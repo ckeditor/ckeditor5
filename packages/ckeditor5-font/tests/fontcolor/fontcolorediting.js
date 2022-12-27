@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -264,6 +264,139 @@ describe( 'FontColorEditing', () => {
 				'<p>b<span style="color:rgba(1,2,3,.4);">a</span>r</p>' +
 				'<p>b<span style="color:#fff;">a</span>z</p>'
 			);
+		} );
+
+		it( 'should support <font color=".."> styling - #RRGGBB color', () => {
+			const data = '<p><font color="#ACABAA">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="#ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:#ACABAA;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - RRGGBB color (no # prefix)', () => {
+			const data = '<p><font color="ACABAA">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:ACABAA;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - #RGB color', () => {
+			const data = '<p><font color="#FAF">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="#FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:#FAF;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - RGB color (no # prefix)', () => {
+			const data = '<p><font color="FAF">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:FAF;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - named color', () => {
+			const data = '<p><font color="lightgreen">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="lightgreen">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:lightgreen;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - strip styling when color is incorrect', () => {
+			const data = '<p><font color="rgb(11, 22, 33)">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]foo<$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p>foo<span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		// #8921
+		describe( 'nested elements that will be converted into the fontColor attribute', () => {
+			it( 'should use the most inner value while converting nested font elements', () => {
+				const data = '<p><font color="#00ffff"><font color="#ff0000">foo</font></font></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting a span with defined the color styles', () => {
+				const data = '<p><font color="#00ffff"><span style="color:#ff0000">foo</span></font></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting the font element inside a span', () => {
+				const data = '<p><span style="color:#ff0000"><font color="#00ffff">foo</font></span></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#00ffff">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#00ffff;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting nested spans with the color styles', () => {
+				const data = '<p><span style="color:#00ffff"><span style="color:#ff0000">foo</span></span></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
 		} );
 	} );
 } );

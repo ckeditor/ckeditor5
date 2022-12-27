@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Watchdog",
+			"className": "EditorWatchdog",
+			"description": "A utility that detects if an editor crashed, destroys it, and automatically creates a new instance of that editor with the content of the previous editor.",
+			"docs": "features/watchdog.html",
+			"path": "src/editorwatchdog.js"
+		}
+	]
+}

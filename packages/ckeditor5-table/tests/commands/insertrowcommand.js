@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,6 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
@@ -59,7 +58,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00[]', '01' ],
 					[ '', '' ],
 					[ '10', '11' ]
@@ -75,7 +74,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '<paragraph>[]10</paragraph>' ],
 					[ '' ],
@@ -92,7 +91,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00[]', '01' ],
 					[ '', '' ],
 					[ '10', '11' ],
@@ -109,7 +108,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10[]', '11' ],
 					[ '', '' ],
@@ -144,7 +143,7 @@ describe( 'InsertRowCommand', () => {
 				// |         | 22 | 23 |
 				// +----+----+----+----+
 				//                     ^-- heading columns
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ { contents: '00', colspan: 2 }, '02', '03' ],
 					[ { contents: '10[]', colspan: 2, rowspan: 3 }, '12', '13' ],
 					[ '', '' ],
@@ -177,7 +176,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 20 | 21 | 22 |
 				// +----+----+----+
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
@@ -210,7 +209,7 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 20           |
 				// +----+----+----+
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
@@ -226,7 +225,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10[]', '11' ],
 					[ '', '' ]
@@ -250,7 +249,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ],
 					[ '', '' ],
@@ -274,7 +273,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ],
 					[ '31', '<horizontalLine></horizontalLine>' ],
@@ -302,12 +301,33 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 10 | 11 | 12 |
 				// +----+----+----+
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2 } ],
 					[ '', { contents: '', colspan: 2 } ],
 					[ '10', '11', '12' ]
 				] ) );
 			} );
+		} );
+
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 
@@ -338,7 +358,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '' ],
 					[ '<paragraph>[]10</paragraph>' ],
@@ -354,7 +374,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '', '' ],
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -370,7 +390,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '', '' ],
@@ -387,7 +407,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '', '' ],
 					[ '00[]', '01' ],
 					[ '10', '11' ],
@@ -404,7 +424,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '', '' ],
@@ -429,7 +449,7 @@ describe( 'InsertRowCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '', '' ],
 					[ '11', '12' ],
 					[ '21', '22' ],
@@ -464,12 +484,33 @@ describe( 'InsertRowCommand', () => {
 				// +----+----+----+
 				// | 10 | 11 | 12 |
 				// +----+----+----+
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '', { contents: '', colspan: 2 } ],
 					[ '00', { contents: '01', colspan: 2 } ],
 					[ '10', '11', '12' ]
 				] ) );
 			} );
+		} );
+
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 } );

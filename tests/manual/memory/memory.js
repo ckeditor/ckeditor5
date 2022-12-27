@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
@@ -32,6 +33,8 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -45,11 +48,11 @@ function initEditor() {
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [
-				ArticlePluginSet, CodeBlock, Alignment,
+				ArticlePluginSet, CodeBlock, Alignment, TableColumnResize,
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
 				Code, Underline, Strikethrough, Superscript, Subscript,
 				Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
-				IndentBlock, WordCount, EasyImage,
+				IndentBlock, WordCount, ImageUpload, CloudServices, EasyImage,
 				TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation
 			],
 			toolbar: [
@@ -61,7 +64,7 @@ function initEditor() {
 				'|',
 				'bulletedList', 'numberedList', 'todoList',
 				'|',
-				'blockQuote', 'imageUpload', 'insertTable', 'mediaEmbed', 'codeBlock',
+				'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 				'|',
 				'alignment', 'outdent', 'indent',
 				'|',
@@ -74,12 +77,13 @@ function initEditor() {
 				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 			},
 			image: {
-				styles: [
-					'full',
-					'alignLeft',
-					'alignRight'
-				],
-				toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
+				toolbar: [
+					'imageTextAlternative',
+					'toggleImageCaption', '|',
+					'imageStyle:inline',
+					'imageStyle:wrapText',
+					'imageStyle:breakText'
+				]
 			},
 			placeholder: 'Type the content here!',
 			mention: {
@@ -104,7 +108,7 @@ function initEditor() {
 
 			document.getElementById( 'clear-content' ).addEventListener( 'click', clearData );
 			document.getElementById( 'print-data-action' ).addEventListener( 'click', printData );
-			document.getElementById( 'read-only' ).addEventListener( 'click', readOnly );
+			document.getElementById( 'read-only' ).addEventListener( 'click', toggleReadOnly );
 			document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
 
 			function destroyEditor() {
@@ -113,13 +117,24 @@ function initEditor() {
 				document.getElementById( 'destroyEditor' ).removeEventListener( 'click', destroyEditor );
 				document.getElementById( 'clear-content' ).removeEventListener( 'click', clearData );
 				document.getElementById( 'print-data-action' ).removeEventListener( 'click', printData );
-				document.getElementById( 'read-only' ).removeEventListener( 'click', readOnly );
+				document.getElementById( 'read-only' ).removeEventListener( 'click', toggleReadOnly );
 			}
 
-			function readOnly() {
-				editor.isReadOnly = !editor.isReadOnly;
-				document.getElementById( 'read-only' ).textContent =
-					editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
+			const button = document.getElementById( 'read-only' );
+			let isReadOnly = false;
+
+			function toggleReadOnly() {
+				isReadOnly = !isReadOnly;
+
+				if ( isReadOnly ) {
+					editor.enableReadOnlyMode( 'manual-test' );
+				} else {
+					editor.disableReadOnlyMode( 'manual-test' );
+				}
+
+				button.textContent = isReadOnly ?
+					'Turn off read-only mode' :
+					'Turn on read-only mode';
 
 				editor.editing.view.focus();
 			}

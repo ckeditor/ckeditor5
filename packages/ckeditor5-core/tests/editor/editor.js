@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -161,16 +161,18 @@ describe( 'Editor', () => {
 			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
 		} );
 
-		it( 'should bind editing.view.document#isReadOnly to the editor', () => {
+		it( 'should bind editing.view.document#isReadOnly to the editor#isReadOnly', () => {
 			const editor = new TestEditor();
-
-			editor.isReadOnly = false;
 
 			expect( editor.editing.view.document.isReadOnly ).to.false;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.editing.view.document.isReadOnly ).to.true;
+
+			editor.disableReadOnlyMode( 'unit-test' );
+
+			expect( editor.editing.view.document.isReadOnly ).to.false;
 		} );
 
 		it( 'should activate #keystrokes', () => {
@@ -306,10 +308,46 @@ describe( 'Editor', () => {
 			expect( editor.t ).to.equal( editor._context.t );
 		} );
 
-		it( 'should use locale instance with a proper configuration', () => {
+		it( 'should use locale instance with a proper configuration passed as the argument to the constructor', () => {
 			const editor = new TestEditor( {
 				language: 'pl'
 			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should use locale instance with a proper configuration set as the defaultConfig option on the constructor', () => {
+			TestEditor.defaultConfig = {
+				language: 'pl'
+			};
+
+			const editor = new TestEditor();
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const editor = new TestEditor( {
+				language: 'pl'
+			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language from the context instead of the constructor config or defaultConfig if all are set', async () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const context = await Context.create( { language: 'pl' } );
+			const editor = new TestEditor( { context, language: 'ru' } );
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
 			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
@@ -377,22 +415,157 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'isReadOnly', () => {
-		it( 'is false initially', () => {
+	describe( 'read-only state', () => {
+		it( 'should be set to false initially', () => {
 			const editor = new TestEditor();
 
-			expect( editor.isReadOnly ).to.false;
+			expect( editor.isReadOnly ).to.be.false;
 		} );
 
-		it( 'is observable', () => {
+		it( 'isReadOnly property should throw an error when set directly', () => {
+			const editor = new TestEditor();
+
+			expectToThrowCKEditorError( () => {
+				editor.isReadOnly = true;
+			}, /editor-isreadonly-has-no-setter/ );
+		} );
+
+		it( 'should be set to true when at least one lock is set', () => {
+			const editor = new TestEditor();
+
+			editor.enableReadOnlyMode( 'lock-1' );
+			editor.enableReadOnlyMode( 'lock-2' );
+
+			editor.disableReadOnlyMode( 'lock-1' );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.disableReadOnlyMode( 'lock-2' );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
+		it( 'should allow using symbols as lock IDs', () => {
+			const editor = new TestEditor();
+
+			const s1 = Symbol( 'lock' );
+			const s2 = Symbol( 'lock' );
+
+			editor.enableReadOnlyMode( s1 );
+			editor.enableReadOnlyMode( s2 );
+
+			editor.disableReadOnlyMode( s1 );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.disableReadOnlyMode( s2 );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
+		// The `change:isReadOnly` event is fired manually and this test ensures
+		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
+		it( 'should be observable', () => {
 			const editor = new TestEditor();
 			const spy = sinon.spy();
 
 			editor.on( 'change:isReadOnly', spy );
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.calledOnce( spy );
+
+			expect( spy.firstCall.args.slice( 1 ) ).to.deep.equal( [
+				'isReadOnly',
+				true,
+				false
+			] );
+
+			editor.disableReadOnlyMode( 'unit-test' );
+
+			sinon.assert.calledTwice( spy );
+
+			expect( spy.secondCall.args.slice( 1 ) ).to.deep.equal( [
+				'isReadOnly',
+				false,
+				true
+			] );
+		} );
+
+		// The `change:isReadOnly` event is fired manually and this test ensures
+		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
+		it( 'should be bindable', async () => {
+			class CustomPlugin extends Plugin {}
+
+			const editor = await TestEditor.create( {
+				plugins: [ CustomPlugin ]
+			} );
+
+			const customPlugin = editor.plugins.get( CustomPlugin );
+
+			customPlugin.bind( 'isEditorReadOnly' ).to( editor, 'isReadOnly' );
+
+			editor.enableReadOnlyMode( 'unit-test' );
+
+			expect( customPlugin.isEditorReadOnly ).to.equal( true );
+
+			editor.disableReadOnlyMode( 'unit-test' );
+
+			expect( customPlugin.isEditorReadOnly ).to.equal( false );
+		} );
+
+		it( 'setting read-only lock twice should not throw an error for the same lock ID', () => {
+			const editor = new TestEditor();
+
+			editor.enableReadOnlyMode( 'lock' );
+			editor.enableReadOnlyMode( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.disableReadOnlyMode( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
+		it( 'clearing read-only lock should not throw an error if the lock ID is not present', () => {
+			const editor = new TestEditor();
+
+			editor.disableReadOnlyMode( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
+
+			editor.enableReadOnlyMode( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.disableReadOnlyMode( 'lock' );
+			editor.disableReadOnlyMode( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
+		it( 'setting read-only lock should throw an error when the lock ID is not a string', () => {
+			const editor = new TestEditor();
+
+			expectToThrowCKEditorError( () => {
+				editor.enableReadOnlyMode();
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
+
+			expectToThrowCKEditorError( () => {
+				editor.enableReadOnlyMode( 123 );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
+		} );
+
+		it( 'clearing read-only lock should throw an error when the lock ID is not a string', () => {
+			const editor = new TestEditor();
+
+			expectToThrowCKEditorError( () => {
+				editor.disableReadOnlyMode();
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: undefined } );
+
+			expectToThrowCKEditorError( () => {
+				editor.disableReadOnlyMode( 123 );
+			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
 		} );
 	} );
 
@@ -553,6 +726,18 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'someCommand' );
 			}, /foo/, editor );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'should call view\'s focus() method', () => {
+			const editor = new TestEditor();
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			editor.editing.view.document.isFocused = true;
+			editor.focus();
+
+			expect( focusSpy.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -921,6 +1106,115 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 2 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
+			} );
+		} );
+
+		describe( '"substitutePlugins" config', () => {
+			it( 'should substitute a plugin when passed as "config.plugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					plugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when passed as "config.extraPlugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					extraPlugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when it is a built-in plugin in the editor class', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const originalBuiltinPlugins = Editor.builtinPlugins;
+
+				Editor.builtinPlugins = [ ErrorPlugin ];
+
+				const editor = new TestEditor( {
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+
+						Editor.builtinPlugins = originalBuiltinPlugins;
 					} );
 			} );
 		} );

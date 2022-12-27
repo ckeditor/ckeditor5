@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "23.1.0",
+  "version": "35.4.0",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,36 +9,37 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "^23.1.0"
+    "@ckeditor/ckeditor5-ui": "^35.4.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "^23.1.0",
-    "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
-    "@ckeditor/ckeditor5-code-block": "^23.1.0",
-    "@ckeditor/ckeditor5-ckfinder": "^23.1.0",
-    "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-balloon": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-font": "^23.1.0",
-    "@ckeditor/ckeditor5-heading": "^23.1.0",
-    "@ckeditor/ckeditor5-highlight": "^23.1.0",
-    "@ckeditor/ckeditor5-html-embed": "^23.1.0",
-    "@ckeditor/ckeditor5-indent": "^23.1.0",
-    "@ckeditor/ckeditor5-link": "^23.1.0",
-    "@ckeditor/ckeditor5-list": "^23.1.0",
-    "@ckeditor/ckeditor5-media-embed": "^23.1.0",
-    "@ckeditor/ckeditor5-page-break": "^23.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
-    "@ckeditor/ckeditor5-remove-format": "^23.1.0",
-    "@ckeditor/ckeditor5-restricted-editing": "^23.1.0",
-    "@ckeditor/ckeditor5-select-all": "^23.1.0",
-    "@ckeditor/ckeditor5-special-characters": "^23.1.0",
-    "@ckeditor/ckeditor5-undo": "^23.1.0",
-    "@ckeditor/ckeditor5-utils": "^23.1.0",
-    "@ckeditor/ckeditor5-table": "^23.1.0"
+    "@ckeditor/ckeditor5-basic-styles": "^35.4.0",
+    "@ckeditor/ckeditor5-ckfinder": "^35.4.0",
+    "@ckeditor/ckeditor5-code-block": "^35.4.0",
+    "@ckeditor/ckeditor5-core": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.4.0",
+    "@ckeditor/ckeditor5-find-and-replace": "^35.4.0",
+    "@ckeditor/ckeditor5-font": "^35.4.0",
+    "@ckeditor/ckeditor5-heading": "^35.4.0",
+    "@ckeditor/ckeditor5-highlight": "^35.4.0",
+    "@ckeditor/ckeditor5-html-embed": "^35.4.0",
+    "@ckeditor/ckeditor5-indent": "^35.4.0",
+    "@ckeditor/ckeditor5-link": "^35.4.0",
+    "@ckeditor/ckeditor5-list": "^35.4.0",
+    "@ckeditor/ckeditor5-media-embed": "^35.4.0",
+    "@ckeditor/ckeditor5-page-break": "^35.4.0",
+    "@ckeditor/ckeditor5-remove-format": "^35.4.0",
+    "@ckeditor/ckeditor5-restricted-editing": "^35.4.0",
+    "@ckeditor/ckeditor5-select-all": "^35.4.0",
+    "@ckeditor/ckeditor5-source-editing": "^35.4.0",
+    "@ckeditor/ckeditor5-special-characters": "^35.4.0",
+    "@ckeditor/ckeditor5-undo": "^35.4.0",
+    "@ckeditor/ckeditor5-utils": "^35.4.0",
+    "@ckeditor/ckeditor5-table": "^35.4.0",
+    "ckeditor5": "^35.4.0"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=14.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -53,7 +54,9 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
   ],
   "main": "./theme/theme.css"
 }

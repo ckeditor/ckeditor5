@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Mention",
+			"className": "Mention",
+			"description": "Introduces support for autocompleting @mentions and #tags. With this feature enabled, when a user types a pre-configured marker, such as <code>@</code> or <code>#</code>, they get autocompletion suggestions.",
+			"docs": "features/mentions.html",
+			"path": "src/mention.js",
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": "mention",
+					"attributes": "data-mention"
+				}
+			]
+		}
+	]
+}

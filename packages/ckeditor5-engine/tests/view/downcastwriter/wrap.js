@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -169,11 +169,11 @@ describe( 'DowncastWriter', () => {
 				);
 			} );
 
-			it( 'should not wrap inside nested containers', () => {
+			it( 'should wrap inside nested containers', () => {
 				testWrap(
 					'<container:div>[foobar<container:p>baz</container:p>]</container:div>',
 					'<attribute:b view-priority="1"></attribute:b>',
-					'<container:div>[<attribute:b view-priority="1">foobar</attribute:b><container:p>baz</container:p>]</container:div>'
+					'<container:div>[<attribute:b view-priority="1">foobar<container:p>baz</container:p></attribute:b>]</container:div>'
 				);
 			} );
 
@@ -439,6 +439,21 @@ describe( 'DowncastWriter', () => {
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( document, 'b' ) );
 				}, 'view-writer-cannot-break-raw-element', document );
+			} );
+
+			it( 'should wrap an inline ContainerElement', () => {
+				const element = new ContainerElement( document, 'span', {}, 'baz' );
+				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
+
+				const wrapAttribute = new AttributeElement( document, 'b' );
+				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
+				const newRange = writer.wrap( range, wrapAttribute );
+
+				expect( stringify( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) ).to.equal(
+					'<container:p>' +
+						'[<attribute:b view-priority="10">foo<container:span>baz</container:span>bar</attribute:b>]' +
+					'</container:p>'
+				);
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {

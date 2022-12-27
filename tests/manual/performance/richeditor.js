@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,6 +33,7 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
@@ -78,6 +79,7 @@ ClassicEditor
 			SpecialCharactersEssentials,
 			TableProperties,
 			TableCellProperties,
+			TableColumnResize,
 			ImageUpload,
 			ImageResize,
 			WordCount,
@@ -127,7 +129,13 @@ ClassicEditor
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ]
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText', '|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( newEditor => {

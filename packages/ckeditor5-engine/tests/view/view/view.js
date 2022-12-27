@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,15 @@
 
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
 import KeyObserver from '../../../src/view/observer/keyobserver';
+import TabObserver from '../../../src/view/observer/tabobserver';
 import InputObserver from '../../../src/view/observer/inputobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
+import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewContainerElement from '../../../src/view/containerelement';
@@ -31,7 +33,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 6;
+	const DEFAULT_OBSERVERS_COUNT = 9;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
@@ -85,19 +87,11 @@ describe( 'view', () => {
 		expect( view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
+		expect( view.getObserver( TabObserver ) ).to.be.instanceof( TabObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
-	} );
-
-	it( 'should add InputObserver on Android devices', () => {
-		const oldEnvIsAndroid = env.isAndroid;
-		env.isAndroid = true;
-
-		const newView = new View( new StylesProcessor() );
-		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
-
-		env.isAndroid = oldEnvIsAndroid;
-		newView.destroy();
+		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
+		expect( view.getObserver( ArrowKeysObserver ) ).to.be.instanceof( ArrowKeysObserver );
 	} );
 
 	describe( 'attachDomRoot()', () => {
@@ -488,8 +482,8 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'isFocused', () => {
-		it( 'should change renderer.isFocused too', () => {
+	describe( 'Renderer property bindings to the document', () => {
+		it( 'Renderer#isFocused should be bound to Document#isFocused', () => {
 			expect( viewDocument.isFocused ).to.equal( false );
 			expect( view._renderer.isFocused ).to.equal( false );
 
@@ -497,6 +491,26 @@ describe( 'view', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( view._renderer.isFocused ).to.equal( true );
+		} );
+
+		it( 'Renderer#isSelecting should be bound to Document#isSelecting', () => {
+			expect( viewDocument.isSelecting ).to.equal( false );
+			expect( view._renderer.isSelecting ).to.equal( false );
+
+			viewDocument.isSelecting = true;
+
+			expect( viewDocument.isSelecting ).to.equal( true );
+			expect( view._renderer.isSelecting ).to.equal( true );
+		} );
+
+		it( 'Renderer#isComposing should be bound to Document#isComposing', () => {
+			expect( viewDocument.isComposing ).to.equal( false );
+			expect( view._renderer.isComposing ).to.equal( false );
+
+			viewDocument.isComposing = true;
+
+			expect( viewDocument.isComposing ).to.equal( true );
+			expect( view._renderer.isComposing ).to.equal( true );
 		} );
 	} );
 
@@ -635,6 +649,15 @@ describe( 'view', () => {
 
 			sinon.assert.calledOnce( renderSpy );
 			sinon.assert.calledOnce( layoutChangedSpy );
+		} );
+
+		it( 'should change the document#isFocusChaning property to false', () => {
+			view.document.isFocusChaning = true;
+
+			view.document.selection._setTo( null );
+			view.forceRender();
+
+			expect( view.document._isFocusChanging ).to.equal( false );
 		} );
 	} );
 

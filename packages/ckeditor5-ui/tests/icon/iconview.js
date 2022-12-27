@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -27,6 +27,10 @@ describe( 'IconView', () => {
 			expect( view.fillColor ).to.equal( '' );
 		} );
 
+		it( 'sets #isColorInherited', () => {
+			expect( view.isColorInherited ).to.be.true;
+		} );
+
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
@@ -43,6 +47,18 @@ describe( 'IconView', () => {
 				view.viewBox = '1 2 3 4';
 
 				expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '1 2 3 4' );
+			} );
+		} );
+
+		describe( 'color inheritance CSS class', () => {
+			it( 'should toggle depending view#isColorInherited', () => {
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
+
+				view.isColorInherited = false;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.false;
+
+				view.isColorInherited = true;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
 			} );
 		} );
 
@@ -70,6 +86,36 @@ describe( 'IconView', () => {
 
 				view.content = '<svg version="1.1" viewBox="10 20 30 40" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
 				expect( view.viewBox ).to.equal( '10 20 30 40' );
+			} );
+
+			it( 'should use removeChild instead of innerHTML', () => {
+				view.content = '<svg><g id="test"></g><g id="test"></g></svg>';
+				assertIconInnerHTML( view, '<g id="test"></g><g id="test"></g>' );
+
+				const innerHTMLSpy = sinon.spy( view.element, 'innerHTML', [ 'set' ] );
+				const removeChildSpy = sinon.spy( view.element, 'removeChild' );
+
+				view.content = '<svg><g id="test"></g></svg>';
+				assertIconInnerHTML( view, '<g id="test"></g>' );
+
+				sinon.assert.notCalled( innerHTMLSpy.set );
+				sinon.assert.calledTwice( removeChildSpy );
+			} );
+
+			describe( 'preservation of presentational attributes on the <svg> element', () => {
+				it( 'should use the static list of attributes from the IconView class', () => {
+					expect( IconView.presentationalAttributeNames ).to.have.length( 58 );
+				} );
+
+				for ( const attributeName of IconView.presentationalAttributeNames ) {
+					it( `should work for the "${ attributeName }" attribute`, () => {
+						view.content = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" ${ attributeName }="${ attributeName }-value">
+							<g id="test"></g>
+						</svg>`;
+
+						expect( view.element.getAttribute( attributeName ), attributeName ).to.equal( attributeName + '-value' );
+					} );
+				}
 			} );
 		} );
 

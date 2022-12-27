@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -271,7 +271,7 @@ describe( 'AttributeCommand', () => {
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
-			model.schema.register( 'image', { inheritAllFrom: '$block' } );
+			model.schema.register( 'imageBlock', { inheritAllFrom: '$block' } );
 			setData( model, '<p>ab[c<img></img><$text bold="true">foobar</$text>xy<img></img>]z</p>' );
 
 			expect( command.isEnabled ).to.be.true;

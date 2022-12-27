@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,22 +9,17 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-resize' ), {
-		removePlugins: [ 'LinkImage' ],
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		removePlugins: [ 'LinkImage', 'AutoImage' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
-				'|',
-				'imageTextAlternative'
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText'
 			]
 		},
 		cloudServices: CS_CONFIG

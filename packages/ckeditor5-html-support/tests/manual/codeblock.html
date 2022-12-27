@@ -1,0 +1,11 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<div id="editor">
+	<pre style="background:violet;" class="foo"><code class="language-html" data-foo="foo">Code Block with custom properties!</code></pre>
+	<pre style="background:yellow;"><code class="language-css" style="color:red;" data-foo="bar">Code Block with disallowed background!</code></pre>
+	<pre style="background:grey;"><strong>Apes are strong!</strong><br><i>Let's check if inline elements are strong also!</i></pre>
+	<code style="color:blue; background:yellow;">Blue code with disallowed background!</code>
+</div>

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The table cell attribute command.
@@ -22,11 +22,27 @@ export default class TablePropertyCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} attributeName Table cell attribute name.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor, attributeName ) {
+	constructor( editor, attributeName, defaultValue ) {
 		super( editor );
 
+		/**
+		 * The attribute that will be set by the command.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
 		this.attributeName = attributeName;
+
+		/**
+		 * The default value for the attribute.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {String}
+		 */
+		this._defaultValue = defaultValue;
 	}
 
 	/**
@@ -61,7 +77,7 @@ export default class TablePropertyCommand extends Command {
 		const table = selection.getFirstPosition().findAncestor( 'table' );
 		const valueToSet = this._getValueToSet( value );
 
-		model.enqueueChange( batch || 'default', writer => {
+		model.enqueueChange( batch, writer => {
 			if ( valueToSet ) {
 				writer.setAttribute( this.attributeName, valueToSet, table );
 			} else {
@@ -82,7 +98,13 @@ export default class TablePropertyCommand extends Command {
 			return;
 		}
 
-		return table.getAttribute( this.attributeName );
+		const value = table.getAttribute( this.attributeName );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 
 	/**
@@ -93,6 +115,10 @@ export default class TablePropertyCommand extends Command {
 	 * @returns {*}
 	 */
 	_getValueToSet( value ) {
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
 		return value;
 	}
 }

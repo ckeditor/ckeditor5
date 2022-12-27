@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import TableHeightCommand from '../../../src/tableproperties/commands/tableheigh
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableHeightCommand', () => {
+		describe( 'TableHeightCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableHeightCommand( editor );
+				command = new TableHeightCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -65,7 +65,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has height property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { height: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -79,7 +79,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { height: '100px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -162,7 +162,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { height: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						command.execute( { value: '25px' } );
 
@@ -170,7 +170,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ { height: '100px', contents: '[]foo' } ] ] ) );
+						setData( model, modelTable( [ [ { tableHeight: '100px', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -199,6 +199,75 @@ describe( 'table properties', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableHeightCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TablePropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableHeightCommand( editor, '300px' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '300px' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has height property other than the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '300px' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has height property other than the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove height from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+
+						command.execute( { value: '300px' } );
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove height from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableHeight: '100px' } ) );
+
+						command.execute( { value: '300px' } );
 
 						assertTableStyle( editor, '' );
 					} );

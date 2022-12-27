@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module table/table
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
 import TableUI from './tableui';
@@ -15,7 +16,6 @@ import TableSelection from './tableselection';
 import TableClipboard from './tableclipboard';
 import TableKeyboard from './tablekeyboard';
 import TableMouse from './tablemouse';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import '../theme/table.css';
 
@@ -72,6 +72,23 @@ export default class Table extends Plugin {
  * Read more in {@link module:table/table~TableConfig}.
  *
  * @member {module:table/table~TableConfig} module:core/editor/editorconfig~EditorConfig#table
+ */
+
+/**
+ * Number of rows and columns to render by default as table heading when inserting new tables.
+ *
+ * You can configure it like this:
+ *
+ *		const tableConfig = {
+ *			defaultHeadings: {
+ *				rows: 1,
+ *				columns: 1
+ *			}
+ *		};
+ *
+ * Both rows and columns properties are optional defaulting to 0 (no heading).
+ *
+ * @member {Object} module:table/table~TableConfig#defaultHeadings
  */
 
 /**

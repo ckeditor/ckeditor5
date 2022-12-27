@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,15 +14,14 @@ import DecoupledEditor from '../src/decouplededitor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -45,7 +44,8 @@ describe( 'DecoupledEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
+			expect( DecoupledEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
+			expect( DecoupledEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
 
 		it( 'creates main root element', () => {
@@ -84,6 +84,39 @@ describe( 'DecoupledEditor', () => {
 
 					editorElement.remove();
 				} );
+			} );
+		} );
+
+		describe( 'config.initialData', () => {
+			it( 'if not set, is set using DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if not set, is set using data passed in constructor', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>' );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if set, is not overwritten with DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new DecoupledEditor( editorElement, { initialData: '<p>Bar</p>' } );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
 			} );
 		} );
 	} );
@@ -150,6 +183,18 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			return DecoupledEditor.create( document.createElement( 'div' ), {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				editor.destroy();
+			} );
+		} );
+
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {
 			const sourceElement = document.createElement( 'div' );
@@ -166,26 +211,6 @@ describe( 'DecoupledEditor', () => {
 						assertCKEditorError( err, 'editor-source-element-already-used' );
 					}
 				)
-				.then( done )
-				.catch( done );
-		} );
-
-		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
-			DecoupledEditor.create( '<p>Hello world!</p>', {
-				initialData: '<p>I am evil!</p>',
-				plugins: [ Paragraph ]
-			} )
-				.then(
-					() => {
-						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-create-initial-data' );
-					}
-				)
-				.then( () => {
-					removeEditorBodyOrphans();
-				} )
 				.then( done )
 				.catch( done );
 		} );
@@ -370,7 +395,20 @@ describe( 'DecoupledEditor', () => {
 					} );
 			} );
 
+			// We don't update the source element by default, so after destroy, it should become empty.
+			it( 'don\'t set data back to the element', () => {
+				editor.setData( '<p>foo</p><p>bar</p>' );
+
+				return editor.destroy()
+					.then( () => {
+						expect( editableElement.innerHTML ).to.equal( '' );
+					} );
+			} );
+
+			// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+			// back to the source element after destroy.
 			it( 'sets data back to the element', () => {
+				editor.config.set( 'updateSourceElementOnDestroy', true );
 				editor.setData( '<p>foo</p>' );
 
 				return editor.destroy()
@@ -402,7 +440,7 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

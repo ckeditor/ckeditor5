@@ -1,3 +1,13 @@
+<head>
+	<!--
+		For a totally unknown reason, loading the sample JPG file fails in Chrome, but works in other browsers
+		(Edge, Firefox), so this request has been added to exclusions for the crawler.
+	-->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": "sample.jpg"
+	}'>
+</head>
+
 <style>
 	pre.markdown-output {
 		background: hsl(70, 7%, 16%);

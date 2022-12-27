@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,12 +22,14 @@ import RemoveFormat from '../../src/removeformat';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
-			Underline, Undo, Image, ImageCaption, ImageToolbar
+			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize
 		],
 		toolbar: [ 'removeFormat', '|', 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo' ]
 	} )

@@ -1,5 +1,8 @@
 {
 	"image widget": "The label for the image widget.",
+	"Wrap text": "The label for the image style button that wraps text around the image.",
+	"Break text": "The label for the image style button that breaks the text around the image.",
+	"In line": "The label for the image style button that places the image inside the line of text.",
 	"Side image": "The label for the Side image option.",
 	"Full size image": "The label for the Full size image option.",
 	"Left aligned image": "The label for the Left aligned image option.",
@@ -20,5 +23,6 @@
 	"Update": "The label of the form submit button if the image source URL input has a value.",
 	"Insert image via URL": "The input label for the Insert image via URL form.",
 	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image.",
-	"Paste the image source URL.": "The content of the tip below the Insert image via URL form."
+	"Caption for the image": "Text used by screen readers do describe an image when the image has no text alternative.",
+	"Caption for image: %0": "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 }

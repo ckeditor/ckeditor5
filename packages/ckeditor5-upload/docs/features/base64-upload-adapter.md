@@ -1,17 +1,21 @@
 ---
 category: features-image-upload
 menu-title: Base64 upload adapter
-order: 40
+order: 50
 ---
 
 # Base64 image upload adapter
 
-The {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter Base64 image upload adapter} plugin converts images inserted into the rich-text editor into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+The Base64 image upload adapter converts images inserted into the rich-text editor into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/advanced/saving-data editor output}.
 
-This kind of image upload does not require any server-side processing &mdash; images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which, in theory, could have a negative impact on the performance.
+This kind of image upload does not require any server-side processing &mdash; images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which has a negative impact on the performance.
 
-<info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
+<info-box warning>
+    Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
+
+This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions; the same applies e.g. to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
+
+Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
 ## Demo
@@ -45,7 +49,7 @@ ClassicEditor
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -61,7 +65,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
-By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. You can customize this behavior to accept, for example, SVG files (in this case use `svg+xml` type).
 
 #### Server-side configuration
 
@@ -71,8 +75,8 @@ It is up to you to implement any filtering mechanisms on your server in order to
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5 WYSIWYG editor.
+See the {@link features/images-overview Image feature guide} to find out more about handling images in CKEditor 5 WYSIWYG editor.
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload).

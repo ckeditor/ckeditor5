@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module html-embed/htmlembedui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import htmlEmbedIcon from '../theme/icons/html.svg';
 
@@ -18,13 +18,23 @@ import htmlEmbedIcon from '../theme/icons/html.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class HtmlEmbedUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'HtmlEmbedUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command = editor.commands.get( 'insertHtmlEmbed' );
+			const command = editor.commands.get( 'htmlEmbed' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -37,7 +47,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'insertHtmlEmbed' );
+				editor.execute( 'htmlEmbed' );
 				editor.editing.view.focus();
 
 				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();

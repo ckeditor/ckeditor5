@@ -1,20 +1,30 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import EmitterMixin from '../src/emittermixin';
 import KeystrokeHandler from '../src/keystrokehandler';
 import { keyCodes } from '../src/keyboard';
+import env from '../src/env';
 
 describe( 'KeystrokeHandler', () => {
+	const Emitter = EmitterMixin();
+
+	const initialEnvMac = env.isMac;
 	let emitter, keystrokes;
 
 	beforeEach( () => {
-		emitter = Object.create( EmitterMixin );
+		env.isMac = false;
+
+		emitter = new Emitter();
 		keystrokes = new KeystrokeHandler();
 
 		keystrokes.listenTo( emitter );
+	} );
+
+	afterEach( () => {
+		env.isMac = initialEnvMac;
 	} );
 
 	describe( 'listenTo()', () => {

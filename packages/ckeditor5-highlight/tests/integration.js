@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,27 +43,29 @@ describe( 'Highlight', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does work inside image caption', () => {
-			setModelData( model, '<image src="/assets/sample.png"><caption>foo[bar]baz</caption></image>' );
+			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[bar]baz</caption></imageBlock>' );
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
 			expect( getModelData( model ) )
-				.to.equal(
-					'<image src="/assets/sample.png"><caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption></image>'
-				);
+				.to.equal( '<imageBlock src="/assets/sample.png">' +
+					'<caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption>' +
+				'</imageBlock>' );
 		} );
 
 		it( 'does work on selection with image', () => {
 			setModelData(
 				model,
-				'<paragraph>foo[foo</paragraph><image src="/assets/sample.png"><caption>abc</caption></image><paragraph>bar]bar</paragraph>'
+				'<paragraph>foo[foo</paragraph>' +
+					'<imageBlock src="/assets/sample.png"><caption>abc</caption></imageBlock>' +
+				'<paragraph>bar]bar</paragraph>'
 			);
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo[<$text highlight="yellowMarker">foo</$text></paragraph>' +
-				'<image src="/assets/sample.png"><caption><$text highlight="yellowMarker">abc</$text></caption></image>' +
+				'<imageBlock src="/assets/sample.png"><caption><$text highlight="yellowMarker">abc</$text></caption></imageBlock>' +
 				'<paragraph><$text highlight="yellowMarker">bar</$text>]bar</paragraph>'
 			);
 		} );

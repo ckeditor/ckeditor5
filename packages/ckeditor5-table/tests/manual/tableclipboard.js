@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,6 +22,7 @@ createEditor( '#editor-geometry', 'geometry' );
 function createEditor( target, inspectorName ) {
 	ClassicEditor
 		.create( document.querySelector( target ), {
+			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties ],
 			toolbar: [
 				'heading', '|',

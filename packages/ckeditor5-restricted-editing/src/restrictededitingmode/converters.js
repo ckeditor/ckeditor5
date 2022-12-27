@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module restricted-editing/restrictededitingmode/converters
  */
 
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import { Matcher } from 'ckeditor5/src/engine';
+
 import { getMarkerAtPosition } from './utils';
 
 const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
@@ -77,10 +78,10 @@ export function resurrectCollapsedMarkerPostFixer( editor ) {
 	return writer => {
 		let changeApplied = false;
 
-		for ( const [ name, data ] of editor.model.document.differ._changedMarkers ) {
-			if ( name.startsWith( 'restrictedEditingException' ) && data.newRange.root.rootName == '$graveyard' ) {
+		for ( const { name, data } of editor.model.document.differ.getChangedMarkers() ) {
+			if ( name.startsWith( 'restrictedEditingException' ) && data.newRange && data.newRange.root.rootName == '$graveyard' ) {
 				writer.updateMarker( name, {
-					range: writer.createRange( writer.createPositionAt( editor.model.document.selection.focus ) )
+					range: writer.createRange( writer.createPositionAt( data.oldRange.start ) )
 				} );
 
 				changeApplied = true;
@@ -109,7 +110,7 @@ export function extendMarkerOnTypingPostFixer( editor ) {
 			}
 		}
 
-		return false;
+		return changeApplied;
 	};
 }
 

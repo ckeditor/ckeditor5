@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,23 @@
  * @module table/tableproperties/ui/tablepropertiesview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import {
+	ButtonView,
+	FocusCycler,
+	FormHeaderView,
+	LabelView,
+	LabeledFieldView,
+	ToolbarView,
+	View,
+	ViewCollection,
+	addListToDropdown,
+	createLabeledDropdown,
+	createLabeledInputText,
+	submitHandler
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
@@ -29,22 +32,14 @@ import {
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
-
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import objectLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import objectRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import objectCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 
 const ALIGNMENT_ICONS = {
-	left: objectLeftIcon,
-	center: objectCenterIcon,
-	right: objectRightIcon
+	left: icons.objectLeft,
+	center: icons.objectCenter,
+	right: icons.objectRight
 };
 
 /**
@@ -63,6 +58,7 @@ export default class TablePropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
+	 * @param {module:table/tableproperties~TablePropertiesOptions} options.defaultTableProperties The default table properties.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -141,6 +137,7 @@ export default class TablePropertiesView extends View {
 		this.options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
 
@@ -198,7 +195,7 @@ export default class TablePropertiesView extends View {
 		 * @readonly
 		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
-		this.backgroundInput = this._createBackgroundField();
+		this.backgroundInput = backgroundInput;
 
 		/**
 		 * An input that allows specifying the table width.
@@ -218,9 +215,8 @@ export default class TablePropertiesView extends View {
 
 		/**
 		 * A toolbar with buttons that allow changing the alignment of an entire table.
-		 *
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbar~ToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.alignmentToolbar = alignmentToolbar;
 
@@ -291,9 +287,12 @@ export default class TablePropertiesView extends View {
 
 		// Background row.
 		this.children.add( new FormRowView( locale, {
+			labelView: backgroundRowLabel,
 			children: [
-				this.backgroundInput
-			]
+				backgroundRowLabel,
+				backgroundInput
+			],
+			class: 'ck-table-form__background-row'
 		} ) );
 
 		this.children.add( new FormRowView( locale, {
@@ -361,8 +360,10 @@ export default class TablePropertiesView extends View {
 		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
+			this.borderColorInput.fieldView.dropdownView.buttonView,
 			this.borderWidthInput,
 			this.backgroundInput,
+			this.backgroundInput.fieldView.dropdownView.buttonView,
 			this.widthInput,
 			this.heightInput,
 			this.alignmentToolbar,
@@ -378,6 +379,16 @@ export default class TablePropertiesView extends View {
 
 		// Mainly for closing using "Esc" and navigation using "Tab".
 		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -398,9 +409,17 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const defaultTableProperties = this.options.defaultTableProperties;
+		const defaultBorder = {
+			style: defaultTableProperties.borderStyle,
+			width: defaultTableProperties.borderWidth,
+			color: defaultTableProperties.borderColor
+		};
+
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: defaultBorder.color
 		} );
 		const locale = this.locale;
 		const t = this.t;
@@ -433,7 +452,9 @@ export default class TablePropertiesView extends View {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
+		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
+
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -466,12 +487,19 @@ export default class TablePropertiesView extends View {
 			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
-		// Reset the border color and width fields when style is "none".
-		// https://github.com/ckeditor/ckeditor5/issues/6227
-		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( !isBorderStyleSet( value ) ) {
+		// Reset the border color and width fields depending on the `border-style` value.
+		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
+			if ( !isBorderStyleSet( newValue ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
+			}
+
+			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
+			if ( !isBorderStyleSet( oldValue ) ) {
+				this.borderColor = defaultBorder.color;
+				this.borderWidth = defaultBorder.width;
 			}
 		} );
 
@@ -489,20 +517,29 @@ export default class TablePropertiesView extends View {
 	 * * {@link #backgroundInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+	 * @returns {Object.<String,module:ui/view~View>}
 	 */
-	_createBackgroundField() {
-		const backgroundInputCreator = getLabeledColorInputCreator( {
-			colorConfig: this.options.backgroundColors,
-			columns: 5
-		} );
+	_createBackgroundFields() {
 		const locale = this.locale;
 		const t = this.t;
+
+		// -- Group label ---------------------------------------------
+
+		const backgroundRowLabel = new LabelView( locale );
+		backgroundRowLabel.text = t( 'Background' );
+
+		// -- Background color input -----------------------------------
+
+		const backgroundInputCreator = getLabeledColorInputCreator( {
+			colorConfig: this.options.backgroundColors,
+			columns: 5,
+			defaultColorValue: this.options.defaultTableProperties.backgroundColor
+		} );
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
-			label: t( 'Background' ),
+			label: t( 'Color' ),
 			class: 'ck-table-properties-form__background'
 		} );
 
@@ -511,7 +548,10 @@ export default class TablePropertiesView extends View {
 			this.backgroundColor = backgroundInput.fieldView.value;
 		} );
 
-		return backgroundInput;
+		return {
+			backgroundRowLabel,
+			backgroundInput
+		};
 	}
 
 	/**
@@ -614,9 +654,7 @@ export default class TablePropertiesView extends View {
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',
-			nameToValue: name => {
-				return name === 'center' ? '' : name;
-			}
+			defaultValue: this.options.defaultTableProperties.alignment
 		} );
 
 		return {
@@ -650,7 +688,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -662,9 +700,8 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
-			type: 'cancel',
 			withText: true
 		} );
 
@@ -699,5 +736,5 @@ export default class TablePropertiesView extends View {
 }
 
 function isBorderStyleSet( value ) {
-	return !!value;
+	return value !== 'none';
 }

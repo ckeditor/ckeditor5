@@ -1,0 +1,45 @@
+<div id="editor">
+	<h2>Hello world!</h2>
+	<p>This is an editor instance.</p>
+	<p>This is an editor instance.</p>
+	<p>This is an editor instance.</p>
+	<p>This is an editor instance.</p>
+	<p>This is an editor instance.</p>
+	<p>This is an editor instance.</p>
+</div>
+
+<div id="fixed">The toolbar should stick to me instead of the viewport.</div>
+
+<button id="change-offset">Set random top offset (100 - 200px)</button>
+<button id="change-offset-interval">Toggle updating offset (100 - 200px) randomly every 2 seconds</button>
+
+<style>
+	:root {
+		--top-offset: 100px;
+	}
+
+	body {
+		height: 10000px;
+	}
+
+	.ck.ck-editor__editable {
+		margin-top: calc(var(--top-offset) * 2);
+		margin-left: 100px;
+		margin-bottom: 100px;
+	}
+
+	#fixed {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		height: var(--top-offset);
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		background: green;
+		opacity: .8;
+		color: #fff;
+		box-sizing: border-box;
+		padding: 40px;
+	}
+</style>

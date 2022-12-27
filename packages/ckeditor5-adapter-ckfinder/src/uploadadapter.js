@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,18 +9,19 @@
  * @module adapter-ckfinder/uploadadapter
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import { Plugin } from 'ckeditor5/src/core';
+import { FileRepository } from 'ckeditor5/src/upload';
+
 import { getCsrfToken } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
  *
- * See the {@glink features/image-upload/ckfinder "CKFinder file manager integration" guide} to learn how to configure
+ * See the {@glink features/images/image-upload/ckfinder "CKFinder file manager integration" guide} to learn how to configure
  * and use this feature as well as find out more about the full integration with the file manager
  * provided by the {@link module:ckfinder/ckfinder~CKFinder} plugin.
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin

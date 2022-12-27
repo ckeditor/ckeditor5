@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -78,7 +78,7 @@ describe( 'transform', () => {
 
 				john.undo();
 				syncClients();
-				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph></paragraph>' );
+				expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph><paragraph>Bar</paragraph>' );
 
 				kate.undo();
 				syncClients();
@@ -258,6 +258,24 @@ describe( 'transform', () => {
 
 				syncClients();
 				expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
+			} );
+
+			// This case can't be solved yet (we need to be able to use operation relations on the other client).
+			it.skip( 'remove merged element then undo #6', () => {
+				john.setData( '<paragraph>Foob[]ar</paragraph>' );
+				kate.setData( '<paragraph>F[ooba]r</paragraph>' );
+
+				john.split();
+				kate.delete();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>bar</paragraph>' );
+
+				// john.undo();
+				//
+				// syncClients();
+				// expectClients( '<paragraph>Foobar</paragraph>' );
 			} );
 		} );
 

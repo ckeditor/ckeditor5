@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Text transformation",
+			"className": "TextTransformation",
+			"description": "Enables support for the autocorrection. It automatically turns predefined snippets into their typographically improved forms. For example, (tm) becomes ™ and 1/2 becomes ½.",
+			"docs": "features/text-transformation.html",
+			"path": "src/texttransformation.js"
+		}
+	]
+}

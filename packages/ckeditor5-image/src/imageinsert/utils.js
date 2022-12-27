@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,7 @@
  * @module image/imageinsert/utils
  */
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import { LabeledFieldView, createLabeledInputText } from 'ckeditor5/src/ui';
 
 /**
  * Creates integrations object that will be passed to the
@@ -70,8 +69,7 @@ export function createLabeledInputView( locale ) {
 	labeledInputView.set( {
 		label: t( 'Insert image via URL' )
 	} );
-	labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
-	labeledInputView.infoText = t( 'Paste the image source URL.' );
+	labeledInputView.fieldView.placeholder = 'https://example.com/image.png';
 
 	return labeledInputView;
 }

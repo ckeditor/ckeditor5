@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,10 +31,10 @@ describe( 'BlockQuoteCommand', () => {
 
 				model.schema.extend( 'widget', {
 					allowIn: '$root',
+					allowChildren: '$text',
 					isLimit: true,
 					isObject: true
 				} );
-				model.schema.extend( '$text', { allowIn: 'widget' } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'heading', view: 'h' } );

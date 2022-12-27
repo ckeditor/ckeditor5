@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 const config = {
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet, Strikethrough, Code, Highlight ],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'highlight', '|', 'undo', 'redo' ]
 };

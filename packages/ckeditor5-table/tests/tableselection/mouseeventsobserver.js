@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,13 +25,12 @@ describe( 'table selection', () => {
 		it( 'should define domEventTypes', () => {
 			expect( observer.domEventType ).to.deep.equal( [
 				'mousemove',
-				'mouseup',
 				'mouseleave'
 			] );
 		} );
 
 		describe( 'onDomEvent', () => {
-			for ( const eventName of [ 'mousemove', 'mouseup', 'mouseleave' ] ) {
+			for ( const eventName of [ 'mousemove', 'mouseleave' ] ) {
 				it( `should fire ${ eventName } with the right event data`, () => {
 					const spy = sinon.spy();
 

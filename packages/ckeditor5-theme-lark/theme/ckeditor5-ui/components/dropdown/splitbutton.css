@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,8 @@
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
 	 */
-	& > .ck-splitbutton__action {
+	&:hover > .ck-splitbutton__action,
+	&.ck-splitbutton_open > .ck-splitbutton__action {
 		@nest [dir="ltr"] & {
 			/* Don't round the action button on the right side */
 			border-top-right-radius: unset;
@@ -35,10 +36,8 @@
 
 		@nest [dir="ltr"] & {
 			/* Don't round the arrow button on the left side */
-			@mixin ck-rounded-corners {
-				border-top-left-radius: unset;
-				border-bottom-left-radius: unset;
-			}
+			border-top-left-radius: unset;
+			border-bottom-left-radius: unset;
 		}
 
 		@nest [dir="rtl"] & {
@@ -52,6 +51,13 @@
 		}
 	}
 
+	/* Make sure the divider stretches 100% height of the button
+	https://github.com/ckeditor/ckeditor5/issues/10936 */
+	& > .ck-splitbutton__arrow:not(:focus) {
+		border-top-width: 0px;
+		border-bottom-width: 0px;
+	}
+
 	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
 	as a whole. The background of both buttons should stand out and there should be a visual
 	separation between both buttons. */
@@ -62,15 +68,30 @@
 			background: var(--ck-color-split-button-hover-background);
 		}
 
+		/* Splitbutton separator needs to be set with the ::after pseudoselector
+		to display properly the borders on focus */
+		& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+			content: '';
+			position: absolute;
+			width: 1px;
+			height: 100%;
+			background-color: var(--ck-color-split-button-hover-border);
+		}
+
+		/* Make sure the divider between the buttons looks fine when the button is focused */
+		& > .ck-splitbutton__arrow:focus::after {
+			--ck-color-split-button-hover-border: var(--ck-color-focus-border);
+		}
+
 		@nest [dir="ltr"] & {
-			& > .ck-splitbutton__arrow:not(.ck-disabled) {
-				border-left-color: var(--ck-color-split-button-hover-border);
+			& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+				left: -1px;
 			}
 		}
 
 		@nest [dir="rtl"] & {
-			& > .ck-splitbutton__arrow:not(.ck-disabled) {
-				border-right-color: var(--ck-color-split-button-hover-border);
+			& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+				right: -1px;
 			}
 		}
 	}

@@ -13,15 +13,19 @@ In order to do that, this feature introduces two editing modes:
 
 You can imagine a workflow in which a certain group of users is responsible for creating templates of documents while a second group of users can only fill the gaps (for example, fill the missing data, like names, dates, product names, etc.).
 
-By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities.
+By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor 5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
 <info-box>
-	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode.
+	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
+</info-box>
+
+<info-box info>
+	The Restricted editing feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
 
-The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode.
+The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Select a section of text and use the toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn selected area into an editable region or to remove an existing one.
 
 Then you can switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
@@ -30,6 +34,22 @@ Then you can switch to the restricted editing mode to see how the editable and n
 </info-box>
 
 {@snippet features/restricted-editing}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Related features
+
+There are more features that help control user permissions in the WYSIWYG editor:
+
+* {@link features/read-only Read-only} &ndash; Turn the entire content of the editor read-only.
+* {@link features/track-changes Track changes} &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
+* {@link features/comments Comments} &ndash; Users can add comments to any part of the content instead of editing it directly.
+
+<info-box>
+	Read this [CKEditor Ecosystem blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
+</info-box>
 
 ## Configuration
 
@@ -108,7 +128,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -133,4 +153,4 @@ When using [real-time collaboration](https://ckeditor.com/collaboration/real-tim
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing).

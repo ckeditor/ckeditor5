@@ -1,13 +1,14 @@
 ---
 title: Block toolbar
-category: features
+category: features-toolbar
+order: 20
 ---
 
-The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (or a paragraph mark &mdash; &#182;). It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+The block toolbar plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (or a paragraph mark &mdash; &#182;). It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link builds/guides/overview#balloon-block-editor balloon block editor overview}.
+The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link installation/getting-started/predefined-builds#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
-## Example
+## Demo
 
 <info-box hint>
 	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example, to create a header or insert an image. See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
@@ -20,7 +21,7 @@ The block toolbar comes in handy when the main editor toolbar cannot be accessed
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
 
 <info-box hint>
-	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/image images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
+	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/images-overview images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
 </info-box>
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:
@@ -66,7 +67,7 @@ BalloonEditor
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'blockQuote', 'imageUpload'
+			'blockQuote', 'uploadImage'
 		],
 		toolbar: [ ... ]
 	} )
@@ -90,7 +91,7 @@ BalloonEditor
 				'|',
 				'bulletedList', 'numberedList',
 				'|',
-				'blockQuote', 'imageUpload'
+				'blockQuote', 'uploadImage'
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -101,9 +102,9 @@ BalloonEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,9 @@ import Position from '../../../src/model/position';
 
 import { setData, getData, parse, stringify } from '../../../src/dev-utils/model';
 import Range from '../../../src/model/range';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+/* global console */
 
 describe( 'DataController utils', () => {
 	let model, doc, root;
@@ -29,7 +32,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'a' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 
@@ -208,10 +211,10 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should save the reference to the original object', () => {
-			const content = new Element( 'image' );
+			const content = new Element( 'imageBlock' );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				allowWhere: '$text',
 				isObject: true
 			} );
@@ -241,6 +244,55 @@ describe( 'DataController utils', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
 		} );
 
+		it( 'should group multiple node inserts', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>f[]oo</paragraph>' );
+			const affectedRange = insertHelper(
+				'<paragraph>abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl</paragraph>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>fabc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl[]oo</paragraph>'
+			);
+			expect( stringify( root, affectedRange ) ).to.equal(
+				'<paragraph>f[abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl]oo</paragraph>'
+			);
+
+			const batch = model.document.history.getOperation( model.document.version - 1 ).batch;
+			const operations = batch.operations.filter( operation => operation.isDocumentOperation );
+
+			expect( operations.length ).to.equal( 5 );
+
+			expect( operations[ 0 ].type ).to.equal( 'split' );
+			expect( operations[ 0 ].splitPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			// First node should always be inserted by a separate operation (to avoid operation transformation
+			// on multiple nodes on undoing (insert + merge).
+			expect( operations[ 1 ].type ).to.equal( 'insert' );
+			expect( operations[ 1 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 1 ].nodes.length ).to.equal( 1 );
+
+			expect( operations[ 2 ].type ).to.equal( 'merge' );
+			expect( operations[ 2 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			expect( operations[ 3 ].type ).to.equal( 'insert' );
+			expect( operations[ 3 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 3 ].nodes.length ).to.equal( 3 );
+
+			expect( operations[ 4 ].type ).to.equal( 'merge' );
+			expect( operations[ 4 ].targetPosition.path ).to.deep.equal( [ 3, 3 ] );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
@@ -249,14 +301,14 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					allowWhere: '$text',
 					isObject: true
 				} );
 				schema.register( 'disallowedElement' );
 
 				schema.extend( '$text', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: '$root' } );
+				schema.extend( 'imageBlock', { allowIn: '$root' } );
 				// Otherwise it won't be passed to the temporary model fragment used inside insert().
 				schema.extend( 'disallowedElement', { allowIn: '$clipboardHolder' } );
 				schema.extend( '$text', {
@@ -327,18 +379,18 @@ describe( 'DataController utils', () => {
 
 			it( 'inserts an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( '<image></image>' );
+				const affectedRange = insertHelper( '<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'f<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'f<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'inserts a text and an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( 'xyz<image></image>' );
+				const affectedRange = insertHelper( 'xyz<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'fxyz<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'fxyz<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'strips a disallowed element', () => {
@@ -416,6 +468,7 @@ describe( 'DataController utils', () => {
 					inheritAllFrom: '$block',
 					allowAttributes: [ 'listType', 'listIndent' ]
 				} );
+				schema.extend( '$text', { allowAttributes: 'foo' } );
 			} );
 
 			it( 'inserts one text node', () => {
@@ -486,6 +539,29 @@ describe( 'DataController utils', () => {
 
 				expect( getData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
 				expect( stringify( root, affectedRange ) ).to.equal( '[<heading1>bar</heading1>]' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/9794
+			it( 'should not insert a disallowed inline widget into a limit element', () => {
+				const schema = model.schema;
+
+				schema.register( 'limit', {
+					isLimit: true,
+					allowIn: '$root'
+				} );
+
+				schema.extend( '$text', {
+					allowIn: 'limit'
+				} );
+
+				const content = new DocumentFragment( [ new Element( 'inlineWidget' ) ] );
+
+				setData( model, '<limit>[]</limit>' );
+
+				const affectedRange = insertContent( model, content );
+
+				expect( getData( model ) ).to.equal( '<limit>[]</limit>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
 			} );
 
 			describe( 'block to block handling', () => {
@@ -789,31 +865,14 @@ describe( 'DataController utils', () => {
 					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>' );
 				} );
 
-				// This is the expected result, but it was so hard to achieve at this stage that I
-				// decided to go with the what the next test represents.
-				// it( 'inserts paragraph + text + inlineWidget + text', () => {
-				// 	setData( model, '<paragraph>f[]oo</paragraph>' );
-				// 	insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
-				// 	expect( getData( model ) )
-				// 		.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
-				// } );
-
-				// See the comment above.
 				it( 'inserts paragraph + text + inlineWidget + text', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
 
-					expect( getData( model ) ).to.equal(
-						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz[]oo</paragraph>'
-					);
-
-					expect( stringify( root, affectedRange ) ).to.equal(
-						'<paragraph>f[yyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz]oo</paragraph>'
-					);
+					expect( getData( model ) )
+						.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
+					expect( stringify( root, affectedRange ) )
+						.to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
 				} );
 
 				it( 'inserts paragraph + text + paragraph', () => {
@@ -1007,6 +1066,23 @@ describe( 'DataController utils', () => {
 
 					expect( stringify( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph><inlineWidget></inlineWidget></paragraph>]<paragraph>bar</paragraph>'
+					);
+				} );
+
+				it( 'inserts multiple text nodes with different attribute values', () => {
+					setData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					const affectedRange = insertHelper( '<$text foo="a">yyy</$text><$text foo="b">xxx</$text>' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx[]</$text></paragraph>' +
+						'<paragraph>bar</paragraph>'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'[<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx</$text></paragraph>]' +
+						'<paragraph>bar</paragraph>'
 					);
 				} );
 			} );
@@ -1226,6 +1302,1550 @@ describe( 'DataController utils', () => {
 					.to.equal( '<paragraph>f[xxx</paragraph><paragraph><$text b="1">yyy</$text>]oo</paragraph>' );
 			} );
 		} );
+
+		describe( 'markers', () => {
+			beforeEach( () => {
+				const schema = model.schema;
+
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+				schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				schema.register( 'imageInline', {
+					inheritAllFrom: '$inlineObject',
+					allowIn: [ '$block' ]
+				} );
+
+				schema.register( 'imageBlock', {
+					allowIn: '$root',
+					isObject: true,
+					isBlock: true
+				} );
+
+				schema.register( 'limit', {
+					isLimit: true,
+					allowIn: '$root'
+
+				} );
+
+				schema.register( 'wrapper', {
+					isLimit: true,
+					isBlock: true,
+					isObject: true,
+					allowWhere: '$block'
+				} );
+
+				schema.extend( 'paragraph', { allowIn: 'limit' } );
+				schema.extend( 'limit', { allowIn: 'wrapper' } );
+			} );
+
+			it( 'should create marker after inserting paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{Bar}</paragraph>
+				//
+				// <paragraph>foo{Bar}</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker ).to.exist;
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create marker after inserting in the middle of existing content', () => {
+				// <paragraph>fo[]oo</paragraph>
+				// <paragraph>{Bar}</paragraph>
+				//
+				// <paragraph>fo{Bar}oo</paragraph>
+				setData( model, '<paragraph>fo[]oo</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foBar[]oo</paragraph>' );
+
+				expect( expectedMarker ).to.exist;
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+			} );
+
+			it( 'should create marker after inserting at the beginning of existing content', () => {
+				// <paragraph>[]foo</paragraph>
+				// <paragraph>{Ba}r</paragraph>
+				//
+				// <paragraph>{Ba}rfoo</paragraph>
+				setData( model, '<paragraph>[]foo</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+
+				expect( expectedMarker ).to.exist;
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+			} );
+
+			it( 'should create marker on the whole paragraph after inserting in the middle', () => {
+				// <paragraph>f[]oo</paragraph>
+				// {<paragraph>Bar</paragraph>}
+				//
+				// <paragraph>f{Bar}oo</paragraph>
+				setData( model, '<paragraph>f[]oo</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fBar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
+
+			it( 'should create marker on the whole paragraph after inserting next to another paragraph', () => {
+				// <paragraph>foo</paragraph>[]
+				// {<paragraph>Bar</paragraph>}
+				//
+				// <paragraph>foo</paragraph>{<paragraph>Bar</paragraph>}
+				setData( model, '<paragraph>foo</paragraph>[]' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on the whole paragraph after inserting before another paragraph', () => {
+				// []<paragraph>foo</paragraph>
+				// {<paragraph>Bar</paragraph>}
+				//
+				// {<paragraph>Bar</paragraph>}<paragraph>foo</paragraph>
+				setData( model, '[]<paragraph>foo</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 0 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should create marker in paragraph after inserting into block quoted paragraph', () => {
+				// <blockQuote><paragraph>foo[]</paragraph></blockQuote>
+				// <paragraph>{Bar}</paragraph>
+				//
+				// <blockQuote><paragraph>foo{Bar}</paragraph></blockQuote>
+				setData( model, '<blockQuote><paragraph>foo[]</paragraph></blockQuote>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 6 ] );
+			} );
+
+			it( 'should create marker in paragraph after inserting into block quoted next to paragraph', () => {
+				// <blockQuote><paragraph>foo</paragraph>[]</blockQuote>
+				// <paragraph>{Bar}</paragraph>
+				//
+				// <blockQuote><paragraph>foo{Bar}</paragraph></blockQuote>
+				setData( model, '<blockQuote><paragraph>foo</paragraph>[]</blockQuote>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 6 ] );
+			} );
+
+			it( 'should create multiple markers after inserting paragraphs', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{Ba}r</paragraph><paragraph>B(ar)</paragraph>
+				//
+				// <paragraph>foo{Ba}r</paragraph><paragraph>B(ar)</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph><paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 2 ] },
+					'marker-b': { start: [ 1, 1 ], end: [ 1, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar</paragraph><paragraph>Bar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 1, 3 ] );
+			} );
+
+			it( 'should create nested markers after inserting paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{B(a)r}</paragraph>
+				//
+				// <paragraph>foo{B(a)r}</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] },
+					'marker-b': { start: [ 0, 1 ], end: [ 0, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+			} );
+
+			it( 'should create nested markers that begin in the same place after inserting paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{(Ba}r)</paragraph>
+				//
+				// <paragraph>foo{(Ba}r)</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 2 ] },
+					'marker-b': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create nested markers that end in the same place after inserting paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{B(ar)}</paragraph>
+				//
+				// <paragraph>foo{B(ar)}</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] },
+					'marker-b': { start: [ 0, 1 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create nested markers that have the same range after inserting paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{(Bar)}</paragraph>
+				//
+				// <paragraph>foo{(Bar)}</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] },
+					'marker-b': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create intersecting markers after inserting paragraph inside another paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// <paragraph>{B(a}r)</paragraph>
+				//
+				// <paragraph>foo{B(a}r)</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 2 ] },
+					'marker-b': { start: [ 0, 1 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedNestedMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create inline marker after inserting paragraph', () => {
+				// <paragraph>foo</paragraph>[]
+				// {<paragraph>}Bar</paragraph>
+				//
+				// <paragraph>foo</paragraph>{<paragraph>}Bar</paragraph>
+				setData( model, '<paragraph>foo</paragraph>[]' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 0, 0 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) )
+					.to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+			} );
+
+			it( 'should create inline nested marker after inserting paragraph next to another one', () => {
+				// <paragraph>foo</paragraph>[]
+				// {(<paragraph>}B)ar</paragraph>
+				//
+				// <paragraph>foo</paragraph>{(<paragraph>}B)ar</paragraph>
+				setData( model, '<paragraph>foo</paragraph>[]' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 0, 0 ] },
+					'marker-b': { start: [ 0 ], end: [ 0, 1 ] }
+				}, [ 1 ] );
+
+				const expectedFirstMarker = model.markers.get( 'marker-a' );
+				const expectedSecondMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+				expect( expectedFirstMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedFirstMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+				expect( expectedSecondMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedSecondMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'should create marker on paragraph after inserting between another paragraphs', () => {
+				// <paragraph>foo</paragraph>[]<paragraph>Bar</paragraph>
+				// {<paragraph>Test</paragraph>}
+				//
+				// <paragraph>foo</paragraph>{<paragraph>Test</paragraph>}<paragraph>Bar</paragraph>
+				setData( model, '<paragraph>foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				insertHelper( '<paragraph>Test</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Test</paragraph><paragraph>Bar</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker after inserting imageBlock next to paragraph', () => {
+				// <paragraph>foo</paragraph>[]
+				// {<imageBlock></imageBlock>}
+				//
+				// <paragraph>foo</paragraph>{<imageBlock></imageBlock>}
+				setData( model, '<paragraph>foo</paragraph>[]' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageInline after inserting inside paragraph', () => {
+				// <paragraph>foo[]</paragraph>
+				// {<imageInline></imageInline>}
+				//
+				// <paragraph>foo{<imageInline></imageInline>}</paragraph>
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
+
+			it( 'should create marker on imageInline when content contains another imageInline', () => {
+				// <paragraph><imageInline></imageInline>[]</paragraph>
+				// {<imageInline></imageInline>}
+				//
+				// <paragraph><imageInline></imageInline>{<imageInline></imageInline>}</paragraph>
+				setData( model, '<paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline><imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+			} );
+
+			it( 'should create marker which contains text and imageInline', () => {
+				// <paragraph>Foo[]</paragraph>
+				// <paragraph>b{ar<imageInline></imageInline>bar}</paragraph>
+				//
+				// <paragraph>Foob{ar<imageInline></imageInline>bar}</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>bar<imageInline></imageInline>bar</paragraph>', {
+					'marker-a': { start: [ 0, 1 ], end: [ 0, 7 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foobar<imageInline></imageInline>bar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 10 ] );
+			} );
+
+			it( 'should create marker which starts in paragraph and ends inside another paragraph with imageInline', () => {
+				// <paragraph>Foo[]</paragraph>
+				// <paragraph>b{ar</paragraph><paragraph><imageInline></imageInline>}</paragraph>
+				//
+				// <paragraph>Foob{ar</paragraph><paragraph><imageInline></imageInline>}</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>bar</paragraph><paragraph><imageInline></imageInline></paragraph>', {
+					'marker-a': { start: [ 0, 1 ], end: [ 1, 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'should create two markers that have intersection between multiple elements', () => {
+				// <paragraph>Foo[]</paragraph>
+				// <paragraph>b{a(r</paragraph><paragraph><imageInline></imageInline>te}s)t</paragraph>
+				//
+				// <paragraph>Foob{a(r</paragraph><paragraph><imageInline></imageInline>te}s)t</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>bar</paragraph><paragraph><imageInline></imageInline>test</paragraph>', {
+					'marker-a': { start: [ 0, 1 ], end: [ 1, 3 ] },
+					'marker-b': { start: [ 0, 2 ], end: [ 1, 4 ] }
+				} );
+
+				const expectedFirstMarker = model.markers.get( 'marker-a' );
+				const expectedSecondMarker = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) )
+					.to.equal( '<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>test[]</paragraph>' );
+
+				expect( expectedFirstMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedFirstMarker.getRange().end.path ).to.deep.equal( [ 1, 3 ] );
+				expect( expectedSecondMarker.getRange().start.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedSecondMarker.getRange().end.path ).to.deep.equal( [ 1, 4 ] );
+			} );
+
+			it( 'should create marker on imageInline inside paragraph after inserting at the beginning', () => {
+				// <paragraph>[]Foo</paragraph>
+				// <paragraph>{<imageInline></imageInline>}</paragraph><paragraph>bar</paragraph>
+				//
+				// <paragraph>{<imageInline></imageInline>}</paragraph><paragraph>barFoo</paragraph>
+				setData( model, '<paragraph>[]Foo</paragraph>' );
+
+				insertHelper( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+			} );
+
+			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
+				// <paragraph>F[]oo</paragraph>
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>F{<imageInline></imageInline>ba}roo</paragraph>
+				setData( model, '<paragraph>F[]oo</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline>bar[]oo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
+
+			it( 'should create marker which starts in paragraph and ends inside the beginning of next paragraph', () => {
+				// <paragraph>Foo[]</paragraph>
+				// <paragraph>b{ar</paragraph><paragraph>}</paragraph>
+				//
+				// <paragraph>Foob{ar</paragraph><paragraph>}</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>bar</paragraph><paragraph></paragraph>', {
+					'marker-a': { start: [ 0, 1 ], end: [ 1, 0 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foobar</paragraph><paragraph>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+			} );
+
+			it( 'should create marker from imageInline and part of text from the next paragraph after inserting in the middle', () => {
+				// <paragraph>Foo[]</paragraph>
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>Foo{<imageInline></imageInline>ba}r</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline>bar[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+			} );
+
+			it( 'should create marker from imageInline and part of text from the next paragraph after inserting at he beginning',
+				() => {
+					// <paragraph>[]Foo</paragraph>
+					// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+					//
+					// <paragraph>{<imageInline></imageInline>ba}rFoo</paragraph>
+					setData( model, '<paragraph>[]Foo</paragraph>' );
+
+					insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+						'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) )
+						.to.equal( '<paragraph><imageInline></imageInline>bar[]Foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+
+			it.skip( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {
+				// <paragraph>Foo</paragraph>[]
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>Foo</paragraph><paragraph>{<imageInline></imageInline></paragraph><paragraph>ba}r</paragraph>
+				setData( model, '<paragraph>Foo</paragraph>[]' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) )
+					.to.equal( '<paragraph>Foo[]</paragraph><paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2, 2 ] );
+			} );
+
+			it.skip( 'should create marker from imageInline  and part of paragraph text after inserting before paragraph', () => {
+				// []<paragraph>Foo</paragraph>
+				// {<imageInline></imageInline><paragraph>ba}r</paragraph>
+				//
+				// <paragraph>{<imageInline></imageInline></paragraph><paragraph>ba}r</paragraph><paragraph>Foo</paragraph>
+				setData( model, '[]<paragraph>Foo</paragraph>' );
+
+				insertHelper( '<imageInline></imageInline><paragraph>bar</paragraph>', {
+					'marker-a': { start: [ 0 ], end: [ 1, 2 ] }
+				}, [ 0 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) )
+					.to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph><paragraph>[]Foo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it.skip( 'should create marker which contains the part of paragraph and imageInline', () => {
+				// <paragraph>Foo[]</paragraph>
+				// <paragraph>b{ar</paragraph><imageInline></imageInline>}
+				//
+				// <paragraph>Foob{ar</paragraph><paragraph><imageInline></imageInline>}</paragraph>
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<paragraph>bar</paragraph><imageInline></imageInline>', {
+					'marker-a': { start: [ 0, 1 ], end: [ 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting at the begining of paragraph', () => {
+				// <paragraph>[]Foo</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// {<imageBlock></imageBlock>}<paragraph>Foo</paragraph>
+				setData( model, '<paragraph>[]Foo</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>Foo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it.skip( 'should create marker on imageBlock after inserting in the middle of paragraph', () => {
+				// <paragraph>Fo[]o</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// <paragraph>Fo</paragraph>{<imageBlock></imageBlock>}<paragraph>o</paragraph>
+				setData( model, '<paragraph>Fo[]o</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Fo</paragraph>[<imageBlock></imageBlock>]<paragraph>o</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting at the end of paragraph', () => {
+				// <paragraph>Foo[]</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// <paragraph>Foo</paragraph>{<imageBlock></imageBlock>}
+				setData( model, '<paragraph>Foo[]</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foo</paragraph>[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting before paragraph', () => {
+				// []<paragraph>Foo</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// {<imageBlock></imageBlock>}<paragraph>Foo</paragraph>
+				setData( model, '[]<paragraph>Foo</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 0 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]Foo</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting next to another imageBlock', () => {
+				// <imageBlock></imageBlock>[]
+				// {<imageBlock></imageBlock>}
+				//
+				// <imageBlock></imageBlock>{<imageBlock></imageBlock>}
+				setData( model, '<imageBlock></imageBlock>[]' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]<imageBlock></imageBlock>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting into paragraph next to another imageBlock', () => {
+				// <imageBlock></imageBlock><paragraph>[]</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// <imageBlock></imageBlock>{<imageBlock></imageBlock>}
+				setData( model, '<imageBlock></imageBlock><paragraph>[]</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting between another image blocks', () => {
+				// <imageBlock></imageBlock>[]<imageBlock></imageBlock>
+				// {<imageBlock></imageBlock>}
+				//
+				// <imageBlock></imageBlock>{<imageBlock></imageBlock>}<imageBlock></imageBlock>
+				setData( model, '<imageBlock></imageBlock>[]<imageBlock></imageBlock>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				}, [ 1 ] );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]<imageBlock></imageBlock><imageBlock></imageBlock>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting next to imageInline', () => {
+				// <paragraph><imageInline></imageInline>[]</paragraph>
+				// {<imageBlock></imageBlock>}
+				//
+				// <paragraph><imageInline></imageInline></paragraph>{<imageBlock></imageBlock>}
+				setData( model, '<paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline></paragraph>[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it.skip( 'should create marker on imageBlock and imageInline after inserting', () => {
+				// <paragraph>[]</paragraph>
+				// {<imageBlock></imageBlock><imageInline></imageInline>}
+				//
+				// {<imageBlock></imageBlock><paragraph><imageInline></imageInline>}</paragraph>
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				insertHelper( '<imageBlock></imageBlock><imageInline></imageInline>', {
+					'marker-a': { start: [ 0 ], end: [ 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it.skip( 'should create marker on imageBlock after inserting in block quoted paragraph', () => {
+				// <blockQuote><paragraph>f[]oo</paragraph></blockQuote>
+				// {<imageBlock></imageBlock>}
+				//
+				// <blockQuote><paragraph>f</paragraph>{<imageBlock></imageBlock>}<paragraph>oo</paragraph></blockQuote>
+				setData( model, '<blockQuote><paragraph>f[]oo</paragraph></blockQuote>' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) )
+					.to.equal( '<blockQuote><paragraph>f</paragraph>[<imageBlock></imageBlock>]<paragraph>oo</paragraph></blockQuote>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+			} );
+
+			it( 'should create marker in paragraph after inserting when content is empty', () => {
+				// []
+				// <paragraph>{foo}</paragraph>
+				//
+				// <paragraph>{foo}</paragraph>
+				setData( model, '[]' );
+
+				insertHelper( '<paragraph>foo</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+			} );
+
+			it( 'should create marker on imageInline after inserting when content is empty', () => {
+				// []
+				// {<imageInline></imageInline>}
+				//
+				// <paragraph>{<imageInline></imageInline>}</paragraph>
+				setData( model, '[]' );
+
+				insertHelper( '<imageInline></imageInline>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+			} );
+
+			it( 'should create marker on paragraph containing imageInline after inserting when content is empty', () => {
+				// []
+				// <paragraph>{Foo<imageInline></imageInline></paragraph>}
+				//
+				// <paragraph>{Foo<imageInline></imageInline></paragraph>}
+				setData( model, '[]' );
+
+				insertHelper( '<paragraph>Foo<imageInline></imageInline></paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline>[]</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should create marker on imageBlock after inserting when content is empty', () => {
+				// []
+				// {<imageBlock></imageBlock>}
+				//
+				// {<imageBlock></imageBlock>}
+				setData( model, '[]' );
+
+				insertHelper( '<imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should create multiple markers around imageBlocks after inserting into empty content', () => {
+				// []
+				// {<imageBlock></imageBlock>}(<imageBlock></imageBlock>)
+				//
+				// {<imageBlock></imageBlock>}(<imageBlock></imageBlock>)
+				setData( model, '[]' );
+
+				insertHelper( '<imageBlock></imageBlock><imageBlock></imageBlock>', {
+					'marker-a': { start: [ 0 ], end: [ 1 ] },
+					'marker-b': { start: [ 1 ], end: [ 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+				const expectedMarkerB = model.markers.get( 'marker-b' );
+
+				expect( getData( model ) ).to.equal( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarkerB.getRange().start.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarkerB.getRange().end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			describe( 'collapsed', () => {
+				it( 'should create collapsed marker after inserting paragraph at the beginning', () => {
+					// <paragraph>[]foo</paragraph>
+					// <paragraph>{}Bar</paragraph>
+					//
+					// <paragraph>{}Barfoo</paragraph>
+					setData( model, '<paragraph>[]foo</paragraph>' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting paragraph in the middle', () => {
+					// <paragraph>f[]oo</paragraph>
+					// <paragraph>{}Bar</paragraph>
+					//
+					// <paragraph>f{}Baroo</paragraph>
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>fBar[]oo</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting paragraph at the end', () => {
+					// <paragraph>foo[]</paragraph>
+					// <paragraph>{}Bar</paragraph>
+					//
+					// <paragraph>foo{}Bar</paragraph>
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting paragraph next to another one', () => {
+					// <paragraph>foo</paragraph>[]
+					// <paragraph>{}Bar</paragraph>
+					//
+					// <paragraph>foo</paragraph><paragraph>{}Bar</paragraph>
+					setData( model, '<paragraph>foo</paragraph>[]' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 0 ] }
+					}, [ 1 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting paragraph before another one', () => {
+					// []<paragraph>foo</paragraph>
+					// <paragraph>{}Bar</paragraph>
+					//
+					// <paragraph>{}Bar</paragraph><paragraph>foo</paragraph>
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 0 ] }
+					}, [ 0 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+				} );
+
+				it( 'should create collapsed marker between two paragraphs', () => {
+					// []<paragraph>foo</paragraph>
+					// <paragraph>Bar</paragraph>{}
+					//
+					// <paragraph>Bar</paragraph>{}<paragraph>foo</paragraph>
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 1 ], end: [ 1 ] }
+					}, [ 0 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+
+					expect( expectedMarker ).to.exist;
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageInline at the beginning of paragraph', () => {
+					// <paragraph>[]foo</paragraph>
+					// {}<imageInline></imageInline>
+					//
+					// <paragraph>{}<imageInline></imageInline>foo</paragraph>
+					setData( model, '<paragraph>[]foo</paragraph>' );
+
+					insertHelper( '<imageInline></imageInline>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline>[]foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageInline in the middle of paragraph', () => {
+					// <paragraph>f[]oo</paragraph>
+					// {}<imageInline></imageInline>
+					//
+					// <paragraph>f{}<imageInline></imageInline>oo</paragraph>
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+
+					insertHelper( '<imageInline></imageInline>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>f<imageInline></imageInline>[]oo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageInline at the end of paragraph', () => {
+					// <paragraph>foo[]</paragraph>
+					// {}<imageInline></imageInline>
+					//
+					// <paragraph>foo{}<imageInline></imageInline></paragraph>
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					insertHelper( '<imageInline></imageInline>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+
+				it.skip( 'should create collapsed marker after inserting imageInline next to paragraph', () => {
+					// <paragraph>foo</paragraph>[]
+					// {}<imageInline></imageInline>
+					//
+					// <paragraph>foo</paragraph><paragraph>{}<imageInline></imageInline></paragraph>
+					setData( model, '<paragraph>foo</paragraph>[]' );
+
+					insertHelper( '<imageInline></imageInline>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					}, [ 1 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph><imageInline></imageInline></paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageInline before paragraph', () => {
+					// []<paragraph>foo</paragraph>
+					// {}<imageInline></imageInline>
+					//
+					// {}<paragraph><imageInline></imageInline></paragraph><paragraph>foo</paragraph>
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					insertHelper( '<imageInline></imageInline>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					}, [ 0 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>[]foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageBlock at the beginning of paragraph', () => {
+					// <paragraph>[]foo</paragraph>
+					// {}<imageBlock></imageBlock>
+					//
+					// {}<imageBlock></imageBlock><paragraph>foo</paragraph>
+					setData( model, '<paragraph>[]foo</paragraph>' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+				} );
+
+				it.skip( 'should create collapsed marker after inserting imageBlock in the middle of paragraph', () => {
+					// <paragraph>f[]oo</paragraph>
+					// {}<imageBlock></imageBlock>
+					//
+					// <paragraph>f</paragraph>{}<imageBlock></imageBlock><paragraph>oo</paragraph>
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>f</paragraph>[<imageBlock></imageBlock>]<paragraph>oo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageBlock at the end of paragraph', () => {
+					// <paragraph>foo[]</paragraph>
+					// {}<imageBlock></imageBlock>
+					//
+					// <paragraph>foo</paragraph>{}<imageBlock></imageBlock>
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					} );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageBlock next to paragraph', () => {
+					// <paragraph>foo</paragraph>[]
+					// {}<imageBlock></imageBlock>
+					//
+					// <paragraph>foo</paragraph>{}<imageBlock></imageBlock>
+					setData( model, '<paragraph>foo</paragraph>[]' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					}, [ 1 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should create collapsed marker after inserting imageBlock before paragraph', () => {
+					// []<paragraph>foo</paragraph>
+					// {}<imageBlock></imageBlock>
+					//
+					// {}<imageBlock></imageBlock><paragraph>foo</paragraph>
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] }
+					}, [ 0 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+				} );
+
+				it( 'should create collapsed marker between imageBlock and paragraph', () => {
+					// []<paragraph>foo</paragraph>
+					// <imageBlock></imageBlock>{}
+					//
+					// <imageBlock></imageBlock>{}<paragraph>foo</paragraph>
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 1 ], end: [ 1 ] }
+					}, [ 0 ] );
+
+					const expectedMarker = model.markers.get( 'marker-a' );
+
+					expect( getData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
+
+					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should create multiple collapsed marker after inserting different elements in empty content', () => {
+					// []
+					// {}<imageInline></imageInline>()<imageBlock></imageBlock>
+					//
+					// <paragraph>{}<imageInline></imageInline>()</paragraph><imageBlock></imageBlock>
+					setData( model, '[]' );
+
+					insertHelper( '<imageInline></imageInline><imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 0 ] },
+						'marker-b': { start: [ 1 ], end: [ 1 ] }
+					} );
+
+					const expectedMarkerA = model.markers.get( 'marker-a' );
+					const expectedMarkerB = model.markers.get( 'marker-b' );
+
+					expect( getData( model ) ).to.equal( '<paragraph><imageInline></imageInline></paragraph>[<imageBlock></imageBlock>]' );
+
+					expect( expectedMarkerA.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarkerA.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarkerB.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarkerB.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+				} );
+			} );
+
+			it( 'should create marker after inserting empty document fragment', () => {
+				// <paragraph>fo[]o</paragraph>
+				// '{}'
+				//
+				// <paragraph>fo{}o</paragraph>
+				setData( model, '<paragraph>fo[]o</paragraph>' );
+
+				insertHelper( new DocumentFragment( [] ), {
+					'marker-a': { start: [ 0 ], end: [ 0 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+			} );
+
+			it( 'should not create marker when insertion is forbidden', () => {
+				// <wrapper><limit><paragraph>[]</paragraph></limit></wrapper>
+				// {<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>}
+				//
+				// <wrapper><limit><paragraph></paragraph></limit></wrapper>
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				// Pasted content is forbidden in current selection.
+				insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 1 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				expect( expectedMarker ).to.be.null;
+			} );
+
+			it( 'should not create marker that is partially on forbidden content', () => {
+				// <wrapper><limit><paragraph>[]</paragraph></limit></wrapper>
+				// {<wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>Ba}r</paragraph>
+				//
+				// <wrapper><limit><paragraph>Bar</paragraph></limit></wrapper>
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 1, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
+
+				expect( expectedMarker ).to.be.null;
+			} );
+
+			it( 'should create marker that starts before and ends after forbidden content', () => {
+				// <wrapper><limit><paragraph>[]</paragraph></limit></wrapper>
+				// <paragraph>{Test</paragraph><wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>Ba}r</paragraph>
+				//
+				// <wrapper><limit><paragraph>{Test</paragraph><paragraph>Ba}r</paragraph></limit></wrapper>
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				insertHelper(
+					'<paragraph>Test</paragraph><wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>Bar</paragraph>',
+					{
+						'marker-a': { start: [ 0, 0 ], end: [ 2, 2 ] }
+					}
+				);
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) )
+					.to.equal( '<wrapper><limit><paragraph>Test</paragraph><paragraph>Bar[]</paragraph></limit></wrapper>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 1, 2 ] );
+			} );
+
+			it( 'should create marker that is next to forbidden content', () => {
+				// <wrapper><limit><paragraph>[]</paragraph></limit></wrapper>
+				// <wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>B{ar}</paragraph>
+				//
+				// <wrapper><limit><paragraph>B{ar}</paragraph></limit></wrapper>
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper><paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 1, 1 ], end: [ 1, 3 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
+
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 0, 3 ] );
+			} );
+
+			it( 'should create 500 markers', () => {
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				const mockMarkers = {};
+				for ( let i = 0; i < 500; i++ ) {
+					mockMarkers[ `comment-thread-${ i }` ] = { start: [ 0, 0 ], end: [ 0, 3 ] };
+				}
+
+				insertHelper( '<paragraph>Bar</paragraph>', mockMarkers );
+
+				for ( let i = 0; i < 500; i++ ) {
+					expect( model.markers.get( `comment-thread-${ i }` ) ).to.exist;
+				}
+			} );
+
+			it( 'should handle markers when selection range is null', () => {
+				// <paragraph>[]foo</paragraph>
+				// <paragraph>{Ba}r</paragraph>
+				//
+				// <paragraph>{Ba}rfoo</paragraph>
+				const stub = testUtils.sinon.stub( console, 'warn' );
+
+				model.schema.getNearestSelectionRange = () => null;
+				setData( model, '<paragraph>[]foo</paragraph>' );
+
+				insertHelper( '<paragraph>Bar</paragraph>', {
+					'marker-a': { start: [ 0, 0 ], end: [ 0, 2 ] }
+				} );
+
+				const expectedMarker = model.markers.get( 'marker-a' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+
+				expect( expectedMarker ).to.exist;
+				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+
+				sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
+			} );
+
+			describe( 'affected range', () => {
+				it( 'should calculate affected range correctly after inserting content with simple marker', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting in the middle of paragraph', () => {
+					setData( model, '<paragraph>fo[]o</paragraph>' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0, 2 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 0, 5 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting paragraph before another one', () => {
+					setData( model, '[]<paragraph>foo</paragraph>' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0, 0 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+
+				it( 'should return affected range correctly after inserting content with multiple markers', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 1 ] },
+						'marker-b': { start: [ 0, 1 ], end: [ 0, 2 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting content with nested markers', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] },
+						'marker-b': { start: [ 0, 1 ], end: [ 0, 2 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting imageBlock', () => {
+					setData( model, '<paragraph>foo[]</paragraph>' );
+
+					const affectedRange = insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 1 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 1 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 2 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting paragraph in empty content', () => {
+					setData( model, '' );
+
+					const affectedRange = insertHelper( '<paragraph>Bar</paragraph>', {
+						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 1 ] );
+				} );
+
+				it( 'should calculate affected range correctly after inserting imageBlock in empty content', () => {
+					setData( model, '' );
+
+					const affectedRange = insertHelper( '<imageBlock></imageBlock>', {
+						'marker-a': { start: [ 0 ], end: [ 1 ] }
+					} );
+
+					expect( affectedRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( affectedRange.end.path ).to.deep.equal( [ 1 ] );
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'integration with limit elements', () => {
@@ -1266,7 +2886,7 @@ describe( 'DataController utils', () => {
 		it( 'should insert text into limit element when selection spans over many limit elements', () => {
 			let affectedRange;
 
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setData( model, '<limit>foo[</limit><limit>]bar</limit>' );
 				affectedRange = insertHelper( 'baz' );
 			} );
@@ -1322,8 +2942,8 @@ describe( 'DataController utils', () => {
 				// Pasted content is forbidden in current selection.
 				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
 
-				expect( getData( model ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 			} );
 
 			it( 'should correctly paste allowed nodes', () => {
@@ -1341,13 +2961,33 @@ describe( 'DataController utils', () => {
 	//
 	// @param {module:engine/model/item~Item|String} content
 	// @returns {module:engine/model/range~Range} range
-	function insertHelper( content ) {
+	function insertHelper( content, markers, customInsertionPath ) {
+		const selection = customInsertionPath ?
+			model.createSelection( model.createPositionFromPath( doc.getRoot(), customInsertionPath ) ) :
+			doc.selection;
+
+		const markersMap = new Map();
+
 		if ( typeof content == 'string' ) {
 			content = parse( content, model.schema, {
 				context: [ '$clipboardHolder' ]
 			} );
+
+			if ( markers && !content.is( 'documentFragment' ) ) {
+				content = new DocumentFragment( [ content ] );
+			}
 		}
 
-		return insertContent( model, content );
+		if ( markers ) {
+			for ( const [ name, value ] of Object.entries( markers ) ) {
+				markersMap.set( name, new Range(
+					new Position( content, value.start ), new Position( content, value.end )
+				) );
+			}
+
+			content.markers = markersMap;
+		}
+
+		return insertContent( model, content, selection );
 	}
 } );

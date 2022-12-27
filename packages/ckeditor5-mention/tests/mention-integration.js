@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, setTimeout */
 
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -184,13 +184,13 @@ describe( 'Mention feature - integration', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( div, { plugins: [ Clipboard, Paragraph, BlockQuote, MentionEditing, UndoEditing ] } )
+				.create( div, { plugins: [ ClipboardPipeline, Paragraph, BlockQuote, MentionEditing, UndoEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 
-					clipboard = editor.plugins.get( 'Clipboard' );
+					clipboard = editor.plugins.get( 'ClipboardPipeline' );
 				} );
 		} );
 
@@ -313,7 +313,7 @@ describe( 'Mention feature - integration', () => {
 						writer.setSelection( writer.createRangeOn( model.document.getRoot().getChild( 0 ).getChild( 0 ) ) );
 					} );
 
-					editor.editing.view.document.fire( 'click' );
+					editor.editing.view.document.fire( 'click', { domEvent: {} } );
 
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI

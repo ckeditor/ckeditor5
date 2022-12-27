@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -49,7 +49,7 @@ describe( 'SpecialCharacters', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					command = editor.commands.get( 'input' );
+					command = editor.commands.get( 'insertText' );
 				} );
 		} );
 
@@ -64,19 +64,23 @@ describe( 'SpecialCharacters', () => {
 
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'specialCharacters' );
+				dropdown.render();
+				document.body.appendChild( dropdown.element );
+
 				dropdown.isOpen = true; // Dropdown is lazy loaded, so needs to be open to be verified (#6175).
 			} );
 
 			afterEach( () => {
+				dropdown.element.remove();
 				dropdown.destroy();
 			} );
 
 			it( 'has a navigation view', () => {
-				expect( dropdown.panelView.children.first ).to.be.instanceOf( SpecialCharactersNavigationView );
+				expect( dropdown.panelView.children.first.navigationView ).to.be.instanceOf( SpecialCharactersNavigationView );
 			} );
 
 			it( 'a navigation contains the "All" special category', () => {
-				const listView = dropdown.panelView.children.first.groupDropdownView.panelView.children.first;
+				const listView = dropdown.panelView.children.first.navigationView.groupDropdownView.panelView.children.first;
 
 				// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
 				expect( listView.items.length ).to.equal( 3 );
@@ -84,11 +88,11 @@ describe( 'SpecialCharacters', () => {
 			} );
 
 			it( 'has a grid view', () => {
-				expect( dropdown.panelView.children.get( 1 ) ).to.be.instanceOf( CharacterGridView );
+				expect( dropdown.panelView.children.first.gridView ).to.be.instanceOf( CharacterGridView );
 			} );
 
 			it( 'has a character info view', () => {
-				expect( dropdown.panelView.children.last ).to.be.instanceOf( CharacterInfoView );
+				expect( dropdown.panelView.children.first.infoView ).to.be.instanceOf( CharacterInfoView );
 			} );
 
 			describe( '#buttonView', () => {
@@ -108,7 +112,7 @@ describe( 'SpecialCharacters', () => {
 			} );
 
 			it( 'executes a command and focuses the editing view', () => {
-				const grid = dropdown.panelView.children.get( 1 );
+				const grid = dropdown.panelView.children.get( 0 ).gridView;
 				const executeSpy = sinon.stub( editor, 'execute' );
 				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 
@@ -116,7 +120,7 @@ describe( 'SpecialCharacters', () => {
 
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'input', {
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
 					text: '≤'
 				} );
 			} );
@@ -125,7 +129,7 @@ describe( 'SpecialCharacters', () => {
 				let grid;
 
 				beforeEach( () => {
-					grid = dropdown.panelView.children.get( 1 );
+					grid = dropdown.panelView.children.get( 0 ).gridView;
 				} );
 
 				it( 'delegates #execute to the dropdown', () => {
@@ -142,12 +146,12 @@ describe( 'SpecialCharacters', () => {
 				} );
 
 				it( 'is updated when navigation view fires #execute', () => {
-					const navigation = dropdown.panelView.children.first;
+					const navigation = dropdown.panelView.children.first.navigationView;
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
 					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
 
-					expect( grid.tiles.get( 0 ).label ).to.equal( '⇐' );
+					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
 			} );
 
@@ -155,8 +159,8 @@ describe( 'SpecialCharacters', () => {
 				let grid, characterInfo;
 
 				beforeEach( () => {
-					grid = dropdown.panelView.children.get( 1 );
-					characterInfo = dropdown.panelView.children.last;
+					grid = dropdown.panelView.children.first.gridView;
+					characterInfo = dropdown.panelView.children.first.infoView;
 				} );
 
 				it( 'is empty when the dropdown was shown', () => {
@@ -171,6 +175,17 @@ describe( 'SpecialCharacters', () => {
 					const tile = grid.tiles.get( 0 );
 
 					tile.fire( 'mouseover' );
+
+					expect( tile.label ).to.equal( '<' );
+					expect( characterInfo.character ).to.equal( '<' );
+					expect( characterInfo.name ).to.equal( 'Less-than sign' );
+					expect( characterInfo.code ).to.equal( 'U+003c' );
+				} );
+
+				it( 'is updated when the tile fires #focus', () => {
+					const tile = grid.tiles.get( 0 );
+
+					tile.fire( 'focus' );
 
 					expect( tile.label ).to.equal( '<' );
 					expect( characterInfo.character ).to.equal( '<' );

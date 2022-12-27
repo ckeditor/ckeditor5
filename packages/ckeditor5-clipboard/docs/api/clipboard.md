@@ -10,7 +10,7 @@ This package implements the clipboard (copy, cut, paste) support for CKEditor 5.
 
 ## Documentation
 
-See the {@link module:clipboard/clipboard~Clipboard} plugin documentation and {@link framework/guides/deep-dive/clipboard "Clipboard" deep dive} guide.
+See the {@link module:clipboard/clipboard~Clipboard} plugin documentation and the {@link framework/guides/deep-dive/clipboard clipboard deep dive guide}.
 
 This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 
@@ -22,7 +22,7 @@ npm install --save @ckeditor/ckeditor5-clipboard
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).
 
 ## External links
 

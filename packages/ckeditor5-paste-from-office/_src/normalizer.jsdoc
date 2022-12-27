@@ -1,0 +1,34 @@
+/**
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module paste-from-office/normalizer
+ */
+
+/**
+ * Interface defining a content transformation pasted from an external editor.
+ *
+ * Normalizers are registered by the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin and run on
+ * {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation inputTransformation event}. They detect environment-specific
+ * quirks and transform it into a form compatible with other CKEditor features.
+ *
+ * @interface Normalizer
+ */
+
+/**
+ * Must return `true` if the `htmlString` contains content which this normalizer can transform.
+ *
+ * @method #isActive
+ * @param {String} htmlString full content of `dataTransfer.getData( 'text/html' )`
+ * @returns {Boolean}
+ */
+
+/**
+ * Executes the normalization of a given data.
+ *
+ * @method #execute
+ * @param {Object} data object obtained from
+ * {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation inputTransformation event}.
+ */

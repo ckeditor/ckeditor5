@@ -8,11 +8,11 @@ The feeds:
 
 1. Static list with `@` marker:
 
-    - Barney
-    - Lily
-    - Marshall
-    - Robin
-    - Ted
+    - Barney Stinson
+    - Lily Aldrin
+    - Marshall Eriksen
+    - Robin Sherbatsky
+    - Ted Mosby
 
 2. Static list of 20 items (`#` marker)
 
@@ -34,7 +34,7 @@ The feeds:
 You can interact with mention panel with keyboard:
 
 - Move arrows up/down to select an item.
-- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation.
+- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the document.
 - The <kbd>esc</kbd> should close the panel.
 
 Mention panel should be closed on:

@@ -10,11 +10,11 @@ This package implements the remove format feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/remove-format#demo demo in the remove format feature} guide.
+Check out the {@link features/remove-format#demo demo in the remove format feature guide}.
 
 ## Documentation
 
-See the {@link features/remove-format remove format feature} guide and the {@link module:remove-format/removeformat~RemoveFormat} plugin documentation.
+See the {@link features/remove-format remove format feature guide} and the {@link module:remove-format/removeformat~RemoveFormat} plugin documentation.
 
 ## Installation
 
@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-remove-format
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format).
 
 ## External links
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module link/unlinkcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import first from '@ckeditor/ckeditor5-utils/src/first';
-import { isImageAllowed } from './utils';
+import { Command } from 'ckeditor5/src/core';
+import { findAttributeRange } from 'ckeditor5/src/typing';
+
+import { isLinkableElement } from './utils';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.
@@ -23,16 +23,15 @@ export default class UnlinkCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const doc = model.document;
+		const selection = model.document.selection;
+		const selectedElement = selection.getSelectedElement();
 
-		const selectedElement = first( doc.selection.getSelectedBlocks() );
-
-		// A check for the `LinkImage` plugin. If the selection contains an image element, get values from the element.
+		// A check for any integration that allows linking elements (e.g. `LinkImage`).
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
-		if ( isImageAllowed( selectedElement, model.schema ) ) {
+		if ( isLinkableElement( selectedElement, model.schema ) ) {
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
-			this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
+			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
 		}
 	}
 
@@ -64,7 +63,7 @@ export default class UnlinkCommand extends Command {
 					selection.getAttribute( 'linkHref' ),
 					model
 				) ] :
-				selection.getRanges();
+				model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

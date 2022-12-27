@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import TableBackgroundColorCommand from '../../../src/tableproperties/commands/t
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableBackgroundColorCommand', () => {
+		describe( 'TableBackgroundColorCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableBackgroundColorCommand( editor );
+				command = new TableBackgroundColorCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -65,7 +65,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has backgroundColor property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -79,7 +79,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -106,7 +106,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table backgroundColor to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute( { value: '#f00' } );
 
@@ -114,7 +114,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute();
 
@@ -143,6 +143,75 @@ describe( 'table properties', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableBackgroundColorCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TablePropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableBackgroundColorCommand( editor, 'red' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'red' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has backgroundColor property other than the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
+
+						expect( command.value ).to.equal( 'blue' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'red' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has backgroundColor property other than the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'blue' } ) );
+
+						expect( command.value ).to.equal( 'blue' );
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove backgroundColor from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
+
+						command.execute( { value: 'red' } );
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove backgroundColor from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBackgroundColor: 'blue' } ) );
+
+						command.execute( { value: 'red' } );
 
 						assertTableStyle( editor, '' );
 					} );

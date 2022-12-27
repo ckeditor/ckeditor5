@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module special-characters/ui/charactergridview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+
+import { KeystrokeHandler, FocusTracker, global } from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
@@ -58,6 +59,34 @@ export default class CharacterGridView extends View {
 		} );
 
 		/**
+		 * Tracks information about the DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		addKeyboardHandlingForGrid( {
+			keystrokeHandler: this.keystrokes,
+			focusTracker: this.focusTracker,
+			gridItems: this.tiles,
+			numberOfColumns: () => global.window
+				.getComputedStyle( this.element.firstChild ) // Responsive .ck-character-grid__tiles
+				.getPropertyValue( 'grid-template-columns' )
+				.split( ' ' )
+				.length,
+			uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
+		} );
+
+		/**
 		 * Fired when any of {@link #tiles grid tiles} is clicked.
 		 *
 		 * @event execute
@@ -71,6 +100,15 @@ export default class CharacterGridView extends View {
 		 * (similar to the native `mouseover` DOM event).
 		 *
 		 * @event tileHover
+		 * @param {Object} data Additional information about the event.
+		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
+		 */
+
+		/**
+		 * Fired when {@link #tiles grid tile} is focused (e.g. by navigating with arrow keys).
+		 *
+		 * @event tileFocus
 		 * @param {Object} data Additional information about the event.
 		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
 		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
@@ -100,7 +138,8 @@ export default class CharacterGridView extends View {
 				title: name
 			},
 			on: {
-				mouseover: tile.bindTemplate.to( 'mouseover' )
+				mouseover: tile.bindTemplate.to( 'mouseover' ),
+				focus: tile.bindTemplate.to( 'focus' )
 			}
 		} );
 
@@ -108,10 +147,56 @@ export default class CharacterGridView extends View {
 			this.fire( 'tileHover', { name, character } );
 		} );
 
+		tile.on( 'focus', () => {
+			this.fire( 'tileFocus', { name, character } );
+		} );
+
 		tile.on( 'execute', () => {
 			this.fire( 'execute', { name, character } );
 		} );
 
 		return tile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		for ( const item of this.tiles ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
+			if ( added.length > 0 ) {
+				for ( const item of added ) {
+					this.focusTracker.add( item.element );
+				}
+			}
+			if ( removed.length > 0 ) {
+				for ( const item of removed ) {
+					this.focusTracker.remove( item.element );
+				}
+			}
+		} );
+
+		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.keystrokes.destroy();
+	}
+
+	/**
+	 * Focuses the first focusable in {@link #tiles}.
+	 */
+	focus() {
+		this.tiles.get( 0 ).focus();
 	}
 }

@@ -1,20 +1,24 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
-		extraPlugins: [ ImageResize ],
+		extraPlugins: [
+			TableColumnResize
+		],
 		cloudServices: CS_CONFIG,
-		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

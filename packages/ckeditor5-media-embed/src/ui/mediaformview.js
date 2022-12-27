@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,23 +7,23 @@
  * @module media-embed/ui/mediaformview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import {
+	ButtonView,
+	FocusCycler,
+	LabeledFieldView,
+	View,
+	ViewCollection,
+	createLabeledInputText,
+	injectCssTransitionDisabler,
+	submitHandler
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import '../../theme/mediaform.css';
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import '../../theme/mediaform.css';
 
 /**
  * The media form view controller class.
@@ -43,7 +43,7 @@ export default class MediaFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * Tracks information about DOM focus in the form.
+		 * Tracks information about the DOM focus in the form.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -78,7 +78,7 @@ export default class MediaFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
@@ -87,7 +87,7 @@ export default class MediaFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
 		/**
 		 * A collection of views that can be focused in the form.
@@ -110,10 +110,10 @@ export default class MediaFormView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
+				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
 				focusPrevious: 'shift + tab',
 
-				// Navigate form fields forwards using the Tab key.
+				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
 				focusNext: 'tab'
 			}
 		} );
@@ -146,6 +146,8 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		injectCssTransitionDisabler( this );
 
 		/**
 		 * The default info text for the {@link #urlInputView}.
@@ -200,12 +202,22 @@ export default class MediaFormView extends View {
 		this.keystrokes.set( 'arrowup', stopPropagation );
 		this.keystrokes.set( 'arrowdown', stopPropagation );
 
-		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
+		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView.
-		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
+		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
 		this.listenTo( this.urlInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**
@@ -282,10 +294,9 @@ export default class MediaFormView extends View {
 
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
-		inputField.placeholder = 'https://example.com';
 
 		inputField.on( 'input', () => {
-			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
+			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
 			this.mediaURLInputValue = inputField.element.value.trim();
 		} );
@@ -334,7 +345,7 @@ export default class MediaFormView extends View {
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
  *
  * @event cancel
  */

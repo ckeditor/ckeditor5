@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -65,7 +65,7 @@ describe( 'Widget - integration', () => {
 
 				editor.conversion.for( 'downcast' )
 					.elementToElement( { model: 'inline', view: 'figure' } )
-					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, { writer } ) => {
@@ -289,10 +289,9 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
-
+		expect( viewDocument.selection.isFake ).to.be.true;
 		expect( getViewData( view ) ).to.equal(
-			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'
+			'<p>Foo[<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>]Bar</p>'
 		);
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );

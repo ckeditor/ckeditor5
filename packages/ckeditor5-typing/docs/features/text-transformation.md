@@ -7,7 +7,7 @@ menu-title: Automatic text transformation
 
 {@snippet features/build-text-transformation-source}
 
-The {@link module:typing/texttransformation~TextTransformation} feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
+The text transformation feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms or for autocorrect. Here are some examples that will be transformed in your WYSIWYG editor:
 
 <table style="width: unset">
 	<thead>
@@ -44,11 +44,21 @@ This feature comes pre-configured with a set of the most popular transformations
 
 While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
 
+You may find additional interesting details and usage examples in the [Automatic text transformation in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-automatic-text-transformation-in-ckeditor-5/) blog post after reading this guide.
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
+
 ## Demo
 
 Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related productivity features
 
@@ -128,9 +138,9 @@ ClassicEditor
 					},
 
 					// Finally, you can define `to` as a callback.
-					// This (naive) rule will auto-capitalize the first word after a period.
+					// This (naive) rule will auto-capitalize the first word after a period, question mark, or an exclamation mark.
 					{
-						from: /(\. )([a-z])$/,
+						from: /([.?!] )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
 					}
 				],
@@ -143,14 +153,14 @@ ClassicEditor
 
 You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
 
-You can test the custom rules defined above in the demo:
+You can test the custom rules defined above in the demo. Try the emojis and see the editor automatically capitalize words after a full stop, a quotation mark and an exclamation mark.
 
 {@snippet features/text-transformation-extended}
 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-typing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing) package:
@@ -173,9 +183,9 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing).

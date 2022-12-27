@@ -1,0 +1,264 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<p>
+	<button id="start">Start the cycle of 10 init() followed by destroy()</button>
+</p>
+
+<div id="editor">
+	<h2>Lists in the table</h2>
+	<figure class="table">
+		<table style="width: 600px;border-bottom:2px dashed hsl(0, 0%, 60%);border-left:2px dashed hsl(0, 0%, 60%);border-right:2px dashed hsl(0, 0%, 60%);border-top:2px dashed hsl(0, 0%, 60%);">
+			<tbody>
+			<tr>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Bulleted list</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Numbered list</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">To do list</span></td>
+			</tr>
+			<tr>
+				<td style="vertical-align:top; width: 33%">
+					<ul>
+						<li>UL List item 1</li>
+						<li>UL List item 2</li>
+					</ul>
+				</td>
+				<td style="vertical-align:top; width: 33%">
+					<ol>
+						<li>OL List item 1</li>
+						<li>OL List item 2</li>
+					</ol>
+				</td>
+				<td style="vertical-align:top; width: 33%">
+					<ul class="todo-list">
+						<li>
+							<label class="todo-list__label">
+								<input type="checkbox" />
+								<span class="todo-list__label__description">Foo</span>
+							</label>
+						</li>
+						<li>
+							<label class="todo-list__label">
+								<input type="checkbox" checked="checked" />
+								<span class="todo-list__label__description">Foo</span>
+							</label>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h2>Basic features overview</h2>
+	<p>Lorem <b>ipsum dolor sit </b>amet, consectetur <i>adipisicing elit</i>.<sub>1</sub></p>
+	<h3>Basic styles</h3>
+	<p>Ad alias, <s>architecto</s> culpa <b><i>cumque</i></b> dignissimos <code>dolor eos incidunt ipsa itaque</code> <u>laboriosam</u> magnam molestias nihil <i><u>numquam</u></i> odit quam, suscipit <i><s>veritatis</s></i> voluptate voluptatum.<sup>2</sup></p>
+	<h3>Image</h3>
+	<figure class="image">
+		<img alt="bar" src="../sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<h3>Blockquote</h3>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li><a href="#">Quoted</a> UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+
+	<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+
+	<h2>Media with previews in the table</h2>
+	<figure class="table">
+		<table style="background-color:hsl(0,0%,90%);border-bottom:2px solid hsl(0, 0%, 0%);border-left:2px solid hsl(0, 0%, 0%);border-right:2px solid hsl(0, 0%, 0%);border-top:2px solid hsl(0, 0%, 0%);">
+			<tbody>
+			<tr>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Service</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Preview</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">URL</span></td>
+			</tr>
+			<tr>
+				<td style="text-align: center"><u>YouTube</u></td>
+				<td>
+					<figure class="media">
+						<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>
+					</figure>
+				</td>
+				<td>
+					<span class="text-small"><a href="https://www.youtube.com/watch?v=ZVv7UMQPEWk">https://www.youtube.com/watch?v=ZVv7UMQPEWk</a></span>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: center"><u>Vimeo</u></td>
+				<td>
+					<figure class="media">
+						<oembed url="https://vimeo.com/1084537"></oembed>
+					</figure>
+				</td>
+				<td>
+					<span class="text-small"><a href="https://vimeo.com/1084537">https://vimeo.com/1084537</a></span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h2>Code blocks in the table</h2>
+	<figure class="table">
+		<table style="border-bottom:2px dashed hsl(0, 0%, 60%);border-left:2px dashed hsl(0, 0%, 60%);border-right:2px dashed hsl(0, 0%, 60%);border-top:2px dashed hsl(0, 0%, 60%);">
+			<tbody>
+			<tr>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Language</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Code snippet</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Language</span></td>
+				<td style="text-align: center"><span class="text-big" style="font-weight: bold">Code snippet</span></td>
+			</tr>
+			<tr>
+				<td style="text-align: center;vertical-align:top">CSS</td>
+				<td style="vertical-align:top">
+					<pre><code class="language-css">body {
+	color: red;
+}
+
+p {
+	font-size: 10px;
+}</code></pre></td>
+				<td style="text-align: center;vertical-align:top">PHP</td>
+				<td style="vertical-align:top"><pre><code class="language-php">&lt;?php
+
+function dump( array ...$args ) {
+	foreach ( $args as $item ) {
+		var_dump( $item );
+	}
+
+	die;
+}</code></pre></td>
+			</tr>
+			<tr>
+				<td style="text-align: center;vertical-align:top">JavaScript</td>
+				<td style="vertical-align:top">
+					<pre><code class="language-javascript">function foo() {
+	console.log( 'indented using 1 tab' );
+}
+
+function bar() {
+    console.log( 'indented using spaces' );
+}</code></pre></td>
+				<td style="text-align: center;vertical-align:top">Plaintext</td>
+				<td style="vertical-align:top"><pre><code class="language-plaintext">Plain text</code></pre></td>
+			</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<hr>
+
+	<h2>Link images + Link decorators</h2>
+
+	<table>
+		<tr>
+			<td>Linked text</td>
+			<td>Linked image (<code>figure > a > img</code>)</td>
+			<td>Linked image (<code>a > img</code>)</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">https://cksource.com</a>
+				</p>
+			</td>
+			<td>
+				<figure class="image">
+					<a class="gallery" href="https://cksource.com">
+						<img src="../sample.jpg" alt="bar">
+					</a>
+					<figcaption>Caption</figcaption>
+				</figure>
+			</td>
+			<td>
+				<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">
+					<img src="../sample.jpg" alt="bar">
+				</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+
+	<h2>HTML embed</h2>
+
+	<h3><code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> tags as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<details open>
+			<summary>Details</summary>
+			Something small enough to escape casual notice.
+		</details>
+	</div>
+
+	<h3><code>&lt;video&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<video width="320" height="240" controls>
+			<source src="../sample.mp4" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+
+	<h3><code>&lt;iframe&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<iframe src="../sample.txt"></iframe>
+	</div>
+
+	<h2>Paste from Office</h2>
+	<h3>Paste here: </h3>
+	<p></p>
+
+	<h2>Text part language</h2>
+	<p>
+		<span lang="es" dir="ltr">
+			<strong>Un lenguaje</strong> (del provenzal lenguatge y este del latín lingua) es un sistema de comunicación
+			estructurado para el que existe un contexto de uso y ciertos principios combinatorios formales. Existen
+			<strong>contextos</strong> tanto naturales como artificiales.
+		</span>
+	</p>
+	<p>
+		<span lang="ar" dir="rtl">
+			اللغة نسق من الإشارات والرموز، يشكل أداة من أدوات المعرفة، وتعتبر اللغة أهم <strong>وسائل</strong> التفاهم
+			والاحتكاك بين أفراد امجتمع في <strong>جميع</strong> ميادين الحياة. وبدون اللغة يتعذر نشاط الناس المعرفي.
+		</span>
+	</p>
+
+	<h2>HTML comments</h2>
+	<!-- C1 -->
+	<p><!-- C2 -->Paragraph<!-- C3 --></p>
+	<!-- C4 -->
+	<table>
+		<tr>
+			<td><!-- C5 -->Table cell #1<!-- C6 --></td>
+			<td>Table cell #2</td>
+			<td>Table cell #3</td>
+		</tr>
+	</table>
+	<ol>
+		<li><!-- C7 -->Item #1<!-- C8 --></li>
+		<li>Item #2</li>
+		<li>Item #3
+			<ul>
+				<li><!-- C9 -->Nested item #3.1<!-- C10 --></li>
+				<li>Nested item #3.2</li>
+				<li>Nested item #3.3</li>
+			</ul>
+		</li>
+	</ol>
+</div>
+
+<style>
+	.custom-class {
+		margin-top: 100px;
+		margin-left: 100px;
+		margin-bottom: 100px;
+		width: 450px;
+	}
+</style>

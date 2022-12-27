@@ -1,9 +1,61 @@
 <div id="editor">
-	<figure class="image">
-		<a href="https://cksource.com">
-			<img alt="bar" src="sample.jpg">
-		</a>
-		<figcaption>CKEditor logo - caption</figcaption>
+	<h2>Inline playground</h2>
+	<p>
+		Inline images that <a href="http://ckeditor.com">are <img src="sample50.png" alt="Linked inline image" />
+		both <img src="sample50.png" alt="Another linked inline image" /> linked</a>
+		and not <img src="sample50.png" alt="Unlinked inline image" /> linked.
+	</p>
+
+	<h2>Block playground</h2>
+
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<th colspan="2" rowspan="2">&nbsp;</th>
+					<th>Linked</th>
+					<th>&nbsp;</th>
+				</tr>
+				<tr>
+					<th>yes</th>
+					<th>no</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th rowspan="2">Captioned</th>
+					<th>yes</th>
+					<td>
+						<figure class="image">
+							<a href="http://ckeditor.com">
+								<img src="sample.jpg" alt="Linked captioned block image">
+							</a>
+							<figcaption>Linked captioned block image</figcaption>
+						</figure>
+					</td>
+					<td>
+						<figure class="image">
+							<img src="sample.jpg" alt="Unlinked captioned block image">
+							<figcaption>&nbsp;Captioned block image</figcaption>
+						</figure>
+					</td>
+				</tr>
+				<tr>
+					<th>no</th>
+					<td>
+						<figure class="image">
+							<a href="http://ckeditor.com">
+								<img src="sample.jpg" alt="Linked block image">
+							</a>
+						</figure>
+					</td>
+					<td>
+						<figure class="image">
+							<img src="sample.jpg" alt="Unlinked block image">
+						</figure>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</figure>
-	<img alt="bar" src="sample.jpg">
 </div>

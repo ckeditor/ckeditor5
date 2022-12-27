@@ -1,0 +1,263 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bengali (https://www.transifex.com/ckeditor/teams/11143/bn/)\n"
+"Language: bn\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "টেবিল ঢোকান"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "হেডার কলাম"
+
+msgctxt "Label for the insert table column to the left of the current one button."
+msgid "Insert column left"
+msgstr "বাম দিকে কলাম ঢোকান"
+
+msgctxt "Label for the insert table column to the right of the current one button."
+msgid "Insert column right"
+msgstr "ডানদিকে কলাম ঢোকান"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "কলাম মুছে ফেলুন"
+
+msgctxt "Label for the select the entire table column button."
+msgid "Select column"
+msgstr "কলাম নির্বাচন করুন"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "কলাম"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "হেডার সারি"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "নীচে সারি ঢোকান"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "উপরে সারি ঢোকান"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "সারি মুছুন"
+
+msgctxt "Label for the select the entire table row button."
+msgid "Select row"
+msgstr "সারি নির্বাচন করুন"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "সারি "
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "সেল আপ মার্জ"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr " ডানদিকে সেল মার্জ করুন"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "নিচে সেল মার্জ করুন"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "বামদিকে সেল মার্জ করুন"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "সেল উল্লম্বভাবে বিভক্ত করুন"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "অনুভূমিকভাবে সেল বিভক্ত করুন"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "সেল একত্রিত করুন"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "টেবিল টুলবার"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table."
+msgid "Table properties"
+msgstr "টেবিল বৈশিষ্ট্য"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
+msgid "Cell properties"
+msgstr "সেল বৈশিষ্ট্য"
+
+msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
+msgid "Border"
+msgstr "বর্ডার "
+
+msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
+msgid "Style"
+msgstr "স্টাইল "
+
+msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
+msgid "Width"
+msgstr "প্রস্থ"
+
+msgctxt "The label for the input that allows configuring the height of a table or a table cell."
+msgid "Height"
+msgstr "উচ্চতা"
+
+msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
+msgid "Color"
+msgstr "  রং"
+
+msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
+msgid "Background"
+msgstr "ব্যাকগ্রাউন্ড"
+
+msgctxt "The label for the input that allows configuring the padding of a table cell."
+msgid "Padding"
+msgstr "প্যাডিং"
+
+msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
+msgid "Dimensions"
+msgstr "মাত্রাগুলো"
+
+msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
+msgid "Table cell text alignment"
+msgstr "সক্ষম সেল টেক্সট সারিবদ্ধকরণ"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Alignment"
+msgstr "সারিবদ্ধকরণ"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
+msgid "Horizontal text alignment toolbar"
+msgstr "অনুভূমিক টেক্সট সারিবদ্ধকরণ টুলবার"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
+msgid "Vertical text alignment toolbar"
+msgstr "উল্লম্ব টেক্সট সারিবদ্ধকরণ টুলবার"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
+msgid "Table alignment toolbar"
+msgstr "টেবিল সারিবদ্ধকরণ টুলবার"
+
+msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
+msgid "None"
+msgstr "কোনোটিই নয়"
+
+msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
+msgid "Solid"
+msgstr "সলিড"
+
+msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
+msgid "Dotted"
+msgstr "ডটেড"
+
+msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
+msgid "Dashed"
+msgstr "ড্যাশড"
+
+msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
+msgid "Double"
+msgstr "দ্বিগুণ"
+
+msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
+msgid "Groove"
+msgstr "খাঁজকাটা"
+
+msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
+msgid "Ridge"
+msgstr "রিজ"
+
+msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
+msgid "Inset"
+msgstr "ইনসেট"
+
+msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
+msgid "Outset"
+msgstr "শুরু"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
+msgid "Align cell text to the left"
+msgstr "বাম দিকে সেল টেক্সট সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
+msgid "Align cell text to the center"
+msgstr "কেন্দ্রে সেল টেক্সট সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
+msgid "Align cell text to the right"
+msgstr "ডানদিকে সেল টেক্সট সারিবদ্ধ করুন "
+
+msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
+msgid "Justify cell text"
+msgstr "সেল টেক্সট জাস্টিফাই করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
+msgid "Align cell text to the top"
+msgstr "শীর্ষে সেল টেক্সট সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
+msgid "Align cell text to the middle"
+msgstr "মাঝখানে সেল টেক্সট সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
+msgid "Align cell text to the bottom"
+msgstr "নীচে সেল টেক্সট সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
+msgid "Align table to the left"
+msgstr "বাম দিকে টেবিল সারিবদ্ধ করুন"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table."
+msgid "Center table"
+msgstr "কেন্দ্রের টেবিল"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
+msgid "Align table to the right"
+msgstr "ডানদিকে টেবিলটি সারিবদ্ধ করুন"
+
+msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
+msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
+msgstr ""
+"রংটি সঠিক নয়। \"#FF0000\" অথবা \"rgb(255,0,0)\" অথবা \"লাল\" ব্যাবহার করুন।\n"
+""
+
+msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
+msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
+msgstr "মানটি সঠিক নয়। \"10px\" বা \"2em\" বা সহজভাবে \"2\" ব্যবহার করে দেখুন।"
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr "রং বাছাইকারী"
+
+msgctxt "The button label for the table toolbar hiding caption attached to the table."
+msgid "Toggle caption off"
+msgstr "টগল ক্যাপশন বন্ধ করুন"
+
+msgctxt "The button label for the table toolbar showing caption attached to the table."
+msgid "Toggle caption on"
+msgstr "টগল ক্যাপশন চালু করুন"
+
+msgctxt "The placeholder text for the table caption displayed when the caption is empty."
+msgid "Enter table caption"
+msgstr "টেবিল ক্যাপশন লিখুন"

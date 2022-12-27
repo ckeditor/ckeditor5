@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -246,4 +246,16 @@ msgstr ""
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
+msgstr ""
+
+msgctxt "The button label for the table toolbar hiding caption attached to the table."
+msgid "Toggle caption off"
+msgstr ""
+
+msgctxt "The button label for the table toolbar showing caption attached to the table."
+msgid "Toggle caption on"
+msgstr ""
+
+msgctxt "The placeholder text for the table caption displayed when the caption is empty."
+msgid "Enter table caption"
 msgstr ""

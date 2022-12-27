@@ -1,18 +1,34 @@
 ---
-category: features
+menu-title: To-do lists
+category: features-lists
+order: 20
 ---
 
 # To-do lists
 
-The {@link module:list/todolist~TodoList to-do list} feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with {@link features/lists bulleted and numbered lists} in any combination.
+The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with {@link features/lists bulleted and numbered lists} in any combination.
+
+To-do lists can be introduced using the dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, they can also be added with Markdown code. Simply start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
+
+After reading this guide, you may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
+
+<info-box info>
+	The To-do list feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
+Use the Insert to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg Insert a to-do list} to add a list to the editor content.
+
 {@snippet features/todo-list}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Keyboard support
 
-You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Space</kbd> shortcut when the selection is in that item.
+You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
 ## Installation
 
@@ -37,7 +53,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## HTML structure
@@ -90,8 +106,8 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 
 ## Ordered and unordered lists
 
-You can read more about these features in the {@link features/lists Lists} feature guide.
+You can read more about these features in the {@link features/lists lists feature guide}.
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).

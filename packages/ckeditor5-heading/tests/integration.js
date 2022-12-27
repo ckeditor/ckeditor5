@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -72,9 +72,9 @@ describe( 'Heading integration', () => {
 		it( 'should not destroy the image when a selection converted to a heading', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<paragraph>b]ar</paragraph>'
 			);
 
@@ -82,9 +82,9 @@ describe( 'Heading integration', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>fo[o</heading1>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<heading1>b]ar</heading1>'
 			);
 		} );
@@ -93,7 +93,7 @@ describe( 'Heading integration', () => {
 	describe( 'with the undo feature', () => {
 		it( 'does not create undo steps when applied to an existing heading (collapsed selection)', () => {
 			// Ensure no undo step by using a transparent batch.
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '<heading1>foo[]bar</heading1>' );
 			} );
 
@@ -105,7 +105,7 @@ describe( 'Heading integration', () => {
 
 		it( 'does not create undo steps when applied to an existing heading (non–collapsed selection)', () => {
 			// Ensure no undo step by using a transparent batch.
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 			} );
 

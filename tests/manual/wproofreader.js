@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,6 +20,8 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -34,6 +36,8 @@ ClassicEditor
 			Code,
 			Subscript,
 			Superscript,
+			ImageUpload,
+			CloudServices,
 			EasyImage,
 			Font,
 			Highlight,
@@ -45,12 +49,12 @@ ClassicEditor
 		toolbar: [
 			'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', 'alignment', '|',
 			'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
-			'link', 'blockQuote', 'imageUpload', 'mediaEmbed', 'insertTable', '|',
-			'bulletedList', 'numberedList', 'indent', 'outdent', '|', 'undo', 'redo',
+			'link', 'blockQuote', 'uploadImage', 'mediaEmbed', 'insertTable', '|',
+			'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo',
 			'|'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		mediaEmbed: {
 			previewsInData: true,

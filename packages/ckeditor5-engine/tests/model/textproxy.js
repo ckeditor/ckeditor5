@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -110,7 +110,7 @@ describe( 'TextProxy', () => {
 			expect( textProxy.is( 'model:node' ) ).to.be.false;
 			expect( textProxy.is( '$text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
-			expect( textProxy.is( 'model:element', 'image' ) ).to.be.false;
+			expect( textProxy.is( 'model:element', 'imageBlock' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ describe( 'NodeList', () => {
 	beforeEach( () => {
 		p = new Element( 'p' );
 		foo = new Text( 'foo' );
-		img = new Element( 'image' );
+		img = new Element( 'imageBlock' );
 		nodes = new NodeList( [ p, foo, img ] );
 	} );
 
@@ -123,7 +123,7 @@ describe( 'NodeList', () => {
 
 	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index', () => {
-			const newImg = new Element( 'image' );
+			const newImg = new Element( 'imageBlock' );
 			nodes._insertNodes( 1, [ newImg ] );
 
 			const bar = new Text( 'bar', { bold: true } );
@@ -161,6 +161,16 @@ describe( 'NodeList', () => {
 			expectToThrowCKEditorError( () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
 			}, 'nodelist-insertnodes-not-node', nodes );
+		} );
+
+		it( 'should insert large number of nodes (250 000) without throwing an error', () => {
+			const numberOfNodes = 250000;
+			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new Text( el ) );
+			const expectedLength = nodes.length + largeArray.length;
+
+			nodes._insertNodes( 0, largeArray );
+
+			expect( nodes.length ).to.equal( expectedLength );
 		} );
 	} );
 
@@ -202,7 +212,7 @@ describe( 'NodeList', () => {
 			expect( nodes.toJSON() ).to.deep.equal( [
 				{ name: 'p' },
 				{ data: 'foo' },
-				{ name: 'image' }
+				{ name: 'imageBlock' }
 			] );
 		} );
 	} );

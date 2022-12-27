@@ -2,8 +2,9 @@ CKEditor 5's Cloud Services integration
 =======================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-cloud-services.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-cloud-services/status.svg)](https://david-dm.org/ckeditor/ckeditor5-cloud-services)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-cloud-services/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-cloud-services?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-cloud-services)
 
 CKEditor 5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) integration layer, which handles `config.cloudServices` and tokens.
 

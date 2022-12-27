@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -22,7 +23,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
@@ -346,9 +347,9 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				} );
 			} );
 
-			describe( 'forwardDelete', () => {
+			describe( 'deleteForward', () => {
 				beforeEach( () => {
-					editor.commands.add( 'forwardDelete', buildFakeCommand( editor ) );
+					editor.commands.add( 'deleteForward', buildFakeCommand( editor ) );
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 'end' );
@@ -360,7 +361,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -368,7 +369,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
@@ -376,7 +377,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
@@ -384,7 +385,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be disabled when caret moves to end boundary and it was enabled previously', () => {
@@ -392,13 +393,13 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -409,7 +410,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -420,7 +421,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -431,7 +432,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -442,7 +443,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -453,7 +454,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 			} );
 		} );
@@ -572,7 +573,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ],
+				plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ],
 				restrictedEditing: {
 					allowedCommands: [ 'allowed' ]
 				}
@@ -740,7 +741,9 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingModeEditing, ClipboardPipeline ]
+			} );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );

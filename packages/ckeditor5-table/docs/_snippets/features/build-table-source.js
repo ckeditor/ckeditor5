@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,6 +13,9 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -31,13 +34,17 @@ ClassicEditor.defaultConfig = {
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'indent', 'outdent',
+			'outdent', 'indent',
 			'|',
 			'link', 'blockQuote',
 			'|',
 			'undo', 'redo'
-		],
-		viewportTopOffset: window.getViewportTopOffsetConfig()
+		]
+	},
+	ui: {
+		viewportOffset: {
+			top: window.getViewportTopOffsetConfig()
+		}
 	},
 	indentBlock: { offset: 30, unit: 'px' }
 };
@@ -45,5 +52,8 @@ ClassicEditor.defaultConfig = {
 window.ClassicEditor = ClassicEditor;
 window.CKEditorPlugins = {
 	TableProperties,
-	TableCellProperties
+	TableCellProperties,
+	TableCaption,
+	TableColumnResize,
+	Superscript
 };

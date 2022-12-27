@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,16 @@
  * @module image/imageinsert
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageUpload from './imageupload';
+import ImageInsertViaUrl from './imageinsertviaurl';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
 /**
  * The image insert plugin.
  *
- * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature}
- * and {@glink features/image#inserting-images-via-source-url Insert images via source URL} documentation.
+ * For a detailed overview, check the {@glink features/images/image-upload/image-upload Image upload feature}
+ * and {@glink features/images/image-upload/images-inserting#inserting-images-via-source-url Insert images via source URL} documentation.
  *
  * This plugin does not do anything directly, but it loads a set of specific plugins
  * to enable image uploading or inserting via implemented integrations:
@@ -37,14 +38,13 @@ export default class ImageInsert extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUpload, ImageInsertUI ];
+		return [ ImageUpload, ImageInsertViaUrl, ImageInsertUI ];
 	}
 }
 
 /**
  * The image insert configuration.
  *
- * @protected
  * @member {module:image/imageinsert~ImageInsertConfig} module:image/image~ImageConfig#insert
  */
 
@@ -55,7 +55,7 @@ export default class ImageInsert extends Plugin {
  *			.create( editorElement, {
  * 				image: {
  * 					insert: {
- *						... // settings for "imageInsert" view goes here
+ *						... // settings for "insertImage" view goes here
  * 					}
  * 				}
  *			} )
@@ -64,7 +64,6 @@ export default class ImageInsert extends Plugin {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
- * @protected
  * @interface module:image/imageinsert~ImageInsertConfig
  */
 
@@ -90,6 +89,20 @@ export default class ImageInsert extends Plugin {
  *			}
  *		};
  *
+ * @protected
  * @member {Array.<String>} module:image/imageinsert~ImageInsertConfig#integrations
  * @default [ 'insertImageViaUrl' ]
+ */
+
+/**
+ * This options allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand} when the user
+ * inserts new images into the editor content. By default, this option is unset which means the editor will choose the optimal image type
+ * based on the context of the insertion (e.g. the current selection and availability of plugins)
+ *
+ * Available options are:
+ *
+ * * `'block'` – all images inserted into the editor will be block (requires the {@link module:image/imageblock~ImageBlock} plugin),
+ * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin).
+ *
+ * @member {'inline'|'block'|undefined} module:image/imageinsert~ImageInsertConfig#type
  */

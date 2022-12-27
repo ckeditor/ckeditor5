@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,7 @@ import getSubNodes from './getsubnodes';
  *
  * @param {Object|Array} target1
  * @param {Object|Array} target2
+ * @returns {Boolean}
  */
 export default function areConnectedThroughProperties( target1, target2, excludedNodes = new Set() ) {
 	if ( target1 === target2 && isObject( target1 ) ) {

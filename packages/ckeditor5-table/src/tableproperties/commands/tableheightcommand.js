@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,15 +37,22 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	 * Creates a new `TableHeightCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'height' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'tableHeight', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	_getValueToSet( value ) {
-		return addDefaultUnitToNumericValue( value, 'px' );
+		value = addDefaultUnitToNumericValue( value, 'px' );
+
+		if ( value === this._defaultValue ) {
+			return null;
+		}
+
+		return value;
 	}
 }

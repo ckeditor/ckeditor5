@@ -1,0 +1,45 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bosnian (https://www.transifex.com/ckeditor/teams/11143/bs/)\n"
+"Language: bs\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "Toolbar button tooltip for the HTML embed feature."
+msgid "Insert HTML"
+msgstr "Umetni HTML"
+
+msgctxt "The HTML snippet."
+msgid "HTML snippet"
+msgstr "HTML odlomak"
+
+msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
+msgid "Paste raw HTML here..."
+msgstr "Zalijepi HTML ovdje..."
+
+msgctxt "A label of a button that switches the HTML embed to the source editing mode."
+msgid "Edit source"
+msgstr "Uredi izvor"
+
+msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
+msgid "Save changes"
+msgstr "Sačuvaj izmjene"
+
+msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
+msgid "No preview available"
+msgstr "Pregled nedostupan"
+
+msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
+msgid "Empty snippet content"
+msgstr "HTML odlomak nema sadžaj"

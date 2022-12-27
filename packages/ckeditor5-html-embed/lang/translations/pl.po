@@ -1,0 +1,45 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Polish (https://www.transifex.com/ckeditor/teams/11143/pl/)\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+msgctxt "Toolbar button tooltip for the HTML embed feature."
+msgid "Insert HTML"
+msgstr "Wstaw kod HTML"
+
+msgctxt "The HTML snippet."
+msgid "HTML snippet"
+msgstr "Kod HTML"
+
+msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
+msgid "Paste raw HTML here..."
+msgstr "Wstaw tutaj czysty kod HTML..."
+
+msgctxt "A label of a button that switches the HTML embed to the source editing mode."
+msgid "Edit source"
+msgstr "Edytuj źródło"
+
+msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
+msgid "Save changes"
+msgstr "Zapisz zmiany"
+
+msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
+msgid "No preview available"
+msgstr "Podgląd nie jest dostępny"
+
+msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
+msgid "Empty snippet content"
+msgstr "Brak kodu"

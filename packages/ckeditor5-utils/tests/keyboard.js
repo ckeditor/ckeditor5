@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,7 +30,7 @@ describe( 'Keyboard', () => {
 		it( 'modifiers and other keys', () => {
 			expect( keyCodes.delete ).to.equal( 46 );
 			expect( keyCodes.ctrl ).to.equal( 0x110000 );
-			expect( keyCodes.cmd ).to.equal( 0x110000 );
+			expect( keyCodes.cmd ).to.equal( 0x880000 );
 			expect( keyCodes.f1 ).to.equal( 112 );
 			expect( keyCodes.f12 ).to.equal( 123 );
 
@@ -38,7 +38,8 @@ describe( 'Keyboard', () => {
 				'ctrl', 'cmd', 'shift', 'alt',
 				'arrowleft', 'arrowup', 'arrowright', 'arrowdown',
 				'backspace', 'delete', 'enter', 'space', 'esc', 'tab',
-				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'
+				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12',
+				'`', '-', '=', '[', ']', ';', '\'', ',', '.', '/', '\\'
 			);
 		} );
 	} );
@@ -54,6 +55,10 @@ describe( 'Keyboard', () => {
 
 		it( 'gets code of a function key', () => {
 			expect( getCode( 'f6' ) ).to.equal( 117 );
+		} );
+
+		it( 'gets code of a punctuation character', () => {
+			expect( getCode( ']' ) ).to.equal( 93 );
 		} );
 
 		it( 'is case insensitive', () => {
@@ -73,40 +78,104 @@ describe( 'Keyboard', () => {
 		} );
 
 		it( 'adds modifiers to the keystroke code', () => {
-			expect( getCode( { keyCode: 48, altKey: true, ctrlKey: true, shiftKey: true } ) )
-				.to.equal( 48 + 0x110000 + 0x220000 + 0x440000 );
+			expect( getCode( { keyCode: 48, altKey: true, ctrlKey: true, shiftKey: true, metaKey: true } ) )
+				.to.equal( 48 + 0x110000 + 0x220000 + 0x440000 + 0x880000 );
 		} );
 	} );
 
 	describe( 'parseKeystroke', () => {
-		it( 'parses string', () => {
-			expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x110000 + 65 );
+		const initialEnvMac = env.isMac;
+
+		afterEach( () => {
+			env.isMac = initialEnvMac;
 		} );
 
-		it( 'allows spacing', () => {
-			expect( parseKeystroke( 'ctrl +   a' ) ).to.equal( 0x110000 + 65 );
+		describe( 'on Macintosh', () => {
+			beforeEach( () => {
+				env.isMac = true;
+			} );
+
+			it( 'parses string', () => {
+				expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'parses string without modifier', () => {
+				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+			} );
+
+			it( 'allows spacing', () => {
+				expect( parseKeystroke( 'ctrl +   a' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'is case-insensitive', () => {
+				expect( parseKeystroke( 'Ctrl+A' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'works with an array', () => {
+				expect( parseKeystroke( [ 'ctrl', 'a' ] ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'works with an array which contains numbers', () => {
+				expect( parseKeystroke( [ 'shift', 33 ] ) ).to.equal( 0x220000 + 33 );
+			} );
+
+			it( 'works with two modifiers', () => {
+				expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x880000 + 0x220000 + 65 );
+			} );
+
+			it( 'supports forced modifier', () => {
+				expect( parseKeystroke( 'ctrl!+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'throws on unknown name', () => {
+				expectToThrowCKEditorError( () => {
+					parseKeystroke( 'foo' );
+				}, 'keyboard-unknown-key', null );
+			} );
 		} );
 
-		it( 'is case-insensitive', () => {
-			expect( parseKeystroke( 'Ctrl+A' ) ).to.equal( 0x110000 + 65 );
-		} );
+		describe( 'on non–Macintosh', () => {
+			beforeEach( () => {
+				env.isMac = false;
+			} );
 
-		it( 'works with an array', () => {
-			expect( parseKeystroke( [ 'ctrl', 'a' ] ) ).to.equal( 0x110000 + 65 );
-		} );
+			it( 'parses string', () => {
+				expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x110000 + 65 );
+			} );
 
-		it( 'works with an array which contains numbers', () => {
-			expect( parseKeystroke( [ 'shift', 33 ] ) ).to.equal( 0x220000 + 33 );
-		} );
+			it( 'parses string without modifier', () => {
+				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+			} );
 
-		it( 'works with two modifiers', () => {
-			expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x110000 + 0x220000 + 65 );
-		} );
+			it( 'allows spacing', () => {
+				expect( parseKeystroke( 'ctrl +   a' ) ).to.equal( 0x110000 + 65 );
+			} );
 
-		it( 'throws on unknown name', () => {
-			expectToThrowCKEditorError( () => {
-				parseKeystroke( 'foo' );
-			}, 'keyboard-unknown-key', null );
+			it( 'is case-insensitive', () => {
+				expect( parseKeystroke( 'Ctrl+A' ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'works with an array', () => {
+				expect( parseKeystroke( [ 'ctrl', 'a' ] ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'works with an array which contains numbers', () => {
+				expect( parseKeystroke( [ 'shift', 33 ] ) ).to.equal( 0x220000 + 33 );
+			} );
+
+			it( 'works with two modifiers', () => {
+				expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x110000 + 0x220000 + 65 );
+			} );
+
+			it( 'supports forced modifier', () => {
+				expect( parseKeystroke( 'ctrl!+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'throws on unknown name', () => {
+				expectToThrowCKEditorError( () => {
+					parseKeystroke( 'foo' );
+				}, 'keyboard-unknown-key', null );
+			} );
 		} );
 	} );
 
@@ -128,6 +197,12 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( '⌘A' );
 			} );
 
+			it( 'replaces CTRL! with ⌃', () => {
+				expect( getEnvKeystrokeText( 'CTRL!' ) ).to.equal( '⌃' );
+				expect( getEnvKeystrokeText( 'CTRL!+A' ) ).to.equal( '⌃A' );
+				expect( getEnvKeystrokeText( 'ctrl!+A' ) ).to.equal( '⌃A' );
+			} );
+
 			it( 'replaces SHIFT with ⇧', () => {
 				expect( getEnvKeystrokeText( 'SHIFT' ) ).to.equal( '⇧' );
 				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( '⇧A' );
@@ -145,11 +220,15 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'ALT+SHIFT+X' ) ).to.equal( '⌥⇧X' );
 			} );
 
-			it( 'does not touch other keys', () => {
-				expect( getEnvKeystrokeText( 'ESC+A' ) ).to.equal( 'ESC+A' );
-				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'TAB' );
+			it( 'normalizes value', () => {
+				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
-				expect( getEnvKeystrokeText( 'A+CTRL+B' ) ).to.equal( 'A+⌘B' );
+				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( '⌘A' );
+				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( '⌘B' );
+				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( '⌘[' );
+				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( '⌘]' );
 			} );
 		} );
 
@@ -158,13 +237,20 @@ describe( 'Keyboard', () => {
 				env.isMac = false;
 			} );
 
-			it( 'does not touch anything', () => {
-				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( 'CTRL+A' );
-				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( 'ctrl+A' );
-				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'SHIFT+A' );
-				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'alt+A' );
-				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'CTRL+SHIFT+A' );
+			it( 'normalizes value', () => {
+				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( 'Ctrl+A' );
+				expect( getEnvKeystrokeText( 'CTRL!+a' ) ).to.equal( 'Ctrl+A' );
+				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( 'Ctrl+B' );
+				expect( getEnvKeystrokeText( 'ctrl!+b' ) ).to.equal( 'Ctrl+B' );
+				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'Shift+A' );
+				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'Alt+A' );
+				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'Ctrl+Shift+A' );
+				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( 'Ctrl+[' );
+				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( 'Ctrl+]' );
 			} );
 		} );
 	} );

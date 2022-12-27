@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module media-embed/mediaembedui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { createDropdown } from 'ckeditor5/src/ui';
+
 import MediaFormView from './ui/mediaformview';
 import MediaEmbedEditing from './mediaembedediting';
 import mediaIcon from '../theme/icons/media.svg';
@@ -53,6 +54,12 @@ export default class MediaEmbedUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * @private
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {module:ui/view~View} form
+	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
+	 */
 	_setUpDropdown( dropdown, form, command ) {
 		const editor = this.editor;
 		const t = editor.t;
@@ -72,6 +79,8 @@ export default class MediaEmbedUI extends Plugin {
 		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
 		// invisible form/input cannot be focused/selected.
 		button.on( 'open', () => {
+			form.disableCssTransitions();
+
 			// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 			// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
 			// unaltered) and re-opened it without changing the value of the media command (e.g. because they
@@ -79,25 +88,28 @@ export default class MediaEmbedUI extends Plugin {
 			// command.
 			form.url = command.value || '';
 			form.urlInputView.fieldView.select();
-			form.focus();
+			form.enableCssTransitions();
 		}, { priority: 'low' } );
 
 		dropdown.on( 'submit', () => {
 			if ( form.isValid() ) {
 				editor.execute( 'mediaEmbed', form.url );
-				closeUI();
+				editor.editing.view.focus();
 			}
 		} );
 
 		dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
-		dropdown.on( 'cancel', () => closeUI() );
-
-		function closeUI() {
+		dropdown.on( 'cancel', () => {
 			editor.editing.view.focus();
-			dropdown.isOpen = false;
-		}
+		} );
 	}
 
+	/**
+	 * @private
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {module:ui/view~View} form
+	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
+	 */
 	_setUpForm( dropdown, form, command ) {
 		form.delegate( 'submit', 'cancel' ).to( dropdown );
 		form.urlInputView.bind( 'value' ).to( command, 'value' );

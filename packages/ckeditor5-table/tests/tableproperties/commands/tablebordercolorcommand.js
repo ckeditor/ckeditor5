@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import TableBorderColorCommand from '../../../src/tableproperties/commands/table
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableBorderColorCommand', () => {
+		describe( 'TableBorderColorCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableBorderColorCommand( editor );
+				command = new TableBorderColorCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -65,14 +65,14 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has borderColor property (single string)', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
 
 					it( 'should be set if selected table has borderColor property object with same values', () => {
 						setTableWithObjectAttributes( model, {
-							borderColor: {
+							tableBorderColor: {
 								top: 'blue',
 								right: 'blue',
 								bottom: 'blue',
@@ -84,7 +84,7 @@ describe( 'table properties', () => {
 
 					it( 'should be undefined if selected table has borderColor property object with different values', () => {
 						setTableWithObjectAttributes( model, {
-							borderColor: {
+							tableBorderColor: {
 								top: 'blue',
 								right: 'red',
 								bottom: 'blue',
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -127,19 +127,19 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table borderColor to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute();
 
@@ -153,7 +153,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table borderColor to a passed value', () => {
@@ -161,13 +161,82 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableBorderColorCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TablePropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableBorderColorCommand( editor, 'red' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'red' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderColor property other than the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
+
+						expect( command.value ).to.equal( 'blue' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'red' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderColor property other than the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'blue' } ) );
+
+						expect( command.value ).to.equal( 'blue' );
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderColor from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
+
+						command.execute( { value: 'red' } );
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderColor from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBorderColor: 'blue' } ) );
+
+						command.execute( { value: 'red' } );
 
 						assertTableStyle( editor, '' );
 					} );

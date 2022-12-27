@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,8 +28,9 @@ export default class TableAlignmentCommand extends TablePropertyCommand {
 	 * Creates a new `TableAlignmentCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'alignment' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'tableAlignment', defaultValue );
 	}
 }

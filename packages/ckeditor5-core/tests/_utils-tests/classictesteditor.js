@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,12 +12,10 @@ import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import EditorUI from '../../src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 
-import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -74,11 +72,12 @@ describe( 'ClassicTestEditor', () => {
 		} );
 
 		it( 'mixes DataApiMixin', () => {
-			expect( testUtils.isMixed( ClassicTestEditor, DataApiMixin ) ).to.true;
+			expect( ClassicTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
+			expect( ClassicTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
 
 		it( 'mixes ElementApiMixin', () => {
-			expect( testUtils.isMixed( ClassicTestEditor, ElementApiMixin ) ).to.true;
+			expect( ClassicTestEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );
 	} );
 
@@ -263,6 +262,18 @@ describe( 'ClassicTestEditor', () => {
 							expect( editor.sourceElement.style.display ).to.equal( '' );
 						} );
 				} );
+		} );
+
+		it( 'should call parent EditorUI#destroy() first before destroying the view', async () => {
+			const newEditor = await ClassicTestEditor.create( editorElement, { foo: 1 } );
+			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
+
+			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+
+			await newEditor.destroy();
+
+			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
 	} );
 } );

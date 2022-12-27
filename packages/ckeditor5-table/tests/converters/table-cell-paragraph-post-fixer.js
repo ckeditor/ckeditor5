@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 
 import TableEditing from '../../src/tableediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Table cell paragraph post-fixer', () => {
 	let editor, model, root;
@@ -30,6 +29,29 @@ describe( 'Table cell paragraph post-fixer', () => {
 		editor.destroy();
 	} );
 
+	it( 'should omit elements that are not table rows (on table insert)', () => {
+		model.schema.register( 'foo', {
+			allowIn: 'table',
+			allowContentOf: '$block'
+		} );
+		editor.conversion.elementToElement( {
+			model: 'foo',
+			view: 'foo'
+		} );
+
+		setModelData( model,
+			'<table>' +
+				'<foo>' +
+					'bar' +
+				'</foo>' +
+			'</table>'
+		);
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			'<table><foo>bar</foo></table>'
+		);
+	} );
+
 	it( 'should add a paragraph to an empty table cell (on table insert)', () => {
 		setModelData( model,
 			'<table>' +
@@ -39,7 +61,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			'</table>'
 		);
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph></paragraph></tableCell>' +
@@ -63,7 +85,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.insertElement( 'tableCell', writer.createPositionAt( root.getNodeByPath( [ 0, 1 ] ), 0 ) );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph></paragraph></tableCell>' +
@@ -89,7 +111,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.insertElement( 'tableCell', writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph></paragraph></tableCell>' +
@@ -113,7 +135,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.remove( writer.createRangeIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph></paragraph></tableCell>' +
@@ -143,7 +165,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.insertText( 'baz', root.getNodeByPath( [ 0, 0, 0 ] ), 'end' );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
@@ -173,7 +195,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.insert( tableCell, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
@@ -206,7 +228,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 			writer.insert( tableRow, writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 'end' ) );
 		} );
 
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +

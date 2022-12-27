@@ -1,14 +1,15 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
 import ClipboardObserver from '../src/clipboardobserver';
+
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import DataTransfer from '../src/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
@@ -23,7 +24,7 @@ describe( 'ClipboardObserver', () => {
 		// Create view and DOM structures.
 		el = writer.createContainerElement( 'p' );
 		writer.insert( writer.createPositionAt( root, 0 ), el );
-		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
+		view.domConverter.viewToDom( root, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
 		range = writer.createRange( writer.createPositionAt( root, 1 ) );
@@ -38,7 +39,9 @@ describe( 'ClipboardObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut', 'drop', 'dragover' ] );
+		expect( observer.domEventType ).to.deep.equal(
+			[ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ]
+		);
 	} );
 
 	describe( 'paste event', () => {
@@ -91,7 +94,7 @@ describe( 'ClipboardObserver', () => {
 			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 
-			expect( data.dropRange.isEqual( doc.selection.getFirstRange() ) ).to.be.true;
+			expect( data.dropRange ).to.be.null;
 
 			expect( preventDefaultSpy.calledOnce ).to.be.true;
 		} );
@@ -113,7 +116,7 @@ describe( 'ClipboardObserver', () => {
 
 			const data = eventSpy.args[ 0 ][ 1 ];
 
-			expect( data.dropRange.isEqual( doc.selection.getFirstRange() ) ).to.be.true;
+			expect( data.dropRange ).to.be.null;
 		} );
 
 		it( 'should be fired with the right event data – dropRange (when document.caretRangeFromPoint present)', () => {
@@ -195,8 +198,7 @@ describe( 'ClipboardObserver', () => {
 			const data = eventSpy.args[ 0 ][ 1 ];
 			expect( data.dataTransfer ).to.equal( dataTransfer );
 
-			expect( data.targetRanges ).to.have.length( 1 );
-			expect( data.targetRanges[ 0 ].isEqual( doc.selection.getFirstRange() ) ).to.be.true;
+			expect( data.targetRanges ).to.be.null;
 
 			expect( sinon.assert.callOrder( normalPrioritySpy, eventSpy ) );
 		} );
@@ -255,6 +257,33 @@ describe( 'ClipboardObserver', () => {
 		} );
 	} );
 
+	describe( 'dragging event', () => {
+		it( 'should be fired on dragover', () => {
+			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+			const normalPrioritySpy = sinon.spy();
+
+			doc.on( 'dragging', eventSpy );
+			doc.on( 'dragover', normalPrioritySpy );
+
+			doc.fire( 'dragover', {
+				dataTransfer,
+				preventDefault: preventDefaultSpy,
+				dropRange: range
+			} );
+
+			expect( eventSpy.calledOnce ).to.be.true;
+			expect( preventDefaultSpy.calledOnce ).to.be.true;
+
+			const data = eventSpy.args[ 0 ][ 1 ];
+			expect( data.dataTransfer ).to.equal( dataTransfer );
+
+			expect( data.targetRanges ).to.have.length( 1 );
+			expect( data.targetRanges[ 0 ].isEqual( range ) ).to.be.true;
+
+			expect( sinon.assert.callOrder( normalPrioritySpy, eventSpy ) );
+		} );
+	} );
+
 	describe( 'dragover event', () => {
 		it( 'should fire when a file is dragging over the document', () => {
 			const targetElement = mockDomTargetElement( {} );
@@ -265,10 +294,13 @@ describe( 'ClipboardObserver', () => {
 			observer.onDomEvent( {
 				type: 'dragover',
 				target: targetElement,
-				dataTransfer
+				dataTransfer,
+				preventDefault: preventDefaultSpy,
+				stopPropagation: stopPropagationSpy
 			} );
 
 			expect( eventSpy.calledOnce ).to.equal( true );
+			expect( preventDefaultSpy.calledOnce ).to.be.true;
 
 			const data = eventSpy.args[ 0 ][ 1 ];
 

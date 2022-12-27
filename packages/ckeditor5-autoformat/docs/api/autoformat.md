@@ -10,11 +10,11 @@ This package implements the autoformatting feature for CKEditor 5. It allows sty
 
 ## Demo
 
-Check out the demo in the {@link features/autoformat Autoformat feature} guide.
+Check out the demo in the {@link features/autoformat autoformat feature guide}.
 
 ## Documentation
 
-See the {@link features/autoformat Autoformat feature} guide and the {@link module:autoformat/autoformat~Autoformat} plugin documentation.
+See the {@link features/autoformat autoformat feature guide} and the {@link module:autoformat/autoformat~Autoformat} plugin documentation.
 
 ## Installation
 
@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-autoformat
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat).
 
 ## External links
 

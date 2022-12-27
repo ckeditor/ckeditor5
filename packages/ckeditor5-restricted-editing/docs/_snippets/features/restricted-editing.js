@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -39,27 +39,36 @@ async function startStandardEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'RestrictedEditingMode' ],
 		toolbar: [
-			'heading', '|', 'bold', 'italic', 'link', '|',
+			'restrictedEditingException', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'restrictedEditingException', '|', 'undo', 'redo'
+			'undo', 'redo'
 		],
-		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
-		},
 		table: {
 			contentToolbar: [
 				'tableColumn',
 				'tableRow',
 				'mergeTableCells'
 			]
-		}
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
+		updateSourceElementOnDestroy: true
 	} );
 }
 
@@ -69,4 +78,16 @@ async function reloadEditor( config ) {
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#restricted-editing-editor' ), config );
+
+	window.attachTourBalloon( {
+		target: window.findToolbarItem(
+			window.editor.ui.view.toolbar,
+			item => item.label && [ 'Enable editing', 'Disable editing' ].includes( item.label )
+		),
+		text: 'Click to add or remove editable regions.',
+		editor: window.editor,
+		tippyOptions: {
+			placement: 'bottom-start'
+		}
+	} );
 }

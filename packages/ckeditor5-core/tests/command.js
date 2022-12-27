@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -34,6 +34,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
+		it( 'sets the affectsData property', () => {
+			expect( command ).to.have.property( 'affectsData', true );
+		} );
+
 		it( 'adds a listener which refreshes the command on editor.model.Document#event:change', () => {
 			sinon.spy( command, 'refresh' );
 
@@ -66,11 +70,11 @@ describe( 'Command', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'is always falsy when the editor is in read-only mode', () => {
-			editor.isReadOnly = false;
+		it( 'is falsy when the editor is in read-only mode and command affects data', () => {
+			command.affectsData = true;
 			command.isEnabled = true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			// Is false.
 			expect( command.isEnabled ).to.false;
@@ -80,21 +84,40 @@ describe( 'Command', () => {
 			// Still false.
 			expect( command.isEnabled ).to.false;
 
-			editor.isReadOnly = false;
+			editor.disableReadOnlyMode( 'unit-test' );
+
+			// And is back to true.
+			expect( command.isEnabled ).to.true;
+		} );
+
+		it( 'doesn\'t depend on the editor read-only mode when command doesn\'t affect data', () => {
+			command.affectsData = false;
+			command.isEnabled = true;
+
+			editor.enableReadOnlyMode( 'unit-test' );
+
+			// Is true.
+			expect( command.isEnabled ).to.true;
+
+			command.refresh();
+
+			// Still true.
+			expect( command.isEnabled ).to.true;
+
+			editor.disableReadOnlyMode( 'unit-test' );
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
 		} );
 
 		it( 'is observable when is overridden', () => {
-			editor.isReadOnly = false;
 			command.isEnabled = true;
 
 			editor.bind( 'something' ).to( command, 'isEnabled' );
 
 			expect( editor.something ).to.true;
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			expect( editor.something ).to.false;
 		} );
@@ -104,12 +127,11 @@ describe( 'Command', () => {
 			const changeSpy = sinon.spy();
 
 			command.isEnabled = true;
-			editor.isReadOnly = false;
 
 			command.on( 'set', setSpy );
 			command.on( 'change', changeSpy );
 
-			editor.isReadOnly = true;
+			editor.enableReadOnlyMode( 'unit-test' );
 
 			sinon.assert.notCalled( setSpy );
 			sinon.assert.calledOnce( changeSpy );

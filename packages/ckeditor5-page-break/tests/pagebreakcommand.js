@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,7 +40,7 @@ describe( 'PageBreakCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				command.refresh();
@@ -60,25 +60,26 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other page break element', () => {
+		it( 'should be true when the selection is on another page break element', () => {
 			setModelData( model, '[<pageBreak></pageBreak>]' );
-			expect( command.isEnabled ).to.be.false;
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on another object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows page break', () => {
@@ -94,8 +95,7 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be false when schema disallows page break', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: 'paragraph' } );
 			// Block page break in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
 				if ( childDefinition.name === 'pageBreak' && context.last.name === 'block' ) {
@@ -274,6 +274,96 @@ describe( 'PageBreakCommand', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>foo</heading1><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
 			);
+		} );
+
+		it( 'should replace an existing selected object with a page break', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing page break with another page break', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<pageBreak></pageBreak>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		describe( 'inheriting attributes', () => {
+			beforeEach( () => {
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			it( 'should copy $block attributes on a page break element when inserting it in $block', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<pageBreak pretty="true" smart="true"></pageBreak>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<pageBreak pretty="true"></pageBreak>' +
+					'<paragraph pretty="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<pageBreak pretty="true" smart="true"></pageBreak>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<pageBreak pretty="true" smart="true"></pageBreak>' +
+					'<paragraph pretty="true" smart="true">[]</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );

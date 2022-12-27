@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,12 @@
  * @module mention/mentionui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import { debounce } from 'lodash-es';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import { Collection, keyCodes, env, Rect, CKEditorError, logWarning } from 'ckeditor5/src/utils';
+import { TextWatcher } from 'ckeditor5/src/typing';
 
-import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
+import { debounce } from 'lodash-es';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
@@ -26,13 +20,17 @@ import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
 
-// The key codes that mention UI handles when it is open.
-const handledKeyCodes = [
+// The key codes that mention UI handles when it is open (without commit keys).
+const defaultHandledKeyCodes = [
 	keyCodes.arrowup,
 	keyCodes.arrowdown,
-	keyCodes.enter,
-	keyCodes.tab,
 	keyCodes.esc
+];
+
+// Dropdown commit key codes.
+const defaultCommitKeyCodes = [
+	keyCodes.enter,
+	keyCodes.tab
 ];
 
 /**
@@ -96,6 +94,9 @@ export default class MentionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		const commitKeys = editor.config.get( 'mention.commitKeys' ) || defaultCommitKeyCodes;
+		const handledKeyCodes = defaultHandledKeyCodes.concat( commitKeys );
+
 		/**
 		 * The contextual balloon plugin instance.
 		 *
@@ -118,7 +119,7 @@ export default class MentionUI extends Plugin {
 					this._mentionsView.selectPrevious();
 				}
 
-				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
+				if ( commitKeys.includes( data.keyCode ) ) {
 					this._mentionsView.executeSelected();
 				}
 
@@ -159,18 +160,27 @@ export default class MentionUI extends Plugin {
 				throw new CKEditorError( 'mentionconfig-incorrect-marker', null, { marker } );
 			}
 
-			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
-			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
 			const itemRenderer = mentionDescription.itemRenderer;
-
-			const definition = { watcher, marker, feedCallback, itemRenderer };
+			const definition = { marker, feedCallback, itemRenderer };
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
 
+		this._setupTextWatcher( feeds );
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			this._hideUIAndRemoveMarker();
+		} );
 		this.on( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
 		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
+
+		// Checks if a given key code is handled by the mention UI.
+		//
+		// @param {Number}
+		// @returns {Boolean}
+		function isHandledKey( keyCode ) {
+			return handledKeyCodes.includes( keyCode );
+		}
 	}
 
 	/**
@@ -210,6 +220,13 @@ export default class MentionUI extends Plugin {
 
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
+
+			// Set to 10 by default for backwards compatibility. See: #10479
+			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+
+			if ( mentionsView.items.length >= dropdownLimit ) {
+				return;
+			}
 
 			const listItemView = new MentionListItemView( locale );
 
@@ -283,6 +300,8 @@ export default class MentionUI extends Plugin {
 	 * @param {String} feedText
 	 */
 	_requestFeed( marker, feedText ) {
+		// @if CK_DEBUG_MENTION // console.log( '%c[Feed]%c Requesting for', 'color: blue', 'color: black', `"${ feedText }"` );
+
 		// Store the last requested feed - it is used to discard any out-of order requests.
 		this._lastRequested = feedText;
 
@@ -354,27 +373,33 @@ export default class MentionUI extends Plugin {
 	 * Registers a text watcher for the marker.
 	 *
 	 * @private
-	 * @param {String} marker
-	 * @param {Number} minimumCharacters
+	 * @param {Array.<Object>} feeds Feeds of mention plugin configured in editor
 	 * @returns {module:typing/textwatcher~TextWatcher}
 	 */
-	_setupTextWatcherForFeed( marker, minimumCharacters ) {
+	_setupTextWatcher( feeds ) {
 		const editor = this.editor;
 
-		const watcher = new TextWatcher( editor.model, createTestCallback( marker, minimumCharacters ) );
+		const feedsWithPattern = feeds.map( feed => ( {
+			...feed,
+			pattern: createRegExp( feed.marker, feed.minimumCharacters || 0 )
+		} ) );
+
+		const watcher = new TextWatcher( editor.model, createTestCallback( feedsWithPattern ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
+			const markerDefinition = getLastValidMarkerInText( feedsWithPattern, data.text );
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
+			const markerPosition = editor.model.createPositionAt( focus.parent, markerDefinition.position );
 
-			if ( hasExistingMention( focus ) ) {
+			if ( isPositionInExistingMention( focus ) || isMarkerInExistingMention( markerPosition ) ) {
 				this._hideUIAndRemoveMarker();
 
 				return;
 			}
 
-			const feedText = requestFeedText( marker, data.text );
-			const matchedTextLength = marker.length + feedText.length;
+			const feedText = requestFeedText( markerDefinition, data.text );
+			const matchedTextLength = markerDefinition.marker.length + feedText.length;
 
 			// Create a marker range.
 			const start = focus.getShiftedBy( -matchedTextLength );
@@ -382,20 +407,32 @@ export default class MentionUI extends Plugin {
 
 			const markerRange = editor.model.createRange( start, end );
 
+			// @if CK_DEBUG_MENTION // console.group( '%c[TextWatcher]%c matched', 'color: red', 'color: black', `"${ feedText }"` );
+			// @if CK_DEBUG_MENTION // console.log( 'data#text', `"${ data.text }"` );
+			// @if CK_DEBUG_MENTION // console.log( 'data#range', data.range.start.path, data.range.end.path );
+			// @if CK_DEBUG_MENTION // console.log( 'marker definition', markerDefinition );
+			// @if CK_DEBUG_MENTION // console.log( 'marker range', markerRange.start.path, markerRange.end.path );
+
 			if ( checkIfStillInCompletionMode( editor ) ) {
 				const mentionMarker = editor.model.markers.get( 'mention' );
 
 				// Update the marker - user might've moved the selection to other mention trigger.
 				editor.model.change( writer => {
+					// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Updating the marker.', 'color: purple', 'color: black' );
+
 					writer.updateMarker( mentionMarker, { range: markerRange } );
 				} );
 			} else {
 				editor.model.change( writer => {
+					// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Adding the marker.', 'color: purple', 'color: black' );
+
 					writer.addMarker( 'mention', { range: markerRange, usingOperation: false, affectsData: false } );
 				} );
 			}
 
-			this._requestFeedDebounced( marker, feedText );
+			this._requestFeedDebounced( markerDefinition.marker, feedText );
+
+			// @if CK_DEBUG_MENTION // console.groupEnd( '[TextWatcher] matched' );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -416,6 +453,9 @@ export default class MentionUI extends Plugin {
 	 */
 	_handleFeedResponse( data ) {
 		const { feed, marker } = data;
+
+		// eslint-disable-next-line max-len
+		// @if CK_DEBUG_MENTION // console.log( `%c[Feed]%c Response for "${ data.feedText }" (${ feed.length })`, 'color: blue', 'color: black', feed );
 
 		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.
 		if ( !checkIfStillInCompletionMode( this.editor ) ) {
@@ -448,13 +488,16 @@ export default class MentionUI extends Plugin {
 	 */
 	_showOrUpdateUI( markerMarker ) {
 		if ( this._isUIVisible ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Updating position.', 'color: green', 'color: black' );
+
 			// Update balloon position as the mention list view may change its size.
 			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
 		} else {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Showing the UI.', 'color: green', 'color: black' );
+
 			this._balloon.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
-				withArrow: false,
 				singleViewMode: true
 			} );
 		}
@@ -471,10 +514,14 @@ export default class MentionUI extends Plugin {
 	_hideUIAndRemoveMarker() {
 		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
 		if ( this._balloon.hasView( this._mentionsView ) ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Hiding the UI.', 'color: green', 'color: black' );
+
 			this._balloon.remove( this._mentionsView );
 		}
 
 		if ( checkIfStillInCompletionMode( this.editor ) ) {
+			// @if CK_DEBUG_MENTION // console.log( '%c[Editing]%c Removing marker.', 'color: purple', 'color: black' );
+
 			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
@@ -577,7 +624,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_se'
+				name: 'caret_se',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -586,7 +636,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_ne'
+				name: 'caret_ne',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -595,7 +648,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_sw'
+				name: 'caret_sw',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -604,7 +660,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_nw'
+				name: 'caret_nw',
+				config: {
+					withArrow: false
+				}
 			};
 		}
 	};
@@ -625,6 +684,43 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
+// Returns a marker definition of the last valid occurring marker in a given string.
+// If there is no valid marker in a string, it returns undefined.
+//
+// Example of returned object:
+//
+//		{
+//			marker: '@',
+//			position: 4,
+//			minimumCharacters: 0
+//		}
+//
+// @param {Array.<Object>} feedsWithPattern Registered feeds in editor for mention plugin with created RegExp for matching marker.
+// @param {String} text String to find the marker in
+// @returns {Object} Matched marker's definition
+function getLastValidMarkerInText( feedsWithPattern, text ) {
+	let lastValidMarker;
+
+	for ( const feed of feedsWithPattern ) {
+		const currentMarkerLastIndex = text.lastIndexOf( feed.marker );
+
+		if ( currentMarkerLastIndex > 0 && !text.substring( currentMarkerLastIndex - 1 ).match( feed.pattern ) ) {
+			continue;
+		}
+
+		if ( !lastValidMarker || currentMarkerLastIndex >= lastValidMarker.position ) {
+			lastValidMarker = {
+				marker: feed.marker,
+				position: currentMarkerLastIndex,
+				minimumCharacters: feed.minimumCharacters,
+				pattern: feed.pattern
+			};
+		}
+	}
+
+	return lastValidMarker;
+}
+
 // Creates a RegExp pattern for the marker.
 //
 // Function has to be exported to achieve 100% code coverage.
@@ -636,7 +732,7 @@ export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
 	const openAfterCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
-	const mentionCharacters = '\\S';
+	const mentionCharacters = '.';
 
 	// The pattern consists of 3 groups:
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
@@ -644,31 +740,52 @@ export function createRegExp( marker, minimumCharacters ) {
 	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
 	//
 	// The pattern matches up to the caret (end of string switch - $).
-	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
-	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([${ mentionCharacters }]${ numberOfCharacters })$`;
-
+	//               (0:      opening sequence       )(1:   marker  )(2:                typed mention              )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])(${ mentionCharacters }${ numberOfCharacters })$`;
 	return new RegExp( pattern, 'u' );
 }
 
 // Creates a test callback for the marker to be used in the text watcher instance.
 //
-// @param {String} marker
-// @param {Number} minimumCharacters
+// @param {Array.<Object>} feedsWithPattern Feeds of mention plugin configured in editor with RegExp to match marker in text
 // @returns {Function}
-function createTestCallback( marker, minimumCharacters ) {
-	const regExp = createRegExp( marker, minimumCharacters );
+function createTestCallback( feedsWithPattern ) {
+	const textMatcher = text => {
+		const markerDefinition = getLastValidMarkerInText( feedsWithPattern, text );
 
-	return text => regExp.test( text );
+		if ( !markerDefinition ) {
+			return false;
+		}
+
+		let splitStringFrom = 0;
+
+		if ( markerDefinition.position !== 0 ) {
+			splitStringFrom = markerDefinition.position - 1;
+		}
+
+		const textToTest = text.substring( splitStringFrom );
+
+		return markerDefinition.pattern.test( textToTest );
+	};
+
+	return textMatcher;
 }
 
 // Creates a text matcher from the marker.
 //
-// @param {String} marker
+// @param {Object} markerDefinition
+// @param {String} text
 // @returns {Function}
-function requestFeedText( marker, text ) {
-	const regExp = createRegExp( marker, 0 );
+function requestFeedText( markerDefinition, text ) {
+	let splitStringFrom = 0;
 
-	const match = text.match( regExp );
+	if ( markerDefinition.position !== 0 ) {
+		splitStringFrom = markerDefinition.position - 1;
+	}
+
+	const regExp = createRegExp( markerDefinition.marker, 0 );
+	const textToMatch = text.substring( splitStringFrom );
+	const match = textToMatch.match( regExp );
 
 	return match[ 2 ];
 }
@@ -684,27 +801,16 @@ function createFeedCallback( feedItems ) {
 
 				// The default feed is case insensitive.
 				return itemId.toLowerCase().includes( feedText.toLowerCase() );
-			} )
-			// Do not return more than 10 items.
-			.slice( 0, 10 );
-
+			} );
 		return filteredItems;
 	};
-}
-
-// Checks if a given key code is handled by the mention UI.
-//
-// @param {Number}
-// @returns {Boolean}
-function isHandledKey( keyCode ) {
-	return handledKeyCodes.includes( keyCode );
 }
 
 // Checks if position in inside or right after a text with a mention.
 //
 // @param {module:engine/model/position~Position} position.
 // @returns {Boolean}
-function hasExistingMention( position ) {
+function isPositionInExistingMention( position ) {
 	// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
 	// and you cannot use selection.hasAttribute( 'mention' ) just yet.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
@@ -713,6 +819,18 @@ function hasExistingMention( position ) {
 	const nodeBefore = position.nodeBefore;
 
 	return hasMention || nodeBefore && nodeBefore.is( '$text' ) && nodeBefore.hasAttribute( 'mention' );
+}
+
+// Checks if the closest marker offset is at the beginning of a mention.
+//
+// See https://github.com/ckeditor/ckeditor5/issues/11400.
+//
+// @param {module:engine/model/position~Position} markerPosition
+// @returns {Boolean}
+function isMarkerInExistingMention( markerPosition ) {
+	const nodeAfter = markerPosition.nodeAfter;
+
+	return nodeAfter && nodeAfter.is( '$text' ) && nodeAfter.hasAttribute( 'mention' );
 }
 
 // Checks if string is a valid mention marker.

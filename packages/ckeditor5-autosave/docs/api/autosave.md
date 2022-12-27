@@ -10,7 +10,7 @@ This package implements the autosaving feature for CKEditor 5.
 
 ## Documentation
 
-See the {@link builds/guides/integration/saving-data#autosave-feature Autosave feature} guide and the {@link module:autosave/autosave~Autosave} plugin documentation.
+See the {@link installation/advanced/saving-data#autosave-feature autosave feature guide} and the {@link module:autosave/autosave~Autosave} plugin documentation.
 
 ## Installation
 
@@ -20,7 +20,7 @@ npm install --save @ckeditor/ckeditor5-autosave
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autosave.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autosave](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autosave).
 
 ## External links
 

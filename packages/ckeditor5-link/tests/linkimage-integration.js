@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -47,14 +47,14 @@ describe( 'LinkImage integration', () => {
 		it( 'link command should link a figcaption element if an image is selected', () => {
 			setModelData(
 				model,
-				'<paragraph>Foo.</paragraph>[<image src="/assets/sample.png"><caption>Foo.</caption></image>]'
+				'<paragraph>Foo.</paragraph>[<imageBlock src="/assets/sample.png"><caption>Foo.</caption></imageBlock>]'
 			);
 
 			editor.execute( 'link', 'https://cksource.com' );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
-				'[<image src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></image>]'
+				'[<imageBlock src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
 			);
 		} );
 
@@ -62,7 +62,7 @@ describe( 'LinkImage integration', () => {
 			setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
-				'[<image src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></image>]'
+				'[<imageBlock src="/assets/sample.png"><caption><$text linkHref="https://cksource.com">Foo.</$text></caption></imageBlock>]'
 			);
 
 			expect( editor.commands.get( 'unlink' ).isEnabled ).to.equal( true );

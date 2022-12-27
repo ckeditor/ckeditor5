@@ -1,16 +1,18 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals Event, document */
 
 import ColorGridView from './../../src/colorgrid/colorgridview';
 import ColorTileView from '../../src/colorgrid/colortileview';
+
 import ViewCollection from '../../src/viewcollection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusCycler from '../../src/focuscycler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorGridView', () => {
@@ -89,10 +91,6 @@ describe( 'ColorGridView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'creates focus cycler', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
-		} );
-
 		it( 'reacts to changes in #selectedColor by setting the item#isOn', () => {
 			expect( view.items.map( item => item ).some( item => item.isOn ) ).to.be.false;
 
@@ -138,6 +136,80 @@ describe( 'ColorGridView', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		describe( 'Focus management across the grid items using arrow keys', () => {
+			let view;
+
+			beforeEach( () => {
+				view = new ColorGridView( locale, { colorDefinitions, columns: 2 } );
+
+				view.render();
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
+				view.destroy();
+			} );
+
+			it( '"arrow right" should focus the next focusable grid item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the first grid item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( '"arrow down" should focus the focusable grid item in the second row', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				// Mock the first grid item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.first.element;
+
+				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

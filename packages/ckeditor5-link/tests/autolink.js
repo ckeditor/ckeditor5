@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@ import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import LinkEditing from '../src/linkediting';
@@ -130,13 +131,25 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)', () => {
+		it( 'adds linkHref attribute on enter when the link (containing www) is partially selected (end)' +
+			'and the remaining fragment is a proper URL', () => {
+			setData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.foo.ba">https://www.foo.ba</$text></paragraph><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add a linkHref attribute for links with www subdomain only, pressing enter with part of its end selected', () => {
+			// https://github.com/ckeditor/ckeditor5/issues/8050.
 			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph><$text linkHref="https://www.ckso">https://www.ckso</$text></paragraph><paragraph>[]</paragraph>'
+				'<paragraph>https://www.ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
@@ -224,6 +237,26 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not autolink address without protocol (defaultProtocol is not set or not valid)', () => {
+			editor.config.set( 'link.defaultProtocol', '' );
+			simulateTyping( 'www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>www.cksource.com []</paragraph>'
+			);
+		} );
+
+		it( 'does not autolink if link is already created', () => {
+			setData( model, '<paragraph><$text linkHref="http://www.cksource.com">http://www.cksource.com</$text>[]</paragraph>' );
+
+			const plugin = editor.plugins.get( 'AutoLink' );
+			const spy = sinon.spy( plugin, '_persistAutoLink' );
+
+			editor.execute( 'enter' );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
 			const supportedURLs = [
@@ -232,7 +265,6 @@ describe( 'AutoLink', () => {
 				'https://cksource.com:8080',
 				'http://www.cksource.com',
 				'hTtP://WwW.cKsOuRcE.cOm',
-				'www.cksource.com',
 				'http://foo.bar.cksource.com',
 				'http://www.cksource.com/some/path/index.html#abc',
 				'http://www.cksource.com/some/path/index.html?foo=bar',
@@ -265,13 +297,19 @@ describe( 'AutoLink', () => {
 				'http://🥳.cksource.com/',
 				'http://code.cksource.com/woot/#&product=browser',
 				'http://j.mp',
+				'http://ww.mp',
+				'http://wwww.mp',
 				'ftp://cksource.com/baz',
 				'http://cksource.com/?q=Test%20URL-encoded%20stuff',
 				'http://مثال.إختبار',
 				'http://例子.测试',
 				'http://उदाहरण.परीक्षा',
 				'http://1337.net',
-				'http://a.b-c.de'
+				'http://a.b-c.de',
+				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
+				'http://192.168.43.58/ckeditor5/latest/features/link.html',
+				'http://83.127.13.40',
+				'http://userid@83.127.13.40'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -284,7 +322,7 @@ describe( 'AutoLink', () => {
 			}
 		} );
 
-		describe( 'invalid or supported URL', () => {
+		describe( 'invalid or unsupported URL', () => {
 			// Some examples came from https://mathiasbynens.be/demo/url-regex.
 			const unsupportedOrInvalid = [
 				'http://',
@@ -310,8 +348,10 @@ describe( 'AutoLink', () => {
 				'http://-error-.invalid/',
 				'http://localhost',
 				'http:/cksource.com',
+				'http://www.cksource', // https://github.com/ckeditor/ckeditor5/issues/8050.
 				'cksource.com',
-				'ww.cksource.com'
+				'ww.cksource.com',
+				'www.cksource'
 			];
 
 			for ( const unsupportedURL of unsupportedOrInvalid ) {
@@ -366,6 +406,45 @@ describe( 'AutoLink', () => {
 			expect( getData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should undo auto-linking by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			simulateTyping( ' ' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/12447
+		it( 'should not undo auto-linking by pressing backspace after any other change has been made', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			simulateTyping( ' abc' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co</$text>[]</paragraph>'
 			);
 		} );
 	} );
@@ -425,7 +504,7 @@ describe( 'AutoLink', () => {
 		const letters = text.split( '' );
 
 		for ( const letter of letters ) {
-			editor.execute( 'input', { text: letter } );
+			editor.execute( 'insertText', { text: letter } );
 		}
 	}
 } );

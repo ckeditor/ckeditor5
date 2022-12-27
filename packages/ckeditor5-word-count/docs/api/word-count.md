@@ -10,11 +10,11 @@ This package implements the word count and character count features for CKEditor
 
 ## Demo
 
-Check out the {@link features/word-count#demo demo in the Word count and character count feature} guide.
+Check out the {@link features/word-count#demo demo in the word count and character count feature guide}.
 
 ## Documentation
 
-See the {@link features/word-count Word count and character count feature} guide and the {@link module:word-count/wordcount~WordCount} plugin documentation.
+See the {@link features/word-count word count and character count feature guide} and the {@link module:word-count/wordcount~WordCount} plugin documentation.
 
 ## Installation
 
@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-word-count
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count).
 
 ## External links
 

@@ -1,0 +1,83 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<style>
+
+	</style>
+</head>
+<div style="display: flex">
+	<div style="width: 40%; margin-right: 20px">
+		<div id="editor">
+			<article>
+				<section id="section1" data-section-id="shall-not-pass">
+					<p data-foo="foo">Section #1</p>
+				</section>
+				<section id="_section2" data-section-id="123">
+					<p style="background-color: violet;">Section #2</p>
+				</section>
+				<section id="section3" style="color: red" class="special_section">
+					<p>Section #3</p>
+				</section>
+			</article>
+
+			<details>
+				<summary>Summary</summary>
+				<p>Hello, world</p>
+			</details>
+
+			<dl>
+				<dt><p>dt1</p></dt>
+				<dt><p>dt2</p></dt>
+				<dd><p>dd1</p></dd>
+				<dd><p>dd2</p></dd>
+			</dl>
+
+			<xyz><p>XYZ</p></xyz>
+
+			<p><span style="color:red;">Span with styles! This should not be red (due to disallowed content).</span></p>
+
+			<p data-foo="foo">
+				<span data-foo="foo">Nested cite: <cite style="color:blue;">I'm blue!</cite></span>
+			</p>
+			<p data-foo="bar">
+				<span data-foo="foo">Nested span: <span style="color:blue;">I'm blue!</span></span>
+			</p>
+
+			<p><cite>Deeply<cite> nested<cite> cite<span style="color:blue;"> with span!</span></cite></cite></cite></p>
+
+			<p style="background-color: violet;"><span>Span with no attributes!</span></p>
+
+			<p><span style="color:blue;"><span style="color:green;">Span with nested styles!</span></span></p>
+
+			<blockquote style="color: red;"><p>Red quote!</p></blockquote>
+
+			<ul>
+				<li style="color: blue;">Blue!</li>
+				<li style="color: red;">Red!</li>
+				<li style="color: violet;">Violet!</li>
+				<ul>
+					<li style="color: yellow;">Yellow!</li>
+				</ul>
+			</ul>
+			<p>
+				<a href="example.com" style="background-color:#5de">Link with different background color.</a>
+			</p>
+			<p data-any-property-name="1">
+				<strong style="font-weight:400">Strong with font weight 400</strong>
+			</p>
+			<p data-any-property-name="2">
+				<i data-foo="foo" style="color: green;">Italic with custom attributes</i>
+			</p>
+			<p>
+				<s style="color: red;">Red strike</s>
+			</p>
+		</div>
+	</div>
+
+	<div style="width: 40%">
+		<h1 style="margin:12px 0 0 0; padding:0 0 5px 0; font-size: 18px; border-bottom: solid 1px grey">Source content:</h1>
+		<div id="preview"></div>
+	</div>
+</div>
+<script>
+	document.getElementById( 'preview' ).innerHTML = document.getElementById( 'editor' ).innerHTML;
+</script>

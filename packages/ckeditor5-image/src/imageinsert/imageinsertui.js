@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,19 +7,19 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
+import { SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
 import { prepareIntegrations } from './utils';
-
-import { isImage } from '../image/utils';
 
 /**
  * The image insert dropdown plugin.
  *
- * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature}
- * and {@glink features/image#inserting-images-via-source-url Insert images via source URL} documentation.
+ * For a detailed overview, check the {@glink features/images/image-upload/image-upload Image upload feature}
+ * and {@glink features/images/image-upload/images-inserting#inserting-images-via-source-url Insert images via source URL} documentation.
  *
- * Adds the `'imageInsert'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'insertImage'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
+ * and also the `imageInsert` dropdown as an alias for backward compatibility.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,10 +36,13 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-
-		editor.ui.componentFactory.add( 'imageInsert', locale => {
+		const componentCreator = locale => {
 			return this._createDropdownView( locale );
-		} );
+		};
+
+		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
+		editor.ui.componentFactory.add( 'insertImage', componentCreator );
+		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
 	}
 
 	/**
@@ -52,48 +55,74 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	_createDropdownView( locale ) {
 		const editor = this.editor;
-		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
-		const command = editor.commands.get( 'imageUpload' );
+		const t = locale.t;
 
-		const dropdownView = imageInsertView.dropdownView;
-		const splitButtonView = dropdownView.buttonView;
+		const uploadImageCommand = editor.commands.get( 'uploadImage' );
+		const insertImageCommand = editor.commands.get( 'insertImage' );
 
-		splitButtonView.actionView = editor.ui.componentFactory.create( 'imageUpload' );
-		// After we replaced action button with `imageUpload` component,
-		// we have lost a proper styling and some minor visual quirks have appeared.
-		// Brining back original split button classes helps fix the button styling
-		// See https://github.com/ckeditor/ckeditor5/issues/7986.
-		splitButtonView.actionView.extendTemplate( {
+		/**
+		 * The dropdown view responsible for displaying the image insert UI.
+		 *
+		 * @member {module:ui/dropdown/dropdownview~DropdownView}
+		 */
+		this.dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
+
+		const buttonView = this.dropdownView.buttonView;
+		const panelView = this.dropdownView.panelView;
+
+		buttonView.set( {
+			label: t( 'Insert image' ),
+			icon: icons.image,
+			tooltip: true
+		} );
+
+		panelView.extendTemplate( {
 			attributes: {
-				class: 'ck ck-button ck-splitbutton__action'
+				class: 'ck-image-insert__panel'
 			}
 		} );
 
-		return this._setUpDropdown( dropdownView, imageInsertView, command );
+		if ( uploadImageCommand ) {
+			const splitButtonView = this.dropdownView.buttonView;
+
+			splitButtonView.actionView = editor.ui.componentFactory.create( 'uploadImage' );
+			// After we replaced action button with `uploadImage` component,
+			// we have lost a proper styling and some minor visual quirks have appeared.
+			// Brining back original split button classes helps fix the button styling
+			// See https://github.com/ckeditor/ckeditor5/issues/7986.
+			splitButtonView.actionView.extendTemplate( {
+				attributes: {
+					class: 'ck ck-button ck-splitbutton__action'
+				}
+			} );
+		}
+
+		return this._setUpDropdown( uploadImageCommand || insertImageCommand );
 	}
 
 	/**
 	 * Sets up the dropdown view.
 	 *
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
-	 * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView} imageInsertView An imageInsertView.
-	 * @param {module:core/command~Command} command An imageInsert command
+	 * @param {module:core/command~Command} command An uploadImage or insertImage command.
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_setUpDropdown( dropdownView, imageInsertView, command ) {
+	_setUpDropdown( command ) {
 		const editor = this.editor;
 		const t = editor.t;
+		const imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
 		const insertButtonView = imageInsertView.insertButtonView;
 		const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
+		const dropdownView = this.dropdownView;
 		const panelView = dropdownView.panelView;
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		dropdownView.bind( 'isEnabled' ).to( command );
 
 		// Defer the children injection to improve initial performance.
 		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
-		dropdownView.buttonView.once( 'open', () => {
+		dropdownView.once( 'change:isOpen', () => {
 			panelView.children.add( imageInsertView );
 		} );
 
@@ -101,9 +130,7 @@ export default class ImageInsertUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
 			if ( dropdownView.isOpen ) {
-				imageInsertView.focus();
-
-				if ( isImage( selectedElement ) ) {
+				if ( imageUtils.isImage( selectedElement ) ) {
 					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
 					insertImageViaUrlForm.label = t( 'Update image URL' );
@@ -133,14 +160,14 @@ export default class ImageInsertUI extends Plugin {
 		function onSubmit() {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
-			if ( isImage( selectedElement ) ) {
+			if ( imageUtils.isImage( selectedElement ) ) {
 				editor.model.change( writer => {
 					writer.setAttribute( 'src', imageInsertView.imageURLInputValue, selectedElement );
 					writer.removeAttribute( 'srcset', selectedElement );
 					writer.removeAttribute( 'sizes', selectedElement );
 				} );
 			} else {
-				editor.execute( 'imageInsert', { source: imageInsertView.imageURLInputValue } );
+				editor.execute( 'insertImage', { source: imageInsertView.imageURLInputValue } );
 			}
 		}
 

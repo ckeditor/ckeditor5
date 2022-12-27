@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,14 +22,26 @@ ClassicEditor
 				'alignment',
 				'undo',
 				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Text alignment' ),
+			text: 'Click to change text alignment.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+

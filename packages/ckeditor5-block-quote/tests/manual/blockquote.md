@@ -8,4 +8,5 @@ Check block quote related behaviors:
 * <kbd>Backspace</kbd>,
 * undo/redo,
 * applying headings and lists,
-* stability when used with nested lists.
+* stability when used with nested lists,
+* stability when used with nested block quotes.

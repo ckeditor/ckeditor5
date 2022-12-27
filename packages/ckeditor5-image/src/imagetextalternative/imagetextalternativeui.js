@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,11 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+
 import TextAlternativeFormView from './ui/textalternativeformview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import { getSelectedImageWidget } from '../image/utils';
 
 /**
  * The image text alternative UI plugin.
@@ -72,11 +69,12 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: textAlternativeIcon,
+				icon: icons.lowVision,
 				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			view.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			this.listenTo( view, 'execute', () => {
 				this._showForm();
@@ -96,6 +94,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -135,7 +134,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
-			if ( !getSelectedImageWidget( viewDocument.selection ) ) {
+			if ( !imageUtils.getClosestSelectedImageWidget( viewDocument.selection ) ) {
 				this._hideForm( true );
 			} else if ( this._isVisible ) {
 				repositionContextualBalloon( editor );
@@ -165,6 +164,8 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
+		this._form.disableCssTransitions();
+
 		if ( !this._isInBalloon ) {
 			this._balloon.add( {
 				view: this._form,
@@ -180,6 +181,8 @@ export default class ImageTextAlternativeUI extends Plugin {
 		labeledInput.fieldView.value = labeledInput.fieldView.element.value = command.value || '';
 
 		this._form.labeledInput.fieldView.select();
+
+		this._form.enableCssTransitions();
 	}
 
 	/**

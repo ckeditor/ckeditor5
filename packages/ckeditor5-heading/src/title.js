@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,16 @@
  * @module heading/title
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Plugin } from 'ckeditor5/src/core';
 
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from 'ckeditor5/src/utils';
 import {
+	DowncastWriter,
 	needsPlaceholder,
 	showPlaceholder,
 	hidePlaceholder,
 	enablePlaceholder
-} from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+} from 'ckeditor5/src/engine';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -44,7 +42,7 @@ export default class Title extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph ];
+		return [ 'Paragraph' ];
 	}
 
 	/**
@@ -89,6 +87,10 @@ export default class Title extends Plugin {
 
 		// Conversion.
 		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
+		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert:title', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
+		} ) );
+
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
 		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
@@ -122,13 +124,15 @@ export default class Title extends Plugin {
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
 	 * body, the result of this method might be incorrect.
 	 *
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The title of the document.
 	 */
-	getTitle() {
+	getTitle( options = {} ) {
 		const titleElement = this._getTitleElement();
 		const titleContentElement = titleElement.getChild( 0 );
 
-		return this.editor.data.stringify( titleContentElement );
+		return this.editor.data.stringify( titleContentElement, options );
 	}
 
 	/**
@@ -138,34 +142,39 @@ export default class Title extends Plugin {
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
 	 * body, the result of this method might be incorrect.
 	 *
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The body of the document.
 	 */
-	getBody() {
+	getBody( options = {} ) {
 		const editor = this.editor;
 		const data = editor.data;
 		const model = editor.model;
 		const root = editor.model.document.getRoot();
-		const viewWriter = new ViewDowncastWriter( editor.editing.view.document );
+		const view = editor.editing.view;
+		const viewWriter = new DowncastWriter( view.document );
 
 		const rootRange = model.createRangeIn( root );
-		const viewDocumentFragment = new ViewDocumentFragment( editor.editing.view.document );
+		const viewDocumentFragment = viewWriter.createDocumentFragment();
 
-		// Convert the entire root to view.
-		data.mapper.clearBindings();
-		data.mapper.bindElements( root, viewDocumentFragment );
-		data.downcastDispatcher.convertInsert( rootRange, viewWriter );
-
-		// Convert all markers that intersects with body.
+		// Find all markers that intersects with body.
 		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 ) );
 		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
+
+		const markers = new Map();
 
 		for ( const marker of model.markers ) {
 			const intersection = bodyRange.getIntersection( marker.getRange() );
 
 			if ( intersection ) {
-				data.downcastDispatcher.convertMarkerAdd( marker.name, intersection, viewWriter );
+				markers.set( marker.name, intersection );
 			}
 		}
+
+		// Convert the entire root to view.
+		data.mapper.clearBindings();
+		data.mapper.bindElements( root, viewDocumentFragment );
+		data.downcastDispatcher.convert( rootRange, markers, viewWriter, options );
 
 		// Remove title element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );
@@ -332,7 +341,8 @@ export default class Title extends Plugin {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item ),
-				text: titlePlaceholder
+				text: titlePlaceholder,
+				keepOnFocus: true
 			} );
 		} );
 
@@ -360,7 +370,8 @@ export default class Title extends Plugin {
 			}
 
 			// Then we need to display placeholder if it is needed.
-			if ( needsPlaceholder( body ) && viewRoot.childCount === 2 && body.name === 'p' ) {
+			// See: https://github.com/ckeditor/ckeditor5/issues/8689.
+			if ( needsPlaceholder( body, true ) && viewRoot.childCount === 2 && body.name === 'p' ) {
 				hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
 			// Or hide if it is not needed.
 			} else {

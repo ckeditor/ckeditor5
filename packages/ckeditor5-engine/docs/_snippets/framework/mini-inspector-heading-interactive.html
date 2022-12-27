@@ -1,0 +1,37 @@
+<div id="mini-inspector-heading-interactive" class="mini-inspector-editor">
+	<h1></h1>
+</div>
+
+<label class="mini-inspector-heading-level-dropdown">
+	<strong>Update heading level:</strong>
+	<select id="mini-inspector-heading-interactive-dropdown">
+		<option value="1">Level 1 (h1)</option>
+		<option value="2">Level 2 (h2)</option>
+		<option value="3">Level 3 (h3)</option>
+		<option value="4">Level 4 (h4)</option>
+		<option value="5">Level 5 (h5)</option>
+		<option value="6">Level 6 (h6)</option>
+	</select>
+</label>
+
+<div id="mini-inspector-heading-interactive-container"></div>
+
+<style>
+	.mini-inspector-heading-level-dropdown {
+		display: block;
+		margin-bottom: 20px;
+	}
+
+	#mini-inspector-heading-interactive-dropdown {
+		padding: 5px;
+	}
+
+	#mini-inspector-heading-interactive-container .ck-mini-inspector > div:first-child .ck-inspector-tree-node__attribute {
+		background: #fdfd77;
+	}
+
+	#mini-inspector-heading-interactive-container .ck-mini-inspector > div:last-child .ck-inspector-tree-node__content .ck-inspector-tree-node__name {
+		display: inline;
+		background: #fdfd77;
+	}
+</style>

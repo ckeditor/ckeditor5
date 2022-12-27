@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,7 +22,7 @@
 // Use:
 // npm run release:bump-version -- --dry-run
 
-require( '@ckeditor/ckeditor5-dev-env' )
+require( '@ckeditor/ckeditor5-dev-release-tools' )
 	.bumpVersions( {
 		cwd: process.cwd(),
 		packages: 'packages',

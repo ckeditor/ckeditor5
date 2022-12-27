@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,9 +12,16 @@ import createViewRoot from '../_utils/createroot';
 import ViewElement from '../../../src/view/element';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import DocumentFragment from '../../../src/view/documentfragment';
+import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor';
+
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
@@ -57,6 +64,40 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
+	describe( 'createDocumentFragment', () => {
+		let view;
+
+		beforeEach( () => {
+			const dataProcessor = new HtmlDataProcessor( doc );
+
+			const html = '' +
+				'<h1 style="color:blue;position:fixed;">Heading <strong>1</strong></h1>' +
+				'<p class="foo1 bar2" style="text-align:left;" data-attr="abc">Foo <i>Bar</i> <strong>Bold</strong></p>' +
+				'<p><u>Some underlined</u> text</p>' +
+				'<ul>' +
+				'<li class="single">Item 1</li>' +
+				'<li><span>Item <s>1</s></span></li>' +
+				'<li><h2>Item 1</h2></li>' +
+				'</ul>';
+
+			view = dataProcessor.toView( html );
+		} );
+
+		it( 'should create empty document fragment', () => {
+			const df = writer.createDocumentFragment();
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create document fragment with children', () => {
+			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 2 );
+		} );
+	} );
+
 	describe( 'createText()', () => {
 		it( 'should create Text instance', () => {
 			const text = writer.createText( 'foo bar' );
@@ -76,13 +117,24 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to pass additional options', () => {
-			const element = writer.createAttributeElement( 'foo', attributes, { priority: 99, id: 'bar' } );
+			const element = writer.createAttributeElement( 'foo', attributes, {
+				priority: 99,
+				id: 'bar',
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.priority ).to.equal( 99 );
 			expect( element.id ).to.equal( 'bar' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should pass priority 0', () => {
+			const element = writer.createAttributeElement( 'foo', attributes, { priority: 0 } );
+
+			expect( element.priority ).to.equal( 0 );
 		} );
 	} );
 
@@ -93,6 +145,63 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createContainerElement( 'foo', attributes, {
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should create element without attributes', () => {
+			const element = writer.createContainerElement( 'foo', null );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( Array.from( element.getAttributes() ).length ).to.equal( 0 );
+			expect( element.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create element with single child', () => {
+			const child = writer.createEmptyElement( 'bar' );
+			const element = writer.createContainerElement( 'foo', null, child );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( Array.from( element.getAttributes() ).length ).to.equal( 0 );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ) ).to.equal( child );
+		} );
+
+		it( 'should create element with children and attributes', () => {
+			const first = writer.createEmptyElement( 'aaa' );
+			const second = writer.createEmptyElement( 'bbb' );
+			const element = writer.createContainerElement( 'foo', attributes, [ first, second ] );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 2 );
+			expect( element.getChild( 0 ) ).to.equal( first );
+			expect( element.getChild( 1 ) ).to.equal( second );
+		} );
+
+		it( 'should create element with children attributes and allow additional options', () => {
+			const child = writer.createEmptyElement( 'bar' );
+			const element = writer.createContainerElement( 'foo', attributes, child, { renderUnsafeAttributes: [ 'baz' ] } );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			assertElementAttributes( element, attributes );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ) ).to.equal( child );
 		} );
 	} );
 
@@ -104,6 +213,14 @@ describe( 'DowncastWriter', () => {
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
 		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createEditableElement( 'foo', attributes, {
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
+
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'createEmptyElement()', () => {
@@ -112,6 +229,17 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createEmptyElement( 'foo', attributes, {
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
+
+			expect( element.is( 'emptyElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -132,6 +260,15 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const renderFn = function() {};
+			const element = writer.createUIElement( 'foo', attributes, renderFn );
+
+			expect( element.is( 'uiElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -164,6 +301,18 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const renderFn = function() {};
+			const element = writer.createRawElement( 'foo', attributes, renderFn, {
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -277,6 +426,14 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 		} );
+
+		it( 'should set custom property to given document fragment', () => {
+			const fragment = writer.createDocumentFragment();
+
+			writer.setCustomProperty( 'foo', 'bar', fragment );
+
+			expect( fragment.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'removeCustomProperty()', () => {
@@ -288,6 +445,16 @@ describe( 'DowncastWriter', () => {
 
 			writer.removeCustomProperty( 'foo', element );
 			expect( element.getCustomProperty( 'foo' ) ).to.be.undefined;
+		} );
+
+		it( 'should remove custom property from given document fragment', () => {
+			const fragment = writer.createDocumentFragment();
+
+			writer.setCustomProperty( 'foo', 'bar', fragment );
+			expect( fragment.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+
+			writer.removeCustomProperty( 'foo', fragment );
+			expect( fragment.getCustomProperty( 'foo' ) ).to.be.undefined;
 		} );
 	} );
 
@@ -344,6 +511,36 @@ describe( 'DowncastWriter', () => {
 			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
 
 			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
+		} );
+	} );
+
+	describe( 'createSlot()', () => {
+		it( 'should throw if called before slot factory is initialized', () => {
+			expect( () => {
+				writer.createSlot();
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+		} );
+
+		it( 'should call slot factory and pass the parameter', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer.createSlot( 'foo' );
+
+			sinon.assert.calledWithExactly( spy, writer, 'foo' );
+		} );
+
+		it( 'should throw if called after slot factory is cleared', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer._clearSlotFactory();
+
+			expect( () => {
+				writer.createSlot( 'foo' );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 

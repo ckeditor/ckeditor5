@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals document, Event */
 
 import MediaFormView from '../../src/ui/mediaformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -22,6 +22,12 @@ describe( 'MediaFormView', () => {
 	beforeEach( () => {
 		view = new MediaFormView( [], { t: val => val } );
 		view.render();
+		document.body.appendChild( view.element );
+	} );
+
+	afterEach( () => {
+		view.element.remove();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -78,11 +84,11 @@ describe( 'MediaFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		describe( 'url input view', () => {
-			it( 'has placeholder', () => {
-				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
-			} );
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
 
+		describe( 'url input view', () => {
 			it( 'has info text', () => {
 				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 			} );
@@ -122,24 +128,29 @@ describe( 'MediaFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+			const view = new MediaFormView( [], { t: () => {} } );
 
-			view = new MediaFormView( [], { t: () => {} } );
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+
+			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new MediaFormView( [], { t: () => {} } );
+			const view = new MediaFormView( [], { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.destroy();
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
@@ -216,6 +227,24 @@ describe( 'MediaFormView', () => {
 
 			view.urlInputView.element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

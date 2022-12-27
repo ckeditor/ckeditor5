@@ -1,18 +1,18 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* eslint-disable new-cap */
 
 import Editor from '../../src/editor/editor';
 import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import EditorUI from '../../src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -22,7 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @memberOf tests.core._utils
  * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends Editor {
+export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Editor ) ) {
 	/**
 	 * @inheritDoc
 	 */
@@ -32,9 +32,6 @@ export default class ClassicTestEditor extends Editor {
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
 		}
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -73,7 +70,6 @@ export default class ClassicTestEditor extends Editor {
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
@@ -81,7 +77,7 @@ export default class ClassicTestEditor extends Editor {
 							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
+						return editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
 					} )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
@@ -138,6 +134,8 @@ class ClassicTestEditorUI extends EditorUI {
 
 		this.setEditableElement( 'main', view.editable.element );
 
+		editingView.attachDomRoot( view.editable.element );
+
 		if ( replacementElement ) {
 			this._elementReplacer.replace( replacementElement, view.element );
 		}
@@ -149,16 +147,13 @@ class ClassicTestEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		this._elementReplacer.restore();
 
 		this._view.destroy();
-
-		super.destroy();
 	}
 }
-
-mix( ClassicTestEditor, DataApiMixin );
-mix( ClassicTestEditor, ElementApiMixin );
 
 function getInitialData( sourceElementOrData ) {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;

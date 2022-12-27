@@ -10,11 +10,11 @@ This package implements the GitHub Flavored Markdown data processor for CKEditor
 
 ## Demo
 
-Check out the {@link features/markdown#demo demo in the Markdown output feature} guide.
+Check out the {@link features/markdown#demo demo in the Markdown output feature guide}.
 
 ## Documentation
 
-See the {@link features/markdown Markdown output} guide and the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} documentation.
+See the {@link features/markdown Markdown output guide} and the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} documentation.
 
 ## Installation
 
@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-markdown-gfm
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm).
 
 ## External links
 

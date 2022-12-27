@@ -10,7 +10,7 @@ This package implements the watchdog feature for CKEditor 5. It keeps a CKEditor
 
 ## Documentation
 
-See the {@link features/watchdog Watchdog feature} guide and the {@link module:watchdog/watchdog~Watchdog} plugin documentation.
+See the {@link features/watchdog watchdog feature guide} and the {@link module:watchdog/watchdog~Watchdog} plugin documentation.
 
 ## Installation
 
@@ -20,7 +20,7 @@ npm install --save @ckeditor/ckeditor5-watchdog
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-watchdog).
 
 ## External links
 

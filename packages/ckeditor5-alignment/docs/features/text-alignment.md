@@ -5,11 +5,21 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or to justify it.
+The alignment feature enables support for text alignment. You can use it to align your content to left, right and center or to justify it.
+
+<info-box info>
+	The alignment feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
+Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to apply desired alignment to a paragraph.
+
 {@snippet features/text-alignment}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -21,6 +31,8 @@ There are more CKEditor 5 features that can help you organize your content:
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Configuring alignment options
+
+### Defining available options
 
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
@@ -45,6 +57,33 @@ ClassicEditor
 ```
 
 {@snippet features/custom-text-alignment-options}
+
+### Using classes instead of inline style
+
+By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
+
+<info-box>
+	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
+</info-box>
+
+The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		alignment: {
+			options: [
+				{ name: 'left', className: 'my-align-left' },
+				{ name: 'right', className: 'my-align-right' }
+			]
+		},
+		toolbar: [
+			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Configuring the toolbar
 
@@ -86,7 +125,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -110,6 +149,12 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Content compatibility
+
+The {@link module:alignment/alignment~Alignment} plugin provides support for the deprecated `align` attribute.
+
+Block elements such as `<p>` with the `align` attribute are accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
+
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment).

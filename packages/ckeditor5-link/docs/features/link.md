@@ -5,15 +5,23 @@ category: features
 
 {@snippet features/build-link-source}
 
-The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
+The link feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
-After you enable the optional [autolink](#autolink-feature) plugin, typed or pasted URL and e-mail addresses will be automatically turned into working links as you type.
+Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type.
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 ## Demo
 
-You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
+Use the Link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking on a link will activate the contextual toolbar, from which you can edit existing links {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-link/theme/icons/unlink.svg Unlink} with a click.
 
 {@snippet features/link}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Typing around links
 
@@ -23,13 +31,13 @@ CKEditor 5 allows for typing both at inner and outer boundaries of links to make
 
 {@img assets/img/typing-inside.gif 770 The animation showing typing inside the link in CKEditor 5 rich text editor.}
 
-**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>→</kbd> or <kbd>←</kbd>) once. The link is no longer highlighted and whatever text you type or formatting you apply will not be enclosed by the link:
+**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) away from the link once. The link is no longer highlighted and whatever text you type or formatting you apply will not be enclosed by the link:
 
 {@img assets/img/typing-before.gif 770 The animation showing typing before the link in CKEditor 5 rich text editor.}
 
 ## Custom link attributes (decorators)
 
-By default, all links created in the editor have the `href="..."` attribute in the {@link builds/guides/integration/basic-api#getting-the-editor-data editor data}. If you want your links to have additional link attributes, {@link module:link/link~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
+By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/basic-api#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/link~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
 
 There are two types of link decorators you can use:
 
@@ -42,7 +50,7 @@ There are two types of link decorators you can use:
 
 ### Demo
 
-In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it to see that it is possible to control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the additional link attributes.
+In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} to see that it is possible to control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the additional link attributes.
 
 {@snippet features/linkdecorators}
 
@@ -242,24 +250,20 @@ ClassicEditor
 
 ## Autolink feature
 
-You can enable automatic linking of URLs typed or pasted into the editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
+Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
 
 To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}
 
-Unlike the base link feature, the autolink plugin is not available in any of the builds. Refer to the [Installation](#installation) section to learn how to enable it.
-
 ## Installation
 
 <info-box info>
-	This base link feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
-
-	The autolink feature is not available in any of the builds and needs to be installed first. Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Both the base link feature and autolink feature are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
@@ -283,6 +287,10 @@ ClassicEditor
 	.catch( ... );
 ```
 
+<info-box info>
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+</info-box>
+
 ## Common API
 
 The {@link module:link/link~Link} plugin registers the UI button component (`'link'`) and the following commands:
@@ -304,7 +312,7 @@ editor.execute( 'link', 'http://example.com', { linkIsExternal: true } );
 editor.execute( 'unlink' );
 ```
 
-The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/image#linking-images Linking images} section in the {@link features/image feature guide}.
+The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/images-linking Linking images} section in the {@link features/images-overview feature guide}.
 
 Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}.
 
@@ -314,4 +322,4 @@ Links are represented in the {@link module:engine/model/model~Model model} using
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).

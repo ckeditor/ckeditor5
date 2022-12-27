@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -61,7 +61,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.extend( '$text', { allowIn: '$root' } );
 			} );
 
@@ -109,25 +109,25 @@ describe( 'DataController utils', () => {
 
 			test(
 				'deletes whole text between nodes',
-				'<image></image>[foo]<image></image>',
-				'<image></image>[]<image></image>'
+				'<imageBlock></imageBlock>[foo]<imageBlock></imageBlock>',
+				'<imageBlock></imageBlock>[]<imageBlock></imageBlock>'
 			);
 
 			test(
 				'deletes an element',
-				'x[<image></image>]y',
+				'x[<imageBlock></imageBlock>]y',
 				'x[]y'
 			);
 
 			test(
 				'deletes a bunch of nodes',
-				'w[x<image></image>y]z',
+				'w[x<imageBlock></imageBlock>y]z',
 				'w[]z'
 			);
 
 			test(
 				'does not break things when option.merge passed',
-				'w[x<image></image>y]z',
+				'w[x<imageBlock></imageBlock>y]z',
 				'w[]z'
 			);
 		} );
@@ -140,7 +140,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 				schema.extend( '$text', {
@@ -217,7 +217,7 @@ describe( 'DataController utils', () => {
 					allowAttributes: 'align'
 				} );
 				schema.register( 'heading1', { inheritAllFrom: '$block', allowIn: 'pparent' } );
-				schema.register( 'image', { inheritAllFrom: '$text' } );
+				schema.register( 'imageBlock', { inheritAllFrom: '$text' } );
 				schema.register( 'pchild', { allowIn: 'paragraph' } );
 				schema.register( 'pparent', { allowIn: '$root' } );
 				schema.register( 'hchild', { allowIn: 'heading1' } );
@@ -291,6 +291,18 @@ describe( 'DataController utils', () => {
 				'removes first element when it\'s empty but second element is not empty (different name)',
 				'<paragraph>x</paragraph><heading1>[foo</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'should not merge if the end position of the selection is directly in a common ancestor',
+				'<paragraph><pchild>[foo</pchild>]<widget></widget></paragraph>',
+				'<paragraph><pchild>[]</pchild><widget></widget></paragraph>'
+			);
+
+			test(
+				'should not merge if the start position of the selection is directly in a common ancestor',
+				'<paragraph><widget></widget>[<pchild>foo]</pchild></paragraph>',
+				'<paragraph><widget></widget>[]<pchild></pchild></paragraph>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -665,13 +677,19 @@ describe( 'DataController utils', () => {
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
 					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
 				);
+
+				test(
+					'does not shrink deletion range if selection ends at start position of block following an object',
+					'<paragraph>x</paragraph><paragraph>[foo</paragraph><blockWidget></blockWidget><paragraph>]bar</paragraph>',
+					'<paragraph>x</paragraph><paragraph>[]bar</paragraph>'
+				);
 			} );
 
 			describe( 'with markers', () => {
 				it( 'should merge left if the first element is not empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -688,7 +706,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge right if the first element is empty', () => {
 					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 0 ] ),
@@ -705,7 +723,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge left if the last element is empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -794,7 +812,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				schema.register( 'blockWidget', { isLimit: true } );
@@ -817,7 +835,7 @@ describe( 'DataController utils', () => {
 
 				setData(
 					model,
-					'x[<image></image><image></image>]z',
+					'x[<imageBlock></imageBlock><imageBlock></imageBlock>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
@@ -956,6 +974,102 @@ describe( 'DataController utils', () => {
 
 				// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
 				expect( getData( model, { rootName: 'bodyRoot' } ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that inherits a deleted block widget attribute with copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph foo="true">[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that inherits a deleted block widget attributes with copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: [ 'foo', 'bar' ]
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: [ 'foo', 'bar' ]
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				model.schema.setAttributeProperties( 'bar', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget bar="true" foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph bar="true" foo="true">[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that does not inherit a deleted block widget attribute without copyOnReplace property', () => {
+				model.schema.extend( 'paragraph', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'creates a paragraph that does not inherit a deleted block widget attribute if it is not allowed on paragraph', () => {
+				model.schema.extend( '$blockObject', {
+					allowAttributes: 'foo'
+				} );
+
+				model.schema.setAttributeProperties( 'foo', {
+					copyOnReplace: true
+				} );
+
+				setData(
+					model,
+					'[<blockWidget foo="true"></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
 			} );
 		} );
 
@@ -1139,7 +1253,7 @@ describe( 'DataController utils', () => {
 					isLimit: true
 				} );
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					allowWhere: '$text',
 					isObject: true
 				} );
@@ -1150,8 +1264,8 @@ describe( 'DataController utils', () => {
 
 				schema.extend( '$text', { allowIn: '$root' } );
 
-				schema.extend( 'image', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: 'heading1' } );
+				schema.extend( 'imageBlock', { allowIn: '$root' } );
+				schema.extend( 'imageBlock', { allowIn: 'heading1' } );
 				schema.extend( 'heading1', { allowIn: 'div' } );
 				schema.extend( 'paragraph', { allowIn: 'div' } );
 				schema.extend( 'heading1', { allowIn: 'article' } );
@@ -1190,13 +1304,13 @@ describe( 'DataController utils', () => {
 
 			test(
 				'but not if selection is not containing the whole content',
-				'<image></image><heading1>[xx</heading1><paragraph>yy]</paragraph>',
-				'<image></image><heading1>[]</heading1>'
+				'<imageBlock></imageBlock><heading1>[xx</heading1><paragraph>yy]</paragraph>',
+				'<imageBlock></imageBlock><heading1>[]</heading1>'
 			);
 
 			test(
 				'but not if only single element is selected',
-				'<heading1>[<image></image>xx]</heading1>',
+				'<heading1>[<imageBlock></imageBlock>xx]</heading1>',
 				'<heading1>[]</heading1>'
 			);
 
@@ -1205,7 +1319,7 @@ describe( 'DataController utils', () => {
 
 				setData(
 					model,
-					'x[<image></image><image></image>]z',
+					'x[<imageBlock></imageBlock><imageBlock></imageBlock>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
@@ -1227,7 +1341,7 @@ describe( 'DataController utils', () => {
 
 		function test( title, input, output, options ) {
 			it( title, () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setData( model, input );
 
 					deleteContent( model, doc.selection, options );

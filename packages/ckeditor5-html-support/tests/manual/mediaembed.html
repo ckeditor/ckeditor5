@@ -1,0 +1,57 @@
+<head>
+	<!--
+		For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI.
+		Additionally, the embedded Spotify player has started to throw an uncaught exception, but only on CI. See #9678.
+	-->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": "vimeo.com",
+		"response-failure": "vimeo.com",
+		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ],
+		"uncaught-exception": "retargetingPixels is not defined"
+	}'>
+</head>
+
+<div style="display: flex; justify-content: space-between;">
+	<div style="flex: 0 1 49%">
+		<h4>The default <code>oembed</code> element</h4>
+
+		<div id="editor">
+			<figure class="media allowed-class disallowed-class" data-validation-allow="Allowed attribute"
+				data-validation-disallow="Disallowed attribute" style="color: blue;">
+				<oembed class="allowed-class disallowed-class" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"
+					data-validation-allow="Allowed attribute" data-validation-disallow="Disallowed attribute"
+					style="color: blue;"></oembed>
+			</figure>
+		</div>
+
+		<h4>Expected output</h4>
+
+		<textarea style="width: 100%; height: 200px; line-height: 1.8em;">
+<figure class="media allowed-class" style="color:blue;" data-validation-allow="Allowed attribute">
+    <oembed class="allowed-class" style="color:blue;" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-validation-allow="Allowed attribute"></oembed>
+</figure>
+		</textarea>
+
+	</div>
+	<div style="flex: 0 1 49%;">
+		<h4>Custom media element</h4>
+
+		<div id="editor-custom-element-name">
+			<figure class="media allowed-class disallowed-class" data-validation-allow="Allowed attribute"
+				data-validation-disallow="Disallowed attribute" style="color: blue;">
+				<custom-oembed class="allowed-class disallowed-class" url="https://vimeo.com/1084537"
+					data-validation-allow="Allowed attribute" data-validation-disallow="Disallowed attribute"
+					style="color: blue;"></custom-oembed>
+			</figure>
+		</div>
+
+		<h4>Expected output</h4>
+
+		<textarea style="width: 100%; height: 200px; line-height: 1.8em;">
+<figure class="media allowed-class" style="color:blue;" data-validation-allow="Allowed attribute">
+    <custom-oembed class="allowed-class" style="color:blue;" url="https://vimeo.com/1084537" data-validation-allow="Allowed attribute"></custom-oembed>
+</figure>
+		</textarea>
+
+	</div>
+</div>

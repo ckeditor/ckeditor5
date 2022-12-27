@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,8 +14,8 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 describe( 'TwoStepCaretMovement()', () => {
 	let editor, model, emitter, selection, view, plugin;
@@ -735,25 +735,28 @@ describe( 'TwoStepCaretMovement()', () => {
 		} );
 	} );
 
-	it( 'should listen with the high+1 priority on view.document#keydown', () => {
+	it( 'should listen with the higher priority than widget type around', () => {
+		const highestPlusPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
 		const highestPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
 		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
 		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
-		emitter.listenTo( view.document, 'keydown', highestPrioritySpy, { priority: 'highest' } );
-		emitter.listenTo( view.document, 'keydown', highPrioritySpy, { priority: 'high' } );
-		emitter.listenTo( view.document, 'keydown', normalPrioritySpy, { priority: 'normal' } );
+		emitter.listenTo( view.document, 'arrowKey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
+		emitter.listenTo( view.document, 'arrowKey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
+		emitter.listenTo( view.document, 'arrowKey', highPrioritySpy, { context: '$text', priority: 'high' } );
+		emitter.listenTo( view.document, 'arrowKey', normalPrioritySpy, { context: '$text', priority: 'normal' } );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowright,
 			preventDefault: preventDefaultSpy
 		} );
 
-		expect( highestPrioritySpy ).to.be.calledOnce;
-		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPrioritySpy );
+		expect( highestPlusPrioritySpy ).to.be.calledOnce;
+		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPlusPrioritySpy );
 
+		expect( highestPrioritySpy ).not.to.be.called;
 		expect( highPrioritySpy ).not.to.be.called;
 		expect( normalPrioritySpy ).not.to.be.called;
 	} );
@@ -817,7 +820,7 @@ describe( 'TwoStepCaretMovement()', () => {
 		] );
 
 		// Simulate an external text insertion BEFORE the user selection to trigger #change:range.
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
 		} );
 
@@ -963,11 +966,10 @@ describe( 'TwoStepCaretMovement()', () => {
 			else {
 				const stepIndex = scenario.indexOf( step );
 				const stepString = `in step #${ stepIndex }`;
-				let caretPosition = step.caretPosition;
 
-				if ( caretPosition !== undefined ) {
+				if ( step.caretPosition !== undefined ) {
 					// Normalize position
-					caretPosition = Array.isArray( step.caretPosition ) ? caretPosition : [ caretPosition ];
+					const caretPosition = toArray( step.caretPosition );
 					expect( selection.getFirstPosition(), `in step #${ stepIndex }, selection's first position` )
 						.to.have.deep.property( 'path', caretPosition );
 				}

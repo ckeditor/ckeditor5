@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* global Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MediaEmbed from '../src/mediaembed';
@@ -36,10 +38,15 @@ describe( 'MediaEmbedUI', () => {
 				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
 				button = dropdown.buttonView;
 				form = dropdown.panelView.children.get( 0 );
+
+				dropdown.render();
+
+				global.document.body.appendChild( dropdown.element );
 			} );
 	} );
 
 	afterEach( () => {
+		dropdown.element.remove();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -121,11 +128,14 @@ describe( 'MediaEmbedUI', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should focus the form', () => {
-					const spy = sinon.spy( form, 'focus' );
+				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
+					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
 
 					button.fire( 'open' );
-					sinon.assert.calledOnce( spy );
+
+					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
 				} );
 			} );
 		} );
@@ -139,13 +149,14 @@ describe( 'MediaEmbedUI', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'executes the command and closes the UI (if the form is valid)', () => {
+			it( 'executes the command and closes the UI (if the form is valid)', async () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
 				// The form is invalid.
 				form.url = 'https://invalid/url';
 				dropdown.isOpen = true;
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
 
 				dropdown.fire( 'submit' );
 
@@ -156,10 +167,14 @@ describe( 'MediaEmbedUI', () => {
 				// The form is valid.
 				form.url = 'https://valid/url';
 				dropdown.fire( 'submit' );
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
 
 				sinon.assert.calledOnce( commandSpy );
 				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
 				sinon.assert.calledOnce( viewFocusSpy );
+
+				await wait( 10 );
+
 				expect( dropdown.isOpen ).to.be.false;
 			} );
 		} );
@@ -175,13 +190,19 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		describe( '#cancel event', () => {
-			it( 'closes the UI', () => {
+			it( 'closes the UI', async () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				dropdown.isOpen = true;
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'focus' ) );
+
 				dropdown.fire( 'cancel' );
+				form.urlInputView.fieldView.element.dispatchEvent( new Event( 'blur' ) );
 
 				sinon.assert.calledOnce( viewFocusSpy );
+
+				await wait( 10 );
+
 				expect( dropdown.isOpen ).to.be.false;
 			} );
 		} );
@@ -251,3 +272,9 @@ describe( 'MediaEmbedUI', () => {
 		} );
 	} );
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
+}

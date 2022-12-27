@@ -25,6 +25,10 @@ Observables are useful when it comes to managing the state of the application, w
 
 Observables can also [decorate their methods](#decorating-object-methods) which makes it possible to control their execution using event listeners, giving external code some control over their behavior.
 
+<info-box>
+	Since the observables are just another layer on top of the event {@link module:utils/emittermixin~EmitterMixin emitters}, check out the {@link framework/guides/deep-dive/event-system event system deep dive guide} to learn more about the advanced usage of events with some additional examples.
+</info-box>
+
 ## Making properties observable
 
 Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~ObservableMixin#set `set()` method}.

@@ -1,5 +1,11 @@
 <head>
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<!-- For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI. -->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": "vimeo.com",
+		"response-failure": "vimeo.com",
+		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ]
+	}'>
 </head>
 
 <div style="margin-bottom: 10px;">
@@ -189,6 +195,73 @@ function bar() {
 			</td>
 		</tr>
 	</table>
+
+	<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+
+	<h2>HTML embed</h2>
+
+	<h3><code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> tags as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<details open>
+			<summary>Details</summary>
+			Something small enough to escape casual notice.
+		</details>
+	</div>
+
+	<h3><code>&lt;video&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<video width="320" height="240" controls>
+			<source src="sample.mp4" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+
+	<h3><code>&lt;iframe&gt;</code> tag as HTML snippet</h3>
+	<div class="raw-html-embed">
+		<iframe src="sample.txt"></iframe>
+	</div>
+
+	<h2>Paste from Office</h2>
+	<h3>Paste here: </h3>
+	<p></p>
+
+	<h2>Text part language</h2>
+	<p>
+		<span lang="es" dir="ltr">
+			<strong>Un lenguaje</strong> (del provenzal lenguatge y este del latín lingua) es un sistema de comunicación
+			estructurado para el que existe un contexto de uso y ciertos principios combinatorios formales. Existen
+			<strong>contextos</strong> tanto naturales como artificiales.
+		</span>
+	</p>
+	<p>
+		<span lang="ar" dir="rtl">
+			اللغة نسق من الإشارات والرموز، يشكل أداة من أدوات المعرفة، وتعتبر اللغة أهم <strong>وسائل</strong> التفاهم
+			والاحتكاك بين أفراد امجتمع في <strong>جميع</strong> ميادين الحياة. وبدون اللغة يتعذر نشاط الناس المعرفي.
+		</span>
+	</p>
+
+	<h2>HTML comments</h2>
+	<!-- C1 -->
+	<p><!-- C2 -->Paragraph<!-- C3 --></p>
+	<!-- C4 -->
+	<table>
+		<tr>
+			<td><!-- C5 -->Table cell #1<!-- C6 --></td>
+			<td>Table cell #2</td>
+			<td>Table cell #3</td>
+		</tr>
+	</table>
+	<ol>
+		<li><!-- C7 -->Item #1<!-- C8 --></li>
+		<li>Item #2</li>
+		<li>Item #3
+			<ul>
+				<li><!-- C9 -->Nested item #3.1<!-- C10 --></li>
+				<li>Nested item #3.2</li>
+				<li>Nested item #3.3</li>
+			</ul>
+		</li>
+	</ol>
 </div>
 
 <style>
@@ -204,4 +277,124 @@ function bar() {
 		clip: rect(0 0 0 0);
 		overflow: hidden;
 	}
+
+	/* Styles necessary for the Styles dropdown: */
+
+	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+	.ck.ck-content h3.category {
+		font-family: 'Bebas Neue';
+		font-size: 20px;
+		font-weight: bold;
+		color: #d1d1d1;
+		letter-spacing: 10px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.ck.ck-content h2.document-title {
+		font-family: 'Bebas Neue';
+		font-size: 50px;
+		font-weight: bold;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.ck.ck-content h3.document-subtitle {
+		font-size: 20px;
+		color: #e91e63;
+		margin: 0 0 1em;
+		font-weight: normal;
+		padding: 0;
+	}
+
+	.ck.ck-content p.info-box {
+		--background-size: 30px;
+		--background-color: #e91e63;
+		padding: 1.2em 2em;
+		border: 1px solid var(--background-color);
+		background: linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)), linear-gradient(135deg, transparent calc(100% - var(--background-size)), var(--background-color) calc(100% - var(--background-size)), var(--background-color));
+		border-radius: 10px;
+		margin: 1.5em 2em;
+		box-shadow: 5px 5px 0 #ffe6ef;
+	}
+
+	.ck.ck-content blockquote.side-quote {
+		font-family: 'Bebas Neue';
+		font-style: normal;
+		float: right;
+		width: 35%;
+		position: relative;
+		border: 0;
+		overflow: visible;
+		z-index: 1;
+		margin-left: 1em;
+	}
+
+	.ck.ck-content blockquote.side-quote::before {
+		content: "“";
+		position: absolute;
+		top: -37px;
+		left: -10px;
+		display: block;
+		font-size: 200px;
+		color: #e7e7e7;
+		z-index: -1;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p {
+		font-size: 2em;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+		font-size: 1.3em;
+		text-align: right;
+		color: #555;
+	}
+
+	.ck.ck-content span.marker {
+		background: yellow;
+	}
+
+	.ck.ck-content span.spoiler {
+		background: #000;
+		color: #000;
+	}
+
+	.ck.ck-content span.spoiler:hover {
+		background: #000;
+		color: #fff;
+	}
+
+	.ck.ck-content pre.fancy-code {
+		border: 0;
+		margin-left: 2em;
+		margin-right: 2em;
+		border-radius: 10px;
+	}
+
+	.ck.ck-content pre.fancy-code::before {
+		content: "";
+		display: block;
+		height: 13px;
+		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		margin-bottom: 8px;
+		background-repeat: no-repeat;
+	}
+
+	.ck.ck-content pre.fancy-code-dark {
+		background: #272822;
+		color: #fff;
+		box-shadow: 5px 5px 0 #0000001f;
+	}
+
+	.ck.ck-content pre.fancy-code-bright {
+		background: #dddfe0;
+		color: #000;
+		box-shadow: 5px 5px 0 #b3b3b3;
+	}
+
 </style>

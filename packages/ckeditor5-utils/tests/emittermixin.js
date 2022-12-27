@@ -1,9 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { default as EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
+/* eslint-disable new-cap */
+
+import EmitterMixin, { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
 import { expectToThrowCKEditorError } from './_utils/utils';
 import CKEditorError from '../src/ckeditorerror';
@@ -14,6 +16,21 @@ describe( 'EmitterMixin', () => {
 	beforeEach( () => {
 		emitter = getEmitterInstance();
 		listener = getEmitterInstance();
+	} );
+
+	it( 'should inherit from the given class', () => {
+		class TestClass {
+			constructor( value ) {
+				this.value = value;
+			}
+		}
+
+		const EmitterClass = EmitterMixin( TestClass );
+
+		const emitter = new EmitterClass( 5 );
+
+		expect( emitter ).to.be.instanceOf( TestClass );
+		expect( emitter.value ).to.equal( 5 );
 	} );
 
 	describe( 'fire', () => {
@@ -544,6 +561,38 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spyBar );
 			sinon.assert.calledOnce( spyBaz );
 		} );
+
+		it( 'should use _addEventListener() on emitter object', () => {
+			const emitter = {
+				_addEventListener() {}
+			};
+
+			const spy = sinon.spy( emitter, '_addEventListener' );
+
+			const callbackFunc = () => {};
+			const optionsObj = {};
+
+			listener.listenTo( emitter, 'test', callbackFunc, optionsObj );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc, optionsObj );
+		} );
+
+		it( 'should use listener\'s _addEventListener() if emitter is not implementing it', () => {
+			const emitter = {};
+
+			const spy = sinon.spy( listener, '_addEventListener' );
+
+			const callbackFunc = () => {};
+			const optionsObj = {};
+
+			listener.listenTo( emitter, 'test', callbackFunc, optionsObj );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc, optionsObj );
+		} );
 	} );
 
 	describe( 'stopListening', () => {
@@ -726,6 +775,38 @@ describe( 'EmitterMixin', () => {
 			emitter.fire( 'foo' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should use _removeEventListener() on emitter object', () => {
+			const emitter = {
+				_removeEventListener() {}
+			};
+
+			const spy = sinon.spy( emitter, '_removeEventListener' );
+
+			const callbackFunc = () => {};
+
+			listener.listenTo( emitter, 'test', callbackFunc );
+			listener.stopListening( emitter, 'test', callbackFunc );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc );
+		} );
+
+		it( 'should use listener\'s _removeEventListener() if emitter is not implementing it', () => {
+			const emitter = {};
+
+			const spy = sinon.spy( listener, '_removeEventListener' );
+
+			const callbackFunc = () => {};
+
+			listener.listenTo( emitter, 'test', callbackFunc );
+			listener.stopListening( emitter, 'test', callbackFunc );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc );
 		} );
 	} );
 
@@ -1349,5 +1430,7 @@ describe( '_getEmitterListenedTo', () => {
 } );
 
 function getEmitterInstance() {
-	return Object.create( EmitterMixin );
+	class BrandNewClass {}
+
+	return new ( EmitterMixin( BrandNewClass ) )();
 }

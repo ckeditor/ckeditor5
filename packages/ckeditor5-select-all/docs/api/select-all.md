@@ -10,11 +10,11 @@ This package implements the select all feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/select-all#demo demo in the Select all feature} guide.
+Check out the {@link features/select-all#demo demo in the select all feature guide}.
 
 ## Documentation
 
-See the {@link features/select-all Select all feature} guide and the {@link module:select-all/selectall~SelectAll} plugin documentation.
+See the {@link features/select-all select all feature guide} and the {@link module:select-all/selectall~SelectAll} plugin documentation.
 
 This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 
@@ -26,7 +26,7 @@ npm install --save @ckeditor/ckeditor5-select-all
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all).
 
 ## External links
 

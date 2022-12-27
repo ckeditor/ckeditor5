@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { Rect } from 'ckeditor5/src/utils';
+import { BalloonPanelView } from 'ckeditor5/src/ui';
+
 import { getTableWidgetAncestor } from './widget';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 
@@ -20,12 +20,8 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
-];
-
-const TABLE_PROPERTIES_BALLOON_POSITIONS = [
-	...BALLOON_POSITIONS,
-	centeredBalloonPositionForLongWidgets
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
+	DEFAULT_BALLOON_POSITIONS.viewportStickyNorth
 ];
 
 /**
@@ -67,8 +63,8 @@ export function getBalloonTablePositionData( editor ) {
 	const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 	return {
-		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: TABLE_PROPERTIES_BALLOON_POSITIONS
+		target: editor.editing.view.domConverter.mapViewToDom( viewTable ),
+		positions: BALLOON_POSITIONS
 	};
 }
 
@@ -96,7 +92,7 @@ export function getBalloonCellPositionData( editor ) {
 	const viewTableCell = mapper.toViewElement( modelTableCell );
 
 	return {
-		target: domConverter.viewToDom( viewTableCell ),
+		target: domConverter.mapViewToDom( viewTableCell ),
 		positions: BALLOON_POSITIONS
 	};
 }
@@ -122,7 +118,7 @@ function createBoundingRect( ranges, editor ) {
 	const rects = Array.from( ranges ).map( range => {
 		const modelTableCell = getTableCellAtPosition( range.start );
 		const viewTableCell = mapper.toViewElement( modelTableCell );
-		return new Rect( domConverter.viewToDom( viewTableCell ) );
+		return new Rect( domConverter.mapViewToDom( viewTableCell ) );
 	} );
 
 	return Rect.getBoundingRect( rects );

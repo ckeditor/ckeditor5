@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -19,6 +19,22 @@ msgstr ""
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
 msgstr "Ýörite nyşanlar"
+
+msgctxt "A label for the \"leftwards simple arrow\" symbol."
+msgid "leftwards simple arrow"
+msgstr ""
+
+msgctxt "A label for the \"rightwards simple arrow\" symbol."
+msgid "rightwards simple arrow"
+msgstr ""
+
+msgctxt "A label for the \"upwards simple arrow\" symbol."
+msgid "upwards simple arrow"
+msgstr ""
+
+msgctxt "A label for the \"downwards simple arrow\" symbol."
+msgid "downwards simple arrow"
+msgstr ""
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"

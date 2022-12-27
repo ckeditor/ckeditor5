@@ -1,14 +1,18 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, setTimeout */
 
 import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );
+
+// It makes no sense to test the sticky position in this context,
+// thus exclude it from this manual test.
+delete defaultPositions.viewportStickyNorth;
 
 let currentHeading = '';
 
@@ -33,12 +37,15 @@ for ( const i in defaultPositions ) {
 	balloon.element.textContent = i;
 	document.body.appendChild( balloon.element );
 
-	balloon.attachTo( {
-		target,
-		positions: [
-			defaultPositions[ i ]
-		]
-	} );
+	// Without it the position could be wrong because the element has just been rendered in DOM.
+	setTimeout( () => {
+		balloon.pin( {
+			target,
+			positions: [
+				defaultPositions[ i ]
+			]
+		} );
+	}, 100 );
 }
 
 function parseHeadingText( text ) {

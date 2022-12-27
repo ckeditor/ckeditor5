@@ -21,11 +21,15 @@ _What is the expected result of the above steps?_
 
 _What is the actual result of the above steps?_
 
+### ❓ Possible solution
+
+_If you have ideas, you can list them here. Otherwise, you can delete this section._
+
 ## 📃 Other details
 
 * Browser: …
 * OS: …
-* CKEditor version: …
+* First affected CKEditor version: …
 * Installed CKEditor plugins: …
 
 ---

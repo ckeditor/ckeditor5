@@ -5,7 +5,15 @@ classes: keyboard-shortcuts
 
 # Keyboard support
 
-Below is a list of the most important keystrokes supported by CKEditor 5 and its features:
+CKEditor 5 offers plenty of features to help you create your content in the most productive way. Using keyboard shortcuts is one of the simplest yet most efficient and popular ways to improve interaction with the software.
+
+<info-box info>
+	Keyboard support is enabled by default.
+</info-box>
+
+Below is a list of the most important keystrokes supported by CKEditor 5 and its features.
+
+## Content editing
 
 <table>
 	<thead>
@@ -19,37 +27,47 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Copy</td>
 			<td><kbd>Ctrl</kbd> + <kbd>C</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>C</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>C</kbd></td>
 		</tr>
 		<tr>
 			<td>Paste</td>
 			<td><kbd>Ctrl</kbd> + <kbd>V</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>V</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>V</kbd></td>
+		</tr>
+		<tr>
+			<td>Paste plain text and inherit target formatting</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
 		</tr>
 		<tr>
 			<td>Undo</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Z</kbd></td>
 		</tr>
 		<tr>
 			<td>Redo</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Y</kbd> <br> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>Y</kbd> <br> <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Y</kbd> <br> <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
+		</tr>
+		<tr>
+			<td>Select all</td>
+			<td><kbd>Ctrl</kbd> + <kbd>A</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>A</kbd></td>
 		</tr>
 		<tr>
 			<td>Bold</td>
 			<td><kbd>Ctrl</kbd> + <kbd>B</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>B</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>B</kbd></td>
 		</tr>
 		<tr>
 			<td>Italic</td>
 			<td><kbd>Ctrl</kbd> + <kbd>I</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>I</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>I</kbd></td>
 		</tr>
 		<tr>
 			<td>Link</td>
 			<td><kbd>Ctrl</kbd> + <kbd>K</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>K</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>K</kbd></td>
 		</tr>
 		<tr>
 			<td>Insert a hard break (e.g. a new paragraph)</td>
@@ -62,6 +80,14 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Nest the current list item (when in a list)</td>
 			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move out of link or inline code style</td>
+			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
+		</tr>
+		<tr>
+			<td>Revert autoformatting action</td>
+			<td colspan="2"><kbd>Backspace</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>
@@ -140,7 +166,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 		</tr>
 		<tr>
 			<td>Execute the currently focused button</td>
-			<td colspan="2"><kbd>Enter</kbd></td>
+			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
 		</tr>
 	</tbody>
 </table>
@@ -156,3 +182,13 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 	width: 30%;
 }
 </style>
+
+
+## Related productivity features
+
+In addition to using keyboard shortcuts, you may want to check the following productivity features:
+
+* {@link features/autoformat Autoformatting} &ndash; Allows for using Markdown-like code to format text on the go.
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.

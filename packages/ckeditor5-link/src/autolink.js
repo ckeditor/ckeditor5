@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module link/autolink
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
-import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
-import { addLinkProtocolIfApplicable } from './utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { Delete, TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
+
+import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
-// This was tweak from https://gist.github.com/dperini/729294.
+// This was a tweak from https://gist.github.com/dperini/729294.
 const URL_REG_EXP = new RegExp(
 	// Group 1: Line start or after a space.
 	'(^|\\s)' +
@@ -27,10 +27,23 @@ const URL_REG_EXP = new RegExp(
 			// BasicAuth using user:pass (optional)
 			'(?:\\S+(?::\\S*)?@)?' +
 			'(?:' +
-				// Host & domain names.
-				'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
-				// TLD identifier name.
-				'(?:[a-z\\u00a1-\\uffff]{2,})' +
+				// IP address dotted notation octets
+				// excludes loopback network 0.0.0.0
+				// excludes reserved space >= 224.0.0.0
+				// excludes network & broadcast addresses
+				// (first & last IP address of each class)
+				'(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])' +
+				'(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}' +
+				'(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))' +
+				'|' +
+				'(' +
+					// Do not allow `www.foo` - see https://github.com/ckeditor/ckeditor5/issues/8050.
+					'((?!www\\.)|(www\\.))' +
+					// Host & domain names.
+					'(?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.)+' +
+					// TLD identifier name.
+					'(?:[a-z\\u00a1-\\uffff]{2,63})' +
+				')' +
 			')' +
 			// port number (optional)
 			'(?::\\d{2,5})?' +
@@ -42,10 +55,10 @@ const URL_REG_EXP = new RegExp(
 		'(' +
 			'(www.|(\\S+@))' +
 			// Host & domain names.
-			'((?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.))+' +
-	// TLD identifier name.
-	'(?:[a-z\\u00a1-\\uffff]{2,})' +
-	')' +
+			'((?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.))+' +
+			// TLD identifier name.
+			'(?:[a-z\\u00a1-\\uffff]{2,63})' +
+		')' +
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
@@ -56,6 +69,13 @@ const URL_GROUP_IN_MATCH = 2;
  * @extends module:core/plugin~Plugin
  */
 export default class AutoLink extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Delete ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -95,12 +115,12 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
-			// 1. Detect "Space" after a text with a potential link.
+			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
 			if ( !isSingleSpaceAtTheEnd( text ) ) {
 				return;
 			}
 
-			// 2. Check text before last typed "Space".
+			// 2. Check text before last typed <kbd>Space</kbd>.
 			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
 
 			if ( url ) {
@@ -108,12 +128,10 @@ export default class AutoLink extends Plugin {
 			}
 		} );
 
-		const input = editor.plugins.get( 'Input' );
-
 		watcher.on( 'matched:data', ( evt, data ) => {
 			const { batch, range, url } = data;
 
-			if ( !input.isInput( batch ) ) {
+			if ( !batch.isTyping ) {
 				return;
 			}
 
@@ -205,24 +223,43 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Applies a link on a given range.
+	 * Applies a link on a given range if the link should be applied.
 	 *
 	 * @param {String} url The URL to link.
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
 	 * @private
 	 */
-	_applyAutoLink( link, range ) {
+	_applyAutoLink( url, range ) {
 		const model = this.editor.model;
 
-		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
+		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+		const fullUrl = addLinkProtocolIfApplicable( url, defaultProtocol );
+
+		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) || !linkHasProtocol( fullUrl ) || linkIsAlreadySet( range ) ) {
 			return;
 		}
 
+		this._persistAutoLink( fullUrl, range );
+	}
+
+	/**
+	 * Enqueues autolink changes in the model.
+	 *
+	 * @param {String} url The URL to link.
+	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
+	 * @protected
+	 */
+	_persistAutoLink( url, range ) {
+		const model = this.editor.model;
+		const deletePlugin = this.editor.plugins.get( 'Delete' );
+
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
-			const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
-			writer.setAttribute( 'linkHref', parsedUrl, range );
+			writer.setAttribute( 'linkHref', url, range );
+
+			model.enqueueChange( () => {
+				deletePlugin.requestUndoOnBackspace();
+			} );
 		} );
 	}
 }
@@ -240,4 +277,9 @@ function getUrlAtTextEnd( text ) {
 
 function isLinkAllowedOnRange( range, model ) {
 	return model.schema.checkAttributeInSelection( model.createSelection( range ), 'linkHref' );
+}
+
+function linkIsAlreadySet( range ) {
+	const item = range.start.nodeAfter;
+	return item && item.hasAttribute( 'linkHref' );
 }

@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* global window */
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
@@ -11,7 +13,14 @@ import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import {
-	createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed, isEmail, addLinkProtocolIfApplicable
+	createLinkElement,
+	isLinkElement,
+	ensureSafeUrl,
+	normalizeDecorators,
+	isLinkableElement,
+	isEmail,
+	addLinkProtocolIfApplicable,
+	openLink
 } from '../src/utils';
 
 describe( 'utils', () => {
@@ -221,31 +230,48 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'isImageAllowed()', () => {
+	describe( 'isLinkableElement()', () => {
 		it( 'returns false when passed "null" as element', () => {
-			expect( isImageAllowed( null, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( null, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when passed an element that is not the image element', () => {
 			const element = new ModelElement( 'paragraph' );
-			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
-		it( 'returns false when schema does not allow linking images', () => {
-			const element = new ModelElement( 'image' );
-			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+		it( 'returns false when schema does not allow linking images (block image)', () => {
+			const element = new ModelElement( 'imageBlock' );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
-		it( 'returns true when passed an image element and it can be linked', () => {
-			const element = new ModelElement( 'image' );
+		it( 'returns false when schema does not allow linking images (inline image)', () => {
+			const element = new ModelElement( 'imageInline' );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+		} );
+
+		it( 'returns true when passed a block image element and it can be linked', () => {
+			const element = new ModelElement( 'imageBlock' );
 			const schema = new Schema();
 
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				allowIn: '$root',
 				allowAttributes: [ 'linkHref' ]
 			} );
 
-			expect( isImageAllowed( element, schema ) ).to.equal( true );
+			expect( isLinkableElement( element, schema ) ).to.equal( true );
+		} );
+
+		it( 'returns true when passed an inline image element and it can be linked', () => {
+			const element = new ModelElement( 'imageInline' );
+			const schema = new Schema();
+
+			schema.register( 'imageInline', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkHref' ]
+			} );
+
+			expect( isLinkableElement( element, schema ) ).to.equal( true );
 		} );
 	} );
 
@@ -278,6 +304,30 @@ describe( 'utils', () => {
 			expect( addLinkProtocolIfApplicable( 'http://www.ckeditor.com', 'http://' ) ).to.equal( 'http://www.ckeditor.com' );
 			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com' ) ).to.equal( 'mailto:foo@bar.com' );
 			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com', 'http://' ) ).to.equal( 'mailto:foo@bar.com' );
+		} );
+	} );
+
+	describe( 'openLink()', () => {
+		let stub;
+
+		beforeEach( () => {
+			stub = sinon.stub( window, 'open' );
+
+			stub.returns( undefined );
+		} );
+
+		afterEach( () => {
+			stub.restore();
+		} );
+
+		it( 'should open a new browser tab', () => {
+			const url = 'http://www.ckeditor.com';
+
+			openLink( url );
+
+			expect( stub.calledOnce ).to.be.true;
+			expect( stub.calledOn( window ) ).to.be.true;
+			expect( stub.calledWith( url, '_blank', 'noopener' ) ).to.be.true;
 		} );
 	} );
 } );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,11 +9,11 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import CKFinderCommand from '../src/ckfindercommand';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -26,7 +26,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
+				plugins: [ Paragraph, ImageBlockEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -44,7 +44,7 @@ describe( 'CKFinderCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				command.refresh();
@@ -59,9 +59,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only image is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
-			model.schema.extend( 'image', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: [ 'paragraph', 'imageBlock' ]
+			} );
 
 			// Block link attribute.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -74,12 +75,14 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only link is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 			} );
@@ -92,8 +95,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be false where link & image are not allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block link attribute - image is not allowed in 'block'.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -105,9 +110,9 @@ describe( 'CKFinderCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when imageInsert or link command is enabled', () => {
+		it( 'should be true when insertImage or link command is enabled', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
-			const insertImage = editor.commands.get( 'imageInsert' );
+			const insertImage = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 
 			insertImage.isEnabled = false;
@@ -189,7 +194,7 @@ describe( 'CKFinderCommand', () => {
 			mockFilesChooseEvent( [ mockFinderFile( url ) ] );
 
 			expect( getModelData( model ) )
-				.to.equal( `[<image src="${ url }"></image>]<paragraph>foo</paragraph>` );
+				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert link if chosen file is not an image', () => {
@@ -256,7 +261,7 @@ describe( 'CKFinderCommand', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
+					plugins: [ Paragraph, ImageBlockEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ],
 					language: 'pl'
 				} )
 				.then( newEditor => {
@@ -303,7 +308,8 @@ describe( 'CKFinderCommand', () => {
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2 ), mockFinderFile( url3 ) ] );
 
 			expect( getModelData( model ) ).to.equal(
-				`<image src="${ url1 }"></image><image src="${ url2 }"></image>[<image src="${ url3 }"></image>]<paragraph>foo</paragraph>`
+				`<imageBlock src="${ url1 }"></imageBlock>` +
+				`<imageBlock src="${ url2 }"></imageBlock>[<imageBlock src="${ url3 }"></imageBlock>]<paragraph>foo</paragraph>`
 			);
 		} );
 
@@ -317,8 +323,8 @@ describe( 'CKFinderCommand', () => {
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
 
 			expect( getModelData( model ) ).to.equal(
-				`<image src="${ url1 }"></image>` +
-				`[<image src="${ url3 }"></image>]` +
+				`<imageBlock src="${ url1 }"></imageBlock>` +
+				`[<imageBlock src="${ url3 }"></imageBlock>]` +
 				`<paragraph>f<$text linkHref="${ url2 }">o</$text>o</paragraph>`
 			);
 		} );
@@ -333,7 +339,7 @@ describe( 'CKFinderCommand', () => {
 			mockFilesChooseEvent( [ mockFinderFile( false ) ] );
 
 			expect( getModelData( model ) ).to.equal(
-				`[<image src="${ proxyUrl }"></image>]<paragraph>foo</paragraph>`
+				`[<imageBlock src="${ proxyUrl }"></imageBlock>]<paragraph>foo</paragraph>`
 			);
 		} );
 
@@ -345,7 +351,7 @@ describe( 'CKFinderCommand', () => {
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: url } );
 
 			expect( getModelData( model ) )
-				.to.equal( `[<image src="${ url }"></image>]<paragraph>foo</paragraph>` );
+				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should show warning notification if no resized image URL was returned', done => {
@@ -368,12 +374,14 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should show warning notification if image cannot be inserted', done => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 			} );
@@ -403,9 +411,9 @@ describe( 'CKFinderCommand', () => {
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 

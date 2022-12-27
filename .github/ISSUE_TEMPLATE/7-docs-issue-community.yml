@@ -1,0 +1,51 @@
+name: "User-generated documentation issue report"
+description: "Semi-automated documentation issue template for user-generated reports. To be invoked from within the docs guides only."
+title: "Docs issue report from '...' guide"
+labels: [ "squad:ccx", "type:docs" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the report.
+  - type: input
+    id: origin-url
+    attributes:
+      label: Origin URL
+      description: On which page does the issue occur?
+    validations:
+      required: true
+  - type: input
+    id: project-version
+    attributes:
+      label: Project version
+      description: In which version of the project does the issue occur?
+    validations:
+      required: true
+  - type: textarea
+    id: information-outdated
+    attributes:
+      label: Is the information outdated? How?
+      description: Please describe here, if you found an information that seems outdated.
+    validations:
+      required: false
+  - type: textarea
+    id: information-missing
+    attributes:
+      label: Is there something missing in the guide? What is it?
+      description: Please describe here, if you think something is missing from the guide.
+    validations:
+      required: false
+  - type: textarea
+    id: information-additional
+    attributes:
+      label: Is there anything else you would like to add?
+      description: If you have any additional remarks, please use this space for them.
+    validations:
+      required: false
+  - type: input
+    id: user-agent
+    attributes:
+      label: User agent
+      description: This provides information about your browser and OS. It is a value returned by the `navigator.userAgent` property.
+    validations:
+      required: true

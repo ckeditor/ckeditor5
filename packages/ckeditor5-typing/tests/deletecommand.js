@@ -1,15 +1,18 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
 import Delete from '../src/delete';
 import ChangeBuffer from '../src/utils/changebuffer';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
@@ -25,6 +28,8 @@ describe( 'DeleteCommand', () => {
 
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
+
+				editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
@@ -101,6 +106,22 @@ describe( 'DeleteCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
+		it( 'deletes previous multi-character emoji when selection is collapsed', () => {
+			setData( model, '<paragraph>foo\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'deletes only one of previous multi-character emojis', () => {
+			setData( model, '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}\u{1F1E7}\u{1F1EA}[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
+		} );
+
 		it( 'deletes selection contents', () => {
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -154,6 +175,7 @@ describe( 'DeleteCommand', () => {
 			const modifyOpts = spy.args[ 0 ][ 1 ][ 1 ];
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
+			expect( modifyOpts ).to.have.property( 'treatEmojiAsSingleUnit', true );
 		} );
 
 		it( 'passes options to deleteContent #1', () => {
@@ -187,7 +209,7 @@ describe( 'DeleteCommand', () => {
 		it( 'should pass the "direction" option to Model#deleteContent method', () => {
 			const spy = sinon.spy();
 			const forwardCommand = new DeleteCommand( editor, 'forward' );
-			editor.commands.add( 'forwardDelete', forwardCommand );
+			editor.commands.add( 'deleteForward', forwardCommand );
 
 			editor.model.on( 'deleteContent', spy );
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
@@ -199,7 +221,7 @@ describe( 'DeleteCommand', () => {
 			let deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'backward' );
 
-			editor.execute( 'forwardDelete' );
+			editor.execute( 'deleteForward' );
 
 			expect( spy.callCount ).to.equal( 2 );
 
@@ -314,6 +336,72 @@ describe( 'DeleteCommand', () => {
 			editor.execute( 'delete' );
 
 			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+		} );
+
+		describe( 'with the empty first block', () => {
+			it( 'replaces the first empty block with paragraph', () => {
+				setData( model, '<heading1>[]</heading1><paragraph>foo</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+			} );
+
+			it( 'does not replace an element when Backspace key is held', () => {
+				setData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
+
+				for ( let sequence = 1; sequence < 10; ++sequence ) {
+					editor.execute( 'delete', { sequence } );
+				}
+
+				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
+				setData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+
+				const element = doc.getRoot().getNodeByPath( [ 0 ] );
+
+				editor.execute( 'delete' );
+
+				expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
+				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+			} );
+
+			it( 'does not replace an element if a paragraph is not allowed in current position', () => {
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
+						return false;
+					}
+				} );
+
+				setData( model, '<heading1>[]</heading1><heading1>foo</heading1>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><heading1>foo</heading1>' );
+			} );
+
+			it( 'does not replace an element if it\'s not empty', () => {
+				setData( model, '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'does not replace an element if it\'s wrapped with some other element', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setData( model, '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+			} );
 		} );
 	} );
 } );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/utils/ui/widget
  */
 
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget } from 'ckeditor5/src/widget';
 
 /**
  * Returns a table widget editing view element if one is selected.
@@ -32,10 +32,20 @@ export function getSelectedTableWidget( selection ) {
  * @returns {module:engine/view/element~Element|null}
  */
 export function getTableWidgetAncestor( selection ) {
-	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
+	const selectionPosition = selection.getFirstPosition();
 
-	if ( parentTable && isTableWidget( parentTable.parent ) ) {
-		return parentTable.parent;
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isTableWidget( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
 	}
 
 	return null;
@@ -47,16 +57,4 @@ export function getTableWidgetAncestor( selection ) {
 // @returns {Boolean}
 function isTableWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
-}
-
-function findAncestor( parentName, positionOrElement ) {
-	let parent = positionOrElement.parent;
-
-	while ( parent ) {
-		if ( parent.name === parentName ) {
-			return parent;
-		}
-
-		parent = parent.parent;
-	}
 }

@@ -8,11 +8,11 @@ It should contain as many features as we developed. By resizing your viewport yo
 
 ## Editor
 
-There should be "two pages" with two sections per each page. Pages should be separated by the page break feature.
+There should be "three pages" with couple of sections per each page. Pages should be separated by the page break feature.
 
 ### First page
 
-**Lists in the table** – in the table (2x3) in the second row should be 3 lists (bulleted, numbered and todo).
+**Lists in the table** – In the table (2x3) in the second row should be 3 lists (bulleted, numbered and todo). The styles for list item markers for unordered and ordered list can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar. There are 3 styles for unordered lists and 6 styles for ordered lists.
 
 **Basic features overview** - a few paragraphs of text (that contain text formatted using basic styles feature), an image, and a blockquote.
 
@@ -28,6 +28,21 @@ There should be "two pages" with two sections per each page. Pages should be sep
   - Left column: the text with two decorators enabled: `Open in a new tab`, `Downloadable`
   - Middle column: an image with the caption that is a `Gallery link`
   - Right column: an image without the caption with enabled all decorators (listed above)
+
+### Third page
+
+**HTML embed** - there are 3 widgets with embedded HTML:
+- `video`
+- `details` and `summary`
+- `iframe`
+
+The "previews in view" mode is enabled, which means that previews should be visible.
+
+**Paste from Office** - Copy & paste some content from Word.
+
+**Text part language** - There are 2 paragraphs with applied language: Spanish with left-to-right direction and Arabic with right-to-left direction. Both should have italic style. Play with the selection and the language dropdown.
+
+**HTML comments** - There are 10 comments in this section: from `C1` to `C10`. Open the source editing mode (or just call the `editor.getData()`) and verify that they are present.
 
 ---
 
@@ -51,3 +66,4 @@ Wordcount plugin logs into the console number of characters and words in the edi
 - Mention plugin is configured with an array of feed: `[ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],`
 - ImageUpload uses EasyImage
 - Styles for printing preview are served by official docs
+- The `SourceEditing` plugin should be disabled if there is at least one pending action.

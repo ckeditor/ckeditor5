@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,6 @@ import Editor from '../../src/editor/editor';
 import VirtualTestEditor from '../../tests/_utils/virtualtesteditor';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -32,7 +31,8 @@ describe( 'VirtualTestEditor', () => {
 		} );
 
 		it( 'mixes DataApiMixin', () => {
-			expect( testUtils.isMixed( VirtualTestEditor, DataApiMixin ) ).to.true;
+			expect( VirtualTestEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
+			expect( VirtualTestEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
 	} );
 

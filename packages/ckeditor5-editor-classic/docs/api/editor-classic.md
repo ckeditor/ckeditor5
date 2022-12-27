@@ -12,7 +12,7 @@ The classic editor implementation for CKEditor 5. See the {@link examples/builds
 
 This package contains the {@link module:editor-classic/classiceditor~ClassicEditor} class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about {@link builds/index CKEditor 5 Builds}.
+This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about {@link installation/index CKEditor 5 builds}.
 
 ## Installation
 
@@ -22,7 +22,7 @@ npm install --save @ckeditor/ckeditor5-editor-classic
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-classic.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-classic](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-classic).
 
 ## External links
 

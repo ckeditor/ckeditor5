@@ -1,21 +1,22 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import EasyImage from '../../src/easyimage';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '../../src/easyimage';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, EasyImage ],
+		plugins: [ ArticlePluginSet, CloudServices, ImageUpload, EasyImage ],
 		toolbar: [
 			'heading',
 			'|',
@@ -25,14 +26,14 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'imageUpload',
+			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
 			'undo',
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

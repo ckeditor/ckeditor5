@@ -1,14 +1,17 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import ImageEditing from '../../src/image/imageediting';
 import {
-	viewFigureToModel,
-	modelToViewAttributeConverter
+	upcastImageFigure,
+	downcastImageAttribute
 } from '../../src/image/converters';
-import { toImageWidget } from '../../src/image/utils';
-import { createImageViewElement } from '../../src/image/imageediting';
+import {
+	createBlockImageViewElement,
+	createInlineImageViewElement
+} from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -21,37 +24,56 @@ describe( 'Image converters', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				document = model.document;
-				viewDocument = editor.editing.view;
+		return VirtualTestEditor.create( {
+			plugins: [ ImageEditing ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
+			document = model.document;
+			viewDocument = editor.editing.view;
 
-				const schema = model.schema;
+			const imageUtils = editor.plugins.get( 'ImageUtils' );
+			const schema = model.schema;
 
-				schema.register( 'image', {
-					allowWhere: '$block',
-					allowAttributes: [ 'alt', 'src' ],
-					isObject: true,
-					isBlock: true
-				} );
-
-				const editingElementCreator = ( modelElement, { writer } ) =>
-					toImageWidget( createImageViewElement( writer ), writer, '' );
-
-				editor.conversion.for( 'editingDowncast' ).elementToElement( {
-					model: 'image',
-					view: editingElementCreator
-				} );
-
-				editor.conversion.for( 'downcast' )
-					.add( modelToViewAttributeConverter( 'src' ) )
-					.add( modelToViewAttributeConverter( 'alt' ) );
+			schema.register( 'imageBlock', {
+				allowWhere: '$block',
+				allowAttributes: [ 'alt', 'src' ],
+				isObject: true,
+				isBlock: true
 			} );
+
+			schema.register( 'imageInline', {
+				allowWhere: '$inline',
+				allowAttributes: [ 'alt', 'src' ],
+				isObject: true,
+				isInline: true
+			} );
+
+			const imageEditingElementCreator = ( modelElement, { writer } ) =>
+				imageUtils.toImageWidget( createBlockImageViewElement( writer ), writer, '' );
+
+			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
+				imageUtils.toImageWidget( createInlineImageViewElement( writer ), writer, '' );
+
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
+				model: 'imageBlock',
+				view: imageEditingElementCreator
+			} );
+
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
+				model: 'imageInline',
+				view: imageInlineEditingElementCreator
+			} );
+
+			editor.conversion.for( 'downcast' )
+				.add( downcastImageAttribute( imageUtils, 'imageBlock', 'src' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageInline', 'src' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageBlock', 'alt' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageInline', 'alt' ) );
+		} );
 	} );
 
-	describe( 'viewFigureToModel', () => {
+	describe( 'upcastImageFigure', () => {
 		function expectModel( data ) {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}
@@ -64,21 +86,19 @@ describe( 'Image converters', () => {
 			editor.editing.destroy();
 
 			schema = model.schema;
-			schema.extend( '$text', { allowIn: 'image' } );
+			schema.extend( '$text', { allowIn: 'imageBlock' } );
 
 			editor.conversion.for( 'upcast' )
-				.add( viewFigureToModel() )
+				.add( upcastImageFigure( editor.plugins.get( 'ImageUtils' ) ) )
 				.elementToElement( {
-					view: {
-						name: 'img',
-						attributes: {
-							src: true
-						}
-					},
+					view: { name: 'img' },
 					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
-						return writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
+						return writer.createElement(
+							'imageBlock',
+							viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+						);
 					}
 				} );
 		} );
@@ -86,7 +106,7 @@ describe( 'Image converters', () => {
 		it( 'should find img element among children and convert it using already defined converters', () => {
 			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
-			expectModel( '<image src="/assets/sample.png"></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
@@ -94,21 +114,21 @@ describe( 'Image converters', () => {
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'foo', model: 'foo' } );
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'bar', model: 'bar' } );
 
-			schema.register( 'foo', { allowIn: 'image' } );
+			schema.register( 'foo', { allowIn: 'imageBlock' } );
 			// Is allowed in root, but should not try to split image element.
 			schema.register( 'bar', { allowIn: '$root' } );
 
 			editor.setData( '<figure class="image">x<img src="/assets/sample.png" />y<foo></foo><bar></bar></figure>' );
 
 			// Element bar not converted because schema does not allow it.
-			expectModel( '<image src="/assets/sample.png">xy<foo></foo></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png">xy<foo></foo></imageBlock>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -120,14 +140,14 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<div>abc</div><image src="foo.jpg"></image><div>def</div>' );
+			expectModel( '<div>abc</div><imageBlock src="foo.jpg"></imageBlock><div>def</div>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - at the end', () => {
 			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -138,14 +158,14 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<div>abc</div><image src="foo.jpg"></image>' );
+			expectModel( '<div>abc</div><imageBlock src="foo.jpg"></imageBlock>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - at the beginning', () => {
 			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -156,7 +176,7 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<image src="foo.jpg"></image><div>def</div>' );
+			expectModel( '<imageBlock src="foo.jpg"></imageBlock><div>def</div>' );
 		} );
 
 		it( 'should be possible to overwrite', () => {
@@ -185,7 +205,20 @@ describe( 'Image converters', () => {
 			editor.setData( '<figure><img src="/assets/sample.png" />xyz</figure>' );
 
 			// Default image converter will be fired.
-			expectModel( '<image src="/assets/sample.png"></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
+		} );
+
+		it( 'should convert image with missing src attribute', () => {
+			editor.setData( '<figure class="image"><img alt="Empty src attribute" /></figure>' );
+
+			expectModel( '<imageBlock alt="Empty src attribute"></imageBlock>' );
+		} );
+
+		it( 'should convert if img element has no src and figure has text', () => {
+			// Image element missing src attribute.
+			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+
+			expectModel( '<imageBlock alt="abc">xyz</imageBlock>' );
 		} );
 
 		it( 'should not convert if there is no img element among children', () => {
@@ -195,18 +228,40 @@ describe( 'Image converters', () => {
 			expectModel( '' );
 		} );
 
-		it( 'should not convert if img element was not converted', () => {
-			// Image element missing src attribute.
-			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+		it( 'should not consume if the img element was not converted', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'high' } );
 
-			// Figure converter outputs nothing and text is disallowed in root.
-			expectModel( '' );
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.true;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should not left unconsumed figure media element', () => {
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should consume the figure element before the img conversion starts', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 		} );
 	} );
 
-	describe( 'modelToViewAttributeConverter', () => {
+	describe( 'downcastImageAttribute', () => {
 		it( 'should convert adding attribute to image', () => {
-			setModelData( model, '<image src=""></image>' );
+			setModelData( model, '<imageBlock src=""></imageBlock>' );
+
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -219,7 +274,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert an empty "src" attribute from image even if removed', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -232,7 +287,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert an empty "alt" attribute from image even if removed', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -245,7 +300,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert change of attribute image', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -258,11 +313,11 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:alt:imageBlock', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
@@ -271,11 +326,11 @@ describe( 'Image converters', () => {
 
 		it( 'should set attribute on <img> even if other element is present inside figure', () => {
 			editor.model.schema.register( 'foo', {
-				allowIn: 'image'
+				allowIn: 'imageBlock'
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'foo', view: 'foo' } );
 
-			setModelData( model, '<image src=""><foo></foo></image>' );
+			setModelData( model, '<imageBlock src=""><foo></foo></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -283,7 +338,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><foo></foo><img alt="foo bar" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img><foo></foo></figure>'
 			);
 		} );
 	} );

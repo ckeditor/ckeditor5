@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-style-panel .ck-style-panel__style-group {
+	& > .ck-label {
+		margin: var(--ck-spacing-large) 0;
+	}
+
+	&:first-child {
+		& > .ck-label {
+			margin-top: 0;
+		}
+	}
+}

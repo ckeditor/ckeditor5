@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-clipboard-drop-target-dot-width: 12px;
+	--ck-clipboard-drop-target-dot-height: 8px;
+	--ck-clipboard-drop-target-color: var(--ck-color-focus-border)
+}
+
+.ck.ck-editor__editable {
+	/*
+	 * Vertical drop target (in text).
+	 */
+	& .ck.ck-clipboard-drop-target-position {
+		& span {
+			bottom: calc(-.5 * var(--ck-clipboard-drop-target-dot-height));
+			top: calc(-.5 * var(--ck-clipboard-drop-target-dot-height));
+			border: 1px solid var(--ck-clipboard-drop-target-color);
+			background: var(--ck-clipboard-drop-target-color);
+			margin-left: -1px;
+
+			/* The triangle above the marker */
+			&::after {
+				content: "";
+				width: 0;
+				height: 0;
+
+				display: block;
+				position: absolute;
+				left: 50%;
+				top: calc(var(--ck-clipboard-drop-target-dot-height) * -.5);
+
+				transform: translateX(-50%);
+				border-color: var(--ck-clipboard-drop-target-color) transparent transparent transparent;
+				border-width: calc(var(--ck-clipboard-drop-target-dot-height)) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width));
+				border-style: solid;
+			}
+		}
+	}
+
+	/*
+	// Horizontal drop target (between blocks).
+	& .ck.ck-clipboard-drop-target-position {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 0;
+		margin: 0;
+		text-align: initial;
+
+		& .ck-clipboard-drop-target__line {
+			position: absolute;
+			width: 100%;
+			height: 0;
+			border: 1px solid var(--ck-clipboard-drop-target-color);
+			margin-top: -1px;
+
+			&::before {
+				content: "";
+				width: 0;
+				height: 0;
+
+				display: block;
+				position: absolute;
+				left: calc(-1 * var(--ck-clipboard-drop-target-dot-size));
+				top: 0;
+
+				transform: translateY(-50%);
+				border-color: transparent transparent transparent var(--ck-clipboard-drop-target-color);
+				border-width: var(--ck-clipboard-drop-target-dot-size) 0 var(--ck-clipboard-drop-target-dot-size) calc(2 * var(--ck-clipboard-drop-target-dot-size));
+				border-style: solid;
+			}
+
+			&::after {
+				content: "";
+				width: 0;
+				height: 0;
+
+				display: block;
+				position: absolute;
+				right: calc(-1 * var(--ck-clipboard-drop-target-dot-size));
+				top: 0;
+
+				transform: translateY(-50%);
+				border-color: transparent var(--ck-clipboard-drop-target-color) transparent transparent;
+				border-width: var(--ck-clipboard-drop-target-dot-size) calc(2 * var(--ck-clipboard-drop-target-dot-size)) var(--ck-clipboard-drop-target-dot-size) 0;
+				border-style: solid;
+			}
+		}
+	}
+	*/
+
+	/*
+	 * Styles of the widget that it a drop target.
+	 */
+	& .ck-widget.ck-clipboard-drop-target-range {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-clipboard-drop-target-color) !important;
+	}
+
+	/*
+	 * Styles of the widget being dragged (its preview).
+	 */
+	& .ck-widget:-webkit-drag {
+		zoom: 0.6;
+		outline: none !important;
+	}
+}

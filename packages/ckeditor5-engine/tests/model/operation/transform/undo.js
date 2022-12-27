@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -325,7 +325,7 @@ describe( 'transform', () => {
 		john.split();
 		john.setSelection( [ 1, 0 ] );
 		john._processExecute( 'bold' );
-		john._processExecute( 'forwardDelete' );
+		john._processExecute( 'deleteForward' );
 
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
@@ -685,5 +685,44 @@ describe( 'transform', () => {
 		john.redo();
 
 		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/8870
+	it( 'object, p, p, p, remove, undo', () => {
+		john.setData( '<imageBlock></imageBlock><paragraph>A</paragraph><paragraph>B[]</paragraph>' );
+
+		// I couldn't use delete command because simply executing this command several times does not
+		// work correctly when selection reaches <imageBlock></imageBlock><p>[]</p>.
+		// At this point we have custom control for firing delete event on view and I didn't want to
+		// simulate that.
+		//
+		john.remove( [ 2, 0 ], [ 2, 1 ] );
+		john.merge( [ 2 ] );
+		john.remove( [ 1, 0 ], [ 1, 1 ] );
+		john.remove( [ 1 ], [ 2 ] );
+		john.remove( [ 0 ], [ 1 ] );
+
+		john.undo();
+		john.undo();
+		john.undo();
+		john.undo();
+		john.undo();
+
+		expectClients( '<imageBlock></imageBlock><paragraph>A</paragraph><paragraph>B</paragraph>' );
+	} );
+
+	it( 'remove merged element then undo', () => {
+		john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+		john.merge();
+		john.setSelection( [ 0, 0 ], [ 0, 6 ] );
+		john.remove();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.undo();
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 } );

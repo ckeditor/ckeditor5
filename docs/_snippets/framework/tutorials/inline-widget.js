@@ -1,7 +1,8 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -24,10 +25,14 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+				name: value
+			} );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -145,6 +150,9 @@ class PlaceholderEditing extends Plugin {
 			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
 			isObject: true,
 
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			allowAttributesOf: '$text',
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
@@ -204,6 +212,11 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ],
 		placeholderConfig: {
 			types: [ 'date', 'color', 'first name', 'surname' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {
@@ -211,6 +224,17 @@ ClassicEditor
 
 		// Expose for playing in the console.
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label.startsWith( 'Placeholder' )
+			),
+			text: 'Click to add a placeholder.',
+			tippyOptions: {
+				placement: 'bottom-start'
+			},
+			editor
+		} );
 	} )
 	.catch( error => {
 		console.error( error.stack );

@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '../tests/_utils/virtualtesteditor';
 import EditingKeystrokeHandler from '../src/editingkeystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'EditingKeystrokeHandler', () => {
 	let editor, keystrokes, executeSpy;
@@ -120,7 +121,8 @@ describe( 'EditingKeystrokeHandler', () => {
 function getCtrlA() {
 	return {
 		keyCode: keyCodes.a,
-		ctrlKey: true,
+		ctrlKey: !env.isMac,
+		metaKey: env.isMac,
 		preventDefault: sinon.spy(),
 		stopPropagation: sinon.spy()
 	};

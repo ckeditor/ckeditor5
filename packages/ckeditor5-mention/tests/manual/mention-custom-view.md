@@ -16,7 +16,7 @@ The feed:
 You can interact with mention panel with keyboard:
 
 - Move arrows up/down to select an item.
-- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation. 
+- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the document.
 - The <kbd>esc</kbd> should close the panel.
 
 Mention panel should be closed on:

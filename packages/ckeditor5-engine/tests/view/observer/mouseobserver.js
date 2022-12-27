@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,7 @@ describe( 'MouseObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.equal( 'mousedown' );
+		expect( observer.domEventType ).to.deep.equal( [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
@@ -33,6 +33,45 @@ describe( 'MouseObserver', () => {
 			viewDocument.on( 'mousedown', spy );
 
 			observer.onDomEvent( { type: 'mousedown', target: document.body } );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
+
+		it( 'should fire mouseup with the right event data', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'mouseup', spy );
+
+			observer.onDomEvent( { type: 'mouseup', target: document.body } );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
+
+		it( 'should fire mouseover with the right event data', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'mouseover', spy );
+
+			observer.onDomEvent( { type: 'mouseover', target: document.body } );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
+
+		it( 'should fire mouseout with the right event data', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'mouseout', spy );
+
+			observer.onDomEvent( { type: 'mouseout', target: document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 

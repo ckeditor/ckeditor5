@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,7 @@
  * @module table/commands/insertrowcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The insert row command.
@@ -52,10 +51,10 @@ export default class InsertRowCommand extends Command {
 	 */
 	refresh() {
 		const selection = this.editor.model.document.selection;
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
-
-		this.isEnabled = !!tableParent;
+		this.isEnabled = isAnyCellSelected;
 	}
 
 	/**
@@ -71,8 +70,8 @@ export default class InsertRowCommand extends Command {
 		const tableUtils = editor.plugins.get( 'TableUtils' );
 		const insertAbove = this.order === 'above';
 
-		const affectedTableCells = getSelectionAffectedTableCells( selection );
-		const rowIndexes = getRowIndexes( affectedTableCells );
+		const affectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
+		const rowIndexes = tableUtils.getRowIndexes( affectedTableCells );
 
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );

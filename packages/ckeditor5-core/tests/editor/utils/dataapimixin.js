@@ -1,24 +1,21 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import DataApiMixin from '../../../src/editor/utils/dataapimixin';
 import Editor from '../../../src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import testUtils from '../../../tests/_utils/utils';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DataApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
-		class CustomEditor extends Editor {}
-		mix( CustomEditor, DataApiMixin );
+		// eslint-disable-next-line new-cap
+		class CustomEditor extends DataApiMixin( Editor ) {}
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor( editor.data.viewDocument );
 		editor.model.document.createRoot( '$root', 'main' );
 		editor.model.document.createRoot( '$root', 'secondRoot' );
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
@@ -27,6 +24,11 @@ describe( 'DataApiMixin', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+	} );
+
+	it( 'is compatible with `mix` function', () => {
+		expect( DataApiMixin ).have.property( 'setData' ).to.be.a( 'function' );
+		expect( DataApiMixin ).have.property( 'getData' ).to.be.a( 'function' );
 	} );
 
 	describe( 'setData()', () => {

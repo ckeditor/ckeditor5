@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import { prepareIntegrations, createLabeledInputView } from '../../src/imageinsert/utils';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 describe( 'Upload utils', () => {
 	describe( 'prepareIntegrations()', () => {
@@ -24,10 +25,12 @@ describe( 'Upload utils', () => {
 			const editor = await ClassicEditor
 				.create( editorElement, {
 					plugins: [
-						CKFinder,
 						Paragraph,
+						Link,
 						Image,
-						ImageUploadUI
+						ImageUploadUI,
+						CKFinderUploadAdapter,
+						CKFinder
 					],
 					image: {
 						insert: {
@@ -130,12 +133,7 @@ describe( 'Upload utils', () => {
 		describe( 'image URL input view', () => {
 			it( 'should have placeholder', () => {
 				const view = createLabeledInputView( { t: val => val } );
-				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/src/image.png' );
-			} );
-
-			it( 'should have info text', () => {
-				const view = createLabeledInputView( { t: val => val } );
-				expect( view.infoText ).to.match( /^Paste the image source URL/ );
+				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/image.png' );
 			} );
 		} );
 	} );

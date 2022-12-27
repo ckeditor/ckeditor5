@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -208,7 +208,7 @@ describe( 'CodeBlockUI', () => {
 				expect( button ).to.have.property( 'isOn', true );
 			} );
 
-			it( 'should execute the command with the first configured language', () => {
+			it( 'should execute the command with the "usePreviousLanguageChoice" option set to "true"', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 				const button = dropdown.buttonView;
 				const executeSpy = sinon.stub( editor, 'execute' );
@@ -219,7 +219,7 @@ describe( 'CodeBlockUI', () => {
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
 				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-					language: 'plaintext'
+					usePreviousLanguageChoice: true
 				} );
 			} );
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import TableBorderStyleCommand from '../../../src/tableproperties/commands/table
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableBorderStyleCommand', () => {
+		describe( 'TableBorderStyleCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableBorderStyleCommand( editor );
+				command = new TableBorderStyleCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -65,14 +65,14 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has borderStyle property (single string)', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						expect( command.value ).to.equal( 'ridge' );
 					} );
 
 					it( 'should be set if selected table has borderStyle property object with same values', () => {
 						setTableWithObjectAttributes( model, {
-							borderStyle: {
+							tableBorderStyle: {
 								top: 'ridge',
 								right: 'ridge',
 								bottom: 'ridge',
@@ -84,7 +84,7 @@ describe( 'table properties', () => {
 
 					it( 'should be undefined if selected table has borderStyle property object with different values', () => {
 						setTableWithObjectAttributes( model, {
-							borderStyle: {
+							tableBorderStyle: {
 								top: 'ridge',
 								right: 'dashed',
 								bottom: 'ridge',
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						expect( command.value ).to.equal( 'ridge' );
 					} );
@@ -127,19 +127,19 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table borderStyle to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						command.execute();
 
@@ -153,7 +153,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table borderStyle to a passed value', () => {
@@ -161,13 +161,82 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableBorderStyleCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TablePropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableBorderStyleCommand( editor, 'none' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'none' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderStyle property other than the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'solid' } ) );
+
+						expect( command.value ).to.equal( 'solid' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'none' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderStyle property other than the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'solid' } ) );
+
+						expect( command.value ).to.equal( 'solid' );
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderStyle from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'solid' } ) );
+
+						command.execute( { value: 'none' } );
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderStyle from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBorderStyle: 'solid' } ) );
+
+						command.execute( { value: 'none' } );
 
 						assertTableStyle( editor, '' );
 					} );

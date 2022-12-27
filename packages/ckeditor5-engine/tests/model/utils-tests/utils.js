@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,7 +41,7 @@ describe( 'itemAt', () => {
 
 	beforeEach( () => {
 		foo = new Text( 'foo' );
-		img = new Element( 'image' );
+		img = new Element( 'imageBlock' );
 		bar = new Text( 'bar' );
 
 		element = new Element( 'p', null, [ foo, img, bar ] );

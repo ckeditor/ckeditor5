@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module media-embed/mediaembedcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from 'ckeditor5/src/core';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**
@@ -29,19 +29,11 @@ export default class MediaEmbedCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const schema = model.schema;
-		const insertPosition = findOptimalInsertionPosition( selection, model );
 		const selectedMedia = getSelectedMediaModelWidget( selection );
 
-		let parent = insertPosition.parent;
-
-		// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
-		if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {
-			parent = parent.parent;
-		}
-
 		this.value = selectedMedia ? selectedMedia.getAttribute( 'url' ) : null;
-		this.isEnabled = schema.checkChild( parent, 'media' );
+
+		this.isEnabled = isMediaSelected( selection ) || isAllowedInParent( selection, model );
 	}
 
 	/**
@@ -63,9 +55,33 @@ export default class MediaEmbedCommand extends Command {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			const insertPosition = findOptimalInsertionPosition( selection, model );
-
-			insertMedia( model, url, insertPosition );
+			insertMedia( model, url, selection, true );
 		}
 	}
+}
+
+// Checks if the table is allowed in the parent.
+//
+// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+// @param {module:engine/model/model~Model} model
+// @returns {Boolean}
+function isAllowedInParent( selection, model ) {
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	let parent = insertionRange.start.parent;
+
+	// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
+	if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {
+		parent = parent.parent;
+	}
+
+	return model.schema.checkChild( parent, 'media' );
+}
+
+// Checks if the media object is selected.
+//
+// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+// @returns {Boolean}
+function isMediaSelected( selection ) {
+	const element = selection.getSelectedElement();
+	return !!element && element.name === 'media';
 }

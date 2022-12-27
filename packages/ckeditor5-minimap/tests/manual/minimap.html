@@ -1,0 +1,95 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' https://unpkg.com https://cksource.com;">
+	<style>
+		@media only screen and (max-width: 320px) {
+			p, h1, h2, h3 {
+				color: hsl( 0, 100%, 50% )
+			}
+		}
+	</style>
+</head>
+
+<p>
+	<b>Preview style</b>:
+	<input type="radio" id="mode-standard" name="mode" value="standard" checked><label for="mode-standard">Standard</label>
+	<input type="radio" id="mode-simple" name="mode" value="simple"><label for="mode-simple">Simple</label>
+</p>
+
+<p>
+	<button id="long">Load long data</button>
+	<button id="medium">Load medium data</button>
+	<button id="short">Load short data</button>
+</p>
+
+<div class="document-container">
+	<div id="toolbar-container" class="toolbar-container"></div>
+	<div class="minimap-wrapper">
+		<div class="editor-container">
+			<div id="editor-content"></div>
+		</div>
+		<div class="minimap-container"></div>
+	</div>
+</div>
+
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif
+	}
+
+	.minimap-wrapper {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		max-height: calc( 100vh - 250px );
+		width: 100%;
+		position: relative;
+		top: -1px;
+	}
+
+	.minimap-container {
+		width: 200px;
+		flex: 0 0 auto;
+		border: 1px solid var(--ck-color-toolbar-border);
+		position: relative;
+		overflow: hidden;
+		max-height: 100%;
+	}
+
+	.document-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		position: relative;
+		flex-grow: 1;
+		max-width: 1300px;
+		margin: 0 auto;
+	}
+
+	.toolbar-container {
+		width: 100%;
+	}
+
+	.editor-container {
+		width: 100%;
+		border: 1px solid hsl( 0, 0%, 80% );
+		border-right: 0;
+		background: hsl( 0, 0%, 95% );
+		box-sizing: border-box;
+		position: relative;
+		overflow: auto;
+	}
+
+	#editor-content {
+		/* A4 size */
+		width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
+		min-height: calc( 297mm + 2px );
+		height: auto;
+		padding: 20mm 12mm;
+		box-sizing: border-box;
+		background: hsl( 0, 0%, 100% );
+		border: 1px solid hsl( 0, 0%, 88% );
+		box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
+		margin: 40px auto;
+		overflow: hidden;
+	}
+</style>

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module ckfinder/ckfinder
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 /**
  * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the
@@ -23,10 +22,10 @@ import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uplo
  * * {@link module:ckfinder/ckfinderui~CKFinderUI},
  * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}.
  *
- * See the {@glink features/image-upload/ckfinder "CKFinder integration" guide} to learn how to configure
+ * See the {@glink features/images/image-upload/ckfinder "CKFinder integration" guide} to learn how to configure
  * and use this feature.
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload" guide} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
@@ -43,7 +42,7 @@ export default class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CKFinderEditing, CKFinderUI, CKFinderUploadAdapter ];
+		return [ 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ];
 	}
 }
 

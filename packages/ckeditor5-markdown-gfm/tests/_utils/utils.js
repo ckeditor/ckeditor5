@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
@@ -17,6 +17,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
  * @param {Object} [options] Additional options.
  * @param {Function} [options.setup] A function that receives the data processor instance before its execution.
  * markdown string (which will be used if this parameter is not provided).
+ * @returns {module:engine/view/documentfragment~DocumentFragment}
  */
 export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
@@ -37,6 +38,8 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	const normalized = typeof normalizedMarkdown !== 'undefined' ? normalizedMarkdown : markdown;
 
 	expect( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ).to.equal( normalized );
+
+	return viewFragment;
 }
 
 function cleanHtml( html ) {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module mention/mentioncommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { Command } from 'ckeditor5/src/core';
+import { CKEditorError, toMap } from 'ckeditor5/src/utils';
+
 import { _addMentionAttributes } from './mentionediting';
 
 /**
@@ -30,7 +30,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				name: 'Foo',
  *				title: 'Big Foo'
  *			},
- *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus.getShiftedBy( -1 ), focus )
  *		} );
  *
  *		// It will replace one character before the selection focus with the 'The "Big Foo"' text
@@ -43,7 +43,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				title: 'Big Foo'
  *			},
  *			text: 'The "Big Foo"',
- *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus.getShiftedBy( -1 ), focus )
  *		} );
  *
  * @extends module:core/command~Command
@@ -68,8 +68,8 @@ export default class MentionCommand extends Command {
 	 * @param {String} options.marker The marker character (e.g. `'@'`).
 	 * @param {String} [options.text] The text of the inserted mention. Defaults to the full mention string composed from `marker` and
 	 * `mention` string or `mention.id` if an object is passed.
-	 * @param {String} [options.range] The range to replace. Note that the replaced range might be shorter than the inserted text with the
-	 * mention attribute.
+	 * @param {module:engine/model/range~Range} [options.range] The range to replace.
+	 * Note that the replaced range might be shorter than the inserted text with the mention attribute.
 	 * @fires execute
 	 */
 	execute( options ) {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,8 @@
  * @module table/commands/mergecellcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 import TableWalker from '../tablewalker';
-import { getTableCellsContainingSelection } from '../utils/selection';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
@@ -80,7 +79,8 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		const cellToMerge = this.value;
 		const direction = this.direction;
@@ -122,18 +122,17 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;
 		}
 
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?
 			getHorizontalCell( tableCell, this.direction, tableUtils ) :
-			getVerticalCell( tableCell, this.direction );
+			getVerticalCell( tableCell, this.direction, tableUtils );
 
 		if ( !cellToMerge ) {
 			return;
@@ -155,6 +154,7 @@ export default class MergeCellCommand extends Command {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} direction
+// @param {module:table/tableutils~TableUtils} tableUtils
 // @returns {module:engine/model/node~Node|null}
 function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
@@ -195,15 +195,16 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} direction
+// @param {module:table/tableutils~TableUtils} tableUtils
 // @returns {module:engine/model/node~Node|null}
-function getVerticalCell( tableCell, direction ) {
+function getVerticalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 
 	const rowIndex = table.getChildIndex( tableRow );
 
 	// Don't search for mergeable cell if direction points out of the table.
-	if ( ( direction == 'down' && rowIndex === table.childCount - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
+	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
 		return;
 	}
 

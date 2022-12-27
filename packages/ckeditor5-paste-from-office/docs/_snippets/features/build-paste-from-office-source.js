@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -41,3 +42,4 @@ ClassicEditor.builtinPlugins.push(
 ClassicEditor.defaultConfig.table.contentToolbar.push( 'tableProperties', 'tableCellProperties' );
 
 window.ClassicEditor = ClassicEditor;
+window.ListProperties = ListProperties;

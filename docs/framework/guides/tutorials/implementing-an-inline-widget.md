@@ -1,6 +1,6 @@
 ---
 category: framework-tutorials
-order: 10
+order: 15
 ---
 
 # Implementing an inline widget
@@ -25,11 +25,12 @@ First, install required dependencies:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4 \
 	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-core \
 	@ckeditor/ckeditor5-dev-utils \
@@ -81,15 +82,18 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
+					}
 				]
 			}
 		]
@@ -241,7 +245,7 @@ The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefi
 
 ### Defining the schema
 
-The `<placeholder>` element should be treated as `$text` so it must be defined with `isInline: true`. You want to allow it wherever the `$text` is allowed so you add `allowWhere: '$text'`. Finally, you will also need the `name` attribute.
+The `<placeholder>` element should be treated as an object in `$text` so it must be defined with `inheritAllFrom: '$inlineObject'`. You will also need the `name` attribute.
 
 You will also use this opportunity to import the theme file (`theme/placeholder.css`).
 
@@ -263,14 +267,10 @@ export default class PlaceholderEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'placeholder', {
-			// Allow wherever text is allowed:
-			allowWhere: '$text',
-
-			// The placeholder will act as an inline node:
-			isInline: true,
-
-			// The inline widget is self-contained so it cannot be split by the caret and can be selected:
-			isObject: true,
+			// Behaves like a self-contained inline object (e.g. an inline image)
+			// allowed in places where $text is allowed (e.g. in paragraphs).
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			inheritAllFrom: '$inlineObject',
 
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
@@ -289,8 +289,8 @@ The HTML structure (data output) of the converter will be a `<span>` with a `pla
 <span class="placeholder">{name}</span>
 ```
 
-* **Upcast conversion**. This view-to-model converter will look for `<span>`s with the `placeholder` class, read the `<span>`'s text and create model `<placeholder>` elements with the `name` attribute set accordingly.
-* **Downcast conversion**. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
+* {@link framework/guides/deep-dive/conversion/upcast **Upcast conversion**}. This view-to-model converter will look for `<span>`s with the `placeholder` class, read the `<span>`'s text and create model `<placeholder>` elements with the `name` attribute set accordingly.
+* {@link framework/guides/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -398,16 +398,17 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+                name: value
+			} );
 
-			// ... and insert it into the document.
-			editor.model.insertContent( placeholder );
-
-			// Put the selection on the inserted element.
-			writer.setSelection( placeholder, 'on' );
+			// ... and insert it into the document. Put the selection on the inserted element.
+			editor.model.insertObject( placeholder, null, null, { setSelection: 'on' } );
 		} );
 	}
 
@@ -494,7 +495,7 @@ foo<span class="placeholder">{name}</span>bar
 
 You could say that in the view there is "more" text than in the model. This means that some positions in the view cannot automatically map to positions in the model. Namely &mdash; those are positions inside the `<span>` element.
 
-Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use utility {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} that you can use here like that:
+Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use utility {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} that you can use here like that:
 
 ```js
 // placeholder/placeholderediting.js
@@ -732,11 +733,11 @@ If you open the dropdown in the toolbar, you will see a new list of placeholders
 
 ## Demo
 
-You can see the placeholder widget implementation in action in the editor below. You can also check out the full [source code](#full-source-code) of this tutorial if you want to develop your own inline widgets.
+You can see the placeholder widget implementation in action in the editor below. You can also check out the full [source code](#final-solution) of this tutorial if you want to develop your own inline widgets.
 
 {@snippet framework/tutorials/inline-widget}
 
-## Full source code
+## Final solution
 
 The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
 
@@ -767,16 +768,17 @@ class Placeholder extends Plugin {
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> element with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+				name: value
+			} );
 
-			// ... and insert it into the document.
-			editor.model.insertContent( placeholder );
-
-			// Put the selection on the inserted element.
-			writer.setSelection( placeholder, 'on' );
+			// ... and insert it into the document. Put the selection on the inserted element.
+			editor.model.insertObject( placeholder, null, null, { setSelection: 'on' } );
 		} );
 	}
 
@@ -873,14 +875,10 @@ class PlaceholderEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'placeholder', {
-			// Allow wherever text is allowed:
-			allowWhere: '$text',
-
-			// The placeholder will act as an inline node:
-			isInline: true,
-
-			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
-			isObject: true,
+			// Behaves like a self-contained inline object (e.g. an inline image)
+			// allowed in places where $text is allowed (e.g. in paragraphs).
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			inheritAllFrom: '$inlineObject',
 
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]

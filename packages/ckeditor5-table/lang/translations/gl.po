@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -247,3 +247,15 @@ msgstr "O valor non é válido. Probe «10px» ou «2em» ou simplemente «2»."
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
 msgstr "Selector de cores"
+
+msgctxt "The button label for the table toolbar hiding caption attached to the table."
+msgid "Toggle caption off"
+msgstr "Desactivar os subtítulos"
+
+msgctxt "The button label for the table toolbar showing caption attached to the table."
+msgid "Toggle caption on"
+msgstr "Activar os subtítulos"
+
+msgctxt "The placeholder text for the table caption displayed when the caption is empty."
+msgid "Enter table caption"
+msgstr "Introduza o título da táboa"

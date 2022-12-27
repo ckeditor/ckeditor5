@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -92,6 +92,16 @@ describe( 'ShiftEnter feature', () => {
 		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		sinon.assert.calledOnce( domEvt.preventDefault );
+	} );
+
+	it( 'does not prevent default event action in composing mode', () => {
+		const domEvt = getDomEvent();
+
+		viewDocument.isComposing = true;
+
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+
+		sinon.assert.notCalled( domEvt.preventDefault );
 	} );
 
 	function getDomEvent() {

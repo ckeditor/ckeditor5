@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -20,6 +20,18 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "Bild-Steuerelement"
 
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Text umfließt Bild"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Bild teilt Text"
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr "Text in Zeile"
+
 msgctxt "The label for the Side image option."
 msgid "Side image"
 msgstr "Seitenbild"
@@ -30,15 +42,15 @@ msgstr "Bild in voller Größe"
 
 msgctxt "The label for the Left aligned image option."
 msgid "Left aligned image"
-msgstr "linksbündiges Bild"
+msgstr "Linksbündiges Bild"
 
 msgctxt "The label for the Centered image option."
 msgid "Centered image"
-msgstr "zentriertes Bild"
+msgstr "Zentriertes Bild"
 
 msgctxt "The label for the Right aligned image option."
 msgid "Right aligned image"
-msgstr "rechtsbündiges Bild"
+msgstr "Rechtsbündiges Bild"
 
 msgctxt "The label for the Change image text alternative button."
 msgid "Change image text alternative"
@@ -100,6 +112,10 @@ msgctxt "The input label for the Insert image via URL form for a pre-existing im
 msgid "Update image URL"
 msgstr "Bild-URL aktualisieren"
 
-msgctxt "The content of the tip below the Insert image via URL form."
-msgid "Paste the image source URL."
-msgstr "Quell-URL des Bildes einfügen."
+msgctxt "Text used by screen readers do describe an image when the image has no text alternative."
+msgid "Caption for the image"
+msgstr "Bildunterschrift"
+
+msgctxt "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
+msgid "Caption for image: %0"
+msgstr "Bildunterschrift: %0"

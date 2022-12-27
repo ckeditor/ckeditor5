@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -86,11 +86,11 @@ msgstr "向左合并单元格"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "垂直拆分单元格"
+msgstr "纵向拆分单元格"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "水平分割单元格"
+msgstr "横向拆分单元格"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
@@ -247,3 +247,15 @@ msgstr "无效值。尝试使用“10px”、“2ex”或者只写“2”。"
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
 msgstr "颜色选择器"
+
+msgctxt "The button label for the table toolbar hiding caption attached to the table."
+msgid "Toggle caption off"
+msgstr "关闭表标题"
+
+msgctxt "The button label for the table toolbar showing caption attached to the table."
+msgid "Toggle caption on"
+msgstr "打开表标题"
+
+msgctxt "The placeholder text for the table caption displayed when the caption is empty."
+msgid "Enter table caption"
+msgstr "输入表标题"

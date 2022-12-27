@@ -1,26 +1,31 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "23.1.0",
-  "description": "Miscellaneous utils used by CKEditor 5.",
+  "version": "35.4.0",
+  "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-engine": "^23.1.0",
-    "assertion-error": "^1.1.0",
-    "js-beautify": "^1.11.0"
+    "@ckeditor/ckeditor5-build-classic": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.4.0",
+    "@ckeditor/ckeditor5-core": "^35.4.0",
+    "@ckeditor/ckeditor5-engine": "^35.4.0",
+    "@types/lodash-es": "^4.17.6",
+    "typescript": "^4.8.4"
   },
+  "depcheckIgnore": [
+    "typescript"
+  ],
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=14.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -34,7 +39,14 @@
   },
   "files": [
     "lang",
-    "src",
-    "theme"
-  ]
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "theme",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.release.json",
+    "postversion": "npm run build"
+  }
 }

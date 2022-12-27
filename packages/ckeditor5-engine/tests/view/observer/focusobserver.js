@@ -1,9 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import View from '../../../src/view/view';
 import createViewRoot from '../_utils/createroot';
@@ -12,6 +15,8 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FocusObserver', () => {
 	let view, viewDocument, observer;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View( new StylesProcessor() );
@@ -58,11 +63,24 @@ describe( 'FocusObserver', () => {
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 
-		it( 'should render document after blurring', () => {
+		it( 'should render document after focus (after the next view change block)', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
+			viewDocument.isFocused = false;
+
+			observer.onDomEvent( { type: 'focus', target: document.body } );
+			view.change( () => {} );
+
+			sinon.assert.calledOnce( renderSpy );
+		} );
+
+		it( 'should render document after blurring (after the next view change block)', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			viewDocument.isFocused = true;
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
+			view.change( () => {} );
 
 			sinon.assert.calledOnce( renderSpy );
 		} );
@@ -123,7 +141,7 @@ describe( 'FocusObserver', () => {
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
 
-		it( 'should delay rendering by 50ms', () => {
+		it( 'should trigger fallback rendering after 50ms', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
 			const clock = sinon.useFakeTimers();
@@ -146,6 +164,45 @@ describe( 'FocusObserver', () => {
 			observer.destroy();
 			clock.tick( 50 );
 			sinon.assert.notCalled( renderSpy );
+
+			clock.restore();
+		} );
+	} );
+
+	describe( 'handle _isFocusChanging property of the document', () => {
+		let domMain, viewMain;
+
+		beforeEach( () => {
+			domMain = document.createElement( 'div' );
+
+			viewMain = createViewRoot( viewDocument );
+			view.attachDomRoot( domMain );
+		} );
+
+		it( 'should set _isFocusChanging to true on focus', () => {
+			view.change( writer => {
+				writer.setSelection( viewMain, 0 );
+			} );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument._isFocusChanging ).to.equal( true );
+		} );
+
+		it( 'should set _isFocusChanging to false after 50ms', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			sinon.assert.notCalled( renderSpy );
+			expect( viewDocument._isFocusChanging ).to.equal( true );
+
+			clock.tick( 50 );
+
+			sinon.assert.called( renderSpy );
+			expect( viewDocument._isFocusChanging ).to.equal( false );
 
 			clock.restore();
 		} );
@@ -190,6 +247,7 @@ describe( 'FocusObserver', () => {
 			// async selection change.
 			viewDocument.fire( 'focus' );
 			viewDocument.fire( 'selectionChange' );
+			view.change( () => {} );
 		} );
 
 		it( 'should render without selectionChange event', done => {
@@ -211,6 +269,7 @@ describe( 'FocusObserver', () => {
 			} );
 
 			observer.onDomEvent( { type: 'focus', target: domEditable } );
+			view.change( () => {} );
 		} );
 	} );
 } );

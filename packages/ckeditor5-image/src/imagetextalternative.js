@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,14 @@
  * @module image/imagetextalternative
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageTextAlternativeEditing from './imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeui';
 
 /**
  * The image text alternative plugin.
  *
- * For a detailed overview, check the {@glink features/image#image-styles image styles} documentation.
+ * For a detailed overview, check the {@glink features/images/images-styles image styles} documentation.
  *
  * This is a "glue" plugin which loads the
  *  {@link module:image/imagetextalternative/imagetextalternativeediting~ImageTextAlternativeEditing}

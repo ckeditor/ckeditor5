@@ -1,0 +1,120 @@
+<div id="snippet-manualsave">
+	<p>Change the content of this editor, then save it on the server.</p>
+</div>
+
+<div id="snippet-manualsave-header">
+	<div id="snippet-manualsave-server">
+		<div id="snippet-manualsave-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-manualsave-lag" type="number" value="500" step="100" min="0" max="9000">
+	</div>
+	<div id="snippet-manualsave-container">
+		<span id="snippet-manualsave-spinner"></span>
+		<input id="snippet-manualsave-save" type="submit" value="Save">
+	</div>
+</div>
+
+<p>Server data:</p>
+
+<pre class="highlight language-html" id="snippet-manualsave-console">&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;</pre>
+
+<style>
+	#snippet-manualsave-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		padding: 10px;
+		border-radius: var(--ck-border-radius);
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	#snippet-manualsave-server,
+	#snippet-manualsave-submit {
+		display: flex;
+		align-items: center;
+	}
+
+	#snippet-manualsave-server_label,
+	#snippet-manualsave-status_label {
+		font-weight: bold;
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	#snippet-manual + .ck.ck-editor .ck-editor__editable {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	#snippet-manualsave-lag {
+		padding: 4px;
+	}
+
+	#snippet-manualsave-save {
+		color: #fff;
+		background: hsl( 88, 73%, 39% );
+		opacity: 0.5;
+		padding: 4px 20px;
+		display: inline-block;
+		border: 0;
+		border-radius: 2px;
+		font-weight: bold;
+		outline: none;
+		transition: 300ms ease background;
+		box-shadow: 0 2px 0 rgb(68, 117, 10);
+	}
+
+	#snippet-manualsave-save:hover {
+		background: hsl( 88, 73%, 42% );
+	}
+
+	#snippet-manualsave-save:active,
+	#snippet-manualsave-save:focus {
+		box-shadow: 0 1px 0 rgb(68, 117, 10);
+	}
+
+	#snippet-manualsave-container.active #snippet-manualsave-save {
+		cursor: pointer;
+		opacity: 1;
+	}
+
+	#snippet-manualsave-container.saving #snippet-manualsave-save {
+		background: hsl( 88, 73%, 34% );
+	}
+
+	#snippet-manualsave-console {
+		max-height: 300px;
+		overflow: auto;
+		white-space: normal;
+		background: #2b2c26;
+		transition: background-color 500ms;
+	}
+
+	#snippet-manualsave-console.updated {
+		background: green;
+	}
+
+	#snippet-manualsave-spinner {
+		display: none;
+	}
+
+	#snippet-manualsave-container.saving #snippet-manualsave-spinner {
+		display: inline-block;
+		vertical-align: middle;
+		margin-right: var(--ck-spacing-medium);
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border-top: 3px solid hsl(0, 0%, 70%);
+		border-right: 2px solid transparent;
+		animation: manualsave-spinner 1s linear infinite;
+	}
+
+	@keyframes manualsave-spinner {
+		to { transform: rotate( 360deg ); }
+	}
+</style>

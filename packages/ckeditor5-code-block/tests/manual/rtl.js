@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		language: 'ar',
 		plugins: [ Code, CodeBlock, ArticlePluginSet ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'code', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable' ]

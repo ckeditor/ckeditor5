@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -49,7 +49,7 @@ describe( 'Text transformation feature - integration', () => {
 				writer.insertText( '(c', doc.selection.focus );
 			} );
 
-			editor.execute( 'input', { text: ')' } );
+			editor.execute( 'insertText', { text: ')' } );
 
 			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
 
@@ -70,7 +70,7 @@ describe( 'Text transformation feature - integration', () => {
 				writer.insertText( 'foo bar baz(c', doc.selection.focus );
 			} );
 
-			editor.execute( 'input', { text: ')' } );
+			editor.execute( 'insertText', { text: ')' } );
 
 			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
 

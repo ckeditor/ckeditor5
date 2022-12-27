@@ -5,13 +5,32 @@ menu-title: Horizontal line
 
 # Horizontal line
 
-The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin provides the possibility to insert a horizontal line into the rich-text editor.
+The horizontal line feature allows inserting a horizontal line into the rich-text editor.
+
+Often known as the horizontal rule, it provides a visual way to separate the content. It may indicate a thematic shift (like a change of topic) between paragraphs or parts of the story or just be a simple graphic separator to help organize the content.
+
+<info-box info>
+	The horizontal line feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
-Use the editor below to see the {@link module:horizontal-line/horizontalline~HorizontalLine} plugin in action.
+To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/horizontal-line}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Related features
+
+There are more CKEditor 5 features that can help you organize your document content better:
+* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
+* {@link features/page-break Page break} &ndash; Divide your document into pages.
+* {@link features/title Document title} &ndash; Clearly separate the title from the body.
+* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Installation
 
@@ -36,7 +55,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -58,4 +77,4 @@ editor.execute( 'horizontalLine' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line).

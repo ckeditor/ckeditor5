@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,10 @@
  * @module table/ui/colorinputview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import { View, InputTextView, ButtonView, createDropdown, ColorGridView, FocusCycler, ViewCollection } from 'ckeditor5/src/ui';
+import { icons } from 'ckeditor5/src/core';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+
 import '../../theme/colorinput.css';
 
 /**
@@ -28,14 +26,14 @@ export default class ColorInputView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options The input options.
-	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options.colorDefinitions The colors to be displayed
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions The colors to be displayed
 	 * in the palette inside the input's dropdown.
 	 * @param {Number} options.columns The number of columns in which the colors will be displayed.
+	 * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+	 * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
 	 */
 	constructor( locale, options ) {
 		super( locale );
-
-		const bind = this.bindTemplate;
 
 		/**
 		 * The value of the input.
@@ -47,14 +45,6 @@ export default class ColorInputView extends View {
 		this.set( 'value', '' );
 
 		/**
-		 * The `id` attribute of the input (i.e. to pair with the `<label>` element).
-		 *
-		 * @observable
-		 * @member {String} #id
-		 */
-		this.set( 'id' );
-
-		/**
 		 * Controls whether the input view is in read-only mode.
 		 *
 		 * @observable
@@ -64,23 +54,25 @@ export default class ColorInputView extends View {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * Set to `true` when the field has some error. Usually controlled via
-		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
+		 * An observable flag set to `true` when the input is focused by the user.
+		 * `false` otherwise.
 		 *
+		 * @readonly
 		 * @observable
-		 * @member {Boolean} #hasError
+		 * @member {Boolean} #isFocused
 		 * @default false
 		 */
-		this.set( 'hasError', false );
+		this.set( 'isFocused', false );
 
 		/**
-		 * The `id` of the element describing this field. When the field has
-		 * some error, it helps screen readers read the error text.
+		 * An observable flag set to `true` when the input contains no text.
 		 *
+		 * @readonly
 		 * @observable
-		 * @member {Boolean} #ariaDescribedById
+		 * @member {Boolean} #isEmpty
+		 * @default true
 		 */
-		this.set( 'ariaDescribedById' );
+		this.set( 'isEmpty', true );
 
 		/**
 		 * A cached reference to the options passed to the constructor.
@@ -90,24 +82,47 @@ export default class ColorInputView extends View {
 		this.options = options;
 
 		/**
+		 * Tracks information about the DOM focus in the view.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * A collection of views that can be focused in the view.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
 		 * An instance of the dropdown allowing to select a color from a grid.
 		 *
-		 * @protected
 		 * @member {module:ui/dropdown/dropdown~DropdownView}
 		 */
-		this._dropdownView = this._createDropdownView( locale );
+		this.dropdownView = this._createDropdownView();
 
 		/**
 		 * An instance of the input allowing the user to type a color value.
 		 *
-		 * @protected
 		 * @member {module:ui/inputtext/inputtextview~InputTextView}
 		 */
-		this._inputView = this._createInputTextView( locale );
+		this.inputView = this._createInputTextView();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * The flag that indicates whether the user is still typing.
-		 * If set to true, it means that the text input field ({@link #_inputView}) still has the focus.
+		 * If set to true, it means that the text input field ({@link #inputView}) still has the focus.
 		 * So, we should interrupt the user by replacing the input's value.
 		 *
 		 * @protected
@@ -115,21 +130,37 @@ export default class ColorInputView extends View {
 		 */
 		this._stillTyping = false;
 
+		/**
+		 * Helps cycling over focusable items in the view.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate items forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
+			}
+		} );
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
 					'ck',
-					'ck-input-color',
-					bind.if( 'hasError', 'ck-error' )
-				],
-				id: bind.to( 'id' ),
-				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
+					'ck-input-color'
+				]
 			},
 			children: [
-				this._inputView,
-				this._dropdownView
+				this.dropdownView,
+				this.inputView
 			]
 		} );
 
@@ -137,14 +168,34 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Focuses the input.
+	 * @inheritDoc
 	 */
-	focus() {
-		this._inputView.focus();
+	render() {
+		super.render();
+
+		// Start listening for the keystrokes coming from the dropdown panel view.
+		this.keystrokes.listenTo( this.dropdownView.panelView.element );
 	}
 
 	/**
-	 * Creates and configures the {@link #_dropdownView}.
+	 * Focuses the input.
+	 */
+	focus() {
+		this.inputView.focus();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
+	 * Creates and configures the {@link #dropdownView}.
 	 *
 	 * @private
 	 */
@@ -155,7 +206,7 @@ export default class ColorInputView extends View {
 		const colorGrid = this._createColorGrid( locale );
 		const dropdown = createDropdown( locale );
 		const colorPreview = new View();
-		const removeColorButton = this._createRemoveColorButton( locale );
+		const removeColorButton = this._createRemoveColorButton();
 
 		colorPreview.setTemplate( {
 			tag: 'span',
@@ -187,12 +238,19 @@ export default class ColorInputView extends View {
 		} );
 
 		dropdown.buttonView.children.add( colorPreview );
-		dropdown.buttonView.tooltip = t( 'Color picker' );
+		dropdown.buttonView.label = t( 'Color picker' );
+		dropdown.buttonView.tooltip = true;
 
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		dropdown.panelView.children.add( removeColorButton );
 		dropdown.panelView.children.add( colorGrid );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
+
+		this._focusables.add( removeColorButton );
+		this._focusables.add( colorGrid );
+
+		this.focusTracker.add( removeColorButton.element );
+		this.focusTracker.add( colorGrid.element );
 
 		return dropdown;
 	}
@@ -201,7 +259,7 @@ export default class ColorInputView extends View {
 	 * Creates and configures an instance of {@link module:ui/inputtext/inputtextview~InputTextView}.
 	 *
 	 * @private
-	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #_inputView}.
+	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #inputView}.
 	 */
 	_createInputTextView() {
 		const locale = this.locale;
@@ -214,8 +272,8 @@ export default class ColorInputView extends View {
 		} );
 
 		inputView.value = this.value;
-		inputView.bind( 'isReadOnly' ).to( this );
-		inputView.bind( 'hasError' ).to( this );
+		inputView.bind( 'isReadOnly', 'hasError' ).to( this );
+		this.bind( 'isFocused', 'isEmpty' ).to( inputView );
 
 		inputView.on( 'input', () => {
 			const inputValue = inputView.element.value;
@@ -245,14 +303,16 @@ export default class ColorInputView extends View {
 		const locale = this.locale;
 		const t = locale.t;
 		const removeColorButton = new ButtonView( locale );
+		const defaultColor = this.options.defaultColorValue || '';
+		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
 
 		removeColorButton.class = 'ck-input-color__remove-color';
 		removeColorButton.withText = true;
-		removeColorButton.icon = removeButtonIcon;
-		removeColorButton.label = t( 'Remove color' );
+		removeColorButton.icon = icons.eraser;
+		removeColorButton.label = removeColorButtonLabel;
 		removeColorButton.on( 'execute', () => {
-			this.value = '';
-			this._dropdownView.isOpen = false;
+			this.value = defaultColor;
+			this.dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );
 
@@ -260,19 +320,19 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the color grid inside the {@link #_dropdownView}.
+	 * Creates and configures the color grid inside the {@link #dropdownView}.
 	 *
 	 * @private
 	 */
 	_createColorGrid( locale ) {
-		const colorGrid = new ColorGrid( locale, {
+		const colorGrid = new ColorGridView( locale, {
 			colorDefinitions: this.options.colorDefinitions,
 			columns: this.options.columns
 		} );
 
 		colorGrid.on( 'execute', ( evtData, data ) => {
 			this.value = data.value;
-			this._dropdownView.isOpen = false;
+			this.dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
@@ -281,7 +341,7 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Sets {@link #_inputView}'s value property to the color value or color label,
+	 * Sets {@link #inputView}'s value property to the color value or color label,
 	 * if there is one and the user is not typing.
 	 *
 	 * Handles cases like:
@@ -299,9 +359,9 @@ export default class ColorInputView extends View {
 			const mappedColor = this.options.colorDefinitions.find( def => normalizedInputValue === normalizeColor( def.color ) );
 
 			if ( mappedColor ) {
-				this._inputView.value = mappedColor.label;
+				this.inputView.value = mappedColor.label;
 			} else {
-				this._inputView.value = inputValue || '';
+				this.inputView.value = inputValue || '';
 			}
 		}
 	}

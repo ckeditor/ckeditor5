@@ -1,9 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document, console */
+/* globals setTimeout, document, console, Event */
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ViewRange from '../../../src/view/range';
 import DocumentSelection from '../../../src/view/documentselection';
@@ -11,12 +13,16 @@ import ViewSelection from '../../../src/view/selection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( done => {
 		domDocument = document;
@@ -43,7 +49,10 @@ describe( 'SelectionObserver', () => {
 			domDocument.getSelection().removeAllRanges();
 
 			viewDocument.isFocused = true;
+
 			domMain.focus();
+
+			viewDocument._isFocusChanging = false;
 		} );
 
 		selectionObserver.enable();
@@ -83,7 +92,58 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should add only one listener to one document', done => {
+	it( 'should change document#_isFocusChanging property to false when selection is changed', done => {
+		viewDocument.on( 'selectionChange', () => {
+			expect( viewDocument._isFocusChanging ).to.equal( false );
+
+			done();
+		} );
+
+		viewDocument._isFocusChanging = true;
+
+		changeDomSelection();
+	} );
+
+	it( 'should not fire selectionChange while user is composing', done => {
+		viewDocument.on( 'selectionChange', () => {
+			throw 'selectionChange fired while composing';
+		} );
+
+		viewDocument.isComposing = true;
+		changeDomSelection();
+
+		setTimeout( done, 100 );
+	} );
+
+	it( 'should fire selectionChange while user is composing on Android', done => {
+		testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+		viewDocument.isComposing = true;
+
+		viewDocument.on( 'selectionChange', ( evt, data ) => {
+			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
+
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
+			expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+			const newViewRange = data.newSelection.getFirstRange();
+			const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+			expect( newViewRange.start.parent ).to.equal( viewFoo );
+			expect( newViewRange.start.offset ).to.equal( 2 );
+			expect( newViewRange.end.parent ).to.equal( viewFoo );
+			expect( newViewRange.end.offset ).to.equal( 2 );
+
+			done();
+		} );
+
+		changeDomSelection();
+	} );
+
+	it( 'should add only one #selectionChange listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
 		createViewRoot( viewDocument, 'div', 'additional' );
 		view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
@@ -100,6 +160,7 @@ describe( 'SelectionObserver', () => {
 			throw 'selectionChange fired in ignored elements';
 		} );
 
+		view.getObserver( MutationObserver ).disable();
 		domMain.childNodes[ 1 ].setAttribute( 'data-cke-ignore-events', 'true' );
 
 		changeDomSelection();
@@ -165,15 +226,18 @@ describe( 'SelectionObserver', () => {
 			writer.setSelection( viewFoo, 0 );
 		} );
 
+		let wasInfiniteLoopDetected = false;
+		sinon.stub( selectionObserver, '_reportInfiniteLoop' ).callsFake( () => {
+			wasInfiniteLoopDetected = true;
+		} );
 		const selectionChangeSpy = sinon.spy();
 
-		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
-		sinon.stub( console, 'warn' );
-
+		selectionObserver._clearInfiniteLoop();
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
 		return new Promise( resolve => {
 			viewDocument.on( 'selectionChangeDone', () => {
+				expect( wasInfiniteLoopDetected ).to.be.true;
 				expect( selectionChangeSpy.callCount ).to.equal( 60 );
 
 				resolve();
@@ -184,6 +248,15 @@ describe( 'SelectionObserver', () => {
 				counter--;
 			}
 		} );
+	} );
+
+	it( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
+		expect( () => {
+			selectionObserver._reportInfiniteLoop();
+		} ).to.throw( Error,
+			'Selection change observer detected an infinite rendering loop.\n\n' +
+			'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
+		);
 	} );
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
@@ -351,6 +424,254 @@ describe( 'SelectionObserver', () => {
 
 		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
 		sel.collapse( domText, 3 );
+	} );
+
+	describe( 'Management of view Document#isSelecting', () => {
+		it( 'should not set #isSelecting to true upon the "selectstart" event outside the DOM root', () => {
+			const selectStartChangedSpy = sinon.spy();
+
+			expect( viewDocument.isSelecting ).to.be.false;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'selectstart', selectStartChangedSpy, { priority: 'highest' } );
+
+			// The event was fired somewhere else in DOM.
+			domDocument.dispatchEvent( new Event( 'selectstart' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( selectStartChangedSpy );
+		} );
+
+		it( 'should set #isSelecting to true upon the "selectstart" event', () => {
+			expect( viewDocument.isSelecting ).to.be.false;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'selectstart', () => {
+				expect( viewDocument.isSelecting ).to.be.true;
+			}, { priority: 'highest' } );
+
+			domMain.dispatchEvent( new Event( 'selectstart' ) );
+
+			expect( viewDocument.isSelecting ).to.be.true;
+		} );
+
+		it( 'should set #isSelecting to false upon the "mouseup" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domDocument, 'mouseup', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest', useCapture: true } );
+
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should fire selectionChange event upon the "mouseup" event (if DOM selection differs from view selection', done => {
+			// Disable DOM selectionchange event to make sure that mouseup triggered view event.
+			selectionObserver.listenTo( domDocument, 'selectionchange', evt => {
+				evt.stop();
+			}, { priority: 'highest' } );
+
+			viewDocument.on( 'selectionChange', ( evt, data ) => {
+				expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
+
+				expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+				expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+				expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
+				expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+				const newViewRange = data.newSelection.getFirstRange();
+				const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+				expect( newViewRange.start.parent ).to.equal( viewFoo );
+				expect( newViewRange.start.offset ).to.equal( 2 );
+				expect( newViewRange.end.parent ).to.equal( viewFoo );
+				expect( newViewRange.end.offset ).to.equal( 2 );
+
+				// Make sure that selectionChange event was triggered before the isSelecting flag reset
+				// so that model and view selection could get updated before isSelecting is reset
+				// and renderer updates the DOM selection.
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				done();
+			} );
+
+			viewDocument.isSelecting = true;
+
+			changeDomSelection();
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should not fire selectionChange event upon the "mouseup" event if it was not selecting', done => {
+			// Disable DOM selectionchange event to make sure that mouseup triggered view event.
+			selectionObserver.listenTo( domDocument, 'selectionchange', evt => {
+				evt.stop();
+			}, { priority: 'highest' } );
+
+			viewDocument.on( 'selectionChange', () => {
+				throw 'selectionChange fired';
+			} );
+
+			viewDocument.isSelecting = false;
+
+			changeDomSelection();
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			setTimeout( done, 100 );
+		} );
+
+		it( 'should set #isSelecting to false upon the "mouseup" event only once (editor with multiple roots)', () => {
+			const isSelectingSetSpy = sinon.spy();
+
+			createViewRoot( viewDocument, 'div', 'additional' );
+			view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
+
+			viewDocument.isSelecting = true;
+
+			viewDocument.on( 'set:isSelecting', isSelectingSetSpy );
+
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.calledOnce( isSelectingSetSpy );
+		} );
+
+		it( 'should not set #isSelecting to false upon the "keydown" event outside the DOM root', () => {
+			const keydownSpy = sinon.spy();
+
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keydown', () => keydownSpy, { priority: 'highest' } );
+
+			domMain.dispatchEvent( new Event( 'keydown' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
+		it( 'should set #isSelecting to false upon the "keydown" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keydown', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest', useCapture: true } );
+
+			domMain.dispatchEvent( new Event( 'keydown' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should not set #isSelecting to false upon the "keyup" event outside the DOM root', () => {
+			const keyupSpy = sinon.spy();
+
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keyup', () => keyupSpy, { priority: 'highest' } );
+
+			domMain.dispatchEvent( new Event( 'keyup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( keyupSpy );
+		} );
+
+		it( 'should set #isSelecting to false upon the "keyup" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keyup', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest', useCapture: true } );
+
+			domMain.dispatchEvent( new Event( 'keyup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		describe( 'isSelecting restoring after a timeout', () => {
+			let clock;
+
+			beforeEach( () => {
+				clock = testUtils.sinon.useFakeTimers();
+
+				// We need to recreate SelectionObserver, so it will use mocked setTimeout.
+				selectionObserver.disable();
+				selectionObserver.destroy();
+				view._observers.delete( SelectionObserver );
+				view.addObserver( SelectionObserver );
+			} );
+
+			afterEach( () => {
+				clock.restore();
+			} );
+
+			it( 'should set #isSelecting to false after 5000ms since the selectstart event', done => {
+				expect( viewDocument.isSelecting ).to.be.false;
+
+				domMain.dispatchEvent( new Event( 'selectstart' ) );
+
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.true;
+				}, 4500 );
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.false;
+					done();
+				}, 5500 );
+
+				clock.tick( 6000 );
+			} );
+
+			it( 'should postpone setting #isSelecting to false after 5000ms if "selectionchange" fired in the meantime', done => {
+				expect( viewDocument.isSelecting ).to.be.false;
+
+				domMain.dispatchEvent( new Event( 'selectstart' ) );
+
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.true;
+
+					// This will postpone the timeout by another 5000ms.
+					domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+				}, 2500 );
+
+				setTimeout( () => {
+					// It would normally be false by now if not for the selectionchange event that was fired.
+					expect( viewDocument.isSelecting ).to.be.true;
+				}, 5500 );
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.false;
+					done();
+				}, 8000 );
+
+				clock.tick( 8000 );
+			} );
+
+			it( 'should cancel the 5000s timeout if the observer is destroyed', () => {
+				const spy = sinon.spy( selectionObserver._documentIsSelectingInactivityTimeoutDebounced, 'cancel' );
+
+				selectionObserver.destroy();
+
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
 	} );
 
 	function changeDomSelection() {

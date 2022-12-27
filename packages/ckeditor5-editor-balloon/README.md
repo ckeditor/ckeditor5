@@ -2,14 +2,15 @@ CKEditor 5 balloon editor implementation
 =========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-balloon.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-editor-balloon)
 
 The balloon editor implementation (Medium-like editor) for CKEditor 5.
 
-This package contains the [`BallonEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BallonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package contains the [`BalloonEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BalloonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the balloon editor. This editor implementation is also available in the [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html).
+This package contains the source version of the balloon editor. This kind of editor implementation is also available as a ready-to-use [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/predefined-builds.html) in the CKEditor 5 documentation.
 
 ## Documentation
 

@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module link/utils
  */
+
+/* global window */
 
 import { upperFirst } from 'lodash-es';
 
@@ -35,7 +37,7 @@ export function isLinkElement( node ) {
 }
 
 /**
- * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
@@ -129,18 +131,18 @@ export function normalizeDecorators( decorators ) {
 }
 
 /**
- * Returns `true` if the specified `element` is an image and it can be linked (the element allows having the `linkHref` attribute).
+ * Returns `true` if the specified `element` can be linked (the element allows the `linkHref` attribute).
  *
  * @params {module:engine/model/element~Element|null} element
  * @params {module:engine/model/schema~Schema} schema
  * @returns {Boolean}
  */
-export function isImageAllowed( element, schema ) {
+export function isLinkableElement( element, schema ) {
 	if ( !element ) {
 		return false;
 	}
 
-	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+	return schema.checkAttribute( element.name, 'linkHref' );
 }
 
 /**
@@ -154,20 +156,39 @@ export function isEmail( value ) {
 }
 
 /**
- * Adds protocol prefix to the specified `link` when:
+ * Adds the protocol prefix to the specified `link` when:
  *
- * * it doesn't contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
- * config value provided
- * * or the link is an email address
+ * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * configuration value provided,
+ * * or the link is an email address.
  *
  *
  * @params {String} link
  * @params {String} defaultProtocol
- * @returns {Boolean}
+ * @returns {String}
  */
 export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
 	const protocol = isEmail( link ) ? 'mailto:' : defaultProtocol;
-	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( link );
+	const isProtocolNeeded = !!protocol && !linkHasProtocol( link );
 
 	return link && isProtocolNeeded ? protocol + link : link;
+}
+
+/**
+ * Checks if protocol is already included in the link.
+ *
+ * @param {String} link
+ * @returns {Boolean}
+ */
+export function linkHasProtocol( link ) {
+	return PROTOCOL_REG_EXP.test( link );
+}
+
+/**
+ * Opens the link in a new browser tab.
+ *
+ * @param {String} link
+ */
+export function openLink( link ) {
+	window.open( link, '_blank', 'noopener' );
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module table/utils/ui/table-properties
  */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { ButtonView, Model } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
+import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+
 import ColorInputView from '../../ui/colorinputview';
-import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 
 const isEmpty = val => val === '';
 
@@ -113,9 +113,10 @@ export function lineWidthFieldValidator( value ) {
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
  * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
+ * @param {String} defaultStyle The default border.
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
-export function getBorderStyleDefinitions( view ) {
+export function getBorderStyleDefinitions( view, defaultStyle ) {
 	const itemDefinitions = new Collection();
 	const styleLabels = getBorderStyleLabels( view.t );
 
@@ -123,14 +124,20 @@ export function getBorderStyleDefinitions( view ) {
 		const definition = {
 			type: 'button',
 			model: new Model( {
-				_borderStyleValue: style === 'none' ? '' : style,
+				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				withText: true
 			} )
 		};
 
 		if ( style === 'none' ) {
-			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => !value );
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
+				if ( defaultStyle === 'none' ) {
+					return !value;
+				}
+
+				return value === style;
+			} );
 		} else {
 			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
 				return value === style;
@@ -159,7 +166,8 @@ export function getBorderStyleDefinitions( view ) {
  * @param {String} propertyName
  * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
-export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameToValue } ) {
+export function fillToolbar( options ) {
+	const { view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
@@ -169,12 +177,23 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameT
 			tooltip: labels[ name ]
 		} );
 
+		// If specified the `nameToValue()` callback, map the value based on the option's name.
+		const buttonValue = nameToValue ? nameToValue( name ) : name;
+
 		button.bind( 'isOn' ).to( view, propertyName, value => {
-			return value === nameToValue( name );
+			// `value` comes from `view[ propertyName ]`.
+			let valueToCompare = value;
+
+			// If it's empty, and the `defaultValue` is specified, use it instead.
+			if ( value === '' && defaultValue ) {
+				valueToCompare = defaultValue;
+			}
+
+			return buttonValue === valueToCompare;
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = nameToValue( name );
+			view[ propertyName ] = buttonValue;
 		} );
 
 		toolbar.items.add( button );
@@ -347,30 +366,35 @@ export const defaultColors = [
  * displayed in the input's dropdown.
  * @param {Number} options.columns The configuration of the number of columns the color palette consists of
  * in the input's dropdown.
+ * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+ * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
  * @returns {Function}
  */
 export function getLabeledColorInputCreator( options ) {
 	return ( labeledFieldView, viewUid, statusUid ) => {
-		const inputView = new ColorInputView( labeledFieldView.locale, {
+		const colorInputView = new ColorInputView( labeledFieldView.locale, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
-			columns: options.columns
+			columns: options.columns,
+			defaultColorValue: options.defaultColorValue
 		} );
 
-		inputView.set( {
+		colorInputView.inputView.set( {
 			id: viewUid,
 			ariaDescribedById: statusUid
 		} );
 
-		inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
-		inputView.bind( 'errorText' ).to( labeledFieldView );
+		colorInputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+		colorInputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
-		inputView.on( 'input', () => {
+		colorInputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
 			labeledFieldView.errorText = null;
 		} );
 
-		return inputView;
+		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( colorInputView );
+
+		return colorInputView;
 	};
 }
 

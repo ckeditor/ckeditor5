@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,9 +29,10 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 	 * Creates a new `TableCellBorderStyleCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'borderStyle' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'tableCellBorderStyle', defaultValue );
 	}
 
 	/**
@@ -42,6 +43,12 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 }

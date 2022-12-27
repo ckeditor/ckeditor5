@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module media-embed/mediaregistry
  */
 
+import { IconView, Template } from 'ckeditor5/src/ui';
+import { logWarning, toArray } from 'ckeditor5/src/utils';
+
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
-import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 
@@ -89,8 +88,9 @@ export default class MediaRegistry {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {String} url The URL to be translated into a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderMediaPreview]
-	 * @param {String} [options.renderForEditingView]
+	 * @param {String} [options.elementName]
+	 * @param {Boolean} [options.renderMediaPreview]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getMediaViewElement( writer, url, options ) {
@@ -113,11 +113,7 @@ export default class MediaRegistry {
 
 		for ( const definition of this.providerDefinitions ) {
 			const previewRenderer = definition.html;
-			let pattern = definition.url;
-
-			if ( !Array.isArray( pattern ) ) {
-				pattern = [ pattern ];
-			}
+			const pattern = toArray( definition.url );
 
 			for ( const subPattern of pattern ) {
 				const match = this._getUrlMatches( url, subPattern );
@@ -189,7 +185,7 @@ class Media {
 		 * @see module:utils/locale~Locale#t
 		 * @method
 		 */
-		this._t = locale.t;
+		this._locale = locale;
 
 		/**
 		 * The output of the `RegExp.match` which validated the {@link #url} of this media.
@@ -211,8 +207,9 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderMediaPreview]
-	 * @param {String} [options.renderForEditingView]
+	 * @param {String} [options.elementName]
+	 * @param {Boolean} [options.renderMediaPreview]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getViewElement( writer, options ) {
@@ -230,15 +227,15 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createRawElement( 'div', attributes, function( domElement ) {
-				domElement.innerHTML = mediaHtml;
+			viewElement = writer.createRawElement( 'div', attributes, ( domElement, domConverter ) => {
+				domConverter.setContentOf( domElement, mediaHtml );
 			} );
 		} else {
 			if ( this.url ) {
 				attributes.url = this.url;
 			}
 
-			viewElement = writer.createEmptyElement( 'oembed', attributes );
+			viewElement = writer.createEmptyElement( options.elementName, attributes );
 		}
 
 		writer.setCustomProperty( 'media-content', true, viewElement );
@@ -251,7 +248,7 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderForEditingView]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {String}
 	 */
 	_getPreviewHtml( options ) {
@@ -274,10 +271,9 @@ class Media {
 	 * @returns {String}
 	 */
 	_getPlaceholderHtml() {
-		const tooltip = new TooltipView();
 		const icon = new IconView();
+		const t = this._locale.t;
 
-		tooltip.text = this._t( 'Open media in new tab' );
 		icon.content = mediaPlaceholderIcon;
 		icon.viewBox = mediaPlaceholderIconViewBox;
 
@@ -300,7 +296,8 @@ class Media {
 						class: 'ck-media__placeholder__url',
 						target: '_blank',
 						rel: 'noopener noreferrer',
-						href: this.url
+						href: this.url,
+						'data-cke-tooltip-text': t( 'Open media in new tab' )
 					},
 					children: [
 						{
@@ -309,8 +306,7 @@ class Media {
 								class: 'ck-media__placeholder__url__text'
 							},
 							children: [ this.url ]
-						},
-						tooltip
+						}
 					]
 				}
 			]

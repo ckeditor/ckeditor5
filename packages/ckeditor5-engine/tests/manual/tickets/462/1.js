@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,7 +26,7 @@ ClassicEditor
 			const domSelection = document.getSelection();
 			const selectionExists = domSelection && domSelection.anchorNode;
 
-			console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u200b/g, '@' ) );
+			console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u2060/g, '@' ) );
 			console.log( 'selection.hasAttribute( italic ):', editor.model.document.selection.hasAttribute( 'italic' ) );
 			console.log( 'selection.hasAttribute( bold ):', editor.model.document.selection.hasAttribute( 'bold' ) );
 			console.log( 'selection anchor\'s parentNode:', selectionExists ? domSelection.anchorNode.parentNode : 'no DOM selection' );

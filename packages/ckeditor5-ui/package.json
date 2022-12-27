@@ -1,38 +1,45 @@
 {
   "name": "@ckeditor/ckeditor5-ui",
-  "version": "23.1.0",
+  "version": "35.4.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-utils": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^35.4.0",
+    "@ckeditor/ckeditor5-core": "^35.4.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
-    "@ckeditor/ckeditor5-block-quote": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-balloon": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-engine": "^23.1.0",
-    "@ckeditor/ckeditor5-enter": "^23.1.0",
-    "@ckeditor/ckeditor5-essentials": "^23.1.0",
-    "@ckeditor/ckeditor5-heading": "^23.1.0",
-    "@ckeditor/ckeditor5-image": "^23.1.0",
-    "@ckeditor/ckeditor5-link": "^23.1.0",
-    "@ckeditor/ckeditor5-list": "^23.1.0",
-    "@ckeditor/ckeditor5-mention": "^23.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
-    "@ckeditor/ckeditor5-horizontal-line": "^23.1.0",
-    "@ckeditor/ckeditor5-table": "^23.1.0",
-    "@ckeditor/ckeditor5-typing": "^23.1.0"
+    "@ckeditor/ckeditor5-basic-styles": "^35.4.0",
+    "@ckeditor/ckeditor5-block-quote": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^35.4.0",
+    "@ckeditor/ckeditor5-editor-classic": "^35.4.0",
+    "@ckeditor/ckeditor5-engine": "^35.4.0",
+    "@ckeditor/ckeditor5-enter": "^35.4.0",
+    "@ckeditor/ckeditor5-essentials": "^35.4.0",
+    "@ckeditor/ckeditor5-font": "^35.4.0",
+    "@ckeditor/ckeditor5-find-and-replace": "^35.4.0",
+    "@ckeditor/ckeditor5-heading": "^35.4.0",
+    "@ckeditor/ckeditor5-image": "^35.4.0",
+    "@ckeditor/ckeditor5-link": "^35.4.0",
+    "@ckeditor/ckeditor5-list": "^35.4.0",
+    "@ckeditor/ckeditor5-mention": "^35.4.0",
+    "@ckeditor/ckeditor5-paragraph": "^35.4.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^35.4.0",
+    "@ckeditor/ckeditor5-table": "^35.4.0",
+    "@ckeditor/ckeditor5-typing": "^35.4.0",
+    "typescript": "^4.8.4",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=14.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -46,7 +53,14 @@
   },
   "files": [
     "lang",
-    "src",
-    "theme"
-  ]
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "theme",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.release.json",
+    "postversion": "npm run build"
+  }
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageInsert from '../../src/imageinsert';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import ImageInsertViaUrl from '../../src/imageinsertviaurl';
+import AutoImage from '../../src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageInsert, CKFinder ],
+		plugins: [ ArticlePluginSet, AutoImage, LinkImage, ImageInsertViaUrl ],
 		toolbar: [
 			'heading',
 			'|',
@@ -22,24 +23,14 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'imageInsert',
+			'insertImage',
 			'insertTable',
 			'mediaEmbed',
 			'undo',
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
-			insert: {
-				integrations: [
-					'insertImageViaUrl',
-					'openCKFinder'
-				]
-			}
-		},
-		ckfinder: {
-			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {

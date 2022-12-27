@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,7 @@
  * @module image/image/ui/utils
  */
 
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import { getSelectedImageWidget } from '../utils';
+import { BalloonPanelView } from 'ckeditor5/src/ui';
 
 /**
  * A helper utility that positions the
@@ -20,7 +19,7 @@ import { getSelectedImageWidget } from '../utils';
 export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
-	if ( getSelectedImageWidget( editor.editing.view.document.selection ) ) {
+	if ( editor.plugins.get( 'ImageUtils' ).getClosestSelectedImageWidget( editor.editing.view.document.selection ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );
@@ -38,16 +37,18 @@ export function repositionContextualBalloon( editor ) {
 export function getBalloonPositionData( editor ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return {
-		target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
+		target: editingView.domConverter.mapViewToDom( imageUtils.getClosestSelectedImageWidget( editingView.document.selection ) ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
 			defaultPositions.northArrowSouthEast,
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast
+			defaultPositions.southArrowNorthEast,
+			defaultPositions.viewportStickyNorth
 		]
 	};
 }

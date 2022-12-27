@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@ import UnderlineEditing from '../../src/underline/underlineediting';
 import UnderlineUI from '../../src/underline/underlineui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -80,7 +81,8 @@ describe( 'Underline', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.u,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );

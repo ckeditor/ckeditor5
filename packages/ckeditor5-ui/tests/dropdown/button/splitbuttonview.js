@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,6 +43,8 @@ describe( 'SplitButtonView', () => {
 			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
 			expect( view.arrowView.element.attributes[ 'aria-haspopup' ].value ).to.equal( 'true' );
 			expect( view.arrowView.icon ).to.be.not.undefined;
+			expect( view.arrowView.tooltip ).to.equal( view.tooltip );
+			expect( view.arrowView.label ).to.equal( view.label );
 		} );
 
 		it( 'creates element from template', () => {
@@ -76,6 +78,22 @@ describe( 'SplitButtonView', () => {
 
 			view.arrowView.isOn = false;
 			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+		} );
+
+		it( 'binds arrowView#tooltip to view', () => {
+			expect( view.arrowView.tooltip ).to.be.false;
+
+			view.tooltip = true;
+
+			expect( view.arrowView.tooltip ).to.equal( true );
+		} );
+
+		it( 'binds arrowView#label to view', () => {
+			expect( view.arrowView.label ).to.be.undefined;
+
+			view.label = 'foo';
+
+			expect( view.arrowView.label ).to.equal( 'foo' );
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
@@ -150,6 +168,24 @@ describe( 'SplitButtonView', () => {
 				sinon.assert.notCalled( keyEvtData.preventDefault );
 				sinon.assert.notCalled( keyEvtData.stopPropagation );
 			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 
@@ -229,6 +265,14 @@ describe( 'SplitButtonView', () => {
 			view.withText = true;
 
 			expect( view.actionView.withText ).to.equal( true );
+		} );
+
+		it( 'binds actionView#tooltip to view', () => {
+			expect( view.actionView.tooltip ).to.be.false;
+
+			view.tooltip = true;
+
+			expect( view.actionView.tooltip ).to.equal( true );
 		} );
 
 		it( 'binds actionView#tooltipPosition to view', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -97,6 +97,15 @@ const attachTopRight = ( targetRect, elementRect ) => ( {
 
 const attachNone = () => null;
 
+const attachWithoutArrow = () => ( {
+	top: 0,
+	left: 0,
+	name: 'arowless',
+	config: {
+		withArrow: false
+	}
+} );
+
 const allPositions = [
 	attachLeftBottom,
 	attachLeftTop,
@@ -131,6 +140,19 @@ describe( 'getOptimalPosition()', () => {
 		if ( limiter ) {
 			limiter.remove();
 		}
+	} );
+
+	it( 'should pass position config to the Position object', () => {
+		setElementTargetPlayground();
+
+		const position = getOptimalPosition( {
+			element,
+			target: () => target,
+			positions: [ attachWithoutArrow ]
+		} );
+
+		expect( position.config ).to.be.an( 'object' );
+		expect( position.config.withArrow ).to.be.false;
 	} );
 
 	it( 'should work when the target is a Function', () => {
@@ -688,8 +710,9 @@ describe( 'getOptimalPosition()', () => {
 
 function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
+	const { top, left, name } = position;
 
-	expect( position ).to.deep.equal( expected );
+	expect( { top, left, name } ).to.deep.equal( expected );
 }
 
 function assertPositionName( options, expected ) {

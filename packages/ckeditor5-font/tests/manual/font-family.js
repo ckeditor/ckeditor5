@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -38,6 +38,7 @@ async function reloadEditor( options = {} ) {
 	}
 
 	const config = {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, FontFamily ],
 		toolbar: [
 			'heading', '|', 'fontFamily', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

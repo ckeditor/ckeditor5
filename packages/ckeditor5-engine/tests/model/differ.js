@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,10 +42,10 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
-				insert( new Element( 'image' ), position );
+				insert( new Element( 'imageBlock' ), position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position }
 				] );
 			} );
 		} );
@@ -55,12 +55,12 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				insert(
-					new Element( 'image', { src: 'foo.jpg' }, new Element( 'caption', null, new Text( 'bar' ) ) ),
+					new Element( 'imageBlock', { src: 'foo.jpg' }, new Element( 'caption', null, new Text( 'bar' ) ) ),
 					position
 				);
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, attributes: new Map( [ [ 'src', 'foo.jpg' ] ] ) }
 				] );
 			} );
 		} );
@@ -69,10 +69,10 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
-				insert( [ new Element( 'image' ), new Element( 'paragraph' ) ], position );
+				insert( [ new Element( 'imageBlock' ), new Element( 'paragraph' ) ], position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position },
+					{ type: 'insert', name: 'imageBlock', length: 1, position },
 					{ type: 'insert', name: 'paragraph', length: 1, position: position.getShiftedBy( 1 ) }
 				] );
 			} );
@@ -132,7 +132,7 @@ describe( 'Differ', () => {
 
 		// Combined.
 		it( 'node in a new element', () => {
-			const image = new Element( 'image' );
+			const image = new Element( 'imageBlock' );
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
@@ -144,7 +144,7 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position }
 				] );
 			} );
 		} );
@@ -180,7 +180,7 @@ describe( 'Differ', () => {
 				// so there is also a diff for text.
 				expectChanges( [
 					{ type: 'attribute', range: diffRange, attributeKey: 'align', attributeOldValue: null, attributeNewValue: 'center' },
-					{ type: 'insert', name: '$text', length: 3, position }
+					{ type: 'insert', name: '$text', length: 3, position, attributes: new Map( [ [ 'bold', true ] ] ) }
 				] );
 			} );
 		} );
@@ -295,6 +295,23 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'element with attributes', () => {
+			const position = new Position( root, [ 0 ] );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+
+			model.change( () => {
+				attribute( range, 'align', null, 'center' );
+			} );
+
+			model.change( () => {
+				remove( position, 1 );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position, attributes: new Map( [ [ 'align', 'center' ] ] ) }
+				] );
+			} );
+		} );
+
 		it( 'a character', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
@@ -315,6 +332,23 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'remove', name: '$text', length: 2, position }
+				] );
+			} );
+		} );
+
+		it( 'characters with attributes', () => {
+			const position = new Position( root, [ 0, 0 ] );
+			const range = new Range( Position._createAt( root.getChild( 0 ), 0 ), Position._createAt( root.getChild( 0 ), 2 ) );
+
+			model.change( () => {
+				attribute( range, 'bold', null, true );
+			} );
+
+			model.change( () => {
+				remove( position, 2 );
+
+				expectChanges( [
+					{ type: 'remove', name: '$text', length: 2, position, attributes: new Map( [ [ 'bold', true ] ] ) }
 				] );
 			} );
 		} );
@@ -1407,7 +1441,9 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				const position = new Position( root, [ 0, 3 ] );
-				const operation = new SplitOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
+				const insertionPosition = SplitOperation.getInsertionPosition( position );
+
+				const operation = new SplitOperation( position, 3, insertionPosition, new Position( doc.graveyard, [ 0 ] ), doc.version );
 
 				model.applyOperation( operation );
 
@@ -1495,7 +1531,27 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'add marker', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
+
+			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+
+			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
+		} );
+
+		it( 'add marker not affecting data', () => {
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 
@@ -1515,7 +1571,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'remove marker', () => {
-			differ.bufferMarkerChange( 'name', range, null, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1535,7 +1591,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'change marker\'s range', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1556,32 +1612,18 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'add marker not affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, false );
-
-			expect( differ.hasDataChanges() ).to.be.false;
-		} );
-
-		it( 'add marker affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
-
-			expect( differ.hasDataChanges() ).to.be.true;
-		} );
-
 		it( 'add marker and remove it', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
-			differ.bufferMarkerChange( 'name', range, null, true );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
 			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
-
-			expect( differ.hasDataChanges() ).to.be.false;
 		} );
 
-		it( 'add marker and change it', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
+		it( 'add marker and change range', () => {
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 
@@ -1600,16 +1642,78 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'change marker to not affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
-			differ.bufferMarkerChange( 'name', range, rangeB, false );
+		it( 'add marker and change affectsData', () => {
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
 
-			expect( differ.hasDataChanges() ).to.be.false;
+			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+
+			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
+		} );
+
+		describe( 'hasDataChanges()', () => {
+			it( 'should return `true` when the range changes and the marker affects data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `false` when the range does not change', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `false` when multiple changes result in not changed range', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `true` when marker stops affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: false } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `true` when marker starts affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `false` when multiple marker changes do not change affecting data (which is false)', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: rangeB, affectsData: false } );
+
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `true` if at least one marker changed', () => {
+				differ.bufferMarkerChange( 'nameA', { range, affectsData: true }, { range, affectsData: true } );
+				differ.bufferMarkerChange( 'nameB', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'nameC', { range, affectsData: true }, { range, affectsData: true } );
+
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
 		} );
 
 		it( 'change marker and remove it', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
-			differ.bufferMarkerChange( 'name', rangeB, null, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1631,8 +1735,8 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'remove marker and add it at same range', () => {
-			differ.bufferMarkerChange( 'name', range, null, true );
-			differ.bufferMarkerChange( 'name', null, range, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1654,7 +1758,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'change marker to the same range', () => {
-			differ.bufferMarkerChange( 'name', range, range, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1694,16 +1798,16 @@ describe( 'Differ', () => {
 		// See https://github.com/ckeditor/ckeditor5/issues/733.
 		it( 'proper filtering of changes in removed elements', () => {
 			// Before fix there was a buggy scenario described in ckeditor5#733.
-			// There was this structure: `<paragraph>foo[</paragraph><image /><blockQuote><p>te]xt</p></blockQuote>`
+			// There was this structure: `<paragraph>foo[</paragraph><imageBlock /><blockQuote><p>te]xt</p></blockQuote>`
 			// On delete of above selection `image` and `paragraph` inside `blockQuote` are removed (it gets merged).
 			// However, since `image` was removed first, when checking if `paragraph` is in a removed element,
-			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<image>`.
+			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<imageBlock>`.
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( [
 				new Element( 'paragraph', null, new Text( 'foo' ) ),
-				new Element( 'image' ),
+				new Element( 'imageBlock' ),
 				new Element( 'blockQuote', null, [
 					new Element( 'paragraph', null, new Text( 'text' ) )
 				] )
@@ -1721,7 +1825,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 1 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 1 ] ) },
 					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1, 0 ] ) }
 				] );
 			} );
@@ -1732,7 +1836,7 @@ describe( 'Differ', () => {
 		// inserted children should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChild( new Element( 'image' ) );
+			root._appendChild( new Element( 'imageBlock' ) );
 
 			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
 
@@ -1745,7 +1849,7 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), new Position( root, [ 0, 0, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ) },
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
@@ -1756,7 +1860,7 @@ describe( 'Differ', () => {
 		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements #2', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChild( new Element( 'image' ) );
+			root._appendChild( new Element( 'imageBlock' ) );
 
 			model.change( () => {
 				// Insert `div` after `image`.
@@ -1765,7 +1869,7 @@ describe( 'Differ', () => {
 				move( new Position( root, [ 0 ] ), 1, new Position( root, [ 1, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ) },
 					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
@@ -1789,11 +1893,11 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( 'refreshItem()', () => {
+	describe( '#_refreshItem()', () => {
 		it( 'should mark given element to be removed and added again', () => {
 			const p = root.getChild( 0 );
 
-			differ.refreshItem( p );
+			differ._refreshItem( p );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
@@ -1806,7 +1910,7 @@ describe( 'Differ', () => {
 			const range = model.createRangeIn( p );
 			const textProxy = [ ...range.getItems() ][ 0 ];
 
-			differ.refreshItem( textProxy );
+			differ._refreshItem( textProxy );
 
 			expectChanges( [
 				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
@@ -1819,7 +1923,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
 
-				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+				differ._refreshItem( root.getChild( 2 ).getChild( 0 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
@@ -1844,7 +1948,7 @@ describe( 'Differ', () => {
 
 			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
 
-			differ.refreshItem( root.getChild( 1 ) );
+			differ._refreshItem( root.getChild( 1 ) );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
@@ -1991,7 +2095,8 @@ describe( 'Differ', () => {
 
 	function split( position ) {
 		const howMany = position.parent.maxOffset - position.offset;
-		const operation = new SplitOperation( position, howMany, null, doc.version );
+		const insertionPosition = SplitOperation.getInsertionPosition( position );
+		const operation = new SplitOperation( position, howMany, insertionPosition, null, doc.version );
 
 		model.applyOperation( operation );
 	}
@@ -2038,6 +2143,8 @@ describe( 'Differ', () => {
 				if ( Object.prototype.hasOwnProperty.call( expected[ i ], key ) ) {
 					if ( key == 'position' || key == 'range' ) {
 						expect( changes[ i ][ key ].isEqual( expected[ i ][ key ] ), `item ${ i }, key "${ key }"` ).to.be.true;
+					} else if ( key == 'attributes' ) {
+						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.deep.equal( expected[ i ][ key ] );
 					} else {
 						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.equal( expected[ i ][ key ] );
 					}

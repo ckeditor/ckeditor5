@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import MentionEditing, { _toMentionAttribute } from '../src/mentionediting';
@@ -237,6 +237,20 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8370
+		it( 'should pass down only relevant attributes', () => {
+			editor.setData( '<p>foo<span class="mention" data-mention="@John">John</span></p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+			const attributeValue = textNode.getAttribute( 'mention' );
+
+			expect( Object.keys( attributeValue ) ).to.have.members( [
+				'id',
+				'uid',
+				'_text'
+			] );
 		} );
 	} );
 
@@ -634,7 +648,7 @@ describe( 'MentionEditing', () => {
 	function createTestEditor( mentionConfig ) {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, MentionEditing, Clipboard ],
+				plugins: [ Paragraph, MentionEditing, ClipboardPipeline ],
 				mention: mentionConfig
 			} );
 	}

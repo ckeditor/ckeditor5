@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersarrows
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * A plugin that provides special characters for the "Arrows" category.
@@ -25,11 +25,22 @@ export default class SpecialCharactersArrows extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'SpecialCharactersArrows';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+			{ title: t( 'leftwards simple arrow' ), character: '←' },
+			{ title: t( 'rightwards simple arrow' ), character: '→' },
+			{ title: t( 'upwards simple arrow' ), character: '↑' },
+			{ title: t( 'downwards simple arrow' ), character: '↓' },
 			{ title: t( 'leftwards double arrow' ), character: '⇐' },
 			{ title: t( 'rightwards double arrow' ), character: '⇒' },
 			{ title: t( 'upwards double arrow' ), character: '⇑' },

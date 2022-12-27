@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,12 +18,25 @@ ClassicEditor
 				{ model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
 			]
 		},
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label && item.buttonView.label.startsWith( 'Heading' )
+			),
+			text: 'Click to change heading level.',
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

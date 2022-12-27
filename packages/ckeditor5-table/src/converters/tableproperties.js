@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,21 +11,38 @@
  * Conversion helper for upcasting attributes using normalized styles.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelAttribute The attribute to set.
+ * @param {String} options.styleName The style name to convert.
+ * @param {String} options.viewElement The view element name that should be converted.
+ * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
+ * @param {Boolean} [options.reduceBoxSides=false]
+ * @param {Function} [options.shouldUpcast] The function which returns `true` if style should be upcasted from this element.
  */
-export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName ) {
+export function upcastStyleToAttribute( conversion, options ) {
+	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false, shouldUpcast = () => true } = options;
+
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
+			name: viewElement,
 			styles: {
 				[ styleName ]: /[\s\S]+/
 			}
 		},
 		model: {
-			name: modelElement,
 			key: modelAttribute,
-			value: viewElement => viewElement.getNormalizedStyle( styleName )
+			value: viewElement => {
+				if ( !shouldUpcast( viewElement ) ) {
+					return;
+				}
+
+				const normalized = viewElement.getNormalizedStyle( styleName );
+				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
+
+				if ( defaultValue !== value ) {
+					return value;
+				}
+			}
 		}
 	} );
 }
@@ -35,16 +52,35 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
+ * @param {Object} modelAttributes
+ * @param {Object} defaultBorder The default border values.
+ * @param {String} defaultBorder.color The default `borderColor` value.
+ * @param {String} defaultBorder.style The default `borderStyle` value.
+ * @param {String} defaultBorder.width The default `borderWidth` value.
  */
-export function upcastBorderStyles( conversion, viewElementName ) {
+export function upcastBorderStyles( conversion, viewElementName, modelAttributes, defaultBorder ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
-		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
-		// TODO: this might needs to be fixed in styles normalizer.
+		// If the element was not converted by element-to-element converter,
+		// we should not try to convert the style. See #8393.
+		if ( !data.modelRange ) {
+			return;
+		}
+
+		// Check the most detailed properties. These will be always set directly or
+		// when using the "group" properties like: `border-(top|right|bottom|left)` or `border`.
 		const stylesToConsume = [
-			'border-top',
-			'border-right',
-			'border-bottom',
-			'border-left'
+			'border-top-width',
+			'border-top-color',
+			'border-top-style',
+			'border-bottom-width',
+			'border-bottom-color',
+			'border-bottom-style',
+			'border-right-width',
+			'border-right-color',
+			'border-right-style',
+			'border-left-width',
+			'border-left-color',
+			'border-left-style'
 		].filter( styleName => data.viewItem.hasStyle( styleName ) );
 
 		if ( !stylesToConsume.length ) {
@@ -60,19 +96,33 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 			return;
 		}
 
-		// This can happen when the upcasted table is nested table. As to why it happens, it remains a mystery.
-		// Take a look at https://github.com/ckeditor/ckeditor5/issues/6177.
-		if ( !data.modelRange ) {
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-		}
-
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
-		conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
+		const normalizedBorder = {
+			style: data.viewItem.getNormalizedStyle( 'border-style' ),
+			color: data.viewItem.getNormalizedStyle( 'border-color' ),
+			width: data.viewItem.getNormalizedStyle( 'border-width' )
+		};
+
+		const reducedBorder = {
+			style: reduceBoxSidesValue( normalizedBorder.style ),
+			color: reduceBoxSidesValue( normalizedBorder.color ),
+			width: reduceBoxSidesValue( normalizedBorder.width )
+		};
+
+		if ( reducedBorder.style !== defaultBorder.style ) {
+			conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
+		}
+
+		if ( reducedBorder.color !== defaultBorder.color ) {
+			conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
+		}
+
+		if ( reducedBorder.width !== defaultBorder.width ) {
+			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
+		}
 	} ) );
 }
 
@@ -80,11 +130,12 @@ export function upcastBorderStyles( conversion, viewElementName ) {
  * Conversion helper for downcasting an attribute to a style.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelElement
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastAttributeToStyle( conversion, modelElement, modelAttribute, styleName ) {
+export function downcastAttributeToStyle( conversion, { modelElement, modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelElement,
@@ -103,10 +154,11 @@ export function downcastAttributeToStyle( conversion, modelElement, modelAttribu
  * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastTableAttribute( conversion, modelAttribute, styleName ) {
+export function downcastTableAttribute( conversion, { modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
@@ -123,4 +175,17 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 			writer.removeStyle( styleName, table );
 		}
 	} ) );
+}
+
+// Reduces the full top, right, bottom, left object to a single string if all sides are equal.
+function reduceBoxSidesValue( style ) {
+	if ( !style ) {
+		return;
+	}
+
+	const commonValue = [ 'top', 'right', 'bottom', 'left' ]
+		.map( side => style[ side ] )
+		.reduce( ( result, side ) => result == side ? result : null );
+
+	return commonValue || style;
 }

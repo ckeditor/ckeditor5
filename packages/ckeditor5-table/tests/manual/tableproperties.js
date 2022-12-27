@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,6 +21,7 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

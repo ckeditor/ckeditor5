@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,9 +13,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import { modelTable } from '../../_utils/utils';
-import { getTableCellsContainingSelection } from '../../../src/utils/selection';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon';
 
 describe( 'table utils', () => {
@@ -68,18 +66,21 @@ describe( 'table utils', () => {
 						'</tableRow></table>' );
 					repositionContextualBalloon( editor, 'cell' );
 
-					const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
+					const tableUtils = editor.plugins.get( 'TableUtils' );
+
+					const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 					const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 					sinon.assert.calledWithExactly( spy, {
-						target: editingView.domConverter.viewToDom( viewCell ),
+						target: editingView.domConverter.mapViewToDom( viewCell ),
 						positions: [
 							defaultPositions.northArrowSouth,
 							defaultPositions.northArrowSouthWest,
 							defaultPositions.northArrowSouthEast,
 							defaultPositions.southArrowNorth,
 							defaultPositions.southArrowNorthWest,
-							defaultPositions.southArrowNorthEast
+							defaultPositions.southArrowNorthEast,
+							defaultPositions.viewportStickyNorth
 						]
 					} );
 				} );
@@ -120,7 +121,7 @@ describe( 'table utils', () => {
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 					sinon.assert.calledWithExactly( spy, {
-						target: editingView.domConverter.viewToDom( viewTable ),
+						target: editingView.domConverter.mapViewToDom( viewTable ),
 						positions: [
 							defaultPositions.northArrowSouth,
 							defaultPositions.northArrowSouthWest,
@@ -128,7 +129,7 @@ describe( 'table utils', () => {
 							defaultPositions.southArrowNorth,
 							defaultPositions.southArrowNorthWest,
 							defaultPositions.southArrowNorthEast,
-							centeredBalloonPositionForLongWidgets
+							defaultPositions.viewportStickyNorth
 						]
 					} );
 				} );
@@ -160,7 +161,7 @@ describe( 'table utils', () => {
 					for ( let col = 0; col < 3; col++ ) {
 						const modelCell = modelRoot.getNodeByPath( [ 0, row, col ] );
 						const viewCell = editor.editing.mapper.toViewElement( modelCell );
-						const cellDomElement = editingView.domConverter.viewToDom( viewCell );
+						const cellDomElement = editingView.domConverter.mapViewToDom( viewCell );
 
 						mockBoundingBox( cellDomElement, {
 							top: 100 + row * 10,
@@ -173,20 +174,22 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'returns the position data', () => {
+				const tableUtils = editor.plugins.get( 'TableUtils' );
 				const defaultPositions = BalloonPanelView.defaultPositions;
 				const data = getBalloonCellPositionData( editor );
-				const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
+				const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 				expect( data ).to.deep.equal( {
-					target: editingView.domConverter.viewToDom( viewCell ),
+					target: editingView.domConverter.mapViewToDom( viewCell ),
 					positions: [
 						defaultPositions.northArrowSouth,
 						defaultPositions.northArrowSouthWest,
 						defaultPositions.northArrowSouthEast,
 						defaultPositions.southArrowNorth,
 						defaultPositions.southArrowNorthWest,
-						defaultPositions.southArrowNorthEast
+						defaultPositions.southArrowNorthEast,
+						defaultPositions.viewportStickyNorth
 					]
 				} );
 			} );

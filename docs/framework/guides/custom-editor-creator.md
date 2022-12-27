@@ -17,10 +17,8 @@ The `*Editor` class is the main class of each editor type. It initializes the wh
 ```js
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The multi-root editor implementation. It provides inline editables and a single toolbar.
@@ -34,7 +32,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
-class MultirootEditor extends Editor {
+class MultirootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Creates an instance of the multi-root editor.
 	 *
@@ -48,7 +46,16 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			// Create initial data object containing data from all roots.
+			const initialData = {};
+
+			for ( const rootName of Object.keys( sourceElements ) ) {
+				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+			}
+
+			this.config.set( 'initialData', initialData );
+		}
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
@@ -99,24 +106,13 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = {};
-
-						// Create initial data object containing data from all roots.
-						for ( const rootName of Object.keys( sourceElements ) ) {
-							initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
-						}
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
 }
-
-mix( MultirootEditor, DataApiMixin );
 ```
 
 ## EditorUI class
@@ -124,9 +120,7 @@ mix( MultirootEditor, DataApiMixin );
 The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
@@ -151,14 +145,6 @@ class MultirootEditorUI extends EditorUI {
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
 		this.view = view;
-
-		/**
-		 * A normalized `config.toolbar` object.
-		 *
-		 * @type {Object}
-		 * @private
-		 */
-		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
@@ -189,7 +175,7 @@ class MultirootEditorUI extends EditorUI {
 		// If the focus tracker loses focus, stop tracking the last focused editable element.
 		// Wherever the focus is restored, it will no longer be in the context of that editable
 		// because the focus "came from the outside", as opposed to the focus moving from one element
-		// to another withing the editor UI.
+		// to another within the editor UI.
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( !isFocused ) {
 				lastFocusedEditableElement = null;
@@ -203,11 +189,6 @@ class MultirootEditorUI extends EditorUI {
 
 			// Register each editable UI view in the editor.
 			this.setEditableElement( editable.name, editableElement );
-
-			// Let the global focus tracker know that the editable UI element is focusable and
-			// belongs to the editor. From now on, the focus tracker will sustain the editor focus
-			// as long as the editable is focused (e.g. the user is typing).
-			this.focusTracker.add( editableElement );
 
 			// Let the editable UI element respond to the changes in the global editor focus
 			// tracker. It has been added to the same tracker a few lines above but, in reality, there are
@@ -254,6 +235,8 @@ class MultirootEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
+		super.destroy();
+
 		const view = this.view;
 		const editingView = this.editor.editing.view;
 
@@ -262,8 +245,6 @@ class MultirootEditorUI extends EditorUI {
 		}
 
 		view.destroy();
-
-		super.destroy();
 	}
 
 	/**
@@ -276,14 +257,10 @@ class MultirootEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
-		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar
-		} );
+		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
+		this.addToolbar( view.toolbar );
 	}
 
 	/**
@@ -307,7 +284,8 @@ class MultirootEditorUI extends EditorUI {
 					view: editingView,
 					element: editingRoot,
 					text: placeholderText,
-					isDirectHost: false
+					isDirectHost: false,
+					keepOnFocus: true
 				} );
 			}
 		}
@@ -450,11 +428,10 @@ MultirootEditor
 	}, {
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
 			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote',
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
-			styles: [ 'full', 'alignLeft', 'alignRight' ]
+			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText' ],
 		},
 		table: {
 			contentToolbar: [

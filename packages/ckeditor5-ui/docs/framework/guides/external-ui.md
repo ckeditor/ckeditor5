@@ -18,12 +18,11 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 ```js
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 // Interfaces to extend the basic Editor API.
@@ -69,9 +68,6 @@ export default class BootstrapEditor extends Editor {
 
 		// Remember the element the editor is created with.
 		this.sourceElement = element;
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -128,7 +124,7 @@ Although the editor is ready to use, it is just a bare editable area &mdash; whi
 With the Bootstrap framework loaded in the web page, you can define the actual UI of the editor in HTML:
 
 ```html
-<!-- The outermost cotainer of the editor. -->
+<!-- The outermost container of the editor. -->
 <div class="ck-editor">
 	<!-- The toolbar of the editor. -->
 	<div class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
@@ -273,6 +269,10 @@ class BootstrapEditorUI extends EditorUI {
 		const view = this.view;
 		const editingView = editor.editing.view;
 
+		// Make sure the EditorUIView is rendered. This will, for instance, create a place for UI elements
+		// like floating panels detached from the main editor UI in DOM.
+		this._view.render();
+
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
 		const editingRoot = editingView.document.getRoot();
@@ -309,14 +309,14 @@ class BootstrapEditorUI extends EditorUI {
 	}
 
 	destroy() {
+		super.destroy();
+
 		// Restore the original editor#element.
 		this._elementReplacer.restore();
 
 		// Destroy the view.
 		this._view.editable.destroy();
 		this._view.destroy();
-
-		super.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
@@ -334,7 +334,7 @@ class BootstrapEditorUI extends EditorUI {
 Almost every feature in the editor defines some command, e.g. {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
 
 ```js
-editor.exectute( 'undo' );
+editor.execute( 'undo' );
 ```
 
 But they also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor and can be followed in simple event listeners:
@@ -501,4 +501,4 @@ BootstrapEditor
 	} );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
+Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

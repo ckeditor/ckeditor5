@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -130,6 +130,22 @@ describe( 'model test utils', () => {
 			expect( args[ 0 ] ).to.equal( data );
 		} );
 
+		it( 'should use model#enqueueChange method if the batchType option was provided', () => {
+			const changeSpy = sinon.spy( model, 'enqueueChange' );
+			const batchType = { isUndoable: true };
+			setData( model, 'text', { batchType } );
+
+			sinon.assert.calledTwice( changeSpy );
+			sinon.assert.calledWith( changeSpy, batchType );
+		} );
+
+		it( 'should use model#change method if no batchType option was provided', () => {
+			const changeSpy = sinon.spy( model, 'change' );
+			setData( model, 'text', {} );
+
+			sinon.assert.calledOnce( changeSpy );
+		} );
+
 		it( 'should insert text', () => {
 			testUtils( 'this is test text', '[]this is test text' );
 		} );
@@ -193,8 +209,7 @@ describe( 'model test utils', () => {
 		it( 'should work in a special root', () => {
 			const model = new Model();
 
-			model.schema.register( 'textOnly' );
-			model.schema.extend( '$text', { allowIn: 'textOnly' } );
+			model.schema.register( 'textOnly', { allowChildren: '$text' } );
 			model.document.createRoot( 'textOnly', 'textOnly' );
 
 			setData( model, 'a[b]c', { rootName: 'textOnly' } );
@@ -559,8 +574,7 @@ describe( 'model test utils', () => {
 
 		it( 'converts data in the specified context', () => {
 			const model = new Model();
-			model.schema.register( 'foo' );
-			model.schema.extend( '$text', { allowIn: 'foo' } );
+			model.schema.register( 'foo', { allowChildren: '$text' } );
 
 			expect( () => {
 				parse( 'text', model.schema, { context: [ 'foo' ] } );

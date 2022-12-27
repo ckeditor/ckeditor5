@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,25 @@
  * @module font/fontsize/fontsizeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { CKEditorError } from 'ckeditor5/src/utils';
+import { isLength, isPercentage } from 'ckeditor5/src/engine';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+// Mapping of `<font size="..">` styling to CSS's `font-size` values.
+const styleFontSize = [
+	'x-small', // Size "0" equal to "1".
+	'x-small',
+	'small',
+	'medium',
+	'large',
+	'x-large',
+	'xx-large',
+	'xxx-large'
+];
 
 /**
  * The font size editing feature.
@@ -77,6 +90,7 @@ export default class FontSizeEditing extends Plugin {
 		// Set-up the two-way conversion.
 		if ( supportAllValues ) {
 			this._prepareAnyValueConverters( definition );
+			this._prepareCompatibilityConverter();
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -96,7 +110,9 @@ export default class FontSizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
-		const presets = definition.model.values.filter( value => !String( value ).match( /[\d.]+[\w%]+/ ) );
+		const presets = definition.model.values.filter( value => {
+			return !isLength( String( value ) ) && !isPercentage( String( value ) );
+		} );
 
 		if ( presets.length ) {
 			/**
@@ -125,13 +141,56 @@ export default class FontSizeEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_SIZE,
 				value: viewElement => viewElement.getStyle( 'font-size' )
 			},
 			view: {
-				name: 'span'
+				name: 'span',
+				styles: {
+					'font-size': /.*/
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Adds support for legacy `<font size="..">` formatting.
+	 *
+	 * @private
+	 */
+	_prepareCompatibilityConverter() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					// Documentation mentions sizes from 1 to 7. To handle old content we support all values
+					// up to 999 but clamp it to the valid range. Why 999? It should cover accidental values
+					// similar to percentage, e.g. 100%, 200% which could be the usual mistake for font size.
+					'size': /^[+-]?\d{1,3}$/
+				}
+			},
+			model: {
+				key: FONT_SIZE,
+				value: viewElement => {
+					const value = viewElement.getAttribute( 'size' );
+					const isRelative = value[ 0 ] === '-' || value[ 0 ] === '+';
+
+					let size = parseInt( value, 10 );
+
+					if ( isRelative ) {
+						// Add relative size (which can be negative) to the default size = 3.
+						size = 3 + size;
+					}
+
+					const maxSize = styleFontSize.length - 1;
+					const clampedSize = Math.min( Math.max( size, 0 ), maxSize );
+
+					return styleFontSize[ clampedSize ];
+				}
 			}
 		} );
 	}

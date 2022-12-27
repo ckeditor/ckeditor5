@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -599,7 +599,15 @@ describe( 'Position', () => {
 			expect( positionB.isTouching( positionA ) ).to.be.true;
 		} );
 
-		it( 'should return false if there are whole nodes between positions', () => {
+		it( 'should return false if there are whole nodes between positions - same level', () => {
+			const positionA = new Position( root, [ 0 ] );
+			const positionB = new Position( root, [ 2 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if there are whole nodes between positions - different levels', () => {
 			const positionA = new Position( root, [ 2 ] );
 			const positionB = new Position( root, [ 1, 0, 3 ] );
 
@@ -862,35 +870,50 @@ describe( 'Position', () => {
 
 		describe( 'by SplitOperation', () => {
 			it( 'transformed position is at the split position', () => {
-				const op = new SplitOperation( new Position( root, [ 3, 2 ] ), 3, null, 1 );
+				const splitPosition = new Position( root, [ 3, 2 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
 			} );
 
 			it( 'transformed position is after the split position', () => {
-				const op = new SplitOperation( new Position( root, [ 3, 1 ] ), 3, null, 1 );
+				const splitPosition = new Position( root, [ 3, 1 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 4, 1 ] );
 			} );
 
 			it( 'transformed position is before the split position', () => {
-				const op = new SplitOperation( new Position( root, [ 3, 3 ] ), 3, null, 1 );
+				const splitPosition = new Position( root, [ 3, 3 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
 			} );
 
 			it( 'transformed position is after the split element', () => {
-				const op = new SplitOperation( new Position( root, [ 3, 1, 5 ] ), 3, null, 1 );
+				const splitPosition = new Position( root, [ 3, 1, 5 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 3 ] );
 			} );
 
 			it( 'transformed position is before the split element', () => {
-				const op = new SplitOperation( new Position( root, [ 3, 3, 5 ] ), 3, null, 1 );
+				const splitPosition = new Position( root, [ 3, 3, 5 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
@@ -899,7 +922,10 @@ describe( 'Position', () => {
 			it( 'transformed position is in graveyard and split position uses graveyard element', () => {
 				pos = new Position( doc.graveyard, [ 1 ] );
 
-				const op = new SplitOperation( new Position( root, [ 3, 2 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const splitPosition = new Position( root, [ 3, 2 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const op = new SplitOperation( splitPosition, 3, insertionPosition, new Position( doc.graveyard, [ 0 ] ), 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 0 ] );

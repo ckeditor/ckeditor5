@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -253,12 +253,12 @@ describe( 'UpcastDispatcher', () => {
 
 			model.schema.register( 'div', { allowIn: '$root' } );
 			model.schema.register( 'p', { allowIn: 'div' } );
-			model.schema.register( 'image', { allowIn: '$root' } );
+			model.schema.register( 'imageBlock', { allowIn: '$root' } );
 
 			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
 				const writer = conversionApi.writer;
 
-				const modelElement = writer.createElement( 'image' );
+				const modelElement = writer.createElement( 'imageBlock' );
 				const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
 				writer.insert( modelElement, splitResult.position );
 
@@ -288,7 +288,37 @@ describe( 'UpcastDispatcher', () => {
 
 			// After splits `div` and `p` are empty so they should be removed.
 			expect( result.childCount ).to.equal( 1 );
-			expect( result.getChild( 0 ).name ).to.equal( 'image' );
+			expect( result.getChild( 0 ).name ).to.equal( 'imageBlock' );
+		} );
+
+		it( 'should not remove empty element that was created as a result of split (if marked as to keep)', () => {
+			const viewElement = new ViewElement( viewDocument, 'li', { id: 'foo' }, [
+				new ViewElement( viewDocument, 'li', { id: 'bar' } )
+			] );
+
+			model.schema.register( 'li', { allowIn: '$root', allowAttributes: 'id' } );
+
+			dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
+				const writer = conversionApi.writer;
+
+				const modelElement = writer.createElement( 'li', { id: data.viewItem.getAttribute( 'id' ) } );
+
+				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+					return;
+				}
+
+				conversionApi.convertChildren( data.viewItem, modelElement );
+				conversionApi.updateConversionResult( modelElement, data );
+				conversionApi.keepEmptyElement( modelElement );
+			} );
+
+			const result = model.change( writer => dispatcher.convert( viewElement, writer ) );
+
+			expect( result.childCount ).to.equal( 2 );
+			expect( result.getChild( 0 ).name ).to.equal( 'li' );
+			expect( result.getChild( 0 ).getAttribute( 'id' ) ).to.equal( 'foo' );
+			expect( result.getChild( 1 ).name ).to.equal( 'li' );
+			expect( result.getChild( 1 ).getAttribute( 'id' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should extract temporary markers elements from converter element and create static markers list', () => {
@@ -710,7 +740,7 @@ describe( 'UpcastDispatcher', () => {
 			it( 'should return all parts of the split element', () => {
 				model.schema.register( 'paragraph', { allowIn: '$root' } );
 				model.schema.register( 'text', { allowIn: 'paragraph' } );
-				model.schema.register( 'image', { allowIn: '$root' } );
+				model.schema.register( 'imageBlock', { allowIn: '$root' } );
 
 				dispatcher.on( 'text', ( evt, data, conversionApi ) => {
 					const modelText = conversionApi.writer.createText( data.viewItem.data );
@@ -724,8 +754,8 @@ describe( 'UpcastDispatcher', () => {
 					evt.stop();
 				}, { priority: 'high' } );
 
-				dispatcher.on( 'element:image', ( evt, data, conversionApi ) => {
-					const modelElement = conversionApi.writer.createElement( 'image' );
+				dispatcher.on( 'element:imageBlock', ( evt, data, conversionApi ) => {
+					const modelElement = conversionApi.writer.createElement( 'imageBlock' );
 
 					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
 
@@ -764,9 +794,9 @@ describe( 'UpcastDispatcher', () => {
 
 				const viewElement = new ViewElement( viewDocument, 'p', null, [
 					new ViewText( viewDocument, 'foo' ),
-					new ViewElement( viewDocument, 'image' ),
+					new ViewElement( viewDocument, 'imageBlock' ),
 					new ViewText( viewDocument, 'bar' ),
-					new ViewElement( viewDocument, 'image' ),
+					new ViewElement( viewDocument, 'imageBlock' ),
 					new ViewText( viewDocument, 'xyz' )
 				] );
 

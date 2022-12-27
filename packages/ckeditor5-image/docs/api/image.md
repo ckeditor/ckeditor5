@@ -10,11 +10,11 @@ This package implements the image feature for CKEditor 5. The feature is introdu
 
 ## Demo
 
-Check out the demos in the {@link features/image Image feature} guide.
+Check out the demos in the {@link features/images-overview image feature guide}.
 
 ## Documentation
 
-See the {@link features/image Image feature} guide and the documentation of the following plugins:
+See the {@link features/images-overview image feature guide} and the documentation of the following plugins:
 
 * {@link module:image/image~Image}
 * {@link module:image/imagecaption~ImageCaption}
@@ -22,6 +22,7 @@ See the {@link features/image Image feature} guide and the documentation of the 
 * {@link module:image/imagetextalternative~ImageTextAlternative}
 * {@link module:image/imagetoolbar~ImageToolbar}
 * {@link module:image/imageupload~ImageUpload}
+* {@link module:image/autoimage~AutoImage}
 
 ## Installation
 
@@ -31,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-image
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
 
 ## External links
 

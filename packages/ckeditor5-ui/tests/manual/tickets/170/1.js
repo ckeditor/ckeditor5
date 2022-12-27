@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,6 +15,7 @@ document.querySelector( '.container-outer' ).scrollTop = 450;
 // Init editor with balloon attached to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-attach' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
@@ -40,6 +41,7 @@ ClassicEditor
 // Init editor with balloon sticked to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-stick' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )

@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 10
+modified_at: 2022-09-29
 ---
 
 # Development environment
@@ -18,14 +19,14 @@ The main package's GitHub repository also [hosts all other CKEditor5 sub-package
 You can find all the official packages listed in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the [older Development environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
+	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 12.0.0+
+* [Node.js](https://nodejs.org/en/) 14.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
@@ -81,6 +82,19 @@ To help test localized editors, the task accepts two optional configurations: `-
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
+## Building DLLs
+
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link installation/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+
+```
+yarn run dll:build
+```
+
+This task accepts the following arguments:
+
+* `--verbose` &ndash; Displays the full output of the scripts, including the Webpack output. *Errors are displayed even if this argument is not used.*
+* `--dev` &ndash; Enables `development` mode in Webpack and disables the code minimization which makes it easier to read the output.
+
 ## Generating documentation
 
 To build the documentation, you need to run the `docs` task:
@@ -105,6 +119,15 @@ This task accepts the following arguments:
 
 	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
+* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allowa navigating over the partially built documentation.
+* `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
+
+	```
+	--guides=image         // matches roughly "*image*"
+	--guides="features/*"  // matches roughly "*features/*"
+	--guides=features/image
+	```
+
 * `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
 * `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
 * `--verbose` &ndash; Prints out more information.
@@ -119,6 +142,98 @@ After building documentation, you can quickly start an HTTP server to serve them
 yarn run docs:serve
 ```
 
+### Verifying documentation
+
+To verify that all pages in our documentation can be opened without any errors, you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
+
+To check pages in the documentation, build it (`yarn run docs`), serve it (`yarn run docs:serve`), and then run the crawler:
+
+```
+yarn run docs:verify
+```
+
+<info-box>
+	By default, the crawler scans `http://fake.ckeditor.com:8080`, so you need to adjust your hosts file first.
+</info-box>
+
+The crawler collects and opens all links from the documentation, except the API and assets.
+
+The crawler accepts the following arguments:
+
+* `--url` (alias `-u`) &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
+* `--depth` (alias `-d`) &ndash; A number that defines how many nested page levels should be examined. Infinity by default.
+* `--exclude` (alias `-e`) &ndash; A string with URL exclusion &ndash; links that match the excluded part are skipped. You can define multiple exclusions by providing multiple `--exclude` (or `-e`) arguments. Not specifying a value removes default exclusions, if any. Nothing is excluded by default, but the `docs:verify` script has some predefined ones.
+* `--concurrency` (alias `-c`) &ndash; Number of concurrent pages (browser tabs) to be used during the scan. By default all links are opened one by one, sequentially (concurrency is 1).
+* `--quit` (alias `-q`) &ndash; A boolean argument that specifies, whether the scan should be terminated as soon as the first error is found. Disabled by default, so all found links are scanned regardless of whether they have errors or not.
+
+For example, to check the documentation without the default exclusions (the API and assets links), using only 2 concurrent pages and terminate the scan as soon as first error is found, run this command:
+
+```
+yarn run docs:verify -e -c 2 -q
+```
+
+#### Defining exclusions for web crawler
+
+The crawler supports exclusions provided as text patterns, which are then searched for in the error messages as substrings. This pattern is just a plain text, not a regular expression. When a pattern (substring) is found, such an error is ignored - it is not listed after the finished scan and it does not mark the entire scan as failed. Only non-ignored errors are logged at the end of the scan.
+
+The pattern for ignoring an error must be defined in `<meta>` tag on a page, where an error occurs. This `<meta>` tag must have `x-cke-crawler-ignore-patterns` name and `content` value provided as JSON object, where:
+
+* Each key is the error type, that can be detected by the crawler.
+* Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for given error type.
+
+The following error types are supported: `uncaught-exception`, `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
+
+* `uncaught-exception` &ndash; As the name suggests, these are uncaught exceptions from the page.
+* `request-failure` &ndash; This error occurs, when the request has not been sent (e.g. it was blocked by the browser) or has not received any response (e.g. due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered as successful ones from HTTP standpoint, so such requests will not be logged as request failures, but as response failures.
+* `response-failure` &ndash; Each HTTP response with status code equal or greater than 400 is treated as failed one.
+* `console-error` &ndash; All `console.error()` calls are treated as an error.
+* `navigation-error` &ndash; The navigation error may happen, when:
+	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
+	* target URL is invalid,
+	* the timeout is exceeded during navigation to a page, so the `load` event is not emitted (e.g. due to an infinite loop in the JavaScript code).
+* `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
+
+| Error&nbsp;type      | Example              |
+|----------------------|----------------------|
+| `uncaught-exception` | `"uncaught-exception": "ckeditor-duplicated-modules"`<br> This pattern ignores only the `ckeditor-duplicated-modules` exception. |
+| `request-failure`    | `"request-failure": "missing-file.jpg"`<br> All requests containing the `missing-file.jpg` in the URL are ignored. |
+| `response-failure`   | `"response-failure": "HTTP response status code: 401"`<br> All requests requiring authorization are ignored. |
+| `console-error`      | `"console-error": "Example error message"`<br> All console errors containing "Example error message" substring are ignored. |
+| `navigation-error`   | `"navigation-error": "Navigation timeout of 15000 ms exceeded"`<br> Links, which are not completely loaded, are ignored. |
+| `page-crash`         | `"page-crash": "Error: Page crashed!"`<br> This general text pattern ignores all page crashes. |
+
+These patterns are simply added as keys and values in a JSON object to the `<meta>` tag on a page, where they should be active:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "page-crash": "Error: Page crashed!",
+    "uncaught-exception": "ckeditor-duplicated-modules",
+    "console-error": "Example error message"
+}'>
+```
+
+Please note that the pattern (regardless of the type of error) does not have to be a string, but can also be defined as an array of strings (patterns) to ignore many different errors:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": [ "Error 1", "Error 2", "Error 3" ]
+}'>
+```
+
+To ignore all errors, use the special wildcard value `*`:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": "*"
+}'>
+```
+
+In addition to the possibility of defining exclusions in the `<meta>` tag, it is also possible to specify that the link cannot be visited by the crawler by adding a `data-cke-crawler-skip` attribute:
+
+```html
+<a href="path/to/page" data-cke-crawler-skip>No entry for crawler, sorry</a>
+```
+
 ## Generating content styles
 
 It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
@@ -129,7 +244,7 @@ yarn docs:content-styles
 
 The stylesheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
+To learn more, refer to the {@link installation/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 
@@ -153,6 +268,5 @@ The script reduces the icon size up to 70%, depending on the software used to cr
 
 **Note**: You may still need to tweak the source code of the SVG files manually after using the script:
 
-* The icons should have the `viewBox` attribute (instead of `width` and `height`). The `removeDimensions` SVGO plugin will not remove `width` and `height` if there is no `viewBox` attribute so make sure it is present.
-* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source.
+* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source and running `clean-up-svg-icons` again usually does that.
 * Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.

@@ -1,17 +1,16 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import { modelTable } from '../_utils/utils';
 import TableEditing from '../../src/tableediting';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -19,7 +18,7 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return ClassicTestEditor
 			.create( '', {
-				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageBlockEditing, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -36,7 +35,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		assertEqualMarkup( getModelData( model, { withoutSelection: true } ), data );
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
 	}
 
 	it( 'should convert table figure', () => {
@@ -70,9 +69,36 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should not convert empty figure', () => {
-		'<figure class="table"></figure>';
+		editor.setData( '<figure class="table"></figure>' );
 
 		expectModel( '<paragraph></paragraph>' );
+	} );
+
+	it( 'should not convert if table was not converted', () => {
+		// Test a case when a conversion of a table inside a figure is not returning anything.
+		// Either because of a failed conversion or if the table was already consumed.
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'highest' } );
+
+			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ).to.be.true;
+			}, { priority: 'low' } );
+		} );
+
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
+
+		expectModel( '<paragraph>xyz</paragraph>' );
+	} );
+
+	it( 'should consume the figure element before the table conversion starts', () => {
+		editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+			expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'table' } ) ).to.be.false;
+		}, { priority: 'low' } );
+
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
@@ -197,6 +223,28 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	it( 'should create valid table model from table with empty cells', () => {
+		model.schema.register( 'block', {
+			allowWhere: '$block',
+			allowContentOf: '$root'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+		editor.setData(
+			'<block>' +
+				'<table>' +
+					'<tr>' +
+						'<td></td>' +
+					'</tr>' +
+				'</table>' +
+			'</block>'
+		);
+
+		expectModel(
+			'<block><table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table></block>'
+		);
+	} );
+
 	it( 'should skip empty table rows', () => {
 		editor.setData(
 			'<table>' +
@@ -289,14 +337,15 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
-	it( 'should strip table in table', () => {
+	it( 'should not strip table in table', () => {
 		editor.setData(
 			'<table>' +
 				'<tr>' +
+					'<td>foo</td>' +
 					'<td>' +
 						'<table>' +
 							'<tr>' +
-								'<td>tableception</td>' +
+								'<td>bar</td>' +
 							'</tr>' +
 						'</table>' +
 					'</td>' +
@@ -308,7 +357,52 @@ describe( 'upcastTable()', () => {
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
-						'<paragraph>tableception</paragraph>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>bar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should strip table in table if nested tables are forbidden', () => {
+		model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+				return false;
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<tr>' +
+					'<td>foo</td>' +
+					'<td>' +
+						'<table>' +
+							'<tr>' +
+								'<td>bar</td>' +
+							'</tr>' +
+						'</table>' +
+					'</td>' +
+				'</tr>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>bar</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
 			'</table>'
@@ -495,15 +589,18 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '<image src="sample.png"></image>' ]
+				[ '<imageBlock src="sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -522,8 +619,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(

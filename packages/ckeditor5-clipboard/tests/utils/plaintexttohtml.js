@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,6 +28,10 @@ describe( 'plainTextToHtml()', () => {
 
 	it( 'turns combination of different amount of line breaks to paragraphs', () => {
 		expect( plainTextToHtml( 'a\n\nb\nc\n\n\n\nd\ne' ) ).to.equal( '<p>a</p><p>b<br>c</p><p></p><p>d<br>e</p>' );
+	} );
+
+	it( 'turns tabs into four spaces', () => {
+		expect( plainTextToHtml( '\tx\t' ) ).to.equal( '&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;&nbsp;' );
 	} );
 
 	it( 'preserves trailing spaces', () => {

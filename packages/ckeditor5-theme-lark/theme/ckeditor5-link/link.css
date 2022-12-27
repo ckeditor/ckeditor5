@@ -1,11 +1,16 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* Class added to span element surrounding currently selected link. */
 .ck .ck-link_selected {
 	background: var(--ck-color-link-selected-background);
+
+	/* Give linked inline images some outline to let the user know they are also part of the link. */
+	& span.image-inline {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-link-selected-background);
+	}
 }
 
 /*

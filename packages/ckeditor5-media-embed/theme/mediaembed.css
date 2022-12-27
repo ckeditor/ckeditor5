@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,9 @@
 	clear: both;
 
 	/* Make sure there is some space between the content and the media. */
-	margin: 1em 0;
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em 0;
 
 	/* Make sure media is not overriden with Bootstrap default `flex` value.
 	See: https://github.com/ckeditor/ckeditor5/issues/1373. */

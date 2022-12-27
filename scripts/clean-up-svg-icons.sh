@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 # For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 # Cleans up and optimizes SVG files using the SVGO utility.
@@ -22,6 +22,6 @@ do
 	then
 		echo "\x1B[33m[clean-up-svg-icons]\x1B[0m Note: \"$i\" is blacklisted, skipping."
 	else
-		svgo --config=./scripts/svgo.config.json -i $i
+		svgo --config=./scripts/svgo.config.js -i $i
 	fi
 done

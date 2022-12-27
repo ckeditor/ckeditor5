@@ -23,7 +23,7 @@ To learn how to set up the project and run tests see the {@link framework/guides
 
 ### Code style
 
-Read more in the [code style](https://github.com/ckeditor/ckeditor5-design/wiki/Code-Style), [naming](https://github.com/ckeditor/ckeditor5-design/wiki/Code-Style-Naming-Guidelines) and [file naming](https://github.com/ckeditor/ckeditor5-design/wiki/File-Names) guidelines.
+Read more in the {@link framework/guides/contributing/code-style code style} guide, where you can also check the {@link framework/guides/contributing/code-style#naming naming} and {@link framework/guides/contributing/code-style#file-names file name} guidelines.
 
 Every package repository installs Git hooks that automatically lint and check the code for code style on commit. However, not every code style issue can be discovered this way, so please do not rely on tools too much :).
 
@@ -47,7 +47,7 @@ Read more about our {@link framework/guides/contributing/testing-environment tes
 
 Assuming that you would like to propose some changes, these are the steps you should take to create a pull request:
 
-1. Make sure to open a ticket in https://github.com/ckeditor/ckeditor5 describing the issue, feature or problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
+1. Make sure to open a ticket in [https://github.com/ckeditor/ckeditor5](https://github.com/ckeditor/ckeditor5) describing the issue, feature or problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
 1. Make sure your {@link framework/guides/contributing/development-environment development environment} is ready.
 1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5`.
 1. Open your terminal, then go to the package ("repository") folder in your development environment:
@@ -100,7 +100,7 @@ Here as well, having a CLA in place is a requirement to become an official trans
 
 ## Reporting issues and requesting features
 
-Read the {@link framework/guides/support/reporting-issues reporting issues} guide to learn more.
+Read the {@link support/reporting-issues reporting issues} guide to learn more.
 
 ## Contributor License Agreement (CLA)
 

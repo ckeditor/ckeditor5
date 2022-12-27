@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-input-width: 18em;
+
+	/* Backward compatibility. */
+	--ck-input-text-width: var(--ck-input-width);
+}
+
+.ck.ck-input {
+	@mixin ck-rounded-corners;
+
+	background: var(--ck-color-input-background);
+	border: 1px solid var(--ck-color-input-border);
+	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	min-width: var(--ck-input-width);
+
+	/* This is important to stay of the same height as surrounding buttons */
+	min-height: var(--ck-ui-component-min-height);
+
+	/* Apply some smooth transition to the box-shadow and border. */
+	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
+
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+	}
+
+	&[readonly] {
+		border: 1px solid var(--ck-color-input-disabled-border);
+		background: var(--ck-color-input-disabled-background);
+		color: var(--ck-color-input-disabled-text);
+
+		&:focus {
+			/* The read-only input should have a slightly less visible shadow when focused. */
+			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);
+		}
+	}
+
+	&.ck-error {
+		border-color: var(--ck-color-input-error-border);
+		animation: ck-input-shake .3s ease both;
+
+		&:focus {
+			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow);
+		}
+	}
+}
+
+@keyframes ck-input-shake {
+	20% {
+		transform: translateX(-2px);
+	}
+
+	40% {
+		transform: translateX(2px);
+	}
+
+	60% {
+		transform: translateX(-1px);
+	}
+
+	80% {
+		transform: translateX(1px);
+	}
+}

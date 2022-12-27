@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,13 @@
  * @module table/tableselection
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
 import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
-import { getColumnIndexes, getRowIndexes, getSelectedTableCells, isSelectionRectangular } from './utils/selection';
 
 import '../theme/tableselection.css';
 
@@ -36,7 +35,7 @@ export default class TableSelection extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableUtils ];
+		return [ TableUtils, TableUtils ];
 	}
 
 	/**
@@ -45,8 +44,10 @@ export default class TableSelection extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const view = editor.editing.view;
 
 		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
+		this.listenTo( view.document, 'insertText', ( evt, data ) => this._handleInsertTextEvent( evt, data ), { priority: 'high' } );
 
 		this._defineSelectionConverter();
 		this._enablePluginDisabling(); // sic!
@@ -58,9 +59,10 @@ export default class TableSelection extends Plugin {
 	 * @returns {Array.<module:engine/model/element~Element>|null}
 	 */
 	getSelectedTableCells() {
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selection = this.editor.model.document.selection;
 
-		const selectedCells = getSelectedTableCells( selection );
+		const selectedCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( selectedCells.length == 0 ) {
 			return null;
@@ -81,6 +83,7 @@ export default class TableSelection extends Plugin {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	getSelectionAsFragment() {
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selectedCells = this.getSelectedTableCells();
 
 		if ( !selectedCells ) {
@@ -89,10 +92,9 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-			const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedCells );
-			const { first: firstRow, last: lastRow } = getRowIndexes( selectedCells );
+			const { first: firstColumn, last: lastColumn } = tableUtils.getColumnIndexes( selectedCells );
+			const { first: firstRow, last: lastRow } = tableUtils.getRowIndexes( selectedCells );
 
 			const sourceTable = selectedCells[ 0 ].findAncestor( 'table' );
 
@@ -101,7 +103,7 @@ export default class TableSelection extends Plugin {
 
 			// If the selection is rectangular there could be a case of all cells in the last row/column spanned over
 			// next row/column so the real lastRow/lastColumn should be updated.
-			if ( isSelectionRectangular( selectedCells, tableUtils ) ) {
+			if ( tableUtils.isSelectionRectangular( selectedCells ) ) {
 				const dimensions = {
 					firstColumn,
 					lastColumn,
@@ -269,10 +271,11 @@ export default class TableSelection extends Plugin {
 	 * @param {Array.<*>} args Delete content method arguments.
 	 */
 	_handleDeleteContent( event, args ) {
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const [ selection, options ] = args;
 		const model = this.editor.model;
 		const isBackward = !options || options.direction == 'backward';
-		const selectedTableCells = getSelectedTableCells( selection );
+		const selectedTableCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( !selectedTableCells.length ) {
 			return;
@@ -300,6 +303,41 @@ export default class TableSelection extends Plugin {
 				selection.setTo( rangeToSelect );
 			}
 		} );
+	}
+
+	/**
+	 * This handler makes it possible to remove the content of all selected cells by starting to type.
+	 * If you take a look at {@link #_defineSelectionConverter} you will find out that despite the multi-cell selection being set
+	 * in the model, the view selection is collapsed in the last cell (because most browsers are unable to render multi-cell selections;
+	 * yes, it's a hack).
+	 *
+	 * When multiple cells are selected in the model and the user starts to type, the
+	 * {@link module:engine/view/document~Document#event:insertText} event carries information provided by the
+	 * beforeinput DOM  event, that in turn only knows about this collapsed DOM selection in the last cell.
+	 *
+	 * As a result, the selected cells have no chance to be cleaned up. To fix this, this listener intercepts
+	 * the event and injects the custom view selection in the data that translates correctly to the actual state
+	 * of the multi-cell selection in the model.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Insert text event data.
+	 */
+	_handleInsertTextEvent( evt, data ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const modelSelection = model.document.selection;
+		const selectedCells = this.getSelectedTableCells( modelSelection );
+
+		if ( !selectedCells ) {
+			return;
+		}
+
+		const view = editor.editing.view;
+		const mapper = editor.editing.mapper;
+		const viewRanges = selectedCells.map( tableCell => view.createRangeOn( mapper.toViewElement( tableCell ) ) );
+
+		data.selection = view.createSelection( viewRanges );
 	}
 
 	/**

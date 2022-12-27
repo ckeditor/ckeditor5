@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Cloud Services",
+			"className": "CloudServices",
+			"description": "A backend integration layer for selected CKEditor 5 premium features, both SaaS and on-premises.",
+			"path": "src/cloudservices.js",
+			"docs": "https://ckeditor.com/ckeditor-cloud-services"
+		}
+	]
+}

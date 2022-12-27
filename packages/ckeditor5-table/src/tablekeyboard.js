@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,14 +9,10 @@
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
+import TableUtils from './tableutils';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import {
-	isArrowKeyCode,
-	getLocalizedArrowKeyCodeDirection
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+import { Plugin } from 'ckeditor5/src/core';
+import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -36,7 +32,7 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection ];
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**
@@ -46,26 +42,20 @@ export default class TableKeyboard extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		// Handle Tab key navigation.
-		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
-
-		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
-		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
-		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { context: 'figure' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: [ 'th', 'td' ] } );
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/keyobserver~KeyEventData} data Key event data.
-	 * @param {Function} cancel The stop/stopPropagation/preventDefault function.
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTabOnSelectedTable( data, cancel ) {
+	_handleTabOnSelectedTable( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -74,7 +64,9 @@ export default class TableKeyboard extends Plugin {
 			return;
 		}
 
-		cancel();
+		domEventData.preventDefault();
+		domEventData.stopPropagation();
+		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
 			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
@@ -82,86 +74,90 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 *
 	 * @private
-	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_getTabHandler( isForward ) {
+	_handleTab( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		return ( domEventData, cancel ) => {
-			const selection = editor.model.document.selection;
-			let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+		const selection = editor.model.document.selection;
+		const isForward = !domEventData.shiftKey;
 
-			if ( !tableCell ) {
-				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
-			}
+		let tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
-			if ( !tableCell ) {
-				return;
-			}
+		if ( !tableCell ) {
+			tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+		}
 
-			cancel();
+		if ( !tableCell ) {
+			return;
+		}
 
-			const tableRow = tableCell.parent;
-			const table = tableRow.parent;
+		domEventData.preventDefault();
+		domEventData.stopPropagation();
+		bubblingEventInfo.stop();
 
-			const currentRowIndex = table.getChildIndex( tableRow );
-			const currentCellIndex = tableRow.getChildIndex( tableCell );
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
 
-			const isFirstCellInRow = currentCellIndex === 0;
+		const currentRowIndex = table.getChildIndex( tableRow );
+		const currentCellIndex = tableRow.getChildIndex( tableCell );
 
-			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// Set the selection over the whole table if the selection was in the first table cell.
+		const isFirstCellInRow = currentCellIndex === 0;
+
+		if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
+			// Set the selection over the whole table if the selection was in the first table cell.
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeOn( table ) );
+			} );
+
+			return;
+		}
+
+		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
+		const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
+
+		if ( isForward && isLastRow && isLastCellInRow ) {
+			editor.execute( 'insertTableRowBelow' );
+
+			// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
+			// or it got overwritten) set the selection over the whole table to mirror the first cell case.
+			if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
 				editor.model.change( writer => {
 					writer.setSelection( writer.createRangeOn( table ) );
 				} );
 
 				return;
 			}
+		}
 
-			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === table.childCount - 1;
+		let cellToFocus;
 
-			if ( isForward && isLastRow && isLastCellInRow ) {
-				editor.execute( 'insertTableRowBelow' );
+		// Move to the first cell in the next row.
+		if ( isForward && isLastCellInRow ) {
+			const nextRow = table.getChild( currentRowIndex + 1 );
 
-				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
-				if ( currentRowIndex === table.childCount - 1 ) {
-					editor.model.change( writer => {
-						writer.setSelection( writer.createRangeOn( table ) );
-					} );
+			cellToFocus = nextRow.getChild( 0 );
+		}
+		// Move to the last cell in the previous row.
+		else if ( !isForward && isFirstCellInRow ) {
+			const previousRow = table.getChild( currentRowIndex - 1 );
 
-					return;
-				}
-			}
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
+		}
+		// Move to the next/previous cell.
+		else {
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
+		}
 
-			let cellToFocus;
-
-			// Move to the first cell in the next row.
-			if ( isForward && isLastCellInRow ) {
-				const nextRow = table.getChild( currentRowIndex + 1 );
-
-				cellToFocus = nextRow.getChild( 0 );
-			}
-			// Move to the last cell in the previous row.
-			else if ( !isForward && isFirstCellInRow ) {
-				const previousRow = table.getChild( currentRowIndex - 1 );
-
-				cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
-			}
-			// Move to the next/previous cell.
-			else {
-				cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
-			}
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( cellToFocus ) );
-			} );
-		};
+		editor.model.change( writer => {
+			writer.setSelection( writer.createRangeIn( cellToFocus ) );
+		} );
 	}
 
 	/**
@@ -171,13 +167,9 @@ export default class TableKeyboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_onArrowKey( eventInfo, domEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
-
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
 
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
@@ -198,13 +190,14 @@ export default class TableKeyboard extends Plugin {
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
 	_handleArrowKeys( direction, expandSelection ) {
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
 
 		// In case one or more table cells are selected (from outside),
 		// move the selection to a cell adjacent to the selected table fragment.
-		const selectedCells = getSelectedTableCells( selection );
+		const selectedCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
 			let focusCell;
@@ -223,14 +216,30 @@ export default class TableKeyboard extends Plugin {
 		// Abort if we're not in a table cell.
 		const tableCell = selection.focus.findAncestor( 'tableCell' );
 
+		/* istanbul ignore if: paranoid check */
 		if ( !tableCell ) {
 			return false;
 		}
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach cell edge.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
-			return false;
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
 		}
 
 		// Let's check if the selection is at the beginning/end of the cell.

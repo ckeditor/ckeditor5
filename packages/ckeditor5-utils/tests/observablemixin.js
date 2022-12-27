@@ -1,47 +1,95 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* eslint-disable new-cap */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils';
 import ObservableMixin from '../src/observablemixin';
 import EmitterMixin from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
-import mix from '../src/mix';
 
 describe( 'ObservableMixin', () => {
+	const Observable = ObservableMixin();
+	const Emitter = EmitterMixin();
+
 	testUtils.createSinonSandbox();
 
 	it( 'exists', () => {
-		expect( ObservableMixin ).to.be.an( 'object' );
+		expect( ObservableMixin ).to.be.a( 'function' );
 	} );
 
 	it( 'mixes in EmitterMixin', () => {
-		expect( ObservableMixin ).to.have.property( 'on', EmitterMixin.on );
+		expect( new Observable() ).to.have.property( 'on', Emitter.prototype.on );
 	} );
 
 	it( 'implements set, bind, and unbind methods', () => {
-		expect( ObservableMixin ).to.contain.keys( 'set', 'bind', 'unbind' );
+		for ( const key of [ 'set', 'bind', 'unbind' ] ) {
+			expect( new Observable() ).to.have.property( key );
+		}
+	} );
+
+	it( 'inherits any emitter directly', () => {
+		class TestClass {
+			constructor( value ) {
+				this.value = value;
+			}
+		}
+
+		const EmitterClass = EmitterMixin( TestClass );
+		const ObservableClass = ObservableMixin( EmitterClass );
+
+		const observable = new ObservableClass( 5 );
+
+		expect( observable ).to.be.instanceOf( TestClass );
+		expect( observable.value ).to.equal( 5 );
+
+		for ( const key of [ 'set', 'bind', 'unbind' ] ) {
+			expect( observable ).to.have.property( key );
+		}
+	} );
+
+	it( 'inherits any emitter indirectly', () => {
+		class TestClass extends Emitter {
+			constructor( value ) {
+				super();
+
+				this.value = value;
+			}
+		}
+
+		const ObservableClass = ObservableMixin( TestClass );
+
+		const observable = new ObservableClass( 5 );
+
+		expect( observable ).to.be.instanceOf( TestClass );
+		expect( observable.value ).to.equal( 5 );
+
+		for ( const key of [ 'set', 'bind', 'unbind' ] ) {
+			expect( observable ).to.have.property( key );
+		}
 	} );
 } );
 
 describe( 'Observable', () => {
 	testUtils.createSinonSandbox();
 
-	class Observable {
+	class BaseObservable extends ObservableMixin() {
 		constructor( properties ) {
+			super();
+
 			if ( properties ) {
 				this.set( properties );
 			}
 		}
 	}
-	mix( Observable, ObservableMixin );
 
 	let Car, car;
 
 	beforeEach( () => {
-		Car = class extends Observable {};
+		Car = class extends BaseObservable {};
 
 		car = new Car( {
 			color: 'red',
@@ -68,7 +116,7 @@ describe( 'Observable', () => {
 				seats: 5
 			} );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4,
@@ -80,7 +128,7 @@ describe( 'Observable', () => {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4
@@ -227,7 +275,7 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'should throw when overriding already existing property (in the prototype)', () => {
-			class Car extends Observable {
+			class Car extends BaseObservable {
 				method() {}
 			}
 
@@ -300,7 +348,7 @@ describe( 'Observable', () => {
 		describe( 'to()', () => {
 			it( 'should not chain', () => {
 				expect(
-					car.bind( 'color' ).to( new Observable( { color: 'red' } ) )
+					car.bind( 'color' ).to( new BaseObservable( { color: 'red' } ) )
 				).to.be.undefined;
 			} );
 
@@ -807,13 +855,13 @@ describe( 'Observable', () => {
 			let Wheel;
 
 			beforeEach( () => {
-				Wheel = class extends Observable {
+				Wheel = class extends BaseObservable {
 				};
 			} );
 
 			it( 'should not chain', () => {
 				expect(
-					car.bind( 'color' ).toMany( [ new Observable( { color: 'red' } ) ], 'color', () => {} )
+					car.bind( 'color' ).toMany( [ new BaseObservable( { color: 'red' } ) ], 'color', () => {} )
 				).to.be.undefined;
 			} );
 
@@ -863,13 +911,13 @@ describe( 'Observable', () => {
 
 	describe( 'unbind()', () => {
 		it( 'should not fail when unbinding a fresh observable', () => {
-			const observable = new Observable();
+			const observable = new BaseObservable();
 
 			observable.unbind();
 		} );
 
 		it( 'should not fail when unbinding property that is not bound', () => {
-			const observable = new Observable();
+			const observable = new BaseObservable();
 
 			observable.bind( 'foo' ).to( car, 'color' );
 
@@ -953,7 +1001,7 @@ describe( 'Observable', () => {
 		it( 'makes the method fire an event', () => {
 			const spy = sinon.spy();
 
-			class Foo extends Observable {
+			class Foo extends BaseObservable {
 				method() {}
 			}
 
@@ -972,7 +1020,7 @@ describe( 'Observable', () => {
 		it( 'executes the original method in a listener with the default priority', () => {
 			const calls = [];
 
-			class Foo extends Observable {
+			class Foo extends BaseObservable {
 				method() {
 					calls.push( 'original' );
 				}
@@ -991,7 +1039,7 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'supports overriding return values', () => {
-			class Foo extends Observable {
+			class Foo extends BaseObservable {
 				method() {
 					return 1;
 				}
@@ -1011,7 +1059,7 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'supports overriding arguments', () => {
-			class Foo extends Observable {
+			class Foo extends BaseObservable {
 				method( a ) {
 					expect( a ).to.equal( 2 );
 				}
@@ -1028,8 +1076,8 @@ describe( 'Observable', () => {
 			foo.method( 1 );
 		} );
 
-		it( 'supports stopping the event (which prevents execution of the orignal method', () => {
-			class Foo extends Observable {
+		it( 'supports stopping the event (which prevents execution of the original method)', () => {
+			class Foo extends BaseObservable {
 				method() {
 					throw new Error( 'this should not be executed' );
 				}
@@ -1047,13 +1095,76 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'throws when trying to decorate non existing method', () => {
-			class Foo extends Observable {}
+			class Foo extends BaseObservable {}
 
 			const foo = new Foo();
 
 			expectToThrowCKEditorError( () => {
 				foo.decorate( 'method' );
 			}, 'observablemixin-cannot-decorate-undefined' );
+		} );
+
+		it( 'should allow decorating multiple methods', () => {
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
+
+			class Foo extends BaseObservable {
+				methodFoo() {}
+				methodBar() {}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'methodFoo' );
+			foo.decorate( 'methodBar' );
+
+			foo.on( 'methodFoo', spyFoo );
+			foo.on( 'methodBar', spyBar );
+
+			foo.methodFoo( 'abc' );
+			foo.methodBar( '123' );
+
+			expect( spyFoo.calledOnce ).to.be.true;
+			expect( spyFoo.args[ 0 ][ 1 ] ).to.deep.equal( [ 'abc' ] );
+
+			expect( spyBar.calledOnce ).to.be.true;
+			expect( spyBar.args[ 0 ][ 1 ] ).to.deep.equal( [ '123' ] );
+		} );
+
+		it( 'should reverts decorated methods to the original method on stopListening for all events', () => {
+			class Foo extends BaseObservable {
+				method() {
+				}
+			}
+
+			const foo = new Foo();
+			const originalMethod = foo.method;
+
+			foo.decorate( 'method' );
+
+			expect( foo.method ).to.not.equal( originalMethod );
+
+			foo.stopListening();
+
+			expect( foo.method ).to.equal( originalMethod );
+		} );
+
+		it( 'should not revert decorated methods to the original method on stopListening for specific emitter', () => {
+			class Foo extends BaseObservable {
+				method() {
+				}
+			}
+
+			const foo = new Foo();
+			const originalMethod = foo.method;
+
+			foo.decorate( 'method' );
+
+			expect( foo.method ).to.not.equal( originalMethod );
+
+			foo.stopListening( Object.create( ObservableMixin ) );
+
+			expect( foo.method ).to.not.equal( originalMethod );
 		} );
 	} );
 } );

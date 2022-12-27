@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,13 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ckfinder-options' ), {
 		toolbar: {
 			items: [
-				'ckfinder', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
-			],
-			viewportTopOffset: 100
+				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'ckfinder'
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len

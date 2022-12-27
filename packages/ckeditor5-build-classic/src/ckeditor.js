@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -26,9 +27,11 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -40,7 +43,9 @@ ClassicEditor.builtinPlugins = [
 	Bold,
 	Italic,
 	BlockQuote,
+	CKBox,
 	CKFinder,
+	CloudServices,
 	EasyImage,
 	Heading,
 	Image,
@@ -54,6 +59,7 @@ ClassicEditor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	PictureEditing,
 	Table,
 	TableToolbar,
 	TextTransformation
@@ -71,10 +77,10 @@ ClassicEditor.defaultConfig = {
 			'bulletedList',
 			'numberedList',
 			'|',
-			'indent',
 			'outdent',
+			'indent',
 			'|',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
@@ -84,9 +90,11 @@ ClassicEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [
-			'imageStyle:full',
+			'imageStyle:inline',
+			'imageStyle:block',
 			'imageStyle:side',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},

@@ -1,20 +1,16 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 :root {
 	--ck-color-resizer: var(--ck-color-focus-border);
-	--ck-resizer-size: 10px;
-	--ck-resizer-border-width: 1px;
-	--ck-resizer-border-radius: 2px;
-
-	/* Set the resizer with a 50% offset. */
-	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
-
-	--ck-resizer-tooltip-offset: 10px;
 	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
 	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
+
+	--ck-resizer-border-radius: var(--ck-border-radius);
+	--ck-resizer-tooltip-offset: 10px;
+	--ck-resizer-tooltip-height: calc(var(--ck-spacing-small) * 2 + 10px);
 }
 
 .ck .ck-widget {
@@ -36,15 +32,13 @@
 		}
 	}
 
-	/* Show the selection handle on mouse hover over the widget. */
-	&:hover {
-		& .ck-widget__selection-handle {
-			visibility: visible;
-		}
+	/* Show the selection handle on mouse hover over the widget, but not for nested widgets. */
+	&:hover > .ck-widget__selection-handle {
+		visibility: visible;
 	}
 
-	/* Show the selection handle when the widget is selected. */
-	&.ck-widget_selected .ck-widget__selection-handle {
+	/* Show the selection handle when the widget is selected, but not for nested widgets. */
+	&.ck-widget_selected > .ck-widget__selection-handle {
 		visibility: visible;
 	}
 }
@@ -56,32 +50,42 @@
 	border-radius: var(--ck-resizer-border-radius);
 	font-size: var(--ck-font-size-tiny);
 	display: block;
-	padding: var(--ck-spacing-small);
+	padding: 0 var(--ck-spacing-small);
+	height: var(--ck-resizer-tooltip-height);
+	line-height: var(--ck-resizer-tooltip-height);
 
 	&.ck-orientation-top-left,
 	&.ck-orientation-top-right,
 	&.ck-orientation-bottom-right,
-	&.ck-orientation-bottom-left {
+	&.ck-orientation-bottom-left,
+	&.ck-orientation-above-center {
 		position: absolute;
 	}
 
 	&.ck-orientation-top-left {
-		top: var( --ck-resizer-tooltip-offset );
-		left: var( --ck-resizer-tooltip-offset );
+		top: var(--ck-resizer-tooltip-offset);
+		left: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-top-right {
-		top: var( --ck-resizer-tooltip-offset );
-		right: var( --ck-resizer-tooltip-offset );
+		top: var(--ck-resizer-tooltip-offset);
+		right: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-bottom-right {
-		bottom: var( --ck-resizer-tooltip-offset );
-		right: var( --ck-resizer-tooltip-offset );
+		bottom: var(--ck-resizer-tooltip-offset);
+		right: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-bottom-left {
-		bottom: var( --ck-resizer-tooltip-offset );
-		left: var( --ck-resizer-tooltip-offset );
+		bottom: var(--ck-resizer-tooltip-offset);
+		left: var(--ck-resizer-tooltip-offset);
+	}
+
+	/* Class applied if the widget is too small to contain the size label */
+	&.ck-orientation-above-center {
+		top: calc(var(--ck-resizer-tooltip-height) * -1);
+		left: 50%;
+		transform: translate(-50%);
 	}
 }

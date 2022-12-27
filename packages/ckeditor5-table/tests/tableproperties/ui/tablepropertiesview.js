@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals document, Event */
 
 import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
@@ -37,7 +37,16 @@ const VIEW_OPTIONS = {
 			label: 'Green',
 			hasBorder: false
 		}
-	]
+	],
+	defaultTableProperties: {
+		borderColor: '',
+		borderStyle: 'none',
+		borderWidth: '',
+		alignment: 'center',
+		width: '',
+		height: '',
+		backgroundColor: ''
+	}
 };
 
 describe( 'table properties', () => {
@@ -50,9 +59,11 @@ describe( 'table properties', () => {
 			locale = { t: val => val };
 			view = new TablePropertiesView( locale, VIEW_OPTIONS );
 			view.render();
+			document.body.appendChild( view.element );
 		} );
 
 		afterEach( () => {
+			view.element.remove();
 			view.destroy();
 		} );
 
@@ -149,9 +160,17 @@ describe( 'table properties', () => {
 							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Dashed' );
 						} );
 
+						it( 'should bind #isEmpty to #borderStyle property', () => {
+							view.borderStyle = 'dotted';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							view.borderStyle = null;
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( '' );
+							expect( view.borderStyle ).to.equal( 'none' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -170,7 +189,7 @@ describe( 'table properties', () => {
 							view.borderWidth = '1px';
 							view.borderColor = 'red';
 
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 
 							expect( view.borderColor ).to.equal( '' );
 							expect( view.borderWidth ).to.equal( '' );
@@ -199,7 +218,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -261,7 +280,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -285,7 +304,11 @@ describe( 'table properties', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
+						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Background' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.backgroundInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -297,7 +320,7 @@ describe( 'table properties', () => {
 
 						it( 'should be created', () => {
 							expect( labeledInput.fieldView ).to.be.instanceOf( ColorInputView );
-							expect( labeledInput.label ).to.equal( 'Background' );
+							expect( labeledInput.label ).to.equal( 'Color' );
 							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__background' );
 						} );
 
@@ -506,6 +529,7 @@ describe( 'table properties', () => {
 						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 						expect( view.cancelButtonView.withText ).to.be.true;
 						expect( view.cancelButtonView.class ).to.equal( 'ck-button-cancel' );
+						expect( view.cancelButtonView.type ).to.equal( 'button' );
 					} );
 
 					it( 'should make the cancel button fire the #cancel event when executed', () => {
@@ -592,8 +616,10 @@ describe( 'table properties', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
 					view.borderColorInput,
+					view.borderColorInput.fieldView.dropdownView.buttonView,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.backgroundInput.fieldView.dropdownView.buttonView,
 					view.widthInput,
 					view.heightInput,
 					view.alignmentToolbar,
@@ -671,6 +697,24 @@ describe( 'table properties', () => {
 			} );
 		} );
 
+		describe( 'destroy()', () => {
+			it( 'should destroy the FocusTracker instance', () => {
+				const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+				view.destroy();
+
+				sinon.assert.calledOnce( destroySpy );
+			} );
+
+			it( 'should destroy the KeystrokeHandler instance', () => {
+				const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+				view.destroy();
+
+				sinon.assert.calledOnce( destroySpy );
+			} );
+		} );
+
 		describe( 'DOM bindings', () => {
 			describe( 'submit event', () => {
 				it( 'should trigger submit event', () => {
@@ -691,6 +735,98 @@ describe( 'table properties', () => {
 				view.focus();
 
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'default table properties', () => {
+			let view, locale;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				locale = { t: val => val };
+				view = new TablePropertiesView( locale, {
+					...VIEW_OPTIONS,
+					defaultTableProperties: {
+						alignment: 'left',
+						borderStyle: 'dashed',
+						borderColor: '#ff0',
+						borderWidth: '2px',
+						backgroundColor: '#00f',
+						width: '250px',
+						height: '150px'
+					}
+				} );
+				view.render();
+			} );
+
+			afterEach( () => {
+				view.destroy();
+			} );
+
+			describe( 'form rows', () => {
+				describe( 'border row', () => {
+					describe( 'border style labeled dropdown', () => {
+						it( 'should reset border width and color inputs when setting style to none', () => {
+							view.borderStyle = 'dotted';
+							view.borderWidth = '1px';
+							view.borderColor = 'red';
+
+							view.borderStyle = 'none';
+
+							expect( view.borderColor ).to.equal( '' );
+							expect( view.borderWidth ).to.equal( '' );
+						} );
+					} );
+
+					describe( 'border width input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.borderWidthInput;
+						} );
+
+						it( 'should be enabled only when #borderStyle is different than "none"', () => {
+							view.borderStyle = 'none';
+							expect( labeledInput.isEnabled ).to.be.false;
+
+							view.borderStyle = 'dotted';
+							expect( labeledInput.isEnabled ).to.be.true;
+						} );
+					} );
+
+					describe( 'border color input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.borderColorInput;
+						} );
+
+						it( 'should be enabled only when #borderStyle is different than "none"', () => {
+							view.borderStyle = 'none';
+							expect( labeledInput.isEnabled ).to.be.false;
+
+							view.borderStyle = 'dotted';
+							expect( labeledInput.isEnabled ).to.be.true;
+						} );
+
+						it( 'should replace "Remove color" with the "Restore default" label', () => {
+							const { borderColorInput } = view;
+							const { panelView } = borderColorInput.fieldView.dropdownView;
+
+							expect( panelView.children.first.label ).to.equal( 'Restore default' );
+						} );
+					} );
+				} );
+
+				describe( 'background row', () => {
+					it( 'should replace "Remove color" with the "Restore default" label', () => {
+						const { backgroundInput } = view;
+						const { panelView } = backgroundInput.fieldView.dropdownView;
+
+						expect( panelView.children.first.label ).to.equal( 'Restore default' );
+					} );
+				} );
 			} );
 		} );
 	} );

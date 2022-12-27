@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module restricted-editing/restrictededitingmodenavigationcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The command that allows navigation across the exceptions in the edited document.
@@ -23,6 +23,9 @@ export default class RestrictedEditingModeNavigationCommand extends Command {
 	 */
 	constructor( editor, direction ) {
 		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode and in restricted editing mode.
+		this.affectsData = false;
 
 		/**
 		 * The direction of the command. Can be `'forward'` or `'backward'`.

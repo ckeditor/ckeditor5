@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,8 +14,6 @@ import InlineEditor from '../src/inlineeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -23,7 +21,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'InlineEditor', () => {
 	let editor, editorElement;
@@ -57,12 +55,13 @@ describe( 'InlineEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'has a Data Interface', () => {
-			expect( testUtils.isMixed( InlineEditor, DataApiMixin ) ).to.be.true;
+		it( 'mixes DataApiMixin', () => {
+			expect( InlineEditor.prototype ).have.property( 'setData' ).to.be.a( 'function' );
+			expect( InlineEditor.prototype ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
 
-		it( 'has a Element Interface', () => {
-			expect( testUtils.isMixed( InlineEditor, ElementApiMixin ) ).to.be.true;
+		it( 'mixes ElementApiMixin', () => {
+			expect( InlineEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );
 
 		it( 'creates main root element', () => {
@@ -102,6 +101,39 @@ describe( 'InlineEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		describe( 'config.initialData', () => {
+			it( 'if not set, is set using DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new InlineEditor( editorElement );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if not set, is set using data passed in constructor', () => {
+				const editor = new InlineEditor( '<p>Foo</p>' );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+			} );
+
+			it( 'if set, is not overwritten with DOM element data', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				const editor = new InlineEditor( editorElement, { initialData: '<p>Bar</p>' } );
+
+				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new InlineEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
 		} );
 	} );
 
@@ -181,6 +213,23 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p>Hello world!</p>';
+
+			return InlineEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'should pass the config.toolbar.shouldNotGroupWhenFull configuration to the view', () => {
 			const editorElement = document.createElement( 'div' );
 
@@ -195,26 +244,6 @@ describe( 'InlineEditor', () => {
 			} ).then( () => {
 				editorElement.remove();
 			} );
-		} );
-
-		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
-			InlineEditor.create( '<p>Hello world!</p>', {
-				initialData: '<p>I am evil!</p>',
-				plugins: [ Paragraph ]
-			} )
-				.then(
-					() => {
-						expect.fail( 'Inline editor should throw an error when both initial data are passed' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-create-initial-data', null );
-					}
-				)
-				.then( () => {
-					removeEditorBodyOrphans();
-				} )
-				.then( done )
-				.catch( done );
 		} );
 
 		// #25
@@ -323,9 +352,10 @@ describe( 'InlineEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.register( 'heading' );
-					schema.extend( 'heading', { allowIn: '$root' } );
-					schema.extend( '$text', { allowIn: 'heading' } );
+					schema.register( 'heading', {
+						allowIn: '$root',
+						allowChildren: '$text'
+					} );
 
 					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
 					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
@@ -336,7 +366,21 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
+		// We don't update the source element by default, so after destroy, it should contain the data
+		// from the editing pipeline.
+		it( 'don\'t set the data back to the editor element', () => {
+			editor.setData( '<p>a</p><heading>b</heading>' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( editorElement.innerHTML ).to.equal( '' );
+				} );
+		} );
+
+		// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+		// back to the source element after destroy.
 		it( 'sets the data back to the editor element', () => {
+			editor.config.set( 'updateSourceElementOnDestroy', true );
 			editor.setData( '<p>a</p><heading>b</heading>' );
 
 			return editor.destroy()
@@ -365,7 +409,7 @@ describe( 'InlineEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

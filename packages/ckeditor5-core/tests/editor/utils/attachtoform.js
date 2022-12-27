@@ -1,13 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import attachToForm from '../../../src/editor/utils/attachtoform';
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global document, Event */
@@ -27,11 +25,10 @@ describe( 'attachToForm()', () => {
 			evt.preventDefault();
 		} );
 
-		class CustomEditor extends Editor {}
-		mix( CustomEditor, ElementApiMixin );
+		// eslint-disable-next-line new-cap
+		class CustomEditor extends ElementApiMixin( Editor ) {}
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor( editor.data.viewDocument );
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 		editor.fire( 'ready' );

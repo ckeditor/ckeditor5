@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,8 @@ import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 import Document from '../../src/view/document';
+import { addBorderRules } from '../../src/view/styles/border';
+import { addMarginRules } from '../../src/view/styles/margin';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Element', () => {
@@ -885,6 +887,48 @@ describe( 'Element', () => {
 			} );
 		} );
 
+		describe( 'getStyleNames - expand = true', () => {
+			it( 'should return all styles in an expanded form', () => {
+				addBorderRules( el.document.stylesProcessor );
+				addMarginRules( el.document.stylesProcessor );
+
+				el._setStyle( {
+					margin: '1 em',
+					border: '2px dotted silver'
+				} );
+
+				const styles = Array.from( el.getStyleNames( true ) );
+
+				expect( styles ).to.deep.equal( [
+					'border',
+					'border-color',
+					'border-style',
+					'border-width',
+					'border-top',
+					'border-right',
+					'border-bottom',
+					'border-left',
+					'border-top-color',
+					'border-right-color',
+					'border-bottom-color',
+					'border-left-color',
+					'border-top-style',
+					'border-right-style',
+					'border-bottom-style',
+					'border-left-style',
+					'border-top-width',
+					'border-right-width',
+					'border-bottom-width',
+					'border-left-width',
+					'margin',
+					'margin-top',
+					'margin-right',
+					'margin-bottom',
+					'margin-left'
+				] );
+			} );
+		} );
+
 		describe( 'hasStyle', () => {
 			it( 'should check if element has a style', () => {
 				el._setStyle( 'padding-top', '10px' );
@@ -1065,6 +1109,28 @@ describe( 'Element', () => {
 			expect( el.getIdentity() ).to.equal(
 				'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
 			);
+		} );
+	} );
+
+	describe( 'shouldRenderUnsafeAttribute()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = new Element( document, 'p' );
+		} );
+
+		it( 'should return true if the atribute name is among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+		} );
+
+		it( 'should return false if the atribute name is not among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
 		} );
 	} );
 } );

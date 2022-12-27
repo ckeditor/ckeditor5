@@ -1,6 +1,7 @@
 ---
 category: framework-architecture
 order: 20
+modified_at: 2021-10-25
 ---
 
 # Core editor architecture
@@ -33,7 +34,7 @@ The {@link module:core/editor/editor~Editor `Editor`} class is a base to impleme
 
 Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin depends on the {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling the methods of inserting text and deleting content, respectively. At the same time, some plugins need to customize <kbd>Backspace</kbd> behavior in certain cases and handle it by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
+Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold/boldui~BoldUI} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. Finally, there is the {@link module:basic-styles/bold~Bold} plugin that brings both plugins for a full experience.
 
 The tl;dr of this is that:
 
@@ -64,7 +65,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-You can see how to implement a simple plugin in the {@link framework/guides/quick-start Quick start} guide.
+You can see how to implement a simple plugin in the {@link framework/guides/creating-simple-plugin-timestamp creating a basic plugin} guide.
 
 ## Commands
 
@@ -150,6 +151,25 @@ enableBold();
 
 The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
+By default, editor commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
+
+```js
+class MyAlwaysEnabledCommand extends Command {
+	constructor( editor ) {
+		super( editor );
+
+		// This command will remain enabled even when the editor is read-only.
+		this.affectsData = false;
+	}
+}
+```
+
+The {@link module:core/command~Command#affectsData `affectsData`} flag will also affect the command in {@link features/read-only#related-features other editor modes} that restrict user write permissions.
+
+<info-box>
+	The `affectsData` flag is set to `true` by default for all editor commands and, unless your command should be enabled when the editor is read-only, you do not need to change it. Also, please keep in mind that the flag is immutable during the lifetime of the editor.
+</info-box>
+
 ## Event system and observables
 
 CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
@@ -200,7 +220,7 @@ mix( Command, ObservableMixin );
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/observables deep dive into observables} guide to learn more about the advanced usage of observables with some additional examples.
+	Check out the {@link framework/guides/deep-dive/event-system event system deep dive guide} and the {@link framework/guides/deep-dive/observables observables deep dive guide} to learn more about the advanced usage of events and observables with some additional examples.
 </info-box>
 
 Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:

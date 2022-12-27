@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,16 +16,23 @@
 	padding: var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;
 }
 
-.ck .ck-insert-table-dropdown__label {
+.ck .ck-insert-table-dropdown__label,
+.ck[dir=rtl] .ck-insert-table-dropdown__label {
 	text-align: center;
 }
 
 .ck .ck-insert-table-dropdown-grid-box {
-	width: var(--ck-insert-table-dropdown-box-width);
-	height: var(--ck-insert-table-dropdown-box-height);
+	min-width: var(--ck-insert-table-dropdown-box-width);
+	min-height: var(--ck-insert-table-dropdown-box-height);
 	margin: var(--ck-insert-table-dropdown-box-margin);
 	border: 1px solid var(--ck-color-base-border);
 	border-radius: 1px;
+	outline: none;
+	transition: none;
+
+	&:focus {
+		box-shadow: none;
+	}
 
 	&.ck-on {
 		border-color: var(--ck-color-focus-border);

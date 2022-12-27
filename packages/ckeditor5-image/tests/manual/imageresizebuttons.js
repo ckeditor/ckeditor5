@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,9 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
+import ImageUpload from '../../src/imageupload';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
@@ -21,6 +23,8 @@ const commonConfig = {
 		ArticlePluginSet,
 		Indent,
 		IndentBlock,
+		ImageUpload,
+		CloudServices,
 		EasyImage,
 		ImageResizeEditing,
 		ImageResizeButtons
@@ -40,24 +44,19 @@ const imageConfig1 = {
 	resizeUnit: '%',
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
-	styles: [
-		'alignLeft',
-		'alignCenter',
-		'alignRight'
-	]
+	toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
 };
 
 const config1 = {
@@ -80,33 +79,30 @@ const imageConfig2 = {
 	resizeUnit: '%',
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null,
 			icon: 'original'
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50',
 			icon: 'medium'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75',
 			icon: 'large'
 		}
 	],
 	toolbar: [
-		'imageStyle:alignLeft',
-		'imageStyle:full',
-		'imageStyle:side', '|',
-		'imageResize:50',
-		'imageResize:75',
-		'imageResize:original'
-	],
-	styles: [
-		'full',
-		'alignLeft',
-		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+		'imageStyle:inline',
+		'imageStyle:wrapText',
+		'imageStyle:breakText',
+		'imageStyle:side', '|', // Purposely using side image to make sure it works well with both style types.
+		'toggleImageCaption', '|',
+		'resizeImage:50',
+		'resizeImage:75',
+		'resizeImage:original'
 	]
 };
 

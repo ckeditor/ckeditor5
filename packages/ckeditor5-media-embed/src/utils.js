@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module media-embed/utils
  */
 
-import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget, toWidget } from 'ckeditor5/src/widget';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
@@ -68,16 +68,16 @@ export function isMediaWidget( viewElement ) {
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
- * @param {String} [options.useSemanticWrapper]
- * @param {String} [options.renderForEditingView]
+ * @param {String} [options.elementName]
+ * @param {Boolean} [options.useSemanticWrapper]
+ * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
-	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
-
-	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
-
-	return figure;
+	return writer.createContainerElement( 'figure', { class: 'media' }, [
+		registry.getMediaViewElement( writer, url, options ),
+		writer.createSlot()
+	] );
 }
 
 /**
@@ -104,16 +104,19 @@ export function getSelectedMediaModelWidget( selection ) {
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} url An URL of an embeddable media.
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert the media. If not specified,
+ * @param {module:engine/model/range~Range} [insertRange] The range to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
+ * @param {Boolean} findOptimalPosition If true it will try to find optimal position to insert media without breaking content
+ * in which a selection is.
  */
-export function insertMedia( model, url, insertPosition ) {
+export function insertMedia( model, url, selectable, findOptimalPosition ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
-		model.insertContent( mediaElement, insertPosition );
-
-		writer.setSelection( mediaElement, 'on' );
+		model.insertObject( mediaElement, selectable, null, {
+			setSelection: 'on',
+			findOptimalPosition
+		} );
 	} );
 }

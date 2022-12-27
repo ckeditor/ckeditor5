@@ -9,7 +9,7 @@ Every non-trivial piece of software has bugs. Despite our high quality standards
 
 In order to limit the effect of an editor crash on the user experience, you can automatically restart the WYSIWYG editor with the content saved just before the crash.
 
-The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
+The watchdog utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
 Note that the most "dangerous" places in the CKEditor 5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart the editor when they occur.
 
@@ -19,7 +19,7 @@ There are two available types of watchdogs:
 * [Context watchdog](#context-watchdog) &ndash; To be used when your application uses the context.
 
 <info-box>
-	Note: A watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: A watchdog can be used only with an {@link installation/advanced/integrating-from-source editor built from source}.
 </info-box>
 
 ## Usage
@@ -131,7 +131,7 @@ watchdog.on( 'stateChange', () => {
 	console.log( `State changed from ${ currentState } to ${ prevState }` );
 
 	if ( currentState === 'crashedPermanently' ) {
-		watchdog.editor.isReadOnly = true;
+		watchdog.editor.enableReadOnlyMode( 'crashed-editor' );
 	}
 
 	prevState = currentState;
@@ -249,7 +249,7 @@ watchdog.setCreator( async config => {
 
 // Setting a custom destructor for the context.
 watchdog.setDestructor( async context => {
-	
+
 	// Do something before destroy.
 
 	await context.destroy();

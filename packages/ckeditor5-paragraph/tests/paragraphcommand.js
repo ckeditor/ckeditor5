@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -132,7 +132,7 @@ describe( 'ParagraphCommand', () => {
 		} );
 
 		it( 'should not rename blocks which cannot become paragraphs (block is an object)', () => {
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				isBlock: true,
 				isObject: true,
 				allowIn: '$root'
@@ -141,7 +141,7 @@ describe( 'ParagraphCommand', () => {
 			setData(
 				model,
 				'<heading1>a[bc</heading1>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<heading1>de]f</heading1>'
 			);
 
@@ -149,7 +149,7 @@ describe( 'ParagraphCommand', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>de]f</paragraph>'
 			);
 		} );

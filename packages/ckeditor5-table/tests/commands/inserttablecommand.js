@@ -1,12 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 import { modelTable } from '../_utils/utils';
@@ -34,14 +33,40 @@ describe( 'InsertTableCommand', () => {
 
 	describe( 'isEnabled', () => {
 		describe( 'when selection is collapsed', () => {
+			it( 'should be true if in a root', () => {
+				setData( model, '[]' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
 			it( 'should be true if in paragraph', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be false if in table', () => {
+			it( 'should be true if in table', () => {
 				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'when selection is not collapsed', () => {
+			it( 'should be true if an object is selected', () => {
+				model.schema.register( 'media', { isObject: true, isBlock: true, allowWhere: '$block' } );
+
+				setData( model, '[<media url="http://ckeditor.com"></media>]' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if in a paragraph', () => {
+				setData( model, '<paragraph>[Foo]</paragraph>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if a non-object element is selected', () => {
+				model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
+
+				setData( model, '[<element></element>]' );
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 	} );
@@ -65,7 +90,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '[]', '' ],
 					[ '', '' ]
 				] ) );
@@ -76,7 +101,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '' ],
@@ -90,7 +115,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -105,7 +130,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -120,7 +145,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -134,12 +159,295 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
 					] )
+				);
+			} );
+		} );
+
+		describe( 'expanded selection', () => {
+			it( 'should replace an existing selected object with a table', () => {
+				model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+				command.execute( { rows: 1, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should replace an existing table with another table', () => {
+				setData( model, '<paragraph>foo</paragraph>[' + modelTable( [ [ '', '' ], [ '', '' ] ] ) + ']<paragraph>bar</paragraph>' );
+
+				command.execute( { rows: 1, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'auto headings', () => {
+			it( 'should have first row as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first column as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { columns: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingColumns: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first row and first column as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1, columns: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 3, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1, headingColumns: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have first three rows and two columns as a heading by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 3, headingColumns: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should have auto headings not to be greater than table rows and columns', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 3 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 2, headingColumns: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					] )
+				);
+
+				await editor.destroy();
+			} );
+		} );
+
+		describe( 'inheriting attributes', () => {
+			let editor;
+			let model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				const attributes = [ 'smart', 'pretty' ];
+
+				model.schema.extend( '$block', {
+					allowAttributes: attributes
+				} );
+
+				model.schema.extend( '$blockObject', {
+					allowAttributes: attributes
+				} );
+
+				for ( const attribute of attributes ) {
+					model.schema.setAttributeProperties( attribute, {
+						copyOnReplace: true
+					} );
+				}
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should copy $block attributes on a table element when inserting it in $block', async () => {
+				setData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
+				);
+			} );
+
+			it( 'should copy attributes from first selected element', () => {
+				setData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true" >bar]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true } ) +
+					'<paragraph pretty="true">foo</paragraph>' +
+					'<paragraph smart="true">bar</paragraph>'
+				);
+			} );
+
+			it( 'should only copy $block attributes marked with copyOnReplace', () => {
+				setData( model, '<paragraph pretty="true" smart="true" nice="false">[]</paragraph>' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
+				);
+			} );
+
+			it( 'should copy attributes from object when it is selected during insertion', () => {
+				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setData( model, '[<object pretty="true" smart="true"></object>]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 1, pretty: true, smart: true } )
 				);
 			} );
 		} );

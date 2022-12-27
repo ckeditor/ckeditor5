@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,6 +15,7 @@ import { fixtures as googleDocsList, browserFixtures as googleDocsListBrowser } 
 import { fixtures as table } from '../_data/table/index.js';
 import { fixtures as pageBreak } from '../_data/page-break/index.js';
 import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index';
+import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index';
 
 // Generic fixtures.
 export const fixtures = {
@@ -25,6 +26,7 @@ export const fixtures = {
 	spacing,
 	'google-docs-bold-wrapper': googleDocsBoldWrapper,
 	'google-docs-list': googleDocsList,
+	'google-docs-br-paragraphs': googleDocsBrParagraphs,
 	table,
 	'page-break': pageBreak,
 	'font-without-table-properties': fontWithoutTableProperties

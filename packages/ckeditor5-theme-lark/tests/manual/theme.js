@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,7 +24,7 @@ import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarsepa
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
-import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
+import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -233,16 +233,44 @@ function renderButton() {
 
 	ui.buttonTooltip.add( toolbar( [
 		button( {
-			label: 'This button has a tooltip (south)',
+			label: 'This button has a tooltip when hovered (south)',
 			withText: true,
 			tooltip: 'The content of the tooltip'
 		} ),
 		button( {
-			label: 'This one too – north',
+			label: 'North',
 			withText: true,
 			keystroke: 'Ctrl+N',
 			tooltip: true,
 			tooltipPosition: 'n'
+		} ),
+		button( {
+			label: 'West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'w'
+		} ),
+		button( {
+			label: 'East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'e'
+		} ),
+		button( {
+			label: 'South East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'se'
+		} ),
+		button( {
+			label: 'South West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'sw'
 		} )
 	] ) );
 }
@@ -515,7 +543,7 @@ function renderInput() {
 	ui.inputLabeled.add( input() );
 	ui.inputReadOnly.add( input( {
 		label: 'A read–only input',
-		isReadOnly: true,
+		isEnabled: false,
 		value: 'Read–only input value'
 	} ) );
 }
@@ -562,6 +590,8 @@ function switchbutton( {
 	const button = new SwitchButtonView();
 
 	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
+
+	button.on( 'execute', () => ( button.isOn = !button.isOn ) );
 
 	return button;
 }
@@ -634,14 +664,14 @@ function toolbarNewLine() {
 
 function input( {
 	label = 'Labeled input',
-	isReadOnly = false,
+	isEnabled = true,
 	value = 'The value of the input'
 } = {} ) {
-	const labeledInput = new LabeledFieldView( {}, createLabeledInputText );
+	const labeledField = new LabeledFieldView( {}, createLabeledInputText );
 
-	labeledInput.fieldView.set( { isReadOnly, label, value } );
+	labeledField.set( { isEnabled, label, value } );
 
-	return labeledInput;
+	return labeledField;
 }
 
 function setManualTestDirection( direction ) {

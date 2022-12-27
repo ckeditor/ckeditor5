@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 import UndoEditing from '../src/undoediting';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'UndoEditing', () => {
@@ -119,7 +120,7 @@ describe( 'UndoEditing', () => {
 	it( 'should not add a transparent batch', () => {
 		sinon.spy( undo._undoCommand, 'addBatch' );
 
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'foobar', root );
 		} );
 
@@ -143,7 +144,8 @@ describe( 'UndoEditing', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.z,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );
@@ -157,7 +159,8 @@ describe( 'UndoEditing', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.y,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );
@@ -170,7 +173,8 @@ describe( 'UndoEditing', () => {
 		const spy = sinon.stub( editor, 'execute' );
 		const keyEventData = {
 			keyCode: keyCodes.z,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			shiftKey: true,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()

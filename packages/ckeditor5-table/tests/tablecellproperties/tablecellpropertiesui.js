@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 
 import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 import { defaultColors } from '../../src/utils/ui/table-properties';
@@ -38,7 +39,7 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
@@ -72,10 +73,12 @@ describe( 'table cell properties', () => {
 
 		describe( 'constructor()', () => {
 			it( 'should define table.tableCellProperties config', () => {
-				expect( editor.config.get( 'table.tableCellProperties' ) ).to.deep.equal( {
-					borderColors: defaultColors,
-					backgroundColors: defaultColors
-				} );
+				expect( editor.config.get( 'table.tableCellProperties' ) ).to.be.an( 'object' );
+
+				expect( editor.config.get( 'table.tableCellProperties' ) ).to.have.property( 'borderColors' );
+				expect( editor.config.get( 'table.tableCellProperties.borderColors' ) ).to.deep.equal( defaultColors );
+				expect( editor.config.get( 'table.tableCellProperties' ) ).to.have.property( 'backgroundColors' );
+				expect( editor.config.get( 'table.tableCellProperties.backgroundColors' ) ).to.deep.equal( defaultColors );
 			} );
 		} );
 
@@ -127,7 +130,6 @@ describe( 'table cell properties', () => {
 						'tableCellBorderStyle',
 						'tableCellBorderColor',
 						'tableCellBorderWidth',
-						'tableCellWidth',
 						'tableCellHeight',
 						'tableCellPadding',
 						'tableCellBackgroundColor',
@@ -198,7 +200,7 @@ describe( 'table cell properties', () => {
 					expect( getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
-								'<tableCell backgroundColor="red" borderStyle="dotted">' +
+								'<tableCell tableCellBackgroundColor="red" tableCellBorderStyle="dotted">' +
 									'<paragraph>[]foo</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
@@ -278,8 +280,12 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'property changes', () => {
+				let batch;
+
 				beforeEach( () => {
-					tableCellPropertiesUI._undoStepBatch = 'foo';
+					batch = editor.model.createBatch();
+
+					tableCellPropertiesUI._undoStepBatch = batch;
 				} );
 
 				describe( '#borderStyle', () => {
@@ -289,7 +295,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderStyle = 'dotted';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch } );
 					} );
 				} );
 
@@ -300,7 +306,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -320,7 +326,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch } );
 					} );
 				} );
 
@@ -331,7 +337,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderWidth = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -351,7 +357,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch } );
 					} );
 				} );
 
@@ -362,7 +368,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.width = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -382,7 +388,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch } );
 					} );
 				} );
 
@@ -393,7 +399,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.height = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -413,7 +419,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch } );
 					} );
 				} );
 
@@ -424,7 +430,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.padding = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -444,7 +450,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch } );
 					} );
 				} );
 
@@ -455,7 +461,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.backgroundColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -475,7 +481,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch } );
 					} );
 				} );
 
@@ -486,7 +492,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.horizontalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
@@ -497,7 +503,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.verticalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch: 'foo' } );
+						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch } );
 					} );
 				} );
 
@@ -566,16 +572,29 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'initial data', () => {
+				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
+					const balloonAddSpy = testUtils.sinon.spy( editor.plugins.get( ContextualBalloon ), 'add' );
+					const borderStyleChangeSpy = testUtils.sinon.spy();
+
+					tableCellPropertiesView.on( 'change:borderStyle', borderStyleChangeSpy );
+
+					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
+					tableCellPropertiesButton.fire( 'execute' );
+
+					sinon.assert.calledOnce( borderStyleChangeSpy );
+					sinon.assert.calledOnce( balloonAddSpy );
+					sinon.assert.callOrder( borderStyleChangeSpy, balloonAddSpy );
+				} );
+
 				it( 'should be set from the command values', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
 					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellWidth' ).value = 'd';
-					editor.commands.get( 'tableCellHeight' ).value = 'e';
-					editor.commands.get( 'tableCellPadding' ).value = 'f';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'g';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'h';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'i';
+					editor.commands.get( 'tableCellHeight' ).value = 'd';
+					editor.commands.get( 'tableCellPadding' ).value = 'e';
+					editor.commands.get( 'tableCellBackgroundColor' ).value = 'f';
+					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'g';
+					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'h';
 
 					tableCellPropertiesButton.fire( 'execute' );
 
@@ -584,12 +603,11 @@ describe( 'table cell properties', () => {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						width: 'd',
-						height: 'e',
-						padding: 'f',
-						backgroundColor: 'g',
-						horizontalAlignment: 'h',
-						verticalAlignment: 'i'
+						height: 'd',
+						padding: 'e',
+						backgroundColor: 'f',
+						horizontalAlignment: 'g',
+						verticalAlignment: 'h'
 					} );
 				} );
 
@@ -597,7 +615,6 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = null;
 					editor.commands.get( 'tableCellBorderColor' ).value = null;
 					editor.commands.get( 'tableCellBorderWidth' ).value = null;
-					editor.commands.get( 'tableCellWidth' ).value = null;
 					editor.commands.get( 'tableCellHeight' ).value = null;
 					editor.commands.get( 'tableCellPadding' ).value = null;
 					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
@@ -608,15 +625,14 @@ describe( 'table cell properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
-						borderStyle: '',
+						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
-						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
-						horizontalAlignment: '',
-						verticalAlignment: ''
+						horizontalAlignment: 'left',
+						verticalAlignment: 'middle'
 					} );
 				} );
 			} );
@@ -659,6 +675,130 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesView.fire( 'submit' );
 
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'default table properties', () => {
+			let editor, editorElement, contextualBalloon,
+				tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
+						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									horizontalAlignment: 'center',
+									verticalAlignment: 'bottom',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px',
+									padding: '10px'
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						tableCellPropertiesUI = editor.plugins.get( TableCellPropertiesUI );
+						tableCellPropertiesButton = editor.ui.componentFactory.create( 'tableCellProperties' );
+						contextualBalloon = editor.plugins.get( ContextualBalloon );
+						tableCellPropertiesView = tableCellPropertiesUI.view;
+
+						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+						testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
+						testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			describe( 'init()', () => {
+				describe( '#view', () => {
+					it( 'should get the default table cell properties configurations', () => {
+						expect( tableCellPropertiesView.options.defaultTableCellProperties ).to.deep.equal( {
+							horizontalAlignment: 'center',
+							verticalAlignment: 'bottom',
+							borderStyle: 'dashed',
+							borderColor: '#ff0',
+							borderWidth: '2px',
+							backgroundColor: '#00f',
+							width: '250px',
+							height: '150px',
+							padding: '10px'
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'Showing the #view', () => {
+				beforeEach( () => {
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+				} );
+
+				describe( 'initial data', () => {
+					it( 'should use default values when command has no value', () => {
+						editor.commands.get( 'tableCellBorderStyle' ).value = null;
+						editor.commands.get( 'tableCellBorderColor' ).value = null;
+						editor.commands.get( 'tableCellBorderWidth' ).value = null;
+						editor.commands.get( 'tableCellBackgroundColor' ).value = null;
+						editor.commands.get( 'tableCellWidth' ).value = null;
+						editor.commands.get( 'tableCellHeight' ).value = null;
+						editor.commands.get( 'tableCellPadding' ).value = null;
+						editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
+						editor.commands.get( 'tableCellVerticalAlignment' ).value = null;
+
+						tableCellPropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( tableCellPropertiesView ).to.include( {
+							borderStyle: 'dashed',
+							borderColor: '#ff0',
+							borderWidth: '2px',
+							backgroundColor: '#00f',
+							width: '250px',
+							height: '150px',
+							padding: '10px',
+							horizontalAlignment: 'center',
+							verticalAlignment: 'bottom'
+						} );
+					} );
+
+					it( 'should not set `borderColor` and `borderWidth` attributes if borderStyle="none"', () => {
+						editor.commands.get( 'tableCellBorderStyle' ).value = 'none';
+
+						tableCellPropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( tableCellPropertiesView ).to.include( {
+							borderStyle: 'none',
+							borderColor: '',
+							borderWidth: '',
+							backgroundColor: '#00f',
+							height: '150px',
+							padding: '10px',
+							horizontalAlignment: 'center',
+							verticalAlignment: 'bottom'
+						} );
+					} );
+				} );
 			} );
 		} );
 	} );

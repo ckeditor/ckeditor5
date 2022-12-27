@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,9 @@
  * @module block-quote/blockquoteediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import BlockQuoteCommand from './blockquotecommand';
 
@@ -29,6 +31,13 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ Enter, Delete ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -36,15 +45,7 @@ export default class BlockQuoteEditing extends Plugin {
 		editor.commands.add( 'blockQuote', new BlockQuoteCommand( editor ) );
 
 		schema.register( 'blockQuote', {
-			allowWhere: '$block',
-			allowContentOf: '$root'
-		} );
-
-		// Disallow blockQuote in blockQuote.
-		schema.addChildCheck( ( ctx, childDef ) => {
-			if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
-				return false;
-			}
+			inheritAllFrom: '$container'
 		} );
 
 		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
@@ -68,13 +69,12 @@ export default class BlockQuoteEditing extends Plugin {
 
 						return true;
 					} else if ( element.is( 'element', 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
-						// Added a blockQuote in incorrect place - most likely inside another blockQuote. Unwrap it
-						// so the content inside is not lost.
+						// Added a blockQuote in incorrect place. Unwrap it so the content inside is not lost.
 						writer.unwrap( element );
 
 						return true;
 					} else if ( element.is( 'element' ) ) {
-						// Just added an element. Check its children to see if there are no nested blockQuotes somewhere inside.
+						// Just added an element. Check that all children meet the scheme rules.
 						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
@@ -102,31 +102,45 @@ export default class BlockQuoteEditing extends Plugin {
 
 			return false;
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-		const command = editor.commands.get( 'blockQuote' );
+		const viewDocument = this.editor.editing.view.document;
+		const selection = editor.model.document.selection;
+		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		// This listener is added in afterInit in order to register it after list's feature listener.
-		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
-		// we'd use numeric priority in this case.
-		this.listenTo( this.editor.editing.view.document, 'enter', ( evt, data ) => {
-			const doc = this.editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
+				return;
+			}
 
-			if ( doc.selection.isCollapsed && positionParent.isEmpty && command.value ) {
-				this.editor.execute( 'blockQuote' );
-				this.editor.editing.view.scrollToTheSelection();
+			const positionParent = selection.getLastPosition().parent;
+
+			if ( positionParent.isEmpty ) {
+				editor.execute( 'blockQuote' );
+				editor.editing.view.scrollToTheSelection();
 
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: 'blockquote' } );
+
+		// Overwrite default Backspace key behavior.
+		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
+				return;
+			}
+
+			const positionParent = selection.getLastPosition().parent;
+
+			if ( positionParent.isEmpty && !positionParent.previousSibling ) {
+				editor.execute( 'blockQuote' );
+				editor.editing.view.scrollToTheSelection();
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'blockquote' } );
 	}
 }

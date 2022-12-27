@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,8 @@ import ModelConsumable from '../../src/conversion/modelconsumable';
 import ModelElement from '../../src/model/element';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelText from '../../src/model/text';
+
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;
@@ -16,7 +18,7 @@ describe( 'ModelConsumable', () => {
 		modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 	} );
 
-	describe( 'add', () => {
+	describe( 'add()', () => {
 		it( 'should add consumable value from given element of given type', () => {
 			modelConsumable.add( modelElement, 'type' );
 
@@ -51,9 +53,33 @@ describe( 'ModelConsumable', () => {
 
 			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).to.be.null;
 		} );
+
+		it( 'should normalize type name for inserts', () => {
+			modelConsumable.add( modelElement, 'insert:foo' );
+
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.true;
+		} );
+
+		it( 'should not normalize type name for markers', () => {
+			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz:abc' );
+			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz:abc' );
+
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:xxx' ) ).to.be.null;
+
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:xxx' ) ).to.be.null;
+		} );
 	} );
 
-	describe( 'consume', () => {
+	describe( 'consume()', () => {
 		it( 'should remove consumable value of given type for given element and return true', () => {
 			modelConsumable.add( modelElement, 'type' );
 
@@ -96,9 +122,40 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.false;
 			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.false;
 		} );
+
+		it( 'should normalize type name for inserts', () => {
+			modelConsumable.add( modelElement, 'insert' );
+			const result = modelConsumable.consume( modelElement, 'insert:foo' );
+
+			expect( result ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.false;
+		} );
+
+		it( 'should not normalize type names for markers', () => {
+			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz' );
+			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz' );
+
+			const addResult = modelConsumable.consume( modelElement, 'addMarker:foo:bar:baz' );
+			const removeResult = modelConsumable.consume( modelElement, 'removeMarker:foo:bar:baz' );
+
+			expect( addResult ).to.be.true;
+			expect( removeResult ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo' ) ).to.be.null;
+
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo' ) ).to.be.null;
+		} );
 	} );
 
-	describe( 'revert', () => {
+	describe( 'revert()', () => {
 		it( 'should re-add consumable value if it was already consumed and return true', () => {
 			modelConsumable.add( modelElement, 'type' );
 			modelConsumable.consume( modelElement, 'type' );
@@ -149,7 +206,7 @@ describe( 'ModelConsumable', () => {
 		} );
 	} );
 
-	describe( 'test', () => {
+	describe( 'test()', () => {
 		it( 'should return null if consumable value of given type has never been added for given element', () => {
 			expect( modelConsumable.test( modelElement, 'typeA' ) ).to.be.null;
 
@@ -171,6 +228,59 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( proxy1To5, 'type' ) ).to.be.null;
 			expect( modelConsumable.test( proxyOther1To4, 'type' ) ).to.be.null;
 			expect( modelConsumable.test( equalProxy1To4, 'type' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'verifyAllConsumed()', () => {
+		it( 'should not throw if all events were consumed', () => {
+			modelConsumable.add( modelElement, 'insert:paragraph' );
+			modelConsumable.add( modelElement, 'attribute:foo:paragraph' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 3 ), 'insert:$text' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 3, 3 ), 'insert:$text' );
+
+			modelConsumable.consume( modelElement, 'insert:paragraph' );
+			modelConsumable.consume( modelElement, 'attribute:foo:paragraph' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 3 ), 'insert:$text' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 3, 3 ), 'insert:$text' );
+
+			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) ).to.not.throw();
+		} );
+
+		it( 'should not throw if all events from specified group were consumed', () => {
+			modelConsumable.add( modelElement, 'insert:paragraph' );
+			modelConsumable.add( modelElement, 'attribute:foo:paragraph' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 3 ), 'insert:$text' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 3, 3 ), 'insert:$text' );
+
+			modelConsumable.consume( modelElement, 'insert:paragraph' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 3 ), 'insert:$text' );
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 3, 3 ), 'insert:$text' );
+
+			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) ).to.not.throw();
+		} );
+
+		it( 'should throw if some element event was not consumed', () => {
+			modelConsumable.add( modelElement, 'insert:paragraph' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+
+			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+
+			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) )
+				.to.throw( CKEditorError, 'conversion-model-consumable-not-consumed' );
+		} );
+
+		it( 'should throw if some text node event was not consumed', () => {
+			modelConsumable.add( modelElement, 'insert:paragraph' );
+			modelConsumable.add( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
+
+			modelConsumable.consume( modelElement, 'insert:paragraph' );
+
+			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) )
+				.to.throw( CKEditorError, 'conversion-model-consumable-not-consumed' );
 		} );
 	} );
 } );

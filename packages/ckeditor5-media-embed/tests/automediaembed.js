@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,14 +11,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'AutoMediaEmbed - integration', () => {
@@ -30,7 +29,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing, Image, ImageCaption ]
+				plugins: [ Typing, Paragraph, Link, Image, ImageCaption, MediaEmbed, AutoMediaEmbed ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -98,6 +97,30 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
+		it( 'can undo auto-embeding by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
+
+			clock.tick( 100 );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
+		} );
+
 		it( 'works for a full URL (https + "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -109,7 +132,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
-		it( 'works for a full URL (https without "wwww" sub-domain)', () => {
+		it( 'works for a full URL (https without "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://youtube.com/watch?v=H08tGjXNHO4' );
 
@@ -131,7 +154,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
-		it( 'works for a full URL (http without "wwww" sub-domain)', () => {
+		it( 'works for a full URL (http without "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://youtube.com/watch?v=H08tGjXNHO4' );
 
@@ -307,13 +330,13 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		it( 'does nothing if pasted a block of content that looks like a URL', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, '<ul><li>https://</li><li>youtube.com/watch?</li></ul><p>v=H08tGjXNHO4</p>' );
+			pasteHtml( editor, '<p>https://</p><p>youtube.com/watch?</p><p>v=H08tGjXNHO4</p>' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">https://</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">youtube.com/watch?</listItem>' +
+				'<paragraph>https://</paragraph>' +
+				'<paragraph>youtube.com/watch?</paragraph>' +
 				'<paragraph>v=H08tGjXNHO4[]</paragraph>'
 			);
 		} );
@@ -329,15 +352,29 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
+		// s/ckeditor5/3
+		it( 'should handle invalid URL with repeated characters', () => {
+			const invalidURL = 'a.' + 'a'.repeat( 100000 ) + '^';
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, invalidURL );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				`<paragraph>${ invalidURL }[]</paragraph>`
+			);
+		} );
+
 		// #47
 		it( 'does not transform a valid URL into a media if the element cannot be placed in the current position', () => {
-			setData( editor.model, '<image src="/assets/sample.png"><caption>Foo.[]</caption></image>' );
+			setData( editor.model, '<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<image src="/assets/sample.png"><caption>Foo.https://www.youtube.com/watch?v=H08tGjXNHO4[]</caption></image>'
+				'<imageBlock src="/assets/sample.png"><caption>Foo.https://www.youtube.com/watch?v=H08tGjXNHO4[]</caption></imageBlock>'
 			);
 		} );
 
@@ -361,7 +398,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 				editor.model,
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'[<media url="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"></media>]' +
-				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+				'<paragraph>Bar.</paragraph>'
 			);
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
@@ -371,7 +408,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
-				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+				'<paragraph>Bar.</paragraph>'
 			);
 		} );
 
@@ -467,7 +504,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 				const rootEl = editor.model.document.getRoot();
 
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], writer.createPositionFromPath( rootEl, [ 0, i ] ) );
 					} );
 				}, i * 5 );
@@ -489,7 +526,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );
@@ -509,7 +546,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				writer.remove( writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ) );
 			} );
 
@@ -527,7 +564,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				const paragraph = writer.createElement( 'paragraph' );
 				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 0 ) ) );
 				writer.setSelection( paragraph, 'in' );
@@ -535,7 +572,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );
@@ -558,7 +595,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
-			editor.model.enqueueChange( 'transparent', writer => {
+			editor.model.enqueueChange( { isUndoable: false }, writer => {
 				const paragraph = writer.createElement( 'paragraph' );
 				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 1 ) ) );
 				writer.setSelection( paragraph, 'in' );
@@ -566,7 +603,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
-					editor.model.enqueueChange( 'transparent', writer => {
+					editor.model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
 				}, i * 5 );
@@ -587,7 +624,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 	it( 'should detach LiveRange', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing, Image, ImageCaption, Table ]
+			plugins: [ Typing, Paragraph, Link, Image, ImageCaption, Table, MediaEmbed, AutoMediaEmbed ]
 		} );
 
 		setData(
@@ -621,7 +658,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 	function simulateTyping( text ) {
 		// While typing, every character is an atomic change.
 		text.split( '' ).forEach( character => {
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: character
 			} );
 		} );

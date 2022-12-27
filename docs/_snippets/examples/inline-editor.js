@@ -1,21 +1,23 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
 
 import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
+		toolbar: {},
 		cloudServices: CS_CONFIG
 	};
 
@@ -34,33 +36,13 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		];
 		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	} else {
-		config.extraPlugins = [ ImageResize ];
 		config.image = {
-			resizeOptions: [
-				{
-					name: 'imageResize:original',
-					label: 'Original',
-					value: null
-				},
-				{
-					name: 'imageResize:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'imageResize:75',
-					label: '75%',
-					value: '75'
-				}
-			],
-			styles: [ 'full', 'alignLeft', 'alignRight' ],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
-				'imageResize',
-				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		};
