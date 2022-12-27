@@ -35,4 +35,3 @@ export default class CodeblockCaption extends Plugin {
 		return 'CodeblockCaption';
 	}
 }
-
