@@ -50,14 +50,18 @@ export default class PageBreakCommand extends Command {
 	}
 }
 
-// Checks if a page break is allowed by the schema in the optimal insertion parent.
+/**
+ * Checks if a page break is allowed by the schema in the optimal insertion parent.
+ */
 function isPageBreakAllowedInParent( selection: DocumentSelection, schema: Schema, model: Model ): boolean {
 	const parent = getInsertPageBreakParent( selection, model );
 
 	return schema.checkChild( parent, 'pageBreak' );
 }
 
-// Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
+/**
+ * Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
+ */
 function getInsertPageBreakParent( selection: DocumentSelection, model: Model ): Element {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
