@@ -23,7 +23,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to {@link installation/getting-started/quick-start-other Installation} for more details.
 
-The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/basic-api Basic API} for an introduction.
+The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor Lifecycle} and @link installation/getting-started/save-editor Getting and setting data} for an introduction.
 
 When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration. CKEditor 5 may still not have all the same features available as CKEditor 4 yet and some existing features may behave differently. Therefore, it is worth spending some time analyzing the features you need in your implementation.
 
