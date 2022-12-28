@@ -187,6 +187,11 @@ export function addToolbarToDropdown(
 	} else {
 		dropdownView.once( 'change:isOpen', () => addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options ) );
 	}
+
+	if ( options.enableActiveItemFocusOnDropdownOpen ) {
+		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
+		focusChildOnDropdownOpen( dropdownView, () => dropdownView.toolbarView!.items.find( ( item: any ) => item.isOn ) );
+	}
 }
 
 /**
@@ -196,11 +201,10 @@ function addToolbarToOpenDropdown(
 	dropdownView: DropdownView,
 	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
 	options: {
-		enableActiveItemFocusOnDropdownOpen?: boolean;
 		isVertical?: boolean;
 		ariaLabel?: string;
 		bindToCollection?: boolean;
-	} = {}
+	}
 ): void {
 	const locale = dropdownView.locale;
 	const t = locale.t;
@@ -217,20 +221,16 @@ function addToolbarToOpenDropdown(
 	if ( options.bindToCollection ) {
 		if ( !( buttons instanceof ViewCollection ) ) {
 			/**
-			 * TODO
-			 * @error toolbar-error-todo
+			 * The `addToolbarToOpenDropdown()` requires a `ViewCollection` instance when called with `bindToCollection` option.
+			 *
+			 * @error ui-dropdown-toolbar-expects-view-collection
 			 */
-			throw new CKEditorError( 'toolbar-error-todo', null );
+			throw new CKEditorError( 'ui-dropdown-toolbar-expects-view-collection', null );
 		}
 
 		toolbarView.items.bindTo( buttons ).using( item => item );
 	} else {
 		toolbarView.items.addMany( buttons );
-	}
-
-	if ( options.enableActiveItemFocusOnDropdownOpen ) {
-		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
-		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
 	}
 
 	dropdownView.panelView.children.add( toolbarView );
@@ -298,6 +298,15 @@ export function addListToDropdown(
 	} else {
 		dropdownView.once( 'change:isOpen', () => addListToOpenDropdown( dropdownView, itemsOrCallback, options ) );
 	}
+
+	// Accessibility: Focus the first active button in the list when the dropdown gets open.
+	focusChildOnDropdownOpen( dropdownView, () => dropdownView.listView!.items.find( item => {
+		if ( item instanceof ListItemView ) {
+			return ( item.children.first as any ).isOn;
+		}
+
+		return false;
+	} ) );
 }
 
 /**
@@ -308,7 +317,7 @@ function addListToOpenDropdown(
 	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
 	options: {
 		ariaLabel?: string;
-	} = {}
+	}
 ): void {
 	const locale = dropdownView.locale;
 
@@ -345,15 +354,6 @@ function addListToOpenDropdown(
 	dropdownView.panelView.children.add( listView );
 
 	listView.items.delegate( 'execute' ).to( dropdownView );
-
-	// Accessibility: Focus the first active button in the list when the dropdown gets open.
-	focusChildOnDropdownOpen( dropdownView, () => listView.items.find( item => {
-		if ( item instanceof ListItemView ) {
-			return ( item.children.first as any ).isOn;
-		}
-
-		return false;
-	} ) );
 }
 
 /**

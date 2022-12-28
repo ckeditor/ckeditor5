@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
-
 /**
  * @module ui/bindings/clickoutsidehandler
  */
+
+import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
 
 /* global document */
 
