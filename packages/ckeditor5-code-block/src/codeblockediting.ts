@@ -167,13 +167,6 @@ export default class CodeBlockEditing extends Plugin {
 			modelToDataViewSoftBreakInsertion( model ),
 			{ priority: 'high' }
 		);
-		editor.data.downcastDispatcher.on<DowncastInsertEvent>(
-			'insert:caption',
-			( evt, data, conversionApi ) => {
-				// caption is available only inside codeBlock
-				// dummy block
-			}
-		);
 
 		editor.data.upcastDispatcher.on<UpcastElementEvent>(
 			'element:code',

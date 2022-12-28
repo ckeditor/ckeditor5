@@ -9,6 +9,7 @@
 
 import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
+import type { ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import ToggleCodeblockCaptionCommand from './togglecodeblockcaptioncommand';
 import { matchCodeblockCaptionViewElement, isCodeblockWrapper } from './utils';
@@ -76,12 +77,11 @@ export default class CodeblockCaptionEditing extends Plugin {
 		editor.commands.add( 'toggleCodeblockCaption', new ToggleCodeblockCaptionCommand( this.editor ) );
 
 		// Disable enter key event inside codeblock caption to prevent bug
-		this.listenTo( view.document, 'enter', ( evt, data ) => {
+		this.listenTo<ViewDocumentEnterEvent>( view.document, 'enter', ( evt, data ) => {
 			data.stopPropagation();
 			data.preventDefault();
 			evt.stop();
-		} );
-		// context: 'figcaption'
+		}, { context: 'figcaption' } );
 	}
 
 	/**
