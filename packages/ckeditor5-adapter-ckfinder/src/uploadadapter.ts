@@ -9,10 +9,11 @@
  * @module adapter-ckfinder/uploadadapter
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { FileRepository } from 'ckeditor5/src/upload';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { FileRepository, type UploadAdapter as ExternalUploadAdapter, type FileLoader, type UploadResponse } from 'ckeditor5/src/upload';
 
 import { getCsrfToken } from './utils';
+import type { LocaleTranslate } from 'ckeditor5/src/utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
@@ -23,29 +24,27 @@ import { getCsrfToken } from './utils';
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CKFinderUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ FileRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CKFinderUploadAdapter' {
 		return 'CKFinderUploadAdapter';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const url = this.editor.config.get( 'ckfinder.uploadUrl' );
+	public init(): void {
+		const url = this.editor.config.get( 'ckfinder.uploadUrl' )! as string;
 
 		if ( !url ) {
 			return;
@@ -60,36 +59,35 @@ export default class CKFinderUploadAdapter extends Plugin {
  * Upload adapter for CKFinder.
  *
  * @private
- * @implements module:upload/filerepository~UploadAdapter
  */
-class UploadAdapter {
+class UploadAdapter implements ExternalUploadAdapter {
+	/**
+	 * FileLoader instance to use during the upload.
+	 */
+	public loader: FileLoader;
+
+	/**
+	 * Upload URL.
+	 */
+	public url: string;
+
+	/**
+	 * Locale translation method.
+	 *
+	 * @member {module:utils/locale~Locale#t} #t
+	 */
+	public t: LocaleTranslate;
+
+	private xhr?: XMLHttpRequest;
+
 	/**
 	 * Creates a new adapter instance.
 	 *
-	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {String} url
 	 * @param {module:utils/locale~Locale#t} t
 	 */
-	constructor( loader, url, t ) {
-		/**
-		 * FileLoader instance to use during the upload.
-		 *
-		 * @member {module:upload/filerepository~FileLoader} #loader
-		 */
+	constructor( loader: FileLoader, url: string, t: LocaleTranslate ) {
 		this.loader = loader;
-
-		/**
-		 * Upload URL.
-		 *
-		 * @member {String} #url
-		 */
 		this.url = url;
-
-		/**
-		 * Locale translation method.
-		 *
-		 * @member {module:utils/locale~Locale#t} #t
-		 */
 		this.t = t;
 	}
 
@@ -99,9 +97,9 @@ class UploadAdapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise.<Object>}
 	 */
-	upload() {
-		return this.loader.file.then( file => {
-			return new Promise( ( resolve, reject ) => {
+	public upload() {
+		return this.loader.file.then( ( file: any ) => {
+			return new Promise<UploadResponse>( ( resolve, reject ) => {
 				this._initRequest();
 				this._initListeners( resolve, reject, file );
 				this._sendRequest( file );
@@ -114,7 +112,7 @@ class UploadAdapter {
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#abort
 	 */
-	abort() {
+	public abort() {
 		if ( this.xhr ) {
 			this.xhr.abort();
 		}
@@ -122,10 +120,8 @@ class UploadAdapter {
 
 	/**
 	 * Initializes the XMLHttpRequest object.
-	 *
-	 * @private
 	 */
-	_initRequest() {
+	private _initRequest() {
 		const xhr = this.xhr = new XMLHttpRequest();
 
 		xhr.open( 'POST', this.url, true );
@@ -135,21 +131,20 @@ class UploadAdapter {
 	/**
 	 * Initializes XMLHttpRequest listeners.
 	 *
-	 * @private
-	 * @param {Function} resolve Callback function to be called when the request is successful.
-	 * @param {Function} reject Callback function to be called when the request cannot be completed.
-	 * @param {File} file File instance to be uploaded.
+	 * @param resolve Callback function to be called when the request is successful.
+	 * @param reject Callback function to be called when the request cannot be completed.
+	 * @param file File instance to be uploaded.
 	 */
-	_initListeners( resolve, reject, file ) {
+	private _initListeners( resolve: Function, reject: Function, file: File ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
 		const t = this.t;
 		const genericError = t( 'Cannot upload file:' ) + ` ${ file.name }.`;
 
-		xhr.addEventListener( 'error', () => reject( genericError ) );
-		xhr.addEventListener( 'abort', () => reject() );
-		xhr.addEventListener( 'load', () => {
-			const response = xhr.response;
+		xhr!.addEventListener( 'error', () => reject( genericError ) );
+		xhr!.addEventListener( 'abort', () => reject() );
+		xhr!.addEventListener( 'load', () => {
+			const response = xhr!.response;
 
 			if ( !response || !response.uploaded ) {
 				return reject( response && response.error && response.error.message ? response.error.message : genericError );
@@ -162,8 +157,8 @@ class UploadAdapter {
 
 		// Upload progress when it's supported.
 		/* istanbul ignore else */
-		if ( xhr.upload ) {
-			xhr.upload.addEventListener( 'progress', evt => {
+		if ( xhr!.upload ) {
+			xhr!.upload.addEventListener( 'progress', ( evt: any ) => {
 				if ( evt.lengthComputable ) {
 					loader.uploadTotal = evt.total;
 					loader.uploaded = evt.loaded;
@@ -175,16 +170,15 @@ class UploadAdapter {
 	/**
 	 * Prepares the data and sends the request.
 	 *
-	 * @private
-	 * @param {File} file File instance to be uploaded.
+	 * @param file File instance to be uploaded.
 	 */
-	_sendRequest( file ) {
+	private _sendRequest( file: File ) {
 		// Prepare form data.
 		const data = new FormData();
 		data.append( 'upload', file );
 		data.append( 'ckCsrfToken', getCsrfToken() );
 
 		// Send request.
-		this.xhr.send( data );
+		this.xhr!.send( data );
 	}
 }
