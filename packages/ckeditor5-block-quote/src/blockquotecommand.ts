@@ -9,6 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
+import type { DocumentFragment, Element, Position, Range, Schema, Writer } from 'ckeditor5/src/engine';
 
 /**
  * The block quote command plugin.
@@ -21,13 +22,13 @@ export default class BlockQuoteCommand extends Command {
 	 *
 	 * @observable
 	 * @readonly
-	 * @member {Boolean} #value
 	 */
+	declare public value: boolean;
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -38,11 +39,11 @@ export default class BlockQuoteCommand extends Command {
 	 * a block quote.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a block quote,
+	 * @param options Command options.
+	 * @param options.forceValue If set, it will force the command behavior. If `true`, the command will apply a block quote,
 	 * otherwise the command will remove the block quote. If not set, the command will act basing on its current value.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
@@ -68,11 +69,8 @@ export default class BlockQuoteCommand extends Command {
 
 	/**
 	 * Checks the command's {@link #value}.
-	 *
-	 * @private
-	 * @returns {Boolean} The current value.
 	 */
-	_getValue() {
+	private _getValue(): boolean {
 		const selection = this.editor.model.document.selection;
 
 		const firstBlock = first( selection.getSelectedBlocks() );
@@ -84,10 +82,9 @@ export default class BlockQuoteCommand extends Command {
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
+	 * @returns Whether the command should be enabled.
 	 */
-	_checkEnabled() {
+	private _checkEnabled(): boolean {
 		if ( this.value ) {
 			return true;
 		}
@@ -110,23 +107,19 @@ export default class BlockQuoteCommand extends Command {
 	 * If blocks which are supposed to be "unquoted" are in the middle of a quote,
 	 * start it or end it, then the quote will be split (if needed) and the blocks
 	 * will be moved out of it, so other quoted blocks remained quoted.
-	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
-	_removeQuote( writer, blocks ) {
+	private _removeQuote( writer: Writer, blocks: Array<Element> ): void {
 		// Unquote all groups of block. Iterate in the reverse order to not break following ranges.
 		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
 			if ( groupRange.start.isAtStart && groupRange.end.isAtEnd ) {
-				writer.unwrap( groupRange.start.parent );
+				writer.unwrap( groupRange.start.parent as Element );
 
 				return;
 			}
 
 			// The group of blocks are at the beginning of an <bQ> so let's move them left (out of the <bQ>).
 			if ( groupRange.start.isAtStart ) {
-				const positionBefore = writer.createPositionBefore( groupRange.start.parent );
+				const positionBefore = writer.createPositionBefore( groupRange.start.parent as Element );
 
 				writer.move( groupRange, positionBefore );
 
@@ -141,7 +134,7 @@ export default class BlockQuoteCommand extends Command {
 
 			// Now we are sure that groupRange.end.isAtEnd is true, so let's move the blocks right.
 
-			const positionAfter = writer.createPositionAfter( groupRange.end.parent );
+			const positionAfter = writer.createPositionAfter( groupRange.end.parent as Element );
 
 			writer.move( groupRange, positionAfter );
 		} );
@@ -149,13 +142,9 @@ export default class BlockQuoteCommand extends Command {
 
 	/**
 	 * Applies the quote to given blocks.
-	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
-	_applyQuote( writer, blocks ) {
-		const quotesToMerge = [];
+	private _applyQuote( writer: Writer, blocks: Array<Element> ): void {
+		const quotesToMerge: Array<Element | DocumentFragment> = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
 		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
@@ -186,19 +175,18 @@ export default class BlockQuoteCommand extends Command {
 	}
 }
 
-function findQuote( elementOrPosition ) {
-	return elementOrPosition.parent.name == 'blockQuote' ? elementOrPosition.parent : null;
+function findQuote( elementOrPosition: Element | Position ): Element | DocumentFragment | null {
+	return elementOrPosition.parent!.name == 'blockQuote' ? elementOrPosition.parent : null;
 }
 
-// Returns a minimal array of ranges containing groups of subsequent blocks.
-//
-// content:         abcdefgh
-// blocks:          [ a, b, d, f, g, h ]
-// output ranges:   [ab]c[d]e[fgh]
-//
-// @param {Array.<module:engine/model/element~Element>} blocks
-// @returns {Array.<module:engine/model/range~Range>}
-function getRangesOfBlockGroups( writer, blocks ) {
+/**
+ * Returns a minimal array of ranges containing groups of subsequent blocks.
+ *
+ * content:         abcdefgh
+ * blocks:          [ a, b, d, f, g, h ]
+ * output ranges:   [ab]c[d]e[fgh]
+ */
+function getRangesOfBlockGroups( writer: Writer, blocks: Array<Element> ): Array<Range> {
 	let startPosition;
 	let i = 0;
 	const ranges = [];
@@ -222,10 +210,12 @@ function getRangesOfBlockGroups( writer, blocks ) {
 	return ranges;
 }
 
-// Checks whether <bQ> can wrap the block.
-function checkCanBeQuoted( schema, block ) {
+/**
+ * Checks whether <bQ> can wrap the block.
+ */
+function checkCanBeQuoted( schema: Schema, block: Element ): boolean {
 	// TMP will be replaced with schema.checkWrap().
-	const isBQAllowed = schema.checkChild( block.parent, 'blockQuote' );
+	const isBQAllowed = schema.checkChild( block.parent as Element, 'blockQuote' );
 	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
 
 	return isBQAllowed && isBlockAllowedInBQ;

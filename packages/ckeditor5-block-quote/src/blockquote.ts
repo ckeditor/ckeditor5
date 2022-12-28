@@ -7,7 +7,7 @@
  * @module block-quote/blockquote
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import BlockQuoteEditing from './blockquoteediting';
 import BlockQuoteUI from './blockquoteui';
@@ -26,14 +26,20 @@ export default class BlockQuote extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ BlockQuoteEditing, BlockQuoteUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'BlockQuote' {
 		return 'BlockQuote';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ BlockQuote.pluginName ]: BlockQuote;
 	}
 }

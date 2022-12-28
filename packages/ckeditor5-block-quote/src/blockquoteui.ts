@@ -23,19 +23,19 @@ export default class BlockQuoteUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'BlockQuoteUI' {
 		return 'BlockQuoteUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'blockQuote', locale => {
-			const command = editor.commands.get( 'blockQuote' );
+			const command = editor.commands.get( 'blockQuote' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
@@ -56,5 +56,11 @@ export default class BlockQuoteUI extends Plugin {
 
 			return buttonView;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ BlockQuoteUI.pluginName ]: BlockQuoteUI;
 	}
 }
