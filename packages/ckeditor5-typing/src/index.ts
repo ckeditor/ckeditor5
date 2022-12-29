@@ -22,3 +22,4 @@ export { default as getLastTextLine } from './utils/getlasttextline';
 export type { TypingConfig } from './typingconfig';
 export type { ViewDocumentDeleteEvent } from './deleteobserver';
 export type { ViewDocumentInsertTextEvent } from './inserttextobserver';
+export type { LastTextLineData } from './utils/getlasttextline';

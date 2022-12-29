@@ -3,8 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { LiveRange } from 'ckeditor5/src/engine';
+import { type Item, type Text, LiveRange } from 'ckeditor5/src/engine';
 import { first } from 'ckeditor5/src/utils';
+import type { Command, Editor } from 'ckeditor5/src/core';
+import type Autoformat from './autoformat';
+
+type CallbackVoid = ( context: { match: RegExpExecArray } ) => void;
+type CallbackBoolean = ( context: { match: RegExpExecArray } ) => boolean;
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -30,10 +35,13 @@ import { first } from 'ckeditor5/src/utils';
  *
  * To convert a paragraph to heading 1 when `- ` is typed, using just the command name:
  *
+ * ```ts
  *		blockAutoformatEditing( editor, plugin, /^\- $/, 'heading1' );
+ * ```
  *
  * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
  *
+ * ```ts
  *		blockAutoformatEditing( editor, plugin, /^\- $/, ( context ) => {
  *			const { match } = context;
  *			const headingLevel = match[ 1 ].length;
@@ -42,27 +50,33 @@ import { first } from 'ckeditor5/src/utils';
  *				formatId: `heading${ headingLevel }`
  *			} );
  * 		} );
+ * ```
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
- * @param {RegExp} pattern The regular expression to execute on just inserted text. The regular expression is tested against the text
+ * @param editor The editor instance.
+ * @param plugin The autoformat plugin instance.
+ * @param pattern The regular expression to execute on just inserted text. The regular expression is tested against the text
  * from the beginning until the caret position.
- * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
+ * @param callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameter:
  * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
  */
-export default function blockAutoformatEditing( editor, plugin, pattern, callbackOrCommand ) {
-	let callback;
-	let command = null;
+export default function blockAutoformatEditing(
+	editor: Editor,
+	plugin: Autoformat,
+	pattern: RegExp,
+	callbackOrCommand?: string | CallbackVoid | CallbackBoolean
+): void {
+	let callback: CallbackVoid | CallbackBoolean;
+	let command: Command | null = null;
 
 	if ( typeof callbackOrCommand == 'function' ) {
 		callback = callbackOrCommand;
 	} else {
 		// We assume that the actual command name was provided.
-		command = editor.commands.get( callbackOrCommand );
+		command = editor.commands.get( callbackOrCommand! )!;
 
 		callback = () => {
-			editor.execute( callbackOrCommand );
+			editor.execute( callbackOrCommand! );
 		};
 	}
 
@@ -73,7 +87,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 		const range = first( editor.model.document.selection.getRanges() );
 
-		if ( !range.isCollapsed ) {
+		if ( !range!.isCollapsed ) {
 			return;
 		}
 
@@ -99,7 +113,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 		// Only list commands and custom callbacks can be applied inside a list.
 		if ( blockToFormat.is( 'element', 'listItem' ) &&
 			typeof callbackOrCommand !== 'function' &&
-			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand )
+			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand! )
 		) {
 			return;
 		}
@@ -110,15 +124,16 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			return;
 		}
 
-		const firstNode = blockToFormat.getChild( 0 );
+		const firstNode = blockToFormat.getChild( 0 ) as Text;
+
 		const firstNodeRange = editor.model.createRangeOn( firstNode );
 
 		// Range is only expected to be within or at the very end of the first text node.
-		if ( !firstNodeRange.containsRange( range ) && !range.end.isEqual( firstNodeRange.end ) ) {
+		if ( !firstNodeRange.containsRange( range! ) && !range!.end.isEqual( firstNodeRange.end ) ) {
 			return;
 		}
 
-		const match = pattern.exec( firstNode.data.substr( 0, range.end.offset ) );
+		const match = pattern.exec( firstNode.data.substr( 0, range!.end.offset ) );
 
 		// ...and this text node's data match the pattern.
 		if ( !match ) {
@@ -138,13 +153,13 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			if ( wasChanged !== false ) {
 				writer.remove( range );
 
-				const selectionRange = editor.model.document.selection.getFirstRange();
+				const selectionRange = editor.model.document.selection.getFirstRange()!;
 				const blockRange = writer.createRangeIn( blockToFormat );
 
 				// If the block is empty and the document selection has been moved when
 				// applying formatting (e.g. is now in newly created block).
 				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
-					writer.remove( blockToFormat );
+					writer.remove( blockToFormat as Item );
 				}
 			}
 			range.detach();
