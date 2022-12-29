@@ -7,21 +7,19 @@
  * @module markdown-gfm/markdown
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import GFMDataProcessor from './gfmdataprocessor';
 
 /**
  * The GitHub Flavored Markdown (GFM) plugin.
  *
  * For a detailed overview, check the {@glink features/markdown Markdown feature documentation}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Markdown extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.data.processor = new GFMDataProcessor( editor.data.viewDocument );
@@ -30,7 +28,13 @@ export default class Markdown extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Markdown' {
 		return 'Markdown';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Markdown.pluginName ]: Markdown;
 	}
 }

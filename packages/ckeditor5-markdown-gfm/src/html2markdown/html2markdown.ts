@@ -7,13 +7,20 @@
  * @module markdown-gfm/html2markdown
  */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
+// Importing types for this package is problematic, so it's omitted.
+// @ts-ignore
 import TurndownService from 'turndown';
+
+// There no avaialble types for 'turndown-plugin-gfm' module and it's not worth to generate them on our own.
+// @ts-ignore
 import { gfm } from 'turndown-plugin-gfm';
 
 // Override the original escape method by not escaping links.
 const originalEscape = TurndownService.prototype.escape;
 
-function escape( string ) {
+function escape( string: string ): string {
 	string = originalEscape( string );
 
 	// Escape "<".
@@ -22,7 +29,7 @@ function escape( string ) {
 	return string;
 }
 
-TurndownService.prototype.escape = function( string ) {
+TurndownService.prototype.escape = function( string: string ): string {
 	// Urls should not be escaped. Our strategy is using a regex to find them and escape everything
 	// which is out of the matches parts.
 
@@ -30,7 +37,7 @@ TurndownService.prototype.escape = function( string ) {
 	let lastLinkEnd = 0;
 
 	for ( const match of matchAutolink( string ) ) {
-		const index = match.index;
+		const index = match.index!;
 
 		// Append the substring between the last match and the current one (if anything).
 		if ( index > lastLinkEnd ) {
@@ -65,25 +72,22 @@ turndownService.use( [
 
 /**
  * Parses HTML to a markdown.
- *
- * @param {String} html
- * @returns {String}
  */
-export default function html2markdown( html ) {
+export default function html2markdown( html: string ): string {
 	return turndownService.turndown( html );
 }
 
 export { turndownService };
 
 // This is a copy of the original taskListItems rule from turdown-plugin-gfm, with minor changes.
-function todoList( turndownService ) {
+function todoList( turndownService: TurndownService ): void {
 	turndownService.addRule( 'taskListItems', {
-		filter( node ) {
+		filter( node: any ) {
 			return node.type === 'checkbox' &&
 				// Changes here as CKEditor outputs a deeper structure.
 				( node.parentNode.nodeName === 'LI' || node.parentNode.parentNode.nodeName === 'LI' );
 		},
-		replacement( content, node ) {
+		replacement( content: any, node: any ) {
 			return ( node.checked ? '[x]' : '[ ]' ) + ' ';
 		}
 	} );
@@ -102,9 +106,11 @@ const regex = new RegExp(
 	'gi'
 );
 
-// Trimming end of link.
-// https://github.github.com/gfm/#autolinks-extension-
-function* matchAutolink( string ) {
+/**
+ * Trimming end of link.
+ * https://github.github.com/gfm/#autolinks-extension-
+ */
+function* matchAutolink( string: string ) {
 	for ( const match of string.matchAll( regex ) ) {
 		const matched = match[ 0 ];
 		const length = autolinkFindEnd( matched );
@@ -118,8 +124,10 @@ function* matchAutolink( string ) {
 	}
 }
 
-// Returns the new length of the link (after it would trim trailing characters).
-function autolinkFindEnd( string ) {
+/**
+ * Returns the new length of the link (after it would trim trailing characters).
+ */
+function autolinkFindEnd( string: string ) {
 	let length = string.length;
 
 	while ( length > 0 ) {

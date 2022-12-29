@@ -13,17 +13,17 @@ import { marked } from 'marked';
 marked.use( {
 	tokenizer: {
 		// Disable the autolink rule in the lexer.
-		autolink: () => null,
-		url: () => null
+		autolink: () => null as any,
+		url: () => null as any
 	},
 	renderer: {
-		checkbox( ...args ) {
+		checkbox( ...args: Array<any> ) {
 			// Remove bogus space after <input type="checkbox"> because it would be preserved
 			// by DomConverter as it's next to an inline object.
 			return Object.getPrototypeOf( this ).checkbox.call( this, ...args ).trimRight();
 		},
 
-		code( ...args ) {
+		code( ...args: Array<any> ) {
 			// Since marked v1.2.8, every <code> gets a trailing "\n" whether it originally
 			// ended with one or not (see https://github.com/markedjs/marked/issues/1884 to learn why).
 			// This results in a redundant soft break in the model when loaded into the editor, which
@@ -35,18 +35,15 @@ marked.use( {
 
 /**
  * Parses markdown string to an HTML.
- *
- * @param {String} markdown
- * @returns {String}
  */
-export default function markdown2html( markdown ) {
+export default function markdown2html( markdown: string ): string {
 	return marked.parse( markdown, {
 		gfm: true,
 		breaks: true,
 		tables: true,
 		xhtml: true,
 		headerIds: false
-	} );
+	} as marked.MarkedOptions );
 }
 
 export { marked };
