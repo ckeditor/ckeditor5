@@ -36,9 +36,9 @@ type TestCallback = ( text: string ) => {
  * the autoformatting engine checks the text on the left of the selection
  * and executes the provided action if the text matches given criteria (regular expression or callback).
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
- * @param {Function|RegExp} testRegexpOrCallback The regular expression or callback to execute on text.
+ * @param editor The editor instance.
+ * @param plugin The autoformat plugin instance.
+ * @param testRegexpOrCallback The regular expression or callback to execute on text.
  * Provided regular expression *must* have three capture groups. The first and the third capture group
  * should match opening and closing delimiters. The second capture group should match the text to format.
  *
@@ -66,7 +66,7 @@ type TestCallback = ( text: string ) => {
  *		}
  * ```
  *
- * @param {Function} formatCallback A callback to apply actual formatting.
+ * @param formatCallback A callback to apply actual formatting.
  * It should return `false` if changes should not be applied (e.g. if a command is disabled).
  *
  * ```ts
