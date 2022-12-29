@@ -50,6 +50,7 @@ packages/ckeditor5-upload/src/**/*.js
 packages/ckeditor5-utils/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
 packages/ckeditor5-word-count/src/**/*.js
+packages/ckeditor5-horizontal-line/src/**/*.js
 packages/*/src/**/*.d.ts
 src/**/*.js
 src/**/*.d.ts
