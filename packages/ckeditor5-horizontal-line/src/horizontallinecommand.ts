@@ -56,7 +56,7 @@ export default class HorizontalLineCommand extends Command {
  * @param model Model instance.
  */
 function isHorizontalLineAllowedInParent( selection: Selection | DocumentSelection, schema: Schema, model: Model ): boolean {
-	const parent = getInsertHorizontalLineParent( selection, model )!;
+	const parent = getInsertHorizontalLineParent( selection, model );
 
 	return schema.checkChild( parent, 'horizontalLine' );
 }

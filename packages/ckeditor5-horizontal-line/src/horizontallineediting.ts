@@ -86,6 +86,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ HorizontalLineEditing.pluginName ]: HorizontalLineEditing;
 	}
+
 	interface CommandsMap {
 		horizontalLine: HorizontalLineCommand;
 	}
