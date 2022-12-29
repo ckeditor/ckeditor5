@@ -19,9 +19,10 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type Autoformat from './autoformat';
 import type { Writer, Model, Position, Range } from 'ckeditor5/src/engine';
 import type { LastTextLineData } from 'ckeditor5/src/typing';
+
+import type Autoformat from './autoformat';
 
 type TestCallback = ( text: string ) => {
 	remove: Array<Array<number>>;

@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { Command, Editor } from 'ckeditor5/src/core';
 import { type Item, type Text, LiveRange } from 'ckeditor5/src/engine';
 import { first } from 'ckeditor5/src/utils';
-import type { Command, Editor } from 'ckeditor5/src/core';
+
 import type Autoformat from './autoformat';
 
 type CallbackVoid = ( context: { match: RegExpExecArray } ) => void;

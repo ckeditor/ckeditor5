@@ -8,8 +8,8 @@
  */
 
 import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
-import { Delete } from 'ckeditor5/src/typing';
 import type { Range, Writer } from 'ckeditor5/src/engine';
+import { Delete } from 'ckeditor5/src/typing';
 
 import blockAutoformatEditing from './blockautoformatediting';
 import inlineAutoformatEditing from './inlineautoformatediting';
