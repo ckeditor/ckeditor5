@@ -10,10 +10,15 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { FileRepository, type UploadAdapter as ExternalUploadAdapter, type FileLoader, type UploadResponse } from 'ckeditor5/src/upload';
+import {
+	FileRepository,
+	type UploadAdapter as UploadAdapterInterface,
+	type FileLoader,
+	type UploadResponse
+} from 'ckeditor5/src/upload';
+import type { LocaleTranslate } from 'ckeditor5/src/utils';
 
 import { getCsrfToken } from './utils';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
@@ -57,10 +62,8 @@ export default class CKFinderUploadAdapter extends Plugin {
 
 /**
  * Upload adapter for CKFinder.
- *
- * @private
  */
-class UploadAdapter implements ExternalUploadAdapter {
+class UploadAdapter implements UploadAdapterInterface {
 	/**
 	 * FileLoader instance to use during the upload.
 	 */
@@ -73,8 +76,6 @@ class UploadAdapter implements ExternalUploadAdapter {
 
 	/**
 	 * Locale translation method.
-	 *
-	 * @member {module:utils/locale~Locale#t} #t
 	 */
 	public t: LocaleTranslate;
 
@@ -82,8 +83,6 @@ class UploadAdapter implements ExternalUploadAdapter {
 
 	/**
 	 * Creates a new adapter instance.
-	 *
-	 * @param {module:utils/locale~Locale#t} t
 	 */
 	constructor( loader: FileLoader, url: string, t: LocaleTranslate ) {
 		this.loader = loader;
@@ -95,14 +94,13 @@ class UploadAdapter implements ExternalUploadAdapter {
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
-	 * @returns {Promise.<Object>}
 	 */
 	public upload() {
-		return this.loader.file.then( ( file: any ) => {
+		return this.loader.file.then( file => {
 			return new Promise<UploadResponse>( ( resolve, reject ) => {
 				this._initRequest();
-				this._initListeners( resolve, reject, file );
-				this._sendRequest( file );
+				this._initListeners( resolve, reject, file! );
+				this._sendRequest( file! );
 			} );
 		} );
 	}
@@ -135,16 +133,20 @@ class UploadAdapter implements ExternalUploadAdapter {
 	 * @param reject Callback function to be called when the request cannot be completed.
 	 * @param file File instance to be uploaded.
 	 */
-	private _initListeners( resolve: Function, reject: Function, file: File ) {
-		const xhr = this.xhr;
+	private _initListeners(
+		resolve: ( value: UploadResponse ) => void,
+		reject: ( reason?: unknown ) => void,
+		file: File
+	) {
+		const xhr = this.xhr!;
 		const loader = this.loader;
 		const t = this.t;
 		const genericError = t( 'Cannot upload file:' ) + ` ${ file.name }.`;
 
-		xhr!.addEventListener( 'error', () => reject( genericError ) );
-		xhr!.addEventListener( 'abort', () => reject() );
-		xhr!.addEventListener( 'load', () => {
-			const response = xhr!.response;
+		xhr.addEventListener( 'error', () => reject( genericError ) );
+		xhr.addEventListener( 'abort', () => reject() );
+		xhr.addEventListener( 'load', () => {
+			const response = xhr.response;
 
 			if ( !response || !response.uploaded ) {
 				return reject( response && response.error && response.error.message ? response.error.message : genericError );
@@ -157,8 +159,8 @@ class UploadAdapter implements ExternalUploadAdapter {
 
 		// Upload progress when it's supported.
 		/* istanbul ignore else */
-		if ( xhr!.upload ) {
-			xhr!.upload.addEventListener( 'progress', ( evt: any ) => {
+		if ( xhr.upload ) {
+			xhr.upload.addEventListener( 'progress', evt => {
 				if ( evt.lengthComputable ) {
 					loader.uploadTotal = evt.total;
 					loader.uploaded = evt.loaded;
