@@ -209,6 +209,18 @@ describe( 'ListView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	describe( '#ariaLabel', () => {
+		it( 'should be not set by default', () => {
+			expect( view.element.attributes[ 'aria-label' ] ).to.be.undefined;
+		} );
+
+		it( 'should set aria-label', () => {
+			view.ariaLabel = 'foo';
+
+			expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'foo' );
+		} );
+	} );
 } );
 
 function focusable() {

@@ -33,6 +33,8 @@ import ViewCollection from '../../src/viewcollection';
 describe( 'utils', () => {
 	let locale, dropdownView;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
 		locale = { t: langString => langString };
 	} );
@@ -711,6 +713,38 @@ describe( 'utils', () => {
 				dropdownView.element.remove();
 			} );
 
+			it( 'uses items callback on first open to generate items', () => {
+				const dropdownView = createDropdown( locale );
+
+				dropdownView.buttonView.set( {
+					isEnabled: true,
+					isOn: false,
+					label: 'foo'
+				} );
+
+				const itemsCallback = sinon.stub().callsFake( () => definitions );
+
+				addListToDropdown( dropdownView, itemsCallback );
+
+				expect( dropdownView.listView ).to.be.undefined;
+				sinon.assert.notCalled( itemsCallback );
+
+				dropdownView.render();
+				document.body.appendChild( dropdownView.element );
+
+				dropdownView.isOpen = true;
+
+				sinon.assert.calledOnce( itemsCallback );
+
+				const panelChildren = dropdownView.panelView.children;
+
+				expect( panelChildren ).to.have.length( 1 );
+				expect( panelChildren.first ).to.equal( dropdownView.listView );
+				expect( dropdownView.listView ).to.be.instanceof( ListView );
+
+				dropdownView.element.remove();
+			} );
+
 			it( 'ignores unknown definition types', () => {
 				definitions.add( { type: 'foo' } );
 
@@ -951,42 +985,38 @@ describe( 'utils', () => {
 				expect( document.activeElement ).to.equal( getListViewDomButton( listItems.get( 1 ) ) );
 			} );
 
-			describe( 'should warn', () => {
-				beforeEach( () => {
-					testUtils.sinon.stub( console, 'warn' );
-				} );
+			it( 'should warn if the active view does not implement the focus() method and therefore cannot be focused', () => {
+				definitions.addMany( [
+					{
+						type: 'button',
+						model: new Model( { label: 'a' } )
+					},
+					{
+						type: 'button',
+						model: new Model( { label: 'b', isOn: true } )
+					}
+				] );
 
-				afterEach( () => {
-					console.warn.restore();
-				} );
+				// Make it render the list view.
+				dropdownView.isOpen = true;
+				dropdownView.isOpen = false;
 
-				it( 'if the active view does not implement the focus() method and therefore cannot be focused', () => {
-					definitions.addMany( [
-						{
-							type: 'button',
-							model: new Model( { label: 'a' } )
-						},
-						{
-							type: 'button',
-							model: new Model( { label: 'b', isOn: true } )
-						}
-					] );
+				const secondChildView = dropdownView.listView.items.get( 1 );
 
-					const secondChildView = dropdownView.listView.items.get( 1 );
+				secondChildView.focus = undefined;
 
-					secondChildView.focus = undefined;
+				testUtils.sinon.stub( console, 'warn' );
 
-					// The focus logic happens when the dropdown is opened.
-					dropdownView.isOpen = true;
+				// The focus logic happens when the dropdown is opened.
+				dropdownView.isOpen = true;
 
-					sinon.assert.calledOnce( console.warn );
-					sinon.assert.calledWithExactly(
-						console.warn,
-						'ui-dropdown-focus-child-on-open-child-missing-focus',
-						{ view: secondChildView },
-						sinon.match.string
-					);
-				} );
+				sinon.assert.calledOnce( console.warn );
+				sinon.assert.calledWithExactly(
+					console.warn,
+					'ui-dropdown-focus-child-on-open-child-missing-focus',
+					{ view: secondChildView },
+					sinon.match.string
+				);
 			} );
 
 			function getListViewDomButton( listView ) {
