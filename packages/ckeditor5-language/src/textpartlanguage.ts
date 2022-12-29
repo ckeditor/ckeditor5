@@ -7,6 +7,7 @@
  * @module language/textpartlanguage
  */
 
+import type { LanguageDirection } from 'ckeditor5/src/utils';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import TextPartLanguageEditing from './textpartlanguageediting';
@@ -29,37 +30,6 @@ import TextPartLanguageUI from './textpartlanguageui';
  */
 export default class TextPartLanguage extends Plugin {
 	/**
-	 * The available {@link module:language/textpartlanguage~TextPartLanguage}
-	 * options that allow setting the language of parts of the content.
-	 *
-	 * This configuration option is available only with the {@glink api/language text part language feature} enabled.
-	 *
-	 * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
-	 * to learn more.
-	 *
-	 * To change the editor's UI language, refer to the {@glink features/ui-language Setting the UI language} guide.
-	 *
-	 * The default value is:
-	 *
-	 * ```ts
-	 * const config = [
-	 * 	{ title: 'Arabic', languageCode: 'ar' },
-	 * 	{ title: 'French', languageCode: 'fr' },
-	 * 	{ title: 'Spanish', languageCode: 'es' }
-	 * ];
-	 * ```
-	 *
-	 * The `title` property will be used by the text part language dropdown to render available options.
-	 *
-	 * The `languageCode` property is used for the `lang` attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
-	 *
-	 * You can also specify the optional `textDirection` property indicating the reading direction of the language.
-	 * Correct values are `ltr` and `rtl`. When the `textDirection` property is missing, the text part language feature will
-	 * specify the text direction by itself.
-	 */
-	public textPartLanguage?: Array<TextPartLanguageOption>;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get requires(): PluginDependencies {
@@ -80,19 +50,19 @@ export default class TextPartLanguage extends Plugin {
 export interface TextPartLanguageOption {
 
 	/**
-	 * @property title The user-readable title of the option.
+	 * The user-readable title of the option.
 	 */
 	title: string;
 
 	/**
-	 * @property languageCode The language code in the ISO 639 format.
+	 * The language code in the ISO 639 format.
 	 */
 	languageCode: string;
 
 	/**
-	 * @property textDirection The language text direction. Automatically detected if omitted.
+	 * The language text direction. Automatically detected if omitted.
 	 */
-	textDirection?: 'ltr' | 'rtl';
+	textDirection?: LanguageDirection;
 }
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -101,6 +71,36 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface LanguageConfig {
+
+		/**
+		 * The available {@link module:language/textpartlanguage~TextPartLanguage}
+		 * options that allow setting the language of parts of the content.
+		 *
+		 * This configuration option is available only with the {@glink api/language text part language feature} enabled.
+		 *
+		 * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
+		 * to learn more.
+		 *
+		 * To change the editor's UI language, refer to the {@glink features/ui-language Setting the UI language} guide.
+		 *
+		 * The default value is:
+		 *
+		 * ```ts
+		 * const config = [
+		 * 	{ title: 'Arabic', languageCode: 'ar' },
+		 * 	{ title: 'French', languageCode: 'fr' },
+		 * 	{ title: 'Spanish', languageCode: 'es' }
+		 * ];
+		 * ```
+		 *
+		 * The `title` property will be used by the text part language dropdown to render available options.
+		 *
+		 * The `languageCode` property is used for the `lang` attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+		 *
+		 * You can also specify the optional `textDirection` property indicating the reading direction of the language.
+		 * Correct values are `ltr` and `rtl`. When the `textDirection` property is missing, the text part language feature will
+		 * specify the text direction by itself.
+		 */
 		textPartLanguage?: Array<TextPartLanguageOption>;
 	}
 }

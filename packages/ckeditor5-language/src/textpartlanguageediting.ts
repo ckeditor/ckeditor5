@@ -8,6 +8,7 @@
  */
 
 import type { ViewElement } from 'ckeditor5/src/engine';
+import type { LanguageDirection } from 'ckeditor5/src/utils';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import TextPartLanguageCommand from './textpartlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
@@ -70,7 +71,7 @@ export default class TextPartLanguageEditing extends Plugin {
 				key: 'language',
 				value: ( viewElement: ViewElement ) => {
 					const languageCode = viewElement.getAttribute( 'lang' )!;
-					const textDirection = viewElement.getAttribute( 'dir' )! as 'ltr' | 'rtl';
+					const textDirection = viewElement.getAttribute( 'dir' )! as LanguageDirection;
 
 					return stringifyLanguageAttribute( languageCode, textDirection );
 				}

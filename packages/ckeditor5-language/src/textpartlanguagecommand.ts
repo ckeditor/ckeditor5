@@ -7,6 +7,7 @@
  * @module language/textpartlanguagecommand
  */
 
+import type { LanguageDirection } from 'ckeditor5/src/utils';
 import { Command } from 'ckeditor5/src/core';
 import { stringifyLanguageAttribute } from './utils';
 
@@ -68,7 +69,7 @@ export default class TextPartLanguageCommand extends Command {
 	 * @param options.textDirection The language text direction.
 	 */
 	public override execute(
-		{ languageCode, textDirection }: { languageCode?: string | false; textDirection?: 'ltr' | 'rtl' } = {}
+		{ languageCode, textDirection }: { languageCode?: string | false; textDirection?: LanguageDirection } = {}
 	): void {
 		const model = this.editor.model;
 		const doc = model.document;

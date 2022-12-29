@@ -18,8 +18,6 @@ import '../theme/language.css';
  * The text part language UI plugin.
  *
  * It introduces the `'language'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TextPartLanguageUI extends Plugin {
 	/**
@@ -43,7 +41,7 @@ export default class TextPartLanguageUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
 			const itemDefinitions = new Collection<ListDropdownItemDefinition>();
-			const titles = {} as any;
+			const titles: Record<string, string> = {};
 
 			const languageCommand = editor.commands.get( 'textPartLanguage' )!;
 
@@ -100,7 +98,7 @@ export default class TextPartLanguageUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( languageCommand, 'isEnabled' );
 			dropdownView.buttonView.bind( 'label' ).to( languageCommand, 'value', value => {
-				return titles[ value as string ] || defaultTitle;
+				return ( value && titles[ value ] ) || defaultTitle;
 			} );
 
 			// Execute command when an item from the dropdown is selected.

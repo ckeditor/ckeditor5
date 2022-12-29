@@ -7,7 +7,7 @@
  * @module language/utils
  */
 
-import { getLanguageDirection } from 'ckeditor5/src/utils';
+import { getLanguageDirection, type LanguageDirection } from 'ckeditor5/src/utils';
 
 /**
  * Returns the language attribute value in a human-readable text format:
@@ -27,7 +27,7 @@ import { getLanguageDirection } from 'ckeditor5/src/utils';
  * @param languageCode The language code in the ISO 639-1 format.
  * @param textDirection The language text direction. Automatically detected if omitted.
  */
-export function stringifyLanguageAttribute( languageCode: string, textDirection?: 'ltr' | 'rtl' ): string {
+export function stringifyLanguageAttribute( languageCode: string, textDirection?: LanguageDirection ): string {
 	textDirection = textDirection || getLanguageDirection( languageCode );
 	return `${ languageCode }:${ textDirection }`;
 }
@@ -37,9 +37,9 @@ export function stringifyLanguageAttribute( languageCode: string, textDirection?
  * {@link module:language/utils~stringifyLanguageAttribute stringifyLanguageAttribute} function.
  *
  * @param str The attribute value.
- * @returns result
- * @returns result.languageCode The language code in the ISO 639 format.
- * @returns result.textDirection The language text direction.
+ * @returns The object with properties:
+ * * languageCode - The language code in the ISO 639 format.
+ * * textDirection - The language text direction.
  */
 export function parseLanguageAttribute( str: string ): { languageCode: string; textDirection: string } {
 	const [ languageCode, textDirection ] = str.split( ':' );
