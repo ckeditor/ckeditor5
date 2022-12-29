@@ -30,6 +30,7 @@ export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonv
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview';
 export * from './dropdown/utils';
 
+export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editorui/editorui';
 export { default as EditorUIView } from './editorui/editoruiview';
 export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview';
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview';

@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-easy-image
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image).
 
 ## External links
 

@@ -577,7 +577,7 @@ The above rules will be met for instance by such a model content:
 </$root>
 ```
 
-Which, in turn, has thess [semantics](#defining-additional-semantics):
+Which, in turn, has these [semantics](#defining-additional-semantics):
 
 ```xml
 <$root>                   <!-- isLimit: true -->

@@ -10,7 +10,7 @@ const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const WrapperPlugin = require( 'wrapper-webpack-plugin' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
@@ -85,7 +85,7 @@ const webpackConfig = {
 		libraryTarget: 'window'
 	},
 	plugins: [
-		new CKEditorWebpackPlugin( {
+		new CKEditorTranslationsPlugin( {
 			// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 			language: 'en',
 			additionalLanguages: 'all',

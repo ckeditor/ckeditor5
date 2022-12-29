@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-remove-format
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-remove-format).
 
 ## External links
 

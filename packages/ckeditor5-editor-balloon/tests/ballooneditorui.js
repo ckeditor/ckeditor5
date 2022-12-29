@@ -7,7 +7,7 @@
 
 import BalloonEditor from '../src/ballooneditor';
 import BalloonEditorUI from '../src/ballooneditorui';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';

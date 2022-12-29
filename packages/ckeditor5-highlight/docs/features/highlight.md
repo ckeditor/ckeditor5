@@ -253,4 +253,4 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
