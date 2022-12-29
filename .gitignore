@@ -39,6 +39,7 @@ packages/ckeditor5-editor-inline/src/**/*.js
 packages/ckeditor5-engine/src/**/*.js
 packages/ckeditor5-enter/src/**/*.js
 packages/ckeditor5-essentials/src/**/*.js
+packages/ckeditor5-horizontal-line/src/**/*.js
 packages/ckeditor5-list/src/**/*.js
 packages/ckeditor5-paragraph/src/**/*.js
 packages/ckeditor5-paste-from-office/src/**/*.js
@@ -50,7 +51,6 @@ packages/ckeditor5-upload/src/**/*.js
 packages/ckeditor5-utils/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
 packages/ckeditor5-word-count/src/**/*.js
-packages/ckeditor5-horizontal-line/src/**/*.js
 packages/*/src/**/*.d.ts
 src/**/*.js
 src/**/*.d.ts
