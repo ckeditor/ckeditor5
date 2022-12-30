@@ -22,8 +22,6 @@ import html2markdown, { turndownService } from './html2markdown/html2markdown';
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
  *
  * See the {@glink features/markdown Markdown output} guide to learn more on how to enable it.
- *
- * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class GFMDataProcessor implements DataProcessor {
 	/**

@@ -37,13 +37,15 @@ marked.use( {
  * Parses markdown string to an HTML.
  */
 export default function markdown2html( markdown: string ): string {
-	return marked.parse( markdown, {
+	const options = {
 		gfm: true,
 		breaks: true,
 		tables: true,
 		xhtml: true,
 		headerIds: false
-	} as marked.MarkedOptions );
+	};
+
+	return marked.parse( markdown, options );
 }
 
 export { marked };
