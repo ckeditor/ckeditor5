@@ -14,8 +14,6 @@ import type { Element, Schema } from 'ckeditor5/src/engine';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
- *
- * @extends module:core/command~Command
  */
 export default class HeadingCommand extends Command {
 	/**
@@ -26,7 +24,7 @@ export default class HeadingCommand extends Command {
 	 * @observable
 	 * @readonly
 	 */
-	declare public value: boolean | string;
+	declare public value: false | string;
 
 	/**
 	 * Set of defined model's elements names that this command support.
@@ -92,6 +90,5 @@ export default class HeadingCommand extends Command {
  * @param schema The schema of the document.
  */
 function checkCanBecomeHeading( block: Element, heading: string, schema: Schema ) {
-	return schema.checkChild( block.parent, heading ) && !schema.isObject( block );
+	return schema.checkChild( block.parent as Element, heading ) && !schema.isObject( block );
 }
-

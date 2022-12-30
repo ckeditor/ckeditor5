@@ -8,23 +8,21 @@
  */
 
 import { Plugin, type Editor, type ElementApi, type PluginDependencies } from 'ckeditor5/src/core';
-import { first, type EventInfo } from 'ckeditor5/src/utils';
+import { first, type GetCallback } from 'ckeditor5/src/utils';
 import {
 	DowncastWriter,
 	enablePlaceholder,
 	hidePlaceholder,
 	needsPlaceholder,
 	showPlaceholder,
+	type DowncastInsertEvent,
 	type Element,
-	type Mapper,
 	type Model,
-	type Position as ModelPosition,
+	type MapperModelToViewPositionEvent,
 	type RootElement,
-	type UpcastConversionApi,
-	type UpcastConversionData,
+	type UpcastElementEvent,
 	type View,
 	type ViewElement,
-	type ViewPosition,
 	type Writer
 } from 'ckeditor5/src/engine';
 
@@ -37,8 +35,6 @@ const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'headi
  * The Title plugin.
  *
  * It splits the document into `Title` and `Body` sections.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Title extends Plugin {
 	/**
@@ -91,20 +87,23 @@ export default class Title extends Plugin {
 
 		// Because `title` is represented by two elements in the model
 		// but only one in the view, it is needed to adjust Mapper.
-		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
-		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 
 		// Conversion.
 		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
-		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert:title', ( evt, data, conversionApi ) => {
-			conversionApi.consumable.consume( data.item, evt.name );
-		} ) );
+		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on<DowncastInsertEvent>(
+			'insert:title',
+			( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}
+		) );
 
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
-		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
@@ -137,7 +136,7 @@ export default class Title extends Plugin {
 	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns The title of the document.
 	 */
-	public getTitle( options = {} ): string {
+	public getTitle( options: Record<string, unknown> = {} ): string {
 		const titleElement = this._getTitleElement();
 		const titleContentElement = titleElement!.getChild( 0 ) as Element;
 
@@ -155,7 +154,7 @@ export default class Title extends Plugin {
 	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns The body of the document.
 	 */
-	public getBody( options = {} ): string {
+	public getBody( options: Record<string, unknown> = {} ): string {
 		const editor = this.editor;
 		const data = editor.data;
 		const model = editor.model;
@@ -319,16 +318,16 @@ export default class Title extends Plugin {
 		const viewRoot = view.document.getRoot();
 		const sourceElement = editor.sourceElement;
 
-		const titlePlaceholder = editor.config.get( 'title.placeholder' ) as string || t( 'Type your title' );
+		const titlePlaceholder = editor.config.get( 'title.placeholder' ) || t( 'Type your title' );
 		const bodyPlaceholder = editor.config.get( 'placeholder' ) ||
 			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' ) ||
 			t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
-		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
 			enablePlaceholder( {
 				view,
-				element: conversionApi.mapper.toViewElement( data.item ),
+				element: conversionApi.mapper.toViewElement( data.item )!,
 				text: titlePlaceholder,
 				keepOnFocus: true
 			} );
@@ -424,7 +423,7 @@ export default class Title extends Plugin {
  * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
  * @param conversionApi Conversion interface to be used by the callback.
  */
-function dataViewModelH1Insertion( evt: EventInfo, data: UpcastConversionData/* DocumentFragment? */, conversionApi: UpcastConversionApi ) {
+function dataViewModelH1Insertion( ...[ , data, conversionApi ]: Parameters<GetCallback<UpcastElementEvent>> ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
@@ -456,8 +455,8 @@ function dataViewModelH1Insertion( evt: EventInfo, data: UpcastConversionData/* 
  * <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
  * ```
  */
-function mapModelPositionToView( editingView: View ) {
-	return ( evt: EventInfo, data: { mapper: Mapper; modelPosition: ModelPosition; viewPosition: ViewPosition } ) => {
+function mapModelPositionToView( editingView: View ): GetCallback<MapperModelToViewPositionEvent> {
+	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 
 		if ( !positionParent.is( 'element', 'title' ) ) {
@@ -548,14 +547,6 @@ function shouldRemoveLastParagraph( placeholder: Element, root: RootElement ) {
 /**
  * The configuration of the {@link module:heading/title~Title title feature}.
  *
- * Read more in {@link module:heading/title~TitleConfig}.
- *
- * @member {module:heading/title~TitleConfig} module:core/editor/editorconfig~EditorConfig#title
- */
-
-/**
- * The configuration of the {@link module:heading/title~Title title feature}.
- *
  * ```ts
  * ClassicEditor
  *   .create( document.querySelector( '#editor' ), {
@@ -570,20 +561,29 @@ function shouldRemoveLastParagraph( placeholder: Element, root: RootElement ) {
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
- *
- * @interface TitleConfig
  */
+export interface TitleConfig {
 
-/**
- * Defines a custom value of the placeholder for the title field.
- *
- * Read more in {@link module:heading/title~TitleConfig}.
- *
- * @member {String} module:heading/title~TitleConfig#placeholder
- */
+	/**
+	 * Defines a custom value of the placeholder for the title field.
+	 *
+	 * Read more in {@link module:heading/title~TitleConfig}.
+	 */
+	placeholder?: string;
+}
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Title.pluginName ]: Title;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:heading/title~Title title feature}.
+		 *
+		 * Read more in {@link module:heading/title~TitleConfig}.
+		 */
+		title?: TitleConfig;
 	}
 }

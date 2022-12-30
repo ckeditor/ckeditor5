@@ -8,8 +8,14 @@
  */
 
 import { Plugin, type Command } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
-import { Collection, type EventInfo } from 'ckeditor5/src/utils';
+import {
+	Model,
+	createDropdown,
+	addListToDropdown,
+	type ButtonExecuteEvent,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
 
 import { getLocalizedOptions } from './utils';
 
@@ -17,8 +23,6 @@ import '../theme/heading.css';
 
 /**
  * The headings UI feature. It introduces the `headings` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HeadingUI extends Plugin {
 	/**
@@ -113,8 +117,9 @@ export default class HeadingUI extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdownView, 'execute', ( evt: EventInfo ) => {
-				editor.execute( evt.source.commandName, evt.source.commandValue ? { value: evt.source.commandValue } : undefined );
+			this.listenTo<ButtonExecuteEvent>( dropdownView, 'execute', evt => {
+				const { commandName, commandValue } = evt.source as any;
+				editor.execute( commandName, commandValue ? { value: commandValue } : undefined );
 				editor.editing.view.focus();
 			} );
 

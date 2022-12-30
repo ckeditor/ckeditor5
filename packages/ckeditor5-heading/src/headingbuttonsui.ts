@@ -61,8 +61,6 @@ const defaultIcons: Record<string, string> = {
  *
  * It is possible to use custom icons by providing `icon` config option in {@link module:heading/heading~HeadingOption}.
  * For the default configuration standard icons are used.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HeadingButtonsUI extends Plugin {
 	/**

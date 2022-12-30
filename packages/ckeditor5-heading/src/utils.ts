@@ -9,7 +9,7 @@
 
 import type { Editor } from 'ckeditor5/src/core';
 
-import type { HeadingOptions } from './heading';
+import type { HeadingOption } from './heading';
 
 /**
  * Returns heading options as defined in `config.heading.options` but processed to consider
@@ -19,7 +19,7 @@ import type { HeadingOptions } from './heading';
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
  * when the user configuration is defined because the editor does not exist yet.
  */
-export function getLocalizedOptions( editor: Editor ): HeadingOptions {
+export function getLocalizedOptions( editor: Editor ): Array<HeadingOption> {
 	const t = editor.t;
 	const localizedTitles: Record<string, string> = {
 		'Paragraph': t( 'Paragraph' ),
