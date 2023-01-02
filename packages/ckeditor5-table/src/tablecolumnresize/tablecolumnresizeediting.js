@@ -715,18 +715,15 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @private
 	 */
 	_registerResizerInserter() {
-		const view = this.editor.editing.view;
+		this.editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+			dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
+				const mapper = conversionApi.mapper;
+				const modelElement = data.item;
+				const viewElement = mapper.toViewElement( modelElement );
+				const viewWriter = conversionApi.writer;
 
-		view.on( 'render', () => {
-			for ( const item of view.createRangeIn( view.document.getRoot() ) ) {
-				if ( ![ 'td', 'th' ].includes( item.item.name ) ) {
-					continue;
-				}
-
-				view.change( viewWriter => {
-					ensureColumnResizerElement( viewWriter, item.item );
-				} );
-			}
-		}, { priority: 'lowest' } );
+				ensureColumnResizerElement( viewWriter, viewElement );
+			}, { priority: 'lowest' } );
+		} );
 	}
 }

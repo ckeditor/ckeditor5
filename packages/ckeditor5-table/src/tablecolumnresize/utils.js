@@ -283,20 +283,13 @@ function calculateMissingColumnWidths( columnWidths ) {
 }
 
 /**
- * Inserts column resizer element into a view cell if it is missing.
+ * Inserts column resizer element into a view cell.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
  * @param {module:engine/view/element~Element} viewCell View cell where resizer should be put.
  */
 export function ensureColumnResizerElement( viewWriter, viewCell ) {
-	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
-
-	if ( viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
+	const viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
 		class: 'ck-table-column-resizer'
 	} );
 
