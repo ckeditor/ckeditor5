@@ -136,7 +136,7 @@ Alternatively, you may install CKEditor from `npm`:
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
-then import it directly into your code with `require( '@ckeditor/ckeditor5-build-classic' )`.
+Then bundle it together with your app.
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 
@@ -206,7 +206,7 @@ Alternatively, you may install CKEditor from `npm:
 npm install --save @ckeditor/ckeditor5-build-inline
 ```
 
-then import it directly into your code with `require( '@ckeditor/ckeditor5-build-inline' )`.
+Then bundle it together with your app.
 
 Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
 
@@ -274,7 +274,7 @@ Alternatively, you may install CKEditor from `npm:
 npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
-then import it directly into your code with `require( '@ckeditor/ckeditor5-build-balloon' )`.
+Then bundle it together with your app.
 
 Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
@@ -342,7 +342,7 @@ Alternatively, you may install CKEditor from `npm:
 npm install --save @ckeditor/ckeditor5-build-balloon-block
 ```
 
-then import it directly into your code with `require( '@ckeditor/ckeditor5-build-ballon-block' )`.
+Then bundle it together with your app.
 
 Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
@@ -406,7 +406,7 @@ Alternatively, you may install CKEditor from `npm:
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
-then import it directly into your code with `require( '@ckeditor/ckeditor5-build-decoupled-document' )`.
+Then bundle it together with your app.
 
 Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 
