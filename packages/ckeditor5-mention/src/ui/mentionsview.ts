@@ -8,20 +8,24 @@
  */
 
 import { ListView } from 'ckeditor5/src/ui';
-import { Rect } from 'ckeditor5/src/utils';
+import { Rect, type Locale } from 'ckeditor5/src/utils';
+
+import type MentionListItemView from './mentionlistitemview';
 
 import '../../theme/mentionui.css';
 
 /**
  * The mention ui view.
- *
- * @extends module:ui/list/listview~ListView
  */
 export default class MentionsView extends ListView {
+	declare public selected: MentionListItemView | undefined;
+
+	declare public position: string | undefined;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		this.extendTemplate( {
@@ -38,7 +42,7 @@ export default class MentionsView extends ListView {
 	/**
 	 * {@link #select Selects} the first item.
 	 */
-	selectFirst() {
+	public selectFirst(): void {
 		this.select( 0 );
 	}
 
@@ -47,9 +51,9 @@ export default class MentionsView extends ListView {
 	 *
 	 * If the last item is already selected, it will select the first item.
 	 */
-	selectNext() {
+	public selectNext(): void {
 		const item = this.selected;
-		const index = this.items.getIndex( item );
+		const index = this.items.getIndex( item! );
 
 		this.select( index + 1 );
 	}
@@ -59,9 +63,9 @@ export default class MentionsView extends ListView {
 	 *
 	 * If the first item is already selected, it will select the last item.
 	 */
-	selectPrevious() {
+	public selectPrevious(): void {
 		const item = this.selected;
-		const index = this.items.getIndex( item );
+		const index = this.items.getIndex( item! );
 
 		this.select( index - 1 );
 	}
@@ -73,9 +77,9 @@ export default class MentionsView extends ListView {
 	 * - if the index is lower than 0, it will select the last item,
 	 * - if the index is higher than the last item index, it will select the first item.
 	 *
-	 * @param {Number} index Index of an item to be marked as selected.
+	 * @param index Index of an item to be marked as selected.
 	 */
-	select( index ) {
+	public select( index: number ): void {
 		let indexToGet = 0;
 
 		if ( index > 0 && index < this.items.length ) {
@@ -84,7 +88,7 @@ export default class MentionsView extends ListView {
 			indexToGet = this.items.length - 1;
 		}
 
-		const item = this.items.get( indexToGet );
+		const item = this.items.get( indexToGet ) as MentionListItemView;
 
 		// Return early if item is already selected.
 		if ( this.selected === item ) {
@@ -101,23 +105,25 @@ export default class MentionsView extends ListView {
 
 		// Scroll the mentions view to the selected element.
 		if ( !this._isItemVisibleInScrolledArea( item ) ) {
-			this.element.scrollTop = item.element.offsetTop;
+			this.element!.scrollTop = item.element!.offsetTop;
 		}
 	}
 
 	/**
 	 * Triggers the `execute` event on the {@link #select selected} item.
 	 */
-	executeSelected() {
-		this.selected.fire( 'execute' );
+	public executeSelected(): void {
+		this.selected!.fire( 'execute' );
 	}
 
-	// Checks if an item is visible in the scrollable area.
-	//
-	// The item is considered visible when:
-	// - its top boundary is inside the scrollable rect
-	// - its bottom boundary is inside the scrollable rect (the whole item must be visible)
-	_isItemVisibleInScrolledArea( item ) {
-		return new Rect( this.element ).contains( new Rect( item.element ) );
+	/**
+	 * Checks if an item is visible in the scrollable area.
+	 *
+	 * The item is considered visible when:
+	 * - its top boundary is inside the scrollable rect
+	 * - its bottom boundary is inside the scrollable rect (the whole item must be visible)
+	 */
+	private _isItemVisibleInScrolledArea( item: MentionListItemView ) {
+		return new Rect( this.element! ).contains( new Rect( item.element! ) );
 	}
 }

@@ -9,15 +9,23 @@
 
 import { ListItemView } from 'ckeditor5/src/ui';
 
+import type { MentionFeedItem } from '../mention';
+
+import type DomWrapperView from './domwrapperview';
+
 export default class MentionListItemView extends ListItemView {
-	highlight() {
-		const child = this.children.first;
+	declare public item: MentionFeedItem;
+
+	declare public marker: string;
+
+	public highlight(): void {
+		const child = this.children.first as DomWrapperView;
 
 		child.isOn = true;
 	}
 
-	removeHighlight() {
-		const child = this.children.first;
+	public removeHighlight(): void {
+		const child = this.children.first as DomWrapperView;
 
 		child.isOn = false;
 	}

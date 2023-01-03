@@ -45,6 +45,7 @@ packages/ckeditor5-horizontal-line/src/**/*.js
 packages/ckeditor5-language/src/**/*.js
 packages/ckeditor5-list/src/**/*.js
 packages/ckeditor5-markdown-gfm/src/**/*.js
+packages/ckeditor5-mention/src/**/*.js
 packages/ckeditor5-page-break/src/**/*.js
 packages/ckeditor5-paragraph/src/**/*.js
 packages/ckeditor5-paste-from-office/src/**/*.js

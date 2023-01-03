@@ -7,47 +7,44 @@
  * @module mention/ui/domwrapperview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { View, type Template } from 'ckeditor5/src/ui';
+import type { Locale } from 'ckeditor5/src/utils';
 
 /**
  * This class wraps DOM element as a CKEditor5 UI View.
  *
  * It allows to render any DOM element and use it in mentions list.
- *
- * @extends {module:ui/view~View}
  */
 export default class DomWrapperView extends View {
+	/**
+	 * The DOM element for which wrapper was created.
+	 */
+	declare public domElement: HTMLElement;
+
+	/**
+	 * Controls whether the dom wrapper view is "on". This is in line with {@link module:ui/button/button~Button#isOn} property.
+	 *
+	 * @observable
+	 * @default true
+	 */
+	declare public isOn: boolean;
+
 	/**
 	 * Creates an instance of {@link module:mention/ui/domwrapperview~DomWrapperView} class.
 	 *
 	 * Also see {@link #render}.
-	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Element} domElement
 	 */
-	constructor( locale, domElement ) {
+	constructor( locale: Locale, domElement: HTMLElement ) {
 		super( locale );
 
 		// Disable template rendering on this view.
-		this.template = false;
+		this.template = false as unknown as Template;
 
-		/**
-		 * The DOM element for which wrapper was created.
-		 *
-		 * @type {Element}
-		 */
 		this.domElement = domElement;
 
 		// Render dom wrapper as a button.
 		this.domElement.classList.add( 'ck-button' );
 
-		/**
-		 * Controls whether the dom wrapper view is "on". This is in line with {@link module:ui/button/button~Button#isOn} property.
-		 *
-		 * @observable
-		 * @default true
-		 * @member {Boolean} #isOn
-		 */
 		this.set( 'isOn', false );
 
 		// Handle isOn state as in buttons.
@@ -70,7 +67,7 @@ export default class DomWrapperView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		this.element = this.domElement;
