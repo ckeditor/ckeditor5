@@ -87,7 +87,7 @@ export default class MentionUI extends Plugin {
 		this._mentionsConfigurations = new Map();
 		this._requestFeedDebounced = debounce( this._requestFeed, 100 );
 
-		editor.config.define( 'mention', { feeds: [] } );
+		editor.config.define( 'mention', { feeds: [], commitKeys: defaultCommitKeyCodes, dropdownLimit: 10 } );
 	}
 
 	/**
