@@ -18,9 +18,9 @@
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Array.<module:heading/heading~HeadingOption>}.
  */
-export function getLocalizedOptions( editor ) {
+export function getLocalizedOptions( editor: any ): any {
 	const t = editor.t;
-	const localizedTitles = {
+	const localizedTitles: any = {
 		Paragraph: t( 'Paragraph' ),
 		'Heading 1': t( 'Heading 1' ),
 		'Heading 2': t( 'Heading 2' ),
@@ -30,7 +30,7 @@ export function getLocalizedOptions( editor ) {
 		'Heading 6': t( 'Heading 6' )
 	};
 
-	return editor.config.get( 'heading.options' ).map( option => {
+	return editor.config.get( 'heading.options' ).map( ( option: any ) => {
 		const title = localizedTitles[ option.title ];
 
 		if ( title && title != option.title ) {

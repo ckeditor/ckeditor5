@@ -24,14 +24,14 @@ export default class HeadingUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): any {
 		return 'HeadingUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): any {
 		const editor = this.editor;
 		const t = editor.t;
 		const options = getLocalizedOptions( editor );
@@ -40,13 +40,13 @@ export default class HeadingUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
-			const titles = {};
-			const itemDefinitions = new Collection();
+			const titles = {} as any;
+			const itemDefinitions = new Collection() as any;
 
-			const headingCommand = editor.commands.get( 'heading' );
-			const paragraphCommand = editor.commands.get( 'paragraph' );
+			const headingCommand = editor.commands.get( 'heading' ) as any;
+			const paragraphCommand = editor.commands.get( 'paragraph' ) as any;
 
-			const commands = [ headingCommand ];
+			const commands = [ headingCommand ] as any;
 
 			for ( const option of options ) {
 				const def = {
@@ -59,11 +59,11 @@ export default class HeadingUI extends Plugin {
 				};
 
 				if ( option.model === 'paragraph' ) {
-					def.model.bind( 'isOn' ).to( paragraphCommand, 'value' );
+					def.model.bind( 'isOn' ).to( paragraphCommand as any, 'value' );
 					def.model.set( 'commandName', 'paragraph' );
 					commands.push( paragraphCommand );
 				} else {
-					def.model.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
+					def.model.bind( 'isOn' ).to( headingCommand as any, 'value', value => value === option.model );
 					def.model.set( {
 						commandName: 'heading',
 						commandValue: option.model
@@ -76,8 +76,8 @@ export default class HeadingUI extends Plugin {
 				titles[ option.model ] = option.title;
 			}
 
-			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, itemDefinitions );
+			const dropdownView = createDropdown( locale ) as any;
+			addListToDropdown( dropdownView, itemDefinitions as any );
 
 			dropdownView.buttonView.set( {
 				isOn: false,
@@ -93,18 +93,18 @@ export default class HeadingUI extends Plugin {
 				}
 			} );
 
-			dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
-				return areEnabled.some( isEnabled => isEnabled );
+			dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled: any ) => {
+				return areEnabled.some( ( isEnabled: any ) => isEnabled );
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
+			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value: any, para: any ) => {
 				const whichModel = value || para && 'paragraph';
 				// If none of the commands is active, display default title.
 				return titles[ whichModel ] ? titles[ whichModel ] : defaultTitle;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdownView, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', ( evt: any ) => {
 				editor.execute( evt.source.commandName, evt.source.commandValue ? { value: evt.source.commandValue } : undefined );
 				editor.editing.view.focus();
 			} );

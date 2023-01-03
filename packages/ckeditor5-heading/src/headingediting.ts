@@ -26,14 +26,14 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): any {
 		return 'HeadingEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: any ) {
 		super( editor );
 
 		editor.config.define( 'heading', {
@@ -49,16 +49,16 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): any {
 		return [ Paragraph ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): any {
 		const editor = this.editor;
-		const options = editor.config.get( 'heading.options' );
+		const options = editor.config.get( 'heading.options' ) as any;
 
 		const modelElements = [];
 
@@ -79,23 +79,23 @@ export default class HeadingEditing extends Plugin {
 		this._addDefaultH1Conversion( editor );
 
 		// Register the heading command for this option.
-		editor.commands.add( 'heading', new HeadingCommand( editor, modelElements ) );
+		editor.commands.add( 'heading', new HeadingCommand( editor, modelElements ) as any );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): any {
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.
-		const editor = this.editor;
+		const editor = this.editor as any;
 		const enterCommand = editor.commands.get( 'enter' );
 		const options = editor.config.get( 'heading.options' );
 
 		if ( enterCommand ) {
-			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
+			this.listenTo( enterCommand, 'afterExecute', ( evt: any, data: any ) => {
 				const positionParent = editor.model.document.selection.getFirstPosition().parent;
-				const isHeading = options.some( option => positionParent.is( 'element', option.model ) );
+				const isHeading = options.some( ( option: any ) => positionParent.is( 'element', option.model ) );
 
 				if ( isHeading && !positionParent.is( 'element', defaultModelElement ) && positionParent.childCount === 0 ) {
 					data.writer.rename( positionParent, defaultModelElement );
@@ -110,7 +110,7 @@ export default class HeadingEditing extends Plugin {
 	 * @private
 	 * @param {module:core/editor/editor~Editor} editor Editor instance on which to add the `h1` conversion.
 	 */
-	_addDefaultH1Conversion( editor ) {
+	private _addDefaultH1Conversion( editor: any ) {
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'heading1',
 			view: 'h1',

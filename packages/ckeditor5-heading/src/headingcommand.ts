@@ -16,13 +16,15 @@ import { first } from 'ckeditor5/src/utils';
  * @extends module:core/command~Command
  */
 export default class HeadingCommand extends Command {
+	public modelElements: any;
+
 	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {Array.<String>} modelElements Names of the element which this command can apply in the model.
 	 */
-	constructor( editor, modelElements ) {
+	constructor( editor: any, modelElements: any ) {
 		super( editor );
 
 		/**
@@ -48,11 +50,12 @@ export default class HeadingCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): any {
 		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && this.modelElements.includes( block.name ) && block.name;
-		this.isEnabled = !!block && this.modelElements.some( heading => checkCanBecomeHeading( block, heading, this.editor.model.schema ) );
+		this.isEnabled = !!block && this.modelElements
+			.some( ( heading: any ) => checkCanBecomeHeading( block, heading, this.editor.model.schema ) );
 	}
 
 	/**
@@ -63,7 +66,7 @@ export default class HeadingCommand extends Command {
 	 * @param {String} options.value Name of the element which this command will apply in the model.
 	 * @fires execute
 	 */
-	execute( options ) {
+	public override execute( options: any ): any {
 		const model = this.editor.model;
 		const document = model.document;
 
@@ -91,6 +94,6 @@ export default class HeadingCommand extends Command {
 // @param {module:heading/headingcommand~HeadingCommand#modelElement} heading Command element name in the model.
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
-function checkCanBecomeHeading( block, heading, schema ) {
+function checkCanBecomeHeading( block: any, heading: any, schema: any ) {
 	return schema.checkChild( block.parent, heading ) && !schema.isObject( block );
 }

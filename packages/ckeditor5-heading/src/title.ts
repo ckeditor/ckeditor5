@@ -31,24 +31,26 @@ const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'headi
  * @extends module:core/plugin~Plugin
  */
 export default class Title extends Plugin {
+	private _bodyPlaceholder: any;
+
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): any {
 		return 'Title';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): any {
 		return [ 'Paragraph' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): any {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -128,8 +130,8 @@ export default class Title extends Plugin {
 	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The title of the document.
 	 */
-	getTitle( options = {} ) {
-		const titleElement = this._getTitleElement();
+	public getTitle( options = {} ): any {
+		const titleElement = this._getTitleElement() as any;
 		const titleContentElement = titleElement.getChild( 0 );
 
 		return this.editor.data.stringify( titleContentElement, options );
@@ -146,13 +148,13 @@ export default class Title extends Plugin {
 	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The body of the document.
 	 */
-	getBody( options = {} ) {
+	public getBody( options = {} ): any {
 		const editor = this.editor;
 		const data = editor.data;
 		const model = editor.model;
-		const root = editor.model.document.getRoot();
+		const root = editor.model.document.getRoot() as any;
 		const view = editor.editing.view;
-		const viewWriter = new DowncastWriter( view.document );
+		const viewWriter = new DowncastWriter( view.document ) as any;
 
 		const rootRange = model.createRangeIn( root );
 		const viewDocumentFragment = viewWriter.createDocumentFragment();
@@ -189,8 +191,8 @@ export default class Title extends Plugin {
 	 * @private
 	 * @returns {module:engine/model/element~Element|undefined}
 	 */
-	_getTitleElement() {
-		const root = this.editor.model.document.getRoot();
+	private _getTitleElement(): any {
+		const root = this.editor.model.document.getRoot() as any;
 
 		for ( const child of root.getChildren() ) {
 			if ( isTitle( child ) ) {
@@ -207,7 +209,7 @@ export default class Title extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_fixTitleContent( writer ) {
+	private _fixTitleContent( writer: any ): any {
 		const title = this._getTitleElement();
 
 		// There's no title in the content - it will be created by _fixTitleElement post-fixer.
@@ -236,9 +238,9 @@ export default class Title extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_fixTitleElement( writer ) {
+	private _fixTitleElement( writer: any ): any {
 		const model = this.editor.model;
-		const modelRoot = model.document.getRoot();
+		const modelRoot = model.document.getRoot() as any;
 
 		const titleElements = Array.from( modelRoot.getChildren() ).filter( isTitle );
 		const firstTitleElement = titleElements[ 0 ];
@@ -284,8 +286,8 @@ export default class Title extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_fixBodyElement( writer ) {
-		const modelRoot = this.editor.model.document.getRoot();
+	private _fixBodyElement( writer: any ): any {
+		const modelRoot = this.editor.model.document.getRoot() as any;
 
 		if ( modelRoot.childCount < 2 ) {
 			this._bodyPlaceholder = writer.createElement( 'paragraph' );
@@ -305,7 +307,7 @@ export default class Title extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_fixExtraParagraph( writer ) {
+	private _fixExtraParagraph( writer: any ): any {
 		const root = this.editor.model.document.getRoot();
 		const placeholder = this._bodyPlaceholder;
 
@@ -324,8 +326,8 @@ export default class Title extends Plugin {
 	 *
 	 * @private
 	 */
-	_attachPlaceholders() {
-		const editor = this.editor;
+	private _attachPlaceholders(): any {
+		const editor = this.editor as any;
 		const t = editor.t;
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
@@ -337,7 +339,7 @@ export default class Title extends Plugin {
 			t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
-		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt: any, data: any, conversionApi: any ) => {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item ),
@@ -348,11 +350,11 @@ export default class Title extends Plugin {
 
 		// Attach placeholder to first element after a title element and remove it if it's not needed anymore.
 		// First element after title can change so we need to observe all changes keep placeholder in sync.
-		let oldBody;
+		let oldBody: any;
 
 		// This post-fixer runs after the model post-fixer so we can assume that
 		// the second child in view root will always exist.
-		view.document.registerPostFixer( writer => {
+		view.document.registerPostFixer( ( writer: any ) => {
 			const body = viewRoot.getChild( 1 );
 			let hasChanged = false;
 
@@ -387,15 +389,15 @@ export default class Title extends Plugin {
 	 *
 	 * @private
 	 */
-	_attachTabPressHandling() {
+	private _attachTabPressHandling(): any {
 		const editor = this.editor;
-		const model = editor.model;
+		const model = editor.model as any;
 
 		// Pressing <kbd>Tab</kbd> inside the title should move the caret to the body.
 		editor.keystrokes.set( 'TAB', ( data, cancel ) => {
-			model.change( writer => {
+			model.change( ( writer: any ) => {
 				const selection = model.document.selection;
-				const selectedElements = Array.from( selection.getSelectedBlocks() );
+				const selectedElements = Array.from( selection.getSelectedBlocks() ) as any;
 
 				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'element', 'title-content' ) ) {
 					const firstBodyElement = model.document.getRoot().getChild( 1 );
@@ -407,14 +409,14 @@ export default class Title extends Plugin {
 
 		// Pressing <kbd>Shift</kbd>+<kbd>Tab</kbd> at the beginning of the body should move the caret to the title.
 		editor.keystrokes.set( 'SHIFT + TAB', ( data, cancel ) => {
-			model.change( writer => {
+			model.change( ( writer: any ) => {
 				const selection = model.document.selection;
 
 				if ( !selection.isCollapsed ) {
 					return;
 				}
 
-				const root = editor.model.document.getRoot();
+				const root = editor.model.document.getRoot() as any;
 				const selectedElement = first( selection.getSelectedBlocks() );
 				const selectionPosition = selection.getFirstPosition();
 
@@ -436,7 +438,7 @@ export default class Title extends Plugin {
 // @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 // @param {Object} data An object containing conversion input, a placeholder for conversion output and possibly other values.
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
-function dataViewModelH1Insertion( evt, data, conversionApi ) {
+function dataViewModelH1Insertion( evt: any, data: any, conversionApi: any ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
@@ -466,8 +468,8 @@ function dataViewModelH1Insertion( evt, data, conversionApi ) {
 // <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
 //
 // @param {module:editor/view/view~View} editingView
-function mapModelPositionToView( editingView ) {
-	return ( evt, data ) => {
+function mapModelPositionToView( editingView: any ) {
+	return ( evt: any, data: any ) => {
 		const positionParent = data.modelPosition.parent;
 
 		if ( !positionParent.is( 'element', 'title' ) ) {
@@ -486,7 +488,7 @@ function mapModelPositionToView( editingView ) {
 //
 // @param {module:engine/model/element~Element} element
 // @returns {Boolean}
-function isTitle( element ) {
+function isTitle( element: any ) {
 	return element.is( 'element', 'title' );
 }
 
@@ -495,7 +497,7 @@ function isTitle( element ) {
 // @param {module:engine/model/element~Element} element
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
-function changeElementToTitle( element, writer, model ) {
+function changeElementToTitle( element: any, writer: any, model: any ) {
 	const title = writer.createElement( 'title' );
 
 	writer.insert( title, element, 'before' );
@@ -510,7 +512,7 @@ function changeElementToTitle( element, writer, model ) {
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
 // @returns {Boolean} Returns true when there was any change. Returns false otherwise.
-function fixAdditionalTitleElements( titleElements, writer, model ) {
+function fixAdditionalTitleElements( titleElements: any, writer: any, model: any ) {
 	let hasChanged = false;
 
 	for ( const title of titleElements ) {
@@ -528,7 +530,7 @@ function fixAdditionalTitleElements( titleElements, writer, model ) {
 // @param {module:engine/model/element~Element} title
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
-function fixTitleElement( title, writer, model ) {
+function fixTitleElement( title: any, writer: any, model: any ) {
 	const child = title.getChild( 0 );
 
 	// Empty title should be removed.
@@ -551,7 +553,7 @@ function fixTitleElement( title, writer, model ) {
 // @param {module:engine/model/rootelement~RootElement} root
 // @param {module:engine/model/element~Element} placeholder
 // @returns {Boolean}
-function shouldRemoveLastParagraph( placeholder, root ) {
+function shouldRemoveLastParagraph( placeholder: any, root: any ) {
 	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}

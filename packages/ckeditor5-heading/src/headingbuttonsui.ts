@@ -25,7 +25,7 @@ const defaultIcons = {
 	heading4: iconHeading4,
 	heading5: iconHeading5,
 	heading6: iconHeading6
-};
+} as any;
 
 /**
  * The `HeadingButtonsUI` plugin defines a set of UI buttons that can be used instead of the
@@ -64,12 +64,12 @@ export default class HeadingButtonsUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): any {
 		const options = getLocalizedOptions( this.editor );
 
 		options
-			.filter( item => item.model !== 'paragraph' )
-			.map( item => this._createButton( item ) );
+			.filter( ( item: any ) => item.model !== 'paragraph' )
+			.map( ( item: any ) => this._createButton( item ) );
 	}
 
 	/**
@@ -78,12 +78,12 @@ export default class HeadingButtonsUI extends Plugin {
 	 * @private
 	 * @param {Object} option
 	 */
-	_createButton( option ) {
+	private _createButton( option: any ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( option.model, locale => {
 			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'heading' );
+			const command = editor.commands.get( 'heading' ) as any;
 
 			view.label = option.title;
 			view.icon = option.icon || defaultIcons[ option.model ];

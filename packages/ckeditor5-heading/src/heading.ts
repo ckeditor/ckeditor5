@@ -29,14 +29,14 @@ export default class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): any {
 		return [ HeadingEditing, HeadingUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): any {
 		return 'Heading';
 	}
 }
