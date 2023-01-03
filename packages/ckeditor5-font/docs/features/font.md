@@ -65,8 +65,8 @@ ClassicEditor
 			'heading', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-font-family-options}
@@ -80,14 +80,16 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		fontFamily: {
 			options: [
+				// Font family configuration options are described in the "Configuring the font family feature" section.
 				// ...
 			],
 			supportAllValues: true
 		},
+		// More of editor's config.
         // ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the font size feature
@@ -151,8 +153,8 @@ ClassicEditor
 			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-named-options}
@@ -187,8 +189,8 @@ ClassicEditor
 			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-font-size-numeric-options}
@@ -203,13 +205,15 @@ ClassicEditor
 		fontSize: {
 			options: [
 				// Numerical values.
+				// ...
 			],
 			supportAllValues: true
 		},
+		// More of editor's config.
         // ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -258,7 +262,7 @@ ClassicEditor
 					label: 'White',
 					hasBorder: true
 				},
-
+				// More color options.
 				// ...
 			]
 		},
@@ -284,7 +288,7 @@ ClassicEditor
 					color: 'hsl(120, 75%, 60%)',
 					label: 'Green'
 				},
-
+				// More color options
 				// ...
 			]
 		},
@@ -292,8 +296,8 @@ ClassicEditor
 			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Changing the geometry of the color grid
@@ -307,24 +311,26 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		fontColor: {
 			colors: [
-				// 9 colors defined here...
+				// 9 colors defined here.
+				// ...
 			]
 
 			columns: 3, // so, you can display them in 3 columns.
 
+			// More color options.
 			// ...
 		},
 		fontBackgroundColor: {
 			columns: 6,
-
+			// Background color options.
 			// ...
 		},
 		toolbar: [
 			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Documents colors
@@ -343,20 +349,22 @@ ClassicEditor
 			// And 12 document colors (2 rows of them).
 			documentColors: 12,
 
+			// More color options.
 			// ...
 		},
 		fontBackgroundColor: {
 			// Remove the "Document colors" section.
 			documentColors: 0,
 
+			// Background color options.
 			// ...
 		},
 		toolbar: [
 			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Installation
@@ -374,11 +382,11 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Font, ... ],
-		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', ... ]
+		plugins: [ Font, /* ... */ ],
+		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
@@ -388,11 +396,11 @@ import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ FontFamily, ... ],
-		toolbar: [ 'fontFamily', ... ]
+		plugins: [ FontFamily, /* ... */ ],
+		toolbar: [ 'fontFamily', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
