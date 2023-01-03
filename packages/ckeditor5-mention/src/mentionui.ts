@@ -87,7 +87,7 @@ export default class MentionUI extends Plugin {
 		this._mentionsConfigurations = new Map();
 		this._requestFeedDebounced = debounce( this._requestFeed, 100 );
 
-		editor.config.define( 'mention', { feeds: [], commitKeys: defaultCommitKeyCodes, dropdownLimit: 10 } );
+		editor.config.define( 'mention', { feeds: [] } );
 	}
 
 	/**
@@ -96,7 +96,7 @@ export default class MentionUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		const commitKeys = editor.config.get( 'mention.commitKeys' )!;
+		const commitKeys = editor.config.get( 'mention.commitKeys' ) || defaultCommitKeyCodes;
 		const handledKeyCodes = defaultHandledKeyCodes.concat( commitKeys );
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
@@ -212,7 +212,7 @@ export default class MentionUI extends Plugin {
 			const { item, marker } = data;
 
 			// Set to 10 by default for backwards compatibility. See: #10479
-			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' )!;
+			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {
 				return null;

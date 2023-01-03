@@ -122,7 +122,7 @@ export type MentionConfig = {
 	 *
 	 * @default [ 13, 9 ] // [ Enter, Tab ]
 	 */
-	commitKeys: Array<number>;
+	commitKeys?: Array<number>;
 
 	/**
 	 * The configuration of the custom number of visible mentions.
@@ -161,7 +161,7 @@ export type MentionConfig = {
 	 *
 	 * @default 10
 	 */
-	dropdownLimit: number;
+	dropdownLimit?: number;
 };
 
 /**
