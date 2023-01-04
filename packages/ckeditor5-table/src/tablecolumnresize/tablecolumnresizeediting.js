@@ -35,7 +35,6 @@ import {
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
-	ensureColumnResizerElement,
 	getDomCellOuterWidth
 } from './utils';
 
@@ -717,12 +716,14 @@ export default class TableColumnResizeEditing extends Plugin {
 	_registerResizerInserter() {
 		this.editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
 			dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
-				const mapper = conversionApi.mapper;
 				const modelElement = data.item;
-				const viewElement = mapper.toViewElement( modelElement );
+				const viewElement = conversionApi.mapper.toViewElement( modelElement );
 				const viewWriter = conversionApi.writer;
 
-				ensureColumnResizerElement( viewWriter, viewElement );
+				viewWriter.insert(
+					viewWriter.createPositionAt( viewElement, 'end' ),
+					viewWriter.createUIElement( 'div', { class: 'ck-table-column-resizer' } )
+				);
 			}, { priority: 'lowest' } );
 		} );
 	}
