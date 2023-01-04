@@ -23,12 +23,14 @@ import {
 	getDataWithoutFiller, isInlineFiller, startsWithFiller
 } from './filler';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
-import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
+import {
+	global,
+	logWarning,
+	indexOf,
+	getAncestors,
+	isText,
+	isComment
+} from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node';
 import type Document from './document';
@@ -69,10 +71,10 @@ export default class DomConverter {
 	public readonly document: Document;
 	public readonly renderingMode: 'data' | 'editing';
 	public blockFillerMode: BlockFillerMode;
-	public readonly preElements: string[];
-	public readonly blockElements: string[];
-	public readonly inlineObjectElements: string[];
-	public readonly unsafeElements: string[];
+	public readonly preElements: Array<string>;
+	public readonly blockElements: Array<string>;
+	public readonly inlineObjectElements: Array<string>;
+	public readonly unsafeElements: Array<string>;
 
 	private readonly _domDocument: DomDocument;
 	private readonly _domToViewMapping: WeakMap<DomElement | DomDocumentFragment, ViewElement | ViewDocumentFragment>;
@@ -355,7 +357,7 @@ export default class DomConverter {
 		}
 
 		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
-		const nodes: DomElement[] = [];
+		const nodes: Array<DomElement> = [];
 
 		let currentNode;
 
@@ -819,7 +821,7 @@ export default class DomConverter {
 
 		const isBackward = this.isDomSelectionBackward( domSelection );
 
-		const viewRanges: ViewRange[] = [];
+		const viewRanges: Array<ViewRange> = [];
 
 		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
 			// DOM Range have correct start and end, no matter what is the DOM Selection direction. So we don't have to fix anything.
@@ -908,6 +910,11 @@ export default class DomConverter {
 				}
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
+
+				if ( isText( domBefore ) && isInlineFiller( domBefore ) ) {
+					return this.domPositionToView( domBefore.parentNode!, indexOf( domBefore ) );
+				}
+
 				const viewBefore = isText( domBefore ) ?
 					this.findCorrespondingViewText( domBefore ) :
 					this.mapDomToView( domBefore as DomElement );
@@ -1071,7 +1078,7 @@ export default class DomConverter {
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
-			const scrollPositions: [ number, number ][] = [];
+			const scrollPositions: Array<[ number, number ]> = [];
 
 			// Save all scrollLeft and scrollTop values starting from domEditable up to
 			// document#documentElement.
@@ -1168,8 +1175,14 @@ export default class DomConverter {
 		// we will use the fact that range will collapse if it's end is before it's start.
 		const range = this._domDocument.createRange();
 
-		range.setStart( selection.anchorNode!, selection.anchorOffset );
-		range.setEnd( selection.focusNode!, selection.focusOffset );
+		try {
+			range.setStart( selection.anchorNode!, selection.anchorOffset );
+			range.setEnd( selection.focusNode!, selection.focusOffset );
+		} catch ( e ) {
+			// Safari sometimes gives us a selection that makes Range.set{Start,End} throw.
+			// See https://github.com/ckeditor/ckeditor5/issues/12375.
+			return false;
+		}
 
 		const backward = range.collapsed;
 
@@ -1677,7 +1690,7 @@ export default class DomConverter {
 // @param {Node} node
 // @param {Array.<String>} types
 // @returns {Boolean} `true` if such parent exists or `false` if it does not.
-function _hasDomParentOfType( node: DomNode, types: string[] ) {
+function _hasDomParentOfType( node: DomNode, types: Array<string> ) {
 	const parents = getAncestors( node );
 
 	return parents.some( parent => ( parent as DomElement ).tagName && types.includes( ( parent as DomElement ).tagName.toLowerCase() ) );
@@ -1704,7 +1717,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 // @param {Node} domNode DOM node.
 // @param {Array.<String>} blockElements
 // @returns {Boolean}
-function isNbspBlockFiller( domNode: DomNode, blockElements: string[] ): boolean {
+function isNbspBlockFiller( domNode: DomNode, blockElements: Array<string> ): boolean {
 	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
 
 	return isNBSP && hasBlockParent( domNode, blockElements ) && ( domNode as DomElement ).parentNode!.childNodes.length === 1;
@@ -1715,7 +1728,7 @@ function isNbspBlockFiller( domNode: DomNode, blockElements: string[] ): boolean
 // @param {Node} domNode DOM node.
 // @param {Array.<String>} blockElements
 // @returns {Boolean}
-function hasBlockParent( domNode: DomNode, blockElements: string[] ): boolean {
+function hasBlockParent( domNode: DomNode, blockElements: Array<string> ): boolean {
 	const parent = domNode.parentNode;
 
 	return !!parent && !!( parent as DomElement ).tagName && blockElements.includes( ( parent as DomElement ).tagName.toLowerCase() );

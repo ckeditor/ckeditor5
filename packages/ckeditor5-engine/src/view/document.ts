@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/document
  */
 
 import DocumentSelection from './documentselection';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BubblingEmitterMixin from './observer/bubblingemittermixin';
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap';
 import type RootEditableElement from './rooteditableelement';
@@ -27,13 +25,14 @@ import type DowncastWriter from './downcastwriter';
  * @mixes module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class Document extends BubblingEmitterMixin( Observable ) {
+export default class Document extends BubblingEmitterMixin( ObservableMixin() ) {
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootEditableElement, 'rootName'>;
+	public readonly roots: Collection<RootEditableElement>;
 	public readonly stylesProcessor: StylesProcessor;
 
 	declare public isReadOnly: boolean;
 	declare public isFocused: boolean;
+	declare public _isFocusChanging: boolean;
 	declare public isSelecting: boolean;
 	declare public isComposing: boolean;
 
@@ -99,6 +98,23 @@ export default class Document extends BubblingEmitterMixin( Observable ) {
 		this.set( 'isFocused', false );
 
 		/**
+		 * Set to `true` if the document is in the process of setting the focus.
+		 *
+		 * To be precise, there are two browser events that we care about: `focus` and `selectionchange`.
+		 *
+		 * Different browsers handle them differently. Chromium sends the `focus` event before the
+		 * `selectionchange` event, which leads to rendering with the old selection state.
+		 *
+		 * The flag is used to prevent rendering when setting the focus is in progress
+		 * and we are waiting for the new value.
+		 *
+		 * @internal
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#_isFocusChanging
+		 */
+		this.set( '_isFocusChanging', false );
+
+		/** @
 		 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 		 * When they stop selecting, the property goes back to `false`.
 		 *
@@ -251,7 +267,7 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  */
 export type ChangeType = 'children' | 'attributes' | 'text';
 
-export type LayoutChangedEvent = {
+export type ViewDocumentLayoutChangedEvent = {
 	name: 'layoutChanged';
 	args: [];
 };

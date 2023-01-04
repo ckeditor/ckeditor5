@@ -13,9 +13,11 @@ import ViewSelection from '../../../src/view/selection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
@@ -47,7 +49,10 @@ describe( 'SelectionObserver', () => {
 			domDocument.getSelection().removeAllRanges();
 
 			viewDocument.isFocused = true;
+
 			domMain.focus();
+
+			viewDocument._isFocusChanging = false;
 		} );
 
 		selectionObserver.enable();
@@ -64,6 +69,57 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should fire selectionChange when it is the only change', done => {
+		viewDocument.on( 'selectionChange', ( evt, data ) => {
+			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
+
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
+			expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+			const newViewRange = data.newSelection.getFirstRange();
+			const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+			expect( newViewRange.start.parent ).to.equal( viewFoo );
+			expect( newViewRange.start.offset ).to.equal( 2 );
+			expect( newViewRange.end.parent ).to.equal( viewFoo );
+			expect( newViewRange.end.offset ).to.equal( 2 );
+
+			done();
+		} );
+
+		changeDomSelection();
+	} );
+
+	it( 'should change document#_isFocusChanging property to false when selection is changed', done => {
+		viewDocument.on( 'selectionChange', () => {
+			expect( viewDocument._isFocusChanging ).to.equal( false );
+
+			done();
+		} );
+
+		viewDocument._isFocusChanging = true;
+
+		changeDomSelection();
+	} );
+
+	it( 'should not fire selectionChange while user is composing', done => {
+		viewDocument.on( 'selectionChange', () => {
+			throw 'selectionChange fired while composing';
+		} );
+
+		viewDocument.isComposing = true;
+		changeDomSelection();
+
+		setTimeout( done, 100 );
+	} );
+
+	it( 'should fire selectionChange while user is composing on Android', done => {
+		testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+		viewDocument.isComposing = true;
+
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
@@ -104,6 +160,7 @@ describe( 'SelectionObserver', () => {
 			throw 'selectionChange fired in ignored elements';
 		} );
 
+		view.getObserver( MutationObserver ).disable();
 		domMain.childNodes[ 1 ].setAttribute( 'data-cke-ignore-events', 'true' );
 
 		changeDomSelection();
@@ -169,15 +226,18 @@ describe( 'SelectionObserver', () => {
 			writer.setSelection( viewFoo, 0 );
 		} );
 
+		let wasInfiniteLoopDetected = false;
+		sinon.stub( selectionObserver, '_reportInfiniteLoop' ).callsFake( () => {
+			wasInfiniteLoopDetected = true;
+		} );
 		const selectionChangeSpy = sinon.spy();
 
-		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
-		sinon.stub( console, 'warn' );
-
+		selectionObserver._clearInfiniteLoop();
 		viewDocument.on( 'selectionChange', selectionChangeSpy );
 
 		return new Promise( resolve => {
 			viewDocument.on( 'selectionChangeDone', () => {
+				expect( wasInfiniteLoopDetected ).to.be.true;
 				expect( selectionChangeSpy.callCount ).to.equal( 60 );
 
 				resolve();
@@ -188,6 +248,15 @@ describe( 'SelectionObserver', () => {
 				counter--;
 			}
 		} );
+	} );
+
+	it( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
+		expect( () => {
+			selectionObserver._reportInfiniteLoop();
+		} ).to.throw( Error,
+			'Selection change observer detected an infinite rendering loop.\n\n' +
+			'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
+		);
 	} );
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {

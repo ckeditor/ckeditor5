@@ -8,7 +8,7 @@ order: 10
 
 # Pasting content from Microsoft Word
 
-The paste from Word feature is allows you to paste content from Microsoft Word and maintain the original structure and formatting. After creating a document in Microsoft Word you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
+The paste from Word feature allows you to paste content from Microsoft Word and maintain the original structure and formatting. After creating a document in Microsoft Word you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
 
 When the plugin is enabled, it automatically detects Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
@@ -37,6 +37,7 @@ To test how Paste from Office works, download the [sample Word document](../../a
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
+* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content. You can read more about the differences between paste from Word and import from Word in the {@link features/features-comparison dedicated comparison guide}.
 
 ## Automatic content filtering
 

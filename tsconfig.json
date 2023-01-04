@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "DOM"
+    ],
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "strict": true,
+    "module": "es6",
+    "target": "es2020",
+    "sourceMap": true,
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "./typings/"
+  ]
+}

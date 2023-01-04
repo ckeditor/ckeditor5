@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/node
  */
 
 import TypeCheckable from './typecheckable';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import {
+	CKEditorError,
+	EmitterMixin,
+	compareArrays
+} from '@ckeditor/ckeditor5-utils';
+
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.
@@ -156,7 +157,7 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 *
 	 * @returns {Array.<Number>} The path.
 	 */
-	public getPath(): number[] {
+	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let node: Node | DocumentFragment = this;
@@ -178,8 +179,8 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): ( Node | DocumentFragment )[] {
-		const ancestors: ( Node | DocumentFragment )[] = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
+		const ancestors: Array<Node | DocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -288,7 +289,7 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	 * @fires change
 	 */
 	public _fireChange( type: ChangeType, node: Node ): void {
-		this.fire<ChangeEvent>( `change:${ type }`, node );
+		this.fire<ViewNodeChangeEvent>( `change:${ type }`, node );
 
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
@@ -406,7 +407,7 @@ Node.prototype.is = function( type: string ): boolean {
  * @event change
  */
 
-export type ChangeEvent = {
+export type ViewNodeChangeEvent = {
 	name: 'change' | `change:${ ChangeType }`;
 	args: [ changedNode: Node ];
 };

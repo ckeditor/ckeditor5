@@ -24,7 +24,7 @@ import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarsepa
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
-import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
+import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -590,6 +590,8 @@ function switchbutton( {
 	const button = new SwitchButtonView();
 
 	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
+
+	button.on( 'execute', () => ( button.isOn = !button.isOn ) );
 
 	return button;
 }

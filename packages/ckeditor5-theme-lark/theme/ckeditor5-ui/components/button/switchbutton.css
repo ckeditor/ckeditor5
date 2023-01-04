@@ -24,6 +24,15 @@ of the component, floating–point numbers have been used which, for the default
 }
 
 .ck.ck-button.ck-switchbutton {
+	/* Unlike a regular button, the switch button text color and background should never change.
+	 * Changing toggle switch (background, outline) is enough to carry the information about the
+	 * state of the entire component (https://github.com/ckeditor/ckeditor5/issues/12519)
+	 */
+	&, &:hover, &:focus, &:active, &.ck-on:hover, &.ck-on:focus, &.ck-on:active {
+		color: inherit;
+		background: transparent;
+	}
+
 	& .ck-button__label {
 		@mixin ck-dir ltr {
 			/* Separate the label from the switch */
@@ -95,6 +104,7 @@ of the component, floating–point numbers have been used which, for the default
 		}
 	}
 
+	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-on {
 		& .ck-button__toggle {
 			background: var(--ck-color-switch-button-on-background);
@@ -117,10 +127,4 @@ of the component, floating–point numbers have been used which, for the default
 			}
 		}
 	}
-
-	/* Regular buttons get a backgound when active. Switch buttons announce that through the switch toggle instead */
-	&:active, &.ck-on:active {
-		background: transparent;
-	}
-
 }

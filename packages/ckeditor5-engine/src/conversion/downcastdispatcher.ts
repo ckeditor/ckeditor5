@@ -10,7 +10,7 @@
 import Consumable from './modelconsumable';
 import Range from '../model/range';
 
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { default as Differ, DiffItem } from '../model/differ';
 import type { default as MarkerCollection, Marker } from '../model/markercollection';
@@ -114,7 +114,7 @@ import type ViewElement from '../view/element';
  *			conversionApi.writer.insert( viewPosition, viewElement );
  *		} );
  */
-export default class DowncastDispatcher extends Emitter {
+export default class DowncastDispatcher extends EmitterMixin() {
 	/** @internal */
 	public readonly _conversionApi: Pick<DowncastConversionApi, 'dispatcher' | 'mapper' | 'schema'>;
 
@@ -501,7 +501,7 @@ export default class DowncastDispatcher extends Emitter {
 	private _reduceChanges( changes: Iterable<DiffItem> ): Iterable<DiffItem | DiffItemReinsert> {
 		const data: { changes: Iterable<DiffItem | DiffItemReinsert> } = { changes };
 
-		this.fire<ReduceChangesEvent>( 'reduceChanges', data );
+		this.fire<DowncastReduceChangesEvent>( 'reduceChanges', data );
 
 		return data.changes;
 	}
@@ -808,7 +808,7 @@ export default class DowncastDispatcher extends Emitter {
 	 */
 }
 
-export type ReduceChangesEvent = {
+export type DowncastReduceChangesEvent = {
 	name: 'reduceChanges';
 	args: [ data: {
 		changes: Iterable<DiffItem | DiffItemReinsert>;
@@ -888,7 +888,7 @@ function shouldMarkerChangeBeConverted(
 	ancestors.shift(); // Remove root element. It cannot be passed to `model.Range#containsItem`.
 	ancestors.reverse();
 
-	const hasCustomHandling = ( ancestors as Element[] ).some( element => {
+	const hasCustomHandling = ( ancestors as Array<Element> ).some( element => {
 		if ( range.containsItem( element ) ) {
 			const viewElement = mapper.toViewElement( element )!;
 

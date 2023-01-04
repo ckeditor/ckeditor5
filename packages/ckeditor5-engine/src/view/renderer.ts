@@ -11,21 +11,24 @@ import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
-import { default as diff, type DiffResult } from '@ckeditor/ckeditor5-utils/src/diff';
-import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
-import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import { Observable, type ChangeEvent as ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import {
+	CKEditorError,
+	ObservableMixin,
+	diff,
+	env,
+	fastDiff,
+	insertAt,
+	isComment,
+	isNode,
+	isText,
+	remove,
+	type DiffResult,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import type { ChangeType } from './document';
 import type DocumentSelection from './documentselection';
 import type DomConverter from './domconverter';
-import type EditableElement from './editableelement';
 import type ViewElement from './element';
 import type ViewNode from './node';
 
@@ -50,7 +53,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export default class Renderer extends Observable {
+export default class Renderer extends ObservableMixin() {
 	public readonly domDocuments: Set<DomDocument>;
 	public readonly domConverter: DomConverter;
 	public readonly markedAttributes: Set<ViewElement>;
@@ -59,7 +62,9 @@ export default class Renderer extends Observable {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
+	declare public readonly _isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
+	declare public readonly isComposing: boolean;
 
 	private _inlineFiller: DomText | null;
 	private _fakeSelectionContainer: DomElement | null;
@@ -131,6 +136,15 @@ export default class Renderer extends Observable {
 		this.set( 'isFocused', false );
 
 		/**
+         * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
+		 *
+		 * @internal
+		 * @observable
+		 * @member {Boolean}
+		 */
+		this.set( '_isFocusChanging', false );
+
+		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 		 * When they stop selecting, the property goes back to `false`.
 		 *
@@ -154,6 +168,22 @@ export default class Renderer extends Observable {
 				}
 			} );
 		}
+
+		/**
+		 * True if composition is in progress inside the document.
+		 *
+		 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
+		this.set( 'isComposing', false );
+
+		this.on( 'change:isComposing', () => {
+			if ( !this.isComposing ) {
+				this.render();
+			}
+		} );
 
 		/**
 		 * The text node in which the inline filler was rendered.
@@ -223,6 +253,26 @@ export default class Renderer extends Observable {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	public render(): void {
+		// Ignore rendering while in the composition mode. Composition events are not cancellable and browser will modify the DOM tree.
+		// All marked elements, attributes, etc. will wait until next render after the composition ends.
+		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
+		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
+		if ( this.isComposing && !env.isAndroid ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
+			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
 		let inlineFillerPosition: ViewPosition | null = null;
 		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 
@@ -317,6 +367,10 @@ export default class Renderer extends Observable {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -529,6 +583,12 @@ export default class Renderer extends Observable {
 			return false;
 		}
 
+		// Do not use inline filler while typing outside inline elements on Android.
+		// The deleteContentBackward would remove part of the inline filler instead of removing last letter in a link.
+		if ( env.isAndroid && ( nodeBefore || nodeAfter ) ) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -545,26 +605,24 @@ export default class Renderer extends Observable {
 		const domText = this.domConverter.findCorrespondingDomText( viewText )!;
 		const newDomText = this.domConverter.viewToDom( viewText ) as DomText;
 
-		const actualText = domText.data;
 		let expectedText = newDomText.data;
-
 		const filler = options.inlineFillerPosition;
 
 		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.index ) {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
-		if ( actualText != expectedText ) {
-			const actions = fastDiff( actualText, expectedText );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
-			for ( const action of actions ) {
-				if ( action.type === 'insert' ) {
-					domText.insertData( action.index, action.values.join( '' ) );
-				} else { // 'delete'
-					domText.deleteData( action.index, action.howMany );
-				}
-			}
-		}
+		updateTextNode( domText, expectedText );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -604,6 +662,9 @@ export default class Renderer extends Observable {
 	/**
 	 * Checks if elements child list needs to be updated and possibly updates it.
 	 *
+	 * Note that on Android, to reduce the risk of composition breaks, it tries to update data of an existing
+	 * child text nodes instead of replacing them completely.
+	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 * @param {Object} options
@@ -619,8 +680,32 @@ export default class Renderer extends Observable {
 			return;
 		}
 
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
+		// IME on Android inserts a new text node while typing after a link
+		// instead of updating an existing text node that follows the link.
+		// We must normalize those text nodes so the diff won't get confused.
+		// https://github.com/ckeditor/ckeditor5/issues/12574.
+		if ( env.isAndroid ) {
+			let previousDomNode = null;
+
+			for ( const domNode of Array.from( domElement.childNodes ) ) {
+				if ( previousDomNode && isText( previousDomNode ) && isText( domNode ) ) {
+					domElement.normalize();
+
+					break;
+				}
+
+				previousDomNode = domNode;
+			}
+		}
+
 		const inlineFillerPosition = options.inlineFillerPosition;
-		const actualDomChildren = this.domConverter.mapViewToDom( viewElement )!.childNodes;
+		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = Array.from(
 			this.domConverter.viewChildrenToDom( viewElement, { bind: true } )
 		);
@@ -634,6 +719,18 @@ export default class Renderer extends Observable {
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 
+		// The rendering is not disabled on Android in the composition mode.
+		// Composition events are not cancellable and browser will modify the DOM tree.
+		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
+		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
+		// Since the composition is fragile and often breaks if the composed text node is replaced while composing
+		// we need to make sure that we update the existing text node and not replace it with another one.
+		// We don't want to change the behavior on other browsers for safety, but maybe one day cause it seems to make sense.
+		// https://github.com/ckeditor/ckeditor5/issues/12455.
+		const actions = env.isAndroid ?
+			this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } ) :
+			diff;
+
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
 
@@ -643,21 +740,47 @@ export default class Renderer extends Observable {
 		// and it disrupts the whole algorithm. See https://github.com/ckeditor/ckeditor5/issues/6367.
 		//
 		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
-		for ( const action of diff ) {
+		for ( const action of actions ) {
 			if ( action === 'delete' ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', actualDomChildren[ i ]
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
 				remove( actualDomChildren[ i ] );
-			} else if ( action === 'equal' ) {
+			} else if ( action === 'equal' || action === 'replace' ) {
 				i++;
 			}
 		}
 
 		i = 0;
 
-		for ( const action of diff ) {
+		for ( const action of actions ) {
 			if ( action === 'insert' ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', expectedDomChildren[ i ]
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
+			}
+			// Update the existing text node data. Note that replace action is generated only for Android for now.
+			else if ( action === 'replace' ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
+				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // }
+
+				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				i++;
+
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
 				// Do it here (not in the loop above) because only after insertions the `i` index is correct.
@@ -674,6 +797,10 @@ export default class Renderer extends Observable {
 				this.domConverter.unbindDomElement( node as DomElement );
 			}
 		}
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 
 	/**
@@ -684,7 +811,7 @@ export default class Renderer extends Observable {
 	 * @param {Array.<ViewNode>|NodeList} expectedDomChildren Expected DOM children.
 	 * @returns {Array.<String>} The list of actions based on the {@link module:utils/diff~diff} function.
 	 */
-	private _diffNodeLists( actualDomChildren: DomNode[] | NodeList, expectedDomChildren: DomNode[] | NodeList ) {
+	private _diffNodeLists( actualDomChildren: Array<DomNode> | NodeList, expectedDomChildren: Array<DomNode> | NodeList ) {
 		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
 
 		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter ) );
@@ -703,19 +830,22 @@ export default class Renderer extends Observable {
 	 * @param {Array.<String>} actions Actions array which is a result of the {@link module:utils/diff~diff} function.
 	 * @param {Array.<ViewNode>|NodeList} actualDom Actual DOM children
 	 * @param {Array.<ViewNode>} expectedDom Expected DOM children.
+	 * @param {Object} [options] Options
+	 * @param {Boolean} [options.replaceText] Mark text nodes replacement.
 	 * @returns {Array.<String>} Actions array modified with the `replace` actions.
 	 */
 	private _findReplaceActions(
-		actions: DiffResult[],
-		actualDom: DomNode[] | NodeList,
-		expectedDom: DomNode[]
-	): ( DiffResult | 'replace' )[] {
+		actions: Array<DiffResult>,
+		actualDom: Array<DomNode> | NodeList,
+		expectedDom: Array<DomNode>,
+		options: { replaceText?: boolean } = {}
+	): Array<DiffResult | 'replace'> {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
 		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
 			return actions;
 		}
 
-		let newActions: ( DiffResult | 'replace' )[] = [];
+		let newActions: Array<DiffResult | 'replace'> = [];
 		let actualSlice = [];
 		let expectedSlice = [];
 
@@ -727,7 +857,10 @@ export default class Renderer extends Observable {
 			} else if ( action === 'delete' ) {
 				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
 			} else { // equal
-				newActions = newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
+				newActions = newActions.concat(
+					diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
+						.map( x => x === 'equal' ? 'replace' : x )
+				);
 				newActions.push( 'equal' );
 				// Reset stored elements on 'equal'.
 				actualSlice = [];
@@ -736,7 +869,10 @@ export default class Renderer extends Observable {
 			counter[ action ]++;
 		}
 
-		return newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
+		return newActions.concat(
+			diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
+				.map( x => x === 'equal' ? 'replace' : x )
+		);
 	}
 
 	/**
@@ -775,6 +911,12 @@ export default class Renderer extends Observable {
 			return;
 		}
 
+		// The focus is still in progress and we are waiting for new values from `selectionchange` event.
+		// In that case, we need to prevent update selection since it would be updated using old values.
+		if ( this._isFocusChanging ) {
+			return;
+		}
+
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();
@@ -790,11 +932,21 @@ export default class Renderer extends Observable {
 			return;
 		}
 
-		// Render selection.
+		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
 			this._updateFakeSelection( domRoot );
-		} else {
+		}
+		// There was a fake selection so remove it and update the DOM selection.
+		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
+		else if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
 			this._removeFakeSelection();
+			this._updateDomSelection( domRoot );
+		}
+		// Update the DOM selection in case of a plain selection change (no fake selection is involved).
+		// On non-Android the whole rendering is disabled in composition mode (including DOM selection update),
+		// but updating DOM selection should be also disabled on Android if in the middle of the composition
+		// (to not interrupt it).
+		else if ( !( this.isComposing && env.isAndroid ) ) {
 			this._updateDomSelection( domRoot );
 		}
 	}
@@ -856,6 +1008,12 @@ export default class Renderer extends Observable {
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor! )!;
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus! )!;
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
@@ -994,7 +1152,7 @@ function isEditable( element: ViewElement ): boolean {
 // @param {Element|Array.<ViewNode>} domParentOrArray
 // @param {Number} offset
 // @returns {Text} The DOM text node that contains an inline filler.
-function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | DomNode[], offset: number ): DomText {
+function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | Array<DomNode>, offset: number ): DomText {
 	const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 	const nodeAfterFiller = childNodes[ offset ];
 
@@ -1006,7 +1164,7 @@ function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | 
 		const fillerNode = domDocument.createTextNode( INLINE_FILLER );
 
 		if ( Array.isArray( domParentOrArray ) ) {
-			( childNodes as DomNode[] ).splice( offset, 0, fillerNode );
+			( childNodes as Array<DomNode> ).splice( offset, 0, fillerNode );
 		} else {
 			insertAt( domParentOrArray as DomElement, offset, fillerNode );
 		}
@@ -1027,6 +1185,12 @@ function areSimilar( node1: DomNode, node2: DomNode ): boolean {
 		!isText( node1 ) && !isText( node2 ) &&
 		!isComment( node1 ) && !isComment( node2 ) &&
 		( node1 as DomElement ).tagName.toLowerCase() === ( node2 as DomElement ).tagName.toLowerCase();
+}
+
+// Whether two DOM nodes are text nodes.
+function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
+	return isNode( node1 ) && isNode( node2 ) &&
+		isText( node1 ) && isText( node2 );
 }
 
 // Whether two dom nodes should be considered as the same.
@@ -1085,7 +1249,7 @@ function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPosition
 	}
 }
 
-function filterOutFakeSelectionContainer( domChildList: DomNode[] | NodeList, fakeSelectionContainer: DomElement | null ) {
+function filterOutFakeSelectionContainer( domChildList: Array<DomNode> | NodeList, fakeSelectionContainer: DomElement | null ) {
 	const childList = Array.from( domChildList );
 
 	if ( childList.length == 0 || !fakeSelectionContainer ) {
@@ -1123,4 +1287,41 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	container.textContent = '\u00A0';
 
 	return container;
+}
+
+// Checks if text needs to be updated and possibly updates it by removing and inserting only parts
+// of the data from the existing text node to reduce impact on the IME composition.
+//
+// @param {Text} domText DOM text node to update.
+// @param {String} expectedText The expected data of a text node.
+function updateTextNode( domText: DomText, expectedText: string ) {
+	const actualText = domText.data;
+
+	if ( actualText == expectedText ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
+		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
+		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // }
+
+		return;
+	}
+
+	// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
+	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
+	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`
+	// @if CK_DEBUG_TYPING // 	);
+	// @if CK_DEBUG_TYPING // }
+
+	const actions = fastDiff( actualText, expectedText );
+
+	for ( const action of actions ) {
+		if ( action.type === 'insert' ) {
+			domText.insertData( action.index, action.values.join( '' ) );
+		} else { // 'delete'
+			domText.deleteData( action.index, action.howMany );
+		}
+	}
 }

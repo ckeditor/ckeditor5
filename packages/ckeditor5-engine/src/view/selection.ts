@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/view/selection
  */
@@ -15,10 +13,12 @@ import Position from './position';
 import Node from './node';
 import DocumentSelection from './documentselection';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import {
+	CKEditorError,
+	EmitterMixin,
+	count,
+	isIterable
+} from '@ckeditor/ckeditor5-utils';
 
 import type Element from './element';
 import type Item from './item';
@@ -37,7 +37,7 @@ import type EditableElement from './editableelement';
  * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
 export default class Selection extends EmitterMixin( TypeCheckable ) {
-	private _ranges: Range[];
+	private _ranges: Array<Range>;
 	private _lastRangeBackward: boolean;
 	private _isFake: boolean;
 	private _fakeSelectionLabel: string;
@@ -575,7 +575,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			throw new CKEditorError( 'view-selection-setto-not-selectable', this );
 		}
 
-		this.fire<ChangeEvent>( 'change' );
+		this.fire<ViewSelectionChangeEvent>( 'change' );
 	}
 
 	/**
@@ -615,7 +615,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			this._addRange( new Range( anchor, newFocus ) );
 		}
 
-		this.fire<ChangeEvent>( 'change' );
+		this.fire<ViewSelectionChangeEvent>( 'change' );
 	}
 
 	/**
@@ -750,7 +750,7 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
 };
 
-export type ChangeEvent = {
+export type ViewSelectionChangeEvent = {
 	name: 'change';
 	args: [];
 };

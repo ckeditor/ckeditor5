@@ -17,7 +17,7 @@
 			]
 		},
 		{
-			"name": "Data Filter",
+			"name": "Data filter",
 			"className": "DataFilter",
 			"description": "Adds support for enabling and disabling HTML features and their attributes. Part of General HTML Support feature.",
 			"path": "src/datafilter.js",
@@ -32,7 +32,7 @@
 			]
 		},
 		{
-			"name": "Data Schema",
+			"name": "Data schema",
 			"className": "DataSchema",
 			"description": "Holds representation of the extended HTML document type definitions. Part of General HTML Support feature.",
 			"path": "src/dataschema.js"

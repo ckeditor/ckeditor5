@@ -20,6 +20,22 @@ msgctxt "Name of the special characters plugins, visible in a dropdown and as a 
 msgid "Special characters"
 msgstr "特殊字元"
 
+msgctxt "A label for the \"leftwards simple arrow\" symbol."
+msgid "leftwards simple arrow"
+msgstr "向左簡單箭號"
+
+msgctxt "A label for the \"rightwards simple arrow\" symbol."
+msgid "rightwards simple arrow"
+msgstr "向右簡單箭號"
+
+msgctxt "A label for the \"upwards simple arrow\" symbol."
+msgid "upwards simple arrow"
+msgstr "向上簡單箭號"
+
+msgctxt "A label for the \"downwards simple arrow\" symbol."
+msgid "downwards simple arrow"
+msgstr "向下簡單箭號"
+
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
 msgstr "向左雙箭頭"

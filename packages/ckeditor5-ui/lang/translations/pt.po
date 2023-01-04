@@ -106,8 +106,8 @@ msgstr "Roxo"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "Barra de ferramentas de edição do conteúdo de blocos"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
-msgstr ""
+msgstr "Barra de ferramentas contextual de edição"

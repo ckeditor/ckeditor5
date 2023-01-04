@@ -12,8 +12,8 @@
 /**
  * Sets data in a given element.
  *
- * @param {HTMLElement} el The element in which the data will be set.
- * @param {String} data The data string.
+ * @param el The element in which the data will be set.
+ * @param data The data string.
  */
 export default function setDataInElement( el: HTMLElement, data: string ): void {
 	if ( el instanceof HTMLTextAreaElement ) {

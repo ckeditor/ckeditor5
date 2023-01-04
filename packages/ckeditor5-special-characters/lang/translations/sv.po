@@ -20,6 +20,22 @@ msgctxt "Name of the special characters plugins, visible in a dropdown and as a 
 msgid "Special characters"
 msgstr "Specialtecken"
 
+msgctxt "A label for the \"leftwards simple arrow\" symbol."
+msgid "leftwards simple arrow"
+msgstr "enkel vänsterpil"
+
+msgctxt "A label for the \"rightwards simple arrow\" symbol."
+msgid "rightwards simple arrow"
+msgstr "enkel högerpil"
+
+msgctxt "A label for the \"upwards simple arrow\" symbol."
+msgid "upwards simple arrow"
+msgstr "enkel uppåtpil"
+
+msgctxt "A label for the \"downwards simple arrow\" symbol."
+msgid "downwards simple arrow"
+msgstr "enkel nedåtpil"
+
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
 msgstr "dubbelpil åt vänster"

@@ -16,8 +16,9 @@ import type Model from '../model';
 import type Schema from '../schema';
 import type Selection from '../selection';
 import type Text from '../text';
+import type Node from '../node';
 
-import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils/src/unicode';
+import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';
 
@@ -48,14 +49,11 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * which change the {@link module:engine/model/model~Model#modifySelection}
  * method's behavior.
  *
- * @param {module:engine/model/model~Model} model The model in context of which
- * the selection modification should be performed.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * The selection to modify.
- * @param {Object} [options]
- * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
- * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
- * @param {Boolean} [options.treatEmojiAsSingleUnit=false] Whether multi-characer emoji sequences should be handled as single unit.
+ * @param model The model in context of which the selection modification should be performed.
+ * @param selection The selection to modify.
+ * @param options.direction The direction in which the selection should be modified. Default 'forward'.
+ * @param options.unit The unit by which selection should be modified. Default 'character'.
+ * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
  */
 export default function modifySelection(
 	model: Model,
@@ -104,9 +102,9 @@ export default function modifySelection(
 	}
 }
 
-// Checks whether the selection can be extended to the the walker's next value (next position).
-// @param {{ walker, unit, isForward, schema, treatEmojiAsSingleUnit }} data
-// @param {module:engine/view/treewalker~TreeWalkerValue} value
+/**
+ * Checks whether the selection can be extended to the the walker's next value (next position).
+ */
 function tryExtendingTo(
 	data: {
 		walker: TreeWalker;
@@ -159,15 +157,13 @@ function tryExtendingTo(
 	}
 }
 
-// Finds a correct position by walking in a text node and checking whether selection can be extended to given position
-// or should be extended further.
-//
-// @param {module:engine/model/treewalker~TreeWalker} walker
-// @param {String} unit The unit by which selection should be modified.
-// @param {Boolean} treatEmojiAsSingleUnit
+/**
+ * Finds a correct position by walking in a text node and checking whether selection can be extended to given position
+ * or should be extended further.
+ */
 function getCorrectPosition(
 	walker: TreeWalker,
-	unit: string,
+	unit: 'character' | 'codePoint' | 'word',
 	treatEmojiAsSingleUnit: boolean
 ): Position {
 	const textNode = walker.position.textNode;
@@ -190,40 +186,33 @@ function getCorrectPosition(
 	return walker.position;
 }
 
-// Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
-// or should be extended further.
-//
-// @param {module:engine/model/treewalker~TreeWalker} walker
-// @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
+/**
+ * Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
+ * or should be extended further.
+ */
 function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): Position {
-	let textNode = walker.position.textNode!;
+	let textNode: Node | null = walker.position.textNode;
 
-	if ( textNode ) {
-		let offset = walker.position.offset - textNode.startOffset!;
+	if ( !textNode ) {
+		textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+	}
 
-		while ( !isAtWordBoundary( textNode.data, offset, isForward ) && !isAtNodeBoundary( textNode, offset, isForward ) ) {
+	while ( textNode && textNode.is( '$text' ) ) {
+		const offset = walker.position.offset - textNode.startOffset!;
+
+		// Check of adjacent text nodes with different attributes (like BOLD).
+		// Example          : 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
+		// should expand to : 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
+		if ( isAtNodeBoundary( textNode, offset, isForward ) ) {
+			textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+		}
+		// Check if this is a word boundary.
+		else if ( isAtWordBoundary( textNode.data, offset, isForward ) ) {
+			break;
+		}
+		// Maybe one more character.
+		else {
 			walker.next();
-
-			// Check of adjacent text nodes with different attributes (like BOLD).
-			// Example          : 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
-			// should expand to : 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
-			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
-
-			// Scan only text nodes. Ignore inline elements (like `<softBreak>`).
-			if ( nextNode && nextNode.is( '$text' ) ) {
-				// Check boundary char of an adjacent text node.
-				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
-
-				// Go to the next node if the character at the boundary of that node belongs to the same word.
-				if ( !wordBoundaryCharacters.includes( boundaryChar ) ) {
-					// If adjacent text node belongs to the same word go to it & reset values.
-					walker.next();
-
-					textNode = walker.position.textNode!;
-				}
-			}
-
-			offset = walker.position.offset - textNode!.startOffset!;
 		}
 	}
 
@@ -241,11 +230,9 @@ function getSearchRange( start: Position, isForward: boolean ) {
 	}
 }
 
-// Checks if selection is on word boundary.
-//
-// @param {String} data The text node value to investigate.
-// @param {Number} offset Position offset.
-// @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
+/**
+ * Checks if selection is on word boundary.
+ */
 function isAtWordBoundary( data: string, offset: number, isForward: boolean ) {
 	// The offset to check depends on direction.
 	const offsetToCheck = offset + ( isForward ? 0 : -1 );
@@ -253,11 +240,9 @@ function isAtWordBoundary( data: string, offset: number, isForward: boolean ) {
 	return wordBoundaryCharacters.includes( data.charAt( offsetToCheck ) );
 }
 
-// Checks if selection is on node boundary.
-//
-// @param {module:engine/model/text~Text} textNode The text node to investigate.
-// @param {Number} offset Position offset.
-// @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
+/**
+ * Checks if selection is on node boundary.
+ */
 function isAtNodeBoundary( textNode: Text, offset: number, isForward: boolean ) {
-	return offset === ( isForward ? textNode.endOffset : 0 );
+	return offset === ( isForward ? textNode.offsetSize : 0 );
 }

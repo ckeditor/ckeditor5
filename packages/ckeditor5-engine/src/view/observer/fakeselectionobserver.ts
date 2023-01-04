@@ -8,14 +8,14 @@
  */
 
 import Observer from './observer';
-import { type ArrowObserverEvent } from './arrowkeysobserver';
+import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver';
 import ViewSelection from '../selection';
 import type View from '../view';
 import type {
-	SelectionObserverEvent,
-	SelectionObserverEventData
+	ViewDocumentSelectionEvent,
+	ViewDocumentSelectionEventData
 } from './selectionobserver';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /**
@@ -28,7 +28,7 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class FakeSelectionObserver extends Observer {
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionObserverEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.
@@ -46,7 +46,7 @@ export default class FakeSelectionObserver extends Observer {
 		 * @method #_fireSelectionChangeDoneDebounced
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<SelectionObserverEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChangeDone', data );
 		}, 200 );
 	}
 
@@ -56,7 +56,7 @@ export default class FakeSelectionObserver extends Observer {
 	public override observe(): void {
 		const document = this.document;
 
-		document.on<ArrowObserverEvent>( 'arrowKey', ( eventInfo, data ) => {
+		document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( eventInfo, data ) => {
 			const selection = document.selection;
 
 			if ( selection.isFake && this.isEnabled ) {
@@ -65,7 +65,7 @@ export default class FakeSelectionObserver extends Observer {
 			}
 		}, { context: '$capture' } );
 
-		document.on<ArrowObserverEvent>( 'arrowKey', ( eventInfo, data ) => {
+		document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( eventInfo, data ) => {
 			const selection = document.selection;
 
 			if ( selection.isFake && this.isEnabled ) {
@@ -117,7 +117,7 @@ export default class FakeSelectionObserver extends Observer {
 		};
 
 		// Fire dummy selection change event.
-		this.document.fire<SelectionObserverEvent>( 'selectionChange', data );
+		this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );
 
 		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 		// This function is debounced what means that `selectionChangeDone` event will be fired only when

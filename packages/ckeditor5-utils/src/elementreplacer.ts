@@ -14,11 +14,8 @@
 export default class ElementReplacer {
 	/**
 	 * The elements replaced by {@link #replace} and their replacements.
-	 *
-	 * @private
-	 * @member {Array.<Object>}
 	 */
-	private _replacedElements: { element: HTMLElement; newElement?: HTMLElement }[];
+	private _replacedElements: Array<{ element: HTMLElement; newElement?: HTMLElement }>;
 
 	constructor() {
 		this._replacedElements = [];
@@ -29,8 +26,8 @@ export default class ElementReplacer {
 	 *
 	 * The effect of this method can be reverted by {@link #restore}.
 	 *
-	 * @param {HTMLElement} element The element to replace.
-	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the `element` will just be hidden.
+	 * @param element The element to replace.
+	 * @param newElement The replacement element. If not passed, then the `element` will just be hidden.
 	 */
 	public replace( element: HTMLElement, newElement?: HTMLElement ): void {
 		this._replacedElements.push( { element, newElement } );

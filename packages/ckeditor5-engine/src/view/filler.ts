@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { keyCodes, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 import type View from './view';
 import type DomEventData from './observer/domeventdata';
 

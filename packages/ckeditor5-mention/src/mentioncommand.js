@@ -92,7 +92,7 @@ export default class MentionCommand extends Command {
 			 *
 			 * Correct markers: `'@'`, `'#'`.
 			 *
-			 * Incorrect markers: `'$$'`, `'[@'`.
+			 * Incorrect markers: `'@@'`, `'[@'`.
 			 *
 			 * See {@link module:mention/mention~MentionConfig}.
 			 *

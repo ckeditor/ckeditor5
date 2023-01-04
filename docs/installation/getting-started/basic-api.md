@@ -174,7 +174,7 @@ Once destroyed, resources used by the editor instance are released and the origi
 
 ### Listening to changes
 
-The {@link module:engine/model/document~Document#change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data.
+The {@link module:engine/model/document~Document#event:change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data.
 
 ```js
 editor.model.document.on( 'change:data', () => {
@@ -182,7 +182,7 @@ editor.model.document.on( 'change:data', () => {
 } );
 ```
 
-There is also a group of changes like selection position changes or marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#change `Document#change`} event.
+There is also a group of changes like selection position changes or marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#event:change `Document#change`} event.
 
 ## UMD support
 

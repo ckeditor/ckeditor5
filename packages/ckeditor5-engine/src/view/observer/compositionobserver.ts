@@ -25,26 +25,53 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		super( view );
 
 		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
+
 		const document = this.document;
 
-		document.on<CompositionObserverEvent>( 'compositionstart', () => {
+		document.on<ViewDocumentCompositionEvent>( 'compositionstart', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 			document.isComposing = true;
-		} );
+		}, { priority: 'low' } );
 
-		document.on<CompositionObserverEvent>( 'compositionend', () => {
+		document.on<ViewDocumentCompositionEvent>( 'compositionend', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
+			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 			document.isComposing = false;
-		} );
+		}, { priority: 'low' } );
 	}
 
 	public onDomEvent( domEvent: CompositionEvent ): void {
-		this.fire( domEvent.type, domEvent );
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
+		// @if CK_DEBUG_TYPING // }
+
+		this.fire( domEvent.type, domEvent, {
+			data: domEvent.data
+		} );
+
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
-export type CompositionObserverEvent = {
+export type ViewDocumentCompositionEvent = {
 	name: 'compositionstart' | 'compositionupdate' | 'compositionend';
-	args: [ data: DomEventData<CompositionEvent> ];
+	args: [ data: CompositionEventData ];
 };
+
+export interface CompositionEventData extends DomEventData<CompositionEvent> {
+	data: string | null;
+}
 
 /**
  * Fired when composition starts inside one of the editables.

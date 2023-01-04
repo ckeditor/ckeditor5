@@ -223,7 +223,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-You can take inspiration from the default configuration of this feature which you can find in: https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js
+You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js)
 
 ## Using external services for preview
 
@@ -480,4 +480,4 @@ The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-media-embed.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-media-embed](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-media-embed).

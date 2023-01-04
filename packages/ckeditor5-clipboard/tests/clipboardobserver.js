@@ -6,9 +6,9 @@
 /* globals document */
 
 import ClipboardObserver from '../src/clipboardobserver';
-import DataTransfer from '../src/datatransfer';
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 

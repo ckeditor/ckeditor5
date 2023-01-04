@@ -27,3 +27,7 @@ msgstr "Sett inn paragraf foran blokk"
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
 msgstr "Sett inn paragraf etter blokk"
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr "Trykk Enter for å skrive etter eller trykk Shift + Enter for å skrive før widgeten"

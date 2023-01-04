@@ -675,6 +675,122 @@ describe( 'DataController utils', () => {
 				}
 			} );
 
+			describe( 'within element - multiple text nodes - backward', () => {
+				test(
+					'word end after 2 nodes',
+					'<p><$text bold="true">foo</$text>bar[]</p>',
+					'<p>[<$text bold="true">foo</$text>bar]</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end inside second node',
+					'<p><$text bold="true">f oo</$text>bar[]</p>',
+					'<p><$text bold="true">f [oo</$text>bar]</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 2 nodes (with text around)',
+					'<p>aaa <$text bold="true">foo</$text>bar[] bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text>bar] bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 3 nodes, start inside last node (2 chars to edge)',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">bar</$text><$text bold="true">ba[]z</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text><$text italic="true">bar</$text><$text bold="true">ba]z</$text> bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 3 nodes, start inside last node (1 char to edge)',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">bar</$text><$text bold="true">b[]az</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text><$text italic="true">bar</$text><$text bold="true">b]az</$text> bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 3 nodes, at the edge of the last node',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">bar</$text><$text bold="true">[]baz</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text><$text italic="true">bar</$text>]<$text bold="true">baz</$text> bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 3 nodes (one is a single char long)',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">[]b</$text><$text bold="true">baz</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text>]<$text italic="true">b</$text><$text bold="true">baz</$text> bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+
+				test(
+					'word end after 3 nodes (start at end of 2 char node)',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">b</$text><$text bold="true">ba[]</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text><$text italic="true">b</$text><$text bold="true">ba</$text>] bbb</p>',
+					{ unit: 'word', direction: 'backward' }
+				);
+			} );
+
+			describe( 'within element - multiple text nodes - forward', () => {
+				test(
+					'word end after 2 nodes',
+					'<p>[]<$text bold="true">foo</$text>bar</p>',
+					'<p>[<$text bold="true">foo</$text>bar]</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end inside second node',
+					'<p>[]<$text bold="true">foo</$text>ba r</p>',
+					'<p>[<$text bold="true">foo</$text>ba] r</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 2 nodes (with text around)',
+					'<p>aaa []<$text bold="true">foo</$text>bar bbb</p>',
+					'<p>aaa [<$text bold="true">foo</$text>bar] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 3 nodes, start inside last node (2 chars to edge)',
+					'<p>aaa <$text bold="true">f[]oo</$text><$text italic="true">bar</$text><$text bold="true">baz</$text> bbb</p>',
+					'<p>aaa <$text bold="true">f[oo</$text><$text italic="true">bar</$text><$text bold="true">baz</$text>] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 3 nodes, start inside last node (1 char to edge)',
+					'<p>aaa <$text bold="true">fo[]o</$text><$text italic="true">bar</$text><$text bold="true">baz</$text> bbb</p>',
+					'<p>aaa <$text bold="true">fo[o</$text><$text italic="true">bar</$text><$text bold="true">baz</$text>] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 3 nodes, at the edge of the last node',
+					'<p>aaa <$text bold="true">foo[]</$text><$text italic="true">bar</$text><$text bold="true">baz</$text> bbb</p>',
+					'<p>aaa <$text bold="true">foo</$text>[<$text italic="true">bar</$text><$text bold="true">baz</$text>] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 3 nodes (one is a single char long)',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">b[]</$text><$text bold="true">baz</$text> bbb</p>',
+					'<p>aaa <$text bold="true">foo</$text><$text italic="true">b</$text>[<$text bold="true">baz</$text>] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+
+				test(
+					'word end after 3 nodes (start at end of 2 char node)',
+					'<p>aaa <$text bold="true">[]fo</$text><$text italic="true">b</$text><$text bold="true">ba</$text> bbb</p>',
+					'<p>aaa [<$text bold="true">fo</$text><$text italic="true">b</$text><$text bold="true">ba</$text>] bbb</p>',
+					{ unit: 'word', direction: 'forward' }
+				);
+			} );
+
 			describe( 'beyond element', () => {
 				test(
 					'extends over boundary of empty elements',
@@ -791,8 +907,50 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[<$text bold="true">foo</$text>]b</p>' );
 					expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/12673.
+				it( 'should expand selection to the whole word', () => {
+					setData( model,
+						'<p>' +
+							'ABC ' +
+							'<$text bold="true">foo</$text>' +
+							'<$text bold="true" italic="true">b[]ar</$text>' +
+							'<$text bold="true">baz</$text>' +
+							' DEF' +
+						'</p>'
+					);
+
+					const newSelBackward = model.createSelection( model.document.selection.getFirstRange().start );
+					const newSelFwd = model.createSelection( model.document.selection.getFirstRange().end );
+
+					model.modifySelection( newSelBackward, {
+						direction: 'backward',
+						unit: 'word'
+					} );
+
+					model.modifySelection( newSelFwd, {
+						direction: 'forward',
+						unit: 'word'
+					} );
+
+					model.change( writer => writer.setSelection(
+						model.createSelection(
+							model.createRange( newSelBackward.getFirstRange().start, newSelFwd.getFirstRange().end )
+						)
+					) );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal(
+						'<p>' +
+							'ABC ' +
+							'[<$text bold="true">foo</$text>' +
+							'<$text bold="true" italic="true">bar</$text>' +
+							'<$text bold="true">baz</$text>]' +
+							' DEF' +
+						'</p>'
+					);
 				} );
 			} );
 

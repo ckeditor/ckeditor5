@@ -10,8 +10,8 @@
 /**
  * Checks if value implements iterator interface.
  *
- * @param {*} value The value to check.
- * @returns {Boolean} True if value implements iterator interface.
+ * @param value The value to check.
+ * @returns True if value implements iterator interface.
  */
 export default function isIterable( value: any ): value is Iterable<any> {
 	return !!( value && value[ Symbol.iterator ] );

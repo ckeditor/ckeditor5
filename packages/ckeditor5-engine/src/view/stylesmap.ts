@@ -368,7 +368,7 @@ export default class StylesMap {
 	 * @param {Boolean} [expand=false] Expand shorthand style properties and all return equivalent style representations.
 	 * @returns {Array.<String>}
 	 */
-	public getStyleNames( expand = false ): string[] {
+	public getStyleNames( expand = false ): Array<string> {
 		if ( this.isEmpty ) {
 			return [];
 		}
@@ -395,8 +395,8 @@ export default class StylesMap {
 	 * @private
 	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
-	private _getStylesEntries(): PropertyDescriptor[] {
-		const parsed: PropertyDescriptor[] = [];
+	private _getStylesEntries(): Array<PropertyDescriptor> {
+		const parsed: Array<PropertyDescriptor> = [];
 
 		const keys = Object.keys( this._styles );
 
@@ -444,7 +444,7 @@ export class StylesProcessor {
 	private readonly _normalizers: Map<string, Normalizer>;
 	private readonly _extractors: Map<string, Extractor>;
 	private readonly _reducers: Map<string, Reducer>;
-	private readonly _consumables: Map<string, string[]>;
+	private readonly _consumables: Map<string, Array<string>>;
 
 	/**
 	 * Creates StylesProcessor instance.
@@ -567,7 +567,7 @@ export class StylesProcessor {
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
-	public getReducedForm( name: string, styles: Styles ): PropertyDescriptor[] {
+	public getReducedForm( name: string, styles: Styles ): Array<PropertyDescriptor> {
 		const normalizedValue = this.getNormalized( name, styles );
 
 		// Might be empty string.
@@ -590,7 +590,7 @@ export class StylesProcessor {
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<String>}
 	 */
-	public getStyleNames( styles: Styles ): string[] {
+	public getStyleNames( styles: Styles ): Array<string> {
 		// Find all extractable styles that have a value.
 		const expandedStyleNames = Array.from( this._consumables.keys() ).filter( name => {
 			const style = this.getNormalized( name, styles );
@@ -627,7 +627,7 @@ export class StylesProcessor {
 	 * @param {String} name
 	 * @returns {Array.<String>}
 	 */
-	public getRelatedStyles( name: string ): string[] {
+	public getRelatedStyles( name: string ): Array<string> {
 		return this._consumables.get( name ) || [];
 	}
 
@@ -788,7 +788,7 @@ export class StylesProcessor {
 	 * @param {String} shorthandName
 	 * @param {Array.<String>} styleNames
 	 */
-	public setStyleRelation( shorthandName: string, styleNames: string[] ): void {
+	public setStyleRelation( shorthandName: string, styleNames: Array<string> ): void {
 		this._mapStyleNames( shorthandName, styleNames );
 
 		for ( const alsoName of styleNames ) {
@@ -803,7 +803,7 @@ export class StylesProcessor {
 	 * @param {Array.<String>} styleNames
 	 * @private
 	 */
-	private _mapStyleNames( name: string, styleNames: string[] ) {
+	private _mapStyleNames( name: string, styleNames: Array<string> ) {
 		if ( !this._consumables.has( name ) ) {
 			this._consumables.set( name, [] );
 		}
@@ -964,7 +964,7 @@ export interface Styles {
 /**
  * TODO docs
  */
-export type StyleValue = string | string[] | Styles | BoxSides;
+export type StyleValue = string | Array<string> | Styles | BoxSides;
 
 /**
  * TODO docs
@@ -979,4 +979,4 @@ export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValu
 /**
  * TODO docs
  */
-export type Reducer = ( value: StyleValue ) => PropertyDescriptor[];
+export type Reducer = ( value: StyleValue ) => Array<PropertyDescriptor>;

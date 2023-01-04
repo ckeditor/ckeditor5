@@ -7,17 +7,21 @@
  * @module engine/conversion/conversion
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import {
+	CKEditorError,
+	toArray,
+	type ArrayOrItem,
+	type PriorityString
+} from '@ckeditor/ckeditor5-utils';
+
 import UpcastHelpers from './upcasthelpers';
 import DowncastHelpers, {
 	type AttributeCreatorFunction,
 	type AttributeDescriptor
 } from './downcasthelpers';
-import toArray, { type ArrayOrItem } from '@ckeditor/ckeditor5-utils/src/toarray';
 
 import type DowncastDispatcher from './downcastdispatcher';
 import type UpcastDispatcher from './upcastdispatcher';
-import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
 import type ElementDefinition from '../view/elementdefinition';
 import type { MatcherPattern } from '../view/matcher';
 
@@ -67,8 +71,8 @@ import type { MatcherPattern } from '../view/matcher';
  */
 export default class Conversion {
 	private readonly _helpers: Map<string, DowncastHelpers | UpcastHelpers>;
-	private readonly _downcast: DowncastDispatcher[];
-	private readonly _upcast: UpcastDispatcher[];
+	private readonly _downcast: Array<DowncastDispatcher>;
+	private readonly _upcast: Array<UpcastDispatcher>;
 
 	/**
 	 * Creates a new conversion instance.
@@ -300,7 +304,7 @@ export default class Conversion {
 		model: string;
 		view: ElementDefinition;
 		upcastAlso?: ArrayOrItem<ElementDefinition | MatcherPattern>;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).elementToElement( definition );
@@ -482,16 +486,16 @@ export default class Conversion {
 			};
 			view: ElementDefinition;
 			upcastAlso?: ArrayOrItem<MatcherPattern>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, ElementDefinition>;
 			upcastAlso?: Record<TValues, MatcherPattern>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		}
 	): void {
 		// Set up downcast converter.
@@ -626,16 +630,16 @@ export default class Conversion {
 			};
 			view: string | ( AttributeDescriptor & { name?: string } );
 			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, ( AttributeDescriptor & { name?: string } )>;
 			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} ): void {
 		// Set up downcast converter.
 		this.for( 'downcast' ).attributeToAttribute( definition );
@@ -663,7 +667,7 @@ export default class Conversion {
 	private _createConversionHelpers(
 		{ name, dispatchers, isDowncast }: {
 			name: string;
-			dispatchers: ( DowncastDispatcher | UpcastDispatcher )[];
+			dispatchers: Array<DowncastDispatcher | UpcastDispatcher>;
 			isDowncast: boolean;
 		}
 	): void {
@@ -677,8 +681,8 @@ export default class Conversion {
 		}
 
 		const helpers = isDowncast ?
-			new DowncastHelpers( dispatchers as DowncastDispatcher[] ) :
-			new UpcastHelpers( dispatchers as UpcastDispatcher[] );
+			new DowncastHelpers( dispatchers as Array<DowncastDispatcher> ) :
+			new UpcastHelpers( dispatchers as Array<UpcastDispatcher> );
 
 		this._helpers.set( name, helpers );
 	}

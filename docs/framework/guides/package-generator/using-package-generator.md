@@ -14,7 +14,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator <packageName> [--verbose] [--use-npm] [--lang]
+npx ckeditor5-package-generator <packageName> [--use-npm] [--use-yarn] [--plugin-name <...>] [--verbose] [--lang <js|ts>]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -27,9 +27,11 @@ As a result of executing the command, a new directory with a package in it will 
 
 Available modifiers for the command are:
 
-* `--verbose` &ndash; (alias: `-v`) whether to prints additional logs about the current executed task.
-* `--use-npm` &ndash; whether to use `npm` instead of `yarn` when installing dependencies in a newly created package.
-* `--lang` &ndash; (values: `js` | `ts`) whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
+* `--use-npm` &ndash; use `npm` to install dependencies in the newly created package.
+* `--use-yarn` &ndash; use `yarn` to install dependencies in the newly created package.
+* `--plugin-name` &ndash; define the plugin name to be different from the package name.
+* `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
+* `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
 
 ## Using the package
 

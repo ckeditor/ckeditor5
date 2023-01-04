@@ -1,6 +1,7 @@
 # All "dot directories".
 .*/**
 !.github/**
+!.husky/**
 
 # Files associated with CKEditor 5 repository.
 **/node_modules
@@ -24,8 +25,35 @@ mrgit.json
 .yalc
 yalc.lock
 
-
 # Ignore compiled TypeScript files.
-packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-adapter-ckfinder/src/**/*.js
+packages/ckeditor5-alignment/src/**/*.js
+packages/ckeditor5-basic-styles/src/**/*.js
+packages/ckeditor5-block-quote/src/**/*.js
+packages/ckeditor5-clipboard/src/**/*.js
+packages/ckeditor5-code-block/src/**/*.js
+packages/ckeditor5-core/src/**/*.js
+packages/ckeditor5-editor-balloon/src/**/*.js
+packages/ckeditor5-editor-classic/src/**/*.js
+packages/ckeditor5-editor-decoupled/src/**/*.js
+packages/ckeditor5-editor-inline/src/**/*.js
 packages/ckeditor5-engine/src/**/*.js
+packages/ckeditor5-enter/src/**/*.js
+packages/ckeditor5-essentials/src/**/*.js
+packages/ckeditor5-horizontal-line/src/**/*.js
+packages/ckeditor5-language/src/**/*.js
+packages/ckeditor5-list/src/**/*.js
+packages/ckeditor5-page-break/src/**/*.js
+packages/ckeditor5-paragraph/src/**/*.js
+packages/ckeditor5-paste-from-office/src/**/*.js
+packages/ckeditor5-select-all/src/**/*.js
+packages/ckeditor5-typing/src/**/*.js
+packages/ckeditor5-ui/src/**/*.js
+packages/ckeditor5-undo/src/**/*.js
+packages/ckeditor5-upload/src/**/*.js
+packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-widget/src/**/*.js
+packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
+src/**/*.js
+src/**/*.d.ts

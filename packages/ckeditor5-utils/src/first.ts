@@ -9,9 +9,6 @@
 
 /**
  * Returns first item of the given `iterator`.
- *
- * @param {Iterator.<*>} iterator
- * @returns {*}
  */
 export default function first<T>( iterator: Iterator<T> ): T | null {
 	const iteratorItem = iterator.next();

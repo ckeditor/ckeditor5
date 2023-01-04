@@ -16,9 +16,9 @@ import isText from './istext';
  * This helper will scroll all `target` ancestors and the web browser viewport to reveal the target to
  * the user. If the `target` is already visible, nothing will happen.
  *
- * @param {Object} options
- * @param {HTMLElement|Range} options.target A target, which supposed to become visible to the user.
- * @param {Number} [options.viewportOffset] An offset from the edge of the viewport (in pixels)
+ * @param options
+ * @param options.target A target, which supposed to become visible to the user.
+ * @param options.viewportOffset An offset from the edge of the viewport (in pixels)
  * the `target` will be moved by when the viewport is scrolled. It enhances the user experience
  * by keeping the `target` some distance from the edge of the viewport and thus making it easier to
  * read or edit by the user.
@@ -87,7 +87,7 @@ export function scrollViewportToShowTarget(
  * Makes any page `HTMLElement` or `Range` (target) visible within its scrollable ancestors,
  * e.g. if they have `overflow: scroll` CSS style.
  *
- * @param {HTMLElement|Range} target A target, which supposed to become visible to the user.
+ * @param target A target, which supposed to become visible to the user.
  */
 export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void {
 	const targetParent = getParentElement( target );
@@ -97,47 +97,56 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
 	} );
 }
 
-// Makes a given rect visible within its parent window.
-//
-// Note: Avoid the situation where the caret is still in the viewport, but totally
-// at the edge of it. In such situation, if it moved beyond the viewport in the next
-// action e.g. after paste, the scrolling would move it to the viewportOffset level
-// and it all would look like the caret visually moved up/down:
-//
-// 1.
-//		| foo[]
-//		|                                    <--- N px of space below the caret
-//		+---------------------------------...
-//
-// 2. *paste*
-// 3.
-//		|
-//		|
-//		+-foo-----------------------------...
-//		  bar[]                              <--- caret below viewport, scrolling...
-//
-// 4. *scrolling*
-// 5.
-//		|
-//		| foo
-//		| bar[]                              <--- caret precisely at the edge
-//		+---------------------------------...
-//
-// To prevent this, this method checks the rects moved by the viewportOffset to cover
-// the upper/lower edge of the viewport. It makes sure if the action repeats, there's
-// no twitching – it's a purely visual improvement:
-//
-// 5. (after fix)
-//		|
-//		| foo
-//		| bar[]
-//		|                                    <--- N px of space below the caret
-//		+---------------------------------...
-//
-// @private
-// @param {Window} window A window which is scrolled to reveal the rect.
-// @param {module:utils/dom/rect~Rect} rect A rect which is to be revealed.
-// @param {Number} viewportOffset See scrollViewportToShowTarget.
+/**
+ * Makes a given rect visible within its parent window.
+ *
+ * Note: Avoid the situation where the caret is still in the viewport, but totally
+ * at the edge of it. In such situation, if it moved beyond the viewport in the next
+ * action e.g. after paste, the scrolling would move it to the viewportOffset level
+ * and it all would look like the caret visually moved up/down:
+ *
+ * 1.
+ * ```
+ * | foo[]
+ * |                                    <--- N px of space below the caret
+ * +---------------------------------...
+ * ```
+ *
+ * 2. *paste*
+ * 3.
+ * ```
+ * |
+ * |
+ * +-foo-----------------------------...
+ *   bar[]                              <--- caret below viewport, scrolling...
+ * ```
+ *
+ * 4. *scrolling*
+ * 5.
+ * ```
+ * |
+ * | foo
+ * | bar[]                              <--- caret precisely at the edge
+ * +---------------------------------...
+ * ```
+ *
+ * To prevent this, this method checks the rects moved by the viewportOffset to cover
+ * the upper/lower edge of the viewport. It makes sure if the action repeats, there's
+ * no twitching – it's a purely visual improvement:
+ *
+ * 5. (after fix)
+ * ```
+ * |
+ * | foo
+ * | bar[]
+ * |                                    <--- N px of space below the caret
+ * +---------------------------------...
+ * ```
+ *
+ * @param window A window which is scrolled to reveal the rect.
+ * @param rect A rect which is to be revealed.
+ * @param viewportOffset See scrollViewportToShowTarget.
+ */
 function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: number ): void {
 	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
@@ -166,11 +175,12 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 	}
 }
 
-// Recursively scrolls element ancestors to visually reveal a rect.
-//
-// @private
-// @param {HTMLElement} A parent The first ancestors to start scrolling.
-// @param {Function} getRect A function which returns the Rect, which is to be revealed.
+/**
+ * Recursively scrolls element ancestors to visually reveal a rect.
+ *
+ * @param parent A parent The first ancestors to start scrolling.
+ * @param getRect A function which returns the Rect, which is to be revealed.
+ */
 function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): void {
 	const parentWindow = getWindow( parent );
 	let parentRect: Rect, targetRect: Rect;
@@ -197,51 +207,37 @@ function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): 
 	}
 }
 
-// Determines if a given `Rect` extends beyond the bottom edge of the second `Rect`.
-//
-// @private
-// @param {module:utils/dom/rect~Rect} firstRect
-// @param {module:utils/dom/rect~Rect} secondRect
-// @returns {Boolean}
+/**
+ * Determines if a given `Rect` extends beyond the bottom edge of the second `Rect`.
+ */
 function isBelow( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.bottom > secondRect.bottom;
 }
 
-// Determines if a given `Rect` extends beyond the top edge of the second `Rect`.
-//
-// @private
-// @param {module:utils/dom/rect~Rect} firstRect
-// @param {module:utils/dom/rect~Rect} secondRect
-// @returns {Boolean}
+/**
+ * Determines if a given `Rect` extends beyond the top edge of the second `Rect`.
+ */
 function isAbove( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.top < secondRect.top;
 }
 
-// Determines if a given `Rect` extends beyond the left edge of the second `Rect`.
-//
-// @private
-// @param {module:utils/dom/rect~Rect} firstRect
-// @param {module:utils/dom/rect~Rect} secondRect
-// @returns {Boolean}
+/**
+ * Determines if a given `Rect` extends beyond the left edge of the second `Rect`.
+ */
 function isLeftOf( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.left < secondRect.left;
 }
 
-// Determines if a given `Rect` extends beyond the right edge of the second `Rect`.
-//
-// @private
-// @param {module:utils/dom/rect~Rect} firstRect
-// @param {module:utils/dom/rect~Rect} secondRect
-// @returns {Boolean}
+/**
+ * Determines if a given `Rect` extends beyond the right edge of the second `Rect`.
+ */
 function isRightOf( firstRect: Rect, secondRect: Rect ): boolean {
 	return firstRect.right > secondRect.right;
 }
 
-// Returns the closest window of an element or range.
-//
-// @private
-// @param {HTMLElement|Range} elementOrRange
-// @returns {Window}
+/**
+ * Returns the closest window of an element or range.
+ */
 function getWindow( elementOrRange: HTMLElement | Range ): Window {
 	if ( isRange( elementOrRange ) ) {
 		return elementOrRange.startContainer.ownerDocument!.defaultView!;
@@ -250,11 +246,9 @@ function getWindow( elementOrRange: HTMLElement | Range ): Window {
 	}
 }
 
-// Returns the closest parent of an element or DOM range.
-//
-// @private
-// @param {HTMLElement|Range} elementOrRange
-// @returns {HTMLelement}
+/**
+ * Returns the closest parent of an element or DOM range.
+ */
 function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 	if ( isRange( elementOrRange ) ) {
 		let parent = elementOrRange.commonAncestorContainer as HTMLElement;
@@ -270,13 +264,13 @@ function getParentElement( elementOrRange: HTMLElement | Range ): HTMLElement {
 	}
 }
 
-// Returns the rect of an element or range residing in an iframe.
-// The result rect is relative to the geometry of the passed window instance.
-//
-// @private
-// @param {HTMLElement|Range} target Element or range which rect should be returned.
-// @param {Window} relativeWindow A window the rect should be relative to.
-// @returns {module:utils/dom/rect~Rect}
+/**
+ * Returns the rect of an element or range residing in an iframe.
+ * The result rect is relative to the geometry of the passed window instance.
+ *
+ * @param target Element or range which rect should be returned.
+ * @param relativeWindow A window the rect should be relative to.
+ */
 function getRectRelativeToWindow( target: HTMLElement | Range, relativeWindow: Window ): Rect {
 	const targetWindow = getWindow( target );
 	const rect = new Rect( target );

@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 
 import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 import { defaultColors } from '../../src/utils/ui/table-properties';
@@ -38,7 +39,7 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
@@ -129,7 +130,6 @@ describe( 'table cell properties', () => {
 						'tableCellBorderStyle',
 						'tableCellBorderColor',
 						'tableCellBorderWidth',
-						'tableCellWidth',
 						'tableCellHeight',
 						'tableCellPadding',
 						'tableCellBackgroundColor',
@@ -590,12 +590,11 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
 					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellWidth' ).value = 'd';
-					editor.commands.get( 'tableCellHeight' ).value = 'e';
-					editor.commands.get( 'tableCellPadding' ).value = 'f';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'g';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'h';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'i';
+					editor.commands.get( 'tableCellHeight' ).value = 'd';
+					editor.commands.get( 'tableCellPadding' ).value = 'e';
+					editor.commands.get( 'tableCellBackgroundColor' ).value = 'f';
+					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'g';
+					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'h';
 
 					tableCellPropertiesButton.fire( 'execute' );
 
@@ -604,12 +603,11 @@ describe( 'table cell properties', () => {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						width: 'd',
-						height: 'e',
-						padding: 'f',
-						backgroundColor: 'g',
-						horizontalAlignment: 'h',
-						verticalAlignment: 'i'
+						height: 'd',
+						padding: 'e',
+						backgroundColor: 'f',
+						horizontalAlignment: 'g',
+						verticalAlignment: 'h'
 					} );
 				} );
 
@@ -617,7 +615,6 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = null;
 					editor.commands.get( 'tableCellBorderColor' ).value = null;
 					editor.commands.get( 'tableCellBorderWidth' ).value = null;
-					editor.commands.get( 'tableCellWidth' ).value = null;
 					editor.commands.get( 'tableCellHeight' ).value = null;
 					editor.commands.get( 'tableCellPadding' ).value = null;
 					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
@@ -631,7 +628,6 @@ describe( 'table cell properties', () => {
 						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
-						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
@@ -694,7 +690,7 @@ describe( 'table cell properties', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo ],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
 						table: {
 							tableCellProperties: {
@@ -796,7 +792,6 @@ describe( 'table cell properties', () => {
 							borderColor: '',
 							borderWidth: '',
 							backgroundColor: '#00f',
-							width: '250px',
 							height: '150px',
 							padding: '10px',
 							horizontalAlignment: 'center',

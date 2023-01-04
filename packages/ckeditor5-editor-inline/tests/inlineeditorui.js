@@ -8,7 +8,7 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import InlineEditorUI from '../src/inlineeditorui';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
 import InlineEditor from '../src/inlineeditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -322,6 +322,18 @@ describe( 'InlineEditorUI', () => {
 							} );
 						} );
 				} );
+		} );
+
+		it( 'should call parent EditorUI#destroy() first before destroying the view', async () => {
+			const newEditor = await VirtualInlineTestEditor.create( '' );
+			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
+
+			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+
+			await newEditor.destroy();
+
+			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
 	} );
 

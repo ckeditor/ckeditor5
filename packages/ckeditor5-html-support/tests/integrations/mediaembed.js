@@ -368,8 +368,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 		} );
 
-		it( 'should run marker upcast converter with priority higher ' +
-			'then low before GHS preserves remaining attributes on table model element', () => {
+		it( 'should create a marker before GHS converts attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -378,14 +377,42 @@ describe( 'MediaEmbedElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: 100000 // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
 				'<figure class="media" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
 					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
+				'</figure>'
+			);
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'should create a marker before GHS converts attributes (without the figure element)', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented'
+			} );
+
+			editor.setData(
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
+				' data-commented-end-after="foo:id" data-commented-start-before="foo:id"></oembed>'
 			);
 
 			expect( editor.getData() ).to.equal(
@@ -737,8 +764,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 		} );
 
-		it( 'should run marker upcast converter with priority higher ' +
-			'then low before GHS preserves remaining attributes on table model element', () => {
+		it( 'should create a marker before GHS converts attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -747,8 +773,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: 100000 // For marker this priority equals to -999
+				view: 'commented'
 			} );
 
 			editor.setData(
@@ -759,6 +784,35 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<figure class="media" data-foo="foo">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+
+			const marker = model.markers.get( 'commented:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'should create a marker before GHS converts attributes(without figure)', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true,
+				styles: true,
+				classes: true
+			} ] );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'commented'
+			} );
+
+			editor.setData(
+				'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"' +
+				' data-foo="foo" data-commented-end-after="foo:id" data-commented-start-before="foo:id"></custom-oembed>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
 					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
 				'</figure>'
 			);
@@ -1256,8 +1310,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 		} );
 
-		it( 'should run marker upcast converter with priority higher ' +
-			'then low before GHS preserves remaining attributes on table model element', () => {
+		it( 'should create a marker before GHS converts attributes (with marker on the figure element)', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /.*/,
 				attributes: true,
@@ -1266,9 +1319,11 @@ describe( 'MediaEmbedElementSupport', () => {
 			} ] );
 
 			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: 100000 // For marker this priority equals to -999
+				view: 'commented'
 			} );
+
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
 
 			editor.setData(
 				'<figure class="media" data-foo="foo" data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +

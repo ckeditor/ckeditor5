@@ -24,7 +24,7 @@ const path = require( 'path' );
 // Use:
 // npm run release:publish -- --dry-run
 
-require( '@ckeditor/ckeditor5-dev-env' )
+require( '@ckeditor/ckeditor5-dev-release-tools' )
 	.releaseSubRepositories( {
 		cwd: process.cwd(),
 		packages: 'packages',
@@ -47,7 +47,9 @@ require( '@ckeditor/ckeditor5-dev-env' )
 				'src/*.js',
 				'build/ckeditor5-dll.js',
 				'build/ckeditor5-dll.manifest.json',
-				'build/translations/*.js'
+				'build/translations/*.js',
+				'tsconfig.json',
+				'typings/*.d.ts'
 			]
 		},
 		optionalFilesAndDirectories: {

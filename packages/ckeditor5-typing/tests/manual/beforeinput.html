@@ -1,0 +1,89 @@
+<div style="margin-bottom: 10px">
+	<label><input type="checkbox" name="logEvents" value="logNative"> log native events</label>
+	<label><input type="checkbox" name="logEvents" value="logCKETyping"> log CKE typing events</label>
+	<div style="margin-top: 10px; font-style: italic;"><b>Note:</b> Start manual tests with <code>-d typing</code> option to be able to see CKE events</div>
+</div>
+
+<div id="editor">
+	<h2>Beforeinput integration test</h2>
+	<p>Paragraph with som mistaks to test spell <a href="foo">checking</a></p>
+	<p>Multi-byte/code point sequences playground: 👪, 👨‍👩‍👦, 👨‍👩‍👧‍👧, b̂, a&#771;.</p>
+	<p>Some playground to test hard and soft delete. Life doesn't <img class="image_resized" style="width:10.08%;" src="sample.jpg" alt="bar"> allow us to execute every single plan perfectly. This especially seems to be the case when you travel. You plan it down to every minute with a big checklist; but when it comes to executing it, something always comes up and you’re left with your improvising skills. You learn to adapt as you go.</p>
+	<p>Playground to test mentions: <span class="mention" data-mention="@Lily">@Lily</span> and<span class="mention" data-mention="@Marshall">@Marshall</span>.</p>
+	<figure class="image image-style-side">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<p>The ultimate table of <a href="https://en.wikipedia.org/wiki/List_of_coffee_drinks">coffee drinks</a>:</p>
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<th rowspan="2">&nbsp;</th>
+					<th rowspan="2">☕️ Espresso</th>
+					<th colspan="2">🥛 Milk</th>
+					<th rowspan="2">🚰 Water</th>
+				</tr>
+				<tr>
+					<th>Steamed</th>
+					<th>Foam</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>Cappuccino</th>
+					<td>✅ yes</td>
+					<td>✅ yes</td>
+					<td>✅ yes</td>
+					<td>❌ no</td>
+				</tr>
+				<tr>
+					<th>Macchiato</th>
+					<td>✅ yes</td>
+					<td>❌ no</td>
+					<td>✅ yes</td>
+					<td>❌ no</td>
+				</tr>
+				<tr>
+					<th>Latte</th>
+					<td>✅ yes</td>
+					<td>✅ yes</td>
+					<td>❌ no</td>
+					<td>❌ no</td>
+				</tr>
+				<tr>
+					<th>Americano</th>
+					<td>✅ yes</td>
+					<td>❌ no</td>
+					<td>❌ no</td>
+					<td>✅ yes</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+</div>
+
+<style>
+	#raw-contenteditable {
+		border: 1px dashed hsl(0, 100%, 50%);
+		padding: 10px 30px;
+	}
+</style>

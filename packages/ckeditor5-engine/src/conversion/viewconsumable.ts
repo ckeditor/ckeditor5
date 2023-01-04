@@ -7,14 +7,15 @@
  * @module engine/conversion/viewconsumable
  */
 
-import { isArray } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Element from '../view/element';
 import type Node from '../view/node';
 import type Text from '../view/text';
 import type DocumentFragment from '../view/documentfragment';
-import { type Match } from '../view/matcher';
+import type { Match } from '../view/matcher';
+
+import { isArray } from 'lodash-es';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
@@ -259,9 +260,9 @@ export default class ViewConsumable {
 		const consumables = {
 			element,
 			name: true,
-			attributes: [] as string[],
-			classes: [] as string[],
-			styles: [] as string[]
+			attributes: [] as Array<string>,
+			classes: [] as Array<string>,
+			styles: [] as Array<string>
 		};
 
 		const attributes = element.getAttributeKeys();
@@ -331,9 +332,9 @@ export default class ViewConsumable {
 
 export interface Consumables {
 	name?: boolean;
-	attributes?: string | string[];
-	classes?: string | string[];
-	styles?: string | string[];
+	attributes?: string | Array<string>;
+	classes?: string | Array<string>;
+	styles?: string | Array<string>;
 }
 
 const CONSUMABLE_TYPES = [ 'attributes', 'classes', 'styles' ] as const;
@@ -527,7 +528,7 @@ class ViewElementConsumables {
 	 * @param {String} type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
-	private _add( type: ConsumableType, item: string | string[] ) {
+	private _add( type: ConsumableType, item: string | Array<string> ) {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
@@ -569,7 +570,7 @@ class ViewElementConsumables {
 	 * @returns {Boolean|null} Returns `true` if all items can be consumed, `null` when one of the items cannot be
 	 * consumed and `false` when one of the items is already consumed.
 	 */
-	private _test( type: ConsumableType, item: string | string[] ): boolean | null {
+	private _test( type: ConsumableType, item: string | Array<string> ): boolean | null {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
@@ -606,7 +607,7 @@ class ViewElementConsumables {
 	 * @param {String} type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
-	private _consume( type: ConsumableType, item: string | string[] ) {
+	private _consume( type: ConsumableType, item: string | Array<string> ) {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
@@ -635,7 +636,7 @@ class ViewElementConsumables {
 	 * @param {String} type Type of the consumable item: `attributes`, `classes` or , `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
-	private _revert( type: ConsumableType, item: string | string[] ) {
+	private _revert( type: ConsumableType, item: string | Array<string> ) {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 

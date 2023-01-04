@@ -10,7 +10,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicEditor from '../src/classiceditor';
 import ClassicEditorUI from '../src/classiceditorui';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicEditorUIView from '../src/classiceditoruiview';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
@@ -296,6 +296,18 @@ describe( 'ClassicEditorUI', () => {
 							} );
 						} );
 				} );
+		} );
+
+		it( 'should call parent EditorUI#destroy() first before destroying the view', async () => {
+			const newEditor = await VirtualClassicTestEditor.create( '' );
+			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
+
+			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+
+			await newEditor.destroy();
+
+			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
 	} );
 

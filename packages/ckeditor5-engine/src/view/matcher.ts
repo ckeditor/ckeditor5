@@ -11,14 +11,14 @@ import type Element from './element';
 
 import { isPlainObject } from 'lodash-es';
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * View matcher class.
  * Instance of this class can be used to find {@link module:engine/view/element~Element elements} that match given pattern.
  */
 export default class Matcher {
-	private readonly _patterns: Exclude<MatcherPattern, string | RegExp>[];
+	private readonly _patterns: Array<Exclude<MatcherPattern, string | RegExp>>;
 
 	/**
 	 * Creates new instance of Matcher.
@@ -26,7 +26,7 @@ export default class Matcher {
 	 * @param {String|RegExp|Object|Function} [pattern] Match patterns. See {@link module:engine/view/matcher~Matcher#add add method} for
 	 * more information.
 	 */
-	constructor( ...pattern: MatcherPattern[] ) {
+	constructor( ...pattern: Array<MatcherPattern> ) {
 		/**
 		 * @private
 		 * @type {Array<Object|Function>}
@@ -73,7 +73,7 @@ export default class Matcher {
 	 * represents style name. Value under that key can be either a string or a regular expression and it will be used
 	 * to match style value.
 	 */
-	public add( ...pattern: MatcherPattern[] ): void {
+	public add( ...pattern: Array<MatcherPattern> ): void {
 		for ( let item of pattern ) {
 			// String or RegExp pattern is used as element's name.
 			if ( typeof item == 'string' || item instanceof RegExp ) {
@@ -113,7 +113,7 @@ export default class Matcher {
 	 * @returns {Array} [result.match.classes] Array with matched class names.
 	 * @returns {Array} [result.match.styles] Array with matched style names.
 	 */
-	public match( ...element: Element[] ): MatchResult | null {
+	public match( ...element: Array<Element> ): MatchResult | null {
 		for ( const singleElement of element ) {
 			for ( const pattern of this._patterns ) {
 				const match = isElementMatching( singleElement, pattern );
@@ -141,8 +141,8 @@ export default class Matcher {
 	 * @returns {Array.<Object>|null} Array with match information about found elements or `null`. For more information
 	 * see {@link module:engine/view/matcher~Matcher#match match method} description.
 	 */
-	public matchAll( ...element: Element[] ): MatchResult[] | null {
-		const results: MatchResult[] = [];
+	public matchAll( ...element: Array<Element> ): Array<MatchResult> | null {
+		const results: Array<MatchResult> = [];
 
 		for ( const singleElement of element ) {
 			for ( const pattern of this._patterns ) {
@@ -300,10 +300,10 @@ function matchPatterns(
 	patterns: PropertyPatterns,
 	keys: Iterable<string>,
 	valueGetter: ( value: string ) => unknown
-): string[] | undefined {
+): Array<string> | undefined {
 	const normalizedPatterns = normalizePatterns( patterns );
 	const normalizedItems = Array.from( keys );
-	const match: string[] = [];
+	const match: Array<string> = [];
 
 	normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
 		normalizedItems.forEach( itemKey => {
@@ -372,7 +372,7 @@ function matchPatterns(
 //
 // @param {Object|Array} patterns
 // @returns {Array|null} Returns an array of objects or null if provided patterns were not in an expected form.
-function normalizePatterns( patterns: PropertyPatterns ): [ true | string | RegExp, true | string | RegExp ][] {
+function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( ( pattern: any ) => {
 			if ( isPlainObject( pattern ) ) {
@@ -437,7 +437,7 @@ function isValueMatched(
 function matchAttributes(
 	patterns: PropertyPatterns,
 	element: Element
-): string[] | undefined {
+): Array<string> | undefined {
 	const attributeKeys = new Set( element.getAttributeKeys() );
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
@@ -464,7 +464,7 @@ function matchAttributes(
 // @param {Array.<String|RegExp>} patterns Array of strings or regular expressions to match against element's classes.
 // @param {module:engine/view/element~Element} element Element which classes will be tested.
 // @returns {Array|null} Returns array with matched class names or `null` if no classes were matched.
-function matchClasses( patterns: ClassPatterns, element: Element ): string[] | undefined {
+function matchClasses( patterns: ClassPatterns, element: Element ): Array<string> | undefined {
 	// We don't need `getter` here because patterns for classes are always normalized to `[ className, true ]`.
 	return matchPatterns( patterns, element.getClassNames(), /* istanbul ignore next */ () => {} );
 }
@@ -475,7 +475,7 @@ function matchClasses( patterns: ClassPatterns, element: Element ): string[] | u
 // used as style name. Value of each key can be a string or regular expression to match against style value.
 // @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
-function matchStyles( patterns: PropertyPatterns, element: Element ): string[] | undefined {
+function matchStyles( patterns: PropertyPatterns, element: Element ): Array<string> | undefined {
 	return matchPatterns( patterns, element.getStyleNames( true ), key => element.getStyle( key ) );
 }
 
@@ -737,9 +737,9 @@ export type MatcherPattern =
 
 export interface Match {
 	name?: boolean;
-	attributes?: string[];
-	classes?: string[];
-	styles?: string[];
+	attributes?: Array<string>;
+	classes?: Array<string>;
+	styles?: Array<string>;
 }
 
 export interface MatchResult {
@@ -753,14 +753,14 @@ export type PropertyPatterns =
 	string |
 	RegExp |
 	Record<string, true | string | RegExp> |
-	( string | RegExp | { key: string | RegExp; value: string | RegExp } )[];
+	Array<string | RegExp | { key: string | RegExp; value: string | RegExp }>;
 
 export type ClassPatterns =
 	true |
 	string |
 	RegExp |
 	Record<string, true> |
-	( string | RegExp )[];
+	Array<string | RegExp>;
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.

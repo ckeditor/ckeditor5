@@ -15,6 +15,7 @@ export { default as TableToolbar } from './tabletoolbar';
 export { default as TableCellProperties } from './tablecellproperties';
 export { default as TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting';
 export { default as TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui';
+export { default as TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting';
 export { default as TableProperties } from './tableproperties';
 export { default as TablePropertiesEditing } from './tableproperties/tablepropertiesediting';
 export { default as TablePropertiesUI } from './tableproperties/tablepropertiesui';

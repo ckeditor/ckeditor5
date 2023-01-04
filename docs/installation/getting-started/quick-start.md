@@ -305,7 +305,7 @@ After you sign up, you will find in the customer dashboard the full code snippet
 
 ## Adjusting plugins included in the CKEditor 5 superbuild
 
-You may disable any features available in the superbuild using the `removePlugins` configuration option. For a full list of feature currently available in the superbuild, please consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please not, that removing certain feature may rended the editor unusable.
+You may disable any features available in the superbuild using the {@link installation/getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
 
 <info-box hint>
 **What's next?**

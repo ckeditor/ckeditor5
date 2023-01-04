@@ -16,63 +16,50 @@ import spy from './spy';
 export default class EventInfo<TName extends string = string, TReturn = unknown> {
 	/**
 	 * The object that fired the event.
-	 *
-	 * @readonly
-	 * @member {Object}
 	 */
 	public readonly source: object;
 
 	/**
 	 * The event name.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	public readonly name: TName;
 
 	/**
-	 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
-	 *
-	 * @readonly
-	 * @member {Array.<Object>}
+	 * Path this event has followed. See {@link module:utils/emittermixin~Emitter#delegate}.
 	 */
-	public path: object[];
+	public path: Array<object>;
 
 	/**
 	 * Stops the event emitter to call further callbacks for this event interaction.
-	 *
-	 * @method #stop
 	 */
 	public readonly stop: { (): void; called?: boolean };
 
 	/**
 	 * Removes the current callback from future interactions of this event.
-	 *
-	 * @method #off
 	 */
 	public readonly off: { (): void; called?: boolean };
 
 	/**
-	 * The value which will be returned by {@link module:utils/emittermixin~EmitterMixin#fire}.
+	 * The value which will be returned by {@link module:utils/emittermixin~Emitter#fire}.
 	 *
 	 * It's `undefined` by default and can be changed by an event listener:
 	 *
-	 *		dataController.fire( 'getSelectedContent', ( evt ) => {
-	 *			// This listener will make `dataController.fire( 'getSelectedContent' )`
-	 *			// always return an empty DocumentFragment.
-	 *			evt.return = new DocumentFragment();
+	 * ```ts
+	 * dataController.fire( 'getSelectedContent', ( evt ) => {
+	 * 	// This listener will make `dataController.fire( 'getSelectedContent' )`
+	 * 	// always return an empty DocumentFragment.
+	 * 	evt.return = new DocumentFragment();
 	 *
-	 *			// Make sure no other listeners are executed.
-	 *			evt.stop();
-	 *		} );
-	 *
-	 * @member #return
+	 * 	// Make sure no other listeners are executed.
+	 * 	evt.stop();
+	 * } );
+	 * ```
 	 */
 	public return: TReturn | undefined;
 
 	/**
-	 * @param {Object} source The emitter.
-	 * @param {String} name The event name.
+	 * @param source The emitter.
+	 * @param name The event name.
 	 */
 	constructor( source: object, name: TName ) {
 		this.source = source;

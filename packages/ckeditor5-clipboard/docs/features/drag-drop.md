@@ -34,7 +34,7 @@ The source code of the above snippet is available here: [`drag-drop.js`](https:/
 
 ## Related features
 
-CKEditor 5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
+* CKEditor 5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
 
 ## Installation
 
