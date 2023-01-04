@@ -427,7 +427,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		it( 'should block user typing outside exception markers', () => {
 			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo []bar baz</paragraph>' );
 		} );
@@ -447,7 +447,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			model.change( writer => {
 				writer.setSelection( firstParagraph, 5 );
 			} );
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
@@ -464,7 +464,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo barX[] baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -488,7 +488,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -517,7 +517,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				writer.setSelection( writer.createPositionAt( firstParagraph, 4 ) );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -542,7 +542,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						writer.createPositionAt( firstParagraph, 6 )
 					) )
 				} );
-				editor.execute( 'input', {
+				editor.execute( 'insertText', {
 					text: 'XX',
 					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ) )
 				} );
@@ -571,7 +571,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						writer.createPositionAt( firstParagraph, 7 )
 					) )
 				} );
-				editor.execute( 'input', {
+				editor.execute( 'insertText', {
 					text: 'XX',
 					range: writer.createRange( writer.createPositionAt( firstParagraph, 5 ) )
 				} );
@@ -842,6 +842,100 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			// Simulate native spell-check action.
 			editor.execute( 'input', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				)
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foxxxxxxx[]baz</paragraph>' );
+		} );
+	} );
+
+	describe( 'enforcing restrictions on insertText command', () => {
+		let firstParagraph;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
+			model = editor.model;
+
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+
+			firstParagraph = model.document.getRoot().getChild( 0 );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should prevent changing text before exception marker', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 0 ),
+					model.createPositionAt( firstParagraph, 7 )
+				)
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 4 ),
+					model.createPositionAt( firstParagraph, 9 )
+				)
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before (change crossing different markers)', () => {
+			addExceptionMarker( 0, 4, firstParagraph );
+			addExceptionMarker( 7, 9, firstParagraph, 2 );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				)
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o bar baz</paragraph>' );
+		} );
+
+		it( 'should allow changing text inside single marker', () => {
+			addExceptionMarker( 0, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
 				text: 'xxxxxxx',
 				range: model.createRange(
 					model.createPositionAt( firstParagraph, 2 ),

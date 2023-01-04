@@ -252,7 +252,7 @@ First, install the necessary dependencies:
 ```bash
 npm install --save \
     @ckeditor/ckeditor5-vue \
-    @ckeditor/ckeditor5-dev-webpack-plugin \
+    @ckeditor/ckeditor5-dev-translations \
     @ckeditor/ckeditor5-dev-utils \
     postcss-loader@4 \
     raw-loader@4
@@ -262,7 +262,7 @@ Edit the `vue.config.js` file and use the following configuration. If the file i
 
 ```js
 const path = require( 'path' );
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
@@ -276,7 +276,7 @@ module.exports = {
 	configureWebpack: {
 		plugins: [
 			// CKEditor needs its own plugin to be built using webpack.
-			new CKEditorWebpackPlugin( {
+			new CKEditorTranslationsPlugin( {
 				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
 				language: 'en',
 
@@ -505,13 +505,13 @@ For more information, please refer to the {@link features/ui-language Setting th
 
 ### CKEditor 5 built from source
 
-Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorWebpackPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) to localize your editor:
+Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorTranslationsPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) to localize your editor:
 
 ```js
 // vue.config.js
 // ...
 
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 // ...
 
@@ -521,7 +521,7 @@ module.exports = {
 	configureWebpack: {
 		plugins: [
 			// CKEditor needs its own plugin to be built using webpack.
-			new CKEditorWebpackPlugin( {
+			new CKEditorTranslationsPlugin( {
 				// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 				language: 'de',
 
@@ -754,4 +754,4 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 ## Contributing and reporting issues
 
-The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-vue.
+The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue](https://github.com/ckeditor/ckeditor5-vue).

@@ -312,6 +312,13 @@ describe( 'ImageEditing', () => {
 					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
+			it( 'should convert image with `display:block` style', () => {
+				editor.setData( '<p><img src="/asserts/sample.png" alt="alt text" style="display:block" /></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<imageBlock alt="alt text" src="/asserts/sample.png"></imageBlock>' );
+			} );
+
 			it( 'should not convert if there is no image class in figure', () => {
 				editor.setData( '<figure class="quote">My quote</figure>' );
 

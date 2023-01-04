@@ -32,15 +32,15 @@ const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
  * file that will be sent to Coveralls.
  */
 module.exports = function checkPackagesCodeCoverage() {
-	childProcess.execSync( 'rm -r -f .nyc_output' );
-	childProcess.execSync( 'mkdir .nyc_output' );
-	childProcess.execSync( 'rm -r -f .out' );
-	childProcess.execSync( 'mkdir .out' );
+	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
+	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
+	childProcess.execSync( 'rm -r -f .out', { stdio: 'inherit' } );
+	childProcess.execSync( 'mkdir .out', { stdio: 'inherit' } );
 
 	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
-	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8', stdio: [ null, 'pipe', 'inherit' ] } )
 		.toString()
 		.trim()
 		.split( '\n' )
@@ -69,7 +69,7 @@ module.exports = function checkPackagesCodeCoverage() {
 		const command = 'yarn run build --sourceMap';
 
 		console.log( '* ' + command );
-		childProcess.execSync( command, { cwd } );
+		childProcess.execSync( command, { cwd, stdio: 'inherit' } );
 
 		console.log( '* Updating the "main" field in `package.json`.' );
 		pkgJson.main = pkgJson.main.replace( /(?<=\.)ts$/, 'js' );
@@ -83,7 +83,7 @@ module.exports = function checkPackagesCodeCoverage() {
 
 	if ( shouldUploadCoverageReport() ) {
 		console.log( 'Uploading combined code coverage report…' );
-		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info', { stdio: 'inherit' } );
 		console.log( 'Done' );
 	} else {
 		console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
@@ -117,7 +117,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 
 	runSubprocess( {
 		binaryName: 'npx',
-		cliArguments: [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ],
+		cliArguments: [ 'ckeditor5-dev-dependency-checker', `packages/${ fullPackageName }` ],
 		packageName: simplePackageName,
 		checkName: 'dependency',
 		failMessage: 'have a dependency problem'
@@ -131,7 +131,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 		failMessage: 'failed to pass unit tests'
 	} );
 
-	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
+	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output', { stdio: 'inherit' } );
 
 	runSubprocess( {
 		binaryName: 'npx',

@@ -17,7 +17,7 @@ import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
 import { isFunction } from 'lodash-es';
 
-// @if CK_DEBUG_POSITION // import { RectDrawer } from '@ckeditor/ckeditor5-minimap/src/utils';
+// @if CK_DEBUG_POSITION // const { RectDrawer } = require( '@ckeditor/ckeditor5-minimap/src/utils' );
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the

@@ -335,7 +335,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
-				if ( listStart != 1 ) {
+				if ( listStart == 0 || listStart > 1 ) {
 					writer.setAttribute( 'start', listStart, element );
 				} else {
 					writer.removeAttribute( 'start', element );
@@ -343,7 +343,9 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				return listParent.getAttribute( 'start' ) || 1;
+				const startAttributeValue = listParent.getAttribute( 'start' );
+
+				return startAttributeValue >= 0 ? startAttributeValue : 1;
 			}
 		} );
 	}
@@ -361,13 +363,6 @@ function upcastListItemAttributes( attributeStrategies ) {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
-
-			// It may happen that the native spell checker fixes a word inside a list item.
-			// When the children mutation is fired, the `<li>` does not have the parent element. See: #9325.
-			if ( !listParent ) {
-				return;
-			}
-
 			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
 			for ( const strategy of attributeStrategies ) {

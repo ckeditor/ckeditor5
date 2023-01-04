@@ -84,17 +84,16 @@ To save space in your toolbar or arrange the features thematically, you can grou
 
 ```js
 toolbar: [
-	{
-		label: 'Basic styles',
-		icon: 'text',
-		items: [ 'bold', 'italic' ]
-	},
-	'|',
-	'undo', 'redo'
+			{
+				label: 'Basic styles',
+				icon: 'bold',
+				items: [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript' ]
+			},
+(...)
 ]
 ```
 
-It will create a "Basic styles" dropdown with a "text" icon containing the "bold" and "italic" buttons. You can test it in the demo below.
+It will create a "Basic styles" dropdown with a "bold" icon containing the basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
 
 {@snippet features/toolbar-nested-simple}
 
@@ -131,7 +130,9 @@ You can use one of the icons listed below for your dropdown:
 | `'importExport'`  | {@icon @ckeditor/ckeditor5-core/theme/icons/importexport.svg Import export} |
 | `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
 | `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
+| `'plus'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/plus.svg Plus}                  |
 
+* The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
 * If `icon: false` is configured, no icon will be displayed and the text label will show up instead.
 * You can set a custom icon for the drop-down by passing an SVG string.

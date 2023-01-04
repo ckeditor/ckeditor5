@@ -762,7 +762,7 @@ export function modelChangePostFixer( model, writer ) {
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Array} args Arguments of {@link module:engine/model/model~Model#insertContent}.
  */
-export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
+export function modelIndentPasteFixer( evt, [ content, selectable, placeOrOffset ] ) {
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
 	// that list will be broken.
@@ -775,7 +775,7 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 	if ( !selectable ) {
 		selection = this.document.selection;
 	} else {
-		selection = this.createSelection( selectable );
+		selection = this.createSelection( selectable, placeOrOffset );
 	}
 
 	if ( item && item.is( 'element', 'listItem' ) ) {

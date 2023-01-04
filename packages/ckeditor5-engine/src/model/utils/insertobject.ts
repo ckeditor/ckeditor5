@@ -16,8 +16,7 @@ import type Model from '../model';
 import type Range from '../range';
 import type Writer from '../writer';
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.
@@ -158,29 +157,13 @@ function updateSelection(
 ) {
 	const model = writer.model;
 
-	if ( place == 'after' ) {
-		let nextElement = contextElement.nextSibling;
-
-		// Check whether an element next to the inserted element is defined and can contain a text.
-		const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
-
-		// If the element is missing, but a paragraph could be inserted next to the element, let's add it.
-		if ( !canSetSelection && model.schema.checkChild( contextElement.parent as any, 'paragraph' ) ) {
-			nextElement = writer.createElement( 'paragraph' );
-
-			model.schema.setAllowedAttributes( nextElement, paragraphAttributes, writer );
-			model.insertContent( nextElement, writer.createPositionAfter( contextElement ) );
-		}
-
-		// Put the selection inside the element, at the beginning.
-		if ( nextElement ) {
-			writer.setSelection( nextElement, 0 );
-		}
-	}
-	else if ( place == 'on' ) {
+	if ( place == 'on' ) {
 		writer.setSelection( contextElement, 'on' );
+
+		return;
 	}
-	else {
+
+	if ( place != 'after' ) {
 		/**
 		 * The unsupported `options.setSelection` parameter was passed
 		 * to the {@link module:engine/model/utils/insertobject insertObject()} function.
@@ -190,5 +173,29 @@ function updateSelection(
 		 * @error insertobject-invalid-place-parameter-value
 		 */
 		throw new CKEditorError( 'insertobject-invalid-place-parameter-value', model );
+	}
+
+	let nextElement = contextElement.nextSibling;
+
+	if ( model.schema.isInline( contextElement ) ) {
+		writer.setSelection( contextElement, 'after' );
+
+		return;
+	}
+
+	// Check whether an element next to the inserted element is defined and can contain a text.
+	const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
+
+	// If the element is missing, but a paragraph could be inserted next to the element, let's add it.
+	if ( !canSetSelection && model.schema.checkChild( contextElement.parent as any, 'paragraph' ) ) {
+		nextElement = writer.createElement( 'paragraph' );
+
+		model.schema.setAllowedAttributes( nextElement, paragraphAttributes, writer );
+		model.insertContent( nextElement, writer.createPositionAfter( contextElement ) );
+	}
+
+	// Put the selection inside the element, at the beginning.
+	if ( nextElement ) {
+		writer.setSelection( nextElement, 0 );
 	}
 }

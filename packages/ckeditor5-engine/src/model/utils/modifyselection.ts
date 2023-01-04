@@ -16,8 +16,9 @@ import type Model from '../model';
 import type Schema from '../schema';
 import type Selection from '../selection';
 import type Text from '../text';
+import type Node from '../node';
 
-import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils/src/unicode';
+import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';
 
@@ -196,34 +197,28 @@ function getCorrectPosition(
 // @param {module:engine/model/treewalker~TreeWalker} walker
 // @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
 function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): Position {
-	let textNode = walker.position.textNode!;
+	let textNode: Node | null = walker.position.textNode;
 
-	if ( textNode ) {
-		let offset = walker.position.offset - textNode.startOffset!;
+	if ( !textNode ) {
+		textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+	}
 
-		while ( !isAtWordBoundary( textNode.data, offset, isForward ) && !isAtNodeBoundary( textNode, offset, isForward ) ) {
+	while ( textNode && textNode.is( '$text' ) ) {
+		const offset = walker.position.offset - textNode.startOffset!;
+
+		// Check of adjacent text nodes with different attributes (like BOLD).
+		// Example          : 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
+		// should expand to : 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
+		if ( isAtNodeBoundary( textNode, offset, isForward ) ) {
+			textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+		}
+		// Check if this is a word boundary.
+		else if ( isAtWordBoundary( textNode.data, offset, isForward ) ) {
+			break;
+		}
+		// Maybe one more character.
+		else {
 			walker.next();
-
-			// Check of adjacent text nodes with different attributes (like BOLD).
-			// Example          : 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
-			// should expand to : 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
-			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
-
-			// Scan only text nodes. Ignore inline elements (like `<softBreak>`).
-			if ( nextNode && nextNode.is( '$text' ) ) {
-				// Check boundary char of an adjacent text node.
-				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
-
-				// Go to the next node if the character at the boundary of that node belongs to the same word.
-				if ( !wordBoundaryCharacters.includes( boundaryChar ) ) {
-					// If adjacent text node belongs to the same word go to it & reset values.
-					walker.next();
-
-					textNode = walker.position.textNode!;
-				}
-			}
-
-			offset = walker.position.offset - textNode!.startOffset!;
 		}
 	}
 
@@ -259,5 +254,5 @@ function isAtWordBoundary( data: string, offset: number, isForward: boolean ) {
 // @param {Number} offset Position offset.
 // @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
 function isAtNodeBoundary( textNode: Text, offset: number, isForward: boolean ) {
-	return offset === ( isForward ? textNode.endOffset : 0 );
+	return offset === ( isForward ? textNode.offsetSize : 0 );
 }

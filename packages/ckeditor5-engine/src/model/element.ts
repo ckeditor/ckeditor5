@@ -14,7 +14,7 @@ import TextProxy from './textproxy';
 
 import type Item from './item';
 
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject, convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -174,7 +174,7 @@ export default class Element extends Node {
 	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
 	 * @returns {module:engine/model/node~Node}
 	 */
-	public getNodeByPath( relativePath: number[] ): Node {
+	public getNodeByPath( relativePath: Array<number> ): Node {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let node: Node = this;
 
@@ -290,7 +290,7 @@ export default class Element extends Node {
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Node[] {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
 		const nodes = this._children._removeNodes( index, howMany );
 
 		for ( const node of nodes ) {
@@ -308,7 +308,7 @@ export default class Element extends Node {
 	 * @returns {module:engine/model/element~Element} `Element` instance created using given plain object.
 	 */
 	public static fromJSON( json: any ): Element {
-		let children: Node[] | undefined;
+		let children: Array<Node> | undefined;
 
 		if ( json.children ) {
 			children = [];

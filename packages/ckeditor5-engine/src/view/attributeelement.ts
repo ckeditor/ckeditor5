@@ -8,7 +8,7 @@
  */
 
 import Element from './element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type DocumentFragment from './documentfragment';
 
@@ -31,7 +31,7 @@ const DEFAULT_PRIORITY = 10;
 export default class AttributeElement extends Element {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
-	public override readonly getFillerOffset: () => number | null;
+	public override getFillerOffset: () => number | null;
 	private readonly _priority: number;
 	private readonly _id: string | number | null;
 	private readonly _clonesGroup: Set<AttributeElement> | null;

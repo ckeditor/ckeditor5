@@ -17,7 +17,7 @@ import type Item from './item';
 import type Node from './node';
 import type Range from './range';
 
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
 
@@ -166,7 +166,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 *
 	 * @returns {Array}
 	 */
-	public getAncestors(): never[] {
+	public getAncestors(): Array<never> {
 		return [];
 	}
 
@@ -216,7 +216,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 *
 	 * @returns {Array}
 	 */
-	public getPath(): number[] {
+	public getPath(): Array<number> {
 		return [];
 	}
 
@@ -231,7 +231,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
 	 * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
 	 */
-	public getNodeByPath( relativePath: number[] ): Node | DocumentFragment {
+	public getNodeByPath( relativePath: Array<number> ): Node | DocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let node: Node | DocumentFragment = this;
 
@@ -349,7 +349,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Node[] {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
 		const nodes = this._children._removeNodes( index, howMany );
 
 		for ( const node of nodes ) {

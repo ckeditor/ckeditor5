@@ -1,4 +1,4 @@
-dist: xenial
+dist: jammy
 addons:
   chrome: stable
 language: node_js
@@ -12,7 +12,7 @@ branches:
 services:
 - xvfb
 node_js:
-- "14"
+- lts/*
 cache: false
 before_install:
 - export START_TIME=$( date +%s )
@@ -26,7 +26,7 @@ script:
 - if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi
 after_script:
 - export END_TIME=$( date +%s )
-- ckeditor5-dev-tests-notify-travis-status
+- ckeditor5-dev-ci-notify-travis-status
 env:
   jobs:
   - TRAVIS_JOB_TYPE=Tests

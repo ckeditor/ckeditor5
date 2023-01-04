@@ -15,6 +15,7 @@ import type Model from '../model';
 import type Node from '../node';
 import type Schema from '../schema';
 import type Writer from '../writer';
+import type Element from '../element';
 
 /**
  * Injects selection post-fixer to the model.
@@ -141,7 +142,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 	// In the first case, there is no need to fix the selection range.
 	// In the second, let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
-		const ancestorObject = originalPosition.getAncestors().reverse().find( item => schema.isObject( item ) );
+		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is Element => schema.isObject( item ) );
 
 		if ( ancestorObject ) {
 			return Range._createOn( ancestorObject );
@@ -276,7 +277,7 @@ function checkSelectionOnNonLimitElements( start: Position, end: Position, schem
  * @param {Array.<module:engine/model/range~Range>} Ranges to merge.
  * @returns {Array.<module:engine/model/range~Range>} Array of unique and nonIntersecting ranges.
  */
-export function mergeIntersectingRanges( ranges: Range[] ): Range[] {
+export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
 	const rangesToMerge = [ ...ranges ];
 	const rangeIndexesToRemove = new Set();
 	let currentRangeIndex = 1;

@@ -82,7 +82,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Move out of link or inline style</td>
+			<td>Move out of link or inline code style</td>
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
 		<tr>
@@ -166,7 +166,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 		</tr>
 		<tr>
 			<td>Execute the currently focused button</td>
-			<td colspan="2"><kbd>Enter</kbd></td>
+			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
 		</tr>
 	</tbody>
 </table>

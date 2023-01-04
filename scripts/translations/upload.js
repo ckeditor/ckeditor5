@@ -6,8 +6,7 @@
 /* eslint-env node */
 
 const fs = require( 'fs' );
-const { uploadPotFiles } = require( '@ckeditor/ckeditor5-dev-env' );
-const getToken = require( '@ckeditor/ckeditor5-dev-env/lib/translations/gettoken' );
+const { uploadPotFiles, getToken } = require( '@ckeditor/ckeditor5-dev-transifex' );
 const { parseArguments, getCKEditor5PackageNames, normalizePath } = require( './utils' );
 
 main().catch( err => {

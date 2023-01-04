@@ -81,6 +81,22 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
+		 * Set to `true` if the document is in the process of setting the focus.
+		 *
+		 * To be precise, there are two browser events that we care about: `focus` and `selectionchange`.
+		 *
+		 * Different browsers handle them differently. Chromium sends the `focus` event before the
+		 * `selectionchange` event, which leads to rendering with the old selection state.
+		 *
+		 * The flag is used to prevent rendering when setting the focus is in progress
+		 * and we are waiting for the new value.
+		 *
+		 * @protected
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#_isFocusChanging
+		 */
+
+		/**
 		 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 		 * When they stop selecting, the property goes back to `false`.
 		 *

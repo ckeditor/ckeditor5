@@ -32,7 +32,7 @@ export default class ClickObserver extends DomEventObserver<'click'> {
 	}
 }
 
-export type ClickObserverEvent = {
+export type ViewDocumentClickEvent = {
 	name: 'click';
 	args: [ data: DomEventData<MouseEvent> ];
 };

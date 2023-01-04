@@ -1,5 +1,5 @@
 ---
-category: simple-plugin
+category: abbreviation-plugin
 order: 25
 ---
 
@@ -421,7 +421,7 @@ class AbbreviationUI extends Plugin {
 }
 ```
 
-That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to {@link framework/guides/simple-plugin-tutorial/abbreviation-plugin-level-2 the second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
+That's it for the first part of this tutorial! Your plugin should now work (in its most basic form). Go on to {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 the second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
 
 ## Demo
 

@@ -203,7 +203,8 @@ export default class ListPropertiesView extends View {
 					.getComputedStyle( this.stylesView.element )
 					.getPropertyValue( 'grid-template-columns' )
 					.split( ' ' )
-					.length
+					.length,
+				uiLanguageDirection: this.locale && this.locale.uiLanguageDirection
 			} );
 		}
 
@@ -368,7 +369,7 @@ export default class ListPropertiesView extends View {
 		} );
 
 		startIndexFieldView.fieldView.set( {
-			min: 1,
+			min: 0,
 			step: 1,
 			value: 1,
 			inputMode: 'numeric'

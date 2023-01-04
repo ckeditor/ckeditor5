@@ -9,8 +9,6 @@
 
 /**
  * String representing a language direction.
- *
- * @typedef {'ltr'|'rtl'} module:utils/language~LanguageDirection
  */
 export type LanguageDirection = 'ltr' | 'rtl';
 
@@ -25,8 +23,7 @@ const RTL_LANGUAGE_CODES = [
 /**
  * Helps determine whether a language text direction is LTR or RTL.
  *
- * @param {String} languageCode The ISO 639-1 or ISO 639-2 language code.
- * @returns {module:utils/language~LanguageDirection}
+ * @param languageCode The ISO 639-1 or ISO 639-2 language code.
  */
 export function getLanguageDirection( languageCode: string ): LanguageDirection {
 	return RTL_LANGUAGE_CODES.includes( languageCode ) ? 'rtl' : 'ltr';

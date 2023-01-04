@@ -522,4 +522,4 @@ The {@link module:mention/mention~Mention} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention).

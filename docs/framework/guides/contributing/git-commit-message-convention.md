@@ -49,7 +49,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
-For reference on how to identify minor or major breaking change see the {@link support/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking change see the {@link updating/versioning-policy versioning policy guide}.
 
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
@@ -226,7 +226,7 @@ As a reviewer, remember that the message will end up in the changelog and must b
 
 When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 
-{@img assets/img/closing-a-pr.gif Screencast how to copy a source version of the suggested commit message when closing a PR.}
+{@img assets/img/closing-a-pr.gif 998 Screencast how to copy a source version of the suggested commit message when closing a PR.}
 
 ### Giving credit
 

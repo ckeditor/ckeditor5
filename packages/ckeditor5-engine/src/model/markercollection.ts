@@ -3,20 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/markercollection
  */
 
 import TypeCheckable from './typecheckable';
-import LiveRange, { type ChangeEvent as LiveRangeChangeEvent } from './liverange';
+import LiveRange, { type LiveRangeChangeEvent } from './liverange';
 
 import type Position from './position';
 import type Range from './range';
 
-import EmitterMixin, { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
@@ -32,7 +29,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @see module:engine/model/markercollection~Marker
  */
-export default class MarkerCollection extends Emitter implements Iterable<Marker> {
+export default class MarkerCollection extends EmitterMixin() implements Iterable<Marker> {
 	private _markers: Map<string, Marker>;
 
 	/**
@@ -144,7 +141,7 @@ export default class MarkerCollection extends Emitter implements Iterable<Marker
 			}
 
 			if ( hasChanged ) {
-				this.fire<UpdateEvent>( `update:${ markerName }`, oldMarker, oldRange, range, oldMarkerData );
+				this.fire<MarkerCollectionUpdateEvent>( `update:${ markerName }`, oldMarker, oldRange, range, oldMarkerData );
 			}
 
 			return oldMarker;
@@ -154,7 +151,7 @@ export default class MarkerCollection extends Emitter implements Iterable<Marker
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
-		this.fire<UpdateEvent>( `update:${ markerName }`, marker, null, range, { ...marker.getData(), range: null } );
+		this.fire<MarkerCollectionUpdateEvent>( `update:${ markerName }`, marker, null, range, { ...marker.getData(), range: null } );
 
 		return marker;
 	}
@@ -174,7 +171,7 @@ export default class MarkerCollection extends Emitter implements Iterable<Marker
 
 		if ( oldMarker ) {
 			this._markers.delete( markerName );
-			this.fire<UpdateEvent>( `update:${ markerName }`, oldMarker, oldMarker.getRange(), null, oldMarker.getData() );
+			this.fire<MarkerCollectionUpdateEvent>( `update:${ markerName }`, oldMarker, oldMarker.getRange(), null, oldMarker.getData() );
 
 			this._destroyMarker( oldMarker );
 
@@ -209,7 +206,7 @@ export default class MarkerCollection extends Emitter implements Iterable<Marker
 
 		const range = marker.getRange();
 
-		this.fire<UpdateEvent>( `update:${ markerName }`, marker, range, range, marker.getData() );
+		this.fire<MarkerCollectionUpdateEvent>( `update:${ markerName }`, marker, range, range, marker.getData() );
 	}
 
 	/**
@@ -610,11 +607,11 @@ Marker.prototype.is = function( type: string ): boolean {
 	return type === 'marker' || type === 'model:marker';
 };
 
-export { type Marker };
+export type { Marker };
 
-export type ChangeEvent = LiveRangeChangeEvent;
+export type MarkerCollectionChangeEvent = LiveRangeChangeEvent;
 
-export type UpdateEvent = {
+export type MarkerCollectionUpdateEvent = {
 	name: 'update' | `update:${ string }`;
 	args: [ marker: Marker, oldRange: Range | null, newRange: Range | null, oldMarkerData: MarkerData ];
 };

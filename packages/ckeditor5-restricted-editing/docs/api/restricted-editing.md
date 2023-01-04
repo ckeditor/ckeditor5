@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-restricted-editing
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing).
 
 ## External links
 

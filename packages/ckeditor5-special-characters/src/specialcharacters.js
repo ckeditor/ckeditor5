@@ -90,7 +90,7 @@ export default class SpecialCharacters extends Plugin {
 
 			// Insert a special character when a tile was clicked.
 			dropdownView.on( 'execute', ( evt, data ) => {
-				editor.execute( 'input', { text: data.character } );
+				editor.execute( 'insertText', { text: data.character } );
 				editor.editing.view.focus();
 			} );
 
@@ -237,6 +237,10 @@ export default class SpecialCharacters extends Plugin {
 		gridView.delegate( 'execute' ).to( dropdownView );
 
 		gridView.on( 'tileHover', ( evt, data ) => {
+			infoView.set( data );
+		} );
+
+		gridView.on( 'tileFocus', ( evt, data ) => {
 			infoView.set( data );
 		} );
 

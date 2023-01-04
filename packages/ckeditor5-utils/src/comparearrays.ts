@@ -13,17 +13,19 @@
  * a flag specifying the relation is returned. Flags are negative numbers, so whenever a number >= 0 is returned
  * it means that arrays differ.
  *
- *		compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'same'
- *		compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'prefix'
- *		compareArrays( [ 0, 2 ], [ 0 ] );			// 'extension'
- *		compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
- *		compareArrays( [ 0, 2 ], [ 0, 1 ] );		// 1
+ * ```ts
+ * compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'same'
+ * compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'prefix'
+ * compareArrays( [ 0, 2 ], [ 0 ] );			// 'extension'
+ * compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
+ * compareArrays( [ 0, 2 ], [ 0, 1 ] );		// 1
+ * ```
  *
- * @param {Array} a Array that is compared.
- * @param {Array} b Array to compare with.
- * @returns {module:utils/comparearrays~ArrayRelation|Number} How array `a` is related to `b`.
+ * @param a Array that is compared.
+ * @param b Array to compare with.
+ * @returns How array `a` is related to `b`.
  */
-export default function compareArrays( a: readonly unknown[], b: readonly unknown[] ): ArrayRelation | number {
+export default function compareArrays( a: ReadonlyArray<unknown>, b: ReadonlyArray<unknown> ): ArrayRelation | number {
 	const minLen = Math.min( a.length, b.length );
 
 	for ( let i = 0; i < minLen; i++ ) {
@@ -47,6 +49,6 @@ export default function compareArrays( a: readonly unknown[], b: readonly unknow
 }
 
 /**
- * @typedef {'extension'|'same'|'prefix'} module:utils/comparearrays~ArrayRelation
+ * Array relation.
  */
 export type ArrayRelation = 'extension' | 'same' | 'prefix';

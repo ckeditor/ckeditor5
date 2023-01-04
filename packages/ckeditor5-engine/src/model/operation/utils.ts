@@ -18,8 +18,7 @@ import type Item from '../item';
 import type NodeList from '../nodelist';
 import type Position from '../position';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Contains functions used for composing model tree by {@link module:engine/model/operation/operation~Operation operations}.
@@ -70,7 +69,7 @@ export function _insert( position: Position, nodes: NodeSet ): Range {
  * @param {module:engine/model/range~Range} range Range containing nodes to remove.
  * @returns {Array.<module:engine/model/node~Node>}
  */
-export function _remove( this: any, range: Range ): Node[] {
+export function _remove( this: any, range: Range ): Array<Node> {
 	if ( !range.isFlat ) {
 		/**
 		 * Trying to remove a range which starts and ends in different element.
@@ -176,8 +175,8 @@ export function _setAttribute( range: Range, key: string, value: unknown ): void
  * @param {module:engine/model/node~NodeSet} nodes Objects to normalize.
  * @returns {Array.<module:engine/model/node~Node>} Normalized nodes.
  */
-export function _normalizeNodes( nodes: NodeSet ): Node[] {
-	const normalized: Node[] = [];
+export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
+	const normalized: Array<Node> = [];
 
 	function convert( nodes: NodeSet ) {
 		if ( typeof nodes == 'string' ) {

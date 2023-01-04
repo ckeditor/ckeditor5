@@ -22,8 +22,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import type ViewItem from '../view/item';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of
@@ -120,10 +119,10 @@ import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
  * @fires text
  * @fires documentFragment
  */
-export default class UpcastDispatcher extends Emitter {
+export default class UpcastDispatcher extends EmitterMixin() {
 	public conversionApi: UpcastConversionApi;
 
-	private _splitParts: Map<ModelElement, ModelElement[]>;
+	private _splitParts: Map<ModelElement, Array<ModelElement>>;
 	private _cursorParents: Map<ModelElement, ModelElement | ModelDocumentFragment>;
 	private _modelCursor: ModelPosition | null;
 	private _emptyElementsToKeep: Set<ModelElement>;
@@ -218,7 +217,7 @@ export default class UpcastDispatcher extends Emitter {
 		writer: ModelWriter,
 		context: SchemaContextDefinition = [ '$root' ]
 	): ModelDocumentFragment {
-		this.fire<ViewCleanupEvent>( 'viewCleanup', viewElement );
+		this.fire<UpcastViewCleanupEvent>( 'viewCleanup', viewElement );
 
 		// Create context tree and set position in the top element.
 		// Items will be converted according to this position.
@@ -454,7 +453,7 @@ export default class UpcastDispatcher extends Emitter {
 		//
 		// With those observations in mind, we will pair the original elements with their split parts by saving "closing tags" and matching
 		// them with "opening tags" in the reverse order. For that we can use a stack.
-		const stack: ModelElement[] = [];
+		const stack: Array<ModelElement> = [];
 
 		for ( const treeWalkerValue of splitResult.range.getWalker() ) {
 			if ( treeWalkerValue.type == 'elementEnd' ) {
@@ -501,8 +500,8 @@ export default class UpcastDispatcher extends Emitter {
 	 * @private
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#getSplitParts
 	 */
-	private _getSplitParts( element: ModelElement ): ModelElement[] {
-		let parts: ModelElement[];
+	private _getSplitParts( element: ModelElement ): Array<ModelElement> {
+		let parts: Array<ModelElement>;
 
 		if ( !this._splitParts.has( element ) ) {
 			parts = [ element ];
@@ -585,7 +584,7 @@ export default class UpcastDispatcher extends Emitter {
 	 */
 }
 
-export type ViewCleanupEvent = {
+export type UpcastViewCleanupEvent = {
 	name: 'viewCleanup';
 	args: [ ViewElement | ViewDocumentFragment ];
 };
@@ -692,7 +691,7 @@ export interface UpcastConversionApi {
 		position: ModelPosition;
 		cursorParent?: ModelElement | ModelDocumentFragment;
 	} | null;
-	getSplitParts( modelElement: ModelElement ): ModelElement[];
+	getSplitParts( modelElement: ModelElement ): Array<ModelElement>;
 	keepEmptyElement( modelElement: ModelElement ): void;
 }
 

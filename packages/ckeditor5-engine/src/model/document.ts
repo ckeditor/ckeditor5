@@ -12,18 +12,21 @@ import DocumentSelection from './documentselection';
 import History from './history';
 import RootElement from './rootelement';
 
-import type { ChangeEvent as SelectionChangeEvent } from './selection';
-import type { default as Model, ApplyOperationEvent } from './model';
-import type { UpdateEvent as MarkerUpdateEvent, ChangeEvent as MarkerChangeEvent } from './markercollection';
+import type { SelectionChangeEvent } from './selection';
+import type { default as Model, ModelApplyOperationEvent } from './model';
+import type { MarkerCollectionUpdateEvent, MarkerCollectionChangeEvent } from './markercollection';
 import type Batch from './batch';
 import type Position from './position';
 import type Range from './range';
 import type Writer from './writer';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import {
+	CKEditorError,
+	Collection,
+	EmitterMixin,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol
+} from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'lodash-es';
 
@@ -47,11 +50,11 @@ const graveyardName = '$graveyard';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class Document extends Emitter {
+export default class Document extends EmitterMixin() {
 	public readonly model: Model;
 	public readonly history: History;
 	public readonly selection: DocumentSelection;
-	public readonly roots: Collection<RootElement, 'rootName'>;
+	public readonly roots: Collection<RootElement>;
 	public readonly differ: Differ;
 
 	private readonly _postFixers: Set<( writer: Writer ) => boolean>;
@@ -125,7 +128,7 @@ export default class Document extends Emitter {
 		this.createRoot( '$root', graveyardName );
 
 		// Then, still before an operation is applied on model, buffer the change in differ.
-		this.listenTo<ApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
+		this.listenTo<ModelApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			if ( operation.isDocumentOperation ) {
@@ -134,7 +137,7 @@ export default class Document extends Emitter {
 		}, { priority: 'high' } );
 
 		// After the operation is applied, bump document's version and add the operation to the history.
-		this.listenTo<ApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
+		this.listenTo<ModelApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			if ( operation.isDocumentOperation ) {
@@ -150,7 +153,7 @@ export default class Document extends Emitter {
 		// Buffer marker changes.
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
-		this.listenTo<MarkerUpdateEvent>( model.markers, 'update', ( evt, marker, oldRange, newRange, oldMarkerData ) => {
+		this.listenTo<MarkerCollectionUpdateEvent>( model.markers, 'update', ( evt, marker, oldRange, newRange, oldMarkerData ) => {
 			// Copy the `newRange` to the new marker data as during the marker removal the range is not updated.
 			const newMarkerData = { ...marker.getData(), range: newRange };
 
@@ -159,7 +162,7 @@ export default class Document extends Emitter {
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
-				marker.on<MarkerChangeEvent>( 'change', ( evt, oldRange ) => {
+				marker.on<MarkerCollectionChangeEvent>( 'change', ( evt, oldRange ) => {
 					const markerData = marker.getData();
 
 					this.differ.bufferMarkerChange(
@@ -251,7 +254,7 @@ export default class Document extends Emitter {
 	 *
 	 * @returns {Array.<String>} Roots names.
 	 */
-	public getRootNames(): string[] {
+	public getRootNames(): Array<string> {
 		return Array.from( this.roots, root => root.rootName ).filter( name => name != graveyardName );
 	}
 
@@ -330,9 +333,9 @@ export default class Document extends Emitter {
 			this.selection.refresh();
 
 			if ( this.differ.hasDataChanges() ) {
-				this.fire<ChangeEvent>( 'change:data', writer.batch );
+				this.fire<DocumentChangeEvent>( 'change:data', writer.batch );
 			} else {
-				this.fire<ChangeEvent>( 'change', writer.batch );
+				this.fire<DocumentChangeEvent>( 'change', writer.batch );
 			}
 
 			// Theoretically, it is not necessary to refresh selection after change event because
@@ -491,7 +494,7 @@ export default class Document extends Emitter {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-export type ChangeEvent = {
+export type DocumentChangeEvent = {
 	name: 'change' | 'change:data';
 	args: [ batch: Batch ];
 };

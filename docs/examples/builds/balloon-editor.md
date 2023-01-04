@@ -20,7 +20,7 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 
 ```js
 
-import BaloonEditor from '@ckeditor/ckeditor5-build-baloon/src/ckeditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {

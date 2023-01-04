@@ -7,7 +7,7 @@
  * @module engine/model/batch
  */
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 import type Operation from './operation/operation';
 
 /**
@@ -23,7 +23,7 @@ import type Operation from './operation/operation';
  * @see module:engine/model/model~Model#change
  */
 export default class Batch {
-	public readonly operations: Operation[];
+	public readonly operations: Array<Operation>;
 	public readonly isUndoable: boolean;
 	public readonly isLocal: boolean;
 	public readonly isUndo: boolean;

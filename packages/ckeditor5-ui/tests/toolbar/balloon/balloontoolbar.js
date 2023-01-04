@@ -88,10 +88,16 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	after( () => {
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
+		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
+		ResizeObserver._observerInstance = null;
 	} );
 
 	it( 'should create a plugin instance', () => {

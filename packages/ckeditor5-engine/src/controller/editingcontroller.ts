@@ -7,6 +7,8 @@
  * @module engine/controller/editingcontroller
  */
 
+import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
@@ -24,18 +26,16 @@ import {
 	remove
 } from '../conversion/downcasthelpers';
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 import type Model from '../model/model';
 import type ModelItem from '../model/item';
 import type ModelText from '../model/text';
 import type ModelTextProxy from '../model/textproxy';
-import type { ChangeEvent } from '../model/document';
+import type { DocumentChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
-import type { SelectionObserverEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentSelectionEvent } from '../view/observer/selectionobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -46,7 +46,7 @@ import type { SelectionObserverEvent } from '../view/observer/selectionobserver'
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class EditingController extends Observable {
+export default class EditingController extends ObservableMixin() {
 	public readonly model: Model;
 	public readonly view: View;
 	public readonly mapper: Mapper;
@@ -116,7 +116,7 @@ export default class EditingController extends Observable {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo<ChangeEvent>( doc, 'change', () => {
+		this.listenTo<DocumentChangeEvent>( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
@@ -124,7 +124,9 @@ export default class EditingController extends Observable {
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo<SelectionObserverEvent>( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo<ViewDocumentSelectionEvent>( this.view.document, 'selectionChange',
+			convertSelectionChange( this.model, this.mapper )
+		);
 
 		// Attach default model converters.
 		this.downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );

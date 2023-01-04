@@ -12,25 +12,27 @@ import priorities, { type PriorityString } from './priorities';
 /**
  * The priority object descriptor.
  *
- *		const objectWithPriority = {
- *			priority: 'high'
- *		}
- *
- * @typedef {Object} module:utils/inserttopriorityarray~ObjectWithPriority
- *
- * @property {module:utils/priorities~PriorityString|Number} priority Priority of the object.
+ * ```ts
+ * const objectWithPriority = {
+ * 	priority: 'high'
+ * }
+ * ```
  */
 export interface ObjectWithPriority {
-	priority: PriorityString | number;
+
+	/**
+	 * Priority of the object.
+	 */
+	priority: PriorityString;
 }
 
 /**
  * Inserts any object with priority at correct index by priority so registered objects are always sorted from highest to lowest priority.
  *
- * @param {Array.<module:utils/inserttopriorityarray~ObjectWithPriority>} objects Array of objects with priority to insert object to.
- * @param {module:utils/inserttopriorityarray~ObjectWithPriority} objectToInsert Object with `priority` property.
+ * @param objects Array of objects with priority to insert object to.
+ * @param objectToInsert Object with `priority` property.
  */
-export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: T[], objectToInsert: T ): void {
+export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
 	const priority = priorities.get( objectToInsert.priority );
 
 	for ( let i = 0; i < objects.length; i++ ) {

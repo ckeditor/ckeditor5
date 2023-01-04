@@ -15,9 +15,8 @@ import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
 import RawElement from './rawelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 import DocumentFragment from './documentfragment';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Text from './text';
 import EditableElement from './editableelement';
 import { isPlainObject } from 'lodash-es';
@@ -214,7 +213,7 @@ export default class DowncastWriter {
 		options: {
 			priority?: number;
 			id?: number | string;
-			renderUnsafeAttributes?: string[];
+			renderUnsafeAttributes?: Array<string>;
 		} = {}
 	): AttributeElement {
 		const attributeElement = new AttributeElement( this.document, name, attributes );
@@ -270,24 +269,24 @@ export default class DowncastWriter {
 	public createContainerElement(
 		name: string,
 		attributes?: ElementAttributes,
-		options?: { renderUnsafeAttributes?: string[] }
+		options?: { renderUnsafeAttributes?: Array<string> }
 	): ContainerElement;
 	public createContainerElement(
 		name: string,
 		attributes: ElementAttributes,
 		children: Node | Iterable<Node>,
-		options?: { renderUnsafeAttributes?: string[] }
+		options?: { renderUnsafeAttributes?: Array<string> }
 	): ContainerElement;
 	public createContainerElement(
 		name: string,
 		attributes?: ElementAttributes,
-		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: string[] } = {},
-		options: { renderUnsafeAttributes?: string[] } = {}
+		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
+		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ContainerElement {
 		let children = null;
 
 		if ( isPlainObject( childrenOrOptions ) ) {
-			options = childrenOrOptions as { renderUnsafeAttributes?: string[] };
+			options = childrenOrOptions as { renderUnsafeAttributes?: Array<string> };
 		} else {
 			children = childrenOrOptions;
 		}
@@ -321,7 +320,7 @@ export default class DowncastWriter {
 		name: string,
 		attributes: ElementAttributes,
 		options: {
-			renderUnsafeAttributes?: string[];
+			renderUnsafeAttributes?: Array<string>;
 		} = {}
 	): EditableElement {
 		const editableElement = new EditableElement( this.document, name, attributes );
@@ -348,9 +347,9 @@ export default class DowncastWriter {
 	 */
 	public createEmptyElement(
 		name: string,
-		attributes: ElementAttributes,
+		attributes?: ElementAttributes,
 		options: {
-			renderUnsafeAttributes?: string[];
+			renderUnsafeAttributes?: Array<string>;
 		} = {}
 	): EmptyElement {
 		const emptyElement = new EmptyElement( this.document, name, attributes );
@@ -390,7 +389,7 @@ export default class DowncastWriter {
 	public createUIElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
+		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
 
@@ -433,7 +432,7 @@ export default class DowncastWriter {
 		attributes: ElementAttributes,
 		renderFunction: ( domElement: DomElement, domConverter?: DomConverter ) => void,
 		options: {
-			renderUnsafeAttributes?: string[];
+			renderUnsafeAttributes?: Array<string>;
 		} = {}
 	): RawElement {
 		const rawElement = new RawElement( this.document, name, attributes );
@@ -483,7 +482,7 @@ export default class DowncastWriter {
 	 * @param {Array.<String>|String} className
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public addClass( className: string | string[], element: Element ): void {
+	public addClass( className: string | Array<string>, element: Element ): void {
 		element._addClass( className );
 	}
 
@@ -496,7 +495,7 @@ export default class DowncastWriter {
 	 * @param {Array.<String>|String} className
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public removeClass( className: string | string[], element: Element ): void {
+	public removeClass( className: string | Array<string>, element: Element ): void {
 		element._removeClass( className );
 	}
 
@@ -545,7 +544,7 @@ export default class DowncastWriter {
 	 * @param {Array.<String>|String} property
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public removeStyle( property: string | string[], element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: Element ): void {
 		element._removeStyle( property );
 	}
 
@@ -821,7 +820,7 @@ export default class DowncastWriter {
 		validateNodesToInsert( nodes, this.document );
 
 		// Group nodes in batches of nodes that require or do not require breaking an AttributeElements.
-		const nodeGroups = ( nodes as Node[] ).reduce( ( groups: { breakAttributes: boolean; nodes: Node[] }[], node ) => {
+		const nodeGroups = ( nodes as Array<Node> ).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<Node> }>, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
 
 			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
@@ -1419,7 +1418,7 @@ export default class DowncastWriter {
 	 */
 	private _wrapChildren( parent: Element, startOffset: number, endOffset: number, wrapElement: AttributeElement ) {
 		let i = startOffset;
-		const wrapPositions: Position[] = [];
+		const wrapPositions: Array<Position> = [];
 
 		while ( i < endOffset ) {
 			const child = parent.getChild( i )!;
@@ -1503,7 +1502,7 @@ export default class DowncastWriter {
 	 */
 	private _unwrapChildren( parent: Element, startOffset: number, endOffset: number, unwrapElement: AttributeElement ) {
 		let i = startOffset;
-		const unwrapPositions: Position[] = [];
+		const unwrapPositions: Array<Position> = [];
 
 		// Iterate over each element between provided offsets inside parent.
 		// We don't use tree walker or range iterator because we will be removing and merging potentially multiple nodes,

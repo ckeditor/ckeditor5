@@ -91,7 +91,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 ## Backwards feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link installation/getting-started/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature availability
 

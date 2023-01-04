@@ -9,8 +9,7 @@
 
 import Element from './element';
 import Node from './node';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
 import type DomConverter from './domconverter';
@@ -40,7 +39,7 @@ type DomElement = globalThis.HTMLElement;
  * @extends module:engine/view/element~Element
  */
 export default class UIElement extends Element {
-	public override readonly getFillerOffset: () => null;
+	public override getFillerOffset: () => null;
 
 	/**
 	 * Creates new instance of UIElement.

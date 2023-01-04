@@ -13,7 +13,7 @@ import type Element from './element';
 import type Node from './node';
 import type Text from './text';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -181,7 +181,7 @@ export default class TextProxy extends TypeCheckable {
 	 * @see module:engine/model/node~Node#getPath
 	 * @returns {Array.<Number>}
 	 */
-	public getPath(): number[] {
+	public getPath(): Array<number> {
 		const path = this.textNode.getPath();
 
 		if ( path.length > 0 ) {
@@ -200,8 +200,8 @@ export default class TextProxy extends TypeCheckable {
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): ( TextProxy | Element | DocumentFragment )[] {
-		const ancestors: ( TextProxy | Element | DocumentFragment )[] = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<TextProxy | Element | DocumentFragment> {
+		const ancestors: Array<TextProxy | Element | DocumentFragment> = [];
 		let parent: TextProxy | Element | DocumentFragment | null = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {

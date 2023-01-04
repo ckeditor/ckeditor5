@@ -25,16 +25,14 @@ import Range from './range';
 import RootElement from './rootelement';
 import Text from './text';
 
-import { type Marker } from './markercollection';
+import type { Marker } from './markercollection';
 import type Selection from './selection';
 import type Batch from './batch';
 import type Item from './item';
 import type Model from './model';
 import type { default as Node, NodeAttributes } from './node';
 
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -615,7 +613,7 @@ export default class Writer {
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
 	 */
-	public remove( itemOrRange: Item | Range | DocumentFragment ): void {
+	public remove( itemOrRange: Item | Range ): void {
 		this._assertWriterUsedCorrectly();
 
 		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
@@ -682,7 +680,7 @@ export default class Writer {
 	 */
 	public createPositionFromPath(
 		root: Element | DocumentFragment,
-		path: number[],
+		path: Array<number>,
 		stickiness?: PositionStickiness
 	): Position {
 		return this.model.createPositionFromPath( root, path, stickiness );
@@ -740,7 +738,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public createRangeIn( element: Element ): Range {
+	public createRangeIn( element: Element | DocumentFragment ): Range {
 		return this.model.createRangeIn( element );
 	}
 
@@ -750,7 +748,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public createRangeOn( element: Item | DocumentFragment ): Range {
+	public createRangeOn( element: Item ): Range {
 		return this.model.createRangeOn( element );
 	}
 

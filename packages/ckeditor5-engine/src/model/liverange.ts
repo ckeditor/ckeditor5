@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/liverange
  */
 
 import Range from './range';
 
-import type { ApplyOperationEvent } from './model';
+import type { ModelApplyOperationEvent } from './model';
 import type DocumentFragment from './documentfragment';
 import type Element from './element';
 import type Item from './item';
@@ -20,7 +18,7 @@ import type MoveOperation from './operation/moveoperation';
 import type Operation from './operation/operation';
 import type Position from './position';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * `LiveRange` is a type of {@link module:engine/model/range~Range Range}
@@ -154,7 +152,7 @@ LiveRange.prototype.is = function( type: string ): boolean {
 		type == 'range' || type === 'model:range';
 };
 
-export type ChangeEvent = {
+export type LiveRangeChangeEvent = {
 	name: 'change' | 'change:range' | 'change:content';
 	args: [ range: Range, data: { deletionPosition: Position | null } ];
 };
@@ -164,7 +162,7 @@ export type ChangeEvent = {
 //
 // @private
 function bindWithDocument( this: LiveRange ) {
-	this.listenTo<ApplyOperationEvent>(
+	this.listenTo<ModelApplyOperationEvent>(
 		this.root.document!.model,
 		'applyOperation',
 		( event, args ) => {
@@ -212,10 +210,10 @@ function transform( this: LiveRange, operation: Operation ) {
 		( this as any ).start = result.start;
 		( this as any ).end = result.end;
 
-		this.fire<ChangeEvent>( 'change:range', oldRange, { deletionPosition } );
+		this.fire<LiveRangeChangeEvent>( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire<ChangeEvent>( 'change:content', this.toRange(), { deletionPosition } );
+		this.fire<LiveRangeChangeEvent>( 'change:content', this.toRange(), { deletionPosition } );
 	}
 }
 

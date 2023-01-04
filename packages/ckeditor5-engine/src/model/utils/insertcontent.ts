@@ -21,7 +21,7 @@ import type Node from '../node';
 import type Schema from '../schema';
 import type Writer from '../writer';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { LiveRange } from '../../index';
 
 /**
@@ -149,7 +149,7 @@ export default function insertContent(
 			const selectionLiveRange = newRange ? LiveRange.fromRange( newRange ) : null;
 
 			// Marker name -> [ start position, end position ].
-			const markersData: Record<string, Position[]> = {};
+			const markersData: Record<string, Array<Position>> = {};
 
 			// Note: `fakeMarkerElements` are sorted backwards. However, now, we want to handle the markers
 			// from the beginning, so that existing <$marker> elements do not affect markers positions.
@@ -251,7 +251,7 @@ class Insertion {
 	private _firstNode: Node | null;
 	private _lastNode: Node | null;
 	private _lastAutoParagraph: Element | null;
-	private _filterAttributesOf: Node[];
+	private _filterAttributesOf: Array<Node>;
 	private _affectedStart: LivePosition | null;
 	private _affectedEnd: LivePosition | null;
 	private _nodeToSelect?: Node | null;

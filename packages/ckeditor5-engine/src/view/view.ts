@@ -7,7 +7,7 @@
  * @module engine/view/view
  */
 
-import Document, { type LayoutChangedEvent } from './document';
+import Document, { type ViewDocumentLayoutChangedEvent } from './document';
 import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
 import DomConverter from './domconverter';
@@ -16,14 +16,14 @@ import Range from './range';
 import Selection from './selection';
 
 import type { default as Observer, ObserverConstructor } from './observer/observer';
-import type { ChangeEvent as SelectionChangeEvent } from './documentselection';
+import type { ViewDocumentSelectionChangeEvent } from './documentselection';
 import type { StylesProcessor } from './stylesmap';
 import type Element from './element';
 import type Item from './item';
 
-import MutationObserver from './observer/mutationobserver';
 import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
+import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
@@ -31,12 +31,14 @@ import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
 import TabObserver from './observer/tabobserver';
 
-import { Observable, type ChangeEvent as ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import {
+	CKEditorError,
+	ObservableMixin,
+	scrollViewportToShowTarget,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -54,12 +56,12 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
- * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+ * * {@link module:engine/view/observer/inputobserver~InputObserver}.
  * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
@@ -70,13 +72,11 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class View extends Observable {
+export default class View extends ObservableMixin() {
 	public readonly document: Document;
 	public readonly domConverter: DomConverter;
 	public readonly domRoots: Map<string, HTMLElement>;
 
-	declare public isFocused: boolean;
-	declare public isSelecting: boolean;
 	declare public isRenderingInProgress: boolean;
 	declare public hasDomSelection: boolean;
 
@@ -144,7 +144,8 @@ export default class View extends Observable {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting' ).to( this.document, 'isFocused', 'isSelecting' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -214,29 +215,26 @@ export default class View extends Observable {
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
 		this.addObserver( ArrowKeysObserver );
+		this.addObserver( InputObserver );
 		this.addObserver( TabObserver );
-
-		if ( env.isAndroid ) {
-			this.addObserver( InputObserver );
-		}
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
 
 		// Use 'normal' priority so that rendering is performed as first when using that priority.
-		this.on<RenderEvent>( 'render', () => {
+		this.on<ViewRenderEvent>( 'render', () => {
 			this._render();
 
 			// Informs that layout has changed after render.
-			this.document.fire<LayoutChangedEvent>( 'layoutChanged' );
+			this.document.fire<ViewDocumentLayoutChangedEvent>( 'layoutChanged' );
 
 			// Reset the `_hasChangedSinceTheLastRendering` flag after rendering.
 			this._hasChangedSinceTheLastRendering = false;
 		} );
 
 		// Listen to the document selection changes directly.
-		this.listenTo<SelectionChangeEvent>( this.document.selection, 'change', () => {
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.document.selection, 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
 
@@ -521,7 +519,7 @@ export default class View extends Observable {
 				this.document._callPostFixers( this._writer );
 				this._postFixersInProgress = false;
 
-				this.fire<RenderEvent>( 'render' );
+				this.fire<ViewRenderEvent>( 'render' );
 			}
 
 			return callbackResult;
@@ -544,6 +542,7 @@ export default class View extends Observable {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
+		this.document._isFocusChanging = false;
 		this.change( () => {} );
 	}
 
@@ -717,7 +716,7 @@ export default class View extends Observable {
 	}
 
 	/**
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
+	 * Renders all changes. In order to avoid triggering the observers (e.g. selection) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
 	 * @private
@@ -748,7 +747,7 @@ export default class View extends Observable {
 	 */
 }
 
-export type RenderEvent = {
+export type ViewRenderEvent = {
 	name: 'render';
 	args: [];
 };

@@ -11,6 +11,7 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
+import { env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view';
@@ -22,16 +23,14 @@ type DomSelection = globalThis.Selection;
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
- * observer checks if there are any mutations and if the DOM selection is different from the
- * {@link module:engine/view/document~Document#selection view selection}. The selection observer fires
- * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
- * and the DOM selection is different then the view selection.
+ * observer checks if the DOM selection is different from the {@link module:engine/view/document~Document#selection view selection}.
+ * The selection observer fires {@link module:engine/view/document~Document#event:selectionChange} event only if
+ * a selection change was the only change in the document and the DOM selection is different from the view selection.
  *
  * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
- * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
@@ -40,7 +39,7 @@ export default class SelectionObserver extends Observer {
 	public readonly domConverter: DomConverter;
 
 	private readonly _documents: WeakSet<Document>;
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: SelectionObserverEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
 	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
 	private _loopbackCounter: number;
@@ -96,7 +95,7 @@ export default class SelectionObserver extends Observer {
 		 * @method #_fireSelectionChangeDoneDebounced
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<SelectionObserverEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChangeDone', data );
 		}, 200 );
 
 		/**
@@ -174,7 +173,34 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView.getSelection();
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.anchorNode, offset: domSelection.anchorOffset },
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection.focusNode, offset: domSelection.focusOffset }
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			// The Renderer is disabled while composing on non-android browsers, so we can't update the view selection
+			// because the DOM and view tree drifted apart. Position mapping could fail because of it.
+			if ( this.document.isComposing && !env.isAndroid ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
+				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.groupEnd();
+				// @if CK_DEBUG_TYPING // }
+
+				return;
+			}
+
 			this._handleSelectionChange( domEvent, domDocument );
+
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -195,6 +221,13 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
+	// @if CK_DEBUG //	_reportInfiniteLoop() {
+	// @if CK_DEBUG //		throw new Error(
+	// @if CK_DEBUG //			'Selection change observer detected an infinite rendering loop.\n\n' +
+	// @if CK_DEBUG //	 		'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
+	// @if CK_DEBUG //		);
+	// @if CK_DEBUG //	}
+
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
@@ -209,18 +242,16 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView!.getSelection();
+		const domSelection = domDocument.defaultView!.getSelection()!;
 
-		if ( this.checkShouldIgnoreEventFromTarget( domSelection!.anchorNode! ) ) {
+		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
 		this.mutationObserver.flush();
 
-		// If there were mutations then the view will be re-rendered by the mutation observer and the selection
-		// will be updated, so the selections will equal and the event will not be fired, as expected.
-		const newViewSelection = this.domConverter.domSelectionToView( domSelection! );
+		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.
 		//
@@ -234,7 +265,7 @@ export default class SelectionObserver extends Observer {
 
 		this.view.hasDomSelection = true;
 
-		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection! ) ) {
+		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
 		}
 
@@ -247,7 +278,7 @@ export default class SelectionObserver extends Observer {
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
 			// which a loopback through a model tries to re-render the wrong selection and again.
 			//
-			// @if CK_DEBUG // console.warn( 'Selection change observer detected an infinite rendering loop.' );
+			// @if CK_DEBUG // this._reportInfiniteLoop();
 
 			return;
 		}
@@ -257,14 +288,23 @@ export default class SelectionObserver extends Observer {
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
 		} else {
-			const data: SelectionObserverEventData = {
+			const data: ViewDocumentSelectionEventData = {
 				oldSelection: this.selection,
 				newSelection: newViewSelection,
-				domSelection: domSelection!
+				domSelection
 			};
 
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
+			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
+			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
+
+			this.document._isFocusChanging = false;
+
 			// Prepare data for new selection and fire appropriate events.
-			this.document.fire<SelectionObserverEvent>( 'selectionChange', data );
+			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );
 
 			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
@@ -284,7 +324,7 @@ export default class SelectionObserver extends Observer {
 	}
 }
 
-export type SelectionObserverEventData = {
+export type ViewDocumentSelectionEventData = {
 	oldSelection: DocumentSelection;
 	newSelection: Selection;
 	domSelection: DomSelection | null;
@@ -307,9 +347,9 @@ export type SelectionObserverEventData = {
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
-export type SelectionObserverEvent = {
+export type ViewDocumentSelectionEvent = {
 	name: 'selectionChange' | 'selectionChangeDone';
-	args: [ SelectionObserverEventData ];
+	args: [ ViewDocumentSelectionEventData ];
 };
 
 /**

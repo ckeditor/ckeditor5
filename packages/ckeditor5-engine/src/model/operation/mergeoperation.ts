@@ -14,8 +14,9 @@ import Range from '../range';
 import { _move } from './utils';
 
 import type Document from '../document';
+import type Element from '../element';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to merge two {@link module:engine/model/element~Element elements}.
@@ -181,7 +182,7 @@ export default class MergeOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		const mergedElement = this.sourcePosition.parent;
+		const mergedElement = this.sourcePosition.parent as Element;
 		const sourceRange = Range._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );

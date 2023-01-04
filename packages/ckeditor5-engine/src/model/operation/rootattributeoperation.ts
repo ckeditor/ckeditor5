@@ -12,7 +12,7 @@ import Operation from './operation';
 import type Document from '../document';
 import type RootElement from '../rootelement';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.

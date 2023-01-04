@@ -21,8 +21,7 @@ import type MoveOperation from './operation/moveoperation';
 import type Operation from './operation/operation';
 import type SplitOperation from './operation/splitoperation';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a range in the model tree.
@@ -206,7 +205,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/range~Range} otherRange Range to differentiate against.
 	 * @returns {Array.<module:engine/model/range~Range>} The difference between ranges.
 	 */
-	public getDifference( otherRange: Range ): Range[] {
+	public getDifference( otherRange: Range ): Array<Range> {
 		const ranges = [];
 
 		if ( this.isIntersecting( otherRange ) ) {
@@ -372,7 +371,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @returns {Array.<module:engine/model/range~Range>} Array of flat ranges covering this range.
 	 */
-	public getMinimalFlatRanges(): Range[] {
+	public getMinimalFlatRanges(): Array<Range> {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
@@ -494,7 +493,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to transform range by.
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
-	public getTransformedByOperation( operation: Operation ): Range[] {
+	public getTransformedByOperation( operation: Operation ): Array<Range> {
 		switch ( operation.type ) {
 			case 'insert':
 				return this._getTransformedByInsertOperation( operation as InsertOperation );
@@ -518,7 +517,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {Iterable.<module:engine/model/operation/operation~Operation>} operations Operations to transform the range by.
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
-	public getTransformedByOperations( operations: Iterable<Operation> ): Range[] {
+	public getTransformedByOperations( operations: Iterable<Operation> ): Array<Range> {
 		const ranges = [ new Range( this.start, this.end ) ];
 
 		for ( const operation of operations ) {
@@ -612,7 +611,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/operation/insertoperation~InsertOperation} operation
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
-	public _getTransformedByInsertOperation( operation: InsertOperation, spread: boolean = false ): Range[] {
+	public _getTransformedByInsertOperation( operation: InsertOperation, spread: boolean = false ): Array<Range> {
 		return this._getTransformedByInsertion( operation.position, operation.howMany, spread );
 	}
 
@@ -626,7 +625,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/operation/moveoperation~MoveOperation} operation
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
-	public _getTransformedByMoveOperation( operation: MoveOperation, spread: boolean = false ): Range[] {
+	public _getTransformedByMoveOperation( operation: MoveOperation, spread: boolean = false ): Array<Range> {
 		const sourcePosition = operation.sourcePosition;
 		const howMany = operation.howMany;
 		const targetPosition = operation.targetPosition;
@@ -776,7 +775,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
-	public _getTransformedByInsertion( insertPosition: Position, howMany: number, spread: boolean = false ): Range[] {
+	public _getTransformedByInsertion( insertPosition: Position, howMany: number, spread: boolean = false ): Array<Range> {
 		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
@@ -816,7 +815,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		targetPosition: Position,
 		howMany: number,
 		spread: boolean = false
-	): Range[] {
+	): Array<Range> {
 		// Special case for transforming a collapsed range. Just transform it like a position.
 		if ( this.isCollapsed ) {
 			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany );
@@ -849,7 +848,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		}
 
 		// Default algorithm.
-		let result: Range[];
+		let result: Array<Range>;
 
 		const differenceSet = this.getDifference( moveRange );
 		let difference = null;
@@ -962,8 +961,8 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
 	 */
-	public static _createOn( item: Item | DocumentFragment ): Range {
-		return this._createFromPositionAndShift( Position._createBefore( item ), ( item as any ).offsetSize );
+	public static _createOn( item: Item ): Range {
+		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
 	/**
@@ -983,7 +982,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to combine.
 	 * @returns {module:engine/model/range~Range} Combined range.
 	 */
-	public static _createFromRanges( ranges: Range[] ): Range {
+	public static _createFromRanges( ranges: Array<Range> ): Range {
 		if ( ranges.length === 0 ) {
 			/**
 			 * At least one range has to be passed to

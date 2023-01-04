@@ -11,9 +11,9 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* globals window, document */
+/* globals document */
 
 describe( 'Delete feature', () => {
 	let element, editor, viewDocument;
@@ -58,8 +58,6 @@ describe( 'Delete feature', () => {
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithMatch( 'deleteForward', { unit: 'character', sequence: 1 } ) ).to.be.true;
 
-		expect( domEvt.preventDefault.calledOnce ).to.be.true;
-
 		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'character',
@@ -70,7 +68,7 @@ describe( 'Delete feature', () => {
 		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
 	} );
 
-	it( 'passes options.selection parameter to delete command if selection to remove was specified', () => {
+	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
 		editor.setData( '<p>Foobar</p>' );
 
 		const spy = editor.execute = sinon.spy();
@@ -82,7 +80,7 @@ describe( 'Delete feature', () => {
 
 		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, {
 			direction: 'backward',
-			unit: 'character',
+			unit: 'selection',
 			sequence: 1,
 			selectionToRemove: viewSelection
 		} ) );
@@ -109,115 +107,254 @@ describe( 'Delete feature', () => {
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
-} );
 
-describe( 'Delete feature - Android', () => {
-	let element, editor, oldEnvIsAndroid;
+	it( 'should preventDefault() the original beforeinput event if not while composing', () => {
+		const spy = sinon.spy();
 
-	before( () => {
-		oldEnvIsAndroid = env.isAndroid;
-		env.isAndroid = true;
+		viewDocument.fire( 'delete', {
+			preventDefault: spy,
+			direction: 'backward',
+			unit: 'character'
+		} );
+
+		sinon.assert.calledOnce( spy );
 	} );
 
-	beforeEach( () => {
+	it( 'should not preventDefault() the original beforeinput event if while composing', () => {
+		const spy = sinon.spy();
+
+		viewDocument.isComposing = true;
+
+		viewDocument.fire( 'delete', {
+			preventDefault: spy,
+			direction: 'backward',
+			unit: 'character'
+		} );
+
+		sinon.assert.notCalled( spy );
+	} );
+} );
+
+describe( 'Delete using the beforeinput event', () => {
+	let element, editor, view, viewDocument, executeSpy;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, { plugins: [ Delete, Paragraph ] } )
-			.then( newEditor => {
-				editor = newEditor;
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ Delete, Paragraph ],
+			initialData: '<p>foo</p>'
+		} );
 
-				const modelRoot = editor.model.document.getRoot();
+		view = editor.editing.view;
+		viewDocument = editor.editing.view.document;
 
-				editor.model.change( writer => {
-					writer.insertElement( 'paragraph', modelRoot, 0 );
-					writer.insertText( 'Foobar', modelRoot.getChild( 0 ), 0 );
-
-					writer.setSelection( modelRoot.getChild( 0 ), 3 );
-				} );
-			} );
+		executeSpy = testUtils.sinon.spy( editor, 'execute' );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		element.remove();
-		return editor.destroy();
+
+		await editor.destroy();
 	} );
 
-	after( () => {
-		env.isAndroid = oldEnvIsAndroid;
-	} );
+	it( 'should scroll the editing view after delete', () => {
+		const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const scrollSpy = testUtils.sinon.spy( view, 'scrollToTheSelection' );
 
-	it( 'should re-set selection on keyup event if it was changed after deletion but before the input was fired', () => {
-		// This test covers a quirk on Android. We will recreate what browser does in this scenario.
-		// The test is not perfect because there are difficulties converting model selection to DOM in unit tests.
-		const view = editor.editing.view;
-		const viewDocument = view.document;
-
-		const domEvt = {
-			preventDefault: sinon.spy()
-		};
-
-		const domRoot = view.getDomRoot();
-		const domSelection = window.getSelection();
-		const domText = domRoot.childNodes[ 0 ].childNodes[ 0 ];
-
-		// Change the selection ("manual conversion").
-		// Because it all works quite bad the selection will be moved to quite a random place after delete is fired but all we care is
-		// checking if the selection is reversed on `keyup` event.
-		domSelection.collapse( domText, 3 );
-
-		// On `delete` the selection is saved.
-		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, {
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
-			unit: 'character',
-			sequence: 1,
-			domTarget: domRoot
+			unit: 'word',
+			sequence: 42,
+			selectionToRemove: view.createSelection( viewFooText, 2 )
 		} ) );
 
-		// Store what was the selection when it was saved in `delete`.
-		const anchorNodeBefore = domSelection.anchorNode;
-		const anchorOffsetBefore = domSelection.anchorOffset;
-		const focusNodeBefore = domSelection.focusNode;
-		const focusOffsetBefore = domSelection.focusOffset;
-
-		// Change the selection.
-		domSelection.collapse( domText, 0 );
-
-		// On `keyup` it should be reversed.
-		viewDocument.fire( 'keyup', new DomEventData( viewDocument, domEvt, {
-			domTarget: domRoot
-		} ) );
-
-		expect( domSelection.anchorNode ).to.equal( anchorNodeBefore );
-		expect( domSelection.anchorOffset ).to.equal( anchorOffsetBefore );
-		expect( domSelection.focusNode ).to.equal( focusNodeBefore );
-		expect( domSelection.focusOffset ).to.equal( focusOffsetBefore );
+		sinon.assert.calledOnce( scrollSpy );
+		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
 
-	it( 'should not crash on keyup event if it was not changed after typing', () => {
-		// This test covers a quirk on Android. We will recreate what browser does in this scenario.
-		const view = editor.editing.view;
-		const viewDocument = view.document;
-
-		const domEvt = {
-			preventDefault: sinon.spy()
-		};
-
-		const domRoot = view.getDomRoot();
-		const domEvent = {
-			preventDefault: sinon.spy()
-		};
-
-		viewDocument.fire( 'input', domEvent );
-		viewDocument.fire( 'keydown', new DomEventData( viewDocument, domEvent, { keyCode: getCode( 'A' ) } ) );
-
-		expect( () => {
-			viewDocument.fire( 'keyup', new DomEventData( viewDocument, domEvt, {
-				domTarget: domRoot
+	describe( 'for "codePoint" and "character" delete units', () => {
+		it( 'should always use the #unit despite #selectionToRemove available next to "codePoint" (non-Android)', () => {
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				unit: 'codePoint',
+				sequence: 3,
+				selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
 			} ) );
-		} ).not.to.throw();
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy, 'delete', {
+				sequence: 3,
+				unit: 'codePoint',
+				selection: undefined
+			} );
+		} );
+
+		it( 'should use the #selectionToRemove for the "codePoint" unit on Android', () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				unit: 'selection',
+				sequence: 3,
+				selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
+			} ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy, 'delete', {
+				sequence: 3,
+				selection: sinon.match.object
+			} );
+		} );
+
+		it( 'should always use the #unit despite #selectionToRemove available next to "character" (non-Android)', () => {
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'forward',
+				unit: 'character',
+				sequence: 5,
+				selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
+			} ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy, 'deleteForward', {
+				sequence: 5,
+				unit: 'character',
+				selection: undefined
+			} );
+		} );
+
+		it( 'should always use the #unit despite #selectionToRemove available next to "character" (Android)', () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'forward',
+				unit: 'character',
+				sequence: 5,
+				selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
+			} ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy, 'deleteForward', {
+				sequence: 5,
+				unit: 'character',
+				selection: undefined
+			} );
+		} );
 	} );
+
+	describe( 'for other input types', () => {
+		it.skip( 'should always use the #selectionToRemove passed from the DeleteObserver', () => {
+			const modelParagraph = editor.model.document.getRoot().getChild( 0 );
+
+			// <paragraph>fo[]o</paragraph>
+			const expectedFirstCallDeleteRange = editor.model.createRange(
+				editor.model.createPositionAt( modelParagraph, 2 ),
+				editor.model.createPositionAt( modelParagraph, 2 )
+			);
+
+			// <paragraph>f[]o</paragraph>
+			const expectedSecondCallDeleteRange = editor.model.createRange(
+				editor.model.createPositionAt( modelParagraph, 1 ),
+				editor.model.createPositionAt( modelParagraph, 1 )
+			);
+
+			// <paragraph>f[]</paragraph>
+			const expectedThirdCallDeleteRange = editor.model.createRange(
+				editor.model.createPositionAt( modelParagraph, 1 ),
+				editor.model.createPositionAt( modelParagraph, 1 )
+			);
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				unit: 'word',
+				sequence: 1,
+				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 )
+			} ) );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'forward',
+				unit: 'selection',
+				sequence: 1,
+				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
+			} ) );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'forward',
+				sequence: 1,
+				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 0 )
+			} ) );
+
+			sinon.assert.calledThrice( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy.firstCall, 'delete', {
+				sequence: 1,
+				unit: 'selection',
+				selection: sinon.match.object
+			} );
+
+			sinon.assert.calledWithMatch( executeSpy.secondCall, 'deleteForward', {
+				sequence: 1,
+				unit: 'selection',
+				selection: sinon.match.object
+			} );
+
+			sinon.assert.calledWithMatch( executeSpy.thirdCall, 'deleteForward', {
+				sequence: 1,
+				unit: 'selection',
+				selection: sinon.match.object
+			} );
+
+			const firstCallModelRange = executeSpy.firstCall.args[ 1 ].selection.getFirstRange();
+			const secondCallModelRange = executeSpy.secondCall.args[ 1 ].selection.getFirstRange();
+			const thirdCallModelRange = executeSpy.secondCall.args[ 1 ].selection.getFirstRange();
+
+			expect( firstCallModelRange.isEqual( expectedFirstCallDeleteRange ) ).to.be.true;
+			expect( secondCallModelRange.isEqual( expectedSecondCallDeleteRange ) ).to.be.true;
+			expect( thirdCallModelRange.isEqual( expectedThirdCallDeleteRange ) ).to.be.true;
+		} );
+
+		it( 'should respect the #direction passed from the DeleteObserver observer', () => {
+			const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'forward',
+				selectionToRemove: view.createSelection( viewFooText, 2 )
+			} ) );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				selectionToRemove: view.createSelection( viewFooText, 2 )
+			} ) );
+
+			sinon.assert.calledTwice( executeSpy );
+			sinon.assert.calledWith( executeSpy.firstCall, 'deleteForward' );
+			sinon.assert.calledWith( executeSpy.secondCall, 'delete' );
+		} );
+
+		it( 'should respect the #sequence passed from the DeleteObserver observer', () => {
+			const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				unit: 'word',
+				sequence: 42,
+				selectionToRemove: view.createSelection( viewFooText, 2 )
+			} ) );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithMatch( executeSpy, 'delete', {
+				sequence: 42
+			} );
+		} );
+	} );
+
+	function getDomEvent() {
+		return {
+			preventDefault: sinon.spy()
+		};
+	}
 } );
 
 describe( 'Delete feature - undo by pressing backspace', () => {
@@ -288,6 +425,8 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 			it( 'if ' + condition, () => {
 				const spy = editor.execute = sinon.spy();
 
+				eventData.selectionToRemove = viewDocument.selection;
+
 				plugin.requestUndoOnBackspace();
 
 				viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), eventData ) );
@@ -322,7 +461,8 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'word',
-				sequence: 1
+				sequence: 1,
+				selectionToRemove: viewDocument.selection
 			} ) );
 
 			expect( spy.calledOnce ).to.be.true;

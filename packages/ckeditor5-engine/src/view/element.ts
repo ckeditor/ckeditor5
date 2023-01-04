@@ -10,9 +10,7 @@
 import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable, toArray, toMap } from '@ckeditor/ckeditor5-utils';
 import { default as Matcher, type MatcherPattern } from './matcher';
 import { default as StylesMap, type StyleValue } from './stylesmap';
 
@@ -50,11 +48,11 @@ import { isPlainObject } from 'lodash-es';
 export default class Element extends Node {
 	public name: string;
 
-	public readonly getFillerOffset?: () => number | null;
+	public getFillerOffset?: () => number | null;
 
-	private _unsafeAttributesToRender: string[];
+	private _unsafeAttributesToRender: Array<string>;
 	private readonly _attrs: Map<string, string>;
-	private readonly _children: Node[];
+	private readonly _children: Array<Node>;
 	private readonly _classes: Set<string>;
 	private readonly _styles: StylesMap;
 	private readonly _customProperties: Map<string | symbol, unknown>;
@@ -359,7 +357,7 @@ export default class Element extends Node {
 	 *
 	 * @param {...String} className
 	 */
-	public hasClass( ...className: string[] ): boolean {
+	public hasClass( ...className: Array<string> ): boolean {
 		for ( const name of className ) {
 			if ( !this._classes.has( name ) ) {
 				return false;
@@ -461,7 +459,7 @@ export default class Element extends Node {
 	 *
 	 * @param {...String} property
 	 */
-	public hasStyle( ...property: string[] ): boolean {
+	public hasStyle( ...property: Array<string> ): boolean {
 		for ( const name of property ) {
 			if ( !this._styles.has( name ) ) {
 				return false;
@@ -480,7 +478,7 @@ export default class Element extends Node {
 	 * See {@link module:engine/view/matcher~Matcher}.
 	 * @returns {module:engine/view/element~Element|null} Found element or `null` if no matching ancestor was found.
 	 */
-	public findAncestor( ...patterns: ( MatcherPattern | ( ( element: Element ) => boolean ) )[] ): Element | null {
+	public findAncestor( ...patterns: Array<MatcherPattern | ( ( element: Element ) => boolean )> ): Element | null {
 		const matcher = new Matcher( ...patterns as any );
 		let parent = this.parent;
 
@@ -660,7 +658,7 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Node[] {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
 		this._fireChange( 'children', this );
 
 		for ( let i = index; i < index + howMany; i++ ) {
@@ -742,7 +740,7 @@ export default class Element extends Node {
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
-	public _addClass( className: string | string[] ): void {
+	public _addClass( className: string | Array<string> ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const name of toArray( className ) ) {
@@ -761,7 +759,7 @@ export default class Element extends Node {
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
-	public _removeClass( className: string | string[] ): void {
+	public _removeClass( className: string | Array<string> ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const name of toArray( className ) ) {
@@ -815,7 +813,7 @@ export default class Element extends Node {
 	 * @param {Array.<String>|String} property
 	 * @fires module:engine/view/node~Node#change
 	 */
-	public _removeStyle( property: string | string[] ): void {
+	public _removeStyle( property: string | Array<string> ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const name of toArray( property ) ) {
@@ -952,7 +950,7 @@ function parseClasses( classesSet: Set<string>, classesString: string ) {
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( document: Document, nodes: string | Item | Iterable<string | Item> ): Node[] {
+function normalize( document: Document, nodes: string | Item | Iterable<string | Item> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

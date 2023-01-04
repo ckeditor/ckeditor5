@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Spelling, grammar and punctuation checking
 
-[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. It offers handy as-you-type proofreading options in a modern, distraction-free UI. Spelling, grammar and punctuation suggestions are available on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
+[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. It offers handy as-you-type and in-dialog proofreading options in a modern, distraction-free UI. Spelling, grammar and punctuation suggestions are available on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
 
 You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with just a click.
 
@@ -33,7 +33,7 @@ Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icon
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-When you hover over the WProofreader badge in the bottom-right corner, it shows you the total number of mistakes detected. Hover an underlined word to display the WProofreader suggestions for any of the spelling and grammar mistakes found. The suggestion card allows the user to employ the feature on the go. If you want to see an overview of all mistakes found, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating dialog, which is easy to navigate and perfect for dedicated proofreading sessions.
+The WProofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the WProofreader suggestions for any of the spelling and grammar mistakes found. The suggestion card allows the user to employ the feature on the go. If you want to see an overview of all mistakes found, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating dialog, which is easy to navigate and perfect for dedicated proofreading sessions.
 
 You can access the WProofreader settings from the toolbar, too. Set the primary language, create a spelling dictionary and tweak some additional proofreading settings.
 
@@ -106,6 +106,63 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+Please be aware that when you try to build CKEditor 5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
+
+The first configuration option is simpler:
+
+```js
+	///[...]
+	module: {
+		rules: [
+			{
+                test: /\.svg$/,
+
+                use: [ 'raw-loader' ]
+            },
+            {
+                test: /\.css$/,
+
+                use: [
+                    {
+						loader: 'style-loader',
+						///[...]
+					}
+				]
+			}
+			///[...]
+		]
+	}
+```
+However, this approach can affect `.svg` and `.css` files included from outside of CKEdtor5-related packages.
+
+Therefore, the best option is to use the other config solution. This one will only load `.svg` and `.css` files imported from CKEdtor5-related packages:
+
+```js
+	///[...]
+	module: {
+		rules: [
+			{
+				test: /ckeditor5([^\/\\]+)?[\/\\]theme[\/\\]icons[\/\\][^\/\\]+\.svg$/,
+
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /ckeditor5([^\/\\]+)?[\/\\]theme[/\\].+\.css$/,
+
+				use: [
+					{
+						loader: 'style-loader',
+						///[...]
+					}
+				]
+			}
+			///[...]
+		]
+	}
+```
+
+With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from source with WProofreader included.
 
 <info-box info>
 	Read more about {@link installation/getting-started/installing-plugins installing plugins}.

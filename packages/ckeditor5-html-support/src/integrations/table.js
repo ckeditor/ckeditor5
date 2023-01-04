@@ -101,7 +101,7 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		} );
+		}, { priority: 'low' } );
 	};
 }
 

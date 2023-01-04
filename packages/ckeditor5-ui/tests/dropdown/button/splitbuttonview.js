@@ -81,7 +81,7 @@ describe( 'SplitButtonView', () => {
 		} );
 
 		it( 'binds arrowView#tooltip to view', () => {
-			expect( view.arrowView.tooltip ).to.be.undefined;
+			expect( view.arrowView.tooltip ).to.be.false;
 
 			view.tooltip = true;
 
@@ -268,7 +268,7 @@ describe( 'SplitButtonView', () => {
 		} );
 
 		it( 'binds actionView#tooltip to view', () => {
-			expect( view.actionView.tooltip ).to.be.undefined;
+			expect( view.actionView.tooltip ).to.be.false;
 
 			view.tooltip = true;
 

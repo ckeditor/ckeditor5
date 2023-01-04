@@ -12,9 +12,29 @@ ClassicEditor
 		toolbar: [
 			{
 				label: 'Basic styles',
-				icon: 'text',
-				items: [ 'bold', 'italic' ]
+				icon: 'bold',
+				items: [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript' ]
 			},
+			'|',
+			{
+				label: 'Fonts',
+				icon: 'text',
+				items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
+			},
+			'|',
+			{
+				label: 'Code',
+				icon: 'threeVerticalDots',
+				items: [ 'code', 'codeBlock' ]
+			},
+			'|',
+			{
+				label: 'Lists',
+				withText: true,
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', 'todoList' ]
+			},
+			'alignment',
 			'|',
 			'undo', 'redo'
 		],

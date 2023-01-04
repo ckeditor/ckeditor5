@@ -19,9 +19,9 @@ import type Operation from './operation';
 import type Document from '../document';
 import type History from '../history';
 
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { compareArrays } from '@ckeditor/ckeditor5-utils';
 
-type TransformationFunction = ( a: Operation, b: Operation, context: TransformationContext ) => Operation[];
+type TransformationFunction = ( a: Operation, b: Operation, context: TransformationContext ) => Array<Operation>;
 
 const transformations = new Map<Function, Map<Function, TransformationFunction>>();
 
@@ -48,12 +48,12 @@ const transformations = new Map<Function, Map<Function, TransformationFunction>>
  * @param {Function} transformationFunction Function to use for transforming.
  */
 function setTransformation<
-	ClassA extends new ( ...args: any[] ) => Operation,
-	ClassB extends new ( ...args: any[] ) => Operation
+	ClassA extends new ( ...args: Array<any> ) => Operation,
+	ClassB extends new ( ...args: Array<any> ) => Operation
 >(
 	OperationA: ClassA,
 	OperationB: ClassB,
-	transformationFunction: ( a: InstanceType<ClassA>, b: InstanceType<ClassB>, context: TransformationContext ) => Operation[]
+	transformationFunction: ( a: InstanceType<ClassA>, b: InstanceType<ClassB>, context: TransformationContext ) => Array<Operation>
 ) {
 	let aGroup = transformations.get( OperationA );
 
@@ -94,7 +94,7 @@ function getTransformation( OperationA: Function, OperationB: Function ): Transf
  * @param {module:engine/model/operation/operation~Operation} a Operation to transform.
  * @returns {Array.<module:engine/model/operation/operation~Operation>}
  */
-function noUpdateTransformation( a: Operation ): Operation[] {
+function noUpdateTransformation( a: Operation ): Array<Operation> {
 	return [ a ];
 }
 
@@ -106,7 +106,7 @@ function noUpdateTransformation( a: Operation ): Operation[] {
  * @param {module:engine/model/operation/transform~TransformationContext} [context] Transformation context for this transformation.
  * @returns {Array.<module:engine/model/operation/operation~Operation>} Transformation result.
  */
-export function transform( a: Operation, b: Operation, context: TransformationContext = {} ): Operation[] {
+export function transform( a: Operation, b: Operation, context: TransformationContext = {} ): Array<Operation> {
 	const transformationFunction = getTransformation( a.constructor, b.constructor );
 
 	/* eslint-disable no-useless-catch */
@@ -169,15 +169,15 @@ export function transform( a: Operation, b: Operation, context: TransformationCo
  * operations and the values are the original operations from the input (`operationsA` and `operationsB`).
  */
 export function transformSets(
-	operationsA: Operation[],
-	operationsB: Operation[],
+	operationsA: Array<Operation>,
+	operationsB: Array<Operation>,
 	options: {
 		document: Document;
 		useRelations?: boolean;
 		padWithNoOps?: boolean;
 		forceWeakRemove?: boolean;
 	}
-): { operationsA: Operation[]; operationsB: Operation[]; originalOperations: Map<Operation, Operation> } {
+): { operationsA: Array<Operation>; operationsB: Array<Operation>; originalOperations: Map<Operation, Operation> } {
 	// Create new arrays so the originally passed arguments are not changed.
 	// No need to clone operations, they are cloned as they are transformed.
 	operationsA = operationsA.slice();
@@ -464,7 +464,7 @@ class ContextFactory {
 	//
 	// @param {Array.<module:engine/model/operation/operation~Operation>} operations
 	// @param {module:engine/model/operation/operation~Operation|null} [takeFrom=null]
-	public setOriginalOperations( operations: Operation[], takeFrom: Operation | null = null ): void {
+	public setOriginalOperations( operations: Array<Operation>, takeFrom: Operation | null = null ): void {
 		const originalOperation = takeFrom ? this.originalOperations.get( takeFrom ) : null;
 
 		for ( const operation of operations ) {
@@ -711,7 +711,7 @@ export type TransformationContext = {
  * @param {Array.<module:engine/model/operation/operation~Operation>} operations Operations to update.
  * @param {Number} baseVersion Base version to set for the first operation in `operations`.
  */
-function updateBaseVersions( operations: readonly Operation[], baseVersion: number ) {
+function updateBaseVersions( operations: ReadonlyArray<Operation>, baseVersion: number ) {
 	for ( const operation of operations ) {
 		operation.baseVersion = baseVersion++;
 	}
@@ -724,7 +724,7 @@ function updateBaseVersions( operations: readonly Operation[], baseVersion: numb
  * @param {Array.<module:engine/model/operation/operation~Operation>} operations
  * @param {Number} howMany
  */
-function padWithNoOps( operations: Operation[], howMany: number ) {
+function padWithNoOps( operations: Array<Operation>, howMany: number ) {
 	for ( let i = 0; i < howMany; i++ ) {
 		operations.push( new NoOperation( 0 ) );
 	}
@@ -926,7 +926,7 @@ function _breakRangeByMoveOperation( range: Range, moveOp: MoveOperation ) {
 	// We are transforming `range` (original range) by `moveRange` (range moved by move operation). As usual when it comes to
 	// transforming a ranges, we may have a common part of the ranges and we may have a difference part (zero to two ranges).
 	let common = null;
-	let difference: Range[] = [];
+	let difference: Array<Range> = [];
 
 	// Let's compare the ranges.
 	if ( moveRange.containsRange( range, true ) ) {
@@ -946,7 +946,7 @@ function _breakRangeByMoveOperation( range: Range, moveOp: MoveOperation ) {
 		difference = [ range ];
 	}
 
-	const result: Range[] = [];
+	const result: Array<Range> = [];
 
 	// The default behaviour of `_getTransformedByMove` might get wrong results for difference part, though, so
 	// we do it by hand.
@@ -1037,7 +1037,7 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 } );
 
 setTransformation( InsertOperation, AttributeOperation, ( a, b ) => {
-	const result: Operation[] = [ a ];
+	const result: Array<Operation> = [ a ];
 
 	// Case 1:
 	//
@@ -2342,7 +2342,7 @@ function _moveTargetIntoMovedRange( a: MoveOperation, b: MoveOperation ) {
 // @param {Array.<module:engine/model/range~Range>} ranges
 // @param {module:engine/model/position~Position} targetPosition
 // @returns {Array.<module:engine/model/operation/moveoperation~MoveOperation>}
-function _makeMoveOperationsFromRanges( ranges: Range[], targetPosition: Position ) {
+function _makeMoveOperationsFromRanges( ranges: Array<Range>, targetPosition: Position ) {
 	// At this moment we have some ranges and a target position, to which those ranges should be moved.
 	// Order in `ranges` array is the go-to order of after transformation.
 	//

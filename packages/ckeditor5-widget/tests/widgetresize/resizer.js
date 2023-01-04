@@ -254,7 +254,7 @@ describe( 'Resizer', () => {
 			};
 
 			resizer = createResizer();
-			resizer.state = state;
+			resizer._state = state;
 		} );
 
 		it( 'enlarges center-aligned objects correctly', () => {

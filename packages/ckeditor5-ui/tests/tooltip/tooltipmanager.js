@@ -10,10 +10,12 @@ import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import TooltipManager from '../../src/tooltipmanager';
+import { Editor, EditorUI } from '@ckeditor/ckeditor5-core';
 
 describe( 'TooltipManager', () => {
 	let editor, element, tooltipManager;
@@ -90,6 +92,68 @@ describe( 'TooltipManager', () => {
 
 				sinon.assert.calledWithExactly( stopListeningSpy.secondCall, secondEditor.ui );
 				sinon.assert.calledWithExactly( stopListeningSpy.thirdCall );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/12602
+			it( 'should avoid destroying #balloonPanelView until the last editor gets destroyed', async () => {
+				const spy = testUtils.sinon.spy( tooltipManager.balloonPanelView, 'destroy' );
+				const elements = getElementsWithTooltips( {
+					a: {
+						text: 'A'
+					}
+				} );
+				const clock = sinon.useFakeTimers();
+
+				const secondEditor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, Bold, Italic ],
+					balloonToolbar: [ 'bold', 'italic' ]
+				} );
+
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+
+				await editor.destroy();
+
+				sinon.assert.notCalled( spy );
+
+				await secondEditor.destroy();
+
+				sinon.assert.calledOnce( spy );
+
+				destroyElements( elements );
+				clock.restore();
+			} );
+
+			it( 'should not throw if the editor has no ui#view', async () => {
+				class EditorWithoutUIView extends Editor {
+					static create( config ) {
+						return new Promise( resolve => {
+							const editor = new this( config );
+
+							resolve(
+								editor.initPlugins()
+									.then( () => {
+										editor.ui = new EditorUI( editor );
+										editor.fire( 'ready' );
+									} )
+									.then( () => editor )
+							);
+						} );
+					}
+
+					destroy() {
+						this.ui.destroy();
+
+						return super.destroy();
+					}
+				}
+
+				const secondEditor = await EditorWithoutUIView.create();
+
+				await secondEditor.destroy();
+
+				// No error was thrown.
+				expect( secondEditor.state ).to.equal( 'destroyed' );
 			} );
 		} );
 
@@ -656,6 +720,56 @@ describe( 'TooltipManager', () => {
 				sinon.assert.calledOnce( unpinSpy );
 			} );
 		} );
+
+		describe( 'when the element disappears', () => {
+			it( 'should unpin if the element that it was attached was removed from DOM', async () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+				clock.restore();
+
+				// ResizeObserver is asynchronous.
+				await wait( 100 );
+
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, {
+					target: elements.a,
+					positions: sinon.match.array
+				} );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				elements.a.remove();
+
+				// ResizeObserver is asynchronous.
+				await wait( 100 );
+
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+
+			it( 'should unpin if the element that it was attached was hidden in CSS', async () => {
+				utils.dispatchMouseEnter( elements.a );
+				utils.waitForTheTooltipToShow( clock );
+				clock.restore();
+
+				// ResizeObserver is asynchronous.
+				await wait( 100 );
+
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, {
+					target: elements.a,
+					positions: sinon.match.array
+				} );
+
+				unpinSpy = sinon.spy( tooltipManager.balloonPanelView, 'unpin' );
+
+				elements.a.style.display = 'none';
+
+				// ResizeObserver is asynchronous.
+				await wait( 100 );
+
+				sinon.assert.calledOnce( unpinSpy );
+			} );
+		} );
 	} );
 
 	describe( 'updating tooltip position on EditorUI#update', () => {
@@ -798,6 +912,7 @@ function getElementsWithTooltips( definitions ) {
 		}
 
 		element.id = name;
+		element.textContent = 'foo';
 
 		document.body.appendChild( element );
 
@@ -839,4 +954,10 @@ function getUtils() {
 			element.dispatchEvent( new Event( 'scroll' ) );
 		}
 	};
+}
+
+function wait( time ) {
+	return new Promise( res => {
+		global.window.setTimeout( res, time );
+	} );
 }

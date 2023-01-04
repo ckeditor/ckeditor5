@@ -10,9 +10,9 @@
 /**
  * Inserts node to the parent at given index.
  *
- * @param {Element} parentElement Parent element.
- * @param {Number} index Insertions index.
- * @param {Node} nodeToInsert Node to insert.
+ * @param parentElement Parent element.
+ * @param index Insertions index.
+ * @param nodeToInsert Node to insert.
  */
 export default function insertAt(
 	parentElement: Element,

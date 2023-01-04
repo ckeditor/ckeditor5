@@ -16,7 +16,7 @@ import type DataProcessor from './dataprocessor';
 import type HtmlWriter from './htmlwriter';
 import type ViewDocument from '../view/document';
 import type ViewDocumentFragment from '../view/documentfragment';
-import { type MatcherPattern } from '../view/matcher';
+import type { MatcherPattern } from '../view/matcher';
 
 /**
  * The HTML data processor class.
@@ -28,6 +28,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 	public domParser: DOMParser;
 	public domConverter: DomConverter;
 	public htmlWriter: HtmlWriter;
+	public skipComments: boolean = true;
 
 	/**
 	 * Creates a new instance of the HTML data processor class.
@@ -83,7 +84,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this.domConverter.domToView( domFragment ) as ViewDocumentFragment;
+		return this.domConverter.domToView( domFragment, { skipComments: this.skipComments } ) as ViewDocumentFragment;
 	}
 
 	/**

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable new-cap */
-
 /**
  * @module engine/model/selection
  */
@@ -19,9 +17,7 @@ import type DocumentSelection from './documentselection';
 import type Element from './element';
 import type Item from './item';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
@@ -37,7 +33,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	protected _attrs: Map<string, unknown>;
 
 	/** @internal */
-	public _ranges: Range[];
+	public _ranges: Array<Range>;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -507,7 +503,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 
 		this._lastRangeBackward = !!isLastBackward;
 
-		this.fire<ChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -551,7 +547,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			this._lastRangeBackward = false;
 		}
 
-		this.fire<ChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -608,7 +604,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 		if ( this.hasAttribute( key ) ) {
 			this._attrs.delete( key );
 
-			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -626,7 +622,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 		if ( this.getAttribute( key ) !== value ) {
 			this._attrs.set( key, value );
 
-			this.fire<ChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -781,7 +777,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 * @param {Array.<module:engine/model/range~Range>} ranges
 	 * @protected
 	 */
-	protected _replaceAllRanges( ranges: Range[] ): void {
+	protected _replaceAllRanges( ranges: Array<Range> ): void {
 		this._removeAllRanges();
 
 		for ( const range of ranges ) {
@@ -856,26 +852,26 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
 };
 
-export type ChangeEvent = {
+export type SelectionChangeEvent = {
 	name: 'change' | 'change:range' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
-		attributeKeys?: string[];
+		attributeKeys?: Array<string>;
 	} ];
 };
 
-export type ChangeRangeEvent = {
+export type SelectionChangeRangeEvent = {
 	name: 'change:range';
 	args: [ {
 		directChange: boolean;
 	} ];
 };
 
-export type ChangeAttributeEvent = {
+export type SelectionChangeAttributeEvent = {
 	name: 'change:attribute';
 	args: [ {
 		directChange: boolean;
-		attributeKeys: string[];
+		attributeKeys: Array<string>;
 	} ];
 };
 
@@ -888,7 +884,7 @@ function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<No
 
 	visited.add( element );
 
-	return element.root.document!.model.schema.isBlock( element ) && element.parent;
+	return element.root.document!.model.schema.isBlock( element ) && !!element.parent;
 }
 
 // Checks if the given element is a $block was not previously visited and is a top block in a range.
@@ -907,7 +903,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 
 	let hasParentLimit = false;
 
-	const block = ancestors.find( element => {
+	const block = ancestors.find( ( element ): element is Element => {
 		// Stop searching after first parent node that is limit element.
 		if ( hasParentLimit ) {
 			return false;
@@ -929,7 +925,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 //
 // @param {module:engine/model/element~Element} block Block to check.
 // @param {module:engine/model/range~Range} range Range to check.
-function isTopBlockInRange( block: Node | DocumentFragment, range: Range ) {
+function isTopBlockInRange( block: Node, range: Range ) {
 	const parentBlock = findAncestorBlock( block );
 
 	if ( !parentBlock ) {
@@ -953,7 +949,7 @@ function findAncestorBlock( node: Node | DocumentFragment ) {
 
 	while ( parent ) {
 		if ( schema.isBlock( parent ) ) {
-			return parent;
+			return parent as Element;
 		}
 
 		parent = parent.parent;

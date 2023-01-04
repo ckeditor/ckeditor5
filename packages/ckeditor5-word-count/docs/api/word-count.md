@@ -24,7 +24,7 @@ npm install --save @ckeditor/ckeditor5-word-count
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count).
 
 ## External links
 

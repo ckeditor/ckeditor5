@@ -12,7 +12,7 @@ import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
 
-const rectProperties: ( keyof RectLike )[] = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -24,85 +24,79 @@ export default class Rect {
 	 * The "top" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public top: number;
+	public top!: number;
 
 	/**
 	 * The "right" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public right: number;
+	public right!: number;
 
 	/**
 	 * The "bottom" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public bottom: number;
+	public bottom!: number;
 
 	/**
 	 * The "left" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public left: number;
+	public left!: number;
 
 	/**
 	 * The "width" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public width: number;
+	public width!: number;
 
 	/**
 	 * The "height" value of the rect.
 	 *
 	 * @readonly
-	 * @member {Number}
 	 */
-	declare public height: number;
+	public height!: number;
 
 	/**
 	 * The object this rect is for.
 	 *
-	 * @protected
 	 * @readonly
-	 * @member {module:utils/dom/rect~RectSource}
 	 */
 	private _source!: RectSource;
 
 	/**
 	 * Creates an instance of rect.
 	 *
-	 *		// Rect of an HTMLElement.
-	 *		const rectA = new Rect( document.body );
+	 * ```ts
+	 * // Rect of an HTMLElement.
+	 * const rectA = new Rect( document.body );
 	 *
-	 *		// Rect of a DOM Range.
-	 *		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
+	 * // Rect of a DOM Range.
+	 * const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
 	 *
-	 *		// Rect of a window (web browser viewport).
-	 *		const rectC = new Rect( window );
+	 * // Rect of a window (web browser viewport).
+	 * const rectC = new Rect( window );
 	 *
-	 *		// Rect out of an object.
-	 *		const rectD = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
+	 * // Rect out of an object.
+	 * const rectD = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
 	 *
-	 *		// Rect out of another Rect instance.
-	 *		const rectE = new Rect( rectD );
+	 * // Rect out of another Rect instance.
+	 * const rectE = new Rect( rectD );
 	 *
-	 *		// Rect out of a ClientRect.
-	 *		const rectF = new Rect( document.body.getClientRects().item( 0 ) );
+	 * // Rect out of a ClientRect.
+	 * const rectF = new Rect( document.body.getClientRects().item( 0 ) );
+	 * ```
 	 *
 	 * **Note**: By default a rect of an HTML element includes its CSS borders and scrollbars (if any)
 	 * ant the rect of a `window` includes scrollbars too. Use {@link #excludeScrollbarsAndBorders}
 	 * to get the inner part of the rect.
 	 *
-	 * @param {module:utils/dom/rect~RectSource} source A source object to create the rect.
+	 * @param source A source object to create the rect.
 	 */
 	constructor( source: RectSource ) {
 		const isSourceRange = isRange( source );
@@ -151,7 +145,7 @@ export default class Rect {
 	/**
 	 * Returns a clone of the rect.
 	 *
-	 * @returns {module:utils/dom/rect~Rect} A cloned rect.
+	 * @returns A cloned rect.
 	 */
 	public clone(): Rect {
 		return new Rect( this );
@@ -160,9 +154,9 @@ export default class Rect {
 	/**
 	 * Moves the rect so that its upper–left corner lands in desired `[ x, y ]` location.
 	 *
-	 * @param {Number} x Desired horizontal location.
-	 * @param {Number} y Desired vertical location.
-	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
+	 * @param x Desired horizontal location.
+	 * @param y Desired vertical location.
+	 * @returns A rect which has been moved.
 	 */
 	public moveTo( x: number, y: number ): this {
 		this.top = y;
@@ -176,9 +170,9 @@ export default class Rect {
 	/**
 	 * Moves the rect in–place by a dedicated offset.
 	 *
-	 * @param {Number} x A horizontal offset.
-	 * @param {Number} y A vertical offset
-	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
+	 * @param x A horizontal offset.
+	 * @param y A vertical offset
+	 * @returns A rect which has been moved.
 	 */
 	public moveBy( x: number, y: number ): this {
 		this.top += y;
@@ -191,9 +185,6 @@ export default class Rect {
 
 	/**
 	 * Returns a new rect a a result of intersection with another rect.
-	 *
-	 * @param {module:utils/dom/rect~Rect} anotherRect
-	 * @returns {module:utils/dom/rect~Rect|null}
 	 */
 	public getIntersection( anotherRect: Rect ): Rect | null {
 		const rect = {
@@ -218,8 +209,7 @@ export default class Rect {
 	/**
 	 * Returns the area of intersection with another rect.
 	 *
-	 * @param {module:utils/dom/rect~Rect} anotherRect
-	 * @returns {Number} Area of intersection.
+	 * @returns Area of intersection.
 	 */
 	public getIntersectionArea( anotherRect: Rect ): number {
 		const rect = this.getIntersection( anotherRect );
@@ -233,8 +223,6 @@ export default class Rect {
 
 	/**
 	 * Returns the area of the rect.
-	 *
-	 * @returns {Number}
 	 */
 	public getArea(): number {
 		return this.width * this.height;
@@ -248,7 +236,7 @@ export default class Rect {
 	 * If there's no such visible rect, which is when the rect is limited by one or many of
 	 * the ancestors, `null` is returned.
 	 *
-	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
+	 * @returns A visible rect instance or `null`, if there's none.
 	 */
 	public getVisible(): Rect | null {
 		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
@@ -285,8 +273,8 @@ export default class Rect {
 	 * {@link #bottom}, {@link #width} and {@link #height}) are the equal in both rect
 	 * instances.
 	 *
-	 * @param {module:utils/dom/rect~Rect} anotherRect A rect instance to compare with.
-	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
+	 * @param anotherRect A rect instance to compare with.
+	 * @returns `true` when Rects are equal. `false` otherwise.
 	 */
 	public isEqual( anotherRect: Rect ): boolean {
 		for ( const prop of rectProperties ) {
@@ -301,8 +289,8 @@ export default class Rect {
 	/**
 	 * Checks whether a rect fully contains another rect instance.
 	 *
-	 * @param {module:utils/dom/rect~Rect} anotherRect
-	 * @returns {Boolean} `true` if contains, `false` otherwise.
+	 * @param anotherRect
+	 * @returns `true` if contains, `false` otherwise.
 	 */
 	public contains( anotherRect: Rect ): boolean {
 		const intersectRect = this.getIntersection( anotherRect );
@@ -316,7 +304,7 @@ export default class Rect {
 	 * * Borders are removed when {@link #_source} is an HTML element.
 	 * * Scrollbars are excluded from HTML elements and the `window`.
 	 *
-	 * @returns {module:utils/dom/rect~Rect} A rect which has been updated.
+	 * @returns A rect which has been updated.
 	 */
 	public excludeScrollbarsAndBorders(): this {
 		const source = this._source as ( HTMLElement | Window );
@@ -358,11 +346,11 @@ export default class Rect {
 	/**
 	 * Returns an array of rects of the given native DOM Range.
 	 *
-	 * @param {Range} range A native DOM range.
-	 * @returns {Array.<module:utils/dom/rect~Rect>} DOM Range rects.
+	 * @param range A native DOM range.
+	 * @returns DOM Range rects.
 	 */
-	public static getDomRangeRects( range: Range ): Rect[] {
-		const rects: Rect[] = [];
+	public static getDomRangeRects( range: Range ): Array<Rect> {
+		const rects: Array<Rect> = [];
 		// Safari does not iterate over ClientRectList using for...of loop.
 		const clientRects = Array.from( range.getClientRects() );
 
@@ -395,8 +383,8 @@ export default class Rect {
 	/**
 	 * Returns a bounding rectangle that contains all the given `rects`.
 	 *
-	 * @param {Iterable.<module:utils/dom/rect~Rect>} rects A list of rectangles that should be contained in the result rectangle.
-	 * @returns {module:utils/dom/rect~Rect|null} Bounding rectangle or `null` if no `rects` were given.
+	 * @param rects A list of rectangles that should be contained in the result rectangle.
+	 * @returns Bounding rectangle or `null` if no `rects` were given.
 	 */
 	public static getBoundingRect( rects: Iterable<Rect> ): Rect | null {
 		const boundingRectData = {
@@ -431,21 +419,11 @@ export default class Rect {
 
 /**
  * A source of {@link module:utils/dom/rect~Rect}.
- *
- * @typedef {HTMLElement|Range|Window|module:utils/dom/rect~RectLike} module:utils/dom/rect~RectSource
  */
 export type RectSource = HTMLElement | Range | Window | RectLike;
 
 /**
  * An object that describes properties of `ClientRect` object.
- *
- * @typedef {Object} module:utils/dom/rect~RectLike
- * @property {Number} top
- * @property {Number} right
- * @property {Number} bottom
- * @property {Number} left
- * @property {Number} width
- * @property {Number} height
  */
 export interface RectLike {
 	readonly top: number;
@@ -456,22 +434,18 @@ export interface RectLike {
 	readonly height: number;
 }
 
-// Acquires all the rect properties from the passed source.
-//
-// @private
-// @param {module:utils/dom/rect~Rect} rect
-// @param {module:utils/dom/rect~RectLike} source
+/**
+ * Acquires all the rect properties from the passed source.
+ */
 function copyRectProperties( rect: Rect, source: RectLike ): void {
 	for ( const p of rectProperties ) {
 		rect[ p ] = source[ p ];
 	}
 }
 
-// Checks if provided object is a <body> HTML element.
-//
-// @private
-// @param {*} value
-// @returns {Boolean}
+/**
+ * Checks if provided object is a <body> HTML element.
+ */
 function isBody( value: unknown ): value is HTMLBodyElement {
 	if ( !isDomElement( value ) ) {
 		return false;
@@ -480,11 +454,9 @@ function isBody( value: unknown ): value is HTMLBodyElement {
 	return value === value.ownerDocument.body;
 }
 
-// Checks if provided object "looks like" a DOM Element and has API required by `Rect` class.
-//
-// @private
-// @param {*} value
-// @returns {Boolean}
+/**
+ * Checks if provided object "looks like" a DOM Element and has API required by `Rect` class.
+ */
 function isDomElement( value: any ): value is Element {
 	// Note: earlier we used `isElement()` from lodash library, however that function is less performant because
 	// it makes complicated checks to make sure that given value is a DOM element.

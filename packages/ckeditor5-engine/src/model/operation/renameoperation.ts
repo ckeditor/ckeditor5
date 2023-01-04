@@ -9,8 +9,9 @@
 
 import Operation from './operation';
 import Element from '../element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Position from '../position';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Document from '../document';
 
