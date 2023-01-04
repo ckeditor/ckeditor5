@@ -262,7 +262,7 @@ ClassicEditor
 					label: 'White',
 					hasBorder: true
 				},
-				// More color options.
+				// More colors.
 				// ...
 			]
 		},
@@ -288,7 +288,7 @@ ClassicEditor
 					color: 'hsl(120, 75%, 60%)',
 					label: 'Green'
 				},
-				// More color options
+				// More colors
 				// ...
 			]
 		},
@@ -317,7 +317,7 @@ ClassicEditor
 
 			columns: 3, // so, you can display them in 3 columns.
 
-			// More color options.
+			// Optional configuration of the number of document colors.
 			// ...
 		},
 		fontBackgroundColor: {
@@ -349,7 +349,7 @@ ClassicEditor
 			// And 12 document colors (2 rows of them).
 			documentColors: 12,
 
-			// More color options.
+			// Optional available font colors configuration.
 			// ...
 		},
 		fontBackgroundColor: {
