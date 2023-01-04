@@ -10,6 +10,7 @@
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
+import type { HeadingOption } from './heading';
 
 import HeadingCommand from './headingcommand';
 
@@ -56,7 +57,7 @@ export default class HeadingEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const options = editor.config.get( 'heading.options' )!;
+		const options = editor.config.get( 'heading.options' )! as Array<HeadingOption>;
 
 		const modelElements = [];
 
@@ -90,7 +91,7 @@ export default class HeadingEditing extends Plugin {
 		// Enter at the end of a heading element should create a paragraph.
 		const editor = this.editor;
 		const enterCommand = editor.commands.get( 'enter' );
-		const options = editor.config.get( 'heading.options' )!;
+		const options = editor.config.get( 'heading.options' )! as Array<HeadingOption>;
 
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
