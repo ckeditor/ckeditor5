@@ -20,7 +20,7 @@ npm install --save @ckeditor/ckeditor5-style
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style).
 
 ## External links
 

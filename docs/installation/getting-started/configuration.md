@@ -74,7 +74,7 @@ ClassicEditor
 However, using this snippet with the official classic build of CKEditor 5 will result in an error thrown in the console of the browser:
 ```
 CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"CKFinder"}`
-Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
+Read more: [https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required)
 ```
 This is a good time to remind you that some plugins in CKEditor 5 depend on each other. In this case, the `CKFinder` plugin requires the `Link` plugin to work. To make the above snippet work, the `CKFinder` plugin must also be deleted:
 

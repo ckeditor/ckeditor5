@@ -754,4 +754,4 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 ## Contributing and reporting issues
 
-The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-vue2.
+The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue2](https://github.com/ckeditor/ckeditor5-vue2).

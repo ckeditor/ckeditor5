@@ -101,4 +101,4 @@ editor.execute( 'textPartLanguage', { languageCode: 'es' } );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-language.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-language](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-language).

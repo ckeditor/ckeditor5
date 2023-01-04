@@ -36,7 +36,7 @@ npm install --save @ckeditor/ckeditor5-widget
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-widget.
+The source code of this package is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-widget](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-widget).
 
 ## External links
 

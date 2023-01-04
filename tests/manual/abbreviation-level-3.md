@@ -1,5 +1,5 @@
 ---
-category: simple-plugin
+category: abbreviation-plugin
 order: 25
 ---
 
