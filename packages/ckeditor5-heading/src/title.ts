@@ -17,9 +17,11 @@ import {
 	showPlaceholder,
 	type DowncastInsertEvent,
 	type Element,
-	type Model,
 	type MapperModelToViewPositionEvent,
+	type Model,
 	type RootElement,
+	type UpcastConversionApi,
+	type UpcastConversionData,
 	type UpcastElementEvent,
 	type View,
 	type ViewElement,
@@ -328,7 +330,7 @@ export default class Title extends Plugin {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item )!,
-				text: titlePlaceholder,
+				text: titlePlaceholder as string,
 				keepOnFocus: true
 			} );
 		} );
@@ -423,7 +425,7 @@ export default class Title extends Plugin {
  * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
  * @param conversionApi Conversion interface to be used by the callback.
  */
-function dataViewModelH1Insertion( ...[ , data, conversionApi ]: Parameters<GetCallback<UpcastElementEvent>> ) {
+function dataViewModelH1Insertion( evt: any, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
