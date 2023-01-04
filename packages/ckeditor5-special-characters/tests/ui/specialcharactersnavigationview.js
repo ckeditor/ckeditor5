@@ -56,6 +56,8 @@ describe( 'SpecialCharactersNavigationView', () => {
 
 	describe( 'currentGroupName()', () => {
 		it( 'returns the #value of #groupDropdownView', () => {
+			view.groupDropdownView.isOpen = true;
+
 			expect( view.currentGroupName ).to.equal( 'groupA' );
 
 			view.groupDropdownView.listView.items.last.children.first.fire( 'execute' );
@@ -68,6 +70,7 @@ describe( 'SpecialCharactersNavigationView', () => {
 
 		beforeEach( () => {
 			groupDropdownView = view.groupDropdownView;
+			groupDropdownView.isOpen = true;
 		} );
 
 		it( 'has a default #value', () => {
@@ -110,7 +113,7 @@ describe( 'SpecialCharactersNavigationView', () => {
 			} );
 
 			it( 'should be configured by the #groupDropdownView', () => {
-				expect( groupDropdownView.buttonView.isOn ).to.be.false;
+				expect( groupDropdownView.buttonView.isOn ).to.be.true;
 				expect( groupDropdownView.buttonView.withText ).to.be.true;
 				expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Character categories' );
 			} );

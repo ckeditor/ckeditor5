@@ -247,6 +247,9 @@ describe( 'HeadingUI', () => {
 						command = editor.commands.get( 'heading' );
 						paragraphCommand = editor.commands.get( 'paragraph' );
 
+						// Trigger lazy init.
+						dropdown.isOpen = true;
+
 						editorElement.remove();
 
 						return editor.destroy();
@@ -256,6 +259,9 @@ describe( 'HeadingUI', () => {
 
 		describe( 'class', () => {
 			it( 'is set for the listView#items in the panel', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
@@ -267,6 +273,9 @@ describe( 'HeadingUI', () => {
 			} );
 
 			it( 'reflects the #value of the commands', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				setData( editor.model, '<heading2>f{}oo</heading2>' );

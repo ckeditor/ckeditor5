@@ -569,6 +569,8 @@ describe( 'utils', () => {
 				expect( () => {
 					dropdownView.isOpen = true;
 				} ).to.throw( CKEditorError, 'ui-dropdown-toolbar-expects-view-collection' );
+
+				dropdownView.element.remove();
 			} );
 		} );
 
