@@ -7,8 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
-ClassicEditor.builtinPlugins.push( TextPartLanguage );
+ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-part-language' ), {
