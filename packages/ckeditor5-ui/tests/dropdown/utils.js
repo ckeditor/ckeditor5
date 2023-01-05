@@ -6,7 +6,7 @@
 /* globals document, Event, console */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { CKEditorError, global, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -480,6 +480,51 @@ describe( 'utils', () => {
 			dropdownView.element.remove();
 		} );
 
+		it( 'creates toolbar with maxWidth set', () => {
+			const dropdownView = createDropdown( locale );
+
+			addToolbarToDropdown( dropdownView, buttons, { maxWidth: '432px' } );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.toolbarView.maxWidth ).to.equal( '432px' );
+
+			dropdownView.element.remove();
+		} );
+
+		it( 'creates toolbar with custom class set', () => {
+			const dropdownView = createDropdown( locale );
+
+			addToolbarToDropdown( dropdownView, buttons, { class: 'foo' } );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.toolbarView.class ).to.equal( 'foo' );
+
+			dropdownView.element.remove();
+		} );
+
+		it( 'creates toolbar with isCompact set', () => {
+			const dropdownView = createDropdown( locale );
+
+			addToolbarToDropdown( dropdownView, buttons, { isCompact: true } );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.toolbarView.isCompact ).to.equal( true );
+
+			dropdownView.element.remove();
+		} );
+
 		describe( 'view#toolbarView', () => {
 			it( 'is created', () => {
 				dropdownView.isOpen = true;
@@ -554,21 +599,6 @@ describe( 'utils', () => {
 				buttonsCollection.add( buttons[ 0 ] );
 
 				expect( dropdownView.toolbarView.items.length ).to.equal( 2 );
-
-				dropdownView.element.remove();
-			} );
-
-			it( 'should throw if bindToCollection option is used without ViewCollection instance provided', () => {
-				const dropdownView = createDropdown( locale );
-
-				addToolbarToDropdown( dropdownView, buttons, { bindToCollection: true } );
-
-				dropdownView.render();
-				document.body.appendChild( dropdownView.element );
-
-				expect( () => {
-					dropdownView.isOpen = true;
-				} ).to.throw( CKEditorError, 'ui-dropdown-toolbar-expects-view-collection' );
 
 				dropdownView.element.remove();
 			} );

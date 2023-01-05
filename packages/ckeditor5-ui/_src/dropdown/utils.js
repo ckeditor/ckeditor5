@@ -142,9 +142,12 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
  * {@link module:ui/dropdown/dropdownview~DropdownView}).
- * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
  * @param {String} [options.ariaLabel] Label used by assistive technologies to describe toolbar element.
- * @param {Boolean} [options.bindToCollection] Whether given `ViewCollection` should be bound to the toolbar items.
+ * @param {String} [options.maxWidth] The maximum width of the toolbar element.
+ * Details: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
+ * @param {String} [options.class] An additional CSS class added to the toolbar element.
+ * @param {Boolean} [options.isCompact] When set true, makes the toolbar look compact with toolbar element.
+ * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
  */
 export function addToolbarToDropdown( dropdownView, buttons, options = {} ) {
 	const locale = dropdownView.locale;

@@ -162,18 +162,23 @@ export function createDropdown(
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
  * {@link module:ui/dropdown/dropdownview~DropdownView}).
- * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
  * @param {String} [options.ariaLabel] Label used by assistive technologies to describe toolbar element.
- * @param {Boolean} [options.bindToCollection] Whether given `ViewCollection` should be bound to the toolbar items.
+ * @param {String} [options.maxWidth] The maximum width of the toolbar element.
+ * Details: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
+ * @param {String} [options.class] An additional CSS class added to the toolbar element.
+ * @param {Boolean} [options.isCompact] When set true, makes the toolbar look compact with toolbar element.
+ * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
 	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
 	options: {
 		enableActiveItemFocusOnDropdownOpen?: boolean;
-		isVertical?: boolean;
 		ariaLabel?: string;
-		bindToCollection?: boolean;
+		maxWidth?: string;
+		class?: string;
+		isCompact?: boolean;
+		isVertical?: boolean;
 	} = {}
 ): void {
 	dropdownView.extendTemplate( {
@@ -201,9 +206,11 @@ function addToolbarToOpenDropdown(
 	dropdownView: DropdownView,
 	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
 	options: {
-		isVertical?: boolean;
 		ariaLabel?: string;
-		bindToCollection?: boolean;
+		maxWidth?: string;
+		class?: string;
+		isCompact?: boolean;
+		isVertical?: boolean;
 	}
 ): void {
 	const locale = dropdownView.locale;
@@ -214,20 +221,23 @@ function addToolbarToOpenDropdown(
 
 	toolbarView.ariaLabel = options.ariaLabel || t( 'Dropdown toolbar' );
 
+	if ( options.maxWidth ) {
+		toolbarView.maxWidth = options.maxWidth;
+	}
+
+	if ( options.class ) {
+		toolbarView.class = options.class;
+	}
+
+	if ( options.isCompact ) {
+		toolbarView.isCompact = options.isCompact;
+	}
+
 	if ( options.isVertical ) {
 		toolbarView.isVertical = true;
 	}
 
-	if ( options.bindToCollection ) {
-		if ( !( buttons instanceof ViewCollection ) ) {
-			/**
-			 * The `addToolbarToOpenDropdown()` requires a `ViewCollection` instance when called with `bindToCollection` option.
-			 *
-			 * @error ui-dropdown-toolbar-expects-view-collection
-			 */
-			throw new CKEditorError( 'ui-dropdown-toolbar-expects-view-collection', null );
-		}
-
+	if ( buttons instanceof ViewCollection ) {
 		toolbarView.items.bindTo( buttons ).using( item => item );
 	} else {
 		toolbarView.items.addMany( buttons );
@@ -488,10 +498,12 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 			return;
 		}
 
+		const element = dropdownView.panelView.element;
+
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( dropdownView.panelView.element!.contains( global.document.activeElement ) ) {
+		if ( element && element.contains( global.document.activeElement ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );

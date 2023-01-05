@@ -1127,7 +1127,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		// (https://github.com/ckeditor/ckeditor5/issues/5608)
 		dropdown.panelPosition = locale.uiLanguageDirection === 'ltr' ? 'sw' : 'se';
 
-		addToolbarToDropdown( dropdown, this.groupedItems, { bindToCollection: true } );
+		addToolbarToDropdown( dropdown, this.groupedItems );
 
 		dropdown.buttonView.set( {
 			label: t( 'Show more items' ),
