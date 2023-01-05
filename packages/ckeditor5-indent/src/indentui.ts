@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';
+import type AttributeCommand from '@ckeditor/ckeditor5-basic-styles/src/attributecommand';
 
 /**
  * The indent UI feature.
@@ -19,21 +20,19 @@ import outdentIcon from '../theme/icons/outdent.svg';
  *
  * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in
  * the {@link module:indent/indent~Indent indent feature} API documentation.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class IndentUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'IndentUI' {
 		return 'IndentUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = editor.t;
@@ -47,17 +46,12 @@ export default class IndentUI extends Plugin {
 
 	/**
 	 * Defines a UI button.
-	 *
-	 * @param {String} commandName
-	 * @param {String} label
-	 * @param {String} icon
-	 * @private
 	 */
-	_defineButton( commandName, label, icon ) {
+	private _defineButton( commandName: string, label: string, icon: string ): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( commandName, locale => {
-			const command = editor.commands.get( commandName );
+			const command = editor.commands.get( commandName )! as AttributeCommand;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -75,5 +69,11 @@ export default class IndentUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ IndentUI.pluginName ]: IndentUI;
 	}
 }

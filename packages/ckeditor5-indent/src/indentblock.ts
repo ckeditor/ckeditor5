@@ -7,8 +7,8 @@
  * @module indent/indentblock
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addMarginRules } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
+import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
@@ -23,14 +23,12 @@ const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'hea
  *
  * If the plugin {@link module:indent/indent~Indent} is defined, it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
  * the `'indent'` and `'outdent'` commands.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'indentBlock', {
@@ -42,16 +40,16 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'IndentBlock' {
 		return 'IndentBlock';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
-		const configuration = editor.config.get( 'indentBlock' );
+		const configuration = editor.config.get( 'indentBlock' )!;
 
 		const useOffsetConfig = !configuration.classes || !configuration.classes.length;
 
@@ -60,12 +58,12 @@ export default class IndentBlock extends Plugin {
 
 		if ( useOffsetConfig ) {
 			editor.data.addStyleProcessorRules( addMarginRules );
-			this._setupConversionUsingOffset( editor.conversion );
+			this._setupConversionUsingOffset();
 
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
 		} else {
-			this._setupConversionUsingClasses( configuration.classes );
+			this._setupConversionUsingClasses( configuration.classes! );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
 		}
@@ -74,19 +72,19 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		const indentCommand = editor.commands.get( 'indent' );
-		const outdentCommand = editor.commands.get( 'outdent' );
+		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
+		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
 
 		// Enable block indentation to heading configuration options. If it is not defined enable in paragraph and default headings.
-		const options = editor.config.get( 'heading.options' );
-		const configuredElements = options && options.map( option => option.model );
+		const options = editor.config.get( 'heading.options' ) as any; // TODO fix when heading merged
+		const configuredElements = options && options.map( ( option: any ) => option.model ); // TODO remove any
 		const knownElements = configuredElements || DEFAULT_ELEMENTS;
 
-		knownElements.forEach( elementName => {
+		knownElements.forEach( ( elementName: any ) => { // TODO remove any
 			if ( schema.isRegistered( elementName ) ) {
 				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
 			}
@@ -94,16 +92,14 @@ export default class IndentBlock extends Plugin {
 
 		schema.setAttributeProperties( 'blockIndent', { isFormatting: true } );
 
-		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
-		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' )! );
 	}
 
 	/**
 	 * Setups conversion for using offset indents.
-	 *
-	 * @private
 	 */
-	_setupConversionUsingOffset() {
+	private _setupConversionUsingOffset(): void {
 		const conversion = this.editor.conversion;
 		const locale = this.editor.locale;
 		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
@@ -116,7 +112,7 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => viewElement.getStyle( marginProperty )
+				value: ( viewElement: ViewElement ) => viewElement.getStyle( marginProperty )
 			}
 		} );
 
@@ -126,7 +122,7 @@ export default class IndentBlock extends Plugin {
 				return {
 					key: 'style',
 					value: {
-						[ marginProperty ]: modelAttributeValue
+						[ marginProperty as string ]: modelAttributeValue as string
 					}
 				};
 			}
@@ -135,12 +131,12 @@ export default class IndentBlock extends Plugin {
 
 	/**
 	 * Setups conversion for using classes.
-	 *
-	 * @param {Array.<String>} classes
-	 * @private
 	 */
-	_setupConversionUsingClasses( classes ) {
-		const definition = {
+	private _setupConversionUsingClasses( classes: Array<string> ) {
+		const definition: {
+			model: { key: string; values: Array<string> };
+			view: Record<string, AttributeDescriptor>;
+		} = {
 			model: {
 				key: 'blockIndent',
 				values: []
@@ -164,8 +160,6 @@ export default class IndentBlock extends Plugin {
  * The configuration of the {@link module:indent/indentblock~IndentBlock block indentation feature}.
  *
  * Read more in {@link module:indent/indentblock~IndentBlockConfig}.
- *
- * @member {module:indent/indentblock~IndentBlockConfig} module:core/editor/editorconfig~EditorConfig#indentBlock
  */
 
 /**
@@ -175,6 +169,7 @@ export default class IndentBlock extends Plugin {
  * {@link module:indent/indentblock~IndentBlockConfig#offset} and {@link module:indent/indentblock~IndentBlockConfig#unit} to
  * create indentation steps.
  *
+ * ```ts
  *		ClassicEditor
  *			.create( editorElement, {
  * 				indentBlock: {
@@ -184,10 +179,12 @@ export default class IndentBlock extends Plugin {
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ * ```
  *
  * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
  * indentation steps:
  *
+ * ```ts
  *		ClassicEditor
  *			.create( editorElement, {
  * 				indentBlock: {
@@ -202,33 +199,51 @@ export default class IndentBlock extends Plugin {
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ * ```
  *
  * In the example above only 5 indentation steps will be available.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface IndentBlockConfig
  */
+export type IndentBlockConfig = {
 
-/**
- * The size of indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} for each indentation step.
- *
- * @default 40
- * @member {Number} module:indent/indentblock~IndentBlockConfig#offset
- */
+	/**
+	 * The size of indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} for each indentation step.
+	 *
+	 * @default 40
+	 */
+	offset: number;
 
-/**
- * The unit used for indentation {@link module:indent/indentblock~IndentBlockConfig#offset}.
- *
- * @default 'px'
- * @member {String} module:indent/indentblock~IndentBlockConfig#unit
- */
+	/**
+	 * The unit used for indentation {@link module:indent/indentblock~IndentBlockConfig#offset}.
+	 *
+	 * @default 'px'
+	 */
+	unit: string;
 
-/**
- * An optional list of classes to use for indenting the editor content. If not set or set to an empty array, no classes will be used.
- * The {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
- * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
- *
- * @default undefined
- * @member {Array.<String>|undefined} module:indent/indentblock~IndentBlockConfig#classes
- */
+	/**
+	 * An optional list of classes to use for indenting the editor content. If not set or set to an empty array, no classes will be used.
+	 * The {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
+	 * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
+	 *
+	 * @default undefined
+	 */
+	classes?: Array<string>;
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		indentBlock: IndentBlockCommand;
+		outdentBlock: IndentBlockCommand;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
+		 *
+		 * Read more in {@link module:alignment/alignment~AlignmentConfig}.
+		 */
+		indentBlock?: IndentBlockConfig;
+	}
+}

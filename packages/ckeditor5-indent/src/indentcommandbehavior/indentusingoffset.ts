@@ -3,52 +3,49 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { IndentBlockConfig } from '../indentblock';
+
 /**
  * @module indent/indentcommandbehavior/indentusingoffset
  */
 
 /**
  * The block indentation behavior that uses offsets to set indentation.
- *
- * @implements module:indent/indentblockcommand~IndentBehavior
  */
 export default class IndentUsingOffset {
 	/**
+	 * The direction of indentation.
+	 */
+	declare public isForward: boolean;
+
+	/**
+	 * The offset of the next indentation step.
+	 */
+	declare public offset: number;
+
+	/**
+	 * Indentation unit.
+	 */
+	declare public unit: string;
+
+	/**
 	 * Creates an instance of the indentation behavior.
 	 *
-	 * @param {Object} config
-	 * @param {String} config.direction The direction of indentation.
-	 * @param {Number} config.offset The offset of the next indentation step.
-	 * @param {String} config.unit Indentation unit.
+	 * @param config.direction The direction of indentation.
+	 * @param config.offset The offset of the next indentation step.
+	 * @param config.unit Indentation unit.
 	 */
-	constructor( config ) {
-		/**
-		 * The direction of indentation.
-		 *
-		 * @type {Boolean}
-		 */
+	constructor( config: IndentBlockConfig & { direction: string } ) {
 		this.isForward = config.direction === 'forward';
-
-		/**
-		 * The offset of the next indentation step.
-		 *
-		 * @type {Number}
-		 */
 		this.offset = config.offset;
-
-		/**
-		 * Indentation unit.
-		 *
-		 * @type {String}
-		 */
 		this.unit = config.unit;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	checkEnabled( indentAttributeValue ) {
-		const currentOffset = parseFloat( indentAttributeValue || 0 );
+	public checkEnabled( indentAttributeValue: string ): boolean {
+		const currentOffset = parseFloat( indentAttributeValue || 0 as any );
 
 		// The command is always enabled for forward indentation.
 		return this.isForward || currentOffset > 0;
@@ -57,8 +54,8 @@ export default class IndentUsingOffset {
 	/**
 	 * @inheritDoc
 	 */
-	getNextIndent( indentAttributeValue ) {
-		const currentOffset = parseFloat( indentAttributeValue || 0 );
+	public getNextIndent( indentAttributeValue: string ): string | undefined {
+		const currentOffset = parseFloat( indentAttributeValue || 0 as any );
 		const isSameUnit = !indentAttributeValue || indentAttributeValue.endsWith( this.unit );
 
 		if ( !isSameUnit ) {

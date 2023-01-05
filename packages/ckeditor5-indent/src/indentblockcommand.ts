@@ -7,7 +7,8 @@
  * @module indent/indentblockcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element, Model } from 'ckeditor5/src/engine';
 import { first } from 'ckeditor5/src/utils';
 
 /**
@@ -18,37 +19,35 @@ import { first } from 'ckeditor5/src/utils';
  *
  * To increase block indentation at the current selection, execute the command:
  *
+ * ```ts
  *		editor.execute( 'indentBlock' );
+ * ```
  *
  * To decrease block indentation at the current selection, execute the command:
  *
+ * ```ts
  *		editor.execute( 'outdentBlock' );
- *
- * @extends module:core/command~Command
+ * ```
  */
 export default class IndentBlockCommand extends Command {
 	/**
-	 * Creates an instance of the command.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:indent/indentblockcommand~IndentBehavior} indentBehavior
+	 * The command's indentation behavior.
 	 */
-	constructor( editor, indentBehavior ) {
+	private _indentBehavior: IndentBehavior;
+
+	/**
+	 * Creates an instance of the command.
+	 */
+	constructor( editor: Editor, indentBehavior: IndentBehavior ) {
 		super( editor );
 
-		/**
-		 * The command's indentation behavior.
-		 *
-		 * @type {module:indent/indentblockcommand~IndentBehavior}
-		 * @private
-		 */
 		this._indentBehavior = indentBehavior;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		// Check whether any of the position's ancestors is a list item.
 		const editor = this.editor;
 		const model = editor.model;
@@ -61,20 +60,20 @@ export default class IndentBlockCommand extends Command {
 			return;
 		}
 
-		this.isEnabled = this._indentBehavior.checkEnabled( block.getAttribute( 'blockIndent' ) );
+		this.isEnabled = this._indentBehavior.checkEnabled( block.getAttribute( 'blockIndent' ) as string );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 
 		const blocksToChange = getBlocksToChange( model );
 
 		model.change( writer => {
 			for ( const block of blocksToChange ) {
-				const currentIndent = block.getAttribute( 'blockIndent' );
+				const currentIndent = block.getAttribute( 'blockIndent' ) as string;
 
 				const nextIndent = this._indentBehavior.getNextIndent( currentIndent );
 
@@ -88,10 +87,10 @@ export default class IndentBlockCommand extends Command {
 	}
 }
 
-// Returns blocks from selection that should have blockIndent selection set.
-//
-// @param {module:engine/model/model~model} model A model.
-function getBlocksToChange( model ) {
+/**
+ * Returns blocks from selection that should have blockIndent selection set.
+ */
+function getBlocksToChange( model: Model ): Array<Element> {
 	const selection = model.document.selection;
 	const schema = model.schema;
 	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
@@ -101,22 +100,17 @@ function getBlocksToChange( model ) {
 
 /**
  * Provides indentation behavior to {@link module:indent/indentblockcommand~IndentBlockCommand}.
- *
- * @interface module:indent/indentblockcommand~IndentBehavior
  */
+type IndentBehavior = {
 
-/**
- * Checks if the command should be enabled.
- *
- * @method #checkEnabled
- * @param {String} indentAttributeValue The current indent attribute value.
- * @returns {Boolean}
- */
+	/**
+	 * Checks if the command should be enabled.
+	 */
+	checkEnabled: ( indentAttributeValue: string ) => boolean;
 
-/**
- * Returns a new indent attribute value based on the current indent. This method returns `undefined` when the indentation should be removed.
- *
- * @method #getNextIndent
- * @param {String} indentAttributeValue The current indent attribute value.
- * @returns {String|undefined}
- */
+	/**
+	 * Returns a new indent attribute value based on the current indent.
+	 * This method returns `undefined` when the indentation should be removed.
+	 */
+	getNextIndent: ( indentAttributeValue: string ) => string | undefined;
+};

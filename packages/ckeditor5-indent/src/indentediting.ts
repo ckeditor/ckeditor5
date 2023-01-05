@@ -16,24 +16,29 @@ import { Plugin, MultiCommand } from 'ckeditor5/src/core';
  *
  * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in the
  * {@link module:indent/indent~Indent indent feature} API documentation.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class IndentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'IndentEditing' {
 		return 'IndentEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		editor.commands.add( 'indent', new MultiCommand( editor ) );
 		editor.commands.add( 'outdent', new MultiCommand( editor ) );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		indent: MultiCommand;
+		outdent: MultiCommand;
 	}
 }

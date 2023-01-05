@@ -7,7 +7,7 @@
  * @module indent/indent
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import IndentEditing from './indentediting';
 import IndentUI from './indentui';
@@ -31,21 +31,25 @@ import IndentUI from './indentui';
  * that allow to increase or decrease text indentation of supported elements.
  *
  * **Note**: In order for the commands and buttons to work, at least one of compatible features is required.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Indent' {
 		return 'Indent';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ IndentEditing, IndentUI ];
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Indent.pluginName ]: Indent;
 	}
 }

@@ -3,43 +3,41 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { IndentBlockConfig } from '../indentblock';
+
 /**
  * @module indent/indentcommandbehavior/indentusingclasses
  */
 
 /**
  * The block indentation behavior that uses classes to set indentation.
- *
- * @implements module:indent/indentblockcommand~IndentBehavior
  */
 export default class IndentUsingClasses {
 	/**
+	 * The direction of indentation.
+	 */
+	declare public isForward: boolean;
+
+	/**
+	 * A list of classes used for indentation.
+	 */
+	declare public classes: Array<string>;
+
+	/**
 	 * Creates an instance of the indentation behavior.
 	 *
-	 * @param {Object} config
-	 * @param {String} config.direction The direction of indentation.
-	 * @param {Array.<String>} config.classes A list of classes used for indentation.
+	 * @param config.direction The direction of indentation.
+	 * @param config.classes A list of classes used for indentation.
 	 */
-	constructor( config ) {
-		/**
-		 * The direction of indentation.
-		 *
-		 * @type {Boolean}
-		 */
+	constructor( config: IndentBlockConfig & { direction: string } ) {
 		this.isForward = config.direction === 'forward';
-
-		/**
-		 * A list of classes used for indentation.
-		 *
-		 * @type {Array.<String>}
-		 */
-		this.classes = config.classes;
+		this.classes = config.classes!;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	checkEnabled( indentAttributeValue ) {
+	public checkEnabled( indentAttributeValue: string ): boolean {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 
 		if ( this.isForward ) {
@@ -52,7 +50,7 @@ export default class IndentUsingClasses {
 	/**
 	 * @inheritDoc
 	 */
-	getNextIndent( indentAttributeValue ) {
+	public getNextIndent( indentAttributeValue: string ): string {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 		const indexStep = this.isForward ? 1 : -1;
 
