@@ -374,6 +374,7 @@ describe( 'CustomElementSupport', () => {
 	it( 'should not convert html comments as a custom element', () => {
 		dataFilter.allowElement( /.*/ );
 
+		editor.data.processor.skipComments = false;
 		editor.setData( '<!-- foo --><custom>bar</custom>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {

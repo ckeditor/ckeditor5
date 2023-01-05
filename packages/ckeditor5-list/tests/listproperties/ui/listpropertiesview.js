@@ -290,7 +290,7 @@ describe( 'ListPropertiesView', () => {
 			it( 'should have basic properties', () => {
 				expect( view.startIndexFieldView.label ).to.equal( 'Start at' );
 				expect( view.startIndexFieldView.class ).to.equal( 'ck-numbered-list-properties__start-index' );
-				expect( view.startIndexFieldView.fieldView.min ).to.equal( 1 );
+				expect( view.startIndexFieldView.fieldView.min ).to.equal( 0 );
 				expect( view.startIndexFieldView.fieldView.step ).to.equal( 1 );
 				expect( view.startIndexFieldView.fieldView.value ).to.equal( 1 );
 				expect( view.startIndexFieldView.fieldView.inputMode ).to.equal( 'numeric' );

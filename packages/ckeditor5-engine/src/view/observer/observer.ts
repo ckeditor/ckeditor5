@@ -7,7 +7,7 @@
  * @module engine/view/observer/observer
  */
 
-import { Emitter as DomEmitter } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type Document from '../document';
 import type View from '../view';
@@ -20,7 +20,7 @@ import type View from '../view';
  *
  * @abstract
  */
-export default abstract class Observer extends DomEmitter {
+export default abstract class Observer extends DomEmitterMixin() {
 	public readonly view: View;
 	public readonly document: Document;
 	public readonly isEnabled: false;

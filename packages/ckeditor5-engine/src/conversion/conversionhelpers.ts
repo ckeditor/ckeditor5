@@ -11,7 +11,7 @@
  * Base class for conversion helpers.
  */
 export default class ConversionHelpers<TDispatcher> {
-	private readonly _dispatchers: TDispatcher[];
+	private readonly _dispatchers: Array<TDispatcher>;
 
 	/**
 	 * Creates a conversion helpers instance.
@@ -19,7 +19,7 @@ export default class ConversionHelpers<TDispatcher> {
 	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
 	 */
-	constructor( dispatchers: TDispatcher[] ) {
+	constructor( dispatchers: Array<TDispatcher> ) {
 		this._dispatchers = dispatchers;
 	}
 

@@ -83,7 +83,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
-		dispatcher.on( `element:${ mediaElementName }`, upcastMedia );
+		dispatcher.on( `element:${ mediaElementName }`, upcastMedia, { priority: 'low' } );
 	};
 
 	function upcastMedia( evt, data, conversionApi ) {

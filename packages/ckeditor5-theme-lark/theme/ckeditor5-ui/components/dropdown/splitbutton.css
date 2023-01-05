@@ -51,6 +51,13 @@
 		}
 	}
 
+	/* Make sure the divider stretches 100% height of the button
+	https://github.com/ckeditor/ckeditor5/issues/10936 */
+	& > .ck-splitbutton__arrow:not(:focus) {
+		border-top-width: 0px;
+		border-bottom-width: 0px;
+	}
+
 	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
 	as a whole. The background of both buttons should stand out and there should be a visual
 	separation between both buttons. */
@@ -69,6 +76,11 @@
 			width: 1px;
 			height: 100%;
 			background-color: var(--ck-color-split-button-hover-border);
+		}
+
+		/* Make sure the divider between the buttons looks fine when the button is focused */
+		& > .ck-splitbutton__arrow:focus::after {
+			--ck-color-split-button-hover-border: var(--ck-color-focus-border);
 		}
 
 		@nest [dir="ltr"] & {

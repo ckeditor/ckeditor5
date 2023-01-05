@@ -1,3 +1,4 @@
+
 ---
 category: framework-tutorials
 order: 10
@@ -329,11 +330,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -738,14 +737,14 @@ This is all that you need from the model and the view layers for now. In terms o
 
 ## Creating a command
 
-A {@link framework/guides/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by commands that they expose. This allows not only executing these features (e.g. bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
+A {@link framework/guides/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (e.g. bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
 
-In case of the simple box the situation is simple:
+In the case of the simple box the situation is simple:
 
 * you need an "insert a new simple box" action,
-* and "can you insert a new simple box here (at the current selection position)".
+* and a "can you insert a new simple box here (at the current selection position)" check.
 
-Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
+Create a new file `insertsimpleboxcommand.js` in the `simplebox/` directory. You will use the {@link module:engine/model/model~Model#insertObject `model.insertObject()`} method which will be able to, for example, split a paragraph if you try to insert a simple box in the middle of it (which is not allowed by the schema).
 
 ```js
 // simplebox/insertsimpleboxcommand.js
@@ -757,7 +756,7 @@ export default class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 
@@ -866,11 +865,9 @@ export default class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -1065,11 +1062,9 @@ class SimpleBoxEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'simpleBox', {
-			// Behaves like a self-contained object (e.g. an image).
-			isObject: true,
-
-			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			// Behaves like a self-contained block object (e.g. a block image)
+			// allowed in places where other blocks are allowed (e.g. directly in the root).
+			inheritAllFrom: '$blockObject'
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -1183,7 +1178,7 @@ class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertObject( createSimpleBox( writer ) );
 		} );
 	}
 

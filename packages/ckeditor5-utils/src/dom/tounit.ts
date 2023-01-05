@@ -11,17 +11,17 @@
  * Returns a helper function, which adds a desired trailing
  * `unit` to the passed value.
  *
- * @param {String} unit An unit like "px" or "em".
- * @returns {module:utils/dom/tounit~helper}
+ * @param unit An unit like "px" or "em".
  */
-export default function toUnit( unit: string ): ( value: string | number ) => string {
-	/**
-	 * A function, which adds a pre–defined trailing `unit`
-	 * to the passed `value`.
-	 *
-	 * @function helper
- 	 * @param {String|Number} value A value to be given the unit.
- 	 * @returns {String} A value with the trailing unit.
-	 */
+export default function toUnit( unit: string ): ToUnitHelper {
 	return value => value + unit;
 }
+
+/**
+ * A function, which adds a pre–defined trailing `unit`
+ * to the passed `value`.
+ *
+ * @param value A value to be given the unit.
+ * @returns A value with the trailing unit.
+ */
+export type ToUnitHelper = ( value: string | number ) => string;

@@ -36,7 +36,6 @@
     "@ckeditor/ckeditor5-essentials": "^35.1.0",
     "@ckeditor/ckeditor5-find-and-replace": "^35.1.0",
     "@ckeditor/ckeditor5-font": "^35.1.0",
-    "@ckeditor/ckeditor5-highlight": "^35.1.0",
     "@ckeditor/ckeditor5-html-support": "^35.1.0",
     "@ckeditor/ckeditor5-indent": "^35.1.0",
     "@ckeditor/ckeditor5-link": "^35.1.0",
@@ -51,8 +50,8 @@
     "@ckeditor/ckeditor5-ui": "^35.1.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-dev-translations": "^32.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^35.1.0",
     "css-loader": "^5.2.7",
     "postcss-loader": "^4.3.0",

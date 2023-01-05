@@ -369,8 +369,11 @@ schema.register( 'myImage', {
 	isObject: true
 } );
 ```
-
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
+
+<info-box>
+	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
+</info-box>
 
 <info-box>
 	Every object is automatically also:
@@ -384,19 +387,27 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
+Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements. 
+
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
-	There is also the `$block` generic item which has `isBlock` set to `true`. Most block type items will inherit from `$block` (through `inheritAllFrom`).
+	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
+
+	Note that every item that inherits from `$block` has `isBlock` set, but not every item with `isBlock` set has to be a `$block`.
 </info-box>
 
 ### Inline elements
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as described in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
+
+<info-box>
+	There is also the `$inlineObject` generic item which has the `isInline` property set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
+</info-box>
 
 ### Selectable elements
 
@@ -416,7 +427,7 @@ The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()
 
 ### Content elements
 
-You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent Model#hasContent()} to check this out).
+You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent `Model#hasContent()`} to check this out).
 
 Elements such as images or media will **always** find their way into the editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
 
@@ -513,6 +524,91 @@ Taking this even further, if anyone registers a `<section>` element (with the `a
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
+
+### Relations between generic items
+
+Relations between generic items (which one can be used where) can be visualized by the following abstract structure:
+
+```xml
+<$root>
+	<$block>                <!-- example: <paragraph>, <heading1> -->
+		<$text/>
+		<$inlineObject/>    <!-- example: <imageInline> -->
+	</$block>
+	<$blockObject/>         <!-- example: <imageBlock>, <table> -->
+	<$container>            <!-- example: <blockQuote> -->
+		<$container/> 
+		<$block/>
+		<$blockObject/>
+	</$container>
+</$root>
+```
+
+The above rules will be met for instance by such a model content:
+
+```xml
+<$root>
+	<heading1>            <!-- inheritAllFrom: $block -->
+		<$text/>          <!-- allowIn: $block -->
+	</heading1>
+	<paragraph>           <!-- inheritAllFrom: $block -->
+		<$text/>          <!-- allowIn: $block -->
+		<softBreak/>      <!-- allowWhere: $text -->
+		<$text/>          <!-- allowIn: $block --> 
+		<imageInline/>    <!-- inheritAllFrom: $inlineObject -->
+	</paragraph>
+	<imageBlock>          <!-- inheritAllFrom: $blockObject -->
+		<caption>         <!-- allowIn: imageBlock, allowContentOf: $block -->
+			<$text/>      <!-- allowIn: $block -->
+		</caption>
+	</imageBlock>
+	<blockQuote>                    <!-- inheritAllFrom: $container -->
+		<paragraph/>                <!-- inheritAllFrom: $block -->
+		<table>                     <!-- inheritAllFrom: $blockObject -->
+			<tableRow>              <!-- allowIn: table -->
+				<tableCell>         <!-- allowIn: tableRow, allowContentOf: $container -->
+					<paragraph>     <!-- inheritAllFrom: $block -->
+						<$text/>    <!-- allowIn: $block -->
+					</paragraph>
+				</tableCell>
+			</tableRow>
+		</table>
+	</blockQuote>
+</$root>
+```
+
+Which, in turn, has these [semantics](#defining-additional-semantics):
+
+```xml
+<$root>                   <!-- isLimit: true -->
+	<heading1>            <!-- isBlock: true -->
+		<$text/>          <!-- isInline: true, isContent: true -->
+	</heading1>
+	<paragraph>           <!-- isBlock: true -->
+		<$text/>          <!-- isInline: true, isContent: true -->
+		<softBreak/>      <!-- isInline: true -->
+		<$text/>          <!-- isInline: true, isContent: true --> 
+		<imageInline/>    <!-- isInline: true, isObject: true -->
+	</paragraph>
+	<imageBlock>          <!-- isBlock: true, isObject: true -->
+		<caption>         <!-- isLimit: true -->
+			<$text/>      <!-- isInline: true, isContent: true -->
+		</caption>
+	</imageBlock>
+	<blockQuote>
+		<paragraph/>                <!-- isBlock: true -->
+		<table>                     <!-- isBlock: true, isObject: true -->
+			<tableRow>              <!-- isLimit: true -->
+				<tableCell>         <!-- isLimit: true -->
+					<paragraph>     <!-- isBlock: true -->
+						<$text/>    <!-- isInline: true, isContent: true -->
+					</paragraph>
+				</tableCell>
+			</tableRow>
+		</table>
+	</blockQuote>
+</$root>
+```
 
 ## Defining advanced rules in `checkChild()` callbacks
 

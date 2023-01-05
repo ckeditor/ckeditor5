@@ -223,6 +223,7 @@ describe( 'BlockQuote integration', () => {
 			return {
 				preventDefault: sinon.spy(),
 				direction: 'backward',
+				inputType: 'deleteContentBackward',
 				unit: 'character'
 			};
 		}
@@ -364,7 +365,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -378,7 +379,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -392,7 +393,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
@@ -406,7 +407,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			// Only enter command should be executed.
+			// Only delete command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );

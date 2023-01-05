@@ -12,9 +12,9 @@ import getAncestors from './getancestors';
 /**
  * Searches and returns the lowest common ancestor of two given nodes.
  *
- * @param {Node} nodeA First node.
- * @param {Node} nodeB Second node.
- * @returns {Node|DocumentFragment|Document|null} Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
+ * @param nodeA First node.
+ * @param nodeB Second node.
+ * @returns Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
  */
 export default function getCommonAncestor( nodeA: Node, nodeB: Node ): Node | null {
 	const ancestorsA = getAncestors( nodeA );

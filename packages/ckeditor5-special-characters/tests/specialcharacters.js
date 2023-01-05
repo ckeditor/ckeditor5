@@ -49,7 +49,7 @@ describe( 'SpecialCharacters', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					command = editor.commands.get( 'input' );
+					command = editor.commands.get( 'insertText' );
 				} );
 		} );
 
@@ -120,7 +120,7 @@ describe( 'SpecialCharacters', () => {
 
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledWithExactly( executeSpy.firstCall, 'input', {
+				sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertText', {
 					text: '≤'
 				} );
 			} );
@@ -175,6 +175,17 @@ describe( 'SpecialCharacters', () => {
 					const tile = grid.tiles.get( 0 );
 
 					tile.fire( 'mouseover' );
+
+					expect( tile.label ).to.equal( '<' );
+					expect( characterInfo.character ).to.equal( '<' );
+					expect( characterInfo.name ).to.equal( 'Less-than sign' );
+					expect( characterInfo.code ).to.equal( 'U+003c' );
+				} );
+
+				it( 'is updated when the tile fires #focus', () => {
+					const tile = grid.tiles.get( 0 );
+
+					tile.fire( 'focus' );
 
 					expect( tile.label ).to.equal( '<' );
 					expect( characterInfo.character ).to.equal( '<' );

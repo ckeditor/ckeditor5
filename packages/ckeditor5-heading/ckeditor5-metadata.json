@@ -33,7 +33,7 @@
 						"h4"
 					],
 					"implements": "$block",
-					"_comment": "The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>`$block`</code> element."
+					"_comment": "This element inherits all attributes, classes and styles that are allowed on the `<$block>` element by other features."
 				},
 				{
 					"elements": "*",

@@ -9,9 +9,6 @@
 
 /**
  * Checks if the object is a native DOM Node.
- *
- * @param {*} obj
- * @returns {Boolean}
  */
 export default function isNode( obj: any ): obj is Node {
 	if ( obj ) {

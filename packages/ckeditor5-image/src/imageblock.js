@@ -16,7 +16,7 @@ import ImageBlockEditing from './image/imageblockediting';
 import '../theme/image.css';
 
 /**
- * The image inline plugin.
+ * The image block plugin.
  *
  * This is a "glue" plugin which loads the following plugins:
  *

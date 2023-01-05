@@ -119,7 +119,7 @@ ClassicEditor
 
 		function findTable( editor, useAnyTable = false ) {
 			const selection = editor.model.document.selection;
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
+			const tableUtils = editor.plugins.get( 'TableUtils' );
 
 			const tableCells = tableUtils.getSelectionAffectedTableCells( selection );
 

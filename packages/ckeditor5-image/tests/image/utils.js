@@ -264,6 +264,15 @@ describe( 'image utils', () => {
 						} );
 					} );
 
+					it( 'should return a matcherPattern object if the element has `display:block` style', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg', style: 'display:block' } );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
 					it( 'should not include "src" in the matcher pattern if the image has no "src"', () => {
 						element = writer.createElement( 'img' );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );

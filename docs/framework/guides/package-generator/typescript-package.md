@@ -21,12 +21,12 @@ An overview of the project's directory structure:
 │  ├─ index.html           # The sample file.
 │  └─ ckeditor.ts          # The editor initialization script.
 ├─ src
+│  ├─ pluginname.ts        # The plugin with example functionality.
 │  ├─ index.ts             # The modules exported by the package when using the DLL builds.
-│  ├─ myplugin.ts          # Very basic plugin that utilizes the CKEditor 5 framework.
 │  └─ **/*.ts              # All TypeScript source files should be saved here.
 ├─ tests
+│  ├─ pluginname.ts
 │  ├─ index.ts             # Tests for the plugin.
-│  ├─ myplugin.ts
 │  └─ **/*.ts              # All tests should be saved here.
 ├─ theme
 │  ├─ icons

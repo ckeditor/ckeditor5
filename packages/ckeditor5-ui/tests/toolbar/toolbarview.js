@@ -21,6 +21,9 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
+import DropdownView from '../../src/dropdown/dropdownview';
+
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -38,6 +41,11 @@ describe( 'ToolbarView', () => {
 
 	after( () => {
 		clearTranslations();
+
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
+		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
+		ResizeObserver._observerInstance = null;
 	} );
 
 	beforeEach( () => {
@@ -48,7 +56,6 @@ describe( 'ToolbarView', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
 		view.destroy();
 		view.element.remove();
 	} );
@@ -499,6 +506,7 @@ describe( 'ToolbarView', () => {
 
 			factory.add( 'foo', namedFactory( 'foo' ) );
 			factory.add( 'bar', namedFactory( 'bar' ) );
+			factory.add( 'baz', namedFactory( 'baz' ) );
 		} );
 
 		it( 'expands the config into collection', () => {
@@ -607,7 +615,7 @@ describe( 'ToolbarView', () => {
 			const items = view.items;
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 
-			view.fillFromConfig( [ 'foo', 'bar', 'baz' ], factory );
+			view.fillFromConfig( [ 'foo', 'bar', 'non-existing' ], factory );
 
 			expect( items ).to.have.length( 2 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
@@ -616,7 +624,7 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				sinon.match( { name: 'baz' } ),
+				sinon.match( { item: 'non-existing' } ),
 				sinon.match.string // Link to the documentation.
 			);
 		} );
@@ -649,6 +657,313 @@ describe( 'ToolbarView', () => {
 			expect( items ).to.have.length( 2 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ).name ).to.equal( 'bar' );
+		} );
+
+		describe( 'nested drop-downs with toolbar', () => {
+			let dropdownView, toolbarView;
+
+			it( 'should create a drop-down with the default look and configured items', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ]
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+				toolbarView = dropdownView.toolbarView;
+
+				const items = view.items;
+
+				expect( items ).to.have.length( 2 );
+				expect( items.get( 0 ).name ).to.equal( 'foo' );
+				expect( items.get( 1 ) ).to.be.instanceOf( DropdownView );
+
+				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
+				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
+				expect( dropdownView.buttonView.icon, 'icon' ).to.equal( icons.threeVerticalDots );
+				expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
+
+				const nestedToolbarItems = toolbarView.items;
+
+				expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'bar' );
+				expect( nestedToolbarItems.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+				expect( nestedToolbarItems.get( 2 ).name ).to.equal( 'foo' );
+			} );
+
+			it( 'should set proper CSS class on the drop-down', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.class ).to.equal( 'ck-toolbar__nested-toolbar-dropdown' );
+			} );
+
+			it( 'should allow configuring the drop-down\'s label', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.label ).to.equal( 'Some label' );
+			} );
+
+			it( 'should allow configuring the drop-down\'s label visibility', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus',
+						withText: true
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.withText ).to.be.true;
+			} );
+
+			it( 'should allow configuring the drop-down\'s icon by SVG string', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.equal( '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>' );
+			} );
+
+			it( 'should allow disabling the drop-down\'s icon by passing false (text label shows up instead)', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						icon: false,
+						items: [ 'bar', '|', 'foo' ]
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.be.undefined;
+				expect( dropdownView.buttonView.withText ).to.be.true;
+			} );
+
+			describe( 'pre-configured icons', () => {
+				const iconNames = [
+					'alignLeft',
+					'bold',
+					'importExport',
+					'paragraph',
+					'plus',
+					'text',
+					'threeVerticalDots'
+				];
+
+				for ( const name of iconNames ) {
+					it( `should provide the "${ name }" icon`, () => {
+						view.fillFromConfig( [
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'foo' ],
+								icon: name
+							}
+						], factory );
+
+						dropdownView = view.items.get( 0 );
+
+						expect( dropdownView.buttonView.icon ).to.equal( icons[ name ] );
+					} );
+				}
+			} );
+
+			it( 'should fall back to a default icon when none was provided', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ]
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.icon ).to.equal( icons.threeVerticalDots );
+				expect( dropdownView.buttonView.withText ).to.be.false;
+			} );
+
+			it( 'should allow configuring the drop-down\'s tooltip', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo' ],
+						icon: 'plus',
+						tooltip: 'Foo bar'
+					}
+				], factory );
+
+				dropdownView = view.items.get( 1 );
+
+				expect( dropdownView.buttonView.tooltip ).to.equal( 'Foo bar' );
+			} );
+
+			it( 'should allow deep nested structures', () => {
+				view.fillFromConfig( [
+					'foo',
+					{
+						label: 'Level 0',
+						items: [
+							'bar',
+							'|',
+							{
+								label: 'Level 1',
+								icon: 'bold',
+								items: [ 'bar' ]
+							}
+						],
+						icon: 'plus',
+						tooltip: 'Foo bar'
+					}
+				], factory );
+
+				const level0DropdownView = view.items.get( 1 );
+				const level1DropdownView = level0DropdownView.toolbarView.items.get( 2 );
+
+				expect( level1DropdownView.toolbarView.items.length ).to.equal( 1 );
+				expect( level1DropdownView.toolbarView.items.get( 0 ).name ).to.equal( 'bar' );
+			} );
+
+			it( 'should warn when the drop-down has no label', () => {
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+				const brokenDefinition = {
+					items: [ 'bar', '|', 'foo' ],
+					icon: 'plus',
+					tooltip: 'Foo bar'
+				};
+
+				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^toolbarview-nested-toolbar-dropdown-missing-label/ ),
+					brokenDefinition,
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			describe( 'toolbar.removeItems support', () => {
+				it( 'should allow removing items from the nested toolbar', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'foo' ]
+							}
+						],
+						removeItems: [ 'bar' ]
+					}, factory );
+
+					dropdownView = view.items.get( 1 );
+					toolbarView = dropdownView.toolbarView;
+
+					const nestedToolbarItems = toolbarView.items;
+
+					expect( nestedToolbarItems.length ).to.equal( 1 );
+					expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should allow removing items from the nested toolbar deep in the structure', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Level 0',
+								items: [
+									'bar',
+									{
+										label: 'Level 1',
+										items: [
+											'foo', 'bar'
+										]
+									}
+								]
+							}
+						],
+						removeItems: [ 'bar' ]
+					}, factory );
+
+					const level0DropdownView = view.items.get( 1 );
+					const level1DropdownView = level0DropdownView.toolbarView.items.get( 0 );
+
+					const level0NestedToolbarItems = level0DropdownView.toolbarView.items;
+					const level1NestedToolbarItems = level1DropdownView.toolbarView.items;
+
+					expect( level0NestedToolbarItems.length ).to.equal( 1 );
+					expect( level0NestedToolbarItems.get( 0 ) ).to.be.instanceOf( DropdownView );
+					expect( level0NestedToolbarItems.get( 0 ).buttonView.label ).to.equal( 'Level 1' );
+
+					expect( level1NestedToolbarItems.length ).to.equal( 1 );
+					expect( level1NestedToolbarItems.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should remove the nested drop-down if all its toolbar items have also been removed', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', 'baz' ]
+							}
+						],
+						removeItems: [ 'bar', 'baz' ]
+					}, factory );
+
+					const items = view.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.get( 0 ).name ).to.equal( 'foo' );
+				} );
+
+				it( 'should remove the nested drop-down if all its toolbar items (but separators) have also been removed', () => {
+					view.fillFromConfig( {
+						items: [
+							'foo',
+							{
+								label: 'Some label',
+								items: [ 'bar', '|', 'baz' ]
+							}
+						],
+						removeItems: [ 'bar', 'baz' ]
+					}, factory );
+
+					const items = view.items;
+
+					expect( items.length ).to.equal( 1 );
+					expect( items.get( 0 ).name ).to.equal( 'foo' );
+				} );
+			} );
 		} );
 	} );
 
@@ -733,6 +1048,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		afterEach( () => {
+			testUtils.sinon.restore();
 			view.element.remove();
 			view.destroy();
 		} );

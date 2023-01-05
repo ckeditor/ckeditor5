@@ -66,11 +66,11 @@ msgstr "대문자 로마자 목록 스타일 전환"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr "소문자 알파벳  목록 스타일 전환"
+msgstr "소문자 알파벳 목록 스타일 전환"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr "대문자 알파벳  목록 스타일 전환"
+msgstr "대문자 알파벳 목록 스타일 전환"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"

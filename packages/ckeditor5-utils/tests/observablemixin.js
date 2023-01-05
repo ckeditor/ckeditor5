@@ -7,11 +7,14 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils';
-import ObservableMixin, { Observable } from '../src/observablemixin';
-import EmitterMixin, { Emitter } from '../src/emittermixin';
+import ObservableMixin from '../src/observablemixin';
+import EmitterMixin from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
 
 describe( 'ObservableMixin', () => {
+	const Observable = ObservableMixin();
+	const Emitter = EmitterMixin();
+
 	testUtils.createSinonSandbox();
 
 	it( 'exists', () => {
@@ -73,7 +76,7 @@ describe( 'ObservableMixin', () => {
 describe( 'Observable', () => {
 	testUtils.createSinonSandbox();
 
-	class BaseObservable extends Observable {
+	class BaseObservable extends ObservableMixin() {
 		constructor( properties ) {
 			super();
 
@@ -113,7 +116,7 @@ describe( 'Observable', () => {
 				seats: 5
 			} );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4,
@@ -125,7 +128,7 @@ describe( 'Observable', () => {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
-			expect( car ).to.deep.equal( {
+			expect( car ).to.include( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4

@@ -97,36 +97,96 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
-	describe( 'attach()', () => {
-		it( 'doesn\'t show resizer if it\'s initialized as disabled', () => {
-			const resizerInstance = createResizer();
-			resizerInstance.isEnabled = false;
-			resizerInstance.attach();
-
-			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
-			expect( domResizerWrapper.style.display ).to.equal( 'none' );
-		} );
-
-		it( 'hides the resizer if it gets disabled at a runtime', () => {
-			const resizerInstance = createResizer();
-			resizerInstance.isEnabled = true;
-			resizerInstance.attach();
-			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
-
-			resizerInstance.isEnabled = false;
-			expect( domResizerWrapper.style.display ).to.equal( 'none' );
-		} );
-
-		it( 'restores the resizer if it gets enabled at a runtime', () => {
+	describe( 'visibility', () => {
+		it( 'does not show the ui if the resizer is not visible when attached', () => {
 			const resizerInstance = createResizer( {
 				getHandleHost: widgetWrapper => widgetWrapper
 			} );
-			resizerInstance.isEnabled = false;
+
+			resizerInstance.isVisible = false;
 			resizerInstance.attach();
+
 			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
+		} );
+
+		it( 'shows the ui if the resizer is visible when attached', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+
+			resizerInstance.isVisible = true;
+			resizerInstance.attach();
+
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.false;
+		} );
+
+		it( 'does not show in the UI when resizer is set as not visible', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			resizerInstance.isVisible = true;
+
+			resizerInstance.isVisible = false;
+
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.true;
+		} );
+
+		it( 'shows in the UI when resizer is set as visible', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			resizerInstance.isVisible = false;
+
+			resizerInstance.isVisible = true;
+
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.classList.contains( 'ck-hidden' ) ).to.be.false;
+		} );
+
+		it( 'is not visible when resizer is not selected', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			resizerInstance.isVisible = true;
+			resizerInstance.isSelected = true;
+
+			resizerInstance.isSelected = false;
+
+			expect( resizerInstance.isVisible ).to.be.false;
+		} );
+
+		it( 'is not visible when resizer is disabled', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			resizerInstance.isVisible = true;
+			resizerInstance.isEnabled = true;
+
+			resizerInstance.isEnabled = false;
+			expect( resizerInstance.isVisible ).to.be.false;
+		} );
+
+		it( 'is visible when resizer is both enabled and selected', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			resizerInstance.isEnabled = false;
+			resizerInstance.isSelected = false;
+			resizerInstance.isVisible = false;
 
 			resizerInstance.isEnabled = true;
-			expect( domResizerWrapper.style.display ).to.equal( '' );
+			expect( resizerInstance.isVisible ).to.be.false;
+
+			resizerInstance.isSelected = true;
+			expect( resizerInstance.isVisible ).to.be.true;
 		} );
 	} );
 
@@ -194,7 +254,7 @@ describe( 'Resizer', () => {
 			};
 
 			resizer = createResizer();
-			resizer.state = state;
+			resizer._state = state;
 		} );
 
 		it( 'enlarges center-aligned objects correctly', () => {

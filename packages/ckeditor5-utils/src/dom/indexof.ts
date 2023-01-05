@@ -10,8 +10,8 @@
 /**
  * Returns index of the node in the parent element.
  *
- * @param {Node} node Node which index is tested.
- * @returns {Number} Index of the node in the parent element. Returns 0 if node has no parent.
+ * @param node Node which index is tested.
+ * @returns Index of the node in the parent element. Returns 0 if node has no parent.
  */
 export default function indexOf( node: Node ): number {
 	let index = 0;

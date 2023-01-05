@@ -275,6 +275,67 @@ describe( 'addKeyboardHandlingForGrid()', () => {
 		} );
 	} );
 
+	describe( 'arrows moves in rtl', () => {
+		beforeEach( () => {
+			view = new TestView( );
+			keystrokes = new KeystrokeHandler();
+			focusTracker = new FocusTracker();
+
+			view.render();
+
+			gridElementsCollection = view.createCollection();
+
+			for ( let i = 0; i < 7; i++ ) {
+				const button = new ButtonView( new Locale() );
+
+				button.render();
+				gridElementsCollection.add( button );
+				focusTracker.add( button.element );
+			}
+
+			addKeyboardHandlingForGrid( {
+				keystrokeHandler: keystrokes,
+				focusTracker,
+				gridItems: gridElementsCollection,
+				numberOfColumns: 3,
+				uiLanguageDirection: 'rtl'
+			} );
+
+			keystrokes.listenTo( view.element );
+		} );
+
+		afterEach( () => {
+			view.element.remove();
+			view.destroy();
+			keystrokes.destroy();
+			focusTracker.destroy();
+		} );
+
+		it( 'swap arrowleft with arrowright', () => {
+			// before: [ ][x][ ]	after: [ ][ ][x]	key: ←
+			//         [ ][ ][ ]	       [ ][ ][ ]
+			//         [ ]      	       [ ]
+			focusTracker.focusedElement = gridElementsCollection.get( 1 ).element;
+
+			const spy = sinon.spy( gridElementsCollection.get( 2 ), 'focus' );
+
+			pressLeftArrow( keystrokes );
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'swap arrowright with arrowleft', () => {
+			// before: [ ][x][ ]	after: [x][ ][ ]	key: ←
+			//         [ ][ ][ ]	       [ ][ ][ ]
+			//         [ ]      	       [ ]
+			focusTracker.focusedElement = gridElementsCollection.get( 1 ).element;
+
+			const spy = sinon.spy( gridElementsCollection.get( 0 ), 'focus' );
+
+			pressRightArrow( keystrokes );
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	class TestView extends View {
 		constructor( ...args ) {
 			super( ...args );

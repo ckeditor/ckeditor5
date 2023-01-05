@@ -5,7 +5,7 @@
 
 import ClipboardPipeline from '../src/clipboardpipeline';
 import ClipboardObserver from '../src/clipboardobserver';
-import DataTransfer from '../src/datatransfer';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
