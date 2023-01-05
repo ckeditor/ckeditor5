@@ -323,6 +323,10 @@ Then, corresponding CSS styles need to be defined for the document:
 
 Note that the editor will automatically distinguish text and block styles and group them in the dropdown.
 
+## Known issues
+
+At present, the styles feature may clash with other features that bring in similar content (e.g. headings). Problems with overlapping styles applied to the same element may also occur.
+
 ## Common API
 
 The {@link module:style/style~Style Style} plugin registers:
