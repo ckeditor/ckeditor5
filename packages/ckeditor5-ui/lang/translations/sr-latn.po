@@ -22,7 +22,7 @@ msgstr "Prošireni uređivač teksta"
 
 msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
 msgid "Editor editing area: %0"
-msgstr ""
+msgstr "Oblast za uređivanje urednika: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
@@ -106,8 +106,8 @@ msgstr "Ljubičasta"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "Traka sa alatkama za blokiranje sadržaja uređivača"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
-msgstr ""
+msgstr "Kontekstualna traka sa alatkama Editor"

@@ -13,47 +13,40 @@ import { _remove } from './utils';
 
 import type Position from '../position';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
 /**
  * Operation to permanently remove node from detached root.
  * Note this operation is only a local operation and won't be send to the other clients.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class DetachOperation extends Operation {
+	/**
+	 * Position before the first {@link module:engine/model/item~Item model item} to detach.
+	 */
 	public sourcePosition: Position;
+
+	/**
+	 * Offset size of moved range.
+	 */
 	public howMany: number;
 
 	// This class doesn't implement those abstract methods. Let's silence the compiler.
-	declare public clone: () => Operation;
-	declare public getReversed: () => Operation;
+	declare public clone: never;
+	declare public getReversed: never;
 
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param {module:engine/model/position~Position} sourcePosition
-	 * Position before the first {@link module:engine/model/item~Item model item} to move.
-	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
+	 * @param sourcePosition Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 */
 	constructor( sourcePosition: Position, howMany: number ) {
 		super( null );
 
-		/**
-		 * Position before the first {@link module:engine/model/item~Item model item} to detach.
-		 *
-		 * @member {module:engine/model/position~Position} #sourcePosition
-		 */
 		this.sourcePosition = sourcePosition.clone();
-
-		/**
-		 * Offset size of moved range.
-		 *
-		 * @member {Number} #howMany
-		 */
 		this.howMany = howMany;
 	}
 

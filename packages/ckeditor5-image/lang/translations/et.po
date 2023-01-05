@@ -66,7 +66,7 @@ msgstr "Sisesta pildi pealkiri"
 
 msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Siseta pilt"
+msgstr "Sisesta pilt"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"

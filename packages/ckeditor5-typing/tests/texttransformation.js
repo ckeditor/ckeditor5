@@ -467,7 +467,7 @@ describe( 'Text transformation feature', () => {
 		const letters = transformFrom.split( '' );
 
 		for ( const letter of letters ) {
-			editor.execute( 'input', { text: letter } );
+			editor.execute( 'insertText', { text: letter } );
 		}
 	}
 } );

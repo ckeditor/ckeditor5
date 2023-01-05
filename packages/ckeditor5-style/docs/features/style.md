@@ -225,6 +225,7 @@ The stylesheet:
 Check out also these CKEditor 5 features to gain better control over your content style and format:
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
@@ -322,6 +323,10 @@ Then, corresponding CSS styles need to be defined for the document:
 
 Note that the editor will automatically distinguish text and block styles and group them in the dropdown.
 
+## Known issues
+
+At present, the styles feature may clash with other features that bring in similar content (e.g. headings). Problems with overlapping styles applied to the same element may also occur.
+
 ## Common API
 
 The {@link module:style/style~Style Style} plugin registers:
@@ -343,4 +348,4 @@ editor.execute( 'style', 'Article category' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style.
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-style).

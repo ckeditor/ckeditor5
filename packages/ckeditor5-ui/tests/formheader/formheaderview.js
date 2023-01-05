@@ -39,8 +39,12 @@ describe( 'FormHeaderView', () => {
 		} );
 
 		it( 'should set the template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-form__header' ) ).to.be.true;
+			expect( view.template.attributes.class ).to.include( 'ck' );
+			expect( view.template.attributes.class ).to.include( 'ck-form__header' );
+		} );
+
+		it( 'should set view#tag', () => {
+			expect( view.children.first.template.tag ).to.equal( 'h2' );
 		} );
 
 		describe( 'options', () => {
@@ -48,7 +52,6 @@ describe( 'FormHeaderView', () => {
 				const view = new FormHeaderView( locale, {
 					class: 'foo'
 				} );
-
 				expect( view.class ).to.equal( 'foo' );
 
 				view.destroy();

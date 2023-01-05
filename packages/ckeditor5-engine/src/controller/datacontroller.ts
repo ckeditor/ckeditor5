@@ -7,9 +7,11 @@
  * @module engine/controller/datacontroller
  */
 
-import { Observable } from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { Emitter } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import {
+	CKEditorError,
+	EmitterMixin,
+	ObservableMixin
+} from '@ckeditor/ckeditor5-utils';
 
 import Mapper from '../conversion/mapper';
 
@@ -27,8 +29,8 @@ import ViewDocumentFragment from '../view/documentfragment';
 import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 import type ViewElement from '../view/element';
-import { type StylesProcessor } from '../view/stylesmap';
-import { type MatcherPattern } from '../view/matcher';
+import type { StylesProcessor } from '../view/stylesmap';
+import type { MatcherPattern } from '../view/matcher';
 
 import ModelRange from '../model/range';
 import type Model from '../model/model';
@@ -36,8 +38,8 @@ import type ModelText from '../model/text';
 import type ModelElement from '../model/element';
 import type ModelTextProxy from '../model/textproxy';
 import type ModelDocumentFragment from '../model/documentfragment';
-import { type SchemaContextDefinition } from '../model/schema';
-import { type BatchType } from '../model/batch';
+import type { SchemaContextDefinition } from '../model/schema';
+import type { BatchType } from '../model/batch';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 
 import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
@@ -60,7 +62,7 @@ import type DataProcessor from '../dataprocessor/dataprocessor';
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class DataController extends Emitter {
+export default class DataController extends EmitterMixin() {
 	public readonly model: Model;
 	public readonly mapper: Mapper;
 	public readonly downcastDispatcher: DowncastDispatcher;
@@ -173,9 +175,11 @@ export default class DataController extends Emitter {
 		this.upcastDispatcher.on<UpcastElementEvent>( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on<UpcastDocumentFragmentEvent>( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		Observable.prototype.decorate.call( this, 'init' as any );
-		Observable.prototype.decorate.call( this, 'set' as any );
-		Observable.prototype.decorate.call( this, 'get' as any );
+		ObservableMixin().prototype.decorate.call( this, 'init' as any );
+		ObservableMixin().prototype.decorate.call( this, 'set' as any );
+		ObservableMixin().prototype.decorate.call( this, 'get' as any );
+		ObservableMixin().prototype.decorate.call( this, 'toView' as any );
+		ObservableMixin().prototype.decorate.call( this, 'toModel' as any );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener offers the possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.
@@ -257,6 +261,7 @@ export default class DataController extends Emitter {
 	 * converters attached to {@link #downcastDispatcher} into a
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
+	 * @fires toView
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
 	 * @param {Object} [options={}] Additional configuration that will be available through the
@@ -454,6 +459,7 @@ export default class DataController extends Emitter {
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
+	 * @fires toModel
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * The element or document fragment whose content will be converted.
 	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
@@ -519,7 +525,7 @@ export default class DataController extends Emitter {
 	 * @param {Array.<String>} rootNames Root names to check.
 	 * @returns {Boolean} Whether all provided root names are existing editor roots.
 	 */
-	private _checkIfRootsExists( rootNames: string[] ): boolean {
+	private _checkIfRootsExists( rootNames: Array<string> ): boolean {
 		for ( const rootName of rootNames ) {
 			if ( !this.model.document.getRootNames().includes( rootName ) ) {
 				return false;
@@ -563,6 +569,24 @@ export default class DataController extends Emitter {
 	 *
 	 * @event get
 	 */
+
+	/**
+	 * Event fired after the {@link #toView toView() method} has been run.
+	 *
+	 * The `toView` event is fired by the decorated {@link #toView} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event toView
+	 */
+
+	/**
+	 * Event fired after the {@link #toModel toModel() method} has been run.
+	 *
+	 * The `toModel` event is fired by the decorated {@link #toModel} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event toModel
+	 */
 }
 
 // Helper function for downcast conversion.
@@ -571,7 +595,7 @@ export default class DataController extends Emitter {
 // at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
 // intersecting with the element, the intersection is returned.
 function _getMarkersRelativeToElement( element: ModelElement ): Map<string, ModelRange> {
-	const result: [ string, ModelRange ][] = [];
+	const result: Array<[ string, ModelRange ]> = [];
 	const doc = element.root.document;
 
 	if ( !doc ) {
@@ -639,3 +663,33 @@ function _getMarkersRelativeToElement( element: ModelElement ): Map<string, Mode
 
 	return new Map( result );
 }
+
+export type DataControllerInitEvent = {
+	name: 'init';
+	args: [ Parameters<DataController[ 'init' ]> ];
+	return: ReturnType<DataController[ 'init' ]>;
+};
+
+export type DataControllerSetEvent = {
+	name: 'set';
+	args: [ Parameters<DataController[ 'set' ]> ];
+	return: ReturnType<DataController[ 'set' ]>;
+};
+
+export type DataControllerGetEvent = {
+	name: 'get';
+	args: [ Parameters<DataController[ 'get' ]> ];
+	return: ReturnType<DataController[ 'get' ]>;
+};
+
+export type DataControllerToModelEvent = {
+	name: 'toModel';
+	args: [ Parameters<DataController[ 'toModel' ]> ];
+	return: ReturnType<DataController[ 'toModel' ]>;
+};
+
+export type DataControllerToViewEvent = {
+	name: 'toView';
+	args: [ Parameters<DataController[ 'toView' ]> ];
+	return: ReturnType<DataController[ 'toView' ]>;
+};

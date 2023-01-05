@@ -6,7 +6,6 @@
 import attachToForm from '../../../src/editor/utils/attachtoform';
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global document, Event */
@@ -26,8 +25,8 @@ describe( 'attachToForm()', () => {
 			evt.preventDefault();
 		} );
 
-		class CustomEditor extends Editor {}
-		mix( CustomEditor, ElementApiMixin );
+		// eslint-disable-next-line new-cap
+		class CustomEditor extends ElementApiMixin( Editor ) {}
 
 		editor = new CustomEditor();
 		editor.model.document.createRoot();

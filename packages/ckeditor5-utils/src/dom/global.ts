@@ -9,26 +9,36 @@
  * @module utils/dom/global
  */
 
+// This interface exists to make our API pages more readable.
+/**
+ * A helper (module) giving an access to the global DOM objects such as `window` and `document`.
+ */
+export interface GlobalType {
+	readonly window: Window & typeof globalThis;
+	readonly document: Document;
+}
+
 /**
  * A helper (module) giving an access to the global DOM objects such as `window` and
  * `document`. Accessing these objects using this helper allows easy and bulletproof
  * testing, i.e. stubbing native properties:
  *
- *		import global from 'ckeditor5/utils/dom/global.js';
+ * ```ts
+ * import { global } from 'ckeditor5/utils';
  *
- *		// This stub will work for any code using global module.
- *		testUtils.sinon.stub( global, 'window', {
- *			innerWidth: 10000
- *		} );
+ * // This stub will work for any code using global module.
+ * testUtils.sinon.stub( global, 'window', {
+ * 	innerWidth: 10000
+ * } );
  *
- *		console.log( global.window.innerWidth );
+ * console.log( global.window.innerWidth );
+ * ```
  */
-
-let global: { window: Window & typeof globalThis; document: Document };
+let globalVar: GlobalType; // named globalVar instead of global: https://github.com/ckeditor/ckeditor5/issues/12971
 
 // In some environments window and document API might not be available.
 try {
-	global = { window, document };
+	globalVar = { window, document };
 } catch ( e ) {
 	// It's not possible to mock a window object to simulate lack of a window object without writing extremely convoluted code.
 	/* istanbul ignore next */
@@ -37,7 +47,7 @@ try {
 	// We only handle this so loading editor in environments without window and document doesn't fail.
 	// For better DX we shouldn't introduce mixed types and require developers to check the type manually.
 	// This module should not be used on purpose in any environment outside browser.
-	global = { window: {} as any, document: {} as any };
+	globalVar = { window: {} as any, document: {} as any };
 }
 
-export default global;
+export default globalVar;

@@ -19,7 +19,6 @@ import TodoListEditing from '../../src/todolist/todolistediting';
 import ListStyleCommand from '../../src/listproperties/liststylecommand';
 import ListReversedCommand from '../../src/listproperties/listreversedcommand';
 import ListStartCommand from '../../src/listproperties/liststartcommand';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 
 describe( 'ListPropertiesEditing', () => {
 	let editor, model, view;
@@ -1430,7 +1429,7 @@ describe( 'ListPropertiesEditing', () => {
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 
-						editor.execute( 'input', { text: 'Foo' } );
+						editor.execute( 'insertText', { text: 'Foo' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
@@ -1552,7 +1551,7 @@ describe( 'ListPropertiesEditing', () => {
 				function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 					text.split( '' ).forEach( character => {
-						editor.execute( 'input', {
+						editor.execute( 'insertText', {
 							text: character
 						} );
 					} );
@@ -1741,59 +1740,6 @@ describe( 'ListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Space shuttle</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Dragon]</listItem>'
 					);
-				} );
-			} );
-
-			describe( 'the FontColor feature', () => {
-				let editor, view, container;
-
-				beforeEach( () => {
-					container = document.createElement( 'div' );
-					document.body.appendChild( container );
-
-					return ClassicTestEditor
-						.create( container, {
-							plugins: [ Paragraph, ListPropertiesEditing, FontColor, Typing ]
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							view = editor.editing.view;
-						} );
-				} );
-
-				afterEach( () => {
-					container.remove();
-
-					return editor.destroy();
-				} );
-
-				describe( 'spellchecking integration', () => {
-					it( 'should not throw if a children mutation was fired over colorized text', () => {
-						editor.setData(
-							'<ul>' +
-								'<li><span style="color:hsl(30, 75%, 60%);">helllo</span></li>' +
-							'</ul>'
-						);
-
-						const viewRoot = view.document.getRoot();
-						const viewLi = viewRoot.getChild( 0 ).getChild( 0 );
-
-						// This should not throw. See #9325.
-						view.document.fire( 'mutations',
-							[
-								{
-									type: 'children',
-									oldChildren: [
-										viewLi.getChild( 0 )
-									],
-									newChildren: view.change( writer => [
-										writer.createContainerElement( 'font' )
-									] ),
-									node: viewLi
-								}
-							]
-						);
-					} );
 				} );
 			} );
 		} );
@@ -3161,7 +3107,7 @@ describe( 'ListPropertiesEditing', () => {
 							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
 						);
 
-						editor.execute( 'input', { text: 'Foo' } );
+						editor.execute( 'insertText', { text: 'Foo' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -3286,7 +3232,7 @@ describe( 'ListPropertiesEditing', () => {
 				function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 					text.split( '' ).forEach( character => {
-						editor.execute( 'input', {
+						editor.execute( 'insertText', {
 							text: character
 						} );
 					} );
@@ -3663,6 +3609,24 @@ describe( 'ListPropertiesEditing', () => {
 						'</ol>'
 					);
 				} );
+
+				it( 'should allow 0 as list start index', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="0">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="0">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
+				} );
+
+				it( 'should not allow a negative start index', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="-3">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="-3">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+				} );
 			} );
 
 			describe( 'view to model', () => {
@@ -3690,6 +3654,24 @@ describe( 'ListPropertiesEditing', () => {
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should convert single list (type: numbered, start: 0)', () => {
+					editor.setData( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listStart="0" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStart="0" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should convert single list and change negative start index (type: numbered, start: -3)', () => {
+					editor.setData( '<ol start="-3"><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
 				} );
 
@@ -4833,7 +4815,7 @@ describe( 'ListPropertiesEditing', () => {
 							'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>'
 						);
 
-						editor.execute( 'input', { text: 'Foo' } );
+						editor.execute( 'insertText', { text: 'Foo' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4958,7 +4940,7 @@ describe( 'ListPropertiesEditing', () => {
 				function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 					text.split( '' ).forEach( character => {
-						editor.execute( 'input', {
+						editor.execute( 'insertText', {
 							text: character
 						} );
 					} );

@@ -187,7 +187,7 @@ describe( 'ListEditing', () => {
 
 	describe( 'delete key handling callback', () => {
 		it( 'should execute outdentList command on backspace key in first item of list (first node in root)', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -199,7 +199,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should execute outdentList command on backspace key in first item of list (after a paragraph)', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -211,7 +211,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not execute outdentList command on delete key in first item of list', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'forward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -224,7 +224,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not execute outdentList command when selection is not collapsed', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -237,7 +237,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not execute outdentList command if not in list item', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -250,7 +250,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not execute outdentList command if not in first list item', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -266,7 +266,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not execute outdentList command when selection is not on first position', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -279,7 +279,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should outdent list when previous element is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -294,7 +294,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should outdent list when list is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -309,7 +309,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should outdent empty list when list is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -328,7 +328,7 @@ describe( 'ListEditing', () => {
 			model.schema.extend( '$text', { allowIn: 'listItemSub' } );
 			editor.conversion.elementToElement( { model: 'listItemSub', view: 'listItemSub' } );
 
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward', selectionToRemove: viewDoc.selection };
 
 			sinon.spy( editor, 'execute' );
 
@@ -4153,6 +4153,17 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should work if a selectable element is passed to DataController#insertContent()', () => {
+			model.change( writer => {
+				const listItem = writer.createElement( 'listItem', { listType: 'bulleted', listIndent: '0' } );
+				model.insertContent( listItem, modelRoot, 'in' );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">[]</listItem>'
 			);
 		} );
 

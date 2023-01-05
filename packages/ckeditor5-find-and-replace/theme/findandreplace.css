@@ -4,7 +4,7 @@
  */
 
 .ck-find-result {
-	background: hsl(60, 100%, 50%);
+	background: var(--ck-color-highlight-background);
 	color: var(--ck-color-text);
 }
 

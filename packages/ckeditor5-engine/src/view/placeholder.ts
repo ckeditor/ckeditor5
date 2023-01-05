@@ -14,6 +14,8 @@ import type DowncastWriter from './downcastwriter';
 import type Element from './element';
 import type View from './view';
 
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders: WeakMap<Document, Map<Element, PlaceholderConfig>> = new WeakMap();
 
@@ -53,6 +55,11 @@ export function enablePlaceholder( options: {
 		// If a post-fixer callback makes a change, it should return `true` so other post–fixers
 		// can re–evaluate the document again.
 		doc.registerPostFixer( writer => updateDocumentPlaceholders( doc, writer ) );
+
+		// Update placeholders on isComposing state change since rendering is disabled while in composition mode.
+		doc.on<ObservableChangeEvent>( 'change:isComposing', () => {
+			view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+		}, { priority: 'high' } );
 	}
 
 	// Store information about the element placeholder under its document.
@@ -171,20 +178,23 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 		return false;
 	}
 
+	const doc = element.document;
+	const viewSelection = doc.selection;
+	const selectionAnchor = viewSelection.anchor;
+
+	if ( doc.isComposing && selectionAnchor && selectionAnchor.parent === element ) {
+		return false;
+	}
+
 	// Skip the focus check and make the placeholder visible already regardless of document focus state.
 	if ( keepOnFocus ) {
 		return true;
 	}
 
-	const doc = element.document;
-
 	// If the document is blurred.
 	if ( !doc.isFocused ) {
 		return true;
 	}
-
-	const viewSelection = doc.selection;
-	const selectionAnchor = viewSelection.anchor;
 
 	// If document is focused and the element is empty but the selection is not anchored inside it.
 	return !!selectionAnchor && selectionAnchor.parent !== element;
@@ -198,7 +208,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 // @returns {Boolean} True if any changes were made to the view document.
 function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): boolean {
 	const placeholders = documentPlaceholders.get( doc )!;
-	const directHostElements: Element[] = [];
+	const directHostElements: Array<Element> = [];
 	let wasViewModified = false;
 
 	// First set placeholders on the direct hosts.

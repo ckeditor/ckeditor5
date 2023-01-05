@@ -9,7 +9,7 @@
 
 import Element, { type ElementAttributes } from './element';
 import Node from './node';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Document from './document';
 import type Item from './item';
@@ -23,7 +23,7 @@ import type Item from './item';
  * @extends module:engine/view/element~Element
  */
 export default class EmptyElement extends Element {
-	public override readonly getFillerOffset: () => null;
+	public override getFillerOffset: () => null;
 
 	/**
 	 * Creates new instance of EmptyElement.

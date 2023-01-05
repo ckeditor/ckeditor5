@@ -11,29 +11,31 @@
  * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
  * prototype of first object (a constructor).
  *
- *		class Editor {
- *			...
- *		}
+ * ```
+ * class Editor {
+ * 	...
+ * }
  *
- *		const SomeMixin = {
- *			a() {
- *				return 'a';
- *			}
- *		};
+ * const SomeMixin = {
+ * 	a() {
+ * 		return 'a';
+ * 	}
+ * };
  *
- *		mix( Editor, SomeMixin, ... );
+ * mix( Editor, SomeMixin, ... );
  *
- *		new Editor().a(); // -> 'a'
+ * new Editor().a(); // -> 'a'
+ * ```
  *
  * Note: Properties which already exist in the base class will not be overriden.
  *
- * @depreciated Use mixin pattern, see: https://www.typescriptlang.org/docs/handbook/mixins.html.
- * @param {Function} [baseClass] Class which prototype will be extended.
- * @param {Object} [...mixins] Objects from which to get properties.
+ * @deprecated Use mixin pattern, see: https://www.typescriptlang.org/docs/handbook/mixins.html.
+ * @param baseClass Class which prototype will be extended.
+ * @param mixins Objects from which to get properties.
  */
-export default function mix( baseClass: Function, ...mixins: object[] ): void {
+export default function mix( baseClass: Function, ...mixins: Array<object> ): void {
 	mixins.forEach( mixin => {
-		const propertyNames: ( string | symbol )[] = Object.getOwnPropertyNames( mixin );
+		const propertyNames: Array<string | symbol> = Object.getOwnPropertyNames( mixin );
 		const propertySymbols = Object.getOwnPropertySymbols( mixin );
 
 		propertyNames.concat( propertySymbols ).forEach( key => {

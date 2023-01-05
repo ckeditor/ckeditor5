@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import EditorUI from '../../../src/editorui/editorui';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
@@ -21,7 +22,6 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -72,6 +72,13 @@ describe( 'BlockToolbar', () => {
 
 		element.remove();
 		return editor.destroy();
+	} );
+
+	after( () => {
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
+		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
+		ResizeObserver._observerInstance = null;
 	} );
 
 	it( 'should have pluginName property', () => {

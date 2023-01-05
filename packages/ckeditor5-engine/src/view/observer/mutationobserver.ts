@@ -10,9 +10,7 @@
 /* globals window */
 
 import Observer from './observer';
-import ViewSelection from '../selection';
-import { startsWithFiller, getDataWithoutFiller } from '../filler';
-
+import { startsWithFiller } from '../filler';
 import { isEqualWith } from 'lodash-es';
 
 import type DomConverter from '../domconverter';
@@ -23,16 +21,13 @@ import type ViewNode from '../node';
 import type ViewText from '../text';
 
 /**
- * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
- * elements as changed and call {@link module:engine/view/renderer~Renderer#render}.
- * Because all mutated nodes are marked as "to be rendered" and the
- * {@link module:engine/view/renderer~Renderer#render} is called, all changes will be reverted, unless the mutation will be handled by the
- * {@link module:engine/view/document~Document#event:mutations} event listener. It means user will see only handled changes, and the editor
- * will block all changes which are not handled.
+ * Mutation observer's role is to watch for any DOM changes inside the editor that weren't
+ * done by the editor's {@link module:engine/view/renderer~Renderer} itself and reverting these changes.
  *
- * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
- * mutations on elements which do not have corresponding view elements. Also
- * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
+ * It does this by observing all mutations in the DOM, marking related view elements as changed and calling
+ * {@link module:engine/view/renderer~Renderer#render}. Because all mutated nodes are marked as
+ * "to be rendered" and the {@link module:engine/view/renderer~Renderer#render `render()`} method is called,
+ * all changes are reverted in the DOM (the DOM is synced with the editor's view structure).
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
@@ -43,7 +38,7 @@ export default class MutationObserver extends Observer {
 	public renderer: Renderer;
 
 	private readonly _config: MutationObserverInit;
-	private readonly _domElements: HTMLElement[];
+	private readonly _domElements: Array<HTMLElement>;
 	private _mutationObserver: InstanceType<typeof global.MutationObserver>;
 
 	constructor( view: View ) {
@@ -58,7 +53,6 @@ export default class MutationObserver extends Observer {
 		this._config = {
 			childList: true,
 			characterData: true,
-			characterDataOldValue: true,
 			subtree: true
 		};
 
@@ -94,8 +88,7 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * Synchronously fires {@link module:engine/view/document~Document#event:mutations} event with all mutations in record queue.
-	 * At the same time empties the queue so mutations will not be fired twice.
+	 * Synchronously handles mutations and empties the queue.
 	 */
 	public flush(): void {
 		this._onMutations( this._mutationObserver.takeRecords() );
@@ -142,12 +135,12 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
+	 * Handles mutations. Mark view elements to sync and call render.
 	 *
 	 * @private
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
-	private _onMutations( domMutations: MutationRecord[] ) {
+	private _onMutations( domMutations: Array<MutationRecord> ) {
 		// As a result of this.flush() we can have an empty collection.
 		if ( domMutations.length === 0 ) {
 			return;
@@ -156,23 +149,25 @@ export default class MutationObserver extends Observer {
 		const domConverter = this.domConverter;
 
 		// Use map and set for deduplication.
-		const mutatedTexts = new Map<ViewText, MutatedText>();
-		const mutatedElements = new Set<ViewElement>();
+		const mutatedTextNodes = new Set<ViewText>();
+		const elementsWithMutatedChildren = new Set<ViewElement>();
 
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
 		for ( const mutation of domMutations ) {
-			if ( mutation.type === 'childList' ) {
-				const element = domConverter.mapDomToView( mutation.target as HTMLElement ) as ViewElement;
+			const element = domConverter.mapDomToView( mutation.target as HTMLElement );
 
-				// Do not collect mutations from UIElements and RawElements.
-				if ( element && ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) ) {
-					continue;
-				}
+			if ( !element ) {
+				continue;
+			}
 
-				if ( element && !this._isBogusBrMutation( mutation ) ) {
-					mutatedElements.add( element );
-				}
+			// Do not collect mutations from UIElements and RawElements.
+			if ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) {
+				continue;
+			}
+
+			if ( mutation.type === 'childList' && !this._isBogusBrMutation( mutation ) ) {
+				elementsWithMutatedChildren.add( element as ViewElement );
 			}
 		}
 
@@ -188,37 +183,31 @@ export default class MutationObserver extends Observer {
 			if ( mutation.type === 'characterData' ) {
 				const text = domConverter.findCorrespondingViewText( mutation.target as Text ) as ViewText;
 
-				if ( text && !mutatedElements.has( text.parent as ViewElement ) ) {
-					// Use text as a key, for deduplication. If there will be another mutation on the same text element
-					// we will have only one in the map.
-					mutatedTexts.set( text, {
-						type: 'text',
-						oldText: text.data,
-						newText: getDataWithoutFiller( mutation.target as Text ),
-						node: text
-					} );
+				if ( text && !elementsWithMutatedChildren.has( text.parent as ViewElement ) ) {
+					mutatedTextNodes.add( text );
 				}
 				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
-				// on text, but for the view, where filler text node did not existed, new text node was created, so we
-				// need to fire 'children' mutation instead of 'text'.
+				// on text, but for the view, where filler text node did not exist, new text node was created, so we
+				// need to handle it as a 'children' mutation instead of 'text'.
 				else if ( !text && startsWithFiller( mutation.target ) ) {
-					mutatedElements.add( domConverter.mapDomToView( mutation.target.parentNode as HTMLElement ) as ViewElement );
+					elementsWithMutatedChildren.add(
+						domConverter.mapDomToView( mutation.target.parentNode as HTMLElement ) as ViewElement
+					);
 				}
 			}
 		}
 
-		// Now we build the list of mutations to fire and mark elements. We did not do it earlier to avoid marking the
+		// Now we build the list of mutations to mark elements. We did not do it earlier to avoid marking the
 		// same node multiple times in case of duplication.
 
-		// List of mutations we will fire.
-		const viewMutations: ( MutatedText | MutatedChildren )[] = [];
+		let hasMutations = false;
 
-		for ( const mutatedText of mutatedTexts.values() ) {
-			this.renderer.markToSync( 'text', mutatedText.node );
-			viewMutations.push( mutatedText );
+		for ( const textNode of mutatedTextNodes ) {
+			hasMutations = true;
+			this.renderer.markToSync( 'text', textNode );
 		}
 
-		for ( const viewElement of mutatedElements ) {
+		for ( const viewElement of elementsWithMutatedChildren ) {
 			const domElement = domConverter.mapViewToDom( viewElement ) as HTMLElement;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement, { withChildren: false } ) );
@@ -226,65 +215,26 @@ export default class MutationObserver extends Observer {
 			// It may happen that as a result of many changes (sth was inserted and then removed),
 			// both elements haven't really changed. #1031
 			if ( !isEqualWith( viewChildren, newViewChildren, sameNodes ) ) {
+				hasMutations = true;
 				this.renderer.markToSync( 'children', viewElement );
-
-				viewMutations.push( {
-					type: 'children',
-					oldChildren: viewChildren,
-					newChildren: newViewChildren,
-					node: viewElement
-				} );
-			}
-		}
-
-		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
-		// There should not be simultaneous mutation in multiple documents, so it's fine.
-		const domSelection = domMutations[ 0 ].target.ownerDocument!.getSelection();
-
-		let viewSelection = null;
-
-		if ( domSelection && domSelection.anchorNode ) {
-			// If `domSelection` is inside a dom node that is already bound to a view node from view tree, get
-			// corresponding selection in the view and pass it together with `viewMutations`. The `viewSelection` may
-			// be used by features handling mutations.
-			// Only one range is supported.
-
-			const viewSelectionAnchor = domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
-			const viewSelectionFocus = domConverter.domPositionToView( domSelection.focusNode!, domSelection.focusOffset );
-
-			// Anchor and focus has to be properly mapped to view.
-			if ( viewSelectionAnchor && viewSelectionFocus ) {
-				viewSelection = new ViewSelection( viewSelectionAnchor );
-				viewSelection.setFocus( viewSelectionFocus );
 			}
 		}
 
 		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
-		if ( viewMutations.length ) {
-			this.document.fire<MutationObserverEvent>( 'mutations', viewMutations, viewSelection );
+		if ( hasMutations ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.group( '%c[MutationObserver]%c Mutations detected',
+			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
+			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // }
 
-			// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
-			// view (which has not been changed). In order to "reset DOM" we render the view again.
+			// At this point we have "dirty DOM" (changed) and de-synched view (which has not been changed).
+			// In order to "reset DOM" we render the view again.
 			this.view.forceRender();
-		}
 
-		function sameNodes( child1: ViewNode, child2: ViewNode ) {
-			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
-			if ( Array.isArray( child1 ) ) {
-				return;
-			}
-
-			// Elements.
-			if ( child1 === child2 ) {
-				return true;
-			}
-			// Texts.
-			else if ( child1.is( '$text' ) && child2.is( '$text' ) ) {
-				return child1.data === child2.data;
-			}
-
-			// Not matching types.
-			return false;
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.groupEnd();
+			// @if CK_DEBUG_TYPING // }
 		}
 	}
 
@@ -311,67 +261,21 @@ export default class MutationObserver extends Observer {
 	}
 }
 
-export type MutationObserverEvent = {
-	name: 'mutations';
-	args: [ viewMutations: ( MutatedChildren | MutatedText )[], viewSelection: ViewSelection | null ];
-};
+function sameNodes( child1: ViewNode, child2: ViewNode ) {
+	// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
+	if ( Array.isArray( child1 ) ) {
+		return;
+	}
 
-/**
- * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverted to the state before
- * mutation, so all changes which should be applied, should be handled on this event.
- *
- * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
- *
- * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
- *
- * @see module:engine/view/observer/mutationobserver~MutationObserver
- * @event module:engine/view/document~Document#event:mutations
- * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatedChildren>}
- * viewMutations Array of mutations.
- * For mutated texts it will be {@link module:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
- * {@link module:engine/view/observer/mutationobserver~MutatedChildren}. You can recognize the type based on the `type` property.
- * @param {module:engine/view/selection~Selection|null} viewSelection View selection that is a result of converting DOM selection to view.
- * Keep in
- * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
- */
+	// Elements.
+	if ( child1 === child2 ) {
+		return true;
+	}
+	// Texts.
+	else if ( child1.is( '$text' ) && child2.is( '$text' ) ) {
+		return child1.data === child2.data;
+	}
 
-/**
- * Mutation item for text.
- *
- * @see module:engine/view/document~Document#event:mutations
- * @see module:engine/view/observer/mutationobserver~MutatedChildren
- *
- * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedText
- *
- * @property {String} type For text mutations it is always 'text'.
- * @property {module:engine/view/text~Text} node Mutated text node.
- * @property {String} oldText Old text.
- * @property {String} newText New text.
- */
-export interface MutatedText {
-	type: 'text';
-	node: ViewText;
-	oldText: string;
-	newText: string;
-}
-
-/**
- * Mutation item for child nodes.
- *
- * @see module:engine/view/document~Document#event:mutations
- * @see module:engine/view/observer/mutationobserver~MutatedText
- *
- * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedChildren
- *
- * @property {String} type For child nodes mutations it is always 'children'.
- * @property {module:engine/view/element~Element} node Parent of the mutated children.
- * @property {Array.<module:engine/view/node~Node>} oldChildren Old child nodes.
- * @property {Array.<module:engine/view/node~Node>} newChildren New child nodes.
- */
-export interface MutatedChildren {
-	type: 'children';
-	node: ViewElement;
-	oldChildren: ViewNode[];
-	newChildren: ViewNode[];
+	// Not matching types.
+	return false;
 }

@@ -97,7 +97,7 @@ expect( selection ).to.not.have.attribute( 'linkHref' );
 
 ## Running manual tests
 
-In order to start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests, but only when you want to check your changes in tests, that require DLL builds.
+In order to start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
 
 <info-box hint>
 	You can read more about the DLL builds in a {@link installation/advanced/dll-builds dedicated guide}.
@@ -106,14 +106,15 @@ In order to start the manual tests server, use the `yarn run manual` task. After
 The `yarn run manual` task accepts the following options:
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
-* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
+* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
+* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
 * `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
 * `--dll` &ndash; An optional flag that allows creating the DLL builds automatically without asking user for confirmation. If `true` (meaning that the `--dll` flag is provided), DLL builds are created automatically if they are required by test files. You can negate the logic to never create DLL builds and not ask user by providing the `--no-dll` flag. Defaults to `null`, so user will be asked for confirmation.
+* `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
 
-It starts the server available at http://localhost:8125.
+It starts the server available at [http://localhost:8125](http://localhost:8125).
 
 ### Creating a manual test
 
@@ -204,7 +205,7 @@ Read more about the crawler in the {@link framework/guides/contributing/developm
 
 ## Rules for using the `--files` option
 
-The `--files` (alias `-f`) option is used by both manual and automated tests, and it accepts following types of patterns:
+The `--files` (alias `-f`) option is used by both the manual and automated tests, and it accepts the following types of patterns:
 
 <table>
 	<tr>
@@ -256,7 +257,7 @@ The `--files` (alias `-f`) option is used by both manual and automated tests, an
 	</tr>
 	<tr>
 		<td><code>ckeditor5,list/list/,style/*grid*</code></td>
-		<td>Sum of all arguments separated by comma <code>,</code>. This can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
+		<td>Sum of all arguments separated by a comma <code>,</code>. This one can use any combination of argument types. Note that since it is a sum, using multiple <code>!foo</code> excluding arguments might not work as expected.</td>
 	</tr>
 </table>
 

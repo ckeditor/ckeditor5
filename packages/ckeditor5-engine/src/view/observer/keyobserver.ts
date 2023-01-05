@@ -10,7 +10,7 @@
 import DomEventObserver from './domeventobserver';
 import type View from '../view';
 import type DomEventData from './domeventdata';
-import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Observer for events connected with pressing keyboard keys.
@@ -44,7 +44,7 @@ export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', K
 	}
 }
 
-export type KeyObserverEvent = {
+export type ViewDocumentKeyEvent = {
 	name: 'keydown' | 'keyup';
 	args: [ data: DomEventData<KeyboardEvent> & KeystrokeInfo & { keystroke: number } ];
 };

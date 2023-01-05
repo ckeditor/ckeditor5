@@ -15,19 +15,20 @@ const BIG_CHUNK_SIZE = 10000;
  *
  * Note: in contrary to Array.splice, this function does not modify the original `target`.
  *
- * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 0, 0 );		// [ 3, 4, 1, 2 ]
- * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 1 );		// [ 1, 3, 4 ]
- * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 0 );		// [ 1, 3, 4, 2 ]
- * 		spliceArray( [ 1, 2 ], [ 3, 4 ], 2, 0 );		// [ 1, 2, 3, 4 ]
- * 		spliceArray( [ 1, 2 ], [], 0, 1 );				// [ 2 ]
+ * ```ts
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 0, 0 );	// [ 3, 4, 1, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 1 );	// [ 1, 3, 4 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 1, 0 );	// [ 1, 3, 4, 2 ]
+ * spliceArray( [ 1, 2 ], [ 3, 4 ], 2, 0 );	// [ 1, 2, 3, 4 ]
+ * spliceArray( [ 1, 2 ], [],       0, 1 );	// [ 2 ]
+ * ```
  *
- * @private
- * @param {Array} target Array to be spliced.
- * @param {Array} source Array of elements to be inserted to target.
- * @param {Number} start Index at which nodes should be inserted/removed.
- * @param {Number} count Number of items.
+ * @param target Array to be spliced.
+ * @param source Array of elements to be inserted to target.
+ * @param start Index at which nodes should be inserted/removed.
+ * @param count Number of items.
  *
- * @returns {Array} New spliced array.
+ * @returns New spliced array.
  */
 export default function spliceArray<T>( target: Array<T>, source: Array<T>, start: number, count: number ): Array<T> {
 	// In case of performance problems, see: https://github.com/ckeditor/ckeditor5/pull/12429/files#r965850568

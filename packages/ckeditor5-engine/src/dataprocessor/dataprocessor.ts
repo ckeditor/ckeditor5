@@ -8,7 +8,7 @@
  */
 
 import type ViewDocumentFragment from '../view/documentfragment';
-import { type MatcherPattern } from '../view/matcher';
+import type { MatcherPattern } from '../view/matcher';
 
 /**
  * The data processor interface. It should be implemented by actual data processors.
@@ -71,4 +71,9 @@ export default interface DataProcessor {
 	toView( data: string ): ViewDocumentFragment;
 	registerRawContentMatcher( pattern: MatcherPattern ): void;
 	useFillerType( type: 'default' | 'marked' ): void;
+
+	/**
+	 * If `false`, comment nodes will be converted to `$comment`. Otherwise comment nodes are ignored.
+	 */
+	skipComments?: boolean;
 }

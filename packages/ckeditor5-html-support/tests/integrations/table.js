@@ -942,6 +942,223 @@ describe( 'TableElementSupport', () => {
 		await editor.destroy();
 	} );
 
+	it( 'should upcast GHS attributes at the low priority (feature attribute converter at low + 1 priority)', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.model.schema.extend( 'table', { allowAttributes: [ 'barAttr' ] } );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			view: 'foo-attr',
+			model: 'barAttr',
+			converterPriority: priorities.get( 'low' ) + 1
+		} );
+
+		editor.setData(
+			'<figure class="table" foo-attr="100">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table barAttr="100">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: { }
+		} );
+	} );
+
+	it( 'should upcast GHS attributes at the low priority (feature attribute converter at low priority)', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		// Apply filtering rules added after initial data load.
+		editor.setData( '' );
+
+		editor.model.schema.extend( 'table', { allowAttributes: [ 'barAttr' ] } );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			view: 'foo-attr',
+			model: 'barAttr',
+			converterPriority: 'low'
+		} );
+
+		editor.setData(
+			'<figure class="table" foo-attr="100">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlFigureAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: { attributes: { 'foo-attr': '100' } }
+			}
+		} );
+	} );
+
+	it( 'should convert markers on the figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.conversion.for( 'upcast' ).dataToMarker( {
+			view: 'commented'
+		} );
+
+		editor.setData(
+			'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: { }
+		} );
+
+		const marker = model.markers.get( 'commented:foo:id' );
+
+		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+	} );
+
+	it( 'should convert markers on the table element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.conversion.for( 'upcast' ).dataToMarker( {
+			view: 'commented'
+		} );
+
+		editor.setData(
+			'<table data-commented-end-after="foo:id" data-commented-start-before="foo:id">' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>1.1</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: { }
+		} );
+
+		const marker = model.markers.get( 'commented:foo:id' );
+
+		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+	} );
+
+	it( 'should upcast custom attributes with marker', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.conversion.for( 'upcast' ).dataToMarker( {
+			view: 'commented'
+		} );
+
+		editor.setData(
+			'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table" foo="bar">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1.1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlFigureAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						foo: 'bar'
+					}
+				}
+			}
+		} );
+
+		const marker = model.markers.get( 'commented:foo:id' );
+
+		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+	} );
+
 	describe( 'TableCaption', () => {
 		// Sanity tests verifying if table caption is correctly handled by default converters.
 
@@ -1325,185 +1542,6 @@ describe( 'TableElementSupport', () => {
 				'</figure>'
 			);
 			/* eslint-enable max-len */
-		} );
-
-		it( 'should run attributes upcast converter with priority higher ' +
-			'then low before GHS preserves remaining attributes on table model element', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /.*/,
-				attributes: true,
-				styles: true,
-				classes: true
-			} ] );
-
-			editor.model.schema.extend( 'table', { allowAttributes: [ 'barAttr' ] } );
-
-			editor.conversion.for( 'upcast' ).attributeToAttribute( {
-				view: 'foo-attr',
-				model: 'barAttr',
-				converterPriority: priorities.get( 'low' ) + 1
-			} );
-
-			editor.setData(
-				'<figure class="table" foo-attr="100">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-					'<table barAttr="100">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>1.1</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
-				attributes: { }
-			} );
-		} );
-
-		it( 'should run attributes upcast converter with priority low ' +
-			'after GHS preserves remaining attributes on table model element', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /.*/,
-				attributes: true,
-				styles: true,
-				classes: true
-			} ] );
-
-			editor.model.schema.extend( 'table', { allowAttributes: [ 'barAttr' ] } );
-
-			editor.conversion.for( 'upcast' ).attributeToAttribute( {
-				view: 'foo-attr',
-				model: 'barAttr',
-				converterPriority: priorities.get( 'low' )
-			} );
-
-			editor.setData(
-				'<figure class="table" foo-attr="100">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-					'<table htmlFigureAttributes="(1)">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>1.1</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
-				attributes: {
-					1: { attributes: { 'foo-attr': '100' } }
-				}
-			} );
-		} );
-
-		it( 'should run marker upcast converter with priority higher ' +
-		'then low before GHS preserves remaining attributes on table model element', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /.*/,
-				attributes: true,
-				styles: true,
-				classes: true
-			} ] );
-
-			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'highest' ) // For marker this priority equals to -999
-			} );
-
-			editor.setData(
-				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>1.1</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
-				attributes: { }
-			} );
-
-			const marker = model.markers.get( 'commented:foo:id' );
-
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
-		} );
-
-		it( 'should upcast custom attributes with marker', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /.*/,
-				attributes: true,
-				styles: true,
-				classes: true
-			} ] );
-
-			editor.conversion.for( 'upcast' ).dataToMarker( {
-				view: 'commented',
-				converterPriority: priorities.get( 'high' )
-			} );
-
-			editor.setData(
-				'<figure data-commented-end-after="foo:id" data-commented-start-before="foo:id" class="table" foo="bar">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-					'<table htmlFigureAttributes="(1)">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>1.1</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
-				attributes: {
-					1: {
-						attributes: {
-							foo: 'bar'
-						}
-					}
-				}
-			} );
-
-			const marker = model.markers.get( 'commented:foo:id' );
-
-			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
-			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
 } );

@@ -9,6 +9,8 @@
 :root {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
+	--ck-labeled-field-label-default-position-x: var(--ck-spacing-medium);
+	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
 	--ck-color-labeled-field-label-background: var(--ck-color-base-background);
 }
 
@@ -87,11 +89,11 @@
 	&.ck-disabled.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		@mixin ck-dir ltr {
-			transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
+			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}
 
 		@mixin ck-dir rtl {
-			transform: translate(calc(-1 * var(--ck-spacing-medium)), calc(0.6 * var(--ck-font-size-base))) scale(1);
+			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x)), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}
 
 		/* Compensate for the default translate position. */

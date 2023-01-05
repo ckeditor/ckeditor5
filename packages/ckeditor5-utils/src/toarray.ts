@@ -10,14 +10,22 @@
 /**
  * Transforms any value to an array. If the provided value is already an array, it is returned unchanged.
  *
- * @param {*} data The value to transform to an array.
- * @returns {Array} An array created from data.
+ * @param data The value to transform to an array.
+ * @returns An array created from data.
  */
-export default function toArray<T>( data: ArrayOrItem<T> ): T[];
-export default function toArray<T>( data: ReadonlyArrayOrItem<T> ): readonly T[];
-export default function toArray<T>( data: ArrayOrItem<T> ): T[] {
+export default function toArray<T>( data: ArrayOrItem<T> ): Array<T>;
+
+/**
+ * Transforms any value to an array. If the provided value is already an array, it is returned unchanged.
+ *
+ * @param data The value to transform to an array.
+ * @returns An array created from data.
+ */
+export default function toArray<T>( data: ReadonlyArrayOrItem<T> ): ReadonlyArray<T>;
+
+export default function toArray<T>( data: ArrayOrItem<T> ): Array<T> {
 	return Array.isArray( data ) ? data : [ data ];
 }
 
-export type ArrayOrItem<T> = T | T[];
-export type ReadonlyArrayOrItem<T> = T | readonly T[];
+export type ArrayOrItem<T> = T | Array<T>;
+export type ReadonlyArrayOrItem<T> = T | ReadonlyArray<T>;

@@ -30,11 +30,8 @@ import type Writer from '../writer';
  * <quote><h>st</h></quote><p>se</p>
  * ```
  *
- * @param {module:engine/model/model~Model} model The model in context of which
- * the selection modification should be performed.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * The selection of which content will be returned.
- * @returns {module:engine/model/documentfragment~DocumentFragment}
+ * @param model The model in context of which the selection modification should be performed.
+ * @param selection The selection of which content will be returned.
  */
 export default function getSelectedContent(
 	model: Model,
@@ -121,7 +118,7 @@ export default function getSelectedContent(
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
 function removeRangeContent( range: Range, writer: Writer ) {
-	const parentsToCheck: ( Element | DocumentFragment )[] = [];
+	const parentsToCheck: Array<Element | DocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity

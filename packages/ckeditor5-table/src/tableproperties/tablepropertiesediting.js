@@ -242,6 +242,12 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
+
+	upcastStyleToAttribute( conversion, {
+		viewElement: /^(table|figure)$/,
+		shouldUpcast: element => !( element.name == 'table' && element.parent.name == 'figure' ),
+		...options
+	} );
+
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

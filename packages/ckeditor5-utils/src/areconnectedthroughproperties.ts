@@ -11,10 +11,6 @@
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
- *
- * @param {Object|Array} obj1
- * @param {Object|Array} obj2
- * @returns {Boolean}
  */
 export default function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
 	if ( obj1 === obj2 && isObject( obj1 ) ) {
@@ -33,9 +29,11 @@ export default function areConnectedThroughProperties( obj1: object, obj2: objec
 	return false;
 }
 
-// Traverses JS structure and stores all sub-nodes, including the head node.
-// It walks into each iterable structures with the `try catch` block to omit errors that might be thrown during
-// tree walking. All primitives, functions and built-ins are skipped.
+/**
+ * Traverses JS structure and stores all sub-nodes, including the head node.
+ * It walks into each iterable structures with the `try catch` block to omit errors that might be thrown during
+ * tree walking. All primitives, functions and built-ins are skipped.
+ */
 function getSubNodes( head: unknown ): Set<unknown> {
 	const nodes = [ head ];
 

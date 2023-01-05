@@ -141,6 +141,8 @@ class App extends Component {
 		);
 	}
 }
+
+export default App;
 ```
 
 ### Context feature properties
@@ -371,7 +373,7 @@ This guide assumes that you are using the [Create React App CLI](https://github.
 The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor 5 from source, you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor 5 source from the existing loaders.
 
 <info-box>
-  You can see all the changes described below in this example project: https://github.com/ckeditor/ckeditor5-react-example/.
+  You can see all the changes described below in this example project: [https://github.com/ckeditor/ckeditor5-react-example/](https://github.com/ckeditor/ckeditor5-react-example/).
 </info-box>
 
 Create a sample application using `create-react-app@3+` first:
@@ -607,10 +609,10 @@ For more information, please refer to the {@link features/ui-language Setting th
 
 ### CKEditor 5 built from source
 
-Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows localizing editor builds:
+Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official translations webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing editor builds:
 
 ```
-yarn add @ckeditor/ckeditor5-dev-webpack-plugin --dev
+yarn add @ckeditor/ckeditor5-dev-translations --dev
 ```
 
 Then, add the installed plugin to the webpack configuration:
@@ -620,7 +622,7 @@ Then, add the installed plugin to the webpack configuration:
 'use strict';
 
 // ...
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 module.exports = {
 	// ...
@@ -628,7 +630,7 @@ module.exports = {
 	plugins: [
 		// ....
 
-		new CKEditorWebpackPlugin( {
+		new CKEditorTranslationsPlugin( {
 			// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 			language: 'de',
 			addMainLanguageTranslationsToAllAssets: true
@@ -647,4 +649,4 @@ For more information, please refer to the {@link features/ui-language Setting th
 
 ## Contributing and reporting issues
 
-The source code of rich text editor component for React is available on GitHub in https://github.com/ckeditor/ckeditor5-react.
+The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).

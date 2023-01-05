@@ -20,7 +20,7 @@ import type Operation from '../model/operation/operation';
 export default class OperationReplayer {
 	private _model: Model;
 	private _logSeparator: string;
-	private _operationsToReplay!: Operation[];
+	private _operationsToReplay!: Array<Operation>;
 
 	/**
 	 * @param {module:engine/model/model~Model} model Data model.
@@ -55,7 +55,7 @@ export default class OperationReplayer {
 	 *
 	 * @returns {Array.<module:engine/model/operation/operation~Operation>}
 	 */
-	public getOperationsToReplay(): Operation[] {
+	public getOperationsToReplay(): Array<Operation> {
 		return this._operationsToReplay;
 	}
 

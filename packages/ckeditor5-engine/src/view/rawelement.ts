@@ -9,7 +9,7 @@
 
 import Element from './element';
 import Node from './node';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type DomConverter from './domconverter';
 import type Item from './item';
@@ -35,7 +35,7 @@ type DomElement = globalThis.HTMLElement;
  * @extends module:engine/view/element~Element
  */
 export default class RawElement extends Element {
-	public override readonly getFillerOffset: () => null;
+	public override getFillerOffset: () => null;
 
 	/**
 	 * Creates a new instance of a raw element.

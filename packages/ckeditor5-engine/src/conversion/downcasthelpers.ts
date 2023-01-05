@@ -19,8 +19,13 @@ import ViewAttributeElement from '../view/attributeelement';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+
+import {
+	CKEditorError,
+	toArray,
+	type EventInfo,
+	type PriorityString
+} from '@ckeditor/ckeditor5-utils';
 
 import type {
 	default as DowncastDispatcher,
@@ -29,7 +34,7 @@ import type {
 	DowncastInsertEvent,
 	DowncastAddMarkerEvent,
 	DowncastAttributeEvent,
-	ReduceChangesEvent,
+	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
 } from './downcastdispatcher';
 import type ModelConsumable from './modelconsumable';
@@ -49,10 +54,8 @@ import type ViewPosition from '../view/position';
 import type ViewRange from '../view/range';
 import type {
 	default as Mapper,
-	ModelToViewPositionEvent
+	MapperModelToViewPositionEvent
 } from './mapper';
-import type EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import type { PriorityString } from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * Downcast conversion helper functions.
@@ -192,11 +195,11 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public elementToElement( config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 			children?: boolean;
 		};
 		view: ElementDefinition | ElementCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToElement( config ) );
 	}
@@ -339,10 +342,10 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public elementToStructure( config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 		};
 		view: StructureCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToStructure( config ) );
 	}
@@ -441,15 +444,15 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 				name?: string;
 			};
 			view: ElementDefinition | AttributeElementCreatorFunction;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, ElementDefinition | AttributeElementCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		}
 	): this {
 		return this.add( downcastAttributeToElement( config ) );
@@ -542,15 +545,15 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 				name?: string;
 			};
 			view: string | AttributeDescriptor | AttributeCreatorFunction;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		} | {
 			model: {
 				key: string;
 				name?: string;
-				values: TValues[];
+				values: Array<TValues>;
 			};
 			view: Record<TValues, AttributeDescriptor | AttributeCreatorFunction>;
-			converterPriority?: PriorityString | number;
+			converterPriority?: PriorityString;
 		}
 	): this {
 		return this.add( downcastAttributeToAttribute( config ) );
@@ -626,7 +629,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public markerToElement( config: {
 		model: string;
 		view: ElementDefinition | MarkerElementCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToElement( config ) );
 	}
@@ -693,7 +696,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public markerToHighlight( config: {
 		model: string;
 		view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToHighlight( config ) );
 	}
@@ -811,7 +814,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	public markerToData( config: {
 		model: string;
 		view?: MarkerDataCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToData( config ) );
 	}
@@ -948,7 +951,7 @@ export function convertRangeSelection() {
 			return;
 		}
 
-		const viewRanges: ViewRange[] = [];
+		const viewRanges: Array<ViewRange> = [];
 
 		for ( const range of selection.getRanges() ) {
 			viewRanges.push( conversionApi.mapper.toViewRange( range ) );
@@ -1217,7 +1220,7 @@ export function insertStructure( elementCreator: StructureCreatorFunction, consu
 			return;
 		}
 
-		const slotsMap = new Map<ViewElement, ModelNode[]>();
+		const slotsMap = new Map<ViewElement, Array<ModelNode>>();
 
 		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
 
@@ -1877,11 +1880,11 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 function downcastElementToElement( config: {
 	model: string | {
 		name: string;
-		attributes?: string | string[];
+		attributes?: string | Array<string>;
 		children?: boolean;
 	};
 	view: ElementDefinition | ElementCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeModelElementConfig( config.model );
 	const view = normalizeToElementConfig( config.view, 'container' );
@@ -1900,7 +1903,7 @@ function downcastElementToElement( config: {
 		);
 
 		if ( model.children || model.attributes.length ) {
-			dispatcher.on<ReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
+			dispatcher.on<DowncastReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
 		}
 	};
 }
@@ -1919,10 +1922,10 @@ function downcastElementToStructure(
 	config: {
 		model: string | {
 			name: string;
-			attributes?: string | string[];
+			attributes?: string | Array<string>;
 		};
 		view: StructureCreatorFunction;
-		converterPriority?: PriorityString | number;
+		converterPriority?: PriorityString;
 	}
 ) {
 	const model = normalizeModelElementConfig( config.model );
@@ -1981,7 +1984,7 @@ function downcastElementToStructure(
 			{ priority: config.converterPriority || 'normal' }
 		);
 
-		dispatcher.on<ReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
+		dispatcher.on<DowncastReduceChangesEvent>( 'reduceChanges', createChangeReducer( model ), { priority: 'low' } );
 	};
 }
 
@@ -2003,10 +2006,10 @@ function downcastAttributeToElement( config: {
 	model: string | {
 		key: string;
 		name?: string;
-		values?: string[];
+		values?: Array<string>;
 	};
 	view: ElementDefinition | AttributeElementCreatorFunction | Record<string, ElementDefinition | AttributeElementCreatorFunction>;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -2060,10 +2063,10 @@ function downcastAttributeToAttribute( config: {
 	model: string | {
 		key: string;
 		name?: string;
-		values?: string[];
+		values?: Array<string>;
 	};
 	view: string | AttributeDescriptor | AttributeCreatorFunction | Record<string, AttributeDescriptor | AttributeCreatorFunction>;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -2111,7 +2114,7 @@ function downcastAttributeToAttribute( config: {
 function downcastMarkerToElement( config: {
 	model: string;
 	view: ElementDefinition | MarkerElementCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	const view = normalizeToElementConfig( config.view, 'ui' );
 
@@ -2141,7 +2144,7 @@ function downcastMarkerToElement( config: {
 function downcastMarkerToData( config: {
 	model: string;
 	view?: MarkerDataCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
 
@@ -2183,7 +2186,7 @@ function downcastMarkerToData( config: {
 function downcastMarkerToHighlight( config: {
 	model: string;
 	view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
-	converterPriority?: PriorityString | number;
+	converterPriority?: PriorityString;
 } ) {
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAddMarkerEvent>(
@@ -2213,7 +2216,7 @@ function downcastMarkerToHighlight( config: {
 // @returns {Object}
 function normalizeModelElementConfig( model: string | {
 	name: string;
-	attributes?: string | string[];
+	attributes?: string | Array<string>;
 	children?: boolean;
 } ): NormalizedModelElementConfig {
 	if ( typeof model == 'string' ) {
@@ -2235,7 +2238,7 @@ function normalizeModelElementConfig( model: string | {
 
 interface NormalizedModelElementConfig {
 	name: string;
-	attributes: string[];
+	attributes: Array<string>;
 	children: boolean;
 }
 
@@ -2425,7 +2428,7 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 		evt: unknown,
 		data: { changes: Iterable<DiffItem | DiffItemReinsert>; reconvertedElements?: Set<ModelNode> }
 	) => {
-		const reducedChanges: ( DiffItem | DiffItemReinsert )[] = [];
+		const reducedChanges: Array<DiffItem | DiffItemReinsert> = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();
@@ -2502,11 +2505,11 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {Function} Exposed by writer as createSlot().
-function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, ModelNode[]>, conversionApi: DowncastConversionApi ) {
+function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
 	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter = 'children' ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
-		let children: ModelNode[] | null = null;
+		let children: Array<ModelNode> | null = null;
 
 		if ( modeOrFilter === 'children' ) {
 			children = Array.from( element.getChildren() );
@@ -2534,7 +2537,7 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Mo
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function validateSlotsChildren(
 	element: ModelElement,
-	slotsMap: Map<ViewElement, ModelNode[]>,
+	slotsMap: Map<ViewElement, Array<ModelNode>>,
 	conversionApi: DowncastConversionApi
 ) {
 	const childrenInSlots = Array.from( slotsMap.values() ).flat();
@@ -2573,15 +2576,15 @@ function validateSlotsChildren(
 // @param {Boolean} [options.reconversion]
 function fillSlots(
 	viewElement: ViewElement,
-	slotsMap: Map<ViewElement, ModelNode[]>,
+	slotsMap: Map<ViewElement, Array<ModelNode>>,
 	conversionApi: DowncastConversionApi,
 	options: { reconversion?: boolean }
 ): void {
 	// Set temporary position mapping to redirect child view elements into a proper slots.
-	conversionApi.mapper.on<ModelToViewPositionEvent>( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
+	conversionApi.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
 
 	let currentSlot: ViewElement | null = null;
-	let currentSlotNodes: ModelNode[] | null = null;
+	let currentSlotNodes: Array<ModelNode> | null = null;
 
 	// Fill slots with nested view nodes.
 	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
@@ -2734,7 +2737,7 @@ function defaultConsumer(
  * this depends on how the element converts the descriptor.
  */
 export interface HighlightDescriptor {
-	classes: string | string[];
+	classes: string | Array<string>;
 	id?: string;
 	priority?: number;
 	attributes?: Record<string, string>;
@@ -2867,7 +2870,7 @@ export type AttributeCreatorFunction = (
 
 export type AttributeDescriptor = {
 	key: 'class';
-	value: string | string[];
+	value: string | Array<string>;
 } | {
 	key: 'style';
 	value: Record<string, string>;

@@ -92,6 +92,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
+		editor.model.document.selection.observeMarkers( 'highlight' );
+
 		editor.model.change( writer => {
 			const root = editor.model.document.getRoot();
 

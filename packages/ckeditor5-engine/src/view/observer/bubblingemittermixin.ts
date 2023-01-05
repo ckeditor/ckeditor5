@@ -7,18 +7,18 @@
  * @module engine/view/observer/bubblingemittermixin
  */
 
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import {
-	Emitter,
+	CKEditorError,
+	EmitterMixin,
+	EventInfo,
+	toArray,
+	type ArrayOrItem,
+	type Emitter,
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
-	type CallbackOptions,
-	type GetCallback
-} from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+	type CallbackOptions
+} from '@ckeditor/ckeditor5-utils';
 
 import BubblingEventInfo from './bubblingeventinfo';
 import type Document from '../document';
@@ -36,7 +36,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * @mixin BubblingEmitterMixin
  * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
  */
-export default function BubblingEmitterMixin<Base extends abstract new( ...args: any[] ) => Emitter>(
+export default function BubblingEmitterMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
 	base: Base
 ): {
 	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & BubblingEmitter;
@@ -122,7 +122,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 		public _addEventListener(
 			this: Document,
 			event: string,
-			callback: ( ev: EventInfo, ...args: any[] ) => void,
+			callback: ( ev: EventInfo, ...args: Array<any> ) => void,
 			options: BubblingCallbackOptions
 		) {
 			const contexts = toArray( options.context || '$document' );
@@ -132,7 +132,7 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 				let emitter = eventContexts.get( context );
 
 				if ( !emitter ) {
-					emitter = new Emitter();
+					emitter = new ( EmitterMixin() )();
 					eventContexts.set( context, emitter! );
 				}
 
@@ -189,7 +189,7 @@ function fireListenerFor(
 	eventContexts: BubblingEventContexts,
 	context: string | Node,
 	eventInfo: EventInfo,
-	...eventArgs: unknown[]
+	...eventArgs: Array<unknown>
 ) {
 	const emitter = typeof context == 'string' ? eventContexts.get( context ) : getCustomContext( eventContexts, context );
 
@@ -348,27 +348,13 @@ type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>
 
 export type BubblingEventContextFunction = ( node: Node ) => boolean;
 
-export type BubblingCallbackOptions = CallbackOptions & {
-	context?: string | string[] | BubblingEventContextFunction;
+export type BubblingEvent<TEvent extends BaseEvent> = TEvent & {
+	eventInfo: BubblingEventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
+	callbackOptions: BubblingCallbackOptions;
 };
 
-export interface BubblingEmitter extends Emitter {
-	on<TEvent extends BaseEvent>(
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
+export type BubblingCallbackOptions = CallbackOptions & {
+	context?: ArrayOrItem<string | BubblingEventContextFunction>;
+};
 
-	once<TEvent extends BaseEvent>(
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
-
-	listenTo<TEvent extends BaseEvent>(
-		emitter: Emitter,
-		event: TEvent[ 'name' ],
-		callback: GetCallback<TEvent>,
-		options?: BubblingCallbackOptions
-	): void;
-}
+export type BubblingEmitter = Emitter;

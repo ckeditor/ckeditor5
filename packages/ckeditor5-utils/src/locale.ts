@@ -22,17 +22,11 @@ export default class Locale {
 	 *
 	 * If the {@link #contentLanguage content language} was not specified in the `Locale` constructor,
 	 * it also defines the language of the content.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	public readonly uiLanguage: string;
 
 	/**
 	 * Text direction of the {@link #uiLanguage editor UI language}. Either `'ltr'` or `'rtl'`.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	public readonly uiLanguageDirection: LanguageDirection;
 
@@ -41,9 +35,6 @@ export default class Locale {
 	 *
 	 * Usually the same as the {@link #uiLanguage editor language}, it can be customized by passing an optional
 	 * argument to the `Locale` constructor.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	public readonly contentLanguage: string;
 
@@ -57,9 +48,6 @@ export default class Locale {
 	 * the content language direction is the same as the {@link #uiLanguageDirection UI language direction}.
 	 *
 	 * The value is either `'ltr'` or `'rtl'`.
-	 *
-	 * @readonly
-	 * @member {String}
 	 */
 	public readonly contentLanguageDirection: LanguageDirection;
 
@@ -69,8 +57,10 @@ export default class Locale {
 	 *
 	 * This method's context is statically bound to the `Locale` instance and **should always be called as a function**:
 	 *
-	 *		const t = locale.t;
-	 *		t( 'Label' );
+	 * ```ts
+	 * const t = locale.t;
+	 * t( 'Label' );
+	 * ```
 	 *
 	 * The message can be either a string or an object implementing the {@link module:utils/translation-service~Message} interface.
 	 *
@@ -78,49 +68,49 @@ export default class Locale {
 	 * For an array of values, the `%<index>` will be changed to an element of that array at the given index.
 	 * For a single value passed as the second argument, only the `%0` placeholders will be changed to the provided value.
 	 *
-	 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
-	 * 		t( 'Created file "%0", fileName );
+	 * ```ts
+	 * t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
+	 * t( 'Created file "%0", fileName );
+	 * ```
 	 *
 	 * The message supports plural forms. To specify the plural form, use the `plural` property. Singular or plural form
 	 * will be chosen depending on the first value from the passed `values`. The value of the `plural` property is used
 	 * as a default plural translation when the translation for the target language is missing.
 	 *
-	 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space' for the English language.
-	 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Add 5 spaces' for the English language.
-	 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Add 2 spaces' for the English language.
+	 * ```ts
+	 * t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space' for the English language.
+	 * t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Add 5 spaces' for the English language.
+	 * t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Add 2 spaces' for the English language.
 	 *
-	 * 		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Dodaj spację' for the Polish language.
-	 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Dodaj 5 spacji' for the Polish language.
-	 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Dodaj 2 spacje' for the Polish language.
+	 * t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Dodaj spację' for the Polish language.
+	 * t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Dodaj 5 spacji' for the Polish language.
+	 * t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Dodaj 2 spacje' for the Polish language.
+	 * ```
 	 *
 	 *  * The message should provide an ID using the `id` property when the message strings are not unique and their
 	 * translations should be different.
 	 *
-	 *		translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
-	 *		translate( 'en', { string: 'image', id: 'AN_IMAGE' } );
-	 *
-	 * @method
-	 * @param {String|module:utils/translation-service~Message} message A message that will be localized (translated).
-	 * @param {String|Number|Array.<String|Number>} [values] A value or an array of values that will fill message placeholders.
-	 * For messages supporting plural forms the first value will determine the plural form.
-	 * @returns {String}
+	 * ```ts
+	 * translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
+	 * translate( 'en', { string: 'image', id: 'AN_IMAGE' } );
+	 * ```
 	 */
-	public readonly t: ( message: string | Message, values?: number | string | readonly ( number | string )[] ) => string;
+	public readonly t: LocaleTranslate;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
 	 * {@glink features/ui-language configuring the language of the editor}.
 	 *
-	 * @param {Object} [options] Locale configuration.
-	 * @param {String} [options.uiLanguage='en'] The editor UI language code in the
+	 * @param options Locale configuration.
+	 * @param options.uiLanguage The editor UI language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. See {@link #uiLanguage}.
-	 * @param {String} [options.contentLanguage] The editor content language code in the
+	 * @param options.contentLanguage The editor content language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
 	 */
-	constructor( options: { readonly uiLanguage?: string; readonly contentLanguage?: string } = {} ) {
-		this.uiLanguage = options.uiLanguage || 'en';
-		this.contentLanguage = options.contentLanguage || this.uiLanguage;
+	constructor( { uiLanguage = 'en', contentLanguage }: { readonly uiLanguage?: string; readonly contentLanguage?: string } = {} ) {
+		this.uiLanguage = uiLanguage;
+		this.contentLanguage = contentLanguage || this.uiLanguage;
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
@@ -134,12 +124,12 @@ export default class Locale {
 	 * properties instead.
 	 *
 	 * @deprecated
-	 * @member {String}
 	 */
 	public get language(): string {
 		/**
 		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
-		 * be removed in the near future. Please use the {@link #uiLanguage} and {@link #contentLanguage} properties instead.
+		 * be removed in the near future. Please use the {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`} and
+		 * {@link module:utils/locale~Locale#contentLanguage `Locale#contentLanguage`} properties instead.
 		 *
 		 * @error locale-deprecated-language-property
 		 */
@@ -153,13 +143,8 @@ export default class Locale {
 
 	/**
 	 * An unbound version of the {@link #t} method.
-	 *
-	 * @private
-	 * @param {String|module:utils/translation-service~Message} message
-	 * @param {Number|String|Array.<Number|String>} [values]
-	 * @returns {String}
 	 */
-	private _t( message: string | Message, values: number | string | readonly ( number | string )[] = [] ): string {
+	private _t( message: string | Message, values: number | string | ReadonlyArray<number | string> = [] ): string {
 		values = toArray( values );
 
 		if ( typeof message === 'string' ) {
@@ -175,8 +160,17 @@ export default class Locale {
 	}
 }
 
-// Fills the `%0, %1, ...` string placeholders with values.
-function interpolateString( string: string, values: readonly any[] ): string {
+/**
+ * @param message A message that will be localized (translated).
+ * @param values A value or an array of values that will fill message placeholders.
+ * For messages supporting plural forms the first value will determine the plural form.
+ */
+export type LocaleTranslate = ( message: string | Message, values?: number | string | ReadonlyArray<number | string> ) => string;
+
+/**
+ * Fills the `%0, %1, ...` string placeholders with values.
+ */
+function interpolateString( string: string, values: ReadonlyArray<any> ): string {
 	return string.replace( /%(\d+)/g, ( match, index ) => {
 		return ( index < values.length ) ? values[ index ] : match;
 	} );

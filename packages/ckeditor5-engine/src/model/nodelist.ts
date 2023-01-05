@@ -9,8 +9,7 @@
 
 import Node from './node';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import spliceArray from '@ckeditor/ckeditor5-utils/src/splicearray';
+import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally
@@ -18,23 +17,18 @@ import spliceArray from '@ckeditor/ckeditor5-utils/src/splicearray';
  * or {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
  */
 export default class NodeList implements Iterable<Node> {
-	private _nodes: Node[];
+	/**
+	 * Nodes contained in this node list.
+	 */
+	private _nodes: Array<Node> = [];
 
 	/**
 	 * Creates an empty node list.
 	 *
-	 * @protected
-	 * @param {Iterable.<module:engine/model/node~Node>} [nodes] Nodes contained in this node list.
+	 * @internal
+	 * @param nodes Nodes contained in this node list.
 	 */
 	constructor( nodes?: Iterable<Node> ) {
-		/**
-		 * Nodes contained in this node list.
-		 *
-		 * @private
-		 * @member {Array.<module:engine/model/node~Node>}
-		 */
-		this._nodes = [];
-
 		if ( nodes ) {
 			this._insertNodes( 0, nodes );
 		}
@@ -44,8 +38,6 @@ export default class NodeList implements Iterable<Node> {
 	 * Iterable interface.
 	 *
 	 * Iterates over all nodes contained inside this node list.
-	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
 	 */
 	public [ Symbol.iterator ](): IterableIterator<Node> {
 		return this._nodes[ Symbol.iterator ]();
@@ -53,9 +45,6 @@ export default class NodeList implements Iterable<Node> {
 
 	/**
 	 * Number of nodes contained inside this node list.
-	 *
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get length(): number {
 		return this._nodes.length;
@@ -63,9 +52,6 @@ export default class NodeList implements Iterable<Node> {
 
 	/**
 	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes contained inside this node list.
-	 *
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get maxOffset(): number {
 		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
@@ -73,9 +59,6 @@ export default class NodeList implements Iterable<Node> {
 
 	/**
 	 * Gets the node at the given index. Returns `null` if incorrect index was passed.
-	 *
-	 * @param {Number} index Index of node.
-	 * @returns {module:engine/model/node~Node|null} Node at given index.
 	 */
 	public getNode( index: number ): Node | null {
 		return this._nodes[ index ] || null;
@@ -83,9 +66,6 @@ export default class NodeList implements Iterable<Node> {
 
 	/**
 	 * Returns an index of the given node. Returns `null` if given node is not inside this node list.
-	 *
-	 * @param {module:engine/model/node~Node} node Child node to look for.
-	 * @returns {Number|null} Child node's index.
 	 */
 	public getNodeIndex( node: Node ): number | null {
 		const index = this._nodes.indexOf( node );
@@ -96,9 +76,6 @@ export default class NodeList implements Iterable<Node> {
 	/**
 	 * Returns the starting offset of given node. Starting offset is equal to the sum of
 	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
-	 *
-	 * @param {module:engine/model/node~Node} node Node to look for.
-	 * @returns {Number|null} Node's starting offset.
 	 */
 	public getNodeStartOffset( node: Node ): number | null {
 		const index = this.getNodeIndex( node );
@@ -111,9 +88,6 @@ export default class NodeList implements Iterable<Node> {
 	 *
 	 * Returns starting offset of a node that is at given index. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link #length}.
-	 *
-	 * @param {Number} index Node's index.
-	 * @returns {Number} Node's starting offset.
 	 */
 	public indexToOffset( index: number ): number {
 		if ( index == this._nodes.length ) {
@@ -139,9 +113,6 @@ export default class NodeList implements Iterable<Node> {
 	 *
 	 * Returns index of a node that occupies given offset. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #maxOffset}.
-	 *
-	 * @param {Number} offset Offset to look for.
-	 * @returns {Number} Index of a node that occupies given offset.
 	 */
 	public offsetToIndex( offset: number ): number {
 		let totalOffset = 0;
@@ -159,8 +130,8 @@ export default class NodeList implements Iterable<Node> {
 			 * Given offset cannot be found in the node list.
 			 *
 			 * @error model-nodelist-offset-out-of-bounds
-			 * @param {Number} offset
-			 * @param {module:engine/model/nodelist~NodeList} nodeList Stringified node list.
+			 * @param offset
+			 * @param nodeList Stringified node list.
 			 */
 			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds',
 				this,
@@ -178,9 +149,8 @@ export default class NodeList implements Iterable<Node> {
 	 * Inserts given nodes at given index.
 	 *
 	 * @internal
-	 * @protected
-	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
+	 * @param index Index at which nodes should be inserted.
+	 * @param nodes Nodes to be inserted.
 	 */
 	public _insertNodes( index: number, nodes: Iterable<Node> ): void {
 		// Validation.
@@ -202,12 +172,11 @@ export default class NodeList implements Iterable<Node> {
 	 * Removes one or more nodes starting at the given index.
 	 *
 	 * @internal
-	 * @protected
-	 * @param {Number} indexStart Index of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
+	 * @param indexStart Index of the first node to remove.
+	 * @param howMany Number of nodes to remove.
+	 * @returns Array containing removed nodes.
 	 */
-	public _removeNodes( indexStart: number, howMany: number = 1 ): Node[] {
+	public _removeNodes( indexStart: number, howMany: number = 1 ): Array<Node> {
 		return this._nodes.splice( indexStart, howMany );
 	}
 
@@ -215,7 +184,7 @@ export default class NodeList implements Iterable<Node> {
 	 * Converts `NodeList` instance to an array containing nodes that were inserted in the node list. Nodes
 	 * are also converted to their plain object representation.
 	 *
-	 * @returns {Array.<module:engine/model/node~Node>} `NodeList` instance converted to `Array`.
+	 * @returns `NodeList` instance converted to `Array`.
 	 */
 	public toJSON(): unknown {
 		return this._nodes.map( node => node.toJSON() );
