@@ -136,7 +136,7 @@ See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/lates
 
 
 ### Note for use in the Adapt Builder:
-To build the ckeditor and bring it into the libraries for use in the Adapt builder, open a terminal, cd into packages/ckeditor5-build-classic/build and run `yarn run build`. Then check the output of the build within the build directory and copy the `ckeditor.js` file into the libraries directory in the Adapt builder. 
+To build the ckeditor and bring it into the libraries for use in the Adapt builder, open a terminal, cd into packages/ckeditor5-build-classic/build and run `yarn run build`. You can see how this looks by opening `packages/ckeditor5-build-classic/sample/index.html` in the browser. Then use the build within the build directory and copy the `ckeditor.js` file into the libraries directory in the Adapt builder. 
 
 ### Reporting issues and feature requests
 
