@@ -71,6 +71,9 @@ import plus from './../theme/icons/plus.svg';
 import text from './../theme/icons/text.svg';
 import importExport from './../theme/icons/importexport.svg';
 
+import assetlink from './../theme/icons/assetlink.svg';
+import references from './../theme/icons/references.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -109,5 +112,8 @@ export const icons = {
 	pencil,
 	pilcrow,
 	quote,
-	threeVerticalDots
+	threeVerticalDots,
+
+	assetlink,
+	references
 };
