@@ -225,7 +225,7 @@ The stylesheet:
 Check out also these CKEditor 5 features to gain better control over your content style and format:
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
-* {@link features/heading Headings} &ndash; Divide your content into sections.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
