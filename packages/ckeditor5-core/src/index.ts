@@ -11,7 +11,7 @@ export { default as Plugin, type PluginDependencies } from './plugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
 export { CommandsMap } from './commandcollection';
-export { PluginsMap } from './plugincollection';
+export { PluginsMap, type default as PluginCollection } from './plugincollection';
 
 export { default as Context } from './context';
 export { default as ContextPlugin } from './contextplugin';

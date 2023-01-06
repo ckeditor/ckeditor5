@@ -15,3 +15,4 @@ export {
 } from './clipboardpipeline';
 export { default as DragDrop } from './dragdrop';
 export { default as PastePlainText } from './pasteplaintext';
+export type { ViewDocumentClipboardInputEvent } from './clipboardobserver';

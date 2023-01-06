@@ -73,7 +73,7 @@ export type { DiffItem } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
-export type { default as Selection } from './model/selection';
+export type { default as Selection, Selectable } from './model/selection';
 export type { default as Writer } from './model/writer';
 export type { default as TypeCheckable } from './model/typecheckable';
 
@@ -99,7 +99,7 @@ export { default as Renderer } from './view/renderer';
 export { default as View } from './view/view';
 export { default as ViewDocument } from './view/document';
 export { default as ViewText } from './view/text';
-export { default as ViewElement } from './view/element';
+export { default as ViewElement, ElementAttributes as ViewElementAttributes } from './view/element';
 export { default as ViewContainerElement } from './view/containerelement';
 export { default as ViewEditableElement } from './view/editableelement';
 export { default as ViewAttributeElement } from './view/attributeelement';
@@ -112,7 +112,7 @@ export type { default as ViewNode } from './view/node';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
-export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
+export type { default as ViewSelection, ViewSelectionChangeEvent, Selectable as ViewSelectable } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
 
 export { getFillerOffset } from './view/containerelement';
@@ -126,7 +126,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher } from './view/matcher';
+export { default as Matcher, MatcherPattern } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';
