@@ -64,11 +64,11 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockQuote, ... ],
-		toolbar: [ 'blockQuote', ... ]
+		plugins: [ BlockQuote, /* ... */ ],
+		toolbar: [ 'blockQuote', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -99,9 +99,10 @@ ClassicEditor
 		extraPlugins: [ DisallowNestingBlockQuotes ],
 
 		// The rest of the configuration.
+		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>

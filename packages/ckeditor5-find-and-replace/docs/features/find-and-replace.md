@@ -41,11 +41,11 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ FindAndReplace, ... ],
-		toolbar: [ 'findAndReplace', ... ],
+		plugins: [ FindAndReplace, /* ... */ ],
+		toolbar: [ 'findAndReplace', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

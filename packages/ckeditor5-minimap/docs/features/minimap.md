@@ -116,7 +116,7 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
 			container: document.querySelector( '.minimap-container' ),
 		}
@@ -126,7 +126,7 @@ DecoupledEditor
 
 		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 	} )
-	.catch( ... );
+	.catch( /* ... */ );
 ```
 
 ## Installation
@@ -145,13 +145,14 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
+			// Reference to the container element as shown in the configuration section of the guide
 			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -174,13 +175,13 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
 			container: document.querySelector( '.minimap-container' )
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Content styles and classes
