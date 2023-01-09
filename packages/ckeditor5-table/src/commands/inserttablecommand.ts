@@ -9,6 +9,12 @@
 
 import { Command } from 'ckeditor5/src/core';
 
+import type {
+	DocumentSelection,
+	Schema,
+	Selection
+} from 'ckeditor5/src/engine';
+
 /**
  * The insert table command.
  *
@@ -24,7 +30,7 @@ export default class InsertTableCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
@@ -48,10 +54,10 @@ export default class InsertTableCommand extends Command {
 	 * table config.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	public override execute( options: { rows?: number; columns?: number; headingRows?: number; headingColumns?: number } = {} ): void {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const config = this.editor.config.get( 'table' );
+		const config = this.editor.config.get( 'table' )!;
 
 		const defaultRows = config.defaultHeadings.rows;
 		const defaultColumns = config.defaultHeadings.columns;
@@ -74,14 +80,22 @@ export default class InsertTableCommand extends Command {
 	}
 }
 
-// Checks if the table is allowed in the parent.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/schema~Schema} schema
-// @returns {Boolean}
-function isAllowedInParent( selection, schema ) {
-	const positionParent = selection.getFirstPosition().parent;
+/**
+ * Checks if the table is allowed in the parent.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @param {module:engine/model/schema~Schema} schema
+ * @returns {Boolean}
+ */
+function isAllowedInParent( selection: Selection | DocumentSelection, schema: Schema ) {
+	const positionParent = selection.getFirstPosition()!.parent;
 	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 
-	return schema.checkChild( validParent, 'table' );
+	return schema.checkChild( validParent as any, 'table' ); // TODO
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertTable: InsertTableCommand;
+	}
 }

@@ -7,6 +7,13 @@
  * @module table/converters/table-cell-refresh-post-fixer
  */
 
+import type {
+	EditingController,
+	Element,
+	Mapper,
+	Model
+} from 'ckeditor5/src/engine';
+
 import { isSingleParagraphWithoutAttributes } from './downcast';
 
 /**
@@ -17,11 +24,8 @@ import { isSingleParagraphWithoutAttributes } from './downcast';
  *
  * When table cell content changes, for example a second `paragraph` element is added, we need to ensure that the first `paragraph` is
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
- *
- * @param {module:engine/model/model~Model} model
- * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
-export default function tableCellRefreshHandler( model, editing ) {
+export default function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 
 	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
@@ -35,8 +39,9 @@ export default function tableCellRefreshHandler( model, editing ) {
 		}
 	}
 
-	for ( const tableCell of cellsToCheck.values() ) {
-		const paragraphsToRefresh = Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, editing.mapper ) );
+	for ( const tableCell of cellsToCheck.values() as Iterable<Element> ) {
+		const paragraphsToRefresh = Array.from( tableCell.getChildren() )
+			.filter( child => shouldRefresh( child as Element, editing.mapper ) );
 
 		for ( const paragraph of paragraphsToRefresh ) {
 			editing.reconvertItem( paragraph );
@@ -44,12 +49,10 @@ export default function tableCellRefreshHandler( model, editing ) {
 	}
 }
 
-// Check if given model element needs refreshing.
-//
-// @param {module:engine/model/element~Element} modelElement
-// @param {module:engine/conversion/mapper~Mapper} mapper
-// @returns {Boolean}
-function shouldRefresh( child, mapper ) {
+/**
+ * Check if given model element needs refreshing.
+ */
+function shouldRefresh( child: Element, mapper: Mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
 		return false;
 	}

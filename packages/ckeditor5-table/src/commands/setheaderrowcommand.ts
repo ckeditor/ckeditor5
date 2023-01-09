@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
 
 import { updateNumericAttribute } from '../utils/common';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure';
@@ -30,7 +31,7 @@ export default class SetHeaderRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
@@ -46,7 +47,7 @@ export default class SetHeaderRowCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent.parent ) );
+		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
 	}
 
 	/**
@@ -61,7 +62,7 @@ export default class SetHeaderRowCommand extends Command {
 	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) the header rows according to
 	 * the `forceValue` parameter instead of the current model state.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		if ( options.forceValue === this.value ) {
 			return;
 		}
@@ -70,11 +71,11 @@ export default class SetHeaderRowCommand extends Command {
 		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-		const table = selectedCells[ 0 ].findAncestor( 'table' );
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
 
 		const { first, last } = tableUtils.getRowIndexes( selectedCells );
 		const headingRowsToSet = this.value ? first : last + 1;
-		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
+		const currentHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
@@ -100,9 +101,15 @@ export default class SetHeaderRowCommand extends Command {
 	 * @returns {Boolean}
 	 * @private
 	 */
-	_isInHeading( tableCell, table ) {
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+	private _isInHeading( tableCell: Element, table: Element ) {
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
-		return !!headingRows && tableCell.parent.index < headingRows;
+		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		setHeaderRow: SetHeaderRowCommand;
 	}
 }

@@ -7,10 +7,18 @@
  * @module table/commands/mergecellcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type {
+	Element,
+	Node,
+	Writer
+} from 'ckeditor5/src/engine';
+
+import { Command, type Editor } from 'ckeditor5/src/core';
 import TableWalker from '../tablewalker';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
+
+import type TableUtils from '../tableutils';
 
 /**
  * The merge cell command.
@@ -32,6 +40,24 @@ import { removeEmptyRowsColumns } from '../utils/structure';
  */
 export default class MergeCellCommand extends Command {
 	/**
+	 * The direction that indicates which cell will be merged with the currently selected one.
+	 *
+	 * @readonly
+	 * @member {String} #direction
+	 */
+	public readonly direction: string;
+
+	/**
+	 * Whether the merge is horizontal (left/right) or vertical (up/down).
+	 *
+	 * @readonly
+	 * @member {Boolean} #isHorizontal
+	 */
+	public readonly isHorizontal: boolean;
+
+	public declare value: Node | undefined;
+
+	/**
 	 * Creates a new `MergeCellCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
@@ -39,30 +65,17 @@ export default class MergeCellCommand extends Command {
 	 * @param {String} options.direction Indicates which cell to merge with the currently selected one.
 	 * Possible values are: `'left'`, `'right'`, `'up'` and `'down'`.
 	 */
-	constructor( editor, options ) {
+	constructor( editor: Editor, options: { direction: string } ) {
 		super( editor );
 
-		/**
-		 * The direction that indicates which cell will be merged with the currently selected one.
-		 *
-		 * @readonly
-		 * @member {String} #direction
-		 */
 		this.direction = options.direction;
-
-		/**
-		 * Whether the merge is horizontal (left/right) or vertical (up/down).
-		 *
-		 * @readonly
-		 * @member {Boolean} #isHorizontal
-		 */
 		this.isHorizontal = this.direction == 'right' || this.direction == 'left';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const cellToMerge = this._getMergeableCell();
 
 		this.value = cellToMerge;
@@ -76,37 +89,37 @@ export default class MergeCellCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
-		const cellToMerge = this.value;
+		const cellToMerge = this.value!;
 		const direction = this.direction;
 
 		model.change( writer => {
 			const isMergeNext = direction == 'right' || direction == 'down';
 
 			// The merge mechanism is always the same so sort cells to be merged.
-			const cellToExpand = isMergeNext ? tableCell : cellToMerge;
-			const cellToRemove = isMergeNext ? cellToMerge : tableCell;
+			const cellToExpand = ( isMergeNext ? tableCell : cellToMerge ) as Element;
+			const cellToRemove = ( isMergeNext ? cellToMerge : tableCell ) as Element;
 
 			// Cache the parent of cell to remove for later check.
-			const removedTableCellRow = cellToRemove.parent;
+			const removedTableCellRow = cellToRemove.parent as Element;
 
 			mergeTableCells( cellToRemove, cellToExpand, writer );
 
 			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
-			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
-			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
+			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) as string || '1' );
+			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) as string || '1' );
 
 			// Update table cell span attribute and merge set selection on merged contents.
 			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
 			writer.setSelection( writer.createRangeIn( cellToExpand ) );
 
 			const tableUtils = this.editor.plugins.get( 'TableUtils' );
-			const table = removedTableCellRow.findAncestor( 'table' );
+			const table = removedTableCellRow.findAncestor( 'table' )!;
 
 			// Remove empty rows and columns after merging.
 			removeEmptyRowsColumns( table, tableUtils );
@@ -119,7 +132,7 @@ export default class MergeCellCommand extends Command {
 	 * @returns {module:engine/model/element~Element|undefined}
 	 * @private
 	 */
-	_getMergeableCell() {
+	private _getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -140,9 +153,9 @@ export default class MergeCellCommand extends Command {
 
 		// If found check if the span perpendicular to merge direction is equal on both cells.
 		const spanAttribute = this.isHorizontal ? 'rowspan' : 'colspan';
-		const span = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
+		const span = parseInt( tableCell.getAttribute( spanAttribute ) as string || '1' );
 
-		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
+		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) as string || '1' );
 
 		if ( cellToMergeSpan === span ) {
 			return cellToMerge;
@@ -150,15 +163,17 @@ export default class MergeCellCommand extends Command {
 	}
 }
 
-// Returns the cell that can be merged horizontally.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @param {String} direction
-// @param {module:table/tableutils~TableUtils} tableUtils
-// @returns {module:engine/model/node~Node|null}
-function getHorizontalCell( tableCell, direction, tableUtils ) {
-	const tableRow = tableCell.parent;
-	const table = tableRow.parent;
+/**
+ * Returns the cell that can be merged horizontally.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {String} direction
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @returns {module:engine/model/node~Node|null}
+ */
+function getHorizontalCell( tableCell: Element, direction: string, tableUtils: TableUtils ) {
+	const tableRow = tableCell.parent!;
+	const table = tableRow.parent as Element;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
 	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) || 0 ) > 0;
 
@@ -167,17 +182,17 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	}
 
 	// Sort cells:
-	const cellOnLeft = direction == 'right' ? tableCell : horizontalCell;
-	const cellOnRight = direction == 'right' ? horizontalCell : tableCell;
+	const cellOnLeft = ( direction == 'right' ? tableCell : horizontalCell ) as Element;
+	const cellOnRight = ( direction == 'right' ? horizontalCell : tableCell ) as Element;
 
 	// Get their column indexes:
-	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft );
-	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
+	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft )!;
+	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight )!;
 
-	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
+	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) as string || '1' );
 
-	const isCellOnLeftInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnLeft, table );
-	const isCellOnRightInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnRight, table );
+	const isCellOnLeftInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnLeft );
+	const isCellOnRightInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnRight );
 
 	// We cannot merge heading columns cells with regular cells.
 	if ( hasHeadingColumns && isCellOnLeftInHeadingColumn != isCellOnRightInHeadingColumn ) {
@@ -191,24 +206,26 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	return cellsAreTouching ? horizontalCell : undefined;
 }
 
-// Returns the cell that can be merged vertically.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @param {String} direction
-// @param {module:table/tableutils~TableUtils} tableUtils
-// @returns {module:engine/model/node~Node|null}
-function getVerticalCell( tableCell, direction, tableUtils ) {
-	const tableRow = tableCell.parent;
-	const table = tableRow.parent;
+/**
+ * Returns the cell that can be merged vertically.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {String} direction
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @returns {module:engine/model/node~Node|null}
+ */
+function getVerticalCell( tableCell: Element, direction: string, tableUtils: TableUtils ) {
+	const tableRow = tableCell.parent as Element;
+	const table = tableRow.parent as Element;
 
-	const rowIndex = table.getChildIndex( tableRow );
+	const rowIndex = table.getChildIndex( tableRow )!;
 
 	// Don't search for mergeable cell if direction points out of the table.
 	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
 		return;
 	}
 
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 	const isMergeWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
@@ -219,12 +236,12 @@ function getVerticalCell( tableCell, direction, tableUtils ) {
 		return;
 	}
 
-	const currentCellRowSpan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+	const currentCellRowSpan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const rowOfCellToMerge = direction == 'down' ? rowIndex + currentCellRowSpan : rowIndex;
 
 	const tableMap = [ ...new TableWalker( table, { endRow: rowOfCellToMerge } ) ];
 
-	const currentCellData = tableMap.find( value => value.cell === tableCell );
+	const currentCellData = tableMap.find( value => value.cell === tableCell )!;
 	const mergeColumn = currentCellData.column;
 
 	const cellToMergeData = tableMap.find( ( { row, cellHeight, column } ) => {
@@ -244,14 +261,16 @@ function getVerticalCell( tableCell, direction, tableUtils ) {
 	return cellToMergeData && cellToMergeData.cell;
 }
 
-// Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
-// paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
-// If both are empty, the merged table cell will have only one empty paragraph.
-//
-// @param {module:engine/model/element~Element} cellToRemove
-// @param {module:engine/model/element~Element} cellToExpand
-// @param {module:engine/model/writer~Writer} writer
-function mergeTableCells( cellToRemove, cellToExpand, writer ) {
+/**
+ * Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
+ * paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
+ * If both are empty, the merged table cell will have only one empty paragraph.
+ *
+ * @param {module:engine/model/element~Element} cellToRemove
+ * @param {module:engine/model/element~Element} cellToExpand
+ * @param {module:engine/model/writer~Writer} writer
+ */
+function mergeTableCells( cellToRemove: Element, cellToExpand: Element, writer: Writer ) {
 	if ( !isEmpty( cellToRemove ) ) {
 		if ( isEmpty( cellToExpand ) ) {
 			writer.remove( writer.createRangeIn( cellToExpand ) );
@@ -264,10 +283,20 @@ function mergeTableCells( cellToRemove, cellToExpand, writer ) {
 	writer.remove( cellToRemove );
 }
 
-// Checks if the passed table cell contains an empty paragraph.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @returns {Boolean}
-function isEmpty( tableCell ) {
-	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'element', 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
+/**
+ * Checks if the passed table cell contains an empty paragraph.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @returns {Boolean}
+ */
+function isEmpty( tableCell: Element ) {
+	const firstTableChild = tableCell.getChild( 0 ) as Element;
+
+	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		mergeCell: MergeCellCommand;
+	}
 }

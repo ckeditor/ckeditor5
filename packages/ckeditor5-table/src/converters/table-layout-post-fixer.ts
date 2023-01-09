@@ -7,6 +7,13 @@
  * @module table/converters/table-layout-post-fixer
  */
 
+import type {
+	Element,
+	Model,
+	Writer,
+	DiffItem
+} from 'ckeditor5/src/engine';
+
 import TableWalker from './../tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
 
@@ -213,15 +220,14 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *		</table>
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTableLayoutPostFixer( model ) {
+export default function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
 }
 
-// The table layout post-fixer.
-//
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/model~Model} model
-function tableLayoutPostFixer( writer, model ) {
+/**
+ * The table layout post-fixer.
+ */
+function tableLayoutPostFixer( writer: Writer, model: Model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -229,7 +235,7 @@ function tableLayoutPostFixer( writer, model ) {
 	// Do not analyze the same table more then once - may happen for multiple changes in the same table.
 	const analyzedTables = new Set();
 
-	for ( const entry of changes ) {
+	for ( const entry of changes as Array<any> ) { // TODO
 		let table;
 
 		if ( entry.name == 'table' && entry.type == 'insert' ) {
@@ -260,12 +266,12 @@ function tableLayoutPostFixer( writer, model ) {
 	return wasFixed;
 }
 
-// Fixes the invalid value of the `rowspan` attribute because a table cell cannot vertically extend beyond the table section it belongs to.
-//
-// @param {module:engine/model/element~Element} table
-// @param {module:engine/model/writer~Writer} writer
-// @returns {Boolean} Returns `true` if the table was fixed.
-function fixTableCellsRowspan( table, writer ) {
+/**
+ * Fixes the invalid value of the `rowspan` attribute because a table cell cannot vertically extend beyond the table section it belongs to.
+ *
+ * @returns Returns `true` if the table was fixed.
+ */
+function fixTableCellsRowspan( table: Element, writer: Writer ) {
 	let wasFixed = false;
 
 	const cellsToTrim = findCellsToTrim( table );
@@ -283,12 +289,12 @@ function fixTableCellsRowspan( table, writer ) {
 	return wasFixed;
 }
 
-// Makes all table rows in a table the same size.
-//
-// @param {module:engine/model/element~Element} table
-// @param {module:engine/model/writer~Writer} writer
-// @returns {Boolean} Returns `true` if the table was fixed.
-function fixTableRowsSizes( table, writer ) {
+/**
+ * Makes all table rows in a table the same size.
+ *
+ * @returns Returns `true` if the table was fixed.
+ */
+function fixTableRowsSizes( table: Element, writer: Writer ) {
 	let wasFixed = false;
 
 	const childrenLengths = getChildrenLengths( table );
@@ -297,7 +303,7 @@ function fixTableRowsSizes( table, writer ) {
 	// Find empty rows.
 	for ( const [ rowIndex, size ] of childrenLengths.entries() ) {
 		// Ignore all non-row models.
-		if ( !size && table.getChild( rowIndex ).is( 'element', 'tableRow' ) ) {
+		if ( !size && table.getChild( rowIndex )!.is( 'element', 'tableRow' ) ) {
 			rowsToRemove.push( rowIndex );
 		}
 	}
@@ -309,13 +315,13 @@ function fixTableRowsSizes( table, writer ) {
 		wasFixed = true;
 
 		for ( const rowIndex of rowsToRemove.reverse() ) {
-			writer.remove( table.getChild( rowIndex ) );
+			writer.remove( table.getChild( rowIndex )! );
 			childrenLengths.splice( rowIndex, 1 );
 		}
 	}
 
 	// Filter out everything that's not a table row.
-	const rowsLengths = childrenLengths.filter( ( row, rowIndex ) => table.getChild( rowIndex ).is( 'element', 'tableRow' ) );
+	const rowsLengths = childrenLengths.filter( ( row, rowIndex ) => table.getChild( rowIndex )!.is( 'element', 'tableRow' ) );
 
 	// Verify if all the rows have the same number of columns.
 	const tableSize = rowsLengths[ 0 ];
@@ -332,7 +338,7 @@ function fixTableRowsSizes( table, writer ) {
 
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
-					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ) );
+					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex )!, 'end' ) );
 				}
 
 				wasFixed = true;
@@ -343,13 +349,12 @@ function fixTableRowsSizes( table, writer ) {
 	return wasFixed;
 }
 
-// Searches for table cells that extend beyond the table section to which they belong to. It will return an array of objects
-// that stores table cells to be trimmed and the correct value of the `rowspan` attribute to set.
-//
-// @param {module:engine/model/element~Element} table
-// @returns {Array.<{{cell, rowspan}}>}
-function findCellsToTrim( table ) {
-	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+/**
+ * Searches for table cells that extend beyond the table section to which they belong to. It will return an array of objects
+ * that stores table cells to be trimmed and the correct value of the `rowspan` attribute to set.
+ */
+function findCellsToTrim( table: Element ) {
+	const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 	const maxRows = Array.from( table.getChildren() )
 		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
 
@@ -377,11 +382,10 @@ function findCellsToTrim( table ) {
 	return cellsToTrim;
 }
 
-// Returns an array with lengths of rows assigned to the corresponding row index.
-//
-// @param {module:engine/model/element~Element} table
-// @returns {Array.<Number>}
-function getChildrenLengths( table ) {
+/**
+ * Returns an array with lengths of rows assigned to the corresponding row index.
+ */
+function getChildrenLengths( table: Element ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
 	const lengths = new Array( table.childCount ).fill( 0 );
 
@@ -392,11 +396,13 @@ function getChildrenLengths( table ) {
 	return lengths;
 }
 
-// Checks if the differ entry for an attribute change is one of the table's attributes.
-//
-// @param entry
-// @returns {Boolean}
-function isTableAttributeEntry( entry ) {
+/**
+ * Checks if the differ entry for an attribute change is one of the table's attributes.
+ *
+ * @param entry
+ * @returns {Boolean}
+ */
+function isTableAttributeEntry( entry: any ) { // TODO: DiffItem
 	const isAttributeType = entry.type === 'attribute';
 	const key = entry.attributeKey;
 

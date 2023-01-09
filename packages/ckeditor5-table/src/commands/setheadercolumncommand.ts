@@ -34,7 +34,7 @@ export default class SetHeaderColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
@@ -66,7 +66,7 @@ export default class SetHeaderColumnCommand extends Command {
 	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) the header columns according to
 	 * the `forceValue` parameter instead of the current model state.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		if ( options.forceValue === this.value ) {
 			return;
 		}
@@ -74,7 +74,7 @@ export default class SetHeaderColumnCommand extends Command {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-		const table = selectedCells[ 0 ].findAncestor( 'table' );
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
 
 		const { first, last } = tableUtils.getColumnIndexes( selectedCells );
 		const headingColumnsToSet = this.value ? first : last + 1;
@@ -92,5 +92,11 @@ export default class SetHeaderColumnCommand extends Command {
 
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		setHeaderColumn: SetHeaderColumnCommand;
 	}
 }

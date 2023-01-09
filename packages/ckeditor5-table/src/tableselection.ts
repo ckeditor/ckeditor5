@@ -7,8 +7,9 @@
  * @module table/tableselection
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
+import type { Element, DocumentFragment } from 'ckeditor5/src/engine';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
@@ -27,21 +28,21 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableSelection' {
 		return 'TableSelection';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableUtils, TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -55,10 +56,8 @@ export default class TableSelection extends Plugin {
 
 	/**
 	 * Returns the currently selected table cells or `null` if it is not a table cells selection.
-	 *
-	 * @returns {Array.<module:engine/model/element~Element>|null}
 	 */
-	getSelectedTableCells() {
+	public getSelectedTableCells(): Array<Element> | null {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selection = this.editor.model.document.selection;
 
@@ -82,7 +81,7 @@ export default class TableSelection extends Plugin {
 	 *
 	 * @returns {module:engine/model/documentfragment~DocumentFragment|null}
 	 */
-	getSelectionAsFragment() {
+	public getSelectionAsFragment(): DocumentFragment | null {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selectedCells = this.getSelectedTableCells();
 
@@ -144,7 +143,7 @@ export default class TableSelection extends Plugin {
 	 * @param {module:engine/model/element~Element} anchorCell
 	 * @param {module:engine/model/element~Element} targetCell
 	 */
-	setCellSelection( anchorCell, targetCell ) {
+	public setCellSelection( anchorCell: Element, targetCell: Element ): void {
 		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
 
 		this.editor.model.change( writer => {
@@ -160,7 +159,7 @@ export default class TableSelection extends Plugin {
 	 *
 	 * @returns {module:engine/model/element~Element}
 	 */
-	getFocusCell() {
+	public getFocusCell(): Element | null {
 		const selection = this.editor.model.document.selection;
 		const focusCellRange = [ ...selection.getRanges() ].pop();
 		const element = focusCellRange.getContainedElement();
@@ -177,9 +176,9 @@ export default class TableSelection extends Plugin {
 	 *
 	 * @returns {module:engine/model/element~Element} anchorCell
 	 */
-	getAnchorCell() {
+	public getAnchorCell(): Element | null {
 		const selection = this.editor.model.document.selection;
-		const anchorCellRange = first( selection.getRanges() );
+		const anchorCellRange = first( selection.getRanges() )!;
 		const element = anchorCellRange.getContainedElement();
 
 		if ( element && element.is( 'element', 'tableCell' ) ) {
@@ -200,7 +199,7 @@ export default class TableSelection extends Plugin {
 	 *
 	 * @private
 	 */
-	_defineSelectionConverter() {
+	private _defineSelectionConverter() {
 		const editor = this.editor;
 		const highlighted = new Set();
 
@@ -242,7 +241,7 @@ export default class TableSelection extends Plugin {
 	 * This listener helps features that disable the table selection plugin bring the selection
 	 * to a clear state they can work with (for instance, because they don't support multiple cell selection).
 	 */
-	_enablePluginDisabling() {
+	private _enablePluginDisabling() {
 		const editor = this.editor;
 
 		this.on( 'change:isEnabled', () => {
@@ -270,7 +269,7 @@ export default class TableSelection extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} event
 	 * @param {Array.<*>} args Delete content method arguments.
 	 */
-	_handleDeleteContent( event, args ) {
+	private _handleDeleteContent( event, args ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const [ selection, options ] = args;
 		const model = this.editor.model;
@@ -323,11 +322,9 @@ export default class TableSelection extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} event
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Insert text event data.
 	 */
-	_handleInsertTextEvent( evt, data ) {
+	private _handleInsertTextEvent( evt, data ) {
 		const editor = this.editor;
-		const model = editor.model;
-		const modelSelection = model.document.selection;
-		const selectedCells = this.getSelectedTableCells( modelSelection );
+		const selectedCells = this.getSelectedTableCells();
 
 		if ( !selectedCells ) {
 			return;
@@ -351,7 +348,7 @@ export default class TableSelection extends Plugin {
 	 * @param {module:engine/model/element~Element} targetCell
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	_getCellsToSelect( anchorCell, targetCell ) {
+	private _getCellsToSelect( anchorCell, targetCell ) {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( anchorCell );
 		const endLocation = tableUtils.getCellLocation( targetCell );
@@ -391,5 +388,11 @@ export default class TableSelection extends Plugin {
 			cells: selectionMap.flat(),
 			backward: flipVertically || flipHorizontally
 		};
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableSelection.pluginName ]: TableSelection;
 	}
 }

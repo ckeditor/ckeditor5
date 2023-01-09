@@ -7,7 +7,8 @@
  * @module table/commands/selectcolumncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Range } from 'ckeditor5/src/engine';
 
 import TableWalker from '../tablewalker';
 
@@ -26,7 +27,7 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// It does not affect data so should be enabled in read-only mode.
@@ -36,7 +37,7 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
@@ -46,21 +47,21 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
-		const lastCell = referenceCells.pop();
-		const table = firstCell.findAncestor( 'table' );
+		const lastCell = referenceCells.pop()!;
+		const table = firstCell.findAncestor( 'table' )!;
 
-		const startLocation = tableUtils.getCellLocation( firstCell );
-		const endLocation = tableUtils.getCellLocation( lastCell );
+		const startLocation = tableUtils.getCellLocation( firstCell )!;
+		const endLocation = tableUtils.getCellLocation( lastCell )!;
 
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
-		const rangesToSelect = [];
+		const rangesToSelect: Array<Range> = [];
 
 		for ( const cellInfo of new TableWalker( table, { startColumn, endColumn } ) ) {
 			rangesToSelect.push( model.createRangeOn( cellInfo.cell ) );
@@ -69,5 +70,11 @@ export default class SelectColumnCommand extends Command {
 		model.change( writer => {
 			writer.setSelection( rangesToSelect );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		selectColumn: SelectColumnCommand;
 	}
 }

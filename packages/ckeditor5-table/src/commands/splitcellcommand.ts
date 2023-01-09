@@ -7,7 +7,7 @@
  * @module table/commands/splitcellcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The split cell command.
@@ -23,28 +23,30 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class SplitCellCommand extends Command {
 	/**
+	 * The direction that indicates which cell will be split.
+	 *
+	 * @readonly
+	 * @member {String} #direction
+	 */
+	public readonly direction: string;
+
+	/**
 	 * Creates a new `SplitCellCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 * @param {Object} options
 	 * @param {String} options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
-	constructor( editor, options = {} ) {
+	constructor( editor: Editor, options: { direction?: string } = {} ) {
 		super( editor );
 
-		/**
-		 * The direction that indicates which cell will be split.
-		 *
-		 * @readonly
-		 * @member {String} #direction
-		 */
 		this.direction = options.direction || 'horizontally';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
@@ -54,7 +56,7 @@ export default class SplitCellCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCell = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection )[ 0 ];
 		const isHorizontal = this.direction === 'horizontally';
@@ -64,5 +66,11 @@ export default class SplitCellCommand extends Command {
 		} else {
 			tableUtils.splitCellVertically( tableCell, 2 );
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		splitCell: SplitCellCommand;
 	}
 }

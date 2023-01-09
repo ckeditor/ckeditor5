@@ -315,7 +315,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
 			name?: string;
 		} | {
-			name?: string;
+			name?: string | RegExp;
 			styles?: PropertyPatterns;
 			classes?: ClassPatterns;
 			attributes?: PropertyPatterns;
@@ -657,7 +657,7 @@ function upcastAttributeToAttribute( config: {
 	view: string | {
 		key?: string;
 		value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
-		name?: string;
+		name?: string | RegExp;
 		styles?: PropertyPatterns;
 		classes?: ClassPatterns;
 		attributes?: PropertyPatterns;

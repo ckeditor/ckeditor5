@@ -7,7 +7,7 @@
  * @module table/tablecellproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
 
@@ -27,14 +27,14 @@ export default class TableCellProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableCellProperties' {
 		return 'TableCellProperties';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableCellPropertiesEditing, TableCellPropertiesUI ];
 	}
 }
@@ -118,3 +118,8 @@ export default class TableCellProperties extends Plugin {
  * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table cell.
  */
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableCellProperties.pluginName ]: TableCellProperties;
+	}
+}

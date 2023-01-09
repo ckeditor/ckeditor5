@@ -34,14 +34,14 @@ export default class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableUI' {
 		return 'TableUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = this.editor.t;
 		const contentLanguageDirection = editor.locale.contentLanguageDirection;

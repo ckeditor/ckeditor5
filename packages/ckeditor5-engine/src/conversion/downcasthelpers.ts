@@ -550,7 +550,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 			model: {
 				key: string;
 				name?: string;
-				values: Array<TValues>;
+				values?: Array<TValues>;
 			};
 			view: Record<TValues, AttributeDescriptor | AttributeCreatorFunction>;
 			converterPriority?: PriorityString;

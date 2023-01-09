@@ -7,7 +7,7 @@
  * @module table/commands/insertrowcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The insert row command.
@@ -27,6 +27,14 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class InsertRowCommand extends Command {
 	/**
+	 * The order of insertion relative to the row in which the caret is located.
+	 *
+	 * @readonly
+	 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
+	 */
+	public order: string;
+
+	/**
 	 * Creates a new `InsertRowCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
@@ -34,22 +42,16 @@ export default class InsertRowCommand extends Command {
 	 * @param {String} [options.order="below"] The order of insertion relative to the row in which the caret is located.
 	 * Possible values: `"above"` and `"below"`.
 	 */
-	constructor( editor, options = {} ) {
+	constructor( editor: Editor, options: { order?: string } = {} ) {
 		super( editor );
 
-		/**
-		 * The order of insertion relative to the row in which the caret is located.
-		 *
-		 * @readonly
-		 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
-		 */
 		this.order = options.order || 'below';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const selection = this.editor.model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
@@ -64,7 +66,7 @@ export default class InsertRowCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
@@ -74,8 +76,14 @@ export default class InsertRowCommand extends Command {
 		const rowIndexes = tableUtils.getRowIndexes( affectedTableCells );
 
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
-		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
+		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertRow: InsertRowCommand;
 	}
 }

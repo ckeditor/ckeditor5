@@ -7,7 +7,9 @@
  * @module table/plaintableoutput
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { ViewContainerElement, Element, Writer } from 'ckeditor5/src/engine';
+
 import Table from './table';
 
 /**
@@ -19,21 +21,21 @@ export default class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'PlainTableOutput' {
 		return 'PlainTableOutput';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Table ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Override default table data downcast converter.
@@ -48,7 +50,7 @@ export default class PlainTableOutput extends Plugin {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
 				model: 'caption',
 				view: ( modelElement, { writer } ) => {
-					if ( modelElement.parent.name === 'table' ) {
+					if ( modelElement.parent!.name === 'table' ) {
 						return writer.createContainerElement( 'caption' );
 					}
 				},
@@ -63,27 +65,28 @@ export default class PlainTableOutput extends Plugin {
 	}
 }
 
-// The plain table downcast converter callback.
-//
-// @private
-// @param {module:engine/model/element~Element} Table model element.
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
-// @returns {module:engine/view/containerelement~ContainerElement} Created element.
-function downcastTableElement( table, { writer } ) {
+/**
+ * The plain table downcast converter callback.
+ *
+ * @param table Table model element.
+ * @param conversionApi The conversion API object.
+ * @returns Created element.
+ */
+function downcastTableElement( table: Element, { writer }: { writer: Writer } ) {
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 	// Table head rows slot.
-	const headRowsSlot = writer.createSlot( element =>
-		element.is( 'element', 'tableRow' ) && element.index < headingRows
+	const headRowsSlot = writer.createSlot( ( element: Element ) =>
+		element.is( 'element', 'tableRow' ) && element.index! < headingRows
 	);
 
 	// Table body rows slot.
-	const bodyRowsSlot = writer.createSlot( element =>
-		element.is( 'element', 'tableRow' ) && element.index >= headingRows
+	const bodyRowsSlot = writer.createSlot( ( element: Element ) =>
+		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
 	);
 
 	// Table children slot.
-	const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
+	const childrenSlot = writer.createSlot( ( element: Element ) => !element.is( 'element', 'tableRow' ) );
 
 	// Table <thead> element with all the heading rows.
 	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );
@@ -92,7 +95,7 @@ function downcastTableElement( table, { writer } ) {
 	const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
 
 	// Table contents element containing <thead> and <tbody> when necessary.
-	const tableContentElements = [];
+	const tableContentElements: Array<ViewContainerElement> = [];
 
 	if ( headingRows ) {
 		tableContentElements.push( theadElement );
@@ -116,10 +119,9 @@ function downcastTableElement( table, { writer } ) {
 	return writer.createContainerElement( 'table', null, [ childrenSlot, ...tableContentElements ] );
 }
 
-// Register table border and background attributes converters.
-//
-// @private
-// @param {module:core/editor/editor~Editor} editor
+/**
+ * Register table border and background attributes converters.
+ */
 function downcastTableBorderAndBackgroundAttributes( editor ) {
 	const modelAttributes = {
 		'border-width': 'tableBorderWidth',
@@ -147,5 +149,11 @@ function downcastTableBorderAndBackgroundAttributes( editor ) {
 				}
 			}, { priority: 'high' } );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ PlainTableOutput.pluginName ]: PlainTableOutput;
 	}
 }

@@ -7,8 +7,11 @@
  * @module table/converters/downcast
  */
 
-import TableWalker from './../tablewalker';
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
+import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine';
+
+import TableWalker from './../tablewalker';
+import type TableUtils from '../tableutils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -18,7 +21,7 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
-export function downcastTable( tableUtils, options = {} ) {
+export function downcastTable( tableUtils: TableUtils, options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableSections = [];
@@ -27,7 +30,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		if ( headingRows > 0 ) {
 			tableSections.push(
 				writer.createContainerElement( 'thead', null,
-					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! < headingRows )
 				)
 			);
 		}
@@ -36,7 +39,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		if ( headingRows < tableUtils.getRows( table ) ) {
 			tableSections.push(
 				writer.createContainerElement( 'tbody', null,
-					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= headingRows )
 				)
 			);
 		}
@@ -58,7 +61,7 @@ export function downcastTable( tableUtils, options = {} ) {
  *
  * @returns {Function} Element creator.
  */
-export function downcastRow() {
+export function downcastRow(): ElementCreatorFunction {
 	return ( tableRow, { writer } ) => {
 		return tableRow.isEmpty ?
 			writer.createEmptyElement( 'tr' ) :
@@ -76,15 +79,15 @@ export function downcastRow() {
  * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
-export function downcastCell( options = {} ) {
+export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
-		const rowIndex = table.getChildIndex( tableRow );
+		const tableRow = tableCell.parent as Element;
+		const table = tableRow.parent as Element;
+		const rowIndex = table.getChildIndex( tableRow )!;
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
@@ -97,6 +100,8 @@ export function downcastCell( options = {} ) {
 					writer.createContainerElement( cellElementName );
 			}
 		}
+
+		return null;
 	};
 }
 
@@ -113,14 +118,14 @@ export function downcastCell( options = {} ) {
  * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
-export function convertParagraphInTableCell( options = {} ) {
+export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( modelElement, { writer, consumable, mapper } ) => {
-		if ( !modelElement.parent.is( 'element', 'tableCell' ) ) {
-			return;
+		if ( !modelElement.parent!.is( 'element', 'tableCell' ) ) {
+			return null;
 		}
 
 		if ( !isSingleParagraphWithoutAttributes( modelElement ) ) {
-			return;
+			return null;
 		}
 
 		if ( options.asWidget ) {
@@ -128,7 +133,9 @@ export function convertParagraphInTableCell( options = {} ) {
 		} else {
 			// Additional requirement for data pipeline to have backward compatible data tables.
 			consumable.consume( modelElement, 'insert' );
-			mapper.bindElements( modelElement, mapper.toViewElement( modelElement.parent ) );
+			mapper.bindElements( modelElement, mapper.toViewElement( modelElement.parent )! );
+
+			return null;
 		}
 	};
 }
@@ -144,32 +151,36 @@ export function convertParagraphInTableCell( options = {} ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isSingleParagraphWithoutAttributes( modelElement ) {
-	const tableCell = modelElement.parent;
+export function isSingleParagraphWithoutAttributes( modelElement: Element ): boolean {
+	const tableCell = modelElement.parent!;
 
 	const isSingleParagraph = tableCell.childCount == 1;
 
 	return isSingleParagraph && !hasAnyAttribute( modelElement );
 }
 
-// Converts a given {@link module:engine/view/element~Element} to a table widget:
-// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
-// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
-//
-// @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-// @param {String} label The element's label. It will be concatenated with the table `alt` attribute if one is present.
-// @returns {module:engine/view/element~Element}
-function toTableWidget( viewElement, writer ) {
+/**
+ * Converts a given {@link module:engine/view/element~Element} to a table widget:
+ * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
+ * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+ * @param {String} label The element's label. It will be concatenated with the table `alt` attribute if one is present.
+ * @returns {module:engine/view/element~Element}
+ */
+function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ) {
 	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
 }
 
-// Checks if an element has any attributes set.
-//
-// @param {module:engine/model/element~Element element
-// @returns {Boolean}
-function hasAnyAttribute( element ) {
+/**
+ * Checks if an element has any attributes set.
+ *
+ * @param {module:engine/model/element~Element} element
+ * @returns {Boolean}
+ */
+function hasAnyAttribute( element: Node ) {
 	return !![ ...element.getAttributeKeys() ].length;
 }

@@ -7,7 +7,7 @@
  * @module table/commands/insertcolumncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The insert column command.
@@ -27,6 +27,14 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class InsertColumnCommand extends Command {
 	/**
+	 * The order of insertion relative to the column in which the caret is located.
+	 *
+	 * @readonly
+	 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
+	 */
+	public order: string;
+
+	/**
 	 * Creates a new `InsertColumnCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor on which this command will be used.
@@ -34,22 +42,16 @@ export default class InsertColumnCommand extends Command {
 	 * @param {String} [options.order="right"] The order of insertion relative to the column in which the caret is located.
 	 * Possible values: `"left"` and `"right"`.
 	 */
-	constructor( editor, options = {} ) {
+	constructor( editor: Editor, options: { order?: string } = {} ) {
 		super( editor );
 
-		/**
-		 * The order of insertion relative to the column in which the caret is located.
-		 *
-		 * @readonly
-		 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
-		 */
 		this.order = options.order || 'right';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const selection = this.editor.model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
@@ -65,7 +67,7 @@ export default class InsertColumnCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
@@ -75,8 +77,14 @@ export default class InsertColumnCommand extends Command {
 		const columnIndexes = tableUtils.getColumnIndexes( affectedTableCells );
 
 		const column = insertBefore ? columnIndexes.first : columnIndexes.last;
-		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
+		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertColumn: InsertColumnCommand;
 	}
 }

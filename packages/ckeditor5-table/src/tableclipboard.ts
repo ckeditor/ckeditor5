@@ -7,7 +7,8 @@
  * @module table/tableclipboard
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
@@ -34,21 +35,21 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableClipboard' {
 		return 'TableClipboard';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableSelection, TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
@@ -62,11 +63,10 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
-	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
 	 */
-	_onCopyCut( evt, data ) {
+	private _onCopyCut( evt, data ) {
 		const tableSelection = this.editor.plugins.get( TableSelection );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
@@ -83,7 +83,7 @@ export default class TableClipboard extends Plugin {
 		const dataController = this.editor.data;
 		const viewDocument = this.editor.editing.view.document;
 
-		const content = dataController.toView( tableSelection.getSelectionAsFragment() );
+		const content = dataController.toView( tableSelection.getSelectionAsFragment()! );
 
 		viewDocument.fire( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,
@@ -100,13 +100,12 @@ export default class TableClipboard extends Plugin {
 	 * - If a selected table fragment is smaller than paste table it will crop pasted table to match dimensions.
 	 * - If dimensions are equal it will replace selected table fragment with a pasted table contents.
 	 *
-	 * @private
 	 * @param evt
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
 	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
 	 */
-	_onInsertContent( evt, content, selectable ) {
+	private _onInsertContent( evt, content, selectable ) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
 			return;
 		}
@@ -115,7 +114,7 @@ export default class TableClipboard extends Plugin {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		// We might need to crop table before inserting so reference might change.
-		let pastedTable = getTableIfOnlyTableInContent( content, model );
+		let pastedTable = this._getTableIfOnlyTableInContent( content, model );
 
 		if ( !pastedTable ) {
 			return;
@@ -183,7 +182,6 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Replaces the part of selectedTable with pastedTable.
 	 *
-	 * @private
 	 * @param {module:engine/model/element~Element} pastedTable
 	 * @param {Object} pastedDimensions
 	 * @param {Number} pastedDimensions.height
@@ -197,7 +195,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	_replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer ) {
+	private _replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer ) {
 		const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
 
 		// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
@@ -212,7 +210,7 @@ export default class TableClipboard extends Plugin {
 		} ) ];
 
 		// Selection must be set to pasted cells (some might be removed or new created).
-		const cellsToSelect = [];
+		const cellsToSelect: Array<Element> = [];
 
 		// Store next cell insert position.
 		let insertPosition;
@@ -257,8 +255,8 @@ export default class TableClipboard extends Plugin {
 		}
 
 		// If there are any headings, all the cells that overlap from heading must be splitted.
-		const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) || 0 );
-		const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) || 0 );
+		const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) as string || '0' );
+		const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) as string || '0' );
 
 		const areHeadingRowsIntersectingSelection = selection.firstRow < headingRows && headingRows <= selection.lastRow;
 		const areHeadingColumnsIntersectingSelection = selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn;
@@ -290,7 +288,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {module:engine/model/element~Element|null} Inserted table cell or null if slot should remain empty.
 	 */
-	_replaceTableSlotCell( tableSlot, cellToInsert, insertPosition, writer ) {
+	private _replaceTableSlotCell( tableSlot, cellToInsert, insertPosition, writer ) {
 		const { cell, isAnchor } = tableSlot;
 
 		// If the slot is occupied by a cell in a selected table - remove it.
@@ -319,53 +317,49 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/model~Model} model The editor model.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	getTableIfOnlyTableInContent( content, model ) {
-		return getTableIfOnlyTableInContent( content, model );
-	}
-}
+	private _getTableIfOnlyTableInContent( content, model ) {
+		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
+			return null;
+		}
 
-function getTableIfOnlyTableInContent( content, model ) {
-	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
+		// Table passed directly.
+		if ( content.is( 'element', 'table' ) ) {
+			return content;
+		}
+
+		// We do not support mixed content when pasting table into table.
+		// See: https://github.com/ckeditor/ckeditor5/issues/6817.
+		if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
+			return content.getChild( 0 );
+		}
+
+		// If there are only whitespaces around a table then use that table for pasting.
+
+		const contentRange = model.createRangeIn( content );
+
+		for ( const element of contentRange.getItems() ) {
+			if ( element.is( 'element', 'table' ) ) {
+				// Stop checking if there is some content before table.
+				const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
+
+				if ( model.hasContent( rangeBefore, { ignoreWhitespaces: true } ) ) {
+					return null;
+				}
+
+				// Stop checking if there is some content after table.
+				const rangeAfter = model.createRange( model.createPositionAfter( element ), contentRange.end );
+
+				if ( model.hasContent( rangeAfter, { ignoreWhitespaces: true } ) ) {
+					return null;
+				}
+
+				// There wasn't any content neither before nor after.
+				return element;
+			}
+		}
+
 		return null;
 	}
-
-	// Table passed directly.
-	if ( content.is( 'element', 'table' ) ) {
-		return content;
-	}
-
-	// We do not support mixed content when pasting table into table.
-	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-	if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
-		return content.getChild( 0 );
-	}
-
-	// If there are only whitespaces around a table then use that table for pasting.
-
-	const contentRange = model.createRangeIn( content );
-
-	for ( const element of contentRange.getItems() ) {
-		if ( element.is( 'element', 'table' ) ) {
-			// Stop checking if there is some content before table.
-			const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
-
-			if ( model.hasContent( rangeBefore, { ignoreWhitespaces: true } ) ) {
-				return null;
-			}
-
-			// Stop checking if there is some content after table.
-			const rangeAfter = model.createRange( model.createPositionAfter( element ), contentRange.end );
-
-			if ( model.hasContent( rangeAfter, { ignoreWhitespaces: true } ) ) {
-				return null;
-			}
-
-			// There wasn't any content neither before nor after.
-			return element;
-		}
-	}
-
-	return null;
 }
 
 // Prepares a table for pasting and returns adjusted selection dimensions.
@@ -586,4 +580,10 @@ function isAffectedBySelection( index, span, limit ) {
 	const overlapsSelectionFromOutside = index < first && endIndex >= first;
 
 	return isInsideSelection || overlapsSelectionFromOutside;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableClipboard.pluginName ]: TableClipboard;
+	}
 }

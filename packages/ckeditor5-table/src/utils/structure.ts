@@ -7,8 +7,16 @@
  * @module table/utils/structure
  */
 
-import TableWalker from '../tablewalker';
+import type { Element, Node, Writer } from 'ckeditor5/src/engine';
+
+import { default as TableWalker, type TableSlot } from '../tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './common';
+import type TableUtils from '../tableutils';
+
+type CellAttributes = {
+	rowspan?: number;
+	colspan?: number;
+};
 
 /**
  * Returns a cropped table according to given dimensions.
@@ -36,17 +44,17 @@ import { createEmptyTableCell, updateNumericAttribute } from './common';
  *		    ├───┼───┬───┤   ├───┤                  └───────┴───┘
  *		 4  │ n │ o │ p │   │ q │
  *		    └───┴───┴───┴───┴───┘
- *
- * @param {module:engine/model/element~Element} sourceTable
- * @param {Object} cropDimensions
- * @param {Number} cropDimensions.startRow
- * @param {Number} cropDimensions.startColumn
- * @param {Number} cropDimensions.endRow
- * @param {Number} cropDimensions.endColumn
- * @param {module:engine/model/writer~Writer} writer
- * @returns {module:engine/model/element~Element}
  */
-export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
+export function cropTableToDimensions(
+	sourceTable: Element,
+	cropDimensions: {
+		startRow: number;
+		startColumn: number;
+		endRow: number;
+		endColumn: number;
+	},
+	writer: Writer
+): Element {
 	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
 
 	// Create empty table with empty rows equal to crop height.
@@ -63,7 +71,7 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
 	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isAnchor, cellAnchorRow, cellAnchorColumn } of tableMap ) {
 		// Row index in cropped table.
 		const rowInCroppedTable = sourceRow - startRow;
-		const row = croppedTable.getChild( rowInCroppedTable );
+		const row = croppedTable.getChild( rowInCroppedTable ) as Element;
 
 		// For empty slots: fill the gap with empty table cell.
 		if ( !isAnchor ) {
@@ -110,13 +118,12 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
  *
  * will return slot info for cells: "j", "f", "k".
  *
- * @param {module:engine/model/element~Element} table The table to check.
- * @param {Number} overlapRow The index of the row to check.
- * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that the cells above that row will not overlap.
- * @returns {Array.<module:table/tablewalker~TableSlot>}
+ * @param table The table to check.
+ * @param overlapRow The index of the row to check.
+ * @param startRow row to start analysis. Use it when it is known that the cells above that row will not overlap. Default value is 0.
  */
-export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
-	const cells = [];
+export function getVerticallyOverlappingCells( table: Element, overlapRow: number, startRow: number = 0 ): Array<TableSlot> {
+	const cells: Array<TableSlot> = [];
 
 	const tableWalker = new TableWalker( table, { startRow, endRow: overlapRow - 1 } );
 
@@ -135,27 +142,24 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
 /**
  * Splits the table cell horizontally.
  *
- * @param {module:engine/model/element~Element} tableCell
- * @param {Number} splitRow
- * @param {module:engine/model/writer~Writer} writer
- * @returns {module:engine/model/element~Element} Created table cell.
+ * @returns Created table cell, if any were created.
  */
-export function splitHorizontally( tableCell, splitRow, writer ) {
-	const tableRow = tableCell.parent;
-	const table = tableRow.parent;
-	const rowIndex = tableRow.index;
+export function splitHorizontally( tableCell: Element, splitRow: number, writer: Writer ): Element | null {
+	const tableRow = tableCell.parent as Node;
+	const table = tableRow.parent as Element;
+	const rowIndex = tableRow.index!;
 
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string );
 	const newRowspan = splitRow - rowIndex;
 
-	const newCellAttributes = {};
+	const newCellAttributes: CellAttributes = {};
 	const newCellRowSpan = rowspan - newRowspan;
 
 	if ( newCellRowSpan > 1 ) {
 		newCellAttributes.rowspan = newCellRowSpan;
 	}
 
-	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
 
 	if ( colspan > 1 ) {
 		newCellAttributes.colspan = colspan;
@@ -208,11 +212,10 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  *
  * will return slot info for cells: "b", "e", "i".
  *
- * @param {module:engine/model/element~Element} table The table to check.
- * @param {Number} overlapColumn The index of the column to check.
- * @returns {Array.<module:table/tablewalker~TableSlot>}
+ * @param table The table to check.
+ * @param overlapColumn The index of the column to check.
  */
-export function getHorizontallyOverlappingCells( table, overlapColumn ) {
+export function getHorizontallyOverlappingCells( table: Element, overlapColumn: number ): Array<TableSlot> {
 	const cellsToSplit = [];
 
 	const tableWalker = new TableWalker( table );
@@ -238,18 +241,18 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
  * @param {module:engine/model/writer~Writer} writer
  * @returns {module:engine/model/element~Element} Created table cell.
  */
-export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
-	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
+export function splitVertically( tableCell: Element, columnIndex: number, splitColumn: number, writer: Writer ): Element {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string );
 	const newColspan = splitColumn - columnIndex;
 
-	const newCellAttributes = {};
+	const newCellAttributes: CellAttributes = {};
 	const newCellColSpan = colspan - newColspan;
 
 	if ( newCellColSpan > 1 ) {
 		newCellAttributes.colspan = newCellColSpan;
 	}
 
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 
 	if ( rowspan > 1 ) {
 		newCellAttributes.rowspan = rowspan;
@@ -268,17 +271,17 @@ export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
  *
  * If table cell width (or height) covers a column (or row) that is after a limit column (or row)
  * this method will trim "colspan" (or "rowspan") attribute so the table cell will fit in a defined limits.
- *
- * @param {module:engine/model/element~Element} tableCell
- * @param {Number} cellRow
- * @param {Number} cellColumn
- * @param {Number} limitRow
- * @param {Number} limitColumn
- * @param {module:engine/model/writer~Writer} writer
  */
-export function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow, limitColumn, writer ) {
-	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+export function trimTableCellIfNeeded(
+	tableCell: Element,
+	cellRow: number,
+	cellColumn: number,
+	limitRow: number,
+	limitColumn: number,
+	writer: Writer
+): void {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 
 	const endColumn = cellColumn + colspan - 1;
 
@@ -297,16 +300,18 @@ export function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow,
 	}
 }
 
-// Sets proper heading attributes to a cropped table.
-function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer ) {
-	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) || 0 );
+/**
+ * Sets proper heading attributes to a cropped table.
+ */
+function addHeadingsToCroppedTable( croppedTable: Element, sourceTable: Element, startRow: number, startColumn: number, writer: Writer ) {
+	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) as string || '0' );
 
 	if ( headingRows > 0 ) {
 		const headingRowsInCrop = headingRows - startRow;
 		updateNumericAttribute( 'headingRows', headingRowsInCrop, croppedTable, writer, 0 );
 	}
 
-	const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) || 0 );
+	const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) as string || '0' );
 
 	if ( headingColumns > 0 ) {
 		const headingColumnsInCrop = headingColumns - startColumn;
@@ -333,12 +338,10 @@ function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startCo
  * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
  * To remove a column from a table use {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`}.
  *
- * @protected
- * @param {module:engine/model/element~Element} table
- * @param {module:table/tableutils~TableUtils} tableUtils
- * @returns {Boolean} True if removed some columns.
+ * @internal
+ * @returns True if removed some columns.
  */
-export function removeEmptyColumns( table, tableUtils ) {
+export function removeEmptyColumns( table: Element, tableUtils: TableUtils ): boolean {
 	const width = tableUtils.getColumns( table );
 	const columnsMap = new Array( width ).fill( 0 );
 
@@ -389,17 +392,15 @@ export function removeEmptyColumns( table, tableUtils ) {
  * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
  * To remove a row from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`}.
  *
- * @protected
- * @param {module:engine/model/element~Element} table
- * @param {module:table/tableutils~TableUtils} tableUtils
- * @returns {Boolean} True if removed some rows.
+ * @internal
+ * @returns True if removed some rows.
  */
-export function removeEmptyRows( table, tableUtils ) {
+export function removeEmptyRows( table: Element, tableUtils: TableUtils ): boolean {
 	const emptyRows = [];
 	const tableRowCount = tableUtils.getRows( table );
 
 	for ( let rowIndex = 0; rowIndex < tableRowCount; rowIndex++ ) {
-		const tableRow = table.getChild( rowIndex );
+		const tableRow = table.getChild( rowIndex ) as Element;
 
 		if ( tableRow.isEmpty ) {
 			emptyRows.push( rowIndex );
@@ -441,11 +442,9 @@ export function removeEmptyRows( table, tableUtils ) {
  * To remove a rows from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`} and
  * {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`} to remove a column.
  *
- * @protected
- * @param {module:engine/model/element~Element} table
- * @param {module:table/tableutils~TableUtils} tableUtils
+ * @internal
  */
-export function removeEmptyRowsColumns( table, tableUtils ) {
+export function removeEmptyRowsColumns( table: Element, tableUtils: TableUtils ): void {
 	const removedColumns = removeEmptyColumns( table, tableUtils );
 
 	// If there was some columns removed then cleaning empty rows was already triggered.
@@ -470,15 +469,17 @@ export function removeEmptyRowsColumns( table, tableUtils ) {
  *      3 |   |   |   |   |
  *        +---+---+---+---+
  *
- * @param {module:engine/model/element~Element} table
- * @param {Object} dimensions
- * @param {Number} dimensions.firstRow
- * @param {Number} dimensions.firstColumn
- * @param {Number} dimensions.lastRow
- * @param {Number} dimensions.lastColumn
- * @returns {Number} Adjusted last row index.
+ * @returns Adjusted last row index.
  */
-export function adjustLastRowIndex( table, dimensions ) {
+export function adjustLastRowIndex(
+	table: Element,
+	dimensions: {
+		firstRow: number;
+		firstColumn: number;
+		lastRow: number;
+		lastColumn: number;
+	}
+): number {
 	const lastRowMap = Array.from( new TableWalker( table, {
 		startColumn: dimensions.firstColumn,
 		endColumn: dimensions.lastColumn,
@@ -516,15 +517,17 @@ export function adjustLastRowIndex( table, dimensions ) {
  *               ^
  *              last column, each cell has colspan = 2, so we need to return 3, not 2
  *
- * @param {module:engine/model/element~Element} table
- * @param {Object} dimensions
- * @param {Number} dimensions.firstRow
- * @param {Number} dimensions.firstColumn
- * @param {Number} dimensions.lastRow
- * @param {Number} dimensions.lastColumn
- * @returns {Number} Adjusted last column index.
+ * @returns Adjusted last column index.
  */
-export function adjustLastColumnIndex( table, dimensions ) {
+export function adjustLastColumnIndex(
+	table: Element,
+	dimensions: {
+		firstRow: number;
+		firstColumn: number;
+		lastRow: number;
+		lastColumn: number;
+	}
+): number {
 	const lastColumnMap = Array.from( new TableWalker( table, {
 		startRow: dimensions.firstRow,
 		endRow: dimensions.lastRow,

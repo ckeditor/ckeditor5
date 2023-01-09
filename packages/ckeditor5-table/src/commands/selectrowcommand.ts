@@ -7,7 +7,8 @@
  * @module table/commands/selectrowcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Range } from 'ckeditor5/src/engine';
 
 /**
  * The select row command.
@@ -24,7 +25,7 @@ export default class SelectRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// It does not affect data so should be enabled in read-only mode.
@@ -34,7 +35,7 @@ export default class SelectRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
@@ -44,17 +45,17 @@ export default class SelectRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const rowIndexes = tableUtils.getRowIndexes( referenceCells );
 
-		const table = referenceCells[ 0 ].findAncestor( 'table' );
-		const rangesToSelect = [];
+		const table = referenceCells[ 0 ].findAncestor( 'table' )!;
+		const rangesToSelect: Array<Range> = [];
 
 		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {
-			for ( const cell of table.getChild( rowIndex ).getChildren() ) {
+			for ( const cell of ( table.getChild( rowIndex ) as any ).getChildren() ) { // TODO
 				rangesToSelect.push( model.createRangeOn( cell ) );
 			}
 		}
@@ -62,5 +63,11 @@ export default class SelectRowCommand extends Command {
 		model.change( writer => {
 			writer.setSelection( rangesToSelect );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		selectRow: SelectRowCommand;
 	}
 }

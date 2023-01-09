@@ -7,7 +7,7 @@
  * @module table/table
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
@@ -39,14 +39,14 @@ export default class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Table' {
 		return 'Table';
 	}
 }
@@ -54,17 +54,22 @@ export default class Table extends Plugin {
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
  *
- *		ClassicEditor
- *			.create( editorElement, {
- * 				table: ... // Table feature options.
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ *   .create( editorElement, {
+ *      table: ... // Table feature options.
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
  * @interface TableConfig
  */
+type TableConfig = {
+	defaultHeadings: DefaultHeadings;
+};
 
 /**
  * The configuration of the {@link module:table/table~Table} feature.
@@ -79,38 +84,46 @@ export default class Table extends Plugin {
  *
  * You can configure it like this:
  *
- *		const tableConfig = {
- *			defaultHeadings: {
- *				rows: 1,
- *				columns: 1
- *			}
- *		};
+ * ```ts
+ * const tableConfig = {
+ *   defaultHeadings: {
+ *     rows: 1,
+ *     columns: 1
+ *   }
+ * };
+ * ```
  *
  * Both rows and columns properties are optional defaulting to 0 (no heading).
  *
  * @member {Object} module:table/table~TableConfig#defaultHeadings
  */
+type DefaultHeadings = {
+	rows?: number;
+	columns?: number;
+};
 
 /**
  * An array of color definitions (either strings or objects).
  *
- *		const colors = [
- *			{
- *				color: 'hsl(0, 0%, 60%)',
- *				label: 'Grey'
- *			},
- *			'hsl(0, 0%, 80%)',
- *			{
- *				color: 'hsl(0, 0%, 90%)',
- *				label: 'Light grey'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 100%)',
- *				label: 'White',
- *				hasBorder: true
- *			},
- *			'#FF0000'
- *		]
+ * ```ts
+ * const colors = [
+ *   {
+ *     color: 'hsl(0, 0%, 60%)',
+ *     label: 'Grey'
+ *   },
+ *   'hsl(0, 0%, 80%)',
+ *   {
+ *     color: 'hsl(0, 0%, 90%)',
+ *     label: 'Light grey'
+ *   },
+ *   {
+ *     color: 'hsl(0, 0%, 100%)',
+ *     label: 'White',
+ *     hasBorder: true
+ *   },
+ *   '#FF0000'
+ * ]
+ * ```
  *
  * Usually used as a configuration parameter, for instance in
  * {@link module:table/table~TableConfig#tableProperties `config.table.tableProperties`}
@@ -118,3 +131,14 @@ export default class Table extends Plugin {
  *
  * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
  */
+type TableColorConfig = Array<string | { color: string; label: string; hasBorder?: boolean }>;
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ Table.pluginName ]: Table;
+	}
+
+	interface EditorConfig {
+		table?: TableConfig;
+	}
+}

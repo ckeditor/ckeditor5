@@ -7,7 +7,8 @@
  * @module table/tableediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { ViewElement } from 'ckeditor5/src/engine';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
@@ -43,21 +44,21 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableEditing' {
 		return 'TableEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
@@ -197,16 +198,18 @@ export default class TableEditing extends Plugin {
 	}
 }
 
-// Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
-// (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
-// elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
-// the first character of the paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
-//
-// <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
-//
-// <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
-//
-// @returns {Function}
+/**
+ * Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
+ * (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
+ * elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
+ * the first character of the paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
+ *
+ * <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
+ *
+ * <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
+ *
+ * @returns {Function}
+ */
 function mapTableCellModelPositionToView() {
 	return ( evt, data ) => {
 		const modelParent = data.modelPosition.parent;
@@ -231,14 +234,15 @@ function mapTableCellModelPositionToView() {
 	};
 }
 
-// Returns fixed colspan and rowspan attrbutes values.
-//
-// @private
-// @param {String} type colspan or rowspan.
-// @returns {Function} conversion value function.
-function upcastCellSpan( type ) {
-	return cell => {
-		const span = parseInt( cell.getAttribute( type ) );
+/**
+ * Returns fixed colspan and rowspan attrbutes values.
+ *
+ * @param type colspan or rowspan.
+ * @returns {Function} conversion value function.
+ */
+function upcastCellSpan( type: string ) {
+	return ( cell: ViewElement ) => {
+		const span = parseInt( cell.getAttribute( type )! );
 
 		if ( Number.isNaN( span ) || span <= 0 ) {
 			return null;

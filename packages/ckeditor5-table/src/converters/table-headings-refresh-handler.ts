@@ -7,6 +7,12 @@
  * @module table/converters/table-heading-rows-refresh-post-fixer
  */
 
+import type {
+	EditingController,
+	Element,
+	Model
+} from 'ckeditor5/src/engine';
+
 import TableWalker from '../tablewalker';
 
 /**
@@ -16,11 +22,8 @@ import TableWalker from '../tablewalker';
  * Table heading rows and heading columns are represented in the model by a `headingRows` and `headingColumns` attributes.
  *
  * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
- *
- * @param {module:engine/model/model~Model} model
- * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
-export default function tableHeadingsRefreshHandler( model, editing ) {
+export default function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 
 	for ( const change of differ.getChanges() ) {
@@ -61,7 +64,7 @@ export default function tableHeadingsRefreshHandler( model, editing ) {
 			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
 
 			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-				editing.reconvertItem( isRowChange ? tableSlot.cell.parent : tableSlot.cell );
+				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as Element );
 			}
 		}
 	}

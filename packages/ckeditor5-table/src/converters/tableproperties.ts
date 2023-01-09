@@ -7,19 +7,28 @@
  * @module table/converters/tableproperites
  */
 
+import type { Conversion, ViewElement } from 'ckeditor5/src/engine';
+
 /**
  * Conversion helper for upcasting attributes using normalized styles.
  *
- * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {Object} options
- * @param {String} options.modelAttribute The attribute to set.
- * @param {String} options.styleName The style name to convert.
- * @param {String} options.viewElement The view element name that should be converted.
- * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
- * @param {Boolean} [options.reduceBoxSides=false]
- * @param {Function} [options.shouldUpcast] The function which returns `true` if style should be upcasted from this element.
+ * @param options.modelAttribute The attribute to set.
+ * @param options.styleName The style name to convert.
+ * @param options.viewElement The view element name that should be converted.
+ * @param options.defaultValue The default value for the specified `modelAttribute`.
+ * @param options.shouldUpcast The function which returns `true` if style should be upcasted from this element.
  */
-export function upcastStyleToAttribute( conversion, options ) {
+export function upcastStyleToAttribute(
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+		viewElement: string | RegExp;
+		defaultValue: string;
+		reduceBoxSides?: boolean;
+		shouldUpcast?: Function;
+	}
+): void {
 	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false, shouldUpcast = () => true } = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
@@ -31,12 +40,12 @@ export function upcastStyleToAttribute( conversion, options ) {
 		},
 		model: {
 			key: modelAttribute,
-			value: viewElement => {
+			value: ( viewElement: ViewElement ) => {
 				if ( !shouldUpcast( viewElement ) ) {
 					return;
 				}
 
-				const normalized = viewElement.getNormalizedStyle( styleName );
+				const normalized = viewElement.getNormalizedStyle( styleName ) as Record<Side, string>;
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
 				if ( defaultValue !== value ) {
@@ -47,18 +56,26 @@ export function upcastStyleToAttribute( conversion, options ) {
 	} );
 }
 
+type StyleValues = {
+	color: string;
+	style: string;
+	width: string;
+};
+
 /**
  * Conversion helper for upcasting border styles for view elements.
  *
- * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} viewElementName
- * @param {Object} modelAttributes
- * @param {Object} defaultBorder The default border values.
- * @param {String} defaultBorder.color The default `borderColor` value.
- * @param {String} defaultBorder.style The default `borderStyle` value.
- * @param {String} defaultBorder.width The default `borderWidth` value.
+ * @param defaultBorder The default border values.
+ * @param defaultBorder.color The default `borderColor` value.
+ * @param defaultBorder.style The default `borderStyle` value.
+ * @param defaultBorder.width The default `borderWidth` value.
  */
-export function upcastBorderStyles( conversion, viewElementName, modelAttributes, defaultBorder ) {
+export function upcastBorderStyles(
+	conversion: Conversion,
+	viewElementName: string,
+	modelAttributes: StyleValues,
+	defaultBorder: StyleValues
+): void {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
 		// If the element was not converted by element-to-element converter,
 		// we should not try to convert the style. See #8393.
@@ -128,14 +145,17 @@ export function upcastBorderStyles( conversion, viewElementName, modelAttributes
 
 /**
  * Conversion helper for downcasting an attribute to a style.
- *
- * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {Object} options
- * @param {String} options.modelElement
- * @param {String} options.modelAttribute
- * @param {String} options.styleName
  */
-export function downcastAttributeToStyle( conversion, { modelElement, modelAttribute, styleName } ) {
+export function downcastAttributeToStyle(
+	conversion: Conversion,
+	options: {
+		modelElement: string;
+		modelAttribute: string;
+		styleName: string;
+	}
+): void {
+	const { modelElement, modelAttribute, styleName } = options;
+
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelElement,
@@ -152,13 +172,15 @@ export function downcastAttributeToStyle( conversion, { modelElement, modelAttri
 
 /**
  * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
- *
- * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {Object} options
- * @param {String} options.modelAttribute
- * @param {String} options.styleName
  */
-export function downcastTableAttribute( conversion, { modelAttribute, styleName } ) {
+export function downcastTableAttribute(
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+	}
+): void {
+	const { modelAttribute, styleName } = options;
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
@@ -177,15 +199,30 @@ export function downcastTableAttribute( conversion, { modelAttribute, styleName 
 	} ) );
 }
 
-// Reduces the full top, right, bottom, left object to a single string if all sides are equal.
-function reduceBoxSidesValue( style ) {
+type Side = 'top' | 'right' | 'bottom' | 'left';
+type Style = Record<Side, string>;
+
+/**
+ * Reduces the full top, right, bottom, left object to a single string if all sides are equal.
+ */
+function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
 	if ( !style ) {
 		return;
 	}
 
-	const commonValue = [ 'top', 'right', 'bottom', 'left' ]
-		.map( side => style[ side ] )
-		.reduce( ( result, side ) => result == side ? result : null );
+	const sides: Array<Side> = [ 'top', 'right', 'bottom', 'left' ];
+	const allSidesDefined = sides.every( side => style[ side ] );
 
-	return commonValue || style;
+	if ( !allSidesDefined ) {
+		return;
+	}
+
+	const topSideStyle = style.top;
+	const allSidesEqual = sides.every( side => style[ side ] === topSideStyle );
+
+	if ( allSidesEqual ) {
+		return topSideStyle;
+	}
+
+	return style;
 }

@@ -7,6 +7,8 @@
  * @module table/converters/table-caption-post-fixer
  */
 
+import type { Model, Writer } from 'ckeditor5/src/engine';
+
 /**
  * Injects a table caption post-fixer into the model.
  *
@@ -20,15 +22,17 @@
  *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTableCaptionPostFixer( model ) {
+export default function injectTableCaptionPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCaptionPostFixer( writer, model ) );
 }
 
-// The table caption post-fixer.
-//
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/model~Model} model
-function tableCaptionPostFixer( writer, model ) {
+/**
+ * The table caption post-fixer.
+ *
+ * @param {module:engine/model/writer~Writer} writer
+ * @param {module:engine/model/model~Model} model
+ */
+function tableCaptionPostFixer( writer: Writer, model: Model ) {
 	const changes = model.document.differ.getChanges();
 	let wasFixed = false;
 
@@ -40,7 +44,7 @@ function tableCaptionPostFixer( writer, model ) {
 		const positionParent = entry.position.parent;
 
 		if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
-			const table = entry.name == 'table' ? entry.position.nodeAfter : entry.position.parent;
+			const table = entry.name == 'table' ? entry.position.nodeAfter! : entry.position.parent; // TODO
 			const captionsToMerge = Array.from( table.getChildren() ).filter( child => child.is( 'element', 'caption' ) );
 			const firstCaption = captionsToMerge.shift();
 

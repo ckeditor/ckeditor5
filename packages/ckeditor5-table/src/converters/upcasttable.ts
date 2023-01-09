@@ -7,6 +7,8 @@
  * @module table/converters/upcasttable
  */
 
+import type { Element } from 'ckeditor5/src/engine';
+
 import { createEmptyTableCell } from '../utils/common';
 import { first } from 'ckeditor5/src/utils';
 
@@ -80,7 +82,7 @@ export default function upcastTable() {
 			const { rows, headingRows, headingColumns } = scanTable( viewTable );
 
 			// Only set attributes if values is greater then 0.
-			const attributes = {};
+			const attributes: { headingColumns?: number; headingRows?: number } = {};
 
 			if ( headingColumns ) {
 				attributes.headingColumns = headingColumns;
@@ -144,7 +146,7 @@ export function skipEmptyTableRow() {
  *
  * @returns {Function} Conversion helper.
  */
-export function ensureParagraphInTableCell( elementName ) {
+export function ensureParagraphInTableCell( elementName: string ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
 			// The default converter will create a model range on converted table cell.
@@ -163,12 +165,10 @@ export function ensureParagraphInTableCell( elementName ) {
 	};
 }
 
-// Get view `<table>` element from the view widget (`<figure>`).
-//
-// @private
-// @param {module:engine/view/element~Element} figureView
-// @returns {module:engine/view/element~Element}
-function getViewTableFromFigure( figureView ) {
+/**
+ * Get view `<table>` element from the view widget (`<figure>`).
+ */
+function getViewTableFromFigure( figureView: Element ) {
 	for ( const figureChild of figureView.getChildren() ) {
 		if ( figureChild.is( 'element', 'table' ) ) {
 			return figureChild;
@@ -176,16 +176,14 @@ function getViewTableFromFigure( figureView ) {
 	}
 }
 
-// Scans table rows and extracts required metadata from the table:
-//
-// headingRows    - The number of rows that go as table headers.
-// headingColumns - The maximum number of row headings.
-// rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
-//
-// @private
-// @param {module:engine/view/element~Element} viewTable
-// @returns {{headingRows, headingColumns, rows}}
-function scanTable( viewTable ) {
+/**
+ * Scans table rows and extracts required metadata from the table:
+ *
+ * headingRows    - The number of rows that go as table headers.
+ * headingColumns - The maximum number of row headings.
+ * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
+ */
+function scanTable( viewTable: Element ) {
 	const tableMeta = {
 		headingRows: 0,
 		headingColumns: 0
@@ -210,7 +208,7 @@ function scanTable( viewTable ) {
 	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
 	let firstTheadElement;
 
-	for ( const tableChild of Array.from( viewTable.getChildren() ) ) {
+	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<Element> ) ) {
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
 		// The else is for future purposes (mainly `<caption>`).
 		if ( tableChild.name === 'tbody' || tableChild.name === 'thead' || tableChild.name === 'tfoot' ) {
@@ -221,18 +219,18 @@ function scanTable( viewTable ) {
 
 			// There might be some extra empty text nodes between the `<tr>`s.
 			// Make sure further code operates on `tr`s only. (#145)
-			const trs = Array.from( tableChild.getChildren() ).filter( el => el.is( 'element', 'tr' ) );
+			const trs = Array.from( tableChild.getChildren() as Iterable<Element> ).filter( el => el.is( 'element', 'tr' ) );
 
 			for ( const tr of trs ) {
 				// This <tr> is a child of a first <thead> element.
-				if ( tr.parent.name === 'thead' && tr.parent === firstTheadElement ) {
+				if ( tr.parent!.name === 'thead' && tr.parent === firstTheadElement ) {
 					tableMeta.headingRows++;
 					headRows.push( tr );
 				} else {
 					bodyRows.push( tr );
 					// For other rows check how many column headings this row has.
 
-					const headingCols = scanRowForHeadingColumns( tr, tableMeta, firstTheadElement );
+					const headingCols = scanRowForHeadingColumns( tr );
 
 					if ( headingCols > tableMeta.headingColumns ) {
 						tableMeta.headingColumns = headingCols;
@@ -242,27 +240,26 @@ function scanTable( viewTable ) {
 		}
 	}
 
-	tableMeta.rows = [ ...headRows, ...bodyRows ];
-
-	return tableMeta;
+	return {
+		...tableMeta,
+		rows: [ ...headRows, ...bodyRows ]
+	};
 }
 
-// Scans a `<tr>` element and its children for metadata:
-// - For heading row:
-//     - Adds this row to either the heading or the body rows.
-//     - Updates the number of heading rows.
-// - For body rows:
-//     - Calculates the number of column headings.
-//
-// @private
-// @param {module:engine/view/element~Element} tr
-// @returns {Number}
-function scanRowForHeadingColumns( tr ) {
+/**
+ * Scans a `<tr>` element and its children for metadata:
+ * - For heading row:
+ *     - Adds this row to either the heading or the body rows.
+ *     - Updates the number of heading rows.
+ * - For body rows:
+ *     - Calculates the number of column headings.
+ */
+function scanRowForHeadingColumns( tr: Element ) {
 	let headingColumns = 0;
 	let index = 0;
 
 	// Filter out empty text nodes from tr children.
-	const children = Array.from( tr.getChildren() )
+	const children = Array.from( tr.getChildren() as IterableIterator<Element> )
 		.filter( child => child.name === 'th' || child.name === 'td' );
 
 	// Count starting adjacent <th> elements of a <tr>.
@@ -270,7 +267,7 @@ function scanRowForHeadingColumns( tr ) {
 		const th = children[ index ];
 
 		// Adjust columns calculation by the number of spanned columns.
-		const colspan = parseInt( th.getAttribute( 'colspan' ) || 1 );
+		const colspan = parseInt( th.getAttribute( 'colspan' ) as string || '1' );
 
 		headingColumns = headingColumns + colspan;
 		index++;

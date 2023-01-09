@@ -9,10 +9,25 @@
 
 import { CKEditorError } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
+import type {
+	DocumentSelection,
+	Element,
+	Node,
+	Position,
+	Range,
+	Selection,
+	Writer
+} from 'ckeditor5/src/engine';
 
-import TableWalker from './tablewalker';
+import TableWalker, { type TableWalkerOptions } from './tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure';
+
+type Cell = { cell: Element; rowspan: number };
+type CellsToMove = Map<number, Cell>;
+type CellsToTrim = Array<Cell>;
+
+type IndexesObject = { first: number; last: number };
 
 /**
  * The table utilities plugin.
@@ -23,14 +38,14 @@ export default class TableUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableUtils' {
 		return 'TableUtils';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		this.decorate( 'insertColumns' );
 		this.decorate( 'insertRows' );
 	}
@@ -62,13 +77,13 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @returns {Object} Returns a `{row, column}` object.
 	 */
-	getCellLocation( tableCell ) {
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+	public getCellLocation( tableCell: Element ): { row: number; column: number } | undefined {
+		const tableRow = tableCell.parent!;
+		const table = tableRow.parent as Element;
 
-		const rowIndex = table.getChildIndex( tableRow );
+		const rowIndex = table.getChildIndex( tableRow as Node );
 
-		const tableWalker = new TableWalker( table, { row: rowIndex } );
+		const tableWalker = new TableWalker( table, { row: rowIndex as number | undefined } ); // TODO
 
 		for ( const { cell, row, column } of tableWalker ) {
 			if ( cell === tableCell ) {
@@ -81,27 +96,36 @@ export default class TableUtils extends Plugin {
 	 * Creates an empty table with a proper structure. The table needs to be inserted into the model,
 	 * for example, by using the {@link module:engine/model/model~Model#insertContent} function.
 	 *
-	 *		model.change( ( writer ) => {
-	 *			// Create a table of 2 rows and 7 columns:
-	 *			const table = tableUtils.createTable( writer, { rows: 2, columns: 7 } );
+	 * ```ts
+	 * model.change( ( writer ) => {
+	 *   // Create a table of 2 rows and 7 columns:
+	 *   const table = tableUtils.createTable( writer, { rows: 2, columns: 7 } );
 	 *
-	 *			// Insert a table to the model at the best position taking the current selection:
-	 *			model.insertContent( table );
-	 *		}
+	 *   // Insert a table to the model at the best position taking the current selection:
+	 *   model.insertContent( table );
+	 * }
+	 * ```
 	 *
-	 * @param {module:engine/model/writer~Writer} writer The model writer.
-	 * @param {Object} options
-	 * @param {Number} [options.rows=2] The number of rows to create.
-	 * @param {Number} [options.columns=2] The number of columns to create.
-	 * @param {Number} [options.headingRows=0] The number of heading rows.
-	 * @param {Number} [options.headingColumns=0] The number of heading columns.
-	 * @returns {module:engine/model/element~Element} The created table element.
+	 * @param writer The model writer.
+	 * @param options.rows The number of rows to create. Default value is 2.
+	 * @param options.columns The number of columns to create. Default value is 2.
+	 * @param options.headingRows The number of heading rows. Default value is 0.
+	 * @param options.headingColumns The number of heading columns. Default value is 0.
+	 * @returns The created table element.
 	 */
-	createTable( writer, options ) {
+	public createTable(
+		writer: Writer,
+		options: {
+			rows?: number;
+			columns?: number;
+			headingRows?: number;
+			headingColumns?: number;
+		}
+	): Element {
 		const table = writer.createElement( 'table' );
 
-		const rows = parseInt( options.rows ) || 2;
-		const columns = parseInt( options.columns ) || 2;
+		const rows = options.rows || 2;
+		const columns = options.columns || 2;
 
 		createEmptyRows( writer, table, 0, rows, columns );
 
@@ -136,14 +160,13 @@ export default class TableUtils extends Plugin {
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *
-	 * @param {module:engine/model/element~Element} table The table model element where the rows will be inserted.
-	 * @param {Object} options
-	 * @param {Number} [options.at=0] The row index at which the rows will be inserted.
-	 * @param {Number} [options.rows=1] The number of rows to insert.
-	 * @param {Boolean|undefined} [options.copyStructureFromAbove] The flag for copying row structure. Note that
+	 * @param table The table model element where the rows will be inserted.
+	 * @param options.at The row index at which the rows will be inserted.  Default value is 0.
+	 * @param options.rows The number of rows to insert.  Default value is 1.
+	 * @param options.copyStructureFromAbove The flag for copying row structure. Note that
 	 * the row structure will not be copied if this option is not provided.
 	 */
-	insertRows( table, options = {} ) {
+	public insertRows( table: Element, options: { at?: number; rows?: number; copyStructureFromAbove?: boolean } = {} ): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
@@ -168,7 +191,7 @@ export default class TableUtils extends Plugin {
 		}
 
 		model.change( writer => {
-			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
@@ -220,7 +243,7 @@ export default class TableUtils extends Plugin {
 
 					// Insert the empty cell only if this slot is not row-spanned from any other cell.
 					if ( colspan > 0 ) {
-						createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : null );
+						createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : undefined );
 					}
 
 					// Skip the col-spanned slots, there won't be any cells.
@@ -256,14 +279,14 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.at=0] The column index at which the columns will be inserted.
 	 * @param {Number} [options.columns=1] The number of columns to insert.
 	 */
-	insertColumns( table, options = {} ) {
+	public insertColumns( table: Element, options: { at?: number; columns?: number } = {} ): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
 
 		model.change( writer => {
-			const headingColumns = table.getAttribute( 'headingColumns' );
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number;
 
 			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
 			if ( insertAt < headingColumns ) {
@@ -344,7 +367,7 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} options.at The row index at which the removing rows will start.
 	 * @param {Number} [options.rows=1] The number of rows to remove.
 	 */
-	removeRows( table, options ) {
+	public removeRows( table: Element, options: { at: number; rows?: number } ): void {
 		const model = this.editor.model;
 
 		const rowsToRemove = options.rows || 1;
@@ -366,11 +389,13 @@ export default class TableUtils extends Plugin {
 		}
 
 		model.change( writer => {
+			const indexesObject = { first, last };
+
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
 			// Preparations must be done in the same enqueueChange callback to use the current table structure.
 
 			// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
-			const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
+			const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, indexesObject );
 
 			// 2. Execution
 
@@ -383,7 +408,7 @@ export default class TableUtils extends Plugin {
 
 			// 2b. Remove all required rows.
 			for ( let i = last; i >= first; i-- ) {
-				writer.remove( table.getChild( i ) );
+				writer.remove( table.getChild( i )! );
 			}
 
 			// 2c. Update cells from rows above that overlap removed section. Similar to step 2 but does not involve moving cells.
@@ -392,7 +417,7 @@ export default class TableUtils extends Plugin {
 			}
 
 			// 2d. Adjust heading rows if removed rows were in a heading section.
-			updateHeadingRows( table, first, last, writer );
+			updateHeadingRows( table, indexesObject, writer );
 
 			// 2e. Remove empty columns (without anchored cells) if there are any.
 			if ( !removeEmptyColumns( table, this ) ) {
@@ -427,12 +452,10 @@ export default class TableUtils extends Plugin {
 	 *		└───────────────────┘                   └───────────┘
 	 *		      ^---- remove from here, `at` = 1, `columns` = 2
 	 *
-	 * @param {module:engine/model/element~Element} table
-	 * @param {Object} options
-	 * @param {Number} options.at The row index at which the removing columns will start.
-	 * @param {Number} [options.columns=1] The number of columns to remove.
+	 * @param options.at The row index at which the removing columns will start.
+	 * @param options.columns The number of columns to remove.
 	 */
-	removeColumns( table, options ) {
+	public removeColumns( table: Element, options: { at: number; columns?: number } ): void {
 		const model = this.editor.model;
 		const first = options.at;
 		const columnsToRemove = options.columns || 1;
@@ -506,13 +529,13 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 */
-	splitCellVertically( tableCell, numberOfCells = 2 ) {
+	public splitCellVertically( tableCell: Element, numberOfCells = 2 ): void {
 		const model = this.editor.model;
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const tableRow = tableCell.parent!;
+		const table = tableRow.parent as Element;
 
-		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
+		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -523,7 +546,7 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
 				// Each inserted cell will have the same attributes:
-				const newCellsAttributes = {};
+				const newCellsAttributes: Record<string, any> = {};
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
@@ -547,7 +570,7 @@ export default class TableUtils extends Plugin {
 				const tableMap = [ ...new TableWalker( table ) ];
 
 				// Get the column index of split cell.
-				const { column: splitCellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
+				const { column: splitCellColumn } = tableMap.find( ( { cell } ) => cell === tableCell )!;
 
 				// Find cells which needs to be expanded vertically - those on the same column or those that spans over split cell's column.
 				const cellsToUpdate = tableMap.filter( ( { cell, cellWidth, column } ) => {
@@ -565,7 +588,7 @@ export default class TableUtils extends Plugin {
 				// Second step: create columns after split cell.
 
 				// Each inserted cell will have the same attributes:
-				const newCellsAttributes = {};
+				const newCellsAttributes: Record<string, any> = {};
 
 				// Do not store default value in the model.
 
@@ -576,7 +599,7 @@ export default class TableUtils extends Plugin {
 
 				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 
-				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+				const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 				// Update heading section if split cell is in heading section.
 				if ( headingColumns > splitCellColumn ) {
@@ -642,15 +665,15 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 */
-	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
+	public splitCellHorizontally( tableCell: Element, numberOfCells = 2 ): void {
 		const model = this.editor.model;
 
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
-		const splitCellRow = table.getChildIndex( tableRow );
+		const tableRow = tableCell.parent as Node;
+		const table = tableRow.parent! as Element;
+		const splitCellRow = table.getChildIndex( tableRow )!;
 
-		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
+		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -667,10 +690,10 @@ export default class TableUtils extends Plugin {
 
 				updateNumericAttribute( 'rowspan', updatedSpan, tableCell, writer );
 
-				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
+				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell )!;
 
 				// Each inserted cell will have the same attributes:
-				const newCellsAttributes = {};
+				const newCellsAttributes: { rowspan?: number; colspan?: number } = {};
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
@@ -722,7 +745,7 @@ export default class TableUtils extends Plugin {
 				}
 
 				// Second step: create rows with single cell below split cell.
-				const newCellsAttributes = {};
+				const newCellsAttributes: { colspan?: number } = {};
 
 				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
@@ -732,7 +755,7 @@ export default class TableUtils extends Plugin {
 				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes );
 
 				// Update heading section if split cell is in heading section.
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
+				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 				if ( headingRows > splitCellRow ) {
 					updateNumericAttribute( 'headingRows', headingRows + cellsToInsert, table, writer );
@@ -749,14 +772,14 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} table The table to analyze.
 	 * @returns {Number}
 	 */
-	getColumns( table ) {
+	public getColumns( table: Element ): number {
 		// Analyze first row only as all the rows should have the same width.
 		// Using the first row without checking if it's a tableRow because we expect
 		// that table will have only tableRow model elements at the beginning.
-		const row = table.getChild( 0 );
+		const row = table.getChild( 0 ) as Element;
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-			const columnWidth = parseInt( row.getAttribute( 'colspan' ) || 1 );
+			const columnWidth = parseInt( row.getAttribute( 'colspan' ) as string || '1' );
 
 			return columns + columnWidth;
 		}, 0 );
@@ -770,7 +793,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} table The table to analyze.
 	 * @returns {Number}
 	 */
-	getRows( table ) {
+	public getRows( table: Element ): number {
 		// Rowspan not included due to #6427.
 		return Array.from( table.getChildren() )
 			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
@@ -797,7 +820,7 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
 	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
 	 */
-	createTableWalker( table, options = {} ) {
+	public createTableWalker( table: Element, options: TableWalkerOptions = {} ): TableWalker {
 		return new TableWalker( table, options );
 	}
 
@@ -811,7 +834,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	getSelectedTableCells( selection ) {
+	public getSelectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
 		const cells = [];
 
 		for ( const range of this.sortRanges( selection.getRanges() ) ) {
@@ -835,7 +858,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	getTableCellsContainingSelection( selection ) {
+	public getTableCellsContainingSelection( selection: Selection | DocumentSelection ): Array<Element> {
 		const cells = [];
 
 		for ( const range of selection.getRanges() ) {
@@ -860,7 +883,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	getSelectionAffectedTableCells( selection ) {
+	public getSelectionAffectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
 		const selectedCells = this.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
@@ -882,8 +905,8 @@ export default class TableUtils extends Plugin {
 	* @param {Array.<module:engine/model/element~Element>} tableCells
 	* @returns {Object} Returns an object with the `first` and `last` table row indexes.
 	*/
-	getRowIndexes( tableCells ) {
-		const indexes = tableCells.map( cell => cell.parent.index );
+	public getRowIndexes( tableCells: Array<Element> ): IndexesObject {
+		const indexes = tableCells.map( cell => ( cell.parent as Element ).index! );
 
 		return this._getFirstLastIndexesObject( indexes );
 	}
@@ -900,8 +923,8 @@ export default class TableUtils extends Plugin {
 	* @param {Array.<module:engine/model/element~Element>} tableCells
 	* @returns {Object} Returns an object with the `first` and `last` table column indexes.
 	*/
-	getColumnIndexes( tableCells ) {
-		const table = tableCells[ 0 ].findAncestor( 'table' );
+	public getColumnIndexes( tableCells: Array<Element> ): IndexesObject {
+		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 		const tableMap = [ ...new TableWalker( table ) ];
 
 		const indexes = tableMap
@@ -933,11 +956,8 @@ export default class TableUtils extends Plugin {
 	* While an invalid selection would be:
 	*   - a, c (the unselected cell "b" creates a gap)
 	*   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
-	*
-	* @param {Array.<module:engine/model/element~Element>} selectedTableCells
-	* @returns {Boolean}
 	*/
-	isSelectionRectangular( selectedTableCells ) {
+	public isSelectionRectangular( selectedTableCells: Array<Element> ): boolean {
 		if ( selectedTableCells.length < 2 || !this._areCellInTheSameTableSection( selectedTableCells ) ) {
 			return false;
 		}
@@ -945,15 +965,15 @@ export default class TableUtils extends Plugin {
 		// A valid selection is a fully occupied rectangle composed of table cells.
 		// Below we will calculate the area of a selected table cells and the area of valid selection.
 		// The area of a valid selection is defined by top-left and bottom-right cells.
-		const rows = new Set();
-		const columns = new Set();
+		const rows: Set<number> = new Set();
+		const columns: Set<number> = new Set();
 
 		let areaOfSelectedCells = 0;
 
 		for ( const tableCell of selectedTableCells ) {
-			const { row, column } = this.getCellLocation( tableCell );
-			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+			const { row, column } = this.getCellLocation( tableCell )!;
+			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string ) || 1;
+			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string ) || 1;
 
 			// Record row & column indexes of current cell.
 			rows.add( row );
@@ -984,18 +1004,14 @@ export default class TableUtils extends Plugin {
 	 * @param {Iterable.<module:engine/model/range~Range>} ranges
 	 * @return {Array.<module:engine/model/range~Range>}
 	 */
-	sortRanges( ranges ) {
+	public sortRanges( ranges: Iterable<Range> ): Array<Range> {
 		return Array.from( ranges ).sort( compareRangeOrder );
 	}
 
 	/**
 	 * Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
-	 *
-	 * @private
-	 * @param {Number[]} indexes
-	 * @returns {Object}
 	 */
-	_getFirstLastIndexesObject( indexes ) {
+	private _getFirstLastIndexesObject( indexes: Array<number> ): IndexesObject {
 		const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
 
 		const first = allIndexesSorted[ 0 ];
@@ -1019,24 +1035,20 @@ export default class TableUtils extends Plugin {
 	 *		├───┼───┼───┼───┤
 	 *		│ c │ c │ d │ d │
 	 *		└───┴───┴───┴───┘
-	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} tableCells
-	 * @returns {Boolean}
 	 */
-	_areCellInTheSameTableSection( tableCells ) {
-		const table = tableCells[ 0 ].findAncestor( 'table' );
+	private _areCellInTheSameTableSection( tableCells: Array<Element> ): boolean {
+		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 
 		const rowIndexes = this.getRowIndexes( tableCells );
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string ) || 0;
 
 		// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
 		if ( !this._areIndexesInSameSection( rowIndexes, headingRows ) ) {
 			return false;
 		}
 
-		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
 		const columnIndexes = this.getColumnIndexes( tableCells );
+		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string ) || 0;
 
 		// Similarly cells must be in same column section.
 		return this._areIndexesInSameSection( columnIndexes, headingColumns );
@@ -1044,14 +1056,8 @@ export default class TableUtils extends Plugin {
 
 	/**
 	 * Unified check if table rows/columns indexes are in the same heading/body section.
-	 *
-	 * @private
-	 * @param {Object} params
-	 * @param {Number} params.first
-	 * @param {Number} params.last
-	 * @param {Number} headingSectionSize
 	 */
-	_areIndexesInSameSection( { first, last }, headingSectionSize ) {
+	private _areIndexesInSameSection( { first, last }: IndexesObject, headingSectionSize: number ): boolean {
 		const firstCellIsInHeading = first < headingSectionSize;
 		const lastCellIsInHeading = last < headingSectionSize;
 
@@ -1059,14 +1065,14 @@ export default class TableUtils extends Plugin {
 	}
 }
 
-// Creates empty rows at the given index in an existing table.
-//
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/element~Element} table
-// @param {Number} insertAt The row index of row insertion.
-// @param {Number} rows The number of rows to create.
-// @param {Number} tableCellToInsert The number of cells to insert in each row.
-function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes = {} ) {
+/**
+ * Creates empty rows at the given index in an existing table.
+ *
+ * @param insertAt The row index of row insertion.
+ * @param rows The number of rows to create.
+ * @param tableCellToInsert The number of cells to insert in each row.
+ */
+function createEmptyRows( writer: Writer, table: Element, insertAt: number, rows: number, tableCellToInsert: number, attributes = {} ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
@@ -1076,30 +1082,31 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 	}
 }
 
-// Creates cells at a given position.
-//
-// @param {Number} columns The number of columns to create
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/position~Position} insertPosition
-function createCells( cells, writer, insertPosition, attributes = {} ) {
+/**
+ * Creates cells at a given position.
+ *
+ * @param cells The number of cells to create
+ */
+function createCells( cells: number, writer: Writer, insertPosition: Position, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
 		createEmptyTableCell( writer, insertPosition, attributes );
 	}
 }
 
-// Evenly distributes the span of a cell to a number of provided cells.
-// The resulting spans will always be integer values.
-//
-// For instance breaking a span of 7 into 3 cells will return:
-//
-//		{ newCellsSpan: 2, updatedSpan: 3 }
-//
-// as two cells will have a span of 2 and the remainder will go the first cell so its span will change to 3.
-//
-// @param {Number} span The span value do break.
-// @param {Number} numberOfCells The number of resulting spans.
-// @returns {{newCellsSpan: Number, updatedSpan: Number}}
-function breakSpanEvenly( span, numberOfCells ) {
+/**
+ * Evenly distributes the span of a cell to a number of provided cells.
+ * The resulting spans will always be integer values.
+ *
+ * For instance breaking a span of 7 into 3 cells will return:
+ *
+ *		{ newCellsSpan: 2, updatedSpan: 3 }
+ *
+ * as two cells will have a span of 2 and the remainder will go the first cell so its span will change to 3.
+ *
+ * @param span The span value do break.
+ * @param numberOfCells The number of resulting spans.
+ */
+function breakSpanEvenly( span: number, numberOfCells: number ): { newCellsSpan: number; updatedSpan: number } {
 	if ( span < numberOfCells ) {
 		return { newCellsSpan: 1, updatedSpan: 1 };
 	}
@@ -1110,9 +1117,11 @@ function breakSpanEvenly( span, numberOfCells ) {
 	return { newCellsSpan, updatedSpan };
 }
 
-// Updates heading columns attribute if removing a row from head section.
-function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
-	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+/**
+ * Updates heading columns attribute if removing a row from head section.
+ */
+function adjustHeadingColumns( table: Element, removedColumnIndexes: IndexesObject, writer: Writer ) {
+	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
 		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
@@ -1122,9 +1131,11 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 	}
 }
 
-// Calculates a new heading rows value for removing rows from heading section.
-function updateHeadingRows( table, first, last, writer ) {
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+/**
+ * Calculates a new heading rows value for removing rows from heading section.
+ */
+function updateHeadingRows( table: Element, { first, last }: IndexesObject, writer: Writer ) {
+	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	if ( first < headingRows ) {
 		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
@@ -1133,30 +1144,32 @@ function updateHeadingRows( table, first, last, writer ) {
 	}
 }
 
-// Finds cells that will be:
-// - trimmed - Cells that are "above" removed rows sections and overlap the removed section - their rowspan must be trimmed.
-// - moved - Cells from removed rows section might stick out of. These cells are moved to the next row after a removed section.
-//
-// Sample table with overlapping & sticking out cells:
-//
-//      +----+----+----+----+----+
-//      | 00 | 01 | 02 | 03 | 04 |
-//      +----+    +    +    +    +
-//      | 10 |    |    |    |    |
-//      +----+----+    +    +    +
-//      | 20 | 21 |    |    |    | <-- removed row
-//      +    +    +----+    +    +
-//      |    |    | 32 |    |    | <-- removed row
-//      +----+    +    +----+    +
-//      | 40 |    |    | 43 |    |
-//      +----+----+----+----+----+
-//
-// In a table above:
-// - cells to trim: '02', '03' & '04'.
-// - cells to move: '21' & '32'.
-function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
-	const cellsToMove = new Map();
-	const cellsToTrim = [];
+/**
+ * Finds cells that will be:
+ * - trimmed - Cells that are "above" removed rows sections and overlap the removed section - their rowspan must be trimmed.
+ * - moved - Cells from removed rows section might stick out of. These cells are moved to the next row after a removed section.
+ *
+ * Sample table with overlapping & sticking out cells:
+ *
+ *      +----+----+----+----+----+
+ *      | 00 | 01 | 02 | 03 | 04 |
+ *      +----+    +    +    +    +
+ *      | 10 |    |    |    |    |
+ *      +----+----+    +    +    +
+ *      | 20 | 21 |    |    |    | <-- removed row
+ *      +    +    +----+    +    +
+ *      |    |    | 32 |    |    | <-- removed row
+ *      +----+    +    +----+    +
+ *      | 40 |    |    | 43 |    |
+ *      +----+----+----+----+----+
+ *
+ * In a table above:
+ * - cells to trim: '02', '03' & '04'.
+ * - cells to move: '21' & '32'.
+ */
+function getCellsToMoveAndTrimOnRemoveRow( table: Element, { first, last }: IndexesObject ) {
+	const cellsToMove: CellsToMove = new Map();
+	const cellsToTrim: CellsToTrim = [];
 
 	for ( const { row, column, cellHeight, cell } of new TableWalker( table, { endRow: last } ) ) {
 		const lastRowOfCell = row + cellHeight - 1;
@@ -1193,23 +1206,24 @@ function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
 			} );
 		}
 	}
+
 	return { cellsToMove, cellsToTrim };
 }
 
-function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
+function moveCellsToRow( table: Element, targetRowIndex: number, cellsToMove: CellsToMove, writer: Writer ) {
 	const tableWalker = new TableWalker( table, {
 		includeAllSlots: true,
 		row: targetRowIndex
 	} );
 
 	const tableRowMap = [ ...tableWalker ];
-	const row = table.getChild( targetRowIndex );
+	const row = table.getChild( targetRowIndex )!;
 
 	let previousCell;
 
 	for ( const { column, cell, isAnchor } of tableRowMap ) {
 		if ( cellsToMove.has( column ) ) {
-			const { cell: cellToMove, rowspan } = cellsToMove.get( column );
+			const { cell: cellToMove, rowspan } = cellsToMove.get( column )!;
 
 			const targetPosition = previousCell ?
 				writer.createPositionAfter( previousCell ) :
@@ -1226,7 +1240,7 @@ function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 	}
 }
 
-function compareRangeOrder( rangeA, rangeB ) {
+function compareRangeOrder( rangeA: Range, rangeB: Range ) {
 	// Since table cell ranges are disjoint, it's enough to check their start positions.
 	const posA = rangeA.start;
 	const posB = rangeB.start;
@@ -1237,12 +1251,10 @@ function compareRangeOrder( rangeA, rangeB ) {
 	return posA.isBefore( posB ) ? -1 : 1;
 }
 
-// Calculates the area of a maximum rectangle that can span over the provided row & column indexes.
-//
-// @param {Array.<Number>} rows
-// @param {Array.<Number>} columns
-// @returns {Number}
-function getBiggestRectangleArea( rows, columns ) {
+/**
+ * Calculates the area of a maximum rectangle that can span over the provided row & column indexes.
+ */
+function getBiggestRectangleArea( rows: Set<number>, columns: Set<number> ): number {
 	const rowsIndexes = Array.from( rows.values() );
 	const columnIndexes = Array.from( columns.values() );
 
@@ -1252,4 +1264,10 @@ function getBiggestRectangleArea( rows, columns ) {
 	const firstColumn = Math.min( ...columnIndexes );
 
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableUtils.pluginName ]: TableUtils;
+	}
 }
