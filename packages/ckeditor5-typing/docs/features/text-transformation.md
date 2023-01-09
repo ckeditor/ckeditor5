@@ -98,8 +98,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Example: Using `transformations.remove` and `extra`
@@ -147,8 +147,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
@@ -178,8 +178,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ TextTransformation, ... ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
