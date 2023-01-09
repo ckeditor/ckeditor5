@@ -52,11 +52,17 @@ export default class FindAndReplaceUI extends Plugin {
 		// Register the toolbar dropdown component.
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale );
-			const formView = this.formView = new FindAndReplaceFormView( editor.locale );
 
 			// Dropdown should be disabled when in source editing mode. See #10001.
 			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
-			dropdown.panelView.children.add( formView );
+
+			dropdown.once( 'change:isOpen', () => {
+				this.formView = new FindAndReplaceFormView( editor.locale );
+
+				dropdown.panelView.children.add( this.formView );
+
+				this._setupFormView( this.formView );
+			} );
 
 			// Every time a dropdown is opened, the search text field should get focused and selected for better UX.
 			// Note: Using the low priority here to make sure the following listener starts working after
@@ -68,19 +74,18 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
 				if ( isOpen ) {
-					formView.disableCssTransitions();
+					this.formView.disableCssTransitions();
 
-					formView.reset();
-					formView._findInputView.fieldView.select();
+					this.formView.reset();
+					this.formView._findInputView.fieldView.select();
 
-					formView.enableCssTransitions();
+					this.formView.enableCssTransitions();
 				} else {
 					this.fire( 'searchReseted' );
 				}
 			}, { priority: 'low' } );
 
 			this._setupDropdownButton( dropdown );
-			this._setupFormView( formView );
 
 			return dropdown;
 		} );

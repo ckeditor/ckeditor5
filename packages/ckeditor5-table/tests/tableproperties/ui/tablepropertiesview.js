@@ -169,6 +169,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should change #borderStyle when executed', () => {
+							labeledDropdown.fieldView.isOpen = true;
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'none' );
 
@@ -177,6 +178,8 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should come with a set of pre–defined border styles', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
 							expect( labeledDropdown.fieldView.listView.items.map( item => {
 								return item.children.first.label;
 							} ) ).to.have.ordered.members( [
