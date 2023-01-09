@@ -55,7 +55,7 @@ Attach the inspector to the editor instance when {@link installation/getting-sta
 
 ```js
 ClassicEditor
-	.create( ... )
+	.create( /* ... */ )
 	.then( editor => {
 		CKEditorInspector.attach( editor );
 	} )
@@ -156,6 +156,7 @@ For instance, to take a peek at the editor model, you could use the {@link modul
 ```js
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+// More imports.
 // ...
 
 ClassicEditor

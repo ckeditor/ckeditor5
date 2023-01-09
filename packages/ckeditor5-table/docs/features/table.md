@@ -118,14 +118,14 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Default table headers
@@ -138,14 +138,14 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			defaultHeadings: { rows: 1, columns: 1 }
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
 
@@ -169,27 +169,27 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',
 				'tableProperties', 'tableCellProperties'
 			],
 
-			// Configuration of the TableProperties plugin.
 			tableProperties: {
+				// Configuration of the TableProperties plugin.
 				// ...
 			},
 
-			// Configuration of the TableCellProperties plugin.
 			tableCellProperties: {
+				// Configuration of the TableCellProperties plugin.
 				// ...
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -212,11 +212,11 @@ import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableColumnResize, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableColumnResize, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 ### Table caption
 
@@ -235,16 +235,16 @@ import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableCaption, Bold, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableToolbar, TableCaption, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			contentToolbar: [
 				'toggleTableCaption'
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -305,13 +305,14 @@ const customColorPalette = [
 		label: 'Blue'
 	},
 
+	// More colors.
 	// ...
 ];
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, ... ],
-		toolbar: [ 'insertTable', ... ],
+		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',
@@ -331,8 +332,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Default table and table cell styles
@@ -540,8 +541,8 @@ ClassicEditor
 
 		// The rest of the configuration.
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 <info-box>
 	Check the {@link framework/guides/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.

@@ -72,14 +72,15 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ], // Depending on your preference.
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Feature configuration.
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
@@ -95,8 +96,8 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			defaultUploadCategories: {
 				Bitmaps: [ 'bmp' ],
@@ -107,8 +108,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Please keep in mind that if you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
@@ -128,14 +129,14 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			ignoreDataId: true
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Changing the language
@@ -147,14 +148,14 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			language: 'es'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Also, make sure to include the translation file after loading the CKBox library:
@@ -173,14 +174,14 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			tokenUrl: 'https://example.com/cs-token-endpoint'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring the API service and assets origin
@@ -192,15 +193,15 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			serviceOrigin: 'https://example.com/',
 			assetsOrigin: 'https://cloud.example.com/',
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API

@@ -29,14 +29,14 @@ import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleu
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, ... ],
-		toolbar: [ ... ],
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
 		simpleUpload: {
 			// Feature configuration.
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -52,8 +52,8 @@ import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleu
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, ... ],
-		toolbar: [ ... ],
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
 		simpleUpload: {
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
@@ -68,8 +68,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types

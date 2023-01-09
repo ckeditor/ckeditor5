@@ -73,18 +73,18 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, ... ],
+		plugins: [ CKFinder, /* ... */ ],
 
 		// Enable the "Insert image" button in the toolbar.
-		toolbar: [ 'uploadImage', ... ],
+		toolbar: [ 'uploadImage', /* ... */ ],
 
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
 			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the image upload only](#image-upload-only)**.
@@ -113,10 +113,10 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, ... ],
+		plugins: [ CKFinder, /* ... */ ],
 
 		// Enable the CKFinder button in the toolbar.
-		toolbar: [ 'ckfinder', ... ]
+		toolbar: [ 'ckfinder', /* ... */ ]
 
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
@@ -128,8 +128,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 See the **[demo of the full integration](#full-integration)**.
@@ -145,15 +145,15 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, ... ],
-		toolbar: [ 'ckfinder', ... ]
+		plugins: [ CKFinder, /* ... */ ],
+		toolbar: [ 'ckfinder', /* ... */ ]
 		ckfinder: {
 			// Open the file manager in the pop-up window.
 			openerMethod: 'popup'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types
@@ -192,14 +192,15 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, ... ],
-		toolbar: [ 'ckfinder', 'uploadImage' ... ], // Depending on your preference.
+		plugins: [ CKFinder, /* ... */ ],
+		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
 		ckfinder: {
 			// Feature configuration.
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API

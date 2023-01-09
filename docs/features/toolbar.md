@@ -89,7 +89,8 @@ toolbar: [
 				icon: 'bold',
 				items: [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript' ]
 			},
-(...)
+// More of toolbar's config.
+// ...
 ]
 ```
 
