@@ -548,6 +548,26 @@ describe( 'utils', () => {
 				expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
 			} );
 
+			it( 'should be created before chained observables are updated', () => {
+				const dropdownView = createDropdown( locale );
+				const observable = new View();
+
+				expect( dropdownView.toolbarView ).to.be.undefined;
+
+				observable.bind( 'isDropdownOpen' ).to( dropdownView, 'isOpen' );
+
+				addToolbarToDropdown( dropdownView, buttons );
+
+				dropdownView.listenTo( observable, 'change:isDropdownOpen', ( evt, name, isDropdownOpen ) => {
+					if ( isDropdownOpen ) {
+						expect( dropdownView.toolbarView ).to.be.not.undefined;
+						expect( dropdownView.toolbarView.items.length ).to.equal( 2 );
+					}
+				} );
+
+				dropdownView.isOpen = true;
+			} );
+
 			it( 'is created immediately on already open dropdown', () => {
 				const dropdownView = createDropdown( locale );
 
@@ -717,6 +737,34 @@ describe( 'utils', () => {
 				expect( dropdownView.listView ).to.be.instanceof( ListView );
 
 				dropdownView.element.remove();
+			} );
+
+			it( 'should be created before chained observables are updated', () => {
+				const dropdownView = createDropdown( locale );
+				const observable = new View();
+
+				observable.bind( 'isDropdownOpen' ).to( dropdownView, 'isOpen' );
+
+				definitions.add( {
+					type: 'button',
+					model: new Model( { label: 'a' } )
+				} );
+
+				definitions.add( {
+					type: 'button',
+					model: new Model( { label: 'b' } )
+				} );
+
+				addListToDropdown( dropdownView, definitions );
+
+				dropdownView.listenTo( observable, 'change:isDropdownOpen', ( evt, name, isDropdownOpen ) => {
+					if ( isDropdownOpen ) {
+						expect( dropdownView.listView ).to.be.not.undefined;
+						expect( dropdownView.listView.items.length ).to.equal( 2 );
+					}
+				} );
+
+				dropdownView.isOpen = true;
 			} );
 
 			it( 'is created immediately on already open dropdown', () => {

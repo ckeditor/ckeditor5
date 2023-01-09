@@ -190,7 +190,11 @@ export function addToolbarToDropdown(
 	if ( dropdownView.isOpen ) {
 		addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options );
 	} else {
-		dropdownView.once( 'change:isOpen', () => addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options ) );
+		dropdownView.once(
+			'change:isOpen',
+			() => addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options ),
+			{ priority: 'highest' }
+		);
 	}
 
 	if ( options.enableActiveItemFocusOnDropdownOpen ) {
@@ -306,7 +310,11 @@ export function addListToDropdown(
 	if ( dropdownView.isOpen ) {
 		addListToOpenDropdown( dropdownView, itemsOrCallback, options );
 	} else {
-		dropdownView.once( 'change:isOpen', () => addListToOpenDropdown( dropdownView, itemsOrCallback, options ) );
+		dropdownView.once(
+			'change:isOpen',
+			() => addListToOpenDropdown( dropdownView, itemsOrCallback, options ),
+			{ priority: 'highest' }
+		);
 	}
 
 	// Accessibility: Focus the first active button in the list when the dropdown gets open.
