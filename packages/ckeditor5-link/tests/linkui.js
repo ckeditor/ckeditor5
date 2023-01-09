@@ -766,6 +766,54 @@ describe( 'LinkUI', () => {
 		}
 	} );
 
+	describe( '_addActionsView()', () => {
+		beforeEach( () => {
+			editor.editing.view.document.isFocused = true;
+		} );
+
+		it( 'should create #actionsView', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._addActionsView();
+
+			expect( linkUIFeature.actionsView ).to.be.instanceOf( LinkActionsView );
+		} );
+
+		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
+			'that link',
+		() => {
+			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+			linkUIFeature._addActionsView();
+			actionsView = linkUIFeature.actionsView;
+
+			expect( balloon.visibleView ).to.equal( actionsView );
+		} );
+	} );
+
+	describe( '_addFormView()', () => {
+		beforeEach( () => {
+			editor.editing.view.document.isFocused = true;
+		} );
+
+		it( 'should create #formView', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._addFormView();
+
+			expect( linkUIFeature.formView ).to.be.instanceOf( LinkFormView );
+		} );
+
+		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._addFormView();
+			formView = linkUIFeature.formView;
+
+			expect( balloon.visibleView ).to.equal( formView );
+		} );
+	} );
+
 	describe( '_hideUI()', () => {
 		beforeEach( () => {
 			linkUIFeature._showUI();

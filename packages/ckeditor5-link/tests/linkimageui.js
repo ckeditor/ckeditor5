@@ -200,12 +200,15 @@ describe( 'LinkImageUI', () => {
 
 				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
+				editor.ui.focusTracker.isFocused = true;
+
 				editor.model.change( writer => {
 					writer.setSelection( root.getChild( 0 ), 'on' );
 				} );
 
 				linkButton.fire( 'execute' );
 
+				expect( linkUIPlugin._balloon.visibleView ).to.be.not.null;
 				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
 			} );
 

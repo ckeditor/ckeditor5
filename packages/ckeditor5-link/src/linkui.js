@@ -313,6 +313,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addActionsView() {
+		if ( !this.actionsView ) {
+			this._createViews();
+		}
+
 		if ( this._areActionsInPanel ) {
 			return;
 		}
@@ -329,6 +333,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addFormView() {
+		if ( !this.formView ) {
+			this._createViews();
+		}
+
 		if ( this._isFormInPanel ) {
 			return;
 		}
