@@ -49,7 +49,7 @@ With the CKBox platform, users can upload files and categorize them into differe
 
 ### Easy Image
 
-The {@link features/easy-image Easy Image} feature comes with a strong focus on the end–user experience and its goal is to make the image upload as effortless and intuitive as possible.
+The {@link features/easy-image Easy Image} feature comes with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
 
 Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that securely uploads images, takes care of rescaling and optimizing them as well as providing various image sizes (responsive images), and delivers uploaded images through a blazing-fast CDN. All that with virtually zero server setup.
 
