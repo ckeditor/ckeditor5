@@ -3,6 +3,8 @@ category: getting-started
 order: 70
 ---
 
+{@snippet installation/getting-and-setting-data/build-autosave-source}
+
 # Getting and setting data
 
 <info-box hint>
