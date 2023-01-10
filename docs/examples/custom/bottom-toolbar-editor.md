@@ -15,8 +15,6 @@ Additionally, thanks to the flexibility offered by the {@link framework/guides/a
 
 The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally, for example in email applications, (forum) post editors, chats or instant messaging. You can probably recognize this UI setup from some popular applications such as Gmail, Slack or Zendesk.
 
-## Demo
-
 {@snippet examples/bottom-toolbar-editor}
 
 ## Editor example configuration
