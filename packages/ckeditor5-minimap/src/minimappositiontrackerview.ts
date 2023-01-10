@@ -8,7 +8,8 @@
  */
 
 import { View } from 'ckeditor5/src/ui';
-import { toUnit, global } from 'ckeditor5/src/utils';
+import { toUnit, global, type Locale } from 'ckeditor5/src/utils';
+import type { MinimapDragEvent } from './minimapview';
 
 const toPx = toUnit( 'px' );
 
@@ -16,45 +17,45 @@ const toPx = toUnit( 'px' );
  * The position tracker visualizing the visible subset of the content. Displayed over the minimap.
  *
  * @private
- * @extends module:ui/view~View
  */
 export default class MinimapPositionTrackerView extends View {
-	constructor( locale ) {
+	/**
+	 * The CSS `height` of the tracker visualizing the subset of the content visible to the user.
+	 *
+	 * @readonly
+	 */
+	public height!: number;
+
+	/**
+	 * The CSS `top` of the tracker, used to move it vertically over the minimap.
+	 *
+	 * @readonly
+	 */
+	public top!: number;
+
+	/**
+	 * The scroll progress (in %) displayed over the tracker when being dragged by the user.
+	 *
+	 * @readonly
+	 */
+	public scrollProgress!: number;
+
+	/**
+	 * Indicates whether the tracker is being dragged by the user (e.g. using the mouse).
+	 *
+	 * @private
+	 * @readonly
+	 */
+	public _isDragging!: boolean;
+
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The CSS `height` of the tracker visualizing the subset of the content visible to the user.
-		 *
-		 * @readonly
-		 * @member {Number} #height
-		 */
 		this.set( 'height', 0 );
-
-		/**
-		 * The CSS `top` of the tracker, used to move it vertically over the minimap.
-		 *
-		 * @readonly
-		 * @member {Number} #top
-		 */
 		this.set( 'top', 0 );
-
-		/**
-		 * The scroll progress (in %) displayed over the tracker when being dragged by the user.
-		 *
-		 * @readonly
-		 * @member {Number} #scrollProgress
-		 */
 		this.set( 'scrollProgress', 0 );
-
-		/**
-		 * Indicates whether the tracker is being dragged by the user (e.g. using the mouse).
-		 *
-		 * @private
-		 * @readonly
-		 * @member {Boolean} #_isDragging
-		 */
 		this.set( '_isDragging', false );
 
 		this.setTemplate( {
@@ -77,19 +78,12 @@ export default class MinimapPositionTrackerView extends View {
 				} )
 			}
 		} );
-
-		/**
-		 * Fired when the position tracker is dragged.
-		 *
-		 * @event drag
-		 * @param {Number} movementY The vertical movement of the tracker as a result of dragging.
-		 */
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		this.listenTo( global.document, 'mousemove', ( evt, data ) => {
@@ -97,7 +91,7 @@ export default class MinimapPositionTrackerView extends View {
 				return;
 			}
 
-			this.fire( 'drag', data.movementY );
+			this.fire<MinimapDragEvent>( 'drag', data.movementY );
 		}, { useCapture: true } );
 
 		this.listenTo( global.document, 'mouseup', () => {
@@ -107,28 +101,22 @@ export default class MinimapPositionTrackerView extends View {
 
 	/**
 	 * Sets the new height of the tracker to visualize the subset of the content visible to the user.
-	 *
-	 * @param {Number} newHeight
 	 */
-	setHeight( newHeight ) {
+	public setHeight( newHeight: number ): void {
 		this.height = newHeight;
 	}
 
 	/**
 	 * Sets the top offset of the tracker to move it around vertically.
-	 *
-	 * @param {Number} newOffset
 	 */
-	setTopOffset( newOffset ) {
+	public setTopOffset( newOffset: number ): void {
 		this.top = newOffset;
 	}
 
 	/**
 	 * Sets the scroll progress (in %) to inform the user using a label when the tracker is being dragged.
-	 *
-	 * @param {Number} newProgress
 	 */
-	setScrollProgress( newProgress ) {
+	public setScrollProgress( newProgress: number ): void {
 		this.scrollProgress = newProgress;
 	}
 }

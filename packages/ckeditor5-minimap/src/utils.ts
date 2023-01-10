@@ -11,6 +11,7 @@
 
 import { Rect, global } from 'ckeditor5/src/utils';
 import { DomConverter, Renderer } from 'ckeditor5/src/engine';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~Renderer} and
@@ -18,16 +19,16 @@ import { DomConverter, Renderer } from 'ckeditor5/src/engine';
  * source root.
  *
  * @protected
- * @param {module:core/editor/editor~Editor} editor The editor instance the original editing root belongs to.
- * @param {String} rootName The name of the root to clone.
- * @returns {HTMLElement} The editing root DOM clone element.
+ * @param editor The editor instance the original editing root belongs to.
+ * @param rootName The name of the root to clone.
+ * @returns The editing root DOM clone element.
  */
-export function cloneEditingViewDomRoot( editor, rootName ) {
+export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HTMLElement {
 	const viewDocument = editor.editing.view.document;
-	const viewRoot = viewDocument.getRoot( rootName );
+	const viewRoot = viewDocument.getRoot( rootName )!;
 	const domConverter = new DomConverter( viewDocument );
 	const renderer = new Renderer( domConverter, viewDocument.selection );
-	const domRootClone = editor.editing.view.getDomRoot().cloneNode();
+	const domRootClone = editor.editing.view.getDomRoot()!.cloneNode() as HTMLElement;
 
 	domConverter.bindElements( domRootClone, viewRoot );
 
@@ -55,21 +56,22 @@ export function cloneEditingViewDomRoot( editor, rootName ) {
  *
  * The returned data format is as follows:
  *
- *		[
- *			'p { color: red; ... } h2 { font-size: 2em; ... } ...',
- *			'.spacing { padding: 1em; ... }; ...',
- *			'...',
- *			{ href: 'http://link.to.external.stylesheet' },
- *			{ href: '...' }
- *		]
+ * ```ts
+ * [
+ * 	'p { color: red; ... } h2 { font-size: 2em; ... } ...',
+ * 	'.spacing { padding: 1em; ... }; ...',
+ * 	'...',
+ * 	{ href: 'http://link.to.external.stylesheet' },
+ * 	{ href: '...' }
+ * ]
+ * ```
  *
  * **Note**: For stylesheets with `href` different than window origin, an object is returned because
  * accessing rules of these styles may cause CORS errors (depending on the configuration of the web page).
  *
  * @protected
- * @returns {Array.<String|Object>}
  */
-export function getPageStyles() {
+export function getPageStyles(): Array<string | object> {
 	return Array.from( global.document.styleSheets )
 		.map( styleSheet => {
 			// CORS
@@ -88,9 +90,8 @@ export function getPageStyles() {
  * TODO
  *
  * @protected
- * @returns {module:utils/dom/rect~Rect}
  */
-export function getDomElementRect( domElement ) {
+export function getDomElementRect( domElement: HTMLElement ): Rect {
 	return new Rect( domElement === global.document.body ? global.window : domElement );
 }
 
@@ -98,9 +99,8 @@ export function getDomElementRect( domElement ) {
  * TODO
  *
  * @protected
- * @returns {Number}
  */
-export function getClientHeight( domElement ) {
+export function getClientHeight( domElement: HTMLElement ): number {
 	return domElement === global.document.body ? global.window.innerHeight : domElement.clientHeight;
 }
 
@@ -108,9 +108,8 @@ export function getClientHeight( domElement ) {
  * TODO
  *
  * @protected
- * @returns {HTMLElement}
  */
-export function getScrollable( domElement ) {
+export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
 	return domElement === global.document.body ? global.window : domElement;
 }
 
@@ -120,12 +119,10 @@ export function getScrollable( domElement ) {
  * TODO: Move to shared utils.
  *
  * @protected
- * @param {HTMLElement} domElement
- * @returns {HTMLElement|null}
  */
-export function findClosestScrollableAncestor( domElement ) {
+export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
 	do {
-		domElement = domElement.parentElement;
+		domElement = domElement.parentElement!;
 
 		if ( !domElement ) {
 			return null;
