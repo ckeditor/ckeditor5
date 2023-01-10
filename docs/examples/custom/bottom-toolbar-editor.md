@@ -3,7 +3,7 @@ category: examples-builds-custom
 order: 70
 classes: main__content--no-toc
 toc: false
-menu-title: Bottom toolbar with formatting options grouped
+menu-title: Bottom toolbar with options grouped
 modified_at: 2021-12-09
 ---
 
@@ -14,6 +14,8 @@ The following custom editor example showcases an editor instance with the main t
 Additionally, thanks to the flexibility offered by the {@link framework/guides/architecture/ui-library CKEditor 5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience.
 
 The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally, for example in email applications, (forum) post editors, chats or instant messaging. You can probably recognize this UI setup from some popular applications such as Gmail, Slack or Zendesk.
+
+There is also a {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option} employed for the list-oriented features.
 
 ## Demo
 
