@@ -12,7 +12,7 @@ import ImageStyleCommand from './imagestylecommand';
 import ImageUtils from '../imageutils';
 import utils from './utils';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import type { ImageStyleConfig, ImageStyleOptionDefinition } from '../imagestyle';
+import type { ImageStyleOptionDefinition } from '../imagestyle';
 import type { Element } from 'ckeditor5/src/engine';
 
 /**
@@ -61,7 +61,7 @@ export default class ImageStyleEditing extends Plugin {
 		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
 
 		this.normalizedStyles = normalizeStyles( {
-			configuredStyles: editor.config.get( 'image.styles' )! as ImageStyleConfig,
+			configuredStyles: editor.config.get( 'image.styles' )!,
 			isBlockPluginLoaded,
 			isInlinePluginLoaded
 		} );
