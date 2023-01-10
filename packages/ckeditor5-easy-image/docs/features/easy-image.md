@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Easy Image integration
 
-The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
+The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible. Unlike the {@link features/ckbox CKBox} feature, which is a full-fledged file manager and orginizer, Easy Image concentrates on upload only.
 
 <info-box info>
 	This is a premium feature and you need a license for it on top of your CKEditor 5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
