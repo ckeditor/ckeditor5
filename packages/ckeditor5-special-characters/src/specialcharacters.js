@@ -64,6 +64,10 @@ export default class SpecialCharacters extends Plugin {
 		 * @member {Map.<String, Set.<String>>} #_groups
 		 */
 		this._groups = new Map();
+
+		editor.config.define( 'specialCharacters', {
+			order: Array.from( this.getGroups() )
+		} );
 	}
 
 	/**
@@ -158,6 +162,27 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
+	 * Returns special character groups in an order determined based on configuration and registration sequence.
+	 *
+	 * @returns {Set.<String>}
+	 */
+	getOrderedGroups() {
+		const groups = Array.from( this.getGroups() );
+		const order = this.editor.config.get( 'specialCharacters.order' );
+
+		const orderHasInvalidGoup = order.find( item => !groups.includes( item ) );
+
+		if ( orderHasInvalidGoup ) {
+			// TODO: Throw error
+		}
+
+		return new Set( [
+			...order,
+			...groups
+		] );
+	}
+
+	/**
 	 * Returns a collection of special characters symbol names (titles).
 	 *
 	 * @param {String} groupName
@@ -225,7 +250,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns {Object} Returns an object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	_createDropdownPanelContent( locale, dropdownView ) {
-		const specialCharsGroups = [ ...this.getGroups() ];
+		const specialCharsGroups = [ ...this.getOrderedGroups() ];
 
 		// Add a special group that shows all available special characters.
 		specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
