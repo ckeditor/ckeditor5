@@ -17,8 +17,6 @@ The presented combination of the UI and editor's features works best for integra
 
 There is also a {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option} employed for the list-oriented features.
 
-## Demo
-
 {@snippet examples/bottom-toolbar-editor}
 
 ## Editor example configuration
@@ -203,14 +201,20 @@ DecoupledEditor
 			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
-			'horizontalLine'
+			'horizontalLine',
+			'|',
+			{
+				label: 'Lists',
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
+			},
+			'|',
+			'undo',
+			'redo'
 		],
 
 		// Configuration of the formatting dropdown.
 		formattingOptions: [
-			'undo',
-			'redo',
-			'|',
 			'fontFamily',
 			'fontSize',
 			'fontColor',
@@ -222,12 +226,6 @@ DecoupledEditor
 			'strikethrough',
 			'|',
 			'alignment',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
 			'|',
 			'removeFormat'
 		],
