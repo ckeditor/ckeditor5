@@ -106,23 +106,25 @@ export default class ImageInsertUI extends Plugin {
 	private _setUpDropdown( command: Command ): DropdownView {
 		const editor = this.editor;
 		const t = editor.t;
-		const imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
-		const insertButtonView = imageInsertView.insertButtonView;
-		const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
 		const dropdownView = this.dropdownView!;
 		const panelView = dropdownView.panelView;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
+		let imageInsertView: ImageInsertPanelView;
+
 		dropdownView.bind( 'isEnabled' ).to( command );
 
-		// Defer the children injection to improve initial performance.
-		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
 		dropdownView.once( 'change:isOpen', () => {
+			imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
+
+			imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
 			panelView.children.add( imageInsertView );
 		} );
 
 		dropdownView.on( 'change:isOpen', () => {
 			const selectedElement = editor.model.document.selection.getSelectedElement()!;
+			const insertButtonView = imageInsertView.insertButtonView;
+			const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
 
 			if ( dropdownView.isOpen ) {
 				if ( imageUtils.isImage( selectedElement ) ) {
@@ -140,7 +142,6 @@ export default class ImageInsertUI extends Plugin {
 		// invisible form/input cannot be focused/selected.
 		}, { priority: 'low' } );
 
-		imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
 		this.delegate( 'cancel' ).to( dropdownView );
 
 		dropdownView.on( 'submit', () => {

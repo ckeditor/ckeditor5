@@ -176,9 +176,9 @@ export default class ImageResizeButtons extends Plugin {
 			// dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
-			addListToDropdown( dropdownView, this._getResizeDropdownListItemDefinitions( options, command ) );
-
-			( dropdownView.listView as any ).ariaLabel = t( 'Image resize list' );
+			addListToDropdown( dropdownView, () => this._getResizeDropdownListItemDefinitions( options, command ), {
+				ariaLabel: t( 'Image resize list' )
+			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {

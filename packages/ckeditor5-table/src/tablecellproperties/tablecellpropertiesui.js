@@ -113,7 +113,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		 *
 		 * @member {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
 		 */
-		this.view = this._createPropertiesView();
+		this.view = null;
 
 		/**
 		 * The batch used to undo all changes made by the form (which are live, as the user types)
@@ -154,7 +154,9 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Destroy created UI components as they are not automatically destroyed.
 		// See https://github.com/ckeditor/ckeditor5/issues/1341.
-		this.view.destroy();
+		if ( this.view ) {
+			this.view.destroy();
+		}
 	}
 
 	/**
@@ -166,12 +168,12 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
 		const config = editor.config.get( 'table.tableCellProperties' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
@@ -199,15 +201,6 @@ export default class TableCellPropertiesUI extends Plugin {
 		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideView();
 			cancel();
-		} );
-
-		// Reposition the balloon or hide the form if a table cell is no longer selected.
-		this.listenTo( editor.ui, 'update', () => {
-			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
-				this._hideView();
-			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor, 'cell' );
-			}
 		} );
 
 		// Close on click outside of balloon panel element.
@@ -333,6 +326,14 @@ export default class TableCellPropertiesUI extends Plugin {
 	_showView() {
 		const editor = this.editor;
 
+		if ( !this.view ) {
+			this.view = this._createPropertiesView();
+		}
+
+		this.listenTo( editor.ui, 'update', () => {
+			this._updateView();
+		} );
+
 		// Update the view with the model values.
 		this._fillViewFormFromCommandValues();
 
@@ -354,10 +355,6 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @protected
 	 */
 	_hideView() {
-		if ( !this._isViewInBalloon ) {
-			return;
-		}
-
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
@@ -374,13 +371,29 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
+	 * Repositions the {@link #_balloon} or hides the {@link #view} if a table cell is no longer selected.
+	 *
+	 * @protected
+	 */
+	_updateView() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+
+		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+			this._hideView();
+		} else if ( this._isViewVisible ) {
+			repositionContextualBalloon( editor, 'cell' );
+		}
+	}
+
+	/**
 	 * Returns `true` when the {@link #view} is visible in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}
 	 */
 	get _isViewVisible() {
-		return this._balloon.visibleView === this.view;
+		return !!this.view && this._balloon.visibleView === this.view;
 	}
 
 	/**
@@ -390,7 +403,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	get _isViewInBalloon() {
-		return this._balloon.hasView( this.view );
+		return !!this.view && this._balloon.hasView( this.view );
 	}
 
 	/**

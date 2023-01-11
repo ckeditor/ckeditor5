@@ -53,7 +53,6 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 */
 	public init(): void {
 		this._createButton();
-		this._createForm();
 	}
 
 	/**
@@ -63,7 +62,9 @@ export default class ImageTextAlternativeUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
-		this._form!.destroy();
+		if ( this._form ) {
+			this._form.destroy();
+		}
 	}
 
 	/**
@@ -147,7 +148,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: this._form,
 			activator: () => this._isVisible,
-			contextElements: [ this._balloon!.view.element! ],
+			contextElements: () => [ this._balloon!.view.element! ],
 			callback: () => this._hideForm()
 		} );
 	}
@@ -160,6 +161,10 @@ export default class ImageTextAlternativeUI extends Plugin {
 	private _showForm(): void {
 		if ( this._isVisible ) {
 			return;
+		}
+
+		if ( !this._form ) {
+			this._createForm();
 		}
 
 		const editor = this.editor;
@@ -218,7 +223,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	private get _isVisible(): boolean {
-		return this._balloon!.visibleView === this._form;
+		return !!this._balloon && this._balloon.visibleView === this._form;
 	}
 
 	/**
@@ -228,12 +233,13 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	private get _isInBalloon(): boolean {
-		return this._balloon!.hasView( this._form! );
+		return !!this._balloon && this._balloon.hasView( this._form! );
 	}
 }
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageTextAlternativeUI.pluginName ]: ImageTextAlternativeUI;
+
 	}
 }
