@@ -64,10 +64,6 @@ export default class SpecialCharacters extends Plugin {
 		 * @member {Map.<String, Set.<String>>} #_groups
 		 */
 		this._groups = new Map();
-
-		editor.config.define( 'specialCharacters', {
-			order: Array.from( this.getGroups() )
-		} );
 	}
 
 	/**
@@ -153,27 +149,25 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Returns an iterator of special characters groups.
+	 * Returns special character groups in an order determined based on configuration and registration sequence.
 	 *
 	 * @returns {Iterable.<String>}
 	 */
 	getGroups() {
-		return this._groups.keys();
-	}
+		const groups = Array.from( this._groups.keys() );
+		const order = this.editor.config.get( 'specialCharacters.order' ) || [];
 
-	/**
-	 * Returns special character groups in an order determined based on configuration and registration sequence.
-	 *
-	 * @returns {Set.<String>}
-	 */
-	getOrderedGroups() {
-		const groups = Array.from( this.getGroups() );
-		const order = this.editor.config.get( 'specialCharacters.order' );
+		const invalidGroup = order.find( item => !groups.includes( item ) );
 
-		const orderHasInvalidGoup = order.find( item => !groups.includes( item ) );
-
-		if ( orderHasInvalidGoup ) {
-			// TODO: Throw error
+		if ( invalidGroup ) {
+			/**
+			 * One of the special character groups in the "specialCharacters.order" configuration doesn't exist.
+			 *
+			 * @error special-character-invalid-order-group-name
+			 */
+			throw new CKEditorError(
+				`special-character-invalid-order-group-name: Group with the name "${ invalidGroup }" doesn't exist.`
+			);
 		}
 
 		return new Set( [
@@ -250,7 +244,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns {Object} Returns an object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	_createDropdownPanelContent( locale, dropdownView ) {
-		const specialCharsGroups = [ ...this.getOrderedGroups() ];
+		const specialCharsGroups = Array.from( this.getGroups() );
 
 		// Add a special group that shows all available special characters.
 		specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
@@ -286,4 +280,56 @@ export default class SpecialCharacters extends Plugin {
  *
  * @property {String} title A unique name of the character (e.g. "greek small letter epsilon").
  * @property {String} character A human-readable character displayed as the label (e.g. "ε").
+ */
+
+/**
+ * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
+ *
+ * Read more in {@link module:special-characters/specialcharacters~SpecialCharactersConfig}.
+ *
+ * @member {module:special-characters/specialcharacters~SpecialCharactersConfig}
+ * module:core/editor/editorconfig~EditorConfig#specialCharacters
+ */
+
+/**
+ * The configuration of the special characters feature.
+ *
+ * Read more about {@glink features/special-characters#configuration configuring the special characters feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				specialCharacters: ... // Special characters feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * @interface SpecialCharactersConfig
+ */
+
+/**
+ * The configuration of the special characters category order.
+ *
+ * Special characters categories are displayed in the UI in the order in which they were registered. Using the `order` property
+ * allows to override this behaviour and enforce specific order. Categories not listed in the `order` property will be displayed
+ * in the default order below categories listed in the configuration.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+ *				specialCharacters: {
+ *					order: [
+ *						'Text',
+ *						'Latin',
+ *						'Mathematical',
+ *						'Currency',
+ *						'Arrows'
+ *					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Array.<String>} module:special-characters/specialcharacters~SpecialCharactersConfig#order
  */
