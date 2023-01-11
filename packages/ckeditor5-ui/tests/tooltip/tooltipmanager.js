@@ -10,7 +10,7 @@ import View from '../../src/view';
 import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';

@@ -46,6 +46,7 @@ export type { default as ModelConsumable } from './conversion/modelconsumable';
 export type { Consumables } from './conversion/viewconsumable';
 
 // DataProcessor.
+export { default as DataProcessor } from './dataprocessor/dataprocessor';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
 // Model / Operation.
@@ -129,7 +130,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher } from './view/matcher';
+export { default as Matcher, type MatcherPattern } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';
