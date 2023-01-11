@@ -130,6 +130,14 @@ Load the classic editor build (here, the [CDN](https://cdn.ckeditor.com/) locati
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 ```
 
+Alternatively, you may install CKEditor from `npm`:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-classic
+```
+
+Then bundle it together with your app.
+
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 
 ```html
@@ -192,6 +200,14 @@ Load the inline editor build (here, the [CDN](https://cdn.ckeditor.com/) locatio
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 ```
 
+Alternatively, you may install CKEditor from `npm:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-inline
+```
+
+Then bundle it together with your app.
+
 Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
 
 ```html
@@ -251,6 +267,14 @@ Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 ```
+
+Alternatively, you may install CKEditor from `npm:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-balloon
+```
+
+Then bundle it together with your app.
 
 Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
@@ -312,6 +336,14 @@ Load the balloon block editor build (here, the [CDN](https://cdn.ckeditor.com/) 
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 ```
 
+Alternatively, you may install CKEditor from `npm:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-balloon-block
+```
+
+Then bundle it together with your app.
+
 Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 ```html
@@ -367,6 +399,14 @@ Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) locat
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
+
+Alternatively, you may install CKEditor from `npm:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-decoupled-document
+```
+
+Then bundle it together with your app.
 
 Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 

@@ -80,7 +80,11 @@ describe( 'SpecialCharacters', () => {
 			} );
 
 			it( 'a navigation contains the "All" special category', () => {
-				const listView = dropdown.panelView.children.first.navigationView.groupDropdownView.panelView.children.first;
+				const groupDropdownView = dropdown.panelView.children.first.navigationView.groupDropdownView;
+
+				groupDropdownView.isOpen = true;
+
+				const listView = groupDropdownView.panelView.children.first;
 
 				// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
 				expect( listView.items.length ).to.equal( 3 );

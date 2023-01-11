@@ -52,7 +52,7 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, ... ],
+		plugins: [ Indent, /* ... */ ],
 		toolbar: {
 			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
 		},
@@ -61,8 +61,8 @@ ClassicEditor
 			unit: 'em'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Using CSS classes
@@ -77,7 +77,7 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, IndentBlock, ... ],
+		plugins: [ Indent, IndentBlock, /* ... */ ],
 		toolbar: {
 			items: [ 'heading', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
 		},
@@ -89,8 +89,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Using classes instead of fixed units (`px` or `em`) has another advantage &mdash; you retain control over what indentation levels are used in the documents. For instance, you can limit indentation to 2 or 3 different levels and there is no way the users can go beyond that. In the example above, the `.custom-block-indent-c` class level is the maximum allowed indentation value. This should help keep your content clean and predictable.
@@ -148,11 +148,11 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Indent, IndentBlock, ... ],
-		toolbar: [ 'outdent', 'indent', ... ]
+		plugins: [ Indent, IndentBlock, /* ... */ ],
+		toolbar: [ 'outdent', 'indent', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

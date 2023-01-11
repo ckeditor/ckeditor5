@@ -13,7 +13,14 @@ ClassicEditor
 			{
 				label: 'Basic styles',
 				withText: true,
-				items: [ 'bold', 'italic' ]
+				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+			},
+			'|',
+			{
+				label: 'Fonts',
+				icon: 'text',
+				withText: true,
+				items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
 			},
 			'|',
 			'undo', 'redo'

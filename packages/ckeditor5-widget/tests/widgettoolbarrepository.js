@@ -194,6 +194,60 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
 			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 		} );
+
+		describe( 'lazy init', () => {
+			it( 'should not fill toolbar items immediately', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+				toolbarView.render();
+
+				expect( toolbarView.items.length ).to.equal( 0 );
+
+				toolbarView.destroy();
+			} );
+
+			it( 'should fill toolbar items on first show', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+			} );
+
+			it( 'should fill toolbar items on first show (and only on the first)', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+
+				widgetToolbarRepository._hideToolbar( toolbarDefinition );
+
+				expect( balloon.visibleView ).to.equal( null );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+			} );
+		} );
 	} );
 
 	describe( 'integration tests', () => {

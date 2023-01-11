@@ -5,7 +5,7 @@
 
 /* global document */
 
-import Heading from '../src/heading.js';
+import Heading from '../src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';

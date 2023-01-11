@@ -55,6 +55,10 @@ describe( 'StyleUI', () => {
 
 				document.body.appendChild( dropdown.element );
 
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
+
 				command = editor.commands.get( 'style' );
 			} );
 

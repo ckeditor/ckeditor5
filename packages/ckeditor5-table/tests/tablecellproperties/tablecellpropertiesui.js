@@ -88,19 +88,29 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( '#view', () => {
-				it( 'should be created', () => {
+				it( 'should not be created', () => {
+					expect( tableCellPropertiesUI.view ).to.be.null;
+				} );
+
+				it( 'should be created on first show', () => {
+					tableCellPropertiesUI._showView();
 					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesUIView );
 				} );
 
 				it( 'should be rendered', () => {
+					tableCellPropertiesUI._showView();
 					expect( tableCellPropertiesUI.view.isRendered ).to.be.true;
 				} );
 
 				it( 'should get the border colors configurations', () => {
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 					expect( tableCellPropertiesView.options.borderColors ).to.have.length( 15 );
 				} );
 
 				it( 'should get the background colors configurations', () => {
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 					expect( tableCellPropertiesView.options.backgroundColors ).to.have.length( 15 );
 				} );
 			} );
@@ -150,6 +160,9 @@ describe( 'table cell properties', () => {
 
 		describe( 'destroy()', () => {
 			it( 'should destroy the #view', () => {
+				tableCellPropertiesUI._showView();
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				const spy = sinon.spy( tableCellPropertiesView, 'destroy' );
 
 				tableCellPropertiesUI.destroy();
@@ -167,6 +180,8 @@ describe( 'table cell properties', () => {
 
 			it( 'should hide on #submit', () => {
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
@@ -180,6 +195,7 @@ describe( 'table cell properties', () => {
 
 					// Show the view. New batch will be created.
 					tableCellPropertiesButton.fire( 'execute' );
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 
 					// Cancel the view immediately.
 					tableCellPropertiesView.fire( 'cancel' );
@@ -192,6 +208,7 @@ describe( 'table cell properties', () => {
 
 					// Show the view. New batch will be created.
 					tableCellPropertiesButton.fire( 'execute' );
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 
 					// Do the changes like a user.
 					tableCellPropertiesView.borderStyle = 'dotted';
@@ -226,6 +243,8 @@ describe( 'table cell properties', () => {
 
 				it( 'should hide the view', () => {
 					tableCellPropertiesButton.fire( 'execute' );
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 					tableCellPropertiesView.fire( 'cancel' );
@@ -241,6 +260,8 @@ describe( 'table cell properties', () => {
 				};
 
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				tableCellPropertiesView.keystrokes.press( keyEvtData );
@@ -249,6 +270,8 @@ describe( 'table cell properties', () => {
 
 			it( 'should hide if the table cell is no longer selected on EditorUI#update', () => {
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				editor.model.change( writer => {
@@ -261,6 +284,8 @@ describe( 'table cell properties', () => {
 
 			it( 'should reposition if table cell is still selected on on EditorUI#update', () => {
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				editor.model.change( writer => {
@@ -272,6 +297,8 @@ describe( 'table cell properties', () => {
 
 			it( 'should hide if clicked outside the balloon', () => {
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -286,6 +313,8 @@ describe( 'table cell properties', () => {
 					batch = editor.model.createBatch();
 
 					tableCellPropertiesUI._undoStepBatch = batch;
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 				} );
 
 				describe( '#borderStyle', () => {
@@ -543,6 +572,8 @@ describe( 'table cell properties', () => {
 
 			it( 'should create a new undoable batch for further #view cancel', () => {
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				const firstBatch = tableCellPropertiesUI._undoStepBatch;
@@ -568,11 +599,18 @@ describe( 'table cell properties', () => {
 				} );
 
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 			} );
 
 			describe( 'initial data', () => {
 				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
+					// Trigger lazy init.
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesUI._hideView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+
 					const balloonAddSpy = testUtils.sinon.spy( editor.plugins.get( ContextualBalloon ), 'add' );
 					const borderStyleChangeSpy = testUtils.sinon.spy();
 
@@ -597,6 +635,7 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'h';
 
 					tableCellPropertiesButton.fire( 'execute' );
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
@@ -622,6 +661,7 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellVerticalAlignment' ).value = null;
 
 					tableCellPropertiesButton.fire( 'execute' );
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
@@ -638,6 +678,11 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should focus the form view', () => {
+				// Trigger lazy init.
+				tableCellPropertiesUI._showView();
+				tableCellPropertiesUI._hideView();
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				const spy = testUtils.sinon.spy( tableCellPropertiesView, 'focus' );
 
 				tableCellPropertiesButton.fire( 'execute' );
@@ -657,6 +702,8 @@ describe( 'table cell properties', () => {
 				const spy = testUtils.sinon.spy( tableCellPropertiesUI, 'stopListening' );
 
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
@@ -670,6 +717,8 @@ describe( 'table cell properties', () => {
 				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 
 				tableCellPropertiesView.fire( 'submit' );
@@ -729,6 +778,18 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'init()', () => {
+				beforeEach( () => {
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+
+					// Trigger lazy init.
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesUI._hideView();
+
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+				} );
+
 				describe( '#view', () => {
 					it( 'should get the default table cell properties configurations', () => {
 						expect( tableCellPropertiesView.options.defaultTableCellProperties ).to.deep.equal( {
@@ -751,6 +812,12 @@ describe( 'table cell properties', () => {
 					editor.model.change( writer => {
 						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
 					} );
+
+					// Trigger lazy init.
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesUI._hideView();
+
+					tableCellPropertiesView = tableCellPropertiesUI.view;
 				} );
 
 				describe( 'initial data', () => {
