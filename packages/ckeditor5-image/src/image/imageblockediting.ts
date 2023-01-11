@@ -76,8 +76,6 @@ export default class ImageBlockEditing extends Plugin {
 	/**
 	 * Configures conversion pipelines to support upcasting and downcasting
 	 * block images (block image widgets) and their attributes.
-	 *
-	 * @private
 	 */
 	private _setupConversion(): void {
 		const editor = this.editor;
@@ -129,8 +127,6 @@ export default class ImageBlockEditing extends Plugin {
 	 * if they decided to put their image there.
 	 *
 	 * See the `ImageInlineEditing` for the similar integration that works in the opposite direction.
-	 *
-	 * @private
 	 */
 	private _setupClipboardIntegration(): void {
 		const editor = this.editor;

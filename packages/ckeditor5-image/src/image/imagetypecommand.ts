@@ -15,18 +15,13 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 export default class ImageTypeCommand extends Command {
 	/**
 	 * Model element name the command converts to.
-	 *
-	 * @readonly
-	 * @private
-	 * @member {'imageBlock'|'imageInline'}
 	 */
 	private readonly _modelElementName: 'imageBlock' | 'imageInline';
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {'imageBlock'|'imageInline'} modelElementName Model element name the command converts to.
+	 * @param modelElementName Model element name the command converts to.
 	 */
 	constructor( editor: Editor, modelElementName: 'imageBlock' | 'imageInline' ) {
 		super( editor );
@@ -40,7 +35,7 @@ export default class ImageTypeCommand extends Command {
 	public override refresh(): void {
 		const editor = this.editor;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection )!;
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		if ( this._modelElementName === 'imageBlock' ) {
 			this.isEnabled = imageUtils.isInlineImage( element );
@@ -53,7 +48,7 @@ export default class ImageTypeCommand extends Command {
 	 * Executes the command and changes the type of a selected image.
 	 *
 	 * @fires execute
-	 * @returns {Object|null} An object containing references to old and new model image elements
+	 * @returns An object containing references to old and new model image elements
 	 * (for before and after the change) so external integrations can hook into the decorated
 	 * `execute` event and handle this change. `null` if the type change failed.
 	 */

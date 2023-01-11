@@ -15,9 +15,9 @@ import { LabeledFieldView, createLabeledInputText, type View } from 'ckeditor5/s
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
- * @param {module:core/editor/editor~Editor} editor Editor instance.
+ * @param editor Editor instance.
  *
- * @returns {Object.<String, module:ui/view~View>} Integrations object.
+ * @returns Integrations object.
  */
 export function prepareIntegrations( editor: Editor ): Record<string, View> {
 	const panelItems = editor.config.get( 'image.insert.integrations' );
@@ -60,9 +60,7 @@ export function prepareIntegrations( editor: Editor ): Record<string, View> {
 /**
  * Creates labeled field view.
  *
- * @param {module:utils/locale~Locale} locale The localization services instance.
- *
- * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+ * @param locale The localization services instance.
  */
 export function createLabeledInputView( locale: Locale ): LabeledFieldView {
 	const t = locale.t;

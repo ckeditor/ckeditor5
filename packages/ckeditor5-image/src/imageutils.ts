@@ -39,7 +39,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
-	public isImage( modelElement: Element ): boolean {
+	public isImage( modelElement?: Element | null ): boolean {
 		return this.isInlineImage( modelElement ) || this.isBlockImage( modelElement );
 	}
 
@@ -48,7 +48,7 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * Also, see {@link module:image/imageutils~ImageUtils#isImageWidget}.
 	 */
-	public isInlineImageView( element: ViewElement ): boolean {
+	public isInlineImageView( element?: ViewElement | null ): boolean {
 		return !!element && element.is( 'element', 'img' );
 	}
 
@@ -57,7 +57,7 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * Also, see {@link module:image/imageutils~ImageUtils#isImageWidget}.
 	 */
-	public isBlockImageView( element: ViewElement ): boolean {
+	public isBlockImageView( element?: ViewElement | null ): boolean {
 		return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'image' );
 	}
 
@@ -163,7 +163,7 @@ export default class ImageUtils extends Plugin {
 	public getClosestSelectedImageElement( selection: Selection | DocumentSelection ): Element | null {
 		const selectedElement = selection.getSelectedElement();
 
-		return this.isImage( selectedElement! ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
+		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
 	}
 
 	/**
@@ -210,14 +210,14 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image`.
 	 */
-	public isBlockImage( modelElement: Element ): boolean {
+	public isBlockImage( modelElement?: Element | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageBlock' );
 	}
 
 	/**
 	 * Checks if the provided model element is an `imageInline`.
 	 */
-	public isInlineImage( modelElement: Element ): boolean {
+	public isInlineImage( modelElement?: Element | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageInline' );
 	}
 
@@ -325,9 +325,9 @@ function determineImageTypeForInsertion(
 	}
 
 	// Try to replace the selected widget (e.g. another image).
-	if ( selectable!.is( 'selection' ) ) {
+	if ( selectable.is( 'selection' ) ) {
 		return determineImageTypeForInsertionAtSelection( schema, selectable );
 	}
 
-	return schema.checkChild( selectable!, 'imageInline' ) ? 'imageInline' : 'imageBlock';
+	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'imageBlock';
 }

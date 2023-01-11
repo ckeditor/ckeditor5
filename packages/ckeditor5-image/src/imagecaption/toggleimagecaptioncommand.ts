@@ -7,7 +7,7 @@
  * @module image/imagecaption/toggleimagecaptioncommand
  */
 
-import type { Element, ViewElement, Writer } from 'ckeditor5/src/engine';
+import type { Element, Writer } from 'ckeditor5/src/engine';
 import { Command } from 'ckeditor5/src/core';
 
 import ImageBlockEditing from '../image/imageblockediting';
@@ -107,9 +107,6 @@ export default class ToggleImageCaptionCommand extends Command {
 	 * * it converts `<imageInline>` to `<imageBlock>` to show the caption,
 	 * * it attempts to restore the caption content from the `ImageCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
-	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	private _showImageCaption( writer: Writer, focusCaptionOnShow?: boolean ): void {
 		const model = this.editor.model;

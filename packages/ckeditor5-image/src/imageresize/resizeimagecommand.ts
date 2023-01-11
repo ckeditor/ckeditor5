@@ -44,8 +44,8 @@ export default class ResizeImageCommand extends Command {
 	 * editor.execute( 'resizeImage', { width: null } );
 	 * ```
 	 *
-	 * @param {Object} options
-	 * @param {String|null} options.width The new width of the image.
+	 * @param options
+	 * @param options.width The new width of the image.
 	 * @fires execute
 	 */
 	public override execute( options: { width: string | null } ): void {

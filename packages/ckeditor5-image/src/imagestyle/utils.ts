@@ -38,7 +38,6 @@ const {
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
  *
  * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition>}
  */
 const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 	// This style represents an image placed in the line of text.
@@ -139,7 +138,6 @@ const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  *
  * @readonly
- * @type {Object.<String,String>}
  */
 const DEFAULT_ICONS: Record<string, string> = {
 	full: objectFullWidth,
@@ -163,7 +161,6 @@ const DEFAULT_ICONS: Record<string, string> = {
  * those that breaks the text around the image.
  *
  * @readonly
- * @type {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
  */
 const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 	name: 'imageStyle:wrapText',
@@ -181,15 +178,15 @@ const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
  * Returns a list of the normalized and validated image style options.
  *
  * @protected
- * @param {Object} config
- * @param {Boolean} config.isInlinePluginLoaded
+ * @param config
+ * @param config.isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
- * @param {Boolean} config.isBlockPluginLoaded
+ * @param config.isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
- * @param {module:image/imagestyle~ImageStyleConfig} config.configuredStyles
+ * @param config.configuredStyles
  * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
  * as a default or custom value.
- * @returns {module:image/imagestyle~ImageStyleConfig}
+ * @returns
  * * Each of options contains a complete icon markup.
  * * The image style options not supported by any of the loaded plugins are filtered out.
  */
@@ -212,13 +209,13 @@ function normalizeStyles( config: {
  * Returns the default image styles configuration depending on the loaded image editing plugins.
  * @protected
  *
- * @param {Boolean} isInlinePluginLoaded
+ * @param isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
  *
- * @param {Boolean} isBlockPluginLoaded
+ * @param isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
  *
- * @returns {Object<String,Array>}
+ * @returns
  * It returns an object with the lists of the image style options and groups defined as strings related to the
  * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
  */
@@ -247,9 +244,6 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePl
 /**
  * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
  * @protected
- *
- * @param {module:core/plugincollection~PluginCollection} pluginCollection
- * @returns {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
  */
 function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<any> ): Array<ImageStyleDropdownDefinition> {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
@@ -259,12 +253,10 @@ function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<any> 
 	}
 }
 
-// Normalizes an image style option or group provided in the {@link module:image/image~ImageConfig#styles}
-// and returns it in a {@link module:image/imagestyle~ImageStyleOptionDefinition}/
-//
-// @param {Object|String} definition
-//
-// @returns {module:image/imagestyle~ImageStyleOptionDefinition}}
+/**
+ * Normalizes an image style option or group provided in the {@link module:image/image~ImageConfig#styles}
+ * and returns it in a {@link module:image/imagestyle~ImageStyleOptionDefinition}/
+ */
 function normalizeDefinition( definition: string | Partial<ImageStyleOptionDefinition> & { name: string } ): ImageStyleOptionDefinition {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
@@ -293,19 +285,18 @@ function normalizeDefinition( definition: string | Partial<ImageStyleOptionDefin
 	return definition as ImageStyleOptionDefinition;
 }
 
-// Checks if the image style option is valid:
-// * if it has the modelElements fields defined and filled,
-// * if the defined modelElements are supported by any of the loaded image editing plugins.
-// It also displays a console warning these conditions are not met.
-//
-// @param {module:image/imagestyle~ImageStyleOptionDefinition} image style option
-// @param {Object.<String,Boolean>} { isBlockPluginLoaded, isInlinePluginLoaded }
-//
-// @returns Boolean
+/**
+ * Checks if the image style option is valid:
+ * * if it has the modelElements fields defined and filled,
+ * * if the defined modelElements are supported by any of the loaded image editing plugins.
+ * It also displays a console warning these conditions are not met.
+ *
+ * @param option image style option
+ */
 function isValidOption(
 	option: ImageStyleOptionDefinition,
 	{ isBlockPluginLoaded, isInlinePluginLoaded }: { isBlockPluginLoaded: boolean; isInlinePluginLoaded: boolean }
-) {
+): boolean {
 	const { modelElements, name } = option;
 
 	if ( !modelElements || !modelElements.length || !name ) {
@@ -344,13 +335,10 @@ function isValidOption(
 	return true;
 }
 
-// Extends the default style with a style provided by the developer.
-// Note: Don't override the custom–defined style object, clone it instead.
-//
-// @param {module:image/imagestyle~ImageStyleOptionDefinition} source
-// @param {Object} style
-//
-// @returns {module:image/imagestyle~ImageStyleOptionDefinition}
+/**
+ * Extends the default style with a style provided by the developer.
+ * Note: Don't override the custom–defined style object, clone it instead.
+ */
 function extendStyle( source: ImageStyleOptionDefinition, style: Partial<ImageStyleOptionDefinition> ): ImageStyleOptionDefinition {
 	const extendedStyle = { ...style };
 
@@ -363,8 +351,9 @@ function extendStyle( source: ImageStyleOptionDefinition, style: Partial<ImageSt
 	return extendedStyle as ImageStyleOptionDefinition;
 }
 
-// Displays a console warning with the 'image-style-configuration-definition-invalid' error.
-// @param {Object} info
+/**
+ * Displays a console warning with the 'image-style-configuration-definition-invalid' error.
+ */
 function warnInvalidStyle( info: object ): void {
 	/**
 	 * The image style definition provided in the configuration is invalid.

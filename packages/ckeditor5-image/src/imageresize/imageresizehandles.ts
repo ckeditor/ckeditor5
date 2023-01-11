@@ -58,8 +58,6 @@ export default class ImageResizeHandles extends Plugin {
 
 	/**
 	 * Attaches the listeners responsible for creating a resizer for each image, except for images inside the HTML embed preview.
-	 *
-	 * @private
 	 */
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
@@ -92,7 +90,7 @@ export default class ImageResizeHandles extends Plugin {
 			resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
-					unit: editor.config.get( 'image.resizeUnit' ) as 'px' | '%',
+					unit: editor.config.get( 'image.resizeUnit' )!,
 
 					modelElement: imageModel,
 					viewElement: widgetView,

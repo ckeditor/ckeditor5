@@ -15,6 +15,8 @@ import {
 	downcastSourcesAttribute,
 	upcastPicture
 } from './image/converters';
+import type { Element } from 'ckeditor5/src/engine';
+import type { UploadResponse } from 'ckeditor5/src/upload';
 
 /**
  * This plugin enables the [`<picture>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture) element support in the editor.
@@ -131,18 +133,21 @@ export default class PictureEditing extends Plugin {
 			return;
 		}
 
-		this.listenTo( editor.plugins.get( 'ImageUploadEditing' ), 'uploadComplete', ( evt, { imageElement, data } ) => {
-			const sources = data.sources;
+		this.listenTo(
+			editor.plugins.get( 'ImageUploadEditing' ),
+			'uploadComplete',
+			( evt, { imageElement, data }: { imageElement: Element; data: UploadResponse } ) => {
+				const sources = data.sources;
 
-			if ( !sources ) {
-				return;
-			}
+				if ( !sources ) {
+					return;
+				}
 
-			editor.model.change( writer => {
-				writer.setAttributes( {
-					sources
-				}, imageElement );
+				editor.model.change( writer => {
+					writer.setAttributes( {
+						sources
+					}, imageElement );
+				} );
 			} );
-		} );
 	}
 }

@@ -57,8 +57,6 @@ export default class ImageInsert extends Plugin {
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface module:image/imageinsert~ImageInsertConfig
  */
 export interface ImageInsertConfig {
 

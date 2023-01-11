@@ -13,8 +13,6 @@ import ImageCaptionUtils from './imagecaptionutils';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ImageCaptionUI extends Plugin {
 	/**

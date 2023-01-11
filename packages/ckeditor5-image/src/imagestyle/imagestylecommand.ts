@@ -23,15 +23,11 @@ export default class ImageStyleCommand extends Command {
 	 * An object containing names of default style options for the inline and block images.
 	 * If there is no default style option for the given image type in the configuration,
 	 * the name will be `false`.
-	 *
-	 * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition#name>}
 	 */
 	private _defaultStyles: Record<string, string | false>;
 
 	/**
 	 * The styles handled by this command.
-	 *
-	 * @type {module:image/imagestyle~ImageStyleConfig#options}
 	 */
 	private _styles: Map<string, ImageStyleOptionDefinition>;
 
@@ -92,8 +88,7 @@ export default class ImageStyleCommand extends Command {
 	 * configuration for the style option.
 	 *
 	 * @param options
-	 * @param {module:image/imagestyle~ImageStyleOptionDefinition#name} options.value The name of the style (as configured in
-	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
+	 * @param options.value The name of the style (as configured in {@link module:image/imagestyle~ImageStyleConfig#options}).
 	 * @fires execute
 	 */
 	public override execute( options: { value?: string } = {} ): void {

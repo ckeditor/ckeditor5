@@ -18,8 +18,6 @@ import type { Element } from 'ckeditor5/src/engine';
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
  * {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand ImageStyleCommand}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ImageStyleEditing extends Plugin {
 	/**

@@ -28,62 +28,40 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 
 /**
  * The TextAlternativeFormView class.
- *
- * @extends module:ui/view~View
  */
 export default class TextAlternativeFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
-	 *
-	 * @readonly
-	 * @member {module:utils/focustracker~FocusTracker}
 	 */
 	public readonly focusTracker: FocusTracker;
 
 	/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
 	 * An input with a label.
-	 *
-	 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView} #labeledInput
 	 */
 	public labeledInput: LabeledFieldView;
 
 	/**
 	 * A button used to submit the form.
-	 *
-	 * @member {module:ui/button/buttonview~ButtonView} #saveButtonView
 	 */
 	public saveButtonView: ButtonView;
 
 	/**
 	 * A button used to cancel the form.
-	 *
-	 * @member {module:ui/button/buttonview~ButtonView} #cancelButtonView
 	 */
 	public cancelButtonView: ButtonView;
 
 	/**
 	 * A collection of views which can be focused in the form.
-	 *
-	 * @readonly
-	 * @protected
-	 * @member {module:ui/viewcollection~ViewCollection}
 	 */
 	protected readonly _focusables: ViewCollection;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
-	 *
-	 * @readonly
-	 * @protected
-	 * @member {module:ui/focuscycler~FocusCycler}
 	 */
 	protected readonly _focusCycler: FocusCycler;
 

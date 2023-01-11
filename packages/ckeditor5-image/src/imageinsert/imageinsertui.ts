@@ -32,8 +32,6 @@ export default class ImageInsertUI extends Plugin {
 
 	/**
 	 * The dropdown view responsible for displaying the image insert UI.
-	 *
-	 * @member {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	public dropdownView?: DropdownView;
 
@@ -81,9 +79,9 @@ export default class ImageInsertUI extends Plugin {
 		} );
 
 		if ( uploadImageCommand ) {
-			const splitButtonView = this.dropdownView.buttonView as any;
+			const splitButtonView = this.dropdownView.buttonView as SplitButtonView;
 
-			splitButtonView.actionView = editor.ui.componentFactory.create( 'uploadImage' );
+			( splitButtonView as any ).actionView = editor.ui.componentFactory.create( 'uploadImage' );
 			// After we replaced action button with `uploadImage` component,
 			// we have lost a proper styling and some minor visual quirks have appeared.
 			// Brining back original split button classes helps fix the button styling

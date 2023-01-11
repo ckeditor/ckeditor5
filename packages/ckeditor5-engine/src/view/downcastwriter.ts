@@ -1308,7 +1308,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
 	 */
-	public createSlot( modeOrFilter: 'children' | SlotFilter ): Element {
+	public createSlot( modeOrFilter: 'children' | SlotFilter = 'children' ): Element {
 		if ( !this._slotFactory ) {
 			/**
 			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.

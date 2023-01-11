@@ -18,7 +18,6 @@ export default class ImageTextAlternativeCommand extends Command {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {String|Boolean} #value
 	 */
 	declare public value: string | boolean;
 

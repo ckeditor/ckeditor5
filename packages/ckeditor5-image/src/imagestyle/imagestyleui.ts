@@ -52,8 +52,6 @@ export default class ImageStyleUI extends Plugin {
 	 * * `'Left aligned image'`,
 	 * * `'Centered image'`,
 	 * * `'Right aligned image'`
-	 *
-	 * @returns {Object.<String,String>}
 	 */
 	public get localizedDefaultStylesTitles(): Record<string, string> {
 		const t = this.editor.t;

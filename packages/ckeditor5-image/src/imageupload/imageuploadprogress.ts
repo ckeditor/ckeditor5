@@ -43,9 +43,6 @@ export default class ImageUploadProgress extends Plugin {
 	 * The image placeholder that is displayed before real image data can be accessed.
 	 *
 	 * For the record, this image is a 1x1 px GIF with an aspect ratio set by CSS.
-	 *
-	 * @protected
-	 * @member {String} #placeholder
 	 */
 	protected placeholder: string;
 
@@ -85,7 +82,6 @@ export default class ImageUploadProgress extends Plugin {
 	 *
 	 * @param evt An object containing information about the fired event.
 	 * @param data Additional information about the change.
-	 * @param conversionApi
 	 */
 	private uploadStatusChange: GetCallback<DowncastAttributeEvent> = ( evt, data, conversionApi ) => {
 		const editor = this.editor;

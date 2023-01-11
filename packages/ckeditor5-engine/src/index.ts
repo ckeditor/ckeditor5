@@ -26,6 +26,7 @@ export type {
 export type {
 	default as UpcastDispatcher,
 	UpcastConversionApi,
+	UpcastConversionData,
 	UpcastElementEvent,
 	UpcastTextEvent
 } from './conversion/upcastdispatcher';
@@ -69,7 +70,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
-export type { DiffItem } from './model/differ';
+export type { DiffItem, DiffItemAttribute } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
@@ -126,7 +127,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher, MatcherPattern } from './view/matcher';
+export { default as Matcher, MatcherPattern, Match } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';

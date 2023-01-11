@@ -48,9 +48,6 @@ export default class ImageUploadEditing extends Plugin {
 	 * is executed as a result of adding caption or changing image style. As a result, the upload logic must keep track of the model
 	 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
 	 * after image type changed).
-	 *
-	 * @private
-	 * @readonly
 	 */
 	private readonly _uploadImageElements: Map<string, Element>;
 

@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
+import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
@@ -43,8 +43,6 @@ export default class ImageCaptionEditing extends Plugin {
 	 * associated with.
 	 *
 	 * To learn more about this system, see {@link #_saveCaption}.
-	 *
-	 * @member {WeakMap.<module:engine/model/element~Element,Object>}
 	 */
 	private _savedCaptionsMap: WeakMap<Element, object>;
 
@@ -87,8 +85,6 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * Configures conversion pipelines to support upcasting and downcasting
 	 * image captions.
-	 *
-	 * @private
 	 */
 	private _setupConversion(): void {
 		const editor = this.editor;
@@ -254,15 +250,15 @@ export default class ImageCaptionEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
-		model.document.on( 'change:data', () => {
+		model.document.on<DocumentChangeEvent>( 'change:data', () => {
 			const changes = model.document.differ.getChanges();
 
-			for ( const change of changes ) {
-				if ( ( change as any ).attributeKey !== 'alt' ) {
+			for ( const change of changes as Array<DiffItemAttribute> ) {
+				if ( change.attributeKey !== 'alt' ) {
 					continue;
 				}
 
-				const image = ( change as any ).range.start.nodeAfter;
+				const image = change.range.start.nodeAfter as Element;
 
 				if ( imageUtils.isBlockImage( image ) ) {
 					const caption = imageCaptionUtils.getCaptionFromImageModelElement( image );

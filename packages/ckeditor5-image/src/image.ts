@@ -10,11 +10,6 @@
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ImageBlock from './imageblock';
 import ImageInline from './imageinline';
-import type { ImageInsertConfig } from './imageinsert';
-import type { ImageStyleConfig } from './imagestyle';
-import type { ImageUploadConfig } from './imageupload';
-import type { ImageStyleDropdownDefinition } from './imagestyle/imagestyleui';
-import type { ImageResizeOption } from './imageresize/imageresizebuttons';
 
 import '../theme/image.css';
 

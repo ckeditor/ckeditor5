@@ -52,7 +52,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 		imageBlock: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageBlock' ) )
 	};
 
-	return ( evt: any, data: any, conversionApi: any ) => {
+	return ( evt, data, conversionApi ) => {
 		if ( !data.modelRange ) {
 			return;
 		}

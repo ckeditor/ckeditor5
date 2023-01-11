@@ -8,12 +8,14 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import { ButtonView, View, ViewCollection, submitHandler, FocusCycler } from 'ckeditor5/src/ui';
+import { ButtonView, View, ViewCollection, submitHandler, FocusCycler, type InputTextView, type LabeledFieldView } from 'ckeditor5/src/ui';
 import { Collection, FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import ImageInsertFormRowView from './imageinsertformrowview';
 
 import '../../../theme/imageinsert.css';
+
+export type ViewWithName = View & { name: string };
 
 /**
  * The insert an image via URL view controller class.
@@ -63,7 +65,7 @@ export default class ImageInsertPanelView extends View {
 	 *
 	 * @private
 	 */
-	declare public _integrations: Collection<View>;
+	declare public _integrations: Collection<ViewWithName>;
 
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
@@ -102,20 +104,21 @@ export default class ImageInsertPanelView extends View {
 			}
 		} );
 
-		this.set( '_integrations', new Collection<View>() );
+		this.set( '_integrations', new Collection<View & { name: string }>() );
 
 		for ( const [ integration, integrationView ] of Object.entries( integrations ) ) {
 			if ( integration === 'insertImageViaUrl' ) {
-				( integrationView as any ).fieldView.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );
+				( integrationView as LabeledFieldView<InputTextView> ).fieldView
+					.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );
 
-				( integrationView as any ).fieldView.on( 'input', () => {
+				( integrationView as LabeledFieldView<InputTextView> ).fieldView.on( 'input', () => {
 					this.imageURLInputValue = ( integrationView as any ).fieldView.element.value.trim();
 				} );
 			}
 
-			( integrationView as any ).name = integration;
+			( integrationView as ViewWithName ).name = integration;
 
-			this._integrations.add( integrationView );
+			this._integrations.add( integrationView as ViewWithName );
 		}
 
 		this.setTemplate( {
@@ -204,7 +207,7 @@ export default class ImageInsertPanelView extends View {
 	 * @param name The name of the integration.
 	 */
 	public getIntegration( name: string ): View {
-		return this._integrations.find( ( integration: any ) => integration.name === name )!;
+		return this._integrations.find( integration => integration.name === name )!;
 	}
 
 	/**

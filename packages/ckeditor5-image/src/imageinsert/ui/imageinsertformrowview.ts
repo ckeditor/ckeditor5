@@ -31,8 +31,6 @@ export default class ImageUploadFormRowView extends View {
 
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
-	 *
-	 * @readonly
 	 */
 	public readonly children: ViewCollection;
 
@@ -52,7 +50,7 @@ export default class ImageUploadFormRowView extends View {
 	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
 	 *
 	 * @observable
-	 * @privtae
+	 * @private
 	 */
 	declare public _ariaLabelledBy: string | null;
 
