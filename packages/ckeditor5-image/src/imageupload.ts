@@ -84,4 +84,12 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageUpload.pluginName ]: ImageUpload;
 	}
+
+	interface ImageConfig {
+
+		/**
+		 * The image upload configuration.
+		 */
+		upload?: ImageUploadConfig;
+	}
 }

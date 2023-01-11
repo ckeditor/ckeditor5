@@ -154,4 +154,170 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageStyle.pluginName ]: ImageStyle;
 	}
+
+	interface ImageConfig {
+
+		/**
+		 * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the
+		 * {@link module:image/imagestyle~ImageStyleConfig#options image style options} to work properly.
+		 * The default configuration is provided (listed below) and can be customized while creating the editor instance.
+		 *
+		 * # **Command**
+		 *
+		 * The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `imageStyleCommand`}
+		 * is configured based on the defined options,
+		 * so you can change the style of the selected image by executing the following command:
+		 *
+		 * ```ts
+		 * editor.execute( 'imageStyle' { value: 'alignLeft' } );
+		 * ```
+		 *
+		 * # **Buttons**
+		 *
+		 * All of the image style options provided in the configuration are registered
+		 * in the {@link module:ui/componentfactory~ComponentFactory UI components factory} with the "imageStyle:" prefixes and can be used
+		 * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}. The buttons available by default depending
+		 * on the loaded plugins are listed in the next section.
+		 *
+		 * Read more about styling images in the {@glink features/images/images-styles Image styles guide}.
+		 *
+		 * # **Default options and buttons**
+		 *
+		 * If the custom configuration is not provided, the default configuration will be used depending on the loaded
+		 * image editing plugins.
+		 *
+		 * * If both {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} and
+		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugins are loaded
+		 * (which is usually the default editor configuration), the following options will be available for the toolbar
+		 * configuration. These options will be registered as the buttons with the "imageStyle:" prefixes.
+		 *
+		 * ```ts
+		 * const imageDefaultConfig = {
+		 * 	styles: {
+		 * 		options: [
+		 * 			'inline', 'alignLeft', 'alignRight',
+		 * 			'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+		 * 			'block', 'side'
+		 * 		]
+		 * 	}
+		 * };
+		 * ```
+		 *
+		 * * If only the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin is loaded,
+		 * the following buttons (options) and groups will be available for the toolbar configuration.
+		 * These options will be registered as the buttons with the "imageStyle:" prefixes.
+		 *
+		 * ```ts
+		 * const imageDefaultConfig = {
+		 * 	styles: {
+		 * 		options: [ 'block', 'side' ]
+		 * 	}
+		 * };
+		 * ```
+		 *
+		 * * If only the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin is loaded,
+		 * the following buttons (options) and groups will available for the toolbar configuration.
+		 * These options will be registered as the buttons with the "imageStyle:" prefixes.
+		 *
+		 * ```ts
+		 * const imageDefaultConfig = {
+		 * 	styles: {
+		 * 		options: [ 'inline', 'alignLeft', 'alignRight' ]
+		 * 	}
+		 * };
+		 * ```
+		 *
+		 * Read more about the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}.
+		 *
+		 * # **Custom configuration**
+		 *
+		 * The image styles configuration can be customized in several ways:
+		 *
+		 * * Any of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}
+		 * can be loaded by the reference to its name as follows:
+		 *
+		 * ```ts
+		 * ClassicEditor
+		 * 	.create( editorElement, {
+		 * 		image: {
+		 * 			styles: {
+		 * 				options: [ 'alignLeft', 'alignRight' ]
+		 * 			}
+		 * 		}
+		 * 	} );
+		 * ```
+		 *
+		 * * Each of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} can be customized,
+		 * e.g. to change the `icon`, `title` or CSS `className` of the style. The feature also provides several
+		 * {@link module:image/imagestyle/utils~DEFAULT_ICONS default icons} to choose from.
+		 *
+		 * ```ts
+		 * import customIcon from 'custom-icon.svg';
+		 *
+		 * // ...
+		 *
+		 * ClassicEditor.create( editorElement, { image:
+		 * 	styles: {
+		 * 		options: {
+		 * 			// This will only customize the icon of the "block" style.
+		 * 			// Note: 'right' is one of default icons provided by the feature.
+		 * 			{
+		 * 				name: 'block',
+		 * 				icon: 'right'
+		 * 			},
+		 *
+		 * 			// This will customize the icon, title and CSS class of the default "side" style.
+		 * 			{
+		 * 				name: 'side',
+		 * 				icon: customIcon,
+		 * 				title: 'My side style',
+		 * 				className: 'custom-side-image'
+		 * 			}
+		 * 		}
+		 * 	}
+		 * } );
+		 * ```
+		 *
+		 * * If none of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options}
+		 * works for the integration, it is possible to define independent custom styles, too.
+		 *
+		 * See the documentation about the image style {@link module:image/imagestyle~ImageStyleOptionDefinition options}
+		 * to define the custom image style configuration properly.
+		 *
+		 * ```ts
+		 * import redIcon from 'red-icon.svg';
+		 * import blueIcon from 'blue-icon.svg';
+		 *
+		 * // ...
+		 *
+		 * ClassicEditor.create( editorElement, { image:
+		 * 	styles: {
+		 * 		// A list of completely custom styling options.
+		 * 		options: [
+		 * 			{
+		 * 				name: 'regular',
+		 * 				modelElements: [ 'imageBlock', 'imageInline' ],
+		 * 				title: 'Regular image',
+		 * 				icon: 'full',
+		 * 				isDefault: true
+		 * 			}, {
+		 * 				name: 'blue',
+		 * 				modelElements: [ 'imageInline' ],
+		 * 				title: 'Blue image',
+		 * 				icon: blueIcon,
+		 * 				className: 'image-blue'
+		 * 			}, {
+		 * 				name: 'red',
+		 * 				modelElements: [ 'imageBlock' ],
+		 * 				title: 'Red image',
+		 * 				icon: redIcon,
+		 * 				className: 'image-red'
+		 * 			}
+		 * 		]
+		 * 	}
+		 * } );
+		 * ```
+		 */
+		styles?: ImageStyleConfig;
+	}
 }

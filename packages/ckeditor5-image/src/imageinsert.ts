@@ -108,5 +108,13 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageInsert.pluginName ]: ImageInsert;
 	}
+
+	interface ImageConfig {
+
+		/**
+		 * The image insert configuration.
+		 */
+		insert?: ImageInsertConfig;
+	}
 }
 
