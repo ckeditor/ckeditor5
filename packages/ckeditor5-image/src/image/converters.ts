@@ -13,9 +13,14 @@ import type {
 	Element,
 	UpcastConversionApi,
 	UpcastDispatcher,
-	ViewElementAttributes
+	UpcastElementEvent,
+	ViewElement,
+	ViewElementAttributes,
+	UpcastConversionData,
+	DowncastAttributeEvent,
+	Range
 } from 'ckeditor5/src/engine';
-import { first } from 'ckeditor5/src/utils';
+import { first, type EventInfo } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
 
 /**
@@ -35,15 +40,13 @@ import type ImageUtils from '../imageutils';
  * of the `<imageBlock>` model element.
  *
  * @protected
- * @param {module:image/imageutils~ImageUtils} imageUtils
- * @returns {Function}
  */
 export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on( 'element:figure', converter );
+		dispatcher.on<UpcastElementEvent>( 'element:figure', converter );
 	};
 
-	function converter( evt: any, data: any, conversionApi: UpcastConversionApi ) {
+	function converter( evt: EventInfo, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
 		// Do not convert if this is not an "image figure".
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ) {
 			return;
@@ -95,17 +98,15 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
  * ```
  *
  * @protected
- * @param {module:image/imageutils~ImageUtils} imageUtils
- * @returns {Function}
  */
 export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	const sourceAttributeNames = [ 'srcset', 'media', 'type', 'sizes' ];
 
 	return dispatcher => {
-		dispatcher.on( 'element:picture', converter );
+		dispatcher.on<UpcastElementEvent>( 'element:picture', converter );
 	};
 
-	function converter( evt: any, data: any, conversionApi: UpcastConversionApi ) {
+	function converter( evt: EventInfo, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
 		const pictureViewElement = data.viewItem;
 
 		// Do not convert <picture> if already consumed.
@@ -158,7 +159,7 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 			// Continue conversion where image conversion ends.
 			data.modelCursor = conversionResult.modelCursor;
 
-			modelImage = first( conversionResult.modelRange!.getItems() );
+			modelImage = first( conversionResult.modelRange!.getItems() ) as Element;
 		}
 
 		conversionApi.consumable.consume( pictureViewElement, { name: true } );
@@ -182,19 +183,27 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
  * @protected
- * @param {module:image/imageutils~ImageUtils} imageUtils
- * @param {'imageBlock'|'imageInline'} imageType The type of the image.
- * @returns {Function}
+ * @param imageType The type of the image.
  */
 export function downcastSrcsetAttribute(
 	imageUtils: ImageUtils,
 	imageType: 'imageBlock' | 'imageInline'
 ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on( `attribute:srcset:${ imageType }`, converter );
+		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:srcset:${ imageType }`, converter );
 	};
 
-	function converter( evt: any, data: any, conversionApi: DowncastConversionApi ) {
+	function converter(
+		evt: EventInfo,
+		data: {
+			item: Element;
+			range: Range;
+			attributeKey: string;
+			attributeOldValue: any;
+			attributeNewValue: any;
+		},
+		conversionApi: DowncastConversionApi
+	) {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -235,16 +244,24 @@ export function downcastSrcsetAttribute(
  * view structure.
  *
  * @protected
- * @param {module:image/imageutils~ImageUtils} imageUtils
- * @returns {Function}
  */
 export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on( 'attribute:sources:imageBlock', converter );
-		dispatcher.on( 'attribute:sources:imageInline', converter );
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageBlock', converter );
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageInline', converter );
 	};
 
-	function converter( evt: any, data: any, conversionApi: DowncastConversionApi ) {
+	function converter(
+		evt: EventInfo,
+		data: {
+			item: Element;
+			range: Range;
+			attributeKey: string;
+			attributeOldValue: unknown;
+			attributeNewValue: any;
+		},
+		conversionApi: DowncastConversionApi
+	) {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -298,10 +315,8 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
  * Converter used to convert a given image attribute from the model to the view.
  *
  * @protected
- * @param {module:image/imageutils~ImageUtils} imageUtils
- * @param {'imageBlock'|'imageInline'} imageType The type of the image.
- * @param {String} attributeKey The name of the attribute to convert.
- * @returns {Function}
+ * @param imageType The type of the image.
+ * @param attributeKey The name of the attribute to convert.
  */
 export function downcastImageAttribute(
 	imageUtils: ImageUtils,
@@ -309,10 +324,20 @@ export function downcastImageAttribute(
 	attributeKey: string
 ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
+		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};
 
-	function converter( evt: any, data: any, conversionApi: DowncastConversionApi ) {
+	function converter(
+		evt: EventInfo,
+		data: {
+			item: Element;
+			range: Range;
+			attributeKey: string;
+			attributeOldValue: unknown;
+			attributeNewValue: unknown;
+		},
+		conversionApi: DowncastConversionApi
+	) {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
