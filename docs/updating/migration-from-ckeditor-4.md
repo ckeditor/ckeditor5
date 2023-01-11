@@ -23,7 +23,7 @@ There is no "drop in" solution for migrating. In this guide we hope to summarize
 
 The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to {@link installation/getting-started/quick-start Installation} for more details.
 
-The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor Lifecycle} and @link installation/getting-started/save-editor Getting and setting data} for an introduction.
+The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor Lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} for an introduction.
 
 ## Features
 
