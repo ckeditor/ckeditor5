@@ -314,7 +314,7 @@ export default class Title extends Plugin {
 	 * Attaches the `Title` and `Body` placeholders to the title and/or content.
 	 */
 	private _attachPlaceholders() {
-		const editor = this.editor as Editor & ElementApi;
+		const editor: Editor & Partial<ElementApi> = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
@@ -330,7 +330,7 @@ export default class Title extends Plugin {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item )!,
-				text: titlePlaceholder as string,
+				text: titlePlaceholder,
 				keepOnFocus: true
 			} );
 		} );
@@ -425,7 +425,7 @@ export default class Title extends Plugin {
  * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
  * @param conversionApi Conversion interface to be used by the callback.
  */
-function dataViewModelH1Insertion( evt: any, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
+function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 

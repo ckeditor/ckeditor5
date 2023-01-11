@@ -57,7 +57,7 @@ export default class HeadingEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const options = editor.config.get( 'heading.options' )! as Array<HeadingOption>;
+		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 
 		const modelElements = [];
 
@@ -91,7 +91,7 @@ export default class HeadingEditing extends Plugin {
 		// Enter at the end of a heading element should create a paragraph.
 		const editor = this.editor;
 		const enterCommand = editor.commands.get( 'enter' );
-		const options = editor.config.get( 'heading.options' )! as Array<HeadingOption>;
+		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
