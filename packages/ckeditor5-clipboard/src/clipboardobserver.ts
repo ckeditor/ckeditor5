@@ -40,8 +40,6 @@ import {
  * To make it available, it needs to be added to {@link module:engine/view/document~Document} by using
  * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. Alternatively, you can load the
  * {@link module:clipboard/clipboard~Clipboard} plugin which adds this observer automatically (because it uses it).
- *
- * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class ClipboardObserver extends DomEventObserver<
 	'paste' | 'copy' | 'cut' | 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave',
@@ -106,7 +104,15 @@ export type ViewDocumentDragEvent = {
 };
 
 export type ClipboardEventData = {
-	dataTransfer: DataTransfer;
+
+	/**
+	 * The data transfer instance.
+	 */
+	readonly dataTransfer: DataTransfer;
+
+	/**
+	 * The position into which the content is dropped.
+	 */
 	dropRange?: ViewRange | null;
 };
 
@@ -160,16 +166,45 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
- * @event module:engine/view/document~Document#event:clipboardInput
- * @param {Object} data The event data.
- * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
- * @param {'paste'|'drop'} method Whether the event was triggered by a paste or drop operation.
- * @param {module:engine/view/element~Element} target The tree view element representing the target.
- * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
- * (usually – into which the content should be inserted).
- * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
- * then it is the drop position (which can be different than the selection at the moment of drop).
+ *
+ * @eventName clipboardInput
+ * @param data The event data.
  */
+export type ClipboardInputEvent = {
+	name: 'clipboardInput';
+	args: [ data: ClipboardInputEventData ];
+};
+
+/**
+ * The value of the {@link module:engine/view/document~Document#event:paste},
+ * {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut} events.
+ *
+ * In order to access the clipboard data, use the `dataTransfer` property.
+ */
+export interface ClipboardInputEventData extends DomEventData {
+
+	/**
+	 * Data transfer instance.
+	 */
+	dataTransfer: DataTransfer;
+
+	/**
+	 * Whether the event was triggered by a paste or drop operation.
+	 */
+	method: 'paste' | 'drop';
+
+	/**
+	 * The tree view element representing the target.
+	 */
+	target: ViewElement;
+
+	/**
+	 * Ranges which are the target of the operation (usually – into which the content should be inserted).
+	 * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
+	 * then it is the drop position (which can be different than the selection at the moment of drop).
+	 */
+	targetRanges?: Array<Range>;
+}
 
 /**
  * Fired when the user drags the content over one of the editing roots of the editor.
@@ -182,9 +217,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:dragover
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName dragover
+ * @param data The event data.
  */
+export type DragoverEvent = {
+	name: 'dragover';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user dropped the content into one of the editing roots of the editor.
@@ -197,10 +237,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:drop
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
- * @param {module:engine/view/range~Range} dropRange The position into which the content is dropped.
+ *
+ * @eventName drop
+ * @param data The event data.
  */
+export type DropEvent = {
+	name: 'drop';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user pasted the content into one of the editing roots of the editor.
@@ -213,9 +257,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:paste
+ *
+ * @eventName paste
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
+export type PasteEvent = {
+	name: 'paste';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user copied the content from one of the editing roots of the editor.
@@ -228,9 +277,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
- * @event module:engine/view/document~Document#event:copy
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName copy
+ * @param data The event data.
  */
+export type CopyEvent = {
+	name: 'copy';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user cut the content from one of the editing roots of the editor.
@@ -243,26 +297,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
- * @event module:engine/view/document~Document#event:cut
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
- */
-
-/**
- * The value of the {@link module:engine/view/document~Document#event:paste},
- * {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut} events.
  *
- * In order to access the clipboard data, use the `dataTransfer` property.
- *
- * @class module:clipboard/clipboardobserver~ClipboardEventData
- * @extends module:engine/view/observer/domeventdata~DomEventData
+ * @eventName cut
+ * @param data The event data.
  */
-
-/**
- * The data transfer instance.
- *
- * @readonly
- * @member {module:engine/view/datatransfer~DataTransfer} module:clipboard/clipboardobserver~ClipboardEventData#dataTransfer
- */
+export type CutEvent = {
+	name: 'cut';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired as a continuation of the {@link #event:dragover} event.
@@ -279,14 +321,34 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
- * @event module:engine/view/document~Document#event:dragging
- * @param {Object} data The event data.
- * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
- * @param {module:engine/view/element~Element} target The tree view element representing the target.
- * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
- * (usually – into which the content should be inserted).
- * It is the drop position (which can be different than the selection at the moment of drop).
+ *
+ * @eventName dragging
+ * @param data The event data.
  */
+export type DraggingEvent = {
+	name: 'dragging';
+	args: [ data: DraggingEventData ];
+};
+
+export type DraggingEventData = {
+
+	/**
+	 * The data transfer instance.
+	 */
+	dataTransfer: DataTransfer;
+
+	/**
+	 * The tree view element representing the target.
+	 */
+	target: Element;
+
+	/**
+	 * Ranges which are the target of the operation (usually – into which the content should be inserted).
+	 * It is the drop position (which can be different than the selection at the moment of drop).
+	 */
+	targetRanges: Array<Range>;
+
+};
 
 /**
  * Fired when the user starts dragging the content in one of the editing roots of the editor.
@@ -299,9 +361,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:dragstart
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName dragstart
+ * @param data The event data.
  */
+export type DragStartEvent = {
+	name: 'dragstart';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user ended dragging the content.
@@ -314,9 +381,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:dragend
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName dragend
+ * @param data The event data.
  */
+export type DragEndEvent = {
+	name: 'dragend';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user drags the content into one of the editing roots of the editor.
@@ -329,9 +401,14 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:dragenter
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName dragenter
+ * @param data The event data.
  */
+export type DragEnterEvent = {
+	name: 'dragenter';
+	args: [ data: ClipboardEventData ];
+};
 
 /**
  * Fired when the user drags the content out of one of the editing roots of the editor.
@@ -344,6 +421,11 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
- * @event module:engine/view/document~Document#event:dragleave
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ *
+ * @eventName dragleave
+ * @param data The event data.
  */
+export type DragLeaveEvent = {
+	name: 'dragleave';
+	args: [ data: ClipboardEventData ];
+};

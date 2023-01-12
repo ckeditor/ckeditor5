@@ -10,8 +10,8 @@
 /**
  * Converts plain text to its HTML-ized version.
  *
- * @param {String} text The plain text to convert.
- * @returns {String} HTML generated from the plain text.
+ * @param text The plain text to convert.
+ * @returns HTML generated from the plain text.
  */
 export default function plainTextToHtml( text: string ): string {
 	text = text
