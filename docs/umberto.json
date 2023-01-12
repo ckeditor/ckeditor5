@@ -179,6 +179,7 @@
 		"installation/getting-started/frameworks/vuejs-v3.html": "installation/frameworks/vuejs-v3.html",
 		"installation/getting-started/frameworks/css.html": "installation/frameworks/css.html",
 		"installation/frameworks/index.html": "installation/frameworks/overview.html",
+		"installation/getting-started/predefined-builds.html#build-customization": "installation/getting-started/quick-start-other.html#build-customization",
 		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
