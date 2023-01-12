@@ -49,8 +49,7 @@ export default class DocumentColorCollection extends ObservableMixin( Collection
 			return this;
 		}
 
-		super.add( item, index );
-		return this;
+		return super.add( item, index );
 	}
 
 	/**

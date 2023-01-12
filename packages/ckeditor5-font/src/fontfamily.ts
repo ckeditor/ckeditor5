@@ -7,7 +7,7 @@
  * @module font/fontfamily
  */
 
-import type { ViewElementDefinition } from 'ckeditor5/src/engine';
+import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import FontFamilyEditing from './fontfamily/fontfamilyediting';
 import FontFamilyUI from './fontfamily/fontfamilyui';
@@ -63,7 +63,7 @@ export interface FontFamilyOption {
 	/**
 	 * An array with all matched elements that the view-to-model conversion should also accept.
 	 */
-	upcastAlso?: Array<ViewElementDefinition>;
+	upcastAlso?: Array<MatcherPattern>;
 }
 
  declare module '@ckeditor/ckeditor5-core' {

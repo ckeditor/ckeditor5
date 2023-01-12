@@ -7,11 +7,19 @@
  * @module font/utils
  */
 
-import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
-import type { AttributeToElementComplexConverterDefinition, DowncastWriter, ViewAttributeElement, ViewElement } from 'ckeditor5/src/engine';
+import ColorTableView from './ui/colortableview';
+
 import type { FontFamilyOption } from './fontfamily';
 import type { FontSizeOption } from './fontsize';
-import ColorTableView from './ui/colortableview';
+import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
+import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type {
+	DowncastWriter,
+	ViewAttributeElement,
+	ViewElement,
+	MatcherPattern,
+	ViewElementDefinition
+} from 'ckeditor5/src/engine';
 
 /**
  * The name of the font size plugin.
@@ -39,14 +47,14 @@ export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 export function buildDefinition(
 	modelAttributeKey: string,
 	options: Array<FontFamilyOption> | Array<FontSizeOption>
-): AttributeToElementComplexConverterDefinition<string> {
-	const definition: AttributeToElementComplexConverterDefinition<string> = {
+): FontConverterDefinition {
+	const definition: FontConverterDefinition = {
 		model: {
 			key: modelAttributeKey,
-			values: [] as Array<string>
+			values: []
 		},
-		view: {} as any,
-		upcastAlso: {} as any
+		view: {},
+		upcastAlso: {}
 	};
 
 	for ( const option of options ) {
@@ -54,12 +62,18 @@ export function buildDefinition(
 		definition.view[ option.model! ] = option.view!;
 
 		if ( option.upcastAlso ) {
-			definition.upcastAlso![ option.model! ] = option.upcastAlso!;
+			definition.upcastAlso[ option.model! ] = option.upcastAlso!;
 		}
 	}
 
 	return definition;
 }
+
+export type FontConverterDefinition = {
+	model: { key: string; values: Array<string> };
+	view: Record<string, ViewElementDefinition>;
+	upcastAlso: Record<string, ArrayOrItem<MatcherPattern>>;
+};
 
 /**
  * A {@link module:font/fontcolor~FontColor font color} and

@@ -7,7 +7,7 @@
  * @module font/fontsize
  */
 
-import type { ViewElementDefinition } from 'ckeditor5/src/engine';
+import type { ViewElementDefinition, MatcherPattern } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import FontSizeEditing from './fontsize/fontsizeediting';
 import FontSizeUI from './fontsize/fontsizeui';
@@ -73,7 +73,7 @@ export interface FontSizeOption {
 	/**
 	 * An array with all matched elements that the view-to-model conversion should also accept.
 	 */
-	upcastAlso?: Array<ViewElementDefinition>;
+	upcastAlso?: Array<MatcherPattern>;
 }
 
  declare module '@ckeditor/ckeditor5-core' {

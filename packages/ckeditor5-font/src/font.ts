@@ -13,7 +13,6 @@ import FontFamily from './fontfamily';
 import FontSize from './fontsize';
 import FontColor from './fontcolor';
 import FontBackgroundColor from './fontbackgroundcolor';
-import type FontCommand from './fontcommand';
 
 /**
  * A plugin that enables a set of text styling features:
@@ -45,9 +44,5 @@ export default class Font extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Font.pluginName ]: Font;
-	}
-
-	interface CommandsMap {
-		font: FontCommand;
 	}
 }

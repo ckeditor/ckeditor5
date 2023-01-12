@@ -7,6 +7,8 @@
  * @module engine
  */
 
+import { MatcherPattern } from './view/matcher';
+
 export * from './view/placeholder';
 
 // Controller.
@@ -14,13 +16,7 @@ export { default as EditingController } from './controller/editingcontroller';
 export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
 
 // Conversion.
-export {
-	default as Conversion,
-	type AttributeToElementBasicConverterDefinition,
-	type AttributeToElementComplexConverterDefinition,
-	type AttributeToElementConverterDefinition,
-	type ElementToElementConverterDefinition
-} from './conversion/conversion';
+export { default as Conversion } from './conversion/conversion';
 export type {
 	default as DowncastDispatcher,
 	DowncastAttributeEvent,
@@ -121,6 +117,7 @@ export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
+export type { MatcherPattern } from './view/matcher';
 
 export { getFillerOffset } from './view/containerelement';
 
