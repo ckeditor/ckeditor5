@@ -112,7 +112,7 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
-export type { default as ElementDefinition } from './view/elementdefinition';
+export type { default as ViewElementDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
