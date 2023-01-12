@@ -254,6 +254,7 @@ describe( 'SpecialCharacters', () => {
 	describe( 'getGroups()', () => {
 		it( 'returns iterator of defined groups in the registration order by default', () => {
 			const groups = Array.from( plugin.getGroups() );
+
 			expect( groups ).to.deep.equal( [ 'Mathematical', 'Arrows' ] );
 		} );
 
@@ -264,6 +265,7 @@ describe( 'SpecialCharacters', () => {
 			] );
 
 			const groups = Array.from( plugin.getGroups() );
+
 			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
 		} );
 
@@ -273,6 +275,7 @@ describe( 'SpecialCharacters', () => {
 			] );
 
 			const groups = Array.from( plugin.getGroups() );
+
 			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
 		} );
 
