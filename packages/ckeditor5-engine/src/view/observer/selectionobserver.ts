@@ -61,7 +61,7 @@ export default class SelectionObserver extends Observer {
 		this.mutationObserver = view.getObserver( MutationObserver )!;
 
 		/**
-		 * Instance of the focus observer. Focus observer calls
+		 * Instance of the focus observer. Selection observer calls
 		 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.
 		 *
 		 * @readonly
