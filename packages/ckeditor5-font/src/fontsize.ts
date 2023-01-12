@@ -21,8 +21,6 @@ import { normalizeOptions } from './fontsize/utils';
  *
  * This is a "glue" plugin which loads the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
  * {@link module:font/fontsize/fontsizeui~FontSizeUI} features in the editor.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontSize extends Plugin {
 	/**

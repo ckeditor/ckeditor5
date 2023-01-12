@@ -19,12 +19,12 @@ import {
 	ViewCollection,
 	type ColorDefinition
 } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import type { Model } from 'ckeditor5/src/engine';
 
 import DocumentColorCollection from '../documentcolorcollection';
 
 import '../../theme/fontcolor.css';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import type { Model } from 'ckeditor5/src/engine';
 
 /**
  * A class which represents a view with the following sub–components:
@@ -32,8 +32,6 @@ import type { Model } from 'ckeditor5/src/engine';
  * * A remove color button,
  * * A static {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors defined in the configuration,
  * * A dynamic {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors used in the document.
- *
- * @extends module:ui/view~View
  */
 export default class ColorTableView extends View {
 	/**
@@ -209,8 +207,8 @@ export default class ColorTableView extends View {
 		this.documentColors.clear();
 
 		for ( const rootName of document.getRootNames() ) {
-			const root = document.getRoot( rootName );
-			const range = model.createRangeIn( root! );
+			const root = document.getRoot( rootName )!;
+			const range = model.createRangeIn( root );
 
 			for ( const node of range.getItems() ) {
 				if ( node.is( '$textProxy' ) && node.hasAttribute( attributeName ) ) {

@@ -14,14 +14,13 @@ import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefiniti
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';
 
-import fontFamilyIcon from '../../theme/icons/font-family.svg';
 import type { FontFamilyOption } from '../fontfamily';
 import type FontFamilyCommand from './fontfamilycommand';
 
+import fontFamilyIcon from '../../theme/icons/font-family.svg';
+
 /**
  * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontFamilyUI extends Plugin {
 	/**

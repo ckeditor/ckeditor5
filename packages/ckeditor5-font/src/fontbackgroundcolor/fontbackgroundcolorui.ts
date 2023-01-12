@@ -9,8 +9,9 @@
 
 import ColorUI from '../ui/colorui';
 import { FONT_BACKGROUND_COLOR } from '../utils';
-import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
 import type { Editor } from 'ckeditor5/src/core';
+
+import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
 
 /**
  * The font background color UI plugin. It introduces the `'fontBackgroundColor'` dropdown.

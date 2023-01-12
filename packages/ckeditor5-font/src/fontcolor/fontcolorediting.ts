@@ -9,8 +9,8 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import FontColorCommand from './fontcolorcommand';
-import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 import type { ViewElement } from 'ckeditor5/src/engine';
+import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 
 /**
  * The font color editing feature.

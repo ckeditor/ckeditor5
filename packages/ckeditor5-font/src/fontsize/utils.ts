@@ -21,11 +21,11 @@ export function normalizeOptions( configuredOptions: Array<string | number | Fon
 	return configuredOptions
 		.map( item => getOptionDefinition( item ) )
 		// Filter out undefined values that `getOptionDefinition` might return.
-		.filter( option => option !== undefined ) as Array<FontSizeOption>;
+		.filter( ( option ): option is FontSizeOption => option !== undefined );
 }
 
 // Default named presets map. Always create a new instance of the preset object in order to avoid modifying references.
-const namedPresets = {
+const namedPresets: Record<string, FontSizeOption> = {
 	get tiny(): FontSizeOption {
 		return {
 			title: 'Tiny',
@@ -76,11 +76,11 @@ const namedPresets = {
  * Returns an option definition either from preset or creates one from number shortcut.
  * If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
  */
-
 function getOptionDefinition( option: string | number | FontSizeOption ): FontSizeOption | undefined {
 	if ( typeof option === 'number' ) {
 		option = String( option );
 	}
+
 	// Check whether passed option is a full item definition provided by user in configuration.
 	if ( typeof option === 'object' && isFullItemDefinition( option ) ) {
 		return attachPriority( option );
@@ -152,10 +152,7 @@ function attachPriority( definition: FontSizeOption ): FontSizeOption {
  * @param definition.model A preset name.
  */
 function findPreset( definition: string | { model?: string } ): FontSizeOption | undefined {
-	if ( typeof definition === 'string' ) {
-		return ( namedPresets as any )[ definition ];
-	}
-	return ( namedPresets as any )[ definition.model! ];
+	return typeof definition === 'string' ? namedPresets[ definition ] : namedPresets[ definition.model! ];
 }
 
 /**
@@ -165,7 +162,7 @@ function isFullItemDefinition( definition: Record<string, any> ): boolean {
 	return definition.title && definition.model && definition.view;
 }
 
-function isNumericalDefinition( definition: any ): boolean {
+function isNumericalDefinition( definition: string | FontSizeOption ): boolean {
 	let numberValue;
 
 	if ( typeof definition === 'object' ) {

@@ -9,8 +9,9 @@
 
 import ColorUI from '../ui/colorui';
 import { FONT_COLOR } from '../utils';
-import fontColorIcon from '../../theme/icons/font-color.svg';
 import type { Editor } from 'ckeditor5/src/core';
+
+import fontColorIcon from '../../theme/icons/font-color.svg';
 
 /**
  * The font color UI plugin. It introduces the `'fontColor'` dropdown.

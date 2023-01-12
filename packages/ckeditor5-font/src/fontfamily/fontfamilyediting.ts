@@ -8,11 +8,11 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
+import type { ViewElement } from 'ckeditor5/src/engine';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_FAMILY } from '../utils';
-import type { ViewElement } from 'ckeditor5/src/engine';
 
 /**
  * The font family editing feature.

@@ -20,8 +20,6 @@ import FontFamilyUI from './fontfamily/fontfamilyui';
  *
  * This is a "glue" plugin which loads the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
  * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FontFamily extends Plugin {
 	/**

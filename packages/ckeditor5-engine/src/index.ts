@@ -7,8 +7,6 @@
  * @module engine
  */
 
-import { MatcherPattern } from './view/matcher';
-
 export * from './view/placeholder';
 
 // Controller.

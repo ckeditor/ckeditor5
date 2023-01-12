@@ -26,29 +26,27 @@ describe( 'utils', () => {
 			const dropdown = createDropdown();
 			dropdown.render();
 
-			addColorTableToDropdown(
-				{
-					dropdownView: dropdown,
-					colors: [
-						{
-							label: 'Black',
-							color: '#000',
-							options: {
-								hasBorder: false
-							}
-						},
-						{
-							label: 'White',
-							color: '#FFFFFF',
-							options: {
-								hasBorder: true
-							}
+			addColorTableToDropdown( {
+				dropdownView: dropdown,
+				colors: [
+					{
+						label: 'Black',
+						color: '#000',
+						options: {
+							hasBorder: false
 						}
-					],
-					columns: 2,
-					removeButtonLabel: 'Remove Color'
-				}
-			);
+					},
+					{
+						label: 'White',
+						color: '#FFFFFF',
+						options: {
+							hasBorder: true
+						}
+					}
+				],
+				columns: 2,
+				removeButtonLabel: 'Remove Color'
+			} );
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
 			expect( dropdown.panelView.children.length ).to.equal( 1 );

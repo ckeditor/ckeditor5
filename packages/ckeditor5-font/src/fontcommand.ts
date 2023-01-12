@@ -12,7 +12,7 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 /**
  * The base font command.
  */
-export default class FontCommand extends Command {
+export default abstract class FontCommand extends Command {
 	/**
 	 * When set, it reflects the {@link #attributeKey} value of the selection.
 	 *

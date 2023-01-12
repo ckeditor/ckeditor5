@@ -68,13 +68,12 @@ export default class ColorUI extends Plugin {
 	 */
 	constructor(
 		editor: Editor,
-		{ commandName, componentName, icon, dropdownLabel }:
-			{
-				commandName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
-				componentName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
-				icon: string;
-				dropdownLabel: string;
-			}
+		{ commandName, componentName, icon, dropdownLabel }: {
+			commandName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
+			componentName: typeof FONT_BACKGROUND_COLOR | typeof FONT_COLOR;
+			icon: string;
+			dropdownLabel: string;
+		}
 	) {
 		super( editor );
 
@@ -101,22 +100,21 @@ export default class ColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
-			this.colorTableView = addColorTableToDropdown(
-				{
-					dropdownView,
-					colors: localizedColors.map( option => ( {
-						label: option.label,
-						color: option.model,
-						options: {
-							hasBorder: option.hasBorder
-						}
-					} ) ),
-					columns: this.columns,
-					removeButtonLabel: t( 'Remove color' ),
-					documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-					documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
-				}
-			);
+
+			this.colorTableView = addColorTableToDropdown( {
+				dropdownView,
+				colors: localizedColors.map( option => ( {
+					label: option.label,
+					color: option.model,
+					options: {
+						hasBorder: option.hasBorder
+					}
+				} ) ),
+				columns: this.columns,
+				removeButtonLabel: t( 'Remove color' ),
+				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
+			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 

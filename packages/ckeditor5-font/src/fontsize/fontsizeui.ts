@@ -8,16 +8,22 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import {
+	Model,
+	createDropdown,
+	addListToDropdown,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 
 import { normalizeOptions } from './utils';
 import { FONT_SIZE } from '../utils';
 
-import fontSizeIcon from '../../theme/icons/font-size.svg';
 import '../../theme/fontsize.css';
 import type { FontSizeOption } from '../fontsize';
 import type FontSizeCommand from './fontsizecommand';
+
+import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
@@ -86,7 +92,7 @@ export default class FontSizeUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const localizedTitles = {
+		const localizedTitles: Record<string, string> = {
 			Default: t( 'Default' ),
 			Tiny: t( 'Tiny' ),
 			Small: t( 'Small' ),
@@ -97,7 +103,7 @@ export default class FontSizeUI extends Plugin {
 		const options = normalizeOptions( ( editor.config.get( FONT_SIZE )! ).options! );
 
 		return options.map( option => {
-			const title = ( localizedTitles as any )[ option.title ];
+			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
 				// Clone the option to avoid altering the original `namedPresets` from `./utils.js`.
