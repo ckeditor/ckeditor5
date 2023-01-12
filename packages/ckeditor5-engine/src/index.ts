@@ -28,6 +28,7 @@ export type {
 export type {
 	default as UpcastDispatcher,
 	UpcastConversionApi,
+	UpcastConversionData,
 	UpcastElementEvent,
 	UpcastTextEvent
 } from './conversion/upcastdispatcher';
@@ -47,6 +48,7 @@ export type { default as ModelConsumable } from './conversion/modelconsumable';
 export type { Consumables } from './conversion/viewconsumable';
 
 // DataProcessor.
+export { default as DataProcessor } from './dataprocessor/dataprocessor';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
 // Model / Operation.
@@ -74,10 +76,11 @@ export type { default as Batch } from './model/batch';
 export type { DiffItem } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
+export type { default as RootElement } from './model/rootelement';
 export type { default as Schema } from './model/schema';
 export type { default as Selection } from './model/selection';
-export type { default as Writer } from './model/writer';
 export type { default as TypeCheckable } from './model/typecheckable';
+export type { default as Writer } from './model/writer';
 
 export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange';
 
@@ -109,15 +112,14 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
-export type { default as ViewElementDefinition } from './view/elementdefinition';
+export type { default as ElementDefinition } from './view/elementdefinition';
+export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
-export type { default as ViewDocumentSelection } from './view/documentselection';
 export type { default as ViewPosition } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
-export type { MatcherPattern } from './view/matcher';
 
 export { getFillerOffset } from './view/containerelement';
 
@@ -130,7 +132,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher } from './view/matcher';
+export { default as Matcher, type MatcherPattern } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';

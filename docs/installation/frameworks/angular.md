@@ -256,7 +256,7 @@ The following `@Input` properties are supported by the CKEditor 5 rich text edit
 
 ### `editor` (required)
 
-The {@link installation/getting-started/basic-api `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
+The {@link installation/getting-started/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```html
 <ckeditor [editor]="Editor"></ckeditor>

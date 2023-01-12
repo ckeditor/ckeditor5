@@ -15,12 +15,10 @@ Inserting {@link features/images-overview images} into content created with CKEd
 * **Pasting** and URL to an image, either into the editor dialog or directly into the content.
 
 With the exception of pasting URLs, all other solutions require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
-<!-- This image basically does nothing for the user except some distraction and we could drop it.
-{@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process in a WYSIWYG editor.}-->
 
 The software that makes the image upload possible is called an **upload adapter**. It is a callback that tells the WYSIWYG editor how to send the file to the server. There are two main strategies of getting the image upload to work that you can adopt in your project:
 
-* [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
+* [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features like CKBox providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter) &ndash; Create your own upload adapter from scratch using the open API architecture of CKEditor 5.
 
 Read our comprehensive blog post about [Managing images with CKEditor 5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management and to compare the available options.
@@ -41,25 +39,19 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 
 ### CKBox
 
-CKBox is a modern SaaS file management platform with a clean interface, responsive images and top-notch UX. If you are a part of an organization with many different files to manage, such as images or documents, and regularly have issues finding the right files for the task at hand, CKBox is the right solution.
+CKBox is a modern SaaS file management platform with a clean interface, responsive images and top-notch UX. We keep expanding and updating it constantly, adding new features and functions. If you are a part of an organization with many different files to manage, such as images or documents, and regularly have issues finding the right files for the task at hand, CKBox is the right solution.
 
 CKBox is a part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer.
 
-With the CKBox platform, users can upload files and categorize them into different groups. They can also change the way the files are organized as various interface modification options exist – like changing the image thumbnail sizes or changing how many files are displayed within the navigation that users can view. Files can be uploaded, deleted, renamed. File properties like dimensions, upload date or size are also easily accessible and can be used to sort the files view.
+With the CKBox platform, users can upload files and categorize them into different groups. They can also change the way the files are organized as various interface modification options exist. For example, you can modify the image thumbnail sizes or decide how many files are displayed within the navigation that users can view. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date or size are also easily accessible and can be used to sort the files view alonside a regular search.
 
 {@link features/ckbox **Learn how to use CKBox in your project**}.
 
 ### Easy Image
 
-CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
+The {@link features/easy-image Easy Image} feature comes with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
 
-Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that:
-
-* securely uploads images,
-* takes care of rescaling and optimizing them as well as providing various image sizes (responsive images),
-* delivers uploaded images through a blazing-fast CDN.
-
-All that with virtually zero server setup.
+Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that securely uploads images, takes care of rescaling and optimizing them as well as providing various image sizes (responsive images), and delivers uploaded images through a blazing-fast CDN. All that with virtually zero server setup.
 
 {@link features/easy-image **Learn how to use Easy Image in your project**}.
 
@@ -89,7 +81,7 @@ The {@link features/simple-upload-adapter Simple upload adapter} allows uploadin
 
 ### Base64 adapter
 
-The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/advanced/saving-data editor output}.
+The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}.
 
 <info-box warning>
 	Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. We recommend using alternative ways to upload images into CKEditor 5.

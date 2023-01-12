@@ -455,4 +455,10 @@ describe( 'CKFinderCommand', () => {
 			mockFinderEvent( 'files:choose', data );
 		}
 	} );
+
+	describe( '_affectsData', () => {
+		it( 'does not affect data', () => {
+			expect( command._affectsData ).to.be.false;
+		} );
+	} );
 } );

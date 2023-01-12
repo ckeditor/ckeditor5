@@ -11,9 +11,16 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-tooltip' ), {
 		toolbar: [
 			{
-				label: 'Others',
-				tooltip: 'Additional editing features',
-				items: [ 'bold', 'italic' ]
+				label: 'Formatting',
+				tooltip: 'Basic formatting features',
+				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+			},
+			'|',
+			{
+				label: 'Inserting',
+				icon: 'plus',
+				tooltip: 'Insert media',
+				items: [ 'uploadImage', 'insertTable' ]
 			},
 			'|',
 			'undo', 'redo'

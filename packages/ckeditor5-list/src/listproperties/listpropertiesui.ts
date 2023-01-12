@@ -197,15 +197,17 @@ function getDropdownViewCreator( {
 
 		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
-		const listPropertiesView = createListPropertiesView( {
-			editor,
-			dropdownView,
-			parentCommandName,
-			styleGridAriaLabel,
-			styleDefinitions
-		} );
+		dropdownView.once( 'change:isOpen', () => {
+			const listPropertiesView = createListPropertiesView( {
+				editor,
+				dropdownView,
+				parentCommandName,
+				styleGridAriaLabel,
+				styleDefinitions
+			} );
 
-		dropdownView.panelView.children.add( listPropertiesView );
+			dropdownView.panelView.children.add( listPropertiesView );
+		} );
 
 		// Focus the editable after executing the command.
 		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
