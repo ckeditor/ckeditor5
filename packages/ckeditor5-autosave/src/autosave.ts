@@ -7,9 +7,18 @@
  * @module autosave/autosave
  */
 
-import { Plugin, PendingActions } from 'ckeditor5/src/core';
-import { DomEmitterMixin, ObservableMixin, mix } from 'ckeditor5/src/utils';
-import { debounce } from 'lodash-es';
+import {
+	Plugin,
+	PendingActions,
+	type PluginDependencies,
+	type Editor,
+	type PendingAction,
+	type EditorDestroyEvent,
+	type EditorReadyEvent
+} from 'ckeditor5/src/core';
+import { DomEmitterMixin, ObservableMixin, mix, type DomEmitter, type Emitter } from 'ckeditor5/src/utils';
+import type { Batch } from 'ckeditor5/src/engine';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /* globals window */
 
@@ -21,159 +30,144 @@ import { debounce } from 'lodash-es';
  * and `window#beforeunload` events and calls the
  * {@link module:autosave/autosave~AutosaveAdapter#save `config.autosave.save()`} function.
  *
- *		ClassicEditor
- *			.create( document.querySelector( '#editor' ), {
- *				plugins: [ ArticlePluginSet, Autosave ],
- *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
- *				image: {
- *					toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
- *				},
- *				autosave: {
- *					save( editor ) {
- *						// The saveData() function must return a promise
- *						// which should be resolved when the data is successfully saved.
- *						return saveData( editor.getData() );
- *					}
- *				}
- *			} );
+ * ```ts
+ * ClassicEditor
+ * 	.create( document.querySelector( '#editor' ), {
+ * 		plugins: [ ArticlePluginSet, Autosave ],
+ * 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+ * 		image: {
+ * 			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+ * 		},
+ * 		autosave: {
+ * 			save( editor: Editor ) {
+ * 				// The saveData() function must return a promise
+ * 				// which should be resolved when the data is successfully saved.
+ * 				return saveData( editor.getData() );
+ * 			}
+ * 		}
+ * 	} );
+ *	```
  *
  * Read more about this feature in the {@glink installation/advanced/saving-data#autosave-feature Autosave feature}
  * section of the {@glink installation/advanced/saving-data Saving and getting data}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Autosave extends Plugin {
 	/**
+	 * The adapter is an object with a `save()` method. That method will be called whenever
+	 * the data changes. It might be called some time after the change,
+	 * since the event is throttled for performance reasons.
+	 */
+
+	declare public adapter: AutosaveAdapter;
+
+	/**
+	 * The state of this plugin.
+	 *
+	 * The plugin can be in the following states:
+	 *
+	 * * synchronized &ndash; When all changes are saved.
+	 * * waiting &ndash; When the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`.
+	 * * saving &ndash; When the provided save method is called and the plugin waits for the response.
+	 * * error &ndash When the provided save method will throw an error. This state immediately changes to the `saving` state and
+	 * the save method will be called again in the short period of time.
+	 *
+	 * @readonly
+	 */
+	declare public state: 'synchronized' | 'waiting' | 'saving' | 'error';
+
+	/**
+	 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
+	 * unless a new action happens in the meantime.
+	 */
+	private _debouncedSave: DebouncedFunc<( () => void )>;
+
+	/**
+	 * The last saved document version.
+	 */
+	private _lastDocumentVersion: number;
+
+	/**
+	 * Promise used for asynchronous save calls.
+	 *
+	 * Created to handle the autosave call to an external data source. It resolves when that call is finished. It is re-used if
+	 * save is called before the promise has been resolved. It is set to `null` if there is no call in progress.
+	 */
+	private _savePromise: Promise<void> | null;
+
+	/**
+	 * DOM emitter.
+	 */
+	private _domEmitter: DomEmitter;
+
+	/**
+	 * The configuration of this plugins.
+	 */
+	private _config: AutosaveConfig;
+
+	/**
+	 * Editor's pending actions manager.
+	 */
+	private _pendingActions: PendingActions;
+
+	/**
+	 * Informs whether there should be another autosave callback performed, immediately after current autosave callback finishes.
+	 *
+	 * This is set to `true` when there is a save request while autosave callback is already being processed
+	 * and the model has changed since the last save.
+	 */
+	private _makeImmediateSave: boolean;
+
+	/**
+	 * An action that will be added to the pending action manager for actions happening in that plugin.
+	 */
+	declare private _action: PendingAction | null;
+
+	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Autosave' {
 		return 'Autosave';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ PendingActions ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		const config = editor.config.get( 'autosave' ) || {};
+		const config: AutosaveConfig = editor.config.get( 'autosave' )! || {};
 
 		// A minimum amount of time that needs to pass after the last action.
 		// After that time the provided save callbacks are being called.
 		const waitingTime = config.waitingTime || 1000;
 
-		/**
-		 * The adapter is an object with a `save()` method. That method will be called whenever
-		 * the data changes. It might be called some time after the change,
-		 * since the event is throttled for performance reasons.
-		 *
-		 * @member {module:autosave/autosave~AutosaveAdapter} #adapter
-		 */
-
-		/**
-		 * The state of this plugin.
-		 *
-		 * The plugin can be in the following states:
-		 *
-		 * * synchronized &ndash; When all changes are saved.
-		 * * waiting &ndash; When the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`.
-		 * * saving &ndash; When the provided save method is called and the plugin waits for the response.
-		 * * error &ndash When the provided save method will throw an error. This state immediately changes to the `saving` state and
-		 * the save method will be called again in the short period of time.
-		 *
-		 * @readonly
-		 * @member {'synchronized'|'waiting'|'saving'} #state
-		 */
 		this.set( 'state', 'synchronized' );
-
-		/**
-		 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
-		 * unless a new action happens in the meantime.
-		 *
-		 * @private
-		 * @type {Function}
-		 */
 		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
-
-		/**
-		 * The last saved document version.
-		 *
-		 * @private
-		 * @type {Number}
-		 */
 		this._lastDocumentVersion = editor.model.document.version;
-
-		/**
-		 * Promise used for asynchronous save calls.
-		 *
-		 * Created to handle the autosave call to an external data source. It resolves when that call is finished. It is re-used if
-		 * save is called before the promise has been resolved. It is set to `null` if there is no call in progress.
-		 *
-		 * @type {Promise|null}
-		 * @private
-		 */
 		this._savePromise = null;
-
-		/**
-		 * DOM emitter.
-		 *
-		 * @private
-		 * @type {DomEmitterMixin}
-		 */
 		this._domEmitter = Object.create( DomEmitterMixin );
-
-		/**
-		 * The configuration of this plugins.
-		 *
-		 * @private
-		 * @type {Object}
-		 */
 		this._config = config;
-
-		/**
-		 * Editor's pending actions manager.
-		 *
-		 * @private
-		 * @member {module:core/pendingactions~PendingActions} #_pendingActions
-		 */
 		this._pendingActions = editor.plugins.get( PendingActions );
-
-		/**
-		 * Informs whether there should be another autosave callback performed, immediately after current autosave callback finishes.
-		 *
-		 * This is set to `true` when there is a save request while autosave callback is already being processed
-		 * and the model has changed since the last save.
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
 		this._makeImmediateSave = false;
-
-		/**
-		 * An action that will be added to the pending action manager for actions happening in that plugin.
-		 *
-		 * @private
-		 * @member {Object} #_action
-		 */
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const doc = editor.model.document;
 
 		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
-		this.listenTo( editor, 'ready', () => {
-			this.listenTo( doc, 'change:data', ( evt, batch ) => {
+		this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
+			this.listenTo<DocumentChangeDataEvent>( doc, 'change:data', ( evt, batch ) => {
 				if ( !this._saveCallbacks.length ) {
 					return;
 				}
@@ -200,14 +194,14 @@ export default class Autosave extends Plugin {
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
 		// `editor.getData()` will be called before plugins are destroyed.
-		this.listenTo( editor, 'destroy', () => this._flush(), { priority: 'highest' } );
+		this.listenTo<EditorDestroyEvent>( editor, 'destroy', () => this._flush(), { priority: 'highest' } );
 
 		// It's not possible to easy test it because karma uses `beforeunload` event
 		// to warn before full page reload and this event cannot be dispatched manually.
 		/* istanbul ignore next */
-		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
+		this._domEmitter.listenTo<WindowBeforeUnloadEvent>( window as unknown as Emitter, 'beforeunload', ( evtInfo, domEvt ) => {
 			if ( this._pendingActions.hasAny ) {
-				domEvt.returnValue = this._pendingActions.first.message;
+				domEvt.returnValue = this._pendingActions.first!.message;
 			}
 		} );
 	}
@@ -215,7 +209,7 @@ export default class Autosave extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		// There's no need for canceling or flushing the throttled save, as
 		// it's done on the editor's destroy event with the highest priority.
 
@@ -227,9 +221,9 @@ export default class Autosave extends Plugin {
 	 * Immediately calls autosave callback. All previously queued (debounced) callbacks are cleared. If there is already an autosave
 	 * callback in progress, then the requested save will be performed immediately after the current callback finishes.
 	 *
-	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
+	 * @returns A promise that will be resolved when the autosave callback is finished.
 	 */
-	save() {
+	public save(): Promise<void> {
 		this._debouncedSave.cancel();
 
 		return this._save();
@@ -237,10 +231,8 @@ export default class Autosave extends Plugin {
 
 	/**
 	 * Invokes the remaining `_save()` method call.
-	 *
-	 * @protected
 	 */
-	_flush() {
+	protected _flush(): void {
 		this._debouncedSave.flush();
 	}
 
@@ -249,10 +241,9 @@ export default class Autosave extends Plugin {
 	 * the `_save()` method creates a pending action and calls the `adapter.save()` method.
 	 * It waits for the result and then removes the created pending action.
 	 *
-	 * @private
-	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
+	 * @returns A promise that will be resolved when the autosave callback is finished.
 	 */
-	_save() {
+	private _save(): Promise<void> {
 		if ( this._savePromise ) {
 			this._makeImmediateSave = this.editor.model.document.version > this._lastDocumentVersion;
 
@@ -299,7 +290,7 @@ export default class Autosave extends Plugin {
 						this._debouncedSave();
 					} else {
 						this.state = 'synchronized';
-						this._pendingActions.remove( this._action );
+						this._pendingActions.remove( this._action! );
 						this._action = null;
 					}
 				}
@@ -322,10 +313,8 @@ export default class Autosave extends Plugin {
 
 	/**
 	 * Creates a pending action if it is not set already.
-	 *
-	 * @private
 	 */
-	_setPendingAction() {
+	private _setPendingAction(): void {
 		const t = this.editor.t;
 
 		if ( !this._action ) {
@@ -335,11 +324,8 @@ export default class Autosave extends Plugin {
 
 	/**
 	 * Saves callbacks.
-	 *
-	 * @private
-	 * @type {Array.<Function>}
 	 */
-	get _saveCallbacks() {
+	private get _saveCallbacks(): Array<( editor: Editor ) => Promise<void>> {
 		const saveCallbacks = [];
 
 		if ( this.adapter && this.adapter.save ) {
@@ -360,86 +346,103 @@ mix( Autosave, ObservableMixin );
  * An interface that requires the `save()` method.
  *
  * Used by {@link module:autosave/autosave~Autosave#adapter}.
- *
- * @interface module:autosave/autosave~AutosaveAdapter
  */
+type AutosaveAdapter = {
 
-/**
- * The method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
- * so the autosave plugin will wait for that action before removing it from pending actions.
- *
- * @method #save
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {Promise.<*>}
- */
+	/**
+	 * The method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
+	 * so the autosave plugin will wait for that action before removing it from pending actions.
+	 */
+	save: AutosaveConfig['save'];
+};
 
 /**
  * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
  *
- * Read more in {@link module:autosave/autosave~AutosaveConfig}.
- *
- * @member {module:autosave/autosave~AutosaveConfig} module:core/editor/editorconfig~EditorConfig#autosave
- */
-
-/**
- * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				autosave: {
- *					save( editor ) {
- *						// The saveData() function must return a promise
- *						// which should be resolved when the data is successfully saved.
- *						return saveData( editor.getData() );
- *					}
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		autosave: {
+ * 			save( editor: Editor ) {
+ * 				// The saveData() function must return a promise
+ * 				// which should be resolved when the data is successfully saved.
+ * 				return saveData( editor.getData() );
+ * 			}
+ * 		}
+ * 	} );
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
  * See also the demo of the {@glink installation/advanced/saving-data#autosave-feature autosave feature}.
- *
- * @interface AutosaveConfig
  */
+type AutosaveConfig = {
 
-/**
- * The callback to be executed when the data needs to be saved.
- *
- * This function must return a promise which should be resolved when the data is successfully saved.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				autosave: {
- *					save( editor ) {
- *						return saveData( editor.getData() );
- *					}
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
- *
- * @method module:autosave/autosave~AutosaveConfig#save
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {Promise.<*>}
- */
+	/**
+	 * The callback to be executed when the data needs to be saved.
+	 *
+	 * This function must return a promise which should be resolved when the data is successfully saved.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		autosave: {
+	 * 			save( editor: Editor ) {
+	 * 				return saveData( editor.getData() );
+	 * 			}
+	 * 		}
+	 * 	} );
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	save: ( editor: Editor ) => Promise<void>;
 
-/**
- * The minimum amount of time that needs to pass after the last action to call the provided callback.
- * By default it is 1000 ms.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				autosave: {
- *					save( editor ) {
- *						return saveData( editor.getData() );
- *					},
- *					waitingTime: 2000
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
- *
- * @member {Number} module:autosave/autosave~AutosaveConfig#waitingTime
- */
+	/**
+	 * The minimum amount of time that needs to pass after the last action to call the provided callback.
+	 * By default it is 1000 ms.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		autosave: {
+	 * 			save( editor: Editor ) {
+	 * 				return saveData( editor.getData() );
+	 * 			},
+	 * 			waitingTime: 2000
+	 * 		}
+	 * 	} );
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	waitingTime: number;
+};
+
+type DocumentChangeDataEvent = {
+	name: 'change:data';
+	args: [ Batch ];
+};
+
+type WindowBeforeUnloadEvent = {
+	name: 'beforeunload';
+	args: [ BeforeUnloadEvent ];
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Autosave.pluginName ]: Autosave;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
+		 *
+		 * Read more in {@link module:autosave/autosave~AutosaveConfig}.
+		 */
+		autosave?: AutosaveConfig;
+	}
+}
