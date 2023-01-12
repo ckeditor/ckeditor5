@@ -15,7 +15,7 @@ import MinimapPositionTrackerView from './minimappositiontrackerview';
 
 export type MinimapViewOptions = {
 	domRootClone: HTMLElement;
-	pageStyles: Array<object | string>;
+	pageStyles: Array<string | { href: string }>;
 	scaleRatio: number;
 	useSimplePreview?: boolean;
 	extraClasses?: string;
@@ -25,23 +25,23 @@ export type MinimapViewOptions = {
  * The main view of the minimap. It renders the original content but scaled down with a tracker element
  * visualizing the subset of the content visible to the user and allowing interactions (scrolling, dragging).
  *
- * @private
+ * @internal
  */
 export default class MinimapView extends View {
 	/**
 	 * An instance of the tracker view displayed over the minimap.
 	 */
-	protected readonly _positionTrackerView: MinimapPositionTrackerView;
+	private readonly _positionTrackerView: MinimapPositionTrackerView;
 
 	/**
 	 * The scale ratio of the minimap relative to the original editing DOM root with the content.
 	 */
-	protected readonly _scaleRatio: number;
+	private readonly _scaleRatio: number;
 
 	/**
 	 * An instance of the iframe view that hosts the minimap.
 	 */
-	protected readonly _minimapIframeView: MinimapIframeView;
+	private readonly _minimapIframeView: MinimapIframeView;
 
 	/**
 	 * Creates an instance of the minimap view.
@@ -95,8 +95,6 @@ export default class MinimapView extends View {
 
 	/**
 	 * Returns the DOM {@link module:utils/dom/rect~Rect} height of the minimap.
-	 *
-	 * @readonly
 	 */
 	public get height(): number {
 		return new Rect( this.element! ).height;
@@ -104,8 +102,6 @@ export default class MinimapView extends View {
 
 	/**
 	 * Returns the number of available space (pixels) the position tracker (visible subset of the content) can use to scroll vertically.
-	 *
-	 * @readonly
 	 */
 	public get scrollHeight(): number {
 		return Math.max( 0, Math.min( this.height, this._minimapIframeView.height ) - this._positionTrackerView.height );
@@ -199,7 +195,7 @@ export default class MinimapView extends View {
  */
 export type MinimapClickEvent = {
 	name: 'click';
-	args: [percentage: number];
+	args: [ percentage: number ];
 };
 
 /**
@@ -210,5 +206,5 @@ export type MinimapClickEvent = {
  */
 export type MinimapDragEvent = {
 	name: 'drag';
-	args: [movementY: number];
+	args: [ movementY: number ];
 };

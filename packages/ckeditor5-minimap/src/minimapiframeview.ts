@@ -16,7 +16,7 @@ const toPx = toUnit( 'px' );
 /**
  * The internal `<iframe>` view that hosts the minimap content.
  *
- * @private
+ * @internal
  */
 export default class MinimapIframeView extends IframeView {
 	/**
@@ -24,14 +24,14 @@ export default class MinimapIframeView extends IframeView {
 	 *
 	 * @readonly
 	 */
-	public top!: number;
+	declare public top: number;
 
 	/**
 	 * The CSS `height` of the iframe.
 	 *
 	 * @readonly
 	 */
-	public height!: number;
+	declare public height: number;
 
 	/**
 	 * Cached view constructor options for re-use in other methods.
@@ -41,9 +41,7 @@ export default class MinimapIframeView extends IframeView {
 	/**
 	 * Creates an instance of the internal minimap iframe.
 	 */
-	constructor(
-		locale: Locale,
-		options: MinimapViewOptions ) {
+	constructor( locale: Locale, options: MinimapViewOptions ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -95,7 +93,7 @@ export default class MinimapIframeView extends IframeView {
 	 * minimap element.
 	 */
 	private _prepareDocument(): void {
-		const iframeDocument = ( this.element as any ).contentWindow.document;
+		const iframeDocument = this.element!.contentWindow!.document;
 		const domRootClone = iframeDocument.adoptNode( this._options.domRootClone );
 
 		const boxStyles = this._options.useSimplePreview ? `

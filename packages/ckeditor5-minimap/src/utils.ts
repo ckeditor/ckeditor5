@@ -18,7 +18,7 @@ import type { Editor } from 'ckeditor5/src/core';
  * {@link module:engine/view/domconverter~DomConverter}. The DOM root clone updates incrementally to stay in sync with the
  * source root.
  *
- * @protected
+ * @internal
  * @param editor The editor instance the original editing root belongs to.
  * @param rootName The name of the root to clone.
  * @returns The editing root DOM clone element.
@@ -69,9 +69,9 @@ export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HT
  * **Note**: For stylesheets with `href` different than window origin, an object is returned because
  * accessing rules of these styles may cause CORS errors (depending on the configuration of the web page).
  *
- * @protected
+ * @internal
  */
-export function getPageStyles(): Array<string | object> {
+export function getPageStyles(): Array<string | { href: string }> {
 	return Array.from( global.document.styleSheets )
 		.map( styleSheet => {
 			// CORS
@@ -87,27 +87,27 @@ export function getPageStyles(): Array<string | object> {
 }
 
 /**
- * TODO
+ * Gets dimensions rectangle according to passed DOM element. Returns whole window's size for `body` element.
  *
- * @protected
+ * @internal
  */
 export function getDomElementRect( domElement: HTMLElement ): Rect {
 	return new Rect( domElement === global.document.body ? global.window : domElement );
 }
 
 /**
- * TODO
+ * Gets client height according to passed DOM element. Returns window's height for `body` element.
  *
- * @protected
+ * @internal
  */
 export function getClientHeight( domElement: HTMLElement ): number {
 	return domElement === global.document.body ? global.window.innerHeight : domElement.clientHeight;
 }
 
 /**
- * TODO
+ * Returns the DOM element itself if it's not a `body` element, whole window otherwise.
  *
- * @protected
+ * @internal
  */
 export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
 	return domElement === global.document.body ? global.window : domElement;
@@ -118,7 +118,7 @@ export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
  *
  * TODO: Move to shared utils.
  *
- * @protected
+ * @internal
  */
 export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
 	do {

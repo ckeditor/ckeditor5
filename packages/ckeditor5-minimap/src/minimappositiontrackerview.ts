@@ -16,7 +16,7 @@ const toPx = toUnit( 'px' );
 /**
  * The position tracker visualizing the visible subset of the content. Displayed over the minimap.
  *
- * @private
+ * @internal
  */
 export default class MinimapPositionTrackerView extends View {
 	/**
@@ -24,29 +24,29 @@ export default class MinimapPositionTrackerView extends View {
 	 *
 	 * @readonly
 	 */
-	public height!: number;
+	declare public height: number;
 
 	/**
 	 * The CSS `top` of the tracker, used to move it vertically over the minimap.
 	 *
 	 * @readonly
 	 */
-	public top!: number;
+	declare public top: number;
 
 	/**
 	 * The scroll progress (in %) displayed over the tracker when being dragged by the user.
 	 *
 	 * @readonly
 	 */
-	public scrollProgress!: number;
+	declare public scrollProgress: number;
 
 	/**
 	 * Indicates whether the tracker is being dragged by the user (e.g. using the mouse).
 	 *
-	 * @private
+	 * @internal
 	 * @readonly
 	 */
-	public _isDragging!: boolean;
+	declare public _isDragging: boolean;
 
 	constructor( locale: Locale ) {
 		super( locale );
