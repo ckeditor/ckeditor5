@@ -21,7 +21,9 @@ describe( 'SpecialCharacters', () => {
 	let plugin;
 
 	beforeEach( () => {
-		plugin = new SpecialCharacters( {} );
+		plugin = new SpecialCharacters( {
+			t: name => name
+		} );
 	} );
 
 	it( 'should require proper plugins', () => {
@@ -153,7 +155,7 @@ describe( 'SpecialCharacters', () => {
 					const navigation = dropdown.panelView.children.first.navigationView;
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
-					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
+					navigation.groupDropdownView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
@@ -238,6 +240,24 @@ describe( 'SpecialCharacters', () => {
 
 			const groups = [ ...plugin.getGroups() ];
 			expect( groups ).to.deep.equal( [ 'Mathematical' ] );
+		} );
+
+		it( 'allows defining a displayed label different from a category name', () => {
+			plugin.addItems( 'Arrows', [
+				{ title: 'arrow left', character: '←' },
+				{ title: 'arrow right', character: '→' }
+			], { label: 'Custom arrows plugin' } );
+
+			expect( plugin._groups.size ).to.equal( 1 );
+			expect( plugin._groups.has( 'Arrows' ) ).to.equal( true );
+
+			const arrowGroup = plugin._groups.get( 'Arrows' );
+
+			expect( arrowGroup ).to.have.property( 'label', 'Custom arrows plugin' );
+			expect( arrowGroup ).to.have.property( 'items' );
+			expect( arrowGroup.items.size ).to.equal( 2 );
+			expect( arrowGroup.items.has( 'arrow left' ) ).to.equal( true );
+			expect( arrowGroup.items.has( 'arrow right' ) ).to.equal( true );
 		} );
 
 		it( 'does not accept "All" as a group name', () => {

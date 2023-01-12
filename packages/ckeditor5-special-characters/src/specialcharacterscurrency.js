@@ -73,6 +73,6 @@ export default class SpecialCharactersCurrency extends Plugin {
 			{ character: '₻', title: t( 'Nordic mark sign' ) },
 			{ character: '₼', title: t( 'Manat sign' ) },
 			{ character: '₽', title: t( 'Ruble sign' ) }
-		] );
+		], { label: t( 'Currency' ) } );
 	}
 }
