@@ -147,7 +147,7 @@ export default class SpecialCharacters extends Plugin {
 			 *
 			 * @error special-character-invalid-group-name
 			 */
-			throw new CKEditorError( 'special-character-invalid-group-name', null, { ALL_SPECIAL_CHARACTERS_GROUP } );
+			throw new CKEditorError( 'special-character-invalid-group-name', null );
 		}
 
 		const group = this._getGroup( groupName, options.label );
