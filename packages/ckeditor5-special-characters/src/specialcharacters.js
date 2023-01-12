@@ -165,9 +165,7 @@ export default class SpecialCharacters extends Plugin {
 			 *
 			 * @error special-character-invalid-order-group-name
 			 */
-			throw new CKEditorError(
-				`special-character-invalid-order-group-name: Group with the name "${ invalidGroup }" doesn't exist.`
-			);
+			throw new CKEditorError( 'special-character-invalid-order-group-name', null, { invalidGroup } );
 		}
 
 		return new Set( [

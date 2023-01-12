@@ -238,6 +238,7 @@ describe( 'SpecialCharacters', () => {
 			] );
 
 			const groups = Array.from( plugin.getGroups() );
+
 			expect( groups ).to.contains( 'Custom mathematical' );
 			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
 			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
