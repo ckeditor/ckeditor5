@@ -297,5 +297,5 @@ So, in short, both methods use very similar mechanisms. However, adding a plugin
 <info-box hint>
 **What's next?**
 
-That was fun, right? Don't hesitate and {@link features/index explore available CKEditor 5 features}, they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
+That was fun, right? Don't hesitate and {@link features/index explore available CKEditor 5 features}, they are waiting to be installed! {@link installation/getting-started/editor-lifecycle In the next article}, you will learn more about the editor lifecycle methods and how to use them.
 </info-box>

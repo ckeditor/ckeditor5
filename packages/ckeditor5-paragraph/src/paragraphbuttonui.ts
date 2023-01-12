@@ -7,9 +7,10 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { Plugin, icons, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
+import Paragraph from './paragraph';
 import type ParagraphCommand from './paragraphcommand';
 
 const icon = icons.paragraph;
@@ -32,6 +33,16 @@ const icon = icons.paragraph;
  * @extends module:core/plugin~Plugin
  */
 export default class ParagraphButtonUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires(): PluginDependencies {
+		return [ Paragraph ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;

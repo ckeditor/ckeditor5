@@ -37,11 +37,14 @@ describe( 'MediaEmbedUI', () => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
 				button = dropdown.buttonView;
-				form = dropdown.panelView.children.get( 0 );
 
 				dropdown.render();
-
 				global.document.body.appendChild( dropdown.element );
+
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
+
+				form = dropdown.panelView.children.get( 0 );
 			} );
 	} );
 

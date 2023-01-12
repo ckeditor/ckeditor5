@@ -62,7 +62,6 @@ export default class Renderer extends ObservableMixin() {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
-	declare public readonly _isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
 	declare public readonly isComposing: boolean;
 
@@ -134,15 +133,6 @@ export default class Renderer extends ObservableMixin() {
 		 * @observable
 		 */
 		this.set( 'isFocused', false );
-
-		/**
-         * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
-		 *
-		 * @internal
-		 * @observable
-		 * @member {Boolean}
-		 */
-		this.set( '_isFocusChanging', false );
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
@@ -908,12 +898,6 @@ export default class Renderer extends ObservableMixin() {
 		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
 		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
 		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
-			return;
-		}
-
-		// The focus is still in progress and we are waiting for new values from `selectionchange` event.
-		// In that case, we need to prevent update selection since it would be updated using old values.
-		if ( this._isFocusChanging ) {
 			return;
 		}
 

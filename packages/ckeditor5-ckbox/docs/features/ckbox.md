@@ -86,6 +86,22 @@ ClassicEditor
 
 The feature can be configured via the {@link module:ckbox/ckbox~CKBoxConfig `config.ckbox`} object.
 
+### Before you start
+
+<info-box>
+	This is a premium feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. 
+
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+
+	If you already have a valid license, please log into your [user dashboard](https://dashboard.ckeditor.com/) to access the feature settings.
+</info-box>
+
+<info-box>
+	There is a [free personal plan than still requires sign-up](https://ckeditor.com/pricing/#plan-ckbox), however.
+</info-box>
+
+After you purchase a license, log into the CKEditor Ecosystem customer dashboard to create access credentials, as explained in the {@link @ckbox guides/configuration/authentication CKBox configuration guide}.
+
 ### Defining upload categories
 
 By default, CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckbox~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof, because it will not require configuration changes when a category name is changed.

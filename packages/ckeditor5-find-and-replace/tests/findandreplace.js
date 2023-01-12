@@ -197,7 +197,7 @@ describe( 'FindAndReplace', () => {
 				// (#10014).
 				editor.setData( LONG_TEXT );
 
-				toolbarDropdownView.buttonView.arrowView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
 				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 

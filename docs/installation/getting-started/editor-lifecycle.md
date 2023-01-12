@@ -1,18 +1,16 @@
 ---
-# Scope:
-# * Guide developers through the basic API to achieve their very first results with CKEditor.
-
 category: getting-started
 order: 60
 ---
 
-# Basic API
+# Editor lifecycle
 
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/installing-plugins previous tutorial} you have explored available features and learned how to add them to your editor. This article shows the basic API which you can use for the interaction with the editor.
+In the {@link installation/getting-started/installing-plugins previous tutorial} you have explored available features and learned how to add them to your editor. This article shows the lifecycle methods used to interact with the editor.
 </info-box>
+
 
 Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
 
@@ -26,6 +24,8 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 <info-box>
 	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source use the editor classes and plugins directly} for greater flexibility.
 </info-box>
+
+{@snippet installation/getting-and-setting-data/build-autosave-source}
 
 ## Creating an editor with `create()`
 
@@ -139,27 +139,7 @@ DecoupledEditor
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>
 
-## Interacting with the editor
-
-Once the editor is created, it is possible to interact with it through its API. The `editor` variable from the examples above should enable that.
-
-### Setting the editor data with `setData()`
-
-To replace the editor content with new data, use the `setData()` method:
-
-```js
-editor.setData( '<p>Some text.</p>' );
-```
-
-### Getting the editor data with `getData()`
-
-If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
-
-```js
-const data = editor.getData();
-```
-
-### Destroying the editor with `destroy()`
+## Destroying the editor with `destroy()`
 
 In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor 5 instances should be destroyed by using the `destroy()` method:
 
@@ -172,9 +152,9 @@ editor.destroy()
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
 
-### Listening to changes
+## Listening to changes
 
-The {@link module:engine/model/document~Document#event:change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data.
+The {@link module:engine/model/document~Document#change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data.
 
 ```js
 editor.model.document.on( 'change:data', () => {
@@ -182,40 +162,10 @@ editor.model.document.on( 'change:data', () => {
 } );
 ```
 
-There is also a group of changes like selection position changes or marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#event:change `Document#change`} event.
-
-## UMD support
-
-Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
-
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
-* by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is available.
-
-For example:
-
-```js
-// In the CommonJS environment.
-const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
-ClassicEditor.create( ... ); // [Function]
-
-// If AMD is present, you can do this.
-require( [ 'path/to/ckeditor5-build-classic/build/ckeditor' ], ClassicEditor => {
-	ClassicEditor.create( ... ); // [Function]
-} );
-
-// As a global variable.
-ClassicEditor.create( ... ); // [Function]
-
-// As an ES6 module (if using webpack or Rollup).
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-ClassicEditor.create( ... ); // [Function]
-```
+There is also a group of changes like selection position changes or marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#change `Document#change`} event.
 
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
-
-If you would like to integrate your CKEditor 5 installation with the Angular, React and Vue.js JavaScript frameworks, {@link installation/frameworks/overview we have a dedicated guide for that}.
+Now you know how to manipulate the editor instance. But an editor without the ability to modify content is not particularly useful. It's time to learn how to interact with the editor's data {@link installation/getting-started/getting-and-setting-data in the following tutorial}.
 </info-box>

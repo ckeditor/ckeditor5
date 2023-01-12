@@ -27,7 +27,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 * `default-src 'none'`: Resets the policy and blocks everything. All successive directives work as a whitelist. By itself, as long as it is followed by other directives, it has no impact on the editor.
 * `connect-src 'self'`
 	* Allows the {@link features/image-upload editor upload features} to use [`XMLHttpReqests`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) (Ajax) to upload files to the server, for instance, when an image is pasted or dropped into the editor content. The `'self`' value ensures the requests remain within the same host.
-	* Allows {@link installation/advanced/saving-data#autosave-feature auto–saving editor data} using `XMLHttpRequest`.
+	* Allows {@link installation/getting-started/getting-and-setting-data#autosave-feature auto–saving editor data} using `XMLHttpRequest`.
 
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.

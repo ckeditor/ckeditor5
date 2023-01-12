@@ -33,6 +33,9 @@ export default class CKFinderCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
+		// The CKFinder command does not affect data by itself.
+		this._affectsData = false;
+
 		// Remove default document listener to lower its priority.
 		this.stopListening( this.editor.model.document, 'change' );
 

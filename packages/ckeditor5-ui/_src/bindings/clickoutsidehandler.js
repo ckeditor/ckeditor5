@@ -20,8 +20,8 @@
  * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior
  * should be added.
  * @param {Function} options.activator Function returning a `Boolean`, to determine whether the handler is active.
- * @param {Array.<HTMLElement>} options.contextElements HTML elements that determine the scope of the
- * handler. Clicking any of them or their descendants will **not** fire the callback.
+ * @param {Array.<HTMLElement>|Function} options.contextElements Array of HTML elements or a callback returning an array of HTML elements
+ * that determine the scope of the handler. Clicking any of them or their descendants will **not** fire the callback.
  * @param {Function} options.callback An action executed by the handler.
  */
 export default function clickOutsideHandler( { emitter, activator, callback, contextElements } ) {
