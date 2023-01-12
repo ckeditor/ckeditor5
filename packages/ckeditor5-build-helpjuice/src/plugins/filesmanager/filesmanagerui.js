@@ -1,7 +1,7 @@
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FilesIcon from './icons/files.svg';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Model, SplitButtonView, addListToDropdown, createDropdown } from 'ckeditor5/src/ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 export default class FilesManagerUI extends Plugin {
 	static get pluginName() {
@@ -14,7 +14,7 @@ export default class FilesManagerUI extends Plugin {
 
 		editor.ui.componentFactory.add('FilesManager', locale => {
 
-			const dropdownView = createDropdown(locale);
+			const dropdownView = createDropdown(locale, SplitButtonView);
 
 			// Configure dropdown's button properties:
 			dropdownView.buttonView.set({
@@ -26,13 +26,17 @@ export default class FilesManagerUI extends Plugin {
 
 			dropdownView.render();
 
-			// Create Heading for Panel
-			const panelContent = document.createElement("div");
-			panelContent.setAttribute("data-controller", "editor--files-manager");
+			const collection = new Collection();
 
-			dropdownView.panelView.element.appendChild(panelContent);
-
-			document.body.appendChild(dropdownView.element);
+			collection.add({
+				type: 'button',
+				model: new Model({
+					label: 'Upload New File',
+					class: 'file-manager-upload-new-file-btn',
+					withText: true
+				})
+			})
+			addListToDropdown(dropdownView, collection)
 
 			return dropdownView;
 		});

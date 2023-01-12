@@ -23,7 +23,6 @@ import ImageStyle from './plugins/image/src/imagestyle';
 import ImageResize from './plugins/image/src/imageresize';
 import ImageToolbar from './plugins/image/src/imagetoolbar';
 import ImageUpload from './plugins/image/src/imageupload';
-import ImageInsert from './plugins/image/src/imageinsert';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -104,7 +103,6 @@ HelpjuiceEditor.builtinPlugins = [
 	ImageToolbar,
 	LinkImage,
 	ImageUpload,
-	ImageInsert,
 	Indent,
 	IndentBlock,
 	Link,
@@ -479,7 +477,6 @@ HelpjuiceEditor.defaultConfig = {
 			'codeblock',
 			'|',
 			'filesmanager',
-			'imageInsert',
 			'link',
 			'mediaEmbed',
 			'insertTable',
