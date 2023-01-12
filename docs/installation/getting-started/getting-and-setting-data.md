@@ -1,11 +1,17 @@
 ---
-category: advanced
-order: 20
+category: getting-started
+order: 70
 ---
 
-{@snippet installation/saving-data/build-autosave-source}
+{@snippet installation/getting-and-setting-data/build-autosave-source}
 
-# Getting and saving data
+# Getting and setting data
+
+<info-box hint>
+**Quick recap**
+
+In the {@link installation/getting-started/editor-lifecycle previous tutorial} you have learned about lifecycle methods. Having the editor created, you can now set or get its data. 
+</info-box>
 
 CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide you can learn about the available options along with their pros and cons.
 
@@ -92,7 +98,22 @@ When you:
 * Implement a single-page application,
 * Use a different editor type than the Classic editor (and hence, cannot use the previous method),
 
-you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method.
+### Getting the editor data with `getData()`
+
+If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
+
+```js
+const data = editor.getData();
+```
+<!-- you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method. -->
+
+### Setting the editor data with `setData()`
+
+To replace the editor content with new data, use the `setData()` method:
+
+```js
+editor.setData( '<p>Some text.</p>' );
+```
 
 For that, you need to store the reference to the `editor` because &mdash; unlike in CKEditor 4 &mdash; there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
 
@@ -246,7 +267,7 @@ How to understand this demo:
 * The autosave itself does not check whether the data has really changed. It bases on changes in the model which, in special cases, may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice in a row.
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
 
-{@snippet installation/saving-data/autosave}
+{@snippet installation/getting-and-setting-data/autosave}
 
 ## Handling users exiting the page
 
@@ -372,4 +393,12 @@ How to understand this demo:
 * The button changes to "Saving..." when the data is being sent to the server or there are any other pending actions (e.g. an image being uploaded).
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
 
-{@snippet installation/saving-data/manualsave}
+{@snippet installation/getting-and-setting-data/manualsave}
+
+<info-box hint>
+**What's next?**
+
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+
+If you would like to integrate your CKEditor 5 installation with the Angular, React and Vue.js JavaScript frameworks, {@link installation/frameworks/overview we have a dedicated guide for that}.
+</info-box>

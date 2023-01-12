@@ -92,10 +92,10 @@ After downloading and installing a predefined CKEditor 5 build in your applicati
 <script src="[ckeditor-build-path]/ckeditor.js"></script>
 ```
 
-Once the CKEditor script is loaded, you can {@link installation/getting-started/basic-api use the API} to create editors in your page.
+Once the CKEditor script is loaded, you can {@link installation/getting-started/editor-lifecycle use the API} to create editors in your page.
 
 <info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/basic-api#umd-support Basic API guide}.
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/predefined-builds#umd-support UMD support section}.
 </info-box>
 
 ## Available builds
@@ -1136,7 +1136,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link installation/getting-started/basic-api#creating-an-editor-with-create editor creator}.
+* Changing the {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/guides/theme-customization editor theme}.
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.
@@ -1303,3 +1303,31 @@ You should handle eventual conflicts and verify the merged changes. After that, 
 If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5" and "ckeditor5-build" [keywords](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
 
 After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!
+
+## UMD support
+
+Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
+
+* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by [RequireJS](http://requirejs.org/) (or any other AMD library),
+* from the global namespace if none of the above loaders is available.
+
+For example:
+
+```js
+// In the CommonJS environment.
+const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
+ClassicEditor.create( ... ); // [Function]
+
+// If AMD is present, you can do this.
+require( [ 'path/to/ckeditor5-build-classic/build/ckeditor' ], ClassicEditor => {
+	ClassicEditor.create( ... ); // [Function]
+} );
+
+// As a global variable.
+ClassicEditor.create( ... ); // [Function]
+
+// As an ES6 module (if using webpack or Rollup).
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+ClassicEditor.create( ... ); // [Function]
+```
