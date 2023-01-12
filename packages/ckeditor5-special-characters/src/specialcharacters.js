@@ -60,10 +60,10 @@ export default class SpecialCharacters extends Plugin {
 		this._characters = new Map();
 
 		/**
-		 * Registered groups. Each group contains a collection with symbol names.
+		 * Registered groups. Each group contains a displayed label and a collection with symbol names.
 		 *
 		 * @private
-		 * @member {Map.<String, {items: Set.<String>>, label: String} #_groups
+		 * @member {Map.<String, {items: Set.<String>, label: String}>} #_groups
 		 */
 		this._groups = new Map();
 
@@ -71,7 +71,7 @@ export default class SpecialCharacters extends Plugin {
 		 * A label describing the "All" special characters category.
 		 *
 		 * @private
-		 * @member {String} _allSpecialCharactersGroupLabel
+		 * @member {String} #_allSpecialCharactersGroupLabel
 		 */
 		this._allSpecialCharactersGroupLabel = t( 'All' );
 	}
