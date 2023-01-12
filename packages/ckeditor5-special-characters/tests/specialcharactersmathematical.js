@@ -7,10 +7,10 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import SpecialCharacters from '../src/specialcharacters';
-import SpecialCharactersCurrency from '../src/specialcharacterscurrency';
+import SpecialCharactersMathematical from '../src/specialcharactersmathematical';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'SpecialCharactersCurrency', () => {
+describe( 'SpecialCharactersMathematical', () => {
 	testUtils.createSinonSandbox();
 
 	let editor, editorElement, addItemsSpy, addItemsFirstCallArgs;
@@ -23,7 +23,7 @@ describe( 'SpecialCharactersCurrency', () => {
 		document.body.appendChild( editorElement );
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ SpecialCharacters, SpecialCharactersCurrency ]
+				plugins: [ SpecialCharacters, SpecialCharactersMathematical ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -43,24 +43,24 @@ describe( 'SpecialCharactersCurrency', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Currency' );
+		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Mathematical' );
 	} );
 
 	it( 'defines a label displayed in the toolbar', () => {
 		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
-			label: 'Currency'
+			label: 'Mathematical'
 		} );
 	} );
 
 	it( 'adds proper characters', () => {
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
-			character: '¢',
-			title: 'Cent sign'
+			title: 'Less-than sign',
+			character: '<'
 		} );
 
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
-			character: '₿',
-			title: 'Bitcoin sign'
+			title: 'Greater-than sign',
+			character: '>'
 		} );
 	} );
 } );
