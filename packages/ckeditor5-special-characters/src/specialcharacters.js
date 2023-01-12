@@ -147,9 +147,7 @@ export default class SpecialCharacters extends Plugin {
 			 *
 			 * @error special-character-invalid-group-name
 			 */
-			throw new CKEditorError(
-				`special-character-invalid-group-name: The name "${ ALL_SPECIAL_CHARACTERS_GROUP }" is reserved and cannot be used.`
-			);
+			throw new CKEditorError( 'special-character-invalid-group-name', null, { ALL_SPECIAL_CHARACTERS_GROUP } );
 		}
 
 		const group = this._getGroup( groupName, options.label );
@@ -161,12 +159,29 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Returns an iterator of special characters groups.
+	 * Returns special character groups in an order determined based on configuration and registration sequence.
 	 *
 	 * @returns {Iterable.<String>}
 	 */
 	getGroups() {
-		return this._groups.keys();
+		const groups = Array.from( this._groups.keys() );
+		const order = this.editor.config.get( 'specialCharacters.order' ) || [];
+
+		const invalidGroup = order.find( item => !groups.includes( item ) );
+
+		if ( invalidGroup ) {
+			/**
+			 * One of the special character groups in the "specialCharacters.order" configuration doesn't exist.
+			 *
+			 * @error special-character-invalid-order-group-name
+			 */
+			throw new CKEditorError( 'special-character-invalid-order-group-name', null, { invalidGroup } );
+		}
+
+		return new Set( [
+			...order,
+			...groups
+		] );
 	}
 
 	/**
@@ -285,4 +300,56 @@ export default class SpecialCharacters extends Plugin {
  *
  * @property {String} title A unique name of the character (e.g. "greek small letter epsilon").
  * @property {String} character A human-readable character displayed as the label (e.g. "ε").
+ */
+
+/**
+ * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
+ *
+ * Read more in {@link module:special-characters/specialcharacters~SpecialCharactersConfig}.
+ *
+ * @member {module:special-characters/specialcharacters~SpecialCharactersConfig}
+ * module:core/editor/editorconfig~EditorConfig#specialCharacters
+ */
+
+/**
+ * The configuration of the special characters feature.
+ *
+ * Read more about {@glink features/special-characters#configuration configuring the special characters feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				specialCharacters: ... // Special characters feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * @interface SpecialCharactersConfig
+ */
+
+/**
+ * The configuration of the special characters category order.
+ *
+ * Special characters categories are displayed in the UI in the order in which they were registered. Using the `order` property
+ * allows to override this behaviour and enforce specific order. Categories not listed in the `order` property will be displayed
+ * in the default order below categories listed in the configuration.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+ *				specialCharacters: {
+ *					order: [
+ *						'Text',
+ *						'Latin',
+ *						'Mathematical',
+ *						'Currency',
+ *						'Arrows'
+ *					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Array.<String>} module:special-characters/specialcharacters~SpecialCharactersConfig#order
  */

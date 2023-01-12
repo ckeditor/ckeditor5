@@ -75,7 +75,8 @@ export default class FocusObserver extends DomEventObserver {
 	/**
 	 * Finishes setting the document focus state.
 	 *
-	 * @function flush
+	 * @public
+	 * @function module:engine/view/observer/focusobserver~FocusObserver#flush
 	 */
 
 	onDomEvent( domEvent ) {
