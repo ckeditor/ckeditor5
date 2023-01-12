@@ -19,8 +19,7 @@ import type {
 	Node,
 	Position,
 	Schema,
-	DiffItemInsert,
-	DiffItemRemove
+	DowncastAttributeEvent
 } from 'ckeditor5/src/engine';
 import { uid } from 'ckeditor5/src/utils';
 
@@ -75,12 +74,15 @@ export default class MentionEditing extends Plugin {
 
 		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc, model.schema ) );
 		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
-		doc.registerPostFixer( writer => selectionMentionAttributePostFixer( writer, doc ) as boolean );
+		doc.registerPostFixer( writer => selectionMentionAttributePostFixer( writer, doc ) );
 
 		editor.commands.add( 'mention', new MentionCommand( editor ) );
 	}
 }
 
+/**
+ * @internal
+ */
 export function _addMentionAttributes(
 	baseMentionData: MentionAttribute,
 	data?: string | MentionAttribute
@@ -94,7 +96,7 @@ export function _addMentionAttributes(
  * This function is exposed as
  * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
  *
- * @protected
+ * @internal
  */
 export function _toMentionAttribute(
 	viewElementOrMention: Element,
@@ -125,17 +127,17 @@ export function _toMentionAttribute(
  * attribute. This may happen when copying part of mention text.
  */
 function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
-	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
-		const mention = data.attributeNewValue;
+	dispatcher.on<DowncastAttributeEvent>( 'attribute:mention', ( evt, data, conversionApi ) => {
+		const mention = data.attributeNewValue as MentionAttribute;
 
 		if ( !data.item.is( '$textProxy' ) || !mention ) {
 			return;
 		}
 
 		const start = data.range.start;
-		const textNode = start.textNode || start.nodeAfter;
+		const textNode = start.textNode || start.nodeAfter as Text;
 
-		if ( textNode.data != mention._text ) {
+		if ( textNode!.data != mention._text ) {
 			// Consume item to prevent partial mention conversion.
 			conversionApi.consumable.consume( data.item, evt.name );
 		}
@@ -167,7 +169,7 @@ function createViewMentionElement( mention: MentionAttribute, { writer }: Downca
  * Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
  * before a text node with mention attribute.
  */
-function selectionMentionAttributePostFixer( writer: Writer, doc: Document ) {
+function selectionMentionAttributePostFixer( writer: Writer, doc: Document ): boolean {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
@@ -176,6 +178,8 @@ function selectionMentionAttributePostFixer( writer: Writer, doc: Document ) {
 
 		return true;
 	}
+
+	return false;
 }
 
 /**
@@ -197,11 +201,15 @@ function shouldNotTypeWithMentionAt( position: Position ): boolean {
  * Model post-fixer that removes the mention attribute from the modified text node.
  */
 function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: Schema ): boolean {
-	const changes = doc.differ.getChanges() as Array<DiffItemInsert | DiffItemRemove>;
+	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
 
 	for ( const change of changes ) {
+		if ( change.type == 'attribute' ) {
+			continue;
+		}
+
 		// Checks the text node on the current position.
 		const position = change.position;
 

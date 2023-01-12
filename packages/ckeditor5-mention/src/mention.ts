@@ -25,11 +25,11 @@ export default class Mention extends Plugin {
 	 * Creates a mention attribute value from the provided view element and optional data.
 	 *
 	 * ```ts
-	 *		editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
+	 * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
 	 *
-	 *		// For a view element: <span data-mention="@joe">@John Doe</span>
-	 *		// it will return:
-	 *		// { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
+	 * // For a view element: <span data-mention="@joe">@John Doe</span>
+	 * // it will return:
+	 * // { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
 	 * ```
 	 *
 	 * @param viewElement
@@ -60,12 +60,12 @@ export default class Mention extends Plugin {
  * Read more about {@glink features/mentions#configuration configuring the mention feature}.
  *
  * ```ts
- *		ClassicEditor
- *			.create( editorElement, {
- *				mention: ... // Mention feature options.
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		mention: ... // Mention feature options.
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
@@ -76,21 +76,21 @@ export type MentionConfig = {
 	 * The list of mention feeds supported by the editor.
 	 *
 	 * ```ts
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Mention, ... ],
-	 *				mention: {
-	 *					feeds: [
-	 *						{
-	 *							marker: '@',
-	 *							feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
-	 *						},
-	 *						...
-	 * 					]
-	 *				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		plugins: [ Mention, ... ],
+	 * 		mention: {
+	 * 			feeds: [
+	 * 				{
+	 * 					marker: '@',
+	 * 					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
+	 * 				},
+	 * 				...
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
 	 * ```
 	 *
 	 * You can provide many mention feeds but they must use different `marker`s.
@@ -101,20 +101,22 @@ export type MentionConfig = {
 	/**
 	 * The configuration of the custom commit keys supported by the editor.
 	 *
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Mention, ... ],
-	 *				mention: {
-	 *					// [ Enter, Space ]
-	 *	 				commitKeys: [ 13, 32 ]
-	 *					feeds: [
-	 *						{ ... }
-	 *						...
-	 * 					]
-	 *				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		plugins: [ Mention, ... ],
+	 * 		mention: {
+	 * 			// [ Enter, Space ]
+	 * 			commitKeys: [ 13, 32 ]
+	 * 			feeds: [
+	 * 				{ ... }
+	 * 				...
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
 	 *
 	 * Custom commit keys configuration allows you to customize how users will confirm the selection of mentions from the dropdown list.
 	 * You can add as many mention commit keys as you need. For instance, in the snippet above new mentions will be committed by pressing
@@ -131,33 +133,35 @@ export type MentionConfig = {
 	 * in the dropdown list. You can specify any number you see fit. For example, in the snippets below you will find the
 	 * dropdownLimit set to `20` and `Infinity` (this will result in showing all available mentions).
 	 *
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Mention, ... ],
-	 *				mention: {
-	 *	 				dropdownLimit: 20,
-	 *					feeds: [
-	 *						{ ... }
-	 *						...
-	 * 					]
-	 *				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		plugins: [ Mention, ... ],
+	 * 		mention: {
+	 * 			dropdownLimit: 20,
+	 * 			feeds: [
+	 * 				{ ... }
+	 * 				...
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
 	 *
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				plugins: [ Mention, ... ],
-	 *				mention: {
-	 *	 				dropdownLimit: Infinity,
-	 *					feeds: [
-	 *						{ ... }
-	 *						...
-	 * 					]
-	 *				}
-	 *			} )
-	 *			.then( ... )
-	 *			.catch( ... );
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		plugins: [ Mention, ... ],
+	 * 		mention: {
+	 * 			dropdownLimit: Infinity,
+	 * 			feeds: [
+	 * 				{ ... }
+	 * 				...
+	 * 			]
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
 	 *
 	 * @default 10
 	 */
@@ -170,64 +174,84 @@ export type MentionConfig = {
  * See {@link module:mention/mention~MentionConfig} to learn more.
  *
  * ```ts
- *		// Static configuration.
- *		const mentionFeedPeople = {
- *			marker: '@',
- *			feed: [ '@Alice', '@Bob', ... ],
- *			minimumCharacters: 2
- *		};
+ * // Static configuration.
+ * const mentionFeedPeople = {
+ * 	marker: '@',
+ * 	feed: [ '@Alice', '@Bob', ... ],
+ * 	minimumCharacters: 2
+ * };
  *
- *		// Simple synchronous callback.
- *		const mentionFeedTags = {
- *			marker: '#',
- *			feed: searchString => {
- *				return tags
- *					// Filter the tags list.
- *					.filter( tag => {
- *						return tag.toLowerCase().includes( queryText.toLowerCase() );
- *					} )
- *			}
- * 		};
+ * // Simple synchronous callback.
+ * const mentionFeedTags = {
+ * 	marker: '#',
+ * 	feed: ( searchString: string ) => {
+ * 		return tags
+ * 			// Filter the tags list.
+ * 			.filter( tag => {
+ * 				return tag.toLowerCase().includes( queryText.toLowerCase() );
+ * 			} )
+ * 	}
+ * };
  *
- *		const tags = [ 'wysiwyg', 'rte', 'rich-text-edior', 'collaboration', 'real-time', ... ];
+ * const tags = [ 'wysiwyg', 'rte', 'rich-text-edior', 'collaboration', 'real-time', ... ];
  *
- *		// Asynchronous callback.
- *		const mentionFeedPlaceholders = {
- *			marker: '$',
- *			feed: searchString => {
- *				return getMatchingPlaceholders( searchString );
- *			}
- * 		};
+ * // Asynchronous callback.
+ * const mentionFeedPlaceholders = {
+ * 	marker: '$',
+ * 	feed: ( searchString: string ) => {
+ * 		return getMatchingPlaceholders( searchString );
+ * 	}
+ * };
  *
- *		function getMatchingPlaceholders( searchString ) {
- *			return new Promise( resolve => {
- *				doSomeXHRQuery( result => {
- *					// console.log( result );
- *					// -> [ '$name', '$surname', '$postal', ... ]
+ * function getMatchingPlaceholders( searchString: string ) {
+ * 	return new Promise<Array<MentionFeedItem>>( resolve => {
+ * 		doSomeXHRQuery( result => {
+ * 			// console.log( result );
+ * 			// -> [ '$name', '$surname', '$postal', ... ]
  *
- *					resolve( result );
- * 				} );
- *			} );
- *		}
+ * 			resolve( result );
+ * 		} );
+ * 	} );
+ * }
  * ```
- *
- * @property marker The character which triggers autocompletion for mention. It must be a single character.
- * @property feed Autocomplete items. Provide an array for
- * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
- * matching items (directly, or via a promise). If a function is passed, it is executed in the context of the editor instance.
- * @property minimumCharacters=0 Specifies after how many characters the autocomplete panel should be shown.
- * @property itemRenderer A function that renders a {@link module:mention/mention~MentionFeedItem}
- * to the autocomplete panel.
  */
 export type MentionFeed = {
+
+	/**
+	 * The character which triggers autocompletion for mention. It must be a single character.
+	 */
 	marker: string;
-	feed?: Array<MentionFeedItem> | FeedCallback;
+
+	/**
+	 * Autocomplete items. Provide an array for
+	 * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
+	 * matching items (directly, or via a promise). If a function is passed, it is executed in the context of the editor instance.
+	 */
+	feed: Array<MentionFeedItem> | FeedCallback;
+
+	/**
+	 * Specifies after how many characters the autocomplete panel should be shown.
+	 *
+	 * @default 0
+	 */
 	minimumCharacters?: number;
-	itemRenderer: ( item: MentionFeedItem ) => HTMLElement;
-	feedCallback: FeedCallback;
+
+	/**
+	 * A function that renders a {@link module:mention/mention~MentionFeedItem}
+	 * to the autocomplete panel.
+	 */
+	itemRenderer: ItemRenderer;
 };
 
-type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
+/**
+ * Function that renders an array of {@link module:mention/mention~MentionFeedItem} based on string input.
+ */
+export type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
+
+/**
+ * Function that takes renders a {@link module:mention/mention~MentionFeedItem} as HTMLElement.
+ */
+export type ItemRenderer = ( item: MentionFeedItem ) => HTMLElement;
 
 /**
  * The mention feed item. It may be defined as a string or a plain object.
@@ -237,55 +261,62 @@ type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise
  * (see {@glink features/mentions#customizing-the-autocomplete-list "Customizing the autocomplete list"}
  * and {@glink features/mentions#customizing-the-output "Customizing the output"} sections).
  *
- *		ClassicEditor
- *			.create( editorElement, {
- *				plugins: [ Mention, ... ],
- *				mention: {
- *					feeds: [
- *						// Feed items as objects.
- *						{
- *							marker: '@',
- *							feed: [
- *								{
- *									id: '@Barney',
- *									fullName: 'Barney Bloom'
- *								},
- *								{
- *									id: '@Lily',
- *									fullName: 'Lily Smith'
- *								},
- *								{
- *									id: '@Marshall',
- *									fullName: 'Marshall McDonald'
- *								},
- *								{
- *									id: '@Robin',
- *									fullName: 'Robin Hood'
- *								},
- *								{
- *									id: '@Ted',
- *									fullName: 'Ted Cruze'
- *								},
- *								// ...
- *							]
- *						},
- *
- *						// Feed items as plain strings.
- *						{
- *							marker: '#',
- *							feed: [ 'wysiwyg', 'rte', 'rich-text-edior', 'collaboration', 'real-time', ... ]
- *						},
+ * ```ts
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		plugins: [ Mention, ... ],
+ * 		mention: {
+ * 			feeds: [
+ * 				// Feed items as objects.
+ * 				{
+ * 					marker: '@',
+ * 					feed: [
+ * 						{
+ * 							id: '@Barney',
+ * 							fullName: 'Barney Bloom'
+ * 						},
+ * 						{
+ * 							id: '@Lily',
+ * 							fullName: 'Lily Smith'
+ * 						},
+ * 						{
+ * 							id: '@Marshall',
+ * 							fullName: 'Marshall McDonald'
+ * 						},
+ * 						{
+ * 							id: '@Robin',
+ * 							fullName: 'Robin Hood'
+ * 						},
+ * 						{
+ * 							id: '@Ted',
+ * 							fullName: 'Ted Cruze'
+ * 						},
+ * 						// ...
  * 					]
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * 				},
  *
- * @property id A unique ID of the mention. It must start with the marker character.
- * @property text Text inserted into the editor when creating a mention.
+ * 				// Feed items as plain strings.
+ * 				{
+ * 					marker: '#',
+ * 					feed: [ 'wysiwyg', 'rte', 'rich-text-edior', 'collaboration', 'real-time', ... ]
+ * 				},
+ * 			]
+ * 		}
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  */
 export type MentionFeedItem = {
+
+	/**
+	 * A unique ID of the mention. It must start with the marker character.
+	 */
 	id: string;
+
+	/**
+	 * Text inserted into the editor when creating a mention.
+	 */
 	text: string;
 };
 
@@ -293,16 +324,21 @@ export type MentionFeedItem = {
  * Represents a mention in the model.
  *
  * See {@link module:mention/mention~Mention#toMentionAttribute `Mention#toMentionAttribute()`}.
- *
- * @property id The ID of a mention. It identifies the mention item in the mention feed. There can be multiple mentions
- * in the document with the same ID (e.g. the same hashtag being mentioned).
- * @property uid A unique ID of this mention instance. Should be passed as an `option.id` when using
- * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
- * @property _text Helper property that stores the text of the inserted mention. Used for detecting a broken mention
- * in the editing area.
  */
 export type MentionAttribute = {
+
+	/**
+	 * The ID of a mention. It identifies the mention item in the mention feed. There can be multiple mentions
+	 * in the document with the same ID (e.g. the same hashtag being mentioned).
+	 */
 	id: string;
+
+	/**
+	 * A unique ID of this mention instance. Should be passed as an `option.id` when using
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
+	 * @property _text Helper property that stores the text of the inserted mention. Used for detecting a broken mention
+	 * in the editing area.
+	 */
 	uid?: string;
 	_text?: string;
 };
@@ -313,6 +349,12 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:mention/mention~Mention} feature.
+		 *
+		 * Read more in {@link module:mention/mention~MentionConfig}.
+		 */
 		mention?: MentionConfig;
 	}
 }

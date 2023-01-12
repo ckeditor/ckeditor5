@@ -11,14 +11,14 @@ import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core
 import type { ViewDocumentKeyEvent, Marker, Position } from 'ckeditor5/src/engine';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
 import { Collection, keyCodes, env, Rect, CKEditorError, logWarning, type PositionOptions } from 'ckeditor5/src/utils';
-import { TextWatcher } from 'ckeditor5/src/typing';
+import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing';
 
 import { debounce } from 'lodash-es';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
-import type { MentionFeed, MentionFeedItem } from './mention';
+import type { FeedCallback, MentionFeed, MentionFeedItem, ItemRenderer } from './mention';
 
 const VERTICAL_SPACING = 3;
 
@@ -42,17 +42,17 @@ export default class MentionUI extends Plugin {
 	/**
 	 * The mention view.
 	 */
-	declare private readonly _mentionsView: MentionsView;
+	private readonly _mentionsView: MentionsView;
 
 	/**
 	 * Stores mention feeds configurations.
 	 */
-	declare private _mentionsConfigurations: Map<string, MentionFeed>;
+	private _mentionsConfigurations: Map<string, Definition>;
 
 	/**
 	 * The contextual balloon plugin instance.
 	 */
-	declare private _balloon: ContextualBalloon | undefined;
+	private _balloon: ContextualBalloon | undefined;
 
 	declare private _items: Collection<{ item: MentionFeedItem; marker: string }>;
 
@@ -129,7 +129,7 @@ export default class MentionUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: this._mentionsView,
 			activator: () => this._isUIVisible,
-			contextElements: () => [ this._balloon.view.element! ],
+			contextElements: () => [ this._balloon!.view.element! ],
 			callback: () => this._hideUIAndRemoveMarker()
 		} );
 
@@ -156,7 +156,7 @@ export default class MentionUI extends Plugin {
 				throw new CKEditorError( 'mentionconfig-incorrect-marker', null, { marker } );
 			}
 
-			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed! );
+			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const itemRenderer = mentionDescription.itemRenderer;
 			const definition = { marker, feedCallback, itemRenderer };
 
@@ -168,7 +168,7 @@ export default class MentionUI extends Plugin {
 			this._hideUIAndRemoveMarker();
 		} );
 		this.on<RequestFeedResponseEvent>( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
-		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
+		this.on<RequestFeedErrorEvent>( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
 
 		/**
 		 * Checks if a given key code is handled by the mention UI.
@@ -191,8 +191,6 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Returns true when {@link #_mentionsView} is in the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} and it is
 	 * currently visible.
-	 *
-	 * @readonly
 	 */
 	private get _isUIVisible(): boolean {
 		return this._balloon!.visibleView === this._mentionsView;
@@ -269,7 +267,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Returns item renderer for the marker.
 	 */
-	public _getItemRenderer( marker: string ): MentionFeed['itemRenderer'] | undefined {
+	public _getItemRenderer( marker: string ): ItemRenderer | undefined {
 		const { itemRenderer } = this._mentionsConfigurations.get( marker )!;
 
 		return itemRenderer;
@@ -278,9 +276,9 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Requests a feed from a configured callbacks.
 	 *
-	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:response
-	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:discarded
-	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:error
+	 * @fires response
+	 * @fires discarded
+	 * @fires error
 	 */
 	private _requestFeed( marker: string, feedText: string ): void {
 		// @if CK_DEBUG_MENTION // console.log( '%c[Feed]%c Requesting for', 'color: blue', 'color: black', `"${ feedText }"` );
@@ -338,7 +336,7 @@ export default class MentionUI extends Plugin {
 
 		const watcher = new TextWatcher( editor.model, createTestCallback( feedsWithPattern ) );
 
-		watcher.on( 'matched', ( evt, data ) => {
+		watcher.on<TextWatcherMatchedEvent<MentionFeedItem>>( 'matched', ( evt, data ) => {
 			const markerDefinition = getLastValidMarkerInText( feedsWithPattern, data.text );
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
@@ -478,7 +476,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Renders a single item in the autocomplete list.
 	 */
-	private _renderItem( item: MentionFeedItem, marker: string ): DomWrapperView {
+	private _renderItem( item: MentionFeedItem, marker: string ): DomWrapperView | ButtonView {
 		const editor = this.editor;
 
 		let view;
@@ -505,7 +503,7 @@ export default class MentionUI extends Plugin {
 			view = buttonView;
 		}
 
-		return view as DomWrapperView;
+		return view;
 	}
 
 	/**
@@ -627,11 +625,13 @@ function getBalloonPanelPositions( preferredPosition: MentionsView['position'] )
  *
  * Example of returned object:
  *
- * 		{
- * 			marker: '@',
- * 			position: 4,
- * 			minimumCharacters: 0
- * 		}
+ * ```ts
+ * {
+ * 	marker: '@',
+ * 	position: 4,
+ * 	minimumCharacters: 0
+ * }
+ * ````
  *
  * @param feedsWithPattern Registered feeds in editor for mention plugin with created RegExp for matching marker.
  * @param text String to find the marker in
@@ -786,54 +786,66 @@ function checkIfStillInCompletionMode( editor: Editor ): boolean {
 	return editor.model.markers.has( 'mention' );
 }
 
+type RequestFeedResponse = {
+
+	/**
+	 * Autocomplete items
+	 */
+	feed: Array<MentionFeedItem>;
+
+	/**
+	 * The character which triggers autocompletion for mention.
+	 */
+	marker: string;
+
+	/**
+	 * The text for which feed items were requested.
+	 */
+	feedText: string;
+};
+
+type RequestFeedError = {
+
+	/**
+	 * The error that was caught.
+	 */
+	error: ErrorEvent;
+};
+
 /**
  * Fired whenever requested feed has a response.
- *
- * @param feed Autocomplete items.
- * @param marker The character which triggers autocompletion for mention.
- * @param feedText The text for which feed items were requested.
  */
 type RequestFeedResponseEvent = {
 	name: 'requestFeed:response';
-	args: [ {
-		feed: Array<MentionFeedItem>;
-		marker: string;
-		feedText: string;
-	} ];
+	args: [ RequestFeedResponse ];
 };
 
 /**
  * Fired whenever the requested feed was discarded. This happens when the response was delayed and
  * other feed was already requested.
- *
- * @param feed Autocomplete items.
- * @param marker The character which triggers autocompletion for mention.
- * @param feedText The text for which feed items were requested.
  */
 type RequestFeedDiscardedEvent = {
 	name: 'requestFeed:discarded';
-	args: [ {
-		feed: Array<MentionFeedItem>;
-		marker: string;
-		feedText: string;
-	} ];
+	args: [ RequestFeedResponse ];
 };
 
 /**
  * Fired whenever the requested {@link module:mention/mention~MentionFeed#feed} promise fails with error.
- *
- * @param error The error that was caught.
  */
 type RequestFeedErrorEvent = {
 	name: 'requestFeed:error';
-	args: [ {
-		error: ErrorEvent;
-	} ];
+	args: [ RequestFeedError ];
+};
+
+type Definition = {
+	marker: string;
+	feedCallback: FeedCallback;
+	itemRenderer: ItemRenderer;
 };
 
 type MarkerDefinition = {
 	marker: string;
-	minimumCharacters: number | undefined;
+	minimumCharacters?: number;
 	pattern: RegExp;
 	position: number;
 };
