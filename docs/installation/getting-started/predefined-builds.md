@@ -1116,3 +1116,31 @@ The table below presents the list of all plugins included in various builds.
 Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
 The two list plugins denoted with a plus (+) can only be used separately.
 The document lists feature is required by the import from Word plugin to run correctly.
+
+## UMD support
+
+Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
+
+* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by [RequireJS](http://requirejs.org/) (or any other AMD library),
+* from the global namespace if none of the above loaders is available.
+
+For example:
+
+```js
+// In the CommonJS environment.
+const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
+ClassicEditor.create( ... ); // [Function]
+
+// If AMD is present, you can do this.
+require( [ 'path/to/ckeditor5-build-classic/build/ckeditor' ], ClassicEditor => {
+	ClassicEditor.create( ... ); // [Function]
+} );
+
+// As a global variable.
+ClassicEditor.create( ... ); // [Function]
+
+// As an ES6 module (if using webpack or Rollup).
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+ClassicEditor.create( ... ); // [Function]
+```
