@@ -46,6 +46,12 @@ describe( 'SpecialCharactersText', () => {
 		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Text' );
 	} );
 
+	it( 'defines a label displayed in the toolbar', () => {
+		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
+			label: 'Text'
+		} );
+	} );
+
 	it( 'adds proper characters', () => {
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
 			character: '…',

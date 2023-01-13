@@ -49,6 +49,8 @@ export default class SpecialCharacters extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		const t = editor.t;
+
 		/**
 		 * Registered characters. A pair of a character name and its symbol.
 		 *
@@ -58,12 +60,20 @@ export default class SpecialCharacters extends Plugin {
 		this._characters = new Map();
 
 		/**
-		 * Registered groups. Each group contains a collection with symbol names.
+		 * Registered groups. Each group contains a displayed label and a collection with symbol names.
 		 *
 		 * @private
-		 * @member {Map.<String, Set.<String>>} #_groups
+		 * @member {Map.<String, {items: Set.<String>, label: String}>} #_groups
 		 */
 		this._groups = new Map();
+
+		/**
+		 * A label describing the "All" special characters category.
+		 *
+		 * @private
+		 * @member {String} #_allSpecialCharactersGroupLabel
+		 */
+		this._allSpecialCharactersGroupLabel = t( 'All' );
 	}
 
 	/**
@@ -126,8 +136,10 @@ export default class SpecialCharacters extends Plugin {
 	 *
 	 * @param {String} groupName
 	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} items
+	 * @param {Object} options
+	 * @param {String} [options.label=groupName]
 	 */
-	addItems( groupName, items ) {
+	addItems( groupName, items, options = { label: groupName } ) {
 		if ( groupName === ALL_SPECIAL_CHARACTERS_GROUP ) {
 			/**
 			 * The name "All" for a special category group cannot be used because it is a special category that displays all
@@ -135,13 +147,13 @@ export default class SpecialCharacters extends Plugin {
 			 *
 			 * @error special-character-invalid-group-name
 			 */
-			throw new CKEditorError( 'special-character-invalid-group-name', null, { ALL_SPECIAL_CHARACTERS_GROUP } );
+			throw new CKEditorError( 'special-character-invalid-group-name', null );
 		}
 
-		const group = this._getGroup( groupName );
+		const group = this._getGroup( groupName, options.label );
 
 		for ( const item of items ) {
-			group.add( item.title );
+			group.items.add( item.title );
 			this._characters.set( item.title, item.character );
 		}
 	}
@@ -183,7 +195,11 @@ export default class SpecialCharacters extends Plugin {
 			return new Set( this._characters.keys() );
 		}
 
-		return this._groups.get( groupName );
+		const group = this._groups.get( groupName );
+
+		if ( group ) {
+			return group.items;
+		}
 	}
 
 	/**
@@ -202,10 +218,14 @@ export default class SpecialCharacters extends Plugin {
 	 *
 	 * @private
 	 * @param {String} groupName The name of the group to create.
+	 * @param {String} label The label describing the new group.
 	 */
-	_getGroup( groupName ) {
+	_getGroup( groupName, label ) {
 		if ( !this._groups.has( groupName ) ) {
-			this._groups.set( groupName, new Set() );
+			this._groups.set( groupName, {
+				items: new Set(),
+				label
+			} );
 		}
 
 		return this._groups.get( groupName );
@@ -240,10 +260,14 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns {Object} Returns an object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	_createDropdownPanelContent( locale, dropdownView ) {
-		const specialCharsGroups = Array.from( this.getGroups() );
+		// The map contains a name of category (an identifier) and its label (a translational string).
+		const specialCharsGroups = new Map( [
+			// Add a special group that shows all available special characters.
+			[ ALL_SPECIAL_CHARACTERS_GROUP, this._allSpecialCharactersGroupLabel ],
 
-		// Add a special group that shows all available special characters.
-		specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
+			...Array.from( this.getGroups() )
+				.map( name => ( [ name, this._groups.get( name ).label ] ) )
+		] );
 
 		const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
 		const gridView = new CharacterGridView( locale );

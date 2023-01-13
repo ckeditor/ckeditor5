@@ -64,6 +64,6 @@ export default class SpecialCharactersText extends Plugin {
 			{ character: '§', title: t( 'Section sign' ) },
 			{ character: '¶', title: t( 'Paragraph sign' ) },
 			{ character: '⁋', title: t( 'Reversed paragraph sign' ) }
-		] );
+		], { label: t( 'Text' ) } );
 	}
 }

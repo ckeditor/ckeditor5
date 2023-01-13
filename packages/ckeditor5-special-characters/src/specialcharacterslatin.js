@@ -165,6 +165,6 @@ export default class SpecialCharactersLatin extends Plugin {
 			{ character: 'Ž', title: t( 'Latin capital letter z with caron' ) },
 			{ character: 'ž', title: t( 'Latin small letter z with caron' ) },
 			{ character: 'ſ', title: t( 'Latin small letter long s' ) }
-		] );
+		], { label: t( 'Latin' ) } );
 	}
 }

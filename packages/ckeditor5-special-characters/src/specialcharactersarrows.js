@@ -59,6 +59,6 @@ export default class SpecialCharactersArrows extends Plugin {
 			{ title: t( 'on with exclamation mark with left right arrow above' ), character: '🔛' },
 			{ title: t( 'soon with rightwards arrow above' ), character: '🔜' },
 			{ title: t( 'top with upwards arrow above' ), character: '🔝' }
-		] );
+		], { label: t( 'Arrows' ) } );
 	}
 }
