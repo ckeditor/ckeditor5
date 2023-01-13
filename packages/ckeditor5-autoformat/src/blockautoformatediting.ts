@@ -37,20 +37,20 @@ type CallbackBoolean = ( context: { match: RegExpExecArray } ) => boolean;
  * To convert a paragraph to heading 1 when `- ` is typed, using just the command name:
  *
  * ```ts
- *		blockAutoformatEditing( editor, plugin, /^\- $/, 'heading1' );
+ * blockAutoformatEditing( editor, plugin, /^\- $/, 'heading1' );
  * ```
  *
  * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
  *
  * ```ts
- *		blockAutoformatEditing( editor, plugin, /^\- $/, ( context ) => {
- *			const { match } = context;
- *			const headingLevel = match[ 1 ].length;
+ * blockAutoformatEditing( editor, plugin, /^\- $/, ( context ) => {
+ * 	const { match } = context;
+ * 	const headingLevel = match[ 1 ].length;
  *
- *			editor.execute( 'heading', {
- *				formatId: `heading${ headingLevel }`
- *			} );
- * 		} );
+ * 	editor.execute( 'heading', {
+ * 		formatId: `heading${ headingLevel }`
+ * 	} );
+ * } );
  * ```
  *
  * @param editor The editor instance.

@@ -44,46 +44,46 @@ type TestCallback = ( text: string ) => {
  * should match opening and closing delimiters. The second capture group should match the text to format.
  *
  * ```ts
- *		// Matches the `**bold text**` pattern.
- *		// There are three capturing groups:
- *		// - The first to match the starting `**` delimiter.
- *		// - The second to match the text to format.
- *		// - The third to match the ending `**` delimiter.
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, formatCallback );
+ * // Matches the `**bold text**` pattern.
+ * // There are three capturing groups:
+ * // - The first to match the starting `**` delimiter.
+ * // - The second to match the text to format.
+ * // - The third to match the ending `**` delimiter.
+ * inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, formatCallback );
  * ```
  *
  * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
  * The function should return proper "ranges" to delete and format.
  *
  * ```ts
- *		{
- *			remove: [
- *				[ 0, 1 ],	// Remove the first letter from the given text.
- *				[ 5, 6 ]	// Remove the 6th letter from the given text.
- *			],
- *			format: [
- *				[ 1, 5 ]	// Format all letters from 2nd to 5th.
- *			]
- *		}
+ * {
+ * 	remove: [
+ * 		[ 0, 1 ],	// Remove the first letter from the given text.
+ * 		[ 5, 6 ]	// Remove the 6th letter from the given text.
+ * 	],
+ * 	format: [
+ * 		[ 1, 5 ]	// Format all letters from 2nd to 5th.
+ * 	]
+ * }
  * ```
  *
  * @param formatCallback A callback to apply actual formatting.
  * It should return `false` if changes should not be applied (e.g. if a command is disabled).
  *
  * ```ts
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
- *			const command = editor.commands.get( 'bold' );
+ * inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
+ * 	const command = editor.commands.get( 'bold' );
  *
- *			if ( !command.isEnabled ) {
- *				return false;
- *			}
+ * 	if ( !command.isEnabled ) {
+ * 		return false;
+ * 	}
  *
- *			const validRanges = editor.model.schema.getValidRanges( rangesToFormat, 'bold' );
+ * 	const validRanges = editor.model.schema.getValidRanges( rangesToFormat, 'bold' );
  *
- *			for ( let range of validRanges ) {
- *				writer.setAttribute( 'bold', true, range );
- *			}
- *		} );
+ * 	for ( let range of validRanges ) {
+ * 		writer.setAttribute( 'bold', true, range );
+ * 	}
+ * } );
  * ```
  */
 export default function inlineAutoformatEditing(
@@ -204,7 +204,7 @@ export default function inlineAutoformatEditing(
  * Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
  * inside provided block.
  *
- * @private
+ * @internal
  */
 function testOutputToRanges( start: Position, arrays: Array<Array<number>>, model: Model ) {
 	return arrays

@@ -6,6 +6,7 @@
 /**
  * @module autoformat/autoformat
  */
+import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
 import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
 import type { Range, Writer } from 'ckeditor5/src/engine';
@@ -134,7 +135,7 @@ export default class Autoformat extends Plugin {
 	 * * ... up to `heading6` and `######`.
 	 */
 	private _addHeadingAutoformats(): void {
-		const command = this.editor.commands.get( 'heading' )!;
+		const command = this.editor.commands.get( 'heading' )! as HeadingCommand;
 
 		if ( command ) {
 			command.modelElements
