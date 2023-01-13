@@ -7,6 +7,8 @@
  * @module table/tablecolumnresize/converters
  */
 
+import type { Plugin } from 'ckeditor5/src/core';
+
 import { normalizeColumnWidths } from './utils';
 
 /**
@@ -21,7 +23,7 @@ import { normalizeColumnWidths } from './utils';
  * @param {module:core/plugin~Plugin} tableUtilsPlugin The {@link module:table/tableutils~TableUtils} plugin instance.
  * @returns {Function} Conversion helper.
  */
-export function upcastColgroupElement( tableUtilsPlugin ) {
+export function upcastColgroupElement( tableUtilsPlugin: Plugin ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
 		const viewColgroupElement = data.viewItem;
 

@@ -8,6 +8,7 @@
 */
 
 import { Command } from 'ckeditor5/src/core';
+import type { Writer } from 'ckeditor5/src/engine';
 
 import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
 
@@ -36,7 +37,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const editor = this.editor;
 		const tableElement = getSelectionAffectedTable( editor.model.document.selection );
 
@@ -58,14 +59,12 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * @param {String} [options.focusCaptionOnShow] When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
-		const { focusCaptionOnShow } = options;
-
+	public override execute( { focusCaptionOnShow }: { focusCaptionOnShow: string } ): void {
 		this.editor.model.change( writer => {
 			if ( this.value ) {
 				this._hideTableCaption( writer );
 			} else {
-				this._showTableCaption( writer, focusCaptionOnShow );
+				this._showTableCaption( writer, !!focusCaptionOnShow );
 			}
 		} );
 	}
@@ -80,7 +79,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @param {Boolean} focusCaptionOnShow Default focus behavior when showing the caption.
 	 */
-	_showTableCaption( writer, focusCaptionOnShow ) {
+	private _showTableCaption( writer: Writer, focusCaptionOnShow: boolean ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
@@ -105,7 +104,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
-	_hideTableCaption( writer ) {
+	private _hideTableCaption( writer: Writer ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );

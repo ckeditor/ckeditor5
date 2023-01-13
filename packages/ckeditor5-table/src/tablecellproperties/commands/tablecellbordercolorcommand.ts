@@ -7,6 +7,9 @@
  * @module table/tablecellproperties/commands/tablecellbordercolorcommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
+import type { Editor } from 'ckeditor5/src/core';
+
 import TableCellPropertyCommand from './tablecellpropertycommand';
 import { getSingleValue } from '../../utils/table-properties';
 
@@ -28,17 +31,17 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 	/**
 	 * Creates a new `TableCellBorderColorCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellBorderColor', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getAttribute( tableCell ) {
+	public override _getAttribute( tableCell: Element ): string | undefined {
 		if ( !tableCell ) {
 			return;
 		}
@@ -50,5 +53,11 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellBorderColor: TableCellBorderColorCommand;
 	}
 }

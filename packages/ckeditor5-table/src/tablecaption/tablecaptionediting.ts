@@ -117,10 +117,11 @@ export default class TableCaptionEditing extends Plugin {
 	 *
 	 * See {@link #_saveCaption}.
 	 *
+	 * @internal
 	 * @param tableModelElement The model element the caption should be returned for.
 	 * @returns The model caption element or `null` if there is none.
 	 */
-	protected _getSavedCaption( tableModelElement: Element ): Element | null {
+	public _getSavedCaption( tableModelElement: Element ): Element | null {
 		const jsonObject = this._savedCaptionsMap.get( tableModelElement );
 
 		return jsonObject ? Element.fromJSON( jsonObject ) : null;
@@ -140,10 +141,17 @@ export default class TableCaptionEditing extends Plugin {
 	 *
 	 * See {@link #_getSavedCaption}.
 	 *
+	 * @internal
 	 * @param tableModelElement The model element the caption is saved for.
 	 * @param caption The caption model element to be saved.
 	 */
-	protected _saveCaption( tableModelElement: Element, caption: Element ): void {
+	public _saveCaption( tableModelElement: Element, caption: Element ): void {
 		this._savedCaptionsMap.set( tableModelElement, caption.toJSON() );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableCaptionEditing.pluginName ]: TableCaptionEditing;
 	}
 }

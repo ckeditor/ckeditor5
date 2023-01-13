@@ -9,6 +9,7 @@
 
 import TablePropertyCommand from './tablepropertycommand';
 import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The table width command.
@@ -36,17 +37,17 @@ export default class TableWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableWidth', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getValueToSet( value ) {
+	public override _getValueToSet( value: string ): string | undefined {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
@@ -54,5 +55,11 @@ export default class TableWidthCommand extends TablePropertyCommand {
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableWidth: TableWidthCommand;
 	}
 }

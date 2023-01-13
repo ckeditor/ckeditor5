@@ -7,6 +7,9 @@
  * @module table/tablecellproperties/commands/tablecellborderstylecommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
+
 import TableCellPropertyCommand from './tablecellpropertycommand';
 import { getSingleValue } from '../../utils/table-properties';
 
@@ -31,14 +34,14 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellBorderStyle', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getAttribute( tableCell ) {
+	public override _getAttribute( tableCell: Element ): string | undefined {
 		if ( !tableCell ) {
 			return;
 		}
@@ -50,5 +53,11 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellBorderStyle: TableCellBorderStyleCommand;
 	}
 }

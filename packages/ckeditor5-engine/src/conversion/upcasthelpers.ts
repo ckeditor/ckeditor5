@@ -323,6 +323,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		model: string | {
 			key: string;
 			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+			name?: string;
 		};
 		converterPriority?: PriorityString;
 	} ): this {

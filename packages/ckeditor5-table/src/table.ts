@@ -131,7 +131,9 @@ type DefaultHeadings = {
  *
  * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
  */
-type TableColorConfig = Array<string | { color: string; label: string; hasBorder?: boolean }>;
+export type TableColorConfig = Array<
+	string | { color: string; label: string; hasBorder?: boolean }
+>;
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

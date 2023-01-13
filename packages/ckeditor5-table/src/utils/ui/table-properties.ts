@@ -7,24 +7,25 @@
  * @module table/utils/ui/table-properties
  */
 
-import { ButtonView, Model } from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+import { ButtonView, Model, type ToolbarView, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
 import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+
+import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview';
+import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';
 
 import ColorInputView from '../../ui/colorinputview';
 
-const isEmpty = val => val === '';
+const isEmpty = ( val: string ) => val === '';
 
 /**
  * Returns an object containing pairs of CSS border style values and their localized UI
  * labels. Used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
  * and {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}.
  *
- * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
- * that is used to localize strings.
- * @returns {Object.<String,String>}
+ * @param t The "t" function provided by the editor that is used to localize strings.
  */
-export function getBorderStyleLabels( t ) {
+export function getBorderStyleLabels( t: LocaleTranslate ): Record<string, string> {
 	return {
 		none: t( 'None' ),
 		solid: t( 'Solid' ),
@@ -42,11 +43,9 @@ export function getBorderStyleLabels( t ) {
  * Returns a localized error string that can be displayed next to color (background, border)
  * fields that have an invalid value.
  *
- * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
- * that is used to localize strings.
- * @returns {String}
+ * @param t The "t" function provided by the editor that is used to localize strings.
  */
-export function getLocalizedColorErrorText( t ) {
+export function getLocalizedColorErrorText( t: LocaleTranslate ): string {
 	return t( 'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".' );
 }
 
@@ -54,11 +53,9 @@ export function getLocalizedColorErrorText( t ) {
  * Returns a localized error string that can be displayed next to length (padding, border width)
  * fields that have an invalid value.
  *
- * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
- * that is used to localize strings.
- * @returns {String}
+ * @param t The "t" function provided by the editor that is used to localize strings.
  */
-export function getLocalizedLengthErrorText( t ) {
+export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
 	return t( 'The value is invalid. Try "10px" or "2em" or simply "2".' );
 }
 
@@ -67,11 +64,8 @@ export function getLocalizedLengthErrorText( t ) {
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isColor}.
- *
- * @param {String} value
- * @returns {Boolean}
  */
-export function colorFieldValidator( value ) {
+export function colorFieldValidator( value: string ): boolean {
 	value = value.trim();
 
 	return isEmpty( value ) || isColor( value );
@@ -83,11 +77,8 @@ export function colorFieldValidator( value ) {
  *
  * See {@link module:engine/view/styles/utils~isLength}.
  * See {@link module:engine/view/styles/utils~isPercentage}.
- *
- * @param {String} value
- * @returns {Boolean}
  */
-export function lengthFieldValidator( value ) {
+export function lengthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
 	return isEmpty( value ) || isNumberString( value ) || isLength( value ) || isPercentage( value );
@@ -98,11 +89,8 @@ export function lengthFieldValidator( value ) {
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
- *
- * @param {String} value
- * @returns {Boolean}
  */
-export function lineWidthFieldValidator( value ) {
+export function lineWidthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
 	return isEmpty( value ) || isNumberString( value ) || isLength( value );
@@ -116,9 +104,12 @@ export function lineWidthFieldValidator( value ) {
  * @param {String} defaultStyle The default border.
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
-export function getBorderStyleDefinitions( view, defaultStyle ) {
+export function getBorderStyleDefinitions(
+	view: TableCellPropertiesView | TablePropertiesView,
+	defaultStyle: string
+): Collection<ListDropdownItemDefinition> {
 	const itemDefinitions = new Collection();
-	const styleLabels = getBorderStyleLabels( view.t );
+	const styleLabels = getBorderStyleLabels( view.t! );
 
 	for ( const style in styleLabels ) {
 		const definition = {
@@ -166,7 +157,17 @@ export function getBorderStyleDefinitions( view, defaultStyle ) {
  * @param {String} propertyName
  * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
-export function fillToolbar( options ) {
+export function fillToolbar(
+	options: {
+		view: TableCellPropertiesView | TablePropertiesView;
+		icons: Array<string>;
+		toolbar: ToolbarView;
+		labels: Record<number, string>;
+		propertyName: string;
+		nameToValue: ( arg0: string ) => string;
+		defaultValue: string;
+	}
+): void {
 	const { view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
@@ -398,16 +399,20 @@ export function getLabeledColorInputCreator( options ) {
 	};
 }
 
-// A simple helper method to detect number strings.
-// I allows full number notation, so omitting 0 is not allowed:
-function isNumberString( value ) {
+/**
+ * A simple helper method to detect number strings.
+ * I allows full number notation, so omitting 0 is not allowed:
+ */
+function isNumberString( value: string ) {
 	const parsedValue = parseFloat( value );
 
 	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
 }
 
-// @param {Array.<Object>} colorConfig
-// @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+/**
+ * @param {Array.<Object>} colorConfig
+ * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+ */
 function colorConfigToColorGridDefinitions( colorConfig ) {
 	return colorConfig.map( item => ( {
 		color: item.model,

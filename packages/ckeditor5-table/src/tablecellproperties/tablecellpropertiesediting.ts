@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addBorderRules, addPaddingRules, addBackgroundRules } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { addBorderRules, addPaddingRules, addBackgroundRules, type Schema, type Conversion, type ViewElement } from 'ckeditor5/src/engine';
 
 import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties';
 import TableEditing from './../tableediting';
@@ -52,21 +52,21 @@ export default class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableCellPropertiesEditing' {
 		return 'TableCellPropertiesEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableEditing, TableCellWidthEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -134,15 +134,15 @@ export default class TableCellPropertiesEditing extends Plugin {
 	}
 }
 
-// Enables the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` attributes for table cells.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} defaultBorder The default border values.
-// @param {String} defaultBorder.color The default `tableCellBorderColor` value.
-// @param {String} defaultBorder.style The default `tableCellBorderStyle` value.
-// @param {String} defaultBorder.width The default `tableCellBorderWidth` value.
-function enableBorderProperties( schema, conversion, defaultBorder ) {
+/**
+ * Enables the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` attributes for table cells.
+ *
+ * @param defaultBorder The default border values.
+ * @param defaultBorder.color The default `tableCellBorderColor` value.
+ * @param defaultBorder.style The default `tableCellBorderStyle` value.
+ * @param defaultBorder.width The default `tableCellBorderWidth` value.
+ */
+function enableBorderProperties( schema: Schema, conversion: Conversion, defaultBorder: { color: string; style: string; width: string } ) {
 	const modelAttributes = {
 		width: 'tableCellBorderWidth',
 		color: 'tableCellBorderColor',
@@ -160,13 +160,12 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
-// Enables the `'tableCellHorizontalAlignment'` attribute for table cells.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-// @param {String} defaultValue The default horizontal alignment value.
-function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
+/**
+ * Enables the `'tableCellHorizontalAlignment'` attribute for table cells.
+ *
+ * @param defaultValue The default horizontal alignment value.
+ */
+function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellHorizontalAlignment' ]
 	} );
@@ -196,7 +195,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				key: 'tableCellHorizontalAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					const align = viewElement.getStyle( 'text-align' );
 
 					return align === defaultValue ? null : align;
@@ -213,7 +212,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				key: 'tableCellHorizontalAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === defaultValue ? null : align;
@@ -222,12 +221,12 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 		} );
 }
 
-// Enables the `'verticalAlignment'` attribute for table cells.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {String} defaultValue The default vertical alignment value.
-function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
+/**
+ * Enables the `'verticalAlignment'` attribute for table cells.
+ *
+ * @param defaultValue The default vertical alignment value.
+ */
+function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellVerticalAlignment' ]
 	} );
@@ -257,7 +256,7 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				key: 'tableCellVerticalAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					const align = viewElement.getStyle( 'vertical-align' );
 
 					return align === defaultValue ? null : align;
@@ -274,11 +273,17 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				key: 'tableCellVerticalAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					const valign = viewElement.getAttribute( 'valign' );
 
 					return valign === defaultValue ? null : valign;
 				}
 			}
 		} );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableCellPropertiesEditing.pluginName ]: TableCellPropertiesEditing;
+	}
 }

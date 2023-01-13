@@ -7,7 +7,7 @@
  * @module table/tableselection/mouseeventsobserver
  */
 
-import { DomEventObserver } from 'ckeditor5/src/engine';
+import { DomEventObserver, type View } from 'ckeditor5/src/engine';
 
 /**
  * The mouse selection event observer.
@@ -29,7 +29,7 @@ export default class MouseEventsObserver extends DomEventObserver {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view ) {
+	constructor( view: View ) {
 		super( view );
 
 		this.domEventType = [ 'mousemove', 'mouseleave' ];
@@ -38,7 +38,7 @@ export default class MouseEventsObserver extends DomEventObserver {
 	/**
 	 * @inheritDoc
 	 */
-	onDomEvent( domEvent ) {
+	public onDomEvent( domEvent ): void {
 		this.fire( domEvent.type, domEvent );
 	}
 }

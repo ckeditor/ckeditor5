@@ -7,8 +7,8 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addBackgroundRules, addBorderRules } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema, type Element } from 'ckeditor5/src/engine';
 
 import TableEditing from '../tableediting';
 import {
@@ -52,21 +52,21 @@ export default class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TablePropertiesEditing' {
 		return 'TablePropertiesEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -117,15 +117,15 @@ export default class TablePropertiesEditing extends Plugin {
 	}
 }
 
-// Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBorderWidth'` attributes for table.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} defaultBorder The default border values.
-// @param {String} defaultBorder.color The default `tableBorderColor` value.
-// @param {String} defaultBorder.style The default `tableBorderStyle` value.
-// @param {String} defaultBorder.width The default `tableBorderWidth` value.
-function enableBorderProperties( schema, conversion, defaultBorder ) {
+/**
+ * Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBorderWidth'` attributes for table.
+ *
+ * @param defaultBorder The default border values.
+ * @param defaultBorder.color The default `tableBorderColor` value.
+ * @param defaultBorder.style The default `tableBorderStyle` value.
+ * @param defaultBorder.width The default `tableBorderWidth` value.
+ */
+function enableBorderProperties( schema: Schema, conversion: Conversion, defaultBorder: { color: string; style: string; width: string } ) {
 	const modelAttributes = {
 		width: 'tableBorderWidth',
 		color: 'tableBorderColor',
@@ -143,12 +143,12 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
-// Enables the `'alignment'` attribute for table.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {String} defaultValue The default alignment value.
-function enableAlignmentProperty( schema, conversion, defaultValue ) {
+/**
+ * Enables the `'alignment'` attribute for table.
+ *
+ * @param defaultValue The default alignment value.
+ */
+function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'tableAlignment' ]
 	} );
@@ -180,7 +180,7 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				key: 'tableAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					let align = viewElement.getStyle( 'float' );
 
 					// CSS: `float:none` => Model: `alignment:center`.
@@ -202,7 +202,7 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 			model: {
 				name: 'table',
 				key: 'tableAlignment',
-				value: viewElement => {
+				value: ( viewElement: ViewElement ) => {
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === defaultValue ? null : align;
@@ -211,15 +211,20 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 		} );
 }
 
-// Enables conversion for an attribute for simple view-model mappings.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} options
-// @param {String} options.modelAttribute
-// @param {String} options.styleName
-// @param {String} options.defaultValue The default value for the specified `modelAttribute`.
-function enableProperty( schema, conversion, options ) {
+/**
+ * Enables conversion for an attribute for simple view-model mappings.
+ *
+ * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
+ */
+function enableProperty(
+	schema: Schema,
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+		defaultValue: string;
+	}
+) {
 	const { modelAttribute } = options;
 
 	schema.extend( 'table', {
@@ -229,14 +234,18 @@ function enableProperty( schema, conversion, options ) {
 	downcastTableAttribute( conversion, options );
 }
 
-// Enables conversion for an attribute for simple view (figure) to model (table) mappings.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} options
-// @param {String} options.modelAttribute
-// @param {String} options.styleName
-function enableTableToFigureProperty( schema, conversion, options ) {
+/**
+ * Enables conversion for an attribute for simple view (figure) to model (table) mappings.
+ */
+function enableTableToFigureProperty(
+	schema: Schema,
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+		defaultValue: string;
+	}
+) {
 	const { modelAttribute } = options;
 
 	schema.extend( 'table', {
@@ -245,7 +254,7 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 
 	upcastStyleToAttribute( conversion, {
 		viewElement: /^(table|figure)$/,
-		shouldUpcast: element => !( element.name == 'table' && element.parent.name == 'figure' ),
+		shouldUpcast: ( element: Element ) => !( element.name == 'table' && element.parent!.name == 'figure' ),
 		...options
 	} );
 

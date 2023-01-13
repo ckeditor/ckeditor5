@@ -7,7 +7,7 @@
  * @module table/tableproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 import TablePropertiesUI from './tableproperties/tablepropertiesui';
@@ -28,14 +28,14 @@ export default class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableProperties' {
 		return 'TableProperties';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TablePropertiesEditing, TablePropertiesUI ];
 	}
 }
@@ -115,3 +115,12 @@ export default class TableProperties extends Plugin {
  *
  * @property {String} [alignment='center'] The default `alignment` of the table.
  */
+export type TablePropertiesOptions = {
+	width: string;
+	height: string;
+	backgroundColor: string;
+	borderColor: string;
+	borderWidth: string;
+	borderStyle?: string;
+	alignment?: string;
+};

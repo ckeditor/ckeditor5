@@ -21,20 +21,20 @@ export default class TableCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableCaptionUI' {
 		return 'TableCaptionUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleTableCaption', locale => {
-			const command = editor.commands.get( 'toggleTableCaption' );
+			const command = editor.commands.get( 'toggleTableCaption' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

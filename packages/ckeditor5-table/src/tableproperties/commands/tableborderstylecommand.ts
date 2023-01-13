@@ -7,8 +7,11 @@
  * @module table/tableproperties/commands/tableborderstylecommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
+
 import TablePropertyCommand from './tablepropertycommand';
 import { getSingleValue } from '../../utils/table-properties';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The table style border command.
@@ -28,17 +31,17 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBorderStyleCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableBorderStyle', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getValue( table ) {
+	public override _getValue( table: Element ): string | undefined {
 		if ( !table ) {
 			return;
 		}
@@ -50,5 +53,11 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableBorderStyle: TableBorderStyleCommand;
 	}
 }

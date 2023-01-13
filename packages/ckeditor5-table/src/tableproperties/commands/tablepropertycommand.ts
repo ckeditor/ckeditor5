@@ -7,7 +7,8 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { Batch, Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The table cell attribute command.
@@ -18,41 +19,37 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class TablePropertyCommand extends Command {
 	/**
+	 * The attribute that will be set by the command.
+	 */
+	public declare readonly attributeName: string;
+
+	/**
+	 * The default value for the attribute.
+	 */
+	protected readonly _defaultValue: string | undefined;
+
+	/**
 	 * Creates a new `TablePropertyCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} attributeName Table cell attribute name.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param attributeName Table cell attribute name.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, attributeName, defaultValue ) {
+	constructor( editor: Editor, attributeName: string, defaultValue?: string ) {
 		super( editor );
 
-		/**
-		 * The attribute that will be set by the command.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.attributeName = attributeName;
-
-		/**
-		 * The default value for the attribute.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {String}
-		 */
 		this._defaultValue = defaultValue;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = selection.getFirstPosition().findAncestor( 'table' );
+		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -62,19 +59,18 @@ export default class TablePropertyCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} [options]
-	 * @param {*} [options.value] If set, the command will set the attribute on the selected table.
+	 * @param options.value If set, the command will set the attribute on the selected table.
 	 * If not set, the command will remove the attribute from the selected table.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Pass the model batch instance to the command to aggregate changes,
+	 * @param options.batch Pass the model batch instance to the command to aggregate changes,
 	 * for example, to allow a single undo step for multiple executions.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { value?: any; batch?: Batch } = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
 		const { value, batch } = options;
 
-		const table = selection.getFirstPosition().findAncestor( 'table' );
+		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch, writer => {
@@ -89,16 +85,14 @@ export default class TablePropertyCommand extends Command {
 	/**
 	 * Returns the attribute value for a table.
 	 *
-	 * @param {module:engine/model/element~Element} table
-	 * @returns {String|undefined}
-	 * @private
+	 * @internal
 	 */
-	_getValue( table ) {
+	public _getValue( table: Element ): string | undefined {
 		if ( !table ) {
 			return;
 		}
 
-		const value = table.getAttribute( this.attributeName );
+		const value = table.getAttribute( this.attributeName ) as string;
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -110,15 +104,19 @@ export default class TablePropertyCommand extends Command {
 	/**
 	 * Returns the proper model value. It can be used to add a default unit to numeric values.
 	 *
-	 * @private
-	 * @param {*} value
-	 * @returns {*}
+	 * @internal
 	 */
-	_getValueToSet( value ) {
+	public _getValueToSet( value: string ): string | undefined {
 		if ( value === this._defaultValue ) {
 			return;
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableProperty: TablePropertyCommand;
 	}
 }

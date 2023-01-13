@@ -7,15 +7,14 @@
  * @module table/utils/ui/widget
  */
 
+import type { DocumentSelection, ViewElement } from 'ckeditor5/src/engine';
+
 import { isWidget } from 'ckeditor5/src/widget';
 
 /**
  * Returns a table widget editing view element if one is selected.
- *
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedTableWidget( selection ) {
+export function getSelectedTableWidget( selection: DocumentSelection ): ViewElement | null {
 	const viewElement = selection.getSelectedElement();
 
 	if ( viewElement && isTableWidget( viewElement ) ) {
@@ -27,11 +26,8 @@ export function getSelectedTableWidget( selection ) {
 
 /**
  * Returns a table widget editing view element if one is among the selection's ancestors.
- *
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {module:engine/view/element~Element|null}
  */
-export function getTableWidgetAncestor( selection ) {
+export function getTableWidgetAncestor( selection: DocumentSelection ): ViewElement | null {
 	const selectionPosition = selection.getFirstPosition();
 
 	if ( !selectionPosition ) {
@@ -51,10 +47,9 @@ export function getTableWidgetAncestor( selection ) {
 	return null;
 }
 
-// Checks if a given view element is a table widget.
-//
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
-function isTableWidget( viewElement ) {
+/**
+ * Checks if a given view element is a table widget.
+ */
+function isTableWidget( viewElement: ViewElement ): boolean {
 	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
 }

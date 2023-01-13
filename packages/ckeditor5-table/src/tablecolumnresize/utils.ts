@@ -7,6 +7,7 @@
  * @module table/tablecolumnresize/utils
  */
 
+import type { Model } from 'ckeditor5/src/engine';
 import { global } from 'ckeditor5/src/utils';
 import {
 	COLUMN_WIDTH_PRECISION,
@@ -23,8 +24,8 @@ import {
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedResizedTables( model ) {
-	const affectedTables = new Set();
+export function getChangedResizedTables( model: Model ): Element {
+	const affectedTables: Set<Element> = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
 		let referencePosition = null;

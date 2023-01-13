@@ -9,6 +9,7 @@
 
 import TablePropertyCommand from './tablepropertycommand';
 import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * The table height command.
@@ -36,23 +37,29 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableHeightCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableHeight', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getValueToSet( value ) {
+	public override _getValueToSet( value: string ): string | undefined {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
-			return null;
+			return;
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableHeight: TableHeightCommand;
 	}
 }

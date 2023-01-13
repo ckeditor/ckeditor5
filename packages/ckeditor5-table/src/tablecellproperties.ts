@@ -40,64 +40,9 @@ export default class TableCellProperties extends Plugin {
 }
 
 /**
- * The configuration of the table cell properties user interface (balloon). It allows to define:
- *
- * * The color palette for the cell border color style field (`tableCellProperties.borderColors`),
- * * The color palette for the cell background style field (`tableCellProperties.backgroundColors`).
- *
- *		const tableConfig = {
- *			tableCellProperties: {
- *				borderColors: [
- *					{
- *						color: 'hsl(0, 0%, 90%)',
- *						label: 'Light grey'
- *					},
- *					// ...
- *				],
- *				backgroundColors: [
- *					{
- *						color: 'hsl(120, 75%, 60%)',
- *						label: 'Green'
- *					},
- *					// ...
- *				]
- *			}
- *		};
- *
- * * The default styles for table cells (`tableCellProperties.defaultProperties`):
- *
- *		const tableConfig = {
- *			tableCellProperties: {
- *				defaultProperties: {
- *					horizontalAlignment: 'right',
- *					verticalAlignment: 'bottom',
- *					padding: '5px'
- *				}
- *			}
- *		}
- *
- * 	 {@link module:table/tableproperties~TablePropertiesOptions Read more about the supported properties.}
- *
- * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
- * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
- * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
- * Default values will not be kept in the editor model.
- *
- * The default color palettes for the cell background and the cell border are the same
- * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
- *
- * Both color palette configurations must follow the
- * {@link module:table/table~TableColorConfig table color configuration format}.
- *
- * Read more about configuring the table feature in {@link module:table/table~TableConfig}.
- *
- * @member {Object} module:table/table~TableConfig#tableCellProperties
- */
-
-/**
  * The configuration of the table cell default properties feature.
  *
- * @typedef {Object} module:table/tablecellproperties~TableCellPropertiesOptions
+ * @typedef module:table/tablecellproperties~TableCellPropertiesOptions
  *
  * @property {String} width The default `width` of the table cell.
  *
@@ -117,9 +62,78 @@ export default class TableCellProperties extends Plugin {
  *
  * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table cell.
  */
+export type TableCellPropertiesOptions = {
+	width: string;
+	height: string;
+	padding: string;
+	backgroundColor: string;
+	borderColor: string;
+	borderWidth: string;
+	borderStyle: string;
+	horizontalAlignment: string;
+	verticalAlignment: string;
+};
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableCellProperties.pluginName ]: TableCellProperties;
+	}
+
+	/**
+	 * The configuration of the table cell properties user interface (balloon). It allows to define:
+	 *
+	 * * The color palette for the cell border color style field (`tableCellProperties.borderColors`),
+	 * * The color palette for the cell background style field (`tableCellProperties.backgroundColors`).
+	 *
+	 *		const tableConfig = {
+	 *			tableCellProperties: {
+	 *				borderColors: [
+	 *					{
+	 *						color: 'hsl(0, 0%, 90%)',
+	*						label: 'Light grey'
+	*					},
+	*					// ...
+	*				],
+	*				backgroundColors: [
+	*					{
+	*						color: 'hsl(120, 75%, 60%)',
+	*						label: 'Green'
+	*					},
+	*					// ...
+	*				]
+	*			}
+	*		};
+	*
+	* * The default styles for table cells (`tableCellProperties.defaultProperties`):
+	*
+	*		const tableConfig = {
+	*			tableCellProperties: {
+	*				defaultProperties: {
+	*					horizontalAlignment: 'right',
+	*					verticalAlignment: 'bottom',
+	*					padding: '5px'
+	*				}
+	*			}
+	*		}
+	*
+	* 	 {@link module:table/tableproperties~TablePropertiesOptions Read more about the supported properties.}
+	*
+	* **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
+	* i.e. they do not limit or filter the colors in the data. They are used only in the user interface
+	* allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
+	* Default values will not be kept in the editor model.
+	*
+	* The default color palettes for the cell background and the cell border are the same
+	* ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
+	*
+	* Both color palette configurations must follow the
+	* {@link module:table/table~TableColorConfig table color configuration format}.
+	*
+	* Read more about configuring the table feature in {@link module:table/table~TableConfig}.
+	*
+	* @member module:table/table~TableConfig#tableCellProperties
+	*/
+	interface EditorConfig {
+		// tableCellProperties?: TableCellPropertiesConfig; TODO
 	}
 }

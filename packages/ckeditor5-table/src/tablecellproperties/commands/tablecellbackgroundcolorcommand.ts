@@ -7,6 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellbackgroundcolorcommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+
 import TableCellPropertyCommand from './tablecellpropertycommand';
 
 /**
@@ -27,10 +29,16 @@ export default class TableCellBackgroundColorCommand extends TableCellPropertyCo
 	/**
 	 * Creates a new `TableCellBackgroundColorCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellBackgroundColor', defaultValue );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellBackgroundColor: TableCellBackgroundColorCommand;
 	}
 }

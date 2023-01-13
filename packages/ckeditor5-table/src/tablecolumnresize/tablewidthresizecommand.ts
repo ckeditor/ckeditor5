@@ -7,6 +7,8 @@
  * @module table/tablecolumnresize/tablewidthresizecommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
 import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 /**
@@ -19,7 +21,7 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue?: string ) {
 		// We create a custom command instead of using the existing `TableWidthCommand`
 		// as we also need to change the `columnWidths` property and running both commands
 		// separately would make the integration with Track Changes feature more troublesome.
@@ -29,7 +31,7 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		// The command is always enabled as it doesn't care about the actual selection - table can be resized
 		// even if the selection is elsewhere.
 		this.isEnabled = true;
@@ -43,9 +45,9 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * @param {String} [options.columnWidths] The new table column widths. If skipped, the model attribute will be removed.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { tableWidth?: string; columnWidths?: string; table?: Element } = {} ): void {
 		const model = this.editor.model;
-		const table = options.table || model.document.selection.getSelectedElement();
+		const table = options.table || model.document.selection.getSelectedElement()!;
 		const { tableWidth, columnWidths } = options;
 
 		model.change( writer => {

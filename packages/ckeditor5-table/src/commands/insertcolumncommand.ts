@@ -28,11 +28,8 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 export default class InsertColumnCommand extends Command {
 	/**
 	 * The order of insertion relative to the column in which the caret is located.
-	 *
-	 * @readonly
-	 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
 	 */
-	public order: string;
+	public readonly order: string;
 
 	/**
 	 * Creates a new `InsertColumnCommand` instance.

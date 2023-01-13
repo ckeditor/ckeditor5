@@ -7,6 +7,9 @@
  * @module table/tablecellproperties/commands/tablecellpaddingcommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
+
 import TableCellPropertyCommand from './tablecellpropertycommand';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties';
 
@@ -36,17 +39,17 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellPaddingCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellPadding', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getAttribute( tableCell ) {
+	public override _getAttribute( tableCell: Element ): string | undefined {
 		if ( !tableCell ) {
 			return;
 		}
@@ -63,7 +66,7 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	_getValueToSet( value ) {
+	public override _getValueToSet( value?: string ): string | undefined {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
@@ -71,5 +74,11 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellPadding: TableCellPaddingCommand;
 	}
 }

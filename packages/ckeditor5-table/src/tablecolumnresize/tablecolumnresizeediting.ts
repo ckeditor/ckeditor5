@@ -9,7 +9,7 @@
 
 import { throttle } from 'lodash-es';
 import { global, DomEmitterMixin } from 'ckeditor5/src/utils';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 import TableEditing from '../tableediting';
@@ -47,72 +47,64 @@ import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
  */
 export default class TableColumnResizeEditing extends Plugin {
 	/**
+	 * A flag indicating if the column resizing is in progress.
+	 */
+	private declare _isResizingActive: boolean;
+
+	/**
+	 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
+	 * or comments-only mode or the `TableColumnResize` plugin is disabled.
+	 *
+	 * @observable
+	 */
+	private declare _isResizingAllowed: boolean;
+
+	/**
+	 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
+	 * initialized when column resizing begins, and is purged upon completion.
+	 */
+	private declare _resizingData: Object | null;
+
+	/**
+	 * DOM emitter.
+	 */
+	private declare _domEmitter: typeof DomEmitterMixin;
+
+	/**
+	 * A local reference to the {@link module:table/tableutils~TableUtils} plugin.
+	 */
+	private _tableUtilsPlugin: TableUtils;
+
+	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableEditing, TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableColumnResizeEditing' {
 		return 'TableColumnResizeEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A flag indicating if the column resizing is in progress.
-		 *
-		 * @private
-		 * @member {Boolean}
-		 */
 		this._isResizingActive = false;
-
-		/**
-		 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
-		 * or comments-only mode or the `TableColumnResize` plugin is disabled.
-		 *
-		 * @private
-		 * @observable
-		 * @member {Boolean}
-		 */
 		this.set( '_isResizingAllowed', true );
-
-		/**
-		 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
-		 * initialized when column resizing begins, and is purged upon completion.
-		 *
-		 * @private
-		 * @member {Object|null}
-		 */
 		this._resizingData = null;
-
-		/**
-		 * DOM emitter.
-		 *
-		 * @private
-		 * @member {DomEmitterMixin}
-		 */
 		this._domEmitter = Object.create( DomEmitterMixin );
-
-		/**
-		 * A local reference to the {@link module:table/tableutils~TableUtils} plugin.
-		 *
-		 * @private
-		 * @member {module:table/tableutils~TableUtils}
-		 */
 		this._tableUtilsPlugin = editor.plugins.get( 'TableUtils' );
 
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot() );
+				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot()! );
 			} );
 		} );
 	}
@@ -120,7 +112,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		this._extendSchema();
 		this._registerPostFixer();
 		this._registerConverters();
@@ -154,7 +146,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		this._domEmitter.stopListening();
 		super.destroy();
 	}
@@ -164,7 +156,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_extendSchema() {
+	private _extendSchema() {
 		this.editor.model.schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth', 'columnWidths' ]
 		} );
@@ -179,7 +171,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_registerPostFixer() {
+	private _registerPostFixer() {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -287,7 +279,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_registerConverters() {
+	private _registerConverters() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
 		const widthStyleToTableWidthDefinition = {

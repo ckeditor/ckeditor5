@@ -7,7 +7,7 @@
  * @module table/tablecellwidth/tablecellwidthediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import TableEditing from './../tableediting';
 import TableCellWidthCommand from './commands/tablecellwidthcommand';
@@ -26,21 +26,21 @@ export default class TableCellWidthEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableCellWidthEditing' {
 		return 'TableCellWidthEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		const defaultTableCellProperties = getNormalizedDefaultProperties(

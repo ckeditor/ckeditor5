@@ -7,6 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellhorizontalalignmentcommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+
 import TableCellPropertyCommand from './tablecellpropertycommand';
 
 /**
@@ -27,10 +29,16 @@ export default class TableCellHorizontalAlignmentCommand extends TableCellProper
 	/**
 	 * Creates a new `TableCellHorizontalAlignmentCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value for the "alignment" attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value for the "alignment" attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellHorizontalAlignment', defaultValue );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellHorizontalAlignment: TableCellHorizontalAlignmentCommand;
 	}
 }

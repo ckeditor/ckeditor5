@@ -21,7 +21,7 @@ import {
 	FormHeaderView,
 	submitHandler
 } from 'ckeditor5/src/ui';
-import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 import {
@@ -65,7 +65,7 @@ export default class TableCellPropertiesView extends View {
 	 * @param {module:table/tablecellproperties~TableCellPropertiesOptions} options.defaultTableCellProperties The default
 	 * table cell properties.
 	 */
-	constructor( locale, options ) {
+	constructor( locale: Locale, options ) {
 		super( locale );
 
 		this.set( {

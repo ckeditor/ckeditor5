@@ -7,6 +7,9 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
+import type { Editor } from 'ckeditor5/src/core';
+
 import TablePropertyCommand from './tablepropertycommand';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties';
 
@@ -36,17 +39,17 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBorderWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableBorderWidth', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_getValue( table ) {
+	public override _getValue( table: Element ): string | undefined {
 		if ( !table ) {
 			return;
 		}
@@ -63,7 +66,7 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	_getValueToSet( value ) {
+	public override _getValueToSet( value: string ): string | undefined {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
@@ -71,5 +74,11 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 		}
 
 		return value;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableBorderWidth: TableBorderWidthCommand;
 	}
 }

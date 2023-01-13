@@ -7,6 +7,7 @@
  * @module table/tablecolumnresize/tablecolumnwidthscommand
  */
 
+import type { Editor } from 'ckeditor5/src/core';
 import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 /**
@@ -19,14 +20,14 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor, defaultValue ) {
+	constructor( editor: Editor, defaultValue: string | undefined ) {
 		super( editor, 'columnWidths', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		// The command is always enabled as it doesn't care about the actual selection - table can be resized
 		// even if the selection is elsewhere.
 		this.isEnabled = true;
@@ -39,7 +40,7 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	 * @param {String} [options.columnWidths] New value of the `columnWidths` attribute.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
-	execute( options = {} ) {
+	public execute( options = {} ) {
 		const model = this.editor.model;
 		const table = options.table || model.document.selection.getSelectedElement();
 		const { columnWidths } = options;

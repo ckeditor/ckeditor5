@@ -7,7 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellpropertycommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element, Batch } from 'ckeditor5/src/engine';
 
 /**
  * The table cell attribute command.
@@ -18,37 +19,33 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class TableCellPropertyCommand extends Command {
 	/**
+	 * The attribute that will be set by the command.
+	 */
+	public readonly attributeName: string;
+
+	/**
+	 * The default value for the attribute.
+	 */
+	protected readonly _defaultValue: string;
+
+	/**
 	 * Creates a new `TableCellPropertyCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} attributeName Table cell attribute name.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param attributeName Table cell attribute name.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor, attributeName, defaultValue ) {
+	constructor( editor: Editor, attributeName: string, defaultValue: string ) {
 		super( editor );
 
-		/**
-		 * The attribute that will be set by the command.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.attributeName = attributeName;
-
-		/**
-		 * The default value for the attribute.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {String}
-		 */
 		this._defaultValue = defaultValue;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const editor = this.editor;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( editor.model.document.selection );
@@ -61,13 +58,12 @@ export default class TableCellPropertyCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} [options]
-	 * @param {*} [options.value] If set, the command will set the attribute on selected table cells.
+	 * @param options.value If set, the command will set the attribute on selected table cells.
 	 * If it is not set, the command will remove the attribute from the selected table cells.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Pass the model batch instance to the command to aggregate changes,
+	 * @param options.batch Pass the model batch instance to the command to aggregate changes,
 	 * for example to allow a single undo step for multiple executions.
 	 */
-	execute( options = {} ) {
+	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
 		const { value, batch } = options;
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -86,16 +82,14 @@ export default class TableCellPropertyCommand extends Command {
 	/**
 	 * Returns the attribute value for a table cell.
 	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @returns {String|undefined}
-	 * @private
+	 * @internal
 	 */
-	_getAttribute( tableCell ) {
+	public _getAttribute( tableCell: Element ): string | undefined {
 		if ( !tableCell ) {
 			return;
 		}
 
-		const value = tableCell.getAttribute( this.attributeName );
+		const value = tableCell.getAttribute( this.attributeName ) as string;
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -107,11 +101,9 @@ export default class TableCellPropertyCommand extends Command {
 	/**
 	 * Returns the proper model value. It can be used to add a default unit to numeric values.
 	 *
-	 * @private
-	 * @param {*} value
-	 * @returns {*}
+	 * @internal
 	 */
-	_getValueToSet( value ) {
+	public _getValueToSet( value?: string ): string | undefined {
 		if ( value === this._defaultValue ) {
 			return;
 		}
@@ -122,16 +114,18 @@ export default class TableCellPropertyCommand extends Command {
 	/**
 	 * Returns a single value for all selected table cells. If the value is the same for all cells,
 	 * it will be returned (`undefined` otherwise).
-	 *
-	 * @param {Array.<module:engine/model/element~Element>} tableCell
-	 * @returns {*}
-	 * @private
 	 */
-	_getSingleValue( tableCell ) {
-		const firstCellValue = this._getAttribute( tableCell[ 0 ] );
+	private _getSingleValue( tableCells: Array<Element> ) {
+		const firstCellValue = this._getAttribute( tableCells[ 0 ] );
 
-		const everyCellHasAttribute = tableCell.every( tableCell => this._getAttribute( tableCell ) === firstCellValue );
+		const everyCellHasAttribute = tableCells.every( tableCells => this._getAttribute( tableCells ) === firstCellValue );
 
 		return everyCellHasAttribute ? firstCellValue : undefined;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		tableCellProperty: TableCellPropertyCommand;
 	}
 }

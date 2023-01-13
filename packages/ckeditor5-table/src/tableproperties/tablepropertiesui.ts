@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { ButtonView, ContextualBalloon, clickOutsideHandler, getLocalizedColorOptions, normalizeColorOptions } from 'ckeditor5/src/ui';
 
 import { debounce } from 'lodash-es';
@@ -25,6 +25,8 @@ import {
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
+import type { Batch } from 'ckeditor5/src/engine';
+import type { TablePropertiesOptions } from '../tableproperties';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -50,23 +52,44 @@ const propertyToCommandMap = {
  */
 export default class TablePropertiesUI extends Plugin {
 	/**
+	 * The default table properties.
+	 */
+	protected _defaultTableProperties?: TablePropertiesOptions;
+
+	/**
+	 * The contextual balloon plugin instance.
+	 */
+	private declare _balloon: ContextualBalloon;
+
+	/**
+	 * The properties form view displayed inside the balloon.
+	 */
+	public view: any | null; // TODO {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
+
+	/**
+	 * The batch used to undo all changes made by the form (which are live, as the user types)
+	 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
+	 */
+	protected declare _undoStepBatch: null | Batch;
+
+	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ ContextualBalloon ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TablePropertiesUI' {
 		return 'TablePropertiesUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'table.tableProperties', {
@@ -78,42 +101,15 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
-		/**
-		 * The default table properties.
-		 *
-		 * @protected
-		 * @member {module:table/tableproperties~TablePropertiesOptions}
-		 */
 		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
 			includeAlignmentProperty: true
 		} );
-
-		/**
-		 * The contextual balloon plugin instance.
-		 *
-		 * @private
-		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
-		 */
 		this._balloon = editor.plugins.get( ContextualBalloon );
-
-		/**
-		 * The properties form view displayed inside the balloon.
-		 *
-		 * @member {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
-		 */
 		this.view = null;
-
-		/**
-		 * The batch used to undo all changes made by the form (which are live, as the user types)
-		 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
-		 *
-		 * @protected
-		 * @member {module:engine/model/batch~Batch}
-		 */
 		this._undoStepBatch = null;
 
 		editor.ui.componentFactory.add( 'tableProperties', locale => {
@@ -128,7 +124,7 @@ export default class TablePropertiesUI extends Plugin {
 			this.listenTo( view, 'execute', () => this._showView() );
 
 			const commands = Object.values( propertyToCommandMap )
-				.map( commandName => editor.commands.get( commandName ) );
+				.map( commandName => editor.commands.get( commandName )! );
 
 			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
 				areEnabled.some( isCommandEnabled => isCommandEnabled )
@@ -141,7 +137,7 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed.
@@ -158,7 +154,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @returns {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} The table
 	 * properties form view instance.
 	 */
-	_createPropertiesView() {
+	private _createPropertiesView() {
 		const editor = this.editor;
 		const config = editor.config.get( 'table.tableProperties' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors );
@@ -182,7 +178,7 @@ export default class TablePropertiesUI extends Plugin {
 
 		this.listenTo( view, 'cancel', () => {
 			// https://github.com/ckeditor/ckeditor5/issues/6180
-			if ( this._undoStepBatch.operations.length ) {
+			if ( this._undoStepBatch!.operations.length ) {
 				editor.execute( 'undo', this._undoStepBatch );
 			}
 
@@ -271,10 +267,8 @@ export default class TablePropertiesUI extends Plugin {
 	 * and passes them to the {@link #view}.
 	 *
 	 * This way, the UI stays up–to–date with the editor data.
-	 *
-	 * @private
 	 */
-	_fillViewFormFromCommandValues() {
+	private _fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
 		const borderStyleCommand = commands.get( 'tableBorderStyle' );
 
@@ -282,11 +276,11 @@ export default class TablePropertiesUI extends Plugin {
 			.map( ( [ property, commandName ] ) => {
 				const defaultValue = this._defaultTableProperties[ property ] || '';
 
-				return [ property, commands.get( commandName ).value || defaultValue ];
+				return [ property, commands.get( commandName )!.value || defaultValue ];
 			} )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
-				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
+				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand!.value === 'none' ) {
 					return;
 				}
 
@@ -300,10 +294,8 @@ export default class TablePropertiesUI extends Plugin {
 	 * **Note**: Each time a view is shown, the new {@link #_undoStepBatch} is created that contains
 	 * all changes made to the document when the view is visible, allowing a single undo step
 	 * for all of them.
-	 *
-	 * @protected
 	 */
-	_showView() {
+	protected _showView(): void {
 		const editor = this.editor;
 
 		if ( !this.view ) {
@@ -331,10 +323,8 @@ export default class TablePropertiesUI extends Plugin {
 
 	/**
 	 * Removes the {@link #view} from the {@link #_balloon}.
-	 *
-	 * @protected
 	 */
-	_hideView() {
+	protected _hideView(): void {
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
@@ -352,10 +342,8 @@ export default class TablePropertiesUI extends Plugin {
 
 	/**
 	 * Repositions the {@link #_balloon} or hides the {@link #view} if a table is no longer selected.
-	 *
-	 * @protected
 	 */
-	_updateView() {
+	protected _updateView(): void {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
@@ -368,21 +356,15 @@ export default class TablePropertiesUI extends Plugin {
 
 	/**
 	 * Returns `true` when the {@link #view} is the visible in the {@link #_balloon}.
-	 *
-	 * @private
-	 * @type {Boolean}
 	 */
-	get _isViewVisible() {
+	private get _isViewVisible(): boolean {
 		return !!this.view && this._balloon.visibleView === this.view;
 	}
 
 	/**
 	 * Returns `true` when the {@link #view} is in the {@link #_balloon}.
-	 *
-	 * @private
-	 * @type {Boolean}
 	 */
-	get _isViewInBalloon() {
+	private get _isViewInBalloon(): boolean {
 		return !!this.view && this._balloon.hasView( this.view );
 	}
 
@@ -397,7 +379,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @param {String} defaultValue The default value of the command.
 	 * @returns {Function}
 	 */
-	_getPropertyChangeCallback( commandName, defaultValue ) {
+	private _getPropertyChangeCallback( commandName: string, defaultValue: string ) {
 		return ( evt, propertyName, newValue, oldValue ) => {
 			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
 			// It is an initial call (when opening the table properties view).
@@ -426,7 +408,15 @@ export default class TablePropertiesUI extends Plugin {
 	 * @param {String} options.defaultValue
 	 * @returns {Function}
 	 */
-	_getValidatedPropertyChangeCallback( options ) {
+	private _getValidatedPropertyChangeCallback(
+		options: {
+			commandName: string;
+			viewField: string;
+			validator: Function;
+			errorText: string;
+			defaultValue: string;
+		}
+	) {
 		const { commandName, viewField, validator, errorText, defaultValue } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;
