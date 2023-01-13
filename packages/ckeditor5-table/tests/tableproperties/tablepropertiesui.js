@@ -569,6 +569,20 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'initial data', () => {
+				it( 'should not execute commands before changing the data', () => {
+					const tableBackgroundCommand = editor.commands.get( 'tableBackgroundColor' );
+					const spy = sinon.spy( tableBackgroundCommand, 'execute' );
+
+					tablePropertiesUI._showView();
+					tablePropertiesView = tablePropertiesUI.view;
+
+					expect( spy.called ).to.be.false;
+
+					tablePropertiesView.backgroundColor = 'red';
+
+					expect( spy.called ).to.be.true;
+				} );
+
 				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
 					// Trigger lazy init.
 					tablePropertiesUI._showView();
@@ -705,6 +719,15 @@ describe( 'table properties', () => {
 				editor.ui.fire( 'update' );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should not reposition the baloon if view is not visible', () => {
+				const spy = sinon.spy( contextualBalloon, 'updatePosition' );
+
+				tablePropertiesUI.view = false;
+				editor.ui.fire( 'update' );
+
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'should hide the view and not reposition the balloon if table is no longer selected', () => {
