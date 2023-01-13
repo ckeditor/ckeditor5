@@ -112,28 +112,3 @@ export function getClientHeight( domElement: HTMLElement ): number {
 export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
 	return domElement === global.document.body ? global.window : domElement;
 }
-
-/**
- * Returns the closest scrollable ancestor of a DOM element.
- *
- * TODO: Move to shared utils.
- *
- * @internal
- */
-export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
-	do {
-		domElement = domElement.parentElement!;
-
-		if ( !domElement ) {
-			return null;
-		}
-
-		const overflow = global.window.getComputedStyle( domElement ).overflowY;
-
-		if ( overflow === 'auto' || overflow === 'scroll' ) {
-			break;
-		}
-	} while ( domElement.tagName != 'BODY' );
-
-	return domElement;
-}

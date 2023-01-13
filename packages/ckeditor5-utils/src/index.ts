@@ -45,6 +45,7 @@ export { default as createElement } from './dom/createelement';
 export { default as Config } from './config';
 export { default as isIterable } from './isiterable';
 export { default as DomEmitterMixin, DomEmitter } from './dom/emittermixin';
+export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor';
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';

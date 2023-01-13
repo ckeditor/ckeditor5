@@ -8,15 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { global } from 'ckeditor5/src/utils';
+import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils';
 import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview';
 import {
 	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
 	getPageStyles,
-	getScrollable,
-	findClosestScrollableAncestor
+	getScrollable
 } from './utils';
 
 // @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
