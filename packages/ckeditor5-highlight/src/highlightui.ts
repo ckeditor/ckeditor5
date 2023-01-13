@@ -8,10 +8,18 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, ToolbarSeparatorView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	SplitButtonView,
+	ToolbarSeparatorView,
+	createDropdown,
+	addToolbarToDropdown,
+	type DropdownView
+} from 'ckeditor5/src/ui';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
+import type { HighlightOption } from './highlight';
 
 import './../theme/highlight.css';
 
@@ -32,8 +40,6 @@ import './../theme/highlight.css';
  *
  * See the {@link module:highlight/highlight~HighlightConfig#options configuration} to learn more
  * about the defaults.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HighlightUI extends Plugin {
 	/**
@@ -50,9 +56,8 @@ export default class HighlightUI extends Plugin {
 	 * * `'Green pen'`.
 	 *
 	 * @readonly
-	 * @type {Object.<String,String>}
 	 */
-	get localizedOptionTitles() {
+	public get localizedOptionTitles(): Record<string, string> {
 		const t = this.editor.t;
 
 		return {
@@ -68,15 +73,15 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HighlightUI' {
 		return 'HighlightUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const options = this.editor.config.get( 'highlight.options' );
+	public init(): void {
+		const options = this.editor.config.get( 'highlight.options' )!;
 
 		for ( const option of options ) {
 			this._addHighlighterButton( option );
@@ -89,12 +94,10 @@ export default class HighlightUI extends Plugin {
 
 	/**
 	 * Creates the "Remove highlight" button.
-	 *
-	 * @private
 	 */
-	_addRemoveHighlightButton() {
+	private _addRemoveHighlightButton(): void {
 		const t = this.editor.t;
-		const command = this.editor.commands.get( 'highlight' );
+		const command = this.editor.commands.get( 'highlight' )!;
 
 		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -103,17 +106,14 @@ export default class HighlightUI extends Plugin {
 
 	/**
 	 * Creates a toolbar button from the provided highlight option.
-	 *
-	 * @param {module:highlight/highlight~HighlightOption} option
-	 * @private
 	 */
-	_addHighlighterButton( option ) {
-		const command = this.editor.commands.get( 'highlight' );
+	private _addHighlighterButton( option: HighlightOption ) {
+		const command = this.editor.commands.get( 'highlight' )!;
 
 		// TODO: change naming
 		this._addButton( 'highlight:' + option.model, option.title, getIconForType( option.type ), option.model, decorateHighlightButton );
 
-		function decorateHighlightButton( button ) {
+		function decorateHighlightButton( button: ButtonView ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 			button.iconView.fillColor = option.color;
@@ -124,14 +124,13 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * Internal method for creating highlight buttons.
 	 *
-	 * @param {String} name The name of the button.
-	 * @param {String} label The label for the button.
-	 * @param {String} icon The button icon.
-	 * @param {*} value The `value` property passed to the executed command.
-	 * @param {Function} decorateButton A callback getting ButtonView instance so that it can be further customized.
-	 * @private
+	 * @param name The name of the button.
+	 * @param label The label for the button.
+	 * @param icon The button icon.
+	 * @param value The `value` property passed to the executed command.
+	 * @param decorateButton A callback getting ButtonView instance so that it can be further customized.
 	 */
-	_addButton( name, label, icon, value, decorateButton ) {
+	private _addButton( name: string, label: string, icon: string, value: string | null, decorateButton: ( button: ButtonView ) => void ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {
@@ -146,7 +145,7 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			buttonView.on( 'execute', () => {
-				editor.execute( 'highlight', { value } );
+				editor.execute( 'highlight', { value: value! } );
 				editor.editing.view.focus();
 			} );
 
@@ -159,11 +158,8 @@ export default class HighlightUI extends Plugin {
 
 	/**
 	 * Creates the split button dropdown UI from the provided highlight options.
-	 *
-	 * @param {Array.<module:highlight/highlight~HighlightOption>} options
-	 * @private
 	 */
-	_addDropdown( options ) {
+	private _addDropdown( options: Array<HighlightOption> ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
@@ -174,12 +170,12 @@ export default class HighlightUI extends Plugin {
 			retVal[ option.model ] = option;
 
 			return retVal;
-		}, {} );
+		}, {} as Record<string, HighlightOption> );
 
 		componentFactory.add( 'highlight', locale => {
-			const command = editor.commands.get( 'highlight' );
+			const command = editor.commands.get( 'highlight' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
-			const splitButtonView = dropdownView.buttonView;
+			const splitButtonView = dropdownView.buttonView as HighlightSplitButtonView;
 
 			splitButtonView.set( {
 				label: t( 'Highlight' ),
@@ -209,7 +205,7 @@ export default class HighlightUI extends Plugin {
 
 					// Update lastExecutedHighlight on execute.
 					this.listenTo( buttonView, 'execute', () => {
-						dropdownView.buttonView.set( { lastExecuted: option.model } );
+						( dropdownView.buttonView as HighlightSplitButtonView ).set( { lastExecuted: option.model } );
 					} );
 
 					return buttonView;
@@ -242,14 +238,16 @@ export default class HighlightUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			// Returns active highlighter option depending on current command value.
-			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
-			// of last executed highlighter. Otherwise it will return option key for current one.
-			function getActiveOption( current, key ) {
+			/**
+			 * Returns active highlighter option depending on current command value.
+			 * If current is not set or it is the same as last execute this method will return the option key (like icon or color)
+			 * of last executed highlighter. Otherwise it will return option key for current one.
+			 */
+			function getActiveOption( current: string, key: keyof HighlightOption ): string {
 				const whichHighlighter = !current ||
 				current === splitButtonView.lastExecuted ? splitButtonView.lastExecuted : current;
 
-				return optionsMap[ whichHighlighter ][ key ];
+				return optionsMap[ whichHighlighter! ][ key ];
 			}
 
 			return dropdownView;
@@ -257,14 +255,30 @@ export default class HighlightUI extends Plugin {
 	}
 }
 
-// Extends split button icon style to reflect last used button style.
-function bindToolbarIconStyleToActiveColor( dropdownView ) {
-	const actionView = dropdownView.buttonView.actionView;
+/**
+ * Extends split button icon style to reflect last used button style.
+ */
+function bindToolbarIconStyleToActiveColor( dropdownView: DropdownView ): void {
+	const actionView = ( dropdownView.buttonView as HighlightSplitButtonView ).actionView;
 
-	actionView.iconView.bind( 'fillColor' ).to( dropdownView.buttonView, 'color' );
+	actionView.iconView.bind( 'fillColor' ).to( ( dropdownView.buttonView! as HighlightSplitButtonView ), 'color' );
 }
 
-// Returns icon for given highlighter type.
-function getIconForType( type ) {
+/**
+ * Returns icon for given highlighter type.
+ */
+function getIconForType( type: string ) {
 	return type === 'marker' ? markerIcon : penIcon;
+}
+
+type HighlightSplitButtonView = SplitButtonView & {
+	lastExecuted: string;
+	commandValue: string;
+	color: string;
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HighlightUI.pluginName ]: HighlightUI;
+	}
 }

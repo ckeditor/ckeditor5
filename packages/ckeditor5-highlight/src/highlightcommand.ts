@@ -8,48 +8,50 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type { TreeWalkerValue } from 'ckeditor5/src/engine';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
  * to apply the text highlighting.
  *
- *		editor.execute( 'highlight', { value: 'greenMarker' } );
+ * ```ts
+ * editor.execute( 'highlight', { value: 'greenMarker' } );
+ * ```
  *
  * **Note**: Executing the command without a value removes the attribute from the model. If the selection is collapsed
  * inside a text with the highlight attribute, the command will remove the attribute from the entire range
  * of that text.
- *
- * @extends module:core/command~Command
  */
 export default class HighlightCommand extends Command {
 	/**
+	 * A value indicating whether the command is active. If the selection has some highlight attribute,
+	 * it corresponds to the value of that attribute.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: string;
+
+	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		/**
-		 * A value indicating whether the command is active. If the selection has some highlight attribute,
-		 * it corresponds to the value of that attribute.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
-		 */
-		this.value = doc.selection.getAttribute( 'highlight' );
+		this.value = doc.selection.getAttribute( 'highlight' ) as string;
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**
 	 * Executes the command.
 	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] The value to apply.
+	 * @param options Options for the executed command.
+	 * @param options.value The value to apply.
 	 *
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	public override execute( options: { value?: string } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
@@ -58,12 +60,12 @@ export default class HighlightCommand extends Command {
 
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
-				const position = selection.getFirstPosition();
+				const position = selection.getFirstPosition()!;
 
 				// When selection is inside text with `highlight` attribute.
 				if ( selection.hasAttribute( 'highlight' ) ) {
 					// Find the full highlighted range.
-					const isSameHighlight = value => {
+					const isSameHighlight = ( value: TreeWalkerValue ) => {
 						return value.item.hasAttribute( 'highlight' ) && value.item.getAttribute( 'highlight' ) === this.value;
 					};
 

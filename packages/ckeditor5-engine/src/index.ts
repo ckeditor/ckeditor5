@@ -79,6 +79,7 @@ export type { default as Schema } from './model/schema';
 export type { default as Selection } from './model/selection';
 export type { default as TypeCheckable } from './model/typecheckable';
 export type { default as Writer } from './model/writer';
+export type { TreeWalkerValue } from './model/treewalker';
 
 export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange';
 

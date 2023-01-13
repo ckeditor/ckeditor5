@@ -7,30 +7,29 @@
  * @module highlight/highlightediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import HighlightCommand from './highlightcommand';
+import type { HighlightConfig, HighlightOption } from './highlight';
 
 /**
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
  * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
  * on the {@link module:highlight/highlight~HighlightConfig configuration}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HighlightEditing' {
 		return 'HighlightEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'highlight', {
@@ -84,13 +83,13 @@ export default class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Allow highlight attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'highlight' } );
 
-		const options = editor.config.get( 'highlight.options' );
+		const options = editor.config.get( 'highlight.options' )!;
 
 		// Set-up the two-way conversion.
 		editor.conversion.attributeToElement( _buildDefinition( options ) );
@@ -99,12 +98,13 @@ export default class HighlightEditing extends Plugin {
 	}
 }
 
-// Converts the options array to a converter definition.
-//
-// @param {Array.<module:highlight/highlight~HighlightOption>} options An array with configured options.
-// @returns {module:engine/conversion/conversion~ConverterDefinition}
-function _buildDefinition( options ) {
-	const definition = {
+/**
+ * Converts the options array to a converter definition.
+ *
+ * @param options An array with configured options.
+ */
+function _buildDefinition( options: Array<HighlightOption> ): HighlightConverterDefinition {
+	const definition: HighlightConverterDefinition = {
 		model: {
 			key: 'highlight',
 			values: []
@@ -121,4 +121,29 @@ function _buildDefinition( options ) {
 	}
 
 	return definition;
+}
+
+type HighlightConverterDefinition = {
+	model: { key: string; values: Array<string> };
+	view: Record<string, { name: string; classes: string }>;
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		highlight: HighlightCommand;
+	}
+
+	interface PluginsMap {
+		[ HighlightEditing.pluginName ]: HighlightEditing;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:highlight/highlight~Highlight} feature.
+		 *
+		 * Read more in {@link module:highlight/highlight~HighlightConfig}.
+		 */
+		highlight?: HighlightConfig;
+	}
 }
