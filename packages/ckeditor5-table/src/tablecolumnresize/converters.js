@@ -68,9 +68,11 @@ export function downcastTableColumnWidthsAttribute() {
 	return dispatcher => dispatcher.on( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
 		const modelTable = data.item;
+		const viewElement = conversionApi.mapper.toViewElement( modelTable );
 
-		const viewTable = [ ...conversionApi.mapper.toViewElement( modelTable ).getChildren() ]
-			.find( viewChild => viewChild.is( 'element', 'table' ) );
+		const viewTable = viewElement.is( 'element', 'table' ) ?
+			viewElement :
+			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) );
 
 		if ( data.attributeNewValue ) {
 			// If new value is the same as the old, the operation is not applied (see the `writer.setAttributeOnItem()`).
