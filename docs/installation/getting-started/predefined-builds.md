@@ -92,10 +92,10 @@ After downloading and installing a predefined CKEditor 5 build in your applicati
 <script src="[ckeditor-build-path]/ckeditor.js"></script>
 ```
 
-Once the CKEditor script is loaded, you can {@link installation/getting-started/basic-api use the API} to create editors in your page.
+Once the CKEditor script is loaded, you can {@link installation/getting-started/editor-lifecycle use the API} to create editors in your page.
 
 <info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/basic-api#umd-support Basic API guide}.
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/predefined-builds#umd-support UMD support section}.
 </info-box>
 
 ## Available builds
@@ -1116,4 +1116,3 @@ The table below presents the list of all plugins included in various builds.
 Plugins denoted with an asterisk (*) are essential for the editor to work and should never be removed.
 The two list plugins denoted with a plus (+) can only be used separately.
 The document lists feature is required by the import from Word plugin to run correctly.
-
