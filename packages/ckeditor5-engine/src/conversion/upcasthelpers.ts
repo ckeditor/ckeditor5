@@ -523,7 +523,7 @@ export function convertText() {
 				return;
 			}
 
-			// Wrap $text in paragraph and include any marker that is directly before $text. #13053
+			// Wrap `$text` in paragraph and include any marker that is directly before `$text`. See #13053.
 			const nodeBefore = position.nodeBefore;
 
 			position = wrapInParagraph( position, writer );
