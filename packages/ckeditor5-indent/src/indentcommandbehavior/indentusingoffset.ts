@@ -16,17 +16,17 @@ export default class IndentUsingOffset {
 	/**
 	 * The direction of indentation.
 	 */
-	declare public isForward: boolean;
+	public isForward: boolean;
 
 	/**
 	 * The offset of the next indentation step.
 	 */
-	declare public offset: number;
+	public offset: number;
 
 	/**
 	 * Indentation unit.
 	 */
-	declare public unit: string;
+	public unit: string;
 
 	/**
 	 * Creates an instance of the indentation behavior.

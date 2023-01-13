@@ -20,13 +20,13 @@ import { first } from 'ckeditor5/src/utils';
  * To increase block indentation at the current selection, execute the command:
  *
  * ```ts
- *		editor.execute( 'indentBlock' );
+ * editor.execute( 'indentBlock' );
  * ```
  *
  * To decrease block indentation at the current selection, execute the command:
  *
  * ```ts
- *		editor.execute( 'outdentBlock' );
+ * editor.execute( 'outdentBlock' );
  * ```
  */
 export default class IndentBlockCommand extends Command {

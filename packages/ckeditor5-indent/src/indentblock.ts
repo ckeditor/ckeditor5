@@ -13,6 +13,7 @@ import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'cked
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
+import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
@@ -80,11 +81,11 @@ export default class IndentBlock extends Plugin {
 		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
 
 		// Enable block indentation to heading configuration options. If it is not defined enable in paragraph and default headings.
-		const options = editor.config.get( 'heading.options' ) as any; // TODO fix when heading merged
-		const configuredElements = options && options.map( ( option: any ) => option.model ); // TODO remove any
+		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
+		const configuredElements = options && options.map( option => option.model );
 		const knownElements = configuredElements || DEFAULT_ELEMENTS;
 
-		knownElements.forEach( ( elementName: any ) => { // TODO remove any
+		knownElements.forEach( elementName => {
 			if ( schema.isRegistered( elementName ) ) {
 				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
 			}
@@ -170,35 +171,35 @@ export default class IndentBlock extends Plugin {
  * create indentation steps.
  *
  * ```ts
- *		ClassicEditor
- *			.create( editorElement, {
- * 				indentBlock: {
- *					offset: 2,
- *					unit: 'em'
- * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		indentBlock: {
+ * 			offset: 2,
+ * 			unit: 'em'
+ * 		}
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
  * ```
  *
  * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
  * indentation steps:
  *
  * ```ts
- *		ClassicEditor
- *			.create( editorElement, {
- * 				indentBlock: {
- *					classes: [
- *						'indent-a', // The first step - smallest indentation.
- *						'indent-b',
- *						'indent-c',
- *						'indent-d',
- *						'indent-e' // The last step - biggest indentation.
- *					]
- * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		indentBlock: {
+ * 			classes: [
+ * 				'indent-a', // The first step - smallest indentation.
+ * 				'indent-b',
+ * 				'indent-c',
+ * 				'indent-d',
+ * 				'indent-e' // The last step - biggest indentation.
+ * 			]
+ * 		}
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
  * ```
  *
  * In the example above only 5 indentation steps will be available.

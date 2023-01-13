@@ -16,12 +16,12 @@ export default class IndentUsingClasses {
 	/**
 	 * The direction of indentation.
 	 */
-	declare public isForward: boolean;
+	public isForward: boolean;
 
 	/**
 	 * A list of classes used for indentation.
 	 */
-	declare public classes: Array<string>;
+	public classes: Array<string>;
 
 	/**
 	 * Creates an instance of the indentation behavior.
