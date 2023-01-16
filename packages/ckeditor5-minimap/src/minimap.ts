@@ -105,6 +105,8 @@ export default class Minimap extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const useSimplePreview = editor.config.get( 'minimap.useSimplePreview' );
+
+		// TODO: Throw an error if there is no `minimap` in config.
 		const minimapContainerElement = editor.config.get( 'minimap.container' )!;
 		const scrollableRootAncestor = this._scrollableRootAncestor!;
 
@@ -211,7 +213,7 @@ export default class Minimap extends Plugin {
 /**
  * The configuration of the {@link module:minimap/minimap~Minimap} feature.
  *
- * ```
+ * ```ts
  * ClassicEditor
  * 	.create( {
  * 		minimap: ... // Minimap feature config.
@@ -229,7 +231,7 @@ interface MinimapConfig {
 	 *
 	 * **Note**: The container must have a fixed `width` and `overflow: hidden` for the minimap to work correctly.
 	 */
-	container?: HTMLElement;
+	container: HTMLElement;
 
 	/**
 	 * When set to `true`, the minimap will render content as simple boxes instead of replicating the look of the content (default).
