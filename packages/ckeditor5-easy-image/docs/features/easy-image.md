@@ -52,8 +52,8 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 			}
 		} )
-		.then( ... )
-		.catch( ... );
+		.then( /* ... */ )
+		.catch( /* ... */ );
 	```
 
 This is all. At this point, image upload will be automatically enabled in your application.
@@ -137,8 +137,8 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EasyImage, Image, ... ],
-		toolbar: [ 'uploadImage', ... ],
+		plugins: [ EasyImage, Image, /* ... */ ],
+		toolbar: [ 'uploadImage', /* ... */ ],
 
 		// Configure the endpoint. See the "Configuration" section above.
 		cloudServices: {
@@ -146,8 +146,8 @@ ClassicEditor
 			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
