@@ -24,8 +24,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const span = createElement( document, 'span', overflowAutoStyleAttribute, [ b ] );
 		const p1 = createElement( document, 'p', {}, [ span ] );
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
-		// eslint-disable-next-line no-unused-vars
-		const div = createElement( document, 'div', {}, [ p1, p2 ] );
+		createElement( document, 'div', {}, [ p1, p2 ] );
 
 		expect( findClosestScrollableAncestor( b ) ).to.equal( span );
 	} );
@@ -42,8 +41,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const span = createElement( document, 'span', {}, [ b ] );
 		const p1 = createElement( document, 'p', overflowAutoStyleAttribute, [ span ] );
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
-		// eslint-disable-next-line no-unused-vars
-		const div = createElement( document, 'div', overflowAutoStyleAttribute, [ p1, p2 ] );
+		createElement( document, 'div', overflowAutoStyleAttribute, [ p1, p2 ] );
 
 		expect( findClosestScrollableAncestor( b ) ).to.equal( p1 );
 	} );
@@ -64,12 +62,18 @@ describe( 'findClosestScrollableAncestor', () => {
 		expect( findClosestScrollableAncestor( b2 ) ).to.equal( span2 );
 	} );
 
+	it( 'returns null in if chosen element doeasn\'t have parent', () => {
+		//  B
+		const b = createElement( document, 'b' );
+		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
+	} );
+
 	it( 'returns null in simple element tree without scrollable ancestors', () => {
 		//  SPAN
 		//    |- B
 		const b = createElement( document, 'b' );
-		// eslint-disable-next-line no-unused-vars
-		const span = createElement( document, 'span', {}, [ b ] );
+		createElement( document, 'span', {}, [ b ] );
+
 		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
 	} );
 
@@ -85,8 +89,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const span = createElement( document, 'span', {}, [ b ] );
 		const p1 = createElement( document, 'p', {}, [ span ] );
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
-		// eslint-disable-next-line no-unused-vars
-		const div = createElement( document, 'div', {}, [ p1, p2 ] );
+		createElement( document, 'div', {}, [ p1, p2 ] );
 
 		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
 	} );
