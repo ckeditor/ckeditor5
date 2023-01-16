@@ -138,11 +138,20 @@ export { default as DomEventData } from './view/observer/domeventdata';
 // View / Events.
 export type { BubblingEvent } from './view/observer/bubblingemittermixin';
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver';
-export type { ViewDocumentCompositionEvent } from './view/observer/compositionobserver';
+export type {
+	ViewDocumentCompositionStartEvent,
+	ViewDocumentCompositionUpdateEvent,
+	ViewDocumentCompositionEndEvent
+} from './view/observer/compositionobserver';
 export type { ViewDocumentInputEvent } from './view/observer/inputobserver';
-export type { ViewDocumentKeyEvent } from './view/observer/keyobserver';
+export type { ViewDocumentKeyDownEvent, ViewDocumentKeyUpEvent, KeyEventData } from './view/observer/keyobserver';
 export type { ViewDocumentLayoutChangedEvent } from './view/document';
-export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
+export type {
+	ViewDocumentMouseDownEvent,
+	ViewDocumentMouseUpEvent,
+	ViewDocumentMouseOverEvent,
+	ViewDocumentMouseOutEvent
+} from './view/observer/mouseobserver';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 
 // View / Styles.

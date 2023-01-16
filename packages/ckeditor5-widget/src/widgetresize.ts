@@ -26,7 +26,7 @@ import {
 	type DomEventData,
 	type Element,
 	type ViewContainerElement,
-	type ViewDocumentMouseEvent,
+	type ViewDocumentMouseDownEvent,
 	type ViewSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -108,7 +108,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer = new ( DomEmitterMixin() )();
 
-		this.listenTo<ViewDocumentMouseEvent>(
+		this.listenTo<ViewDocumentMouseDownEvent>(
 			editing.view.document,
 			'mousedown',
 			this._mouseDownListener.bind( this ),

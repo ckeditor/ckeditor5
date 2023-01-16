@@ -13,7 +13,9 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
 /**
  * Adds a border CSS styles processing rules.
  *
- *		editor.data.addStyleProcessorRules( addBorderRules );
+ * ```ts
+ * editor.data.addStyleProcessorRules( addBorderRules );
+ * ```
  *
  * This rules merges all [border](https://developer.mozilla.org/en-US/docs/Web/CSS/border) styles notation shorthands:
  *
@@ -32,15 +34,15 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
  *
  * The normalized model stores border values as:
  *
- *		const styles = {
- *			border: {
- *				color: { top, right, bottom, left },
- *				style: { top, right, bottom, left },
- *				width: { top, right, bottom, left },
- *			}
- *		};
- *
- * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
+ * ```ts
+ * const styles = {
+ * 	border: {
+ * 		color: { top, right, bottom, left },
+ * 		style: { top, right, bottom, left },
+ * 		width: { top, right, bottom, left },
+ * 	}
+ * };
+ * ```
  */
 export function addBorderRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'border', getBorderNormalizer() );
@@ -242,32 +244,38 @@ function normalizeBorderShorthand( string: string ) {
 	return result;
 }
 
-// The border reducer factory.
-//
-// It tries to produce the most optimal output for the specified styles.
-//
-// For a border style:
-//
-//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
-//
-// It will produce: `border-style: solid`.
-// For a border style and color:
-//
-//      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
-//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
-//
-// It will produce: `border-color: #ff0; border-style: solid`.
-// If all border parameters are specified:
-//
-//      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
-//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
-//      width: {top: "2px", bottom: "2px", right: "2px", left: "2px"}
-//
-// It will combine everything into a single property: `border: 2px solid #ff0`.
-//
-// The definitions are merged only if all border selectors have the same values.
-//
-// @returns {Function}
+/**
+ * The border reducer factory.
+ *
+ * It tries to produce the most optimal output for the specified styles.
+ *
+ * For a border style:
+ *
+ * ```css
+ * style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+ * ```
+ *
+ * It will produce: `border-style: solid`.
+ * For a border style and color:
+ *
+ * ```css
+ * color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
+ * style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+ * ```
+ *
+ * It will produce: `border-color: #ff0; border-style: solid`.
+ * If all border parameters are specified:
+ *
+ * ```css
+ * color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
+ * style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+ * width: {top: "2px", bottom: "2px", right: "2px", left: "2px"}
+ * ```
+ *
+ * It will combine everything into a single property: `border: 2px solid #ff0`.
+ *
+ * The definitions are merged only if all border selectors have the same values.
+ */
 function getBorderReducer(): Reducer {
 	return value => {
 		const topStyles = extractBorderPosition( value, 'top' );
@@ -312,8 +320,9 @@ function getBorderReducer(): Reducer {
 		];
 	};
 
-	// @param {Array.<Object>} styles The array of objects with `style`, `color`, `width` properties.
-	// @param {'width'|'style'|'color'} type
+	/**
+	 * @param styles The array of objects with `style`, `color`, `width` properties.
+	 */
 	function getReducedStyleValueForType( styles: Array<Styles>, type: 'width' | 'style' | 'color' ) {
 		return styles
 			.map( style => style[ type ] as any )
@@ -325,16 +334,17 @@ function getBorderPositionReducer( which: keyof BoxSides | 'all' ): Reducer {
 	return value => reduceBorderPosition( value, which );
 }
 
-// Returns an array with reduced border styles depending on the specified values.
-//
-// If all border properties (width, style, color) are specified, the returned selector will be
-// merged into a group: `border-*: [width] [style] [color]`.
-//
-// Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
-//
-// @param {Object|null} value Styles if defined.
-// @param {'top'|'right'|'bottom'|'left'|'all'} which The border position.
-// @returns {Array}
+/**
+ * Returns an array with reduced border styles depending on the specified values.
+ *
+ * If all border properties (width, style, color) are specified, the returned selector will be
+ * merged into a group: `border-*: [width] [style] [color]`.
+ *
+ * Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
+ *
+ * @param value Styles if defined.
+ * @param which The border position.
+ */
 function reduceBorderPosition( value: any, which: keyof BoxSides | 'all' ): Array<PropertyDescriptor> {
 	const borderTypes = [];
 

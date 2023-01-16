@@ -7,7 +7,9 @@
  * @module engine/view/containerelement
  */
 
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
+import type Document from './document';
+import type Node from './node';
 
 /**
  * Containers are elements which define document structure. They define boundaries for
@@ -27,63 +29,33 @@ import Element from './element';
  * To create a new container element instance use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
  * method.
- *
- * @extends module:engine/view/element~Element
  */
 export default class ContainerElement extends Element {
-	public override getFillerOffset: () => number | null;
-
 	/**
 	 * Creates a container element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
 	 * @see module:engine/view/element~Element
-	 * @protected
-	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
-	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into created element.
+	 * @internal
+	 * @param document The document instance to which this element belongs.
+	 * @param name Node name.
+	 * @param attrs Collection of attributes.
+	 * @param children A list of nodes to be inserted into created element.
 	 */
-	constructor( ...args: ConstructorParameters<typeof Element> ) {
-		super( ...args );
+	constructor(
+		document: Document,
+		name: string,
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
+	) {
+		super( document, name, attrs, children );
 
-		/**
-		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
-		 *
-		 * @method #getFillerOffset
-		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-		 */
 		this.getFillerOffset = getFillerOffset;
 	}
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		containerElement.is( 'containerElement' ); // -> true
- *		containerElement.is( 'element' ); // -> true
- *		containerElement.is( 'node' ); // -> true
- *		containerElement.is( 'view:containerElement' ); // -> true
- *		containerElement.is( 'view:element' ); // -> true
- *		containerElement.is( 'view:node' ); // -> true
- *
- *		containerElement.is( 'model:element' ); // -> false
- *		containerElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is a container element, you can also check its
- * {@link module:engine/view/containerelement~ContainerElement#name name}:
- *
- *		containerElement.is( 'element', 'div' ); // -> true if this is a div container element
- *		containerElement.is( 'contaienrElement', 'div' ); // -> same as above
- *		text.is( 'element', 'div' ); -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type Type to check.
- * @param {String} [name] Element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 ContainerElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'containerElement' || type === 'view:containerElement' ||
@@ -102,7 +74,7 @@ ContainerElement.prototype.is = function( type: string, name?: string ): boolean
 /**
  * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
  *
- * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+ * @returns Block filler offset or `null` if block filler is not needed.
  */
 export function getFillerOffset( this: ContainerElement ): number | null {
 	const children = [ ...this.getChildren() ];

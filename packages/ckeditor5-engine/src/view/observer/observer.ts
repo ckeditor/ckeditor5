@@ -17,45 +17,38 @@ import type View from '../view';
  * processing and fire events on the {@link module:engine/view/document~Document} objects.
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
- *
- * @abstract
  */
 export default abstract class Observer extends DomEmitterMixin() {
+	/**
+	 * An instance of the view controller.
+	 */
 	public readonly view: View;
+
+	/**
+	 * A reference to the {@link module:engine/view/document~Document} object.
+	 */
 	public readonly document: Document;
-	public readonly isEnabled: false;
+
+	/**
+	 * The state of the observer. If it is disabled, no events will be fired.
+	 */
+	private _isEnabled: boolean = false;
 
 	/**
 	 * Creates an instance of the observer.
-	 *
-	 * @param {module:engine/view/view~View} view
 	 */
 	constructor( view: View ) {
 		super();
 
-		/**
-		 * An instance of the view controller.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/view~View}
-		 */
 		this.view = view;
-
-		/**
-		 * A reference to the {@link module:engine/view/document~Document} object.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/document~Document}
-		 */
 		this.document = view.document;
+	}
 
-		/**
-		 * The state of the observer. If it is disabled, no events will be fired.
-		 *
-		 * @readonly
-		 * @member {Boolean}
-		 */
-		this.isEnabled = false;
+	/**
+	 * The state of the observer. If it is disabled, no events will be fired.
+	 */
+	public get isEnabled(): boolean {
+		return this._isEnabled;
 	}
 
 	/**
@@ -69,7 +62,7 @@ export default abstract class Observer extends DomEmitterMixin() {
 	 * @see module:engine/view/observer/observer~Observer#disable
 	 */
 	public enable(): void {
-		( this as any ).isEnabled = true;
+		this._isEnabled = true;
 	}
 
 	/**
@@ -79,7 +72,7 @@ export default abstract class Observer extends DomEmitterMixin() {
 	 * @see module:engine/view/observer/observer~Observer#enable
 	 */
 	public disable(): void {
-		( this as any ).isEnabled = false;
+		this._isEnabled = false;
 	}
 
 	/**
@@ -98,11 +91,11 @@ export default abstract class Observer extends DomEmitterMixin() {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `DowncastWriter#createUIElement()`} to ignore events
 	 * fired within a UI that should be excluded from CKEditor 5's realms.
 	 *
-	 * @param {Node} domTarget The DOM event target to check (usually an element, sometimes a text node and
+	 * @param domTarget The DOM event target to check (usually an element, sometimes a text node and
 	 * potentially sometimes a document, too).
-	 * @returns {Boolean} Whether this event should be ignored by the observer.
+	 * @returns Whether this event should be ignored by the observer.
 	 */
-	public checkShouldIgnoreEventFromTarget( domTarget: Node ): boolean {
+	public checkShouldIgnoreEventFromTarget( domTarget: Node | null ): boolean {
 		if ( domTarget && domTarget.nodeType === 3 ) {
 			domTarget = domTarget.parentNode as any;
 		}
@@ -117,16 +110,13 @@ export default abstract class Observer extends DomEmitterMixin() {
 	/**
 	 * Starts observing the given root element.
 	 *
-	 * @method #observe
-	 * @param {HTMLElement} domElement
-	 * @param {String} name The name of the root element.
+	 * @param name The name of the root element.
 	 */
 
 	public abstract observe( domElement: HTMLElement, name: string ): void;
 }
 
 /**
- * TODO
- * The for all all classes that inherit from Observer but excludes the abstract Observer itself.
+ * The constructor of {@link ~Observer} subclass.
  */
 export type ObserverConstructor = new ( view: View ) => Observer;

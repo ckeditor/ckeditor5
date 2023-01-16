@@ -10,6 +10,9 @@
 import ContainerElement from './containerelement';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection';
+import type { ElementAttributes } from './element';
+import type Document from './document';
+import type Node from './node';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -19,43 +22,45 @@ import type { ViewSelectionChangeEvent } from './selection';
  *
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
- *
- * @extends module:engine/view/containerelement~ContainerElement
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditableElement extends ObservableMixin( ContainerElement ) {
+	/**
+	 * Whether the editable is in read-write or read-only mode.
+	 *
+	 * @observable
+	 */
 	declare public isReadOnly: boolean;
+
+	/**
+	 * Whether the editable is focused.
+	 *
+	 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
+	 * selection is changed.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isFocused: boolean;
 
 	/**
 	 * Creates an editable element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
-	 * @protected
+	 * @internal
+	 * @param document The document instance to which this element belongs.
+	 * @param name Node name.
+	 * @param attrs Collection of attributes.
+	 * @param children A list of nodes to be inserted into created element.
 	 */
-	constructor( ...args: ConstructorParameters<typeof ContainerElement> ) {
-		super( ...args );
+	constructor(
+		document: Document,
+		name: string,
+		attributes?: ElementAttributes,
+		children?: Node | Iterable<Node>
+	) {
+		super( document, name, attributes, children );
 
-		const document = args[ 0 ];
-
-		/**
-		 * Whether the editable is in read-write or read-only mode.
-		 *
-		 * @observable
-		 * @member {Boolean} module:engine/view/editableelement~EditableElement#isReadOnly
-		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * Whether the editable is focused.
-		 *
-		 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
-		 * selection is changed.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} module:engine/view/editableelement~EditableElement#isFocused
-		 */
 		this.set( 'isFocused', false );
 
 		this.bind( 'isReadOnly' ).to( document );
@@ -77,32 +82,8 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	}
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		editableElement.is( 'editableElement' ); // -> true
- *		editableElement.is( 'element' ); // -> true
- *		editableElement.is( 'node' ); // -> true
- *		editableElement.is( 'view:editableElement' ); // -> true
- *		editableElement.is( 'view:element' ); // -> true
- *		editableElement.is( 'view:node' ); // -> true
- *
- *		editableElement.is( 'model:element' ); // -> false
- *		editableElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is an editbale element, you can also check its
- * {@link module:engine/view/editableelement~EditableElement#name name}:
- *
- *		editableElement.is( 'element', 'div' ); // -> true if this is a div element
- *		editableElement.is( 'editableElement', 'div' ); // -> same as above
- *		text.is( 'element', 'div' ); -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type Type to check.
- * @param {String} [name] Element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 EditableElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'editableElement' || type === 'view:editableElement' ||

@@ -6,6 +6,7 @@
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 import type View from './view';
 import type DomEventData from './observer/domeventdata';
+import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver';
 
 /**
  * Set of utilities related to handling block and inline fillers.
@@ -42,7 +43,6 @@ import type DomEventData from './observer/domeventdata';
  *
  * @see module:engine/view/filler~MARKED_NBSP_FILLER
  * @see module:engine/view/filler~BR_FILLER
- * @function
  */
 export const NBSP_FILLER = ( domDocument: Document ): Text => domDocument.createTextNode( '\u00A0' );
 
@@ -52,7 +52,6 @@ export const NBSP_FILLER = ( domDocument: Document ): Text => domDocument.create
  *
  * @see module:engine/view/filler~NBSP_FILLER
  * @see module:engine/view/filler~BR_FILLER
- * @function
  */
 export const MARKED_NBSP_FILLER = ( domDocument: Document ): HTMLSpanElement => {
 	const span = domDocument.createElement( 'span' );
@@ -68,7 +67,6 @@ export const MARKED_NBSP_FILLER = ( domDocument: Document ): HTMLSpanElement => 
  *
  * @see module:engine/view/filler~NBSP_FILLER
  * @see module:engine/view/filler~MARKED_NBSP_FILLER
- * @function
  */
 export const BR_FILLER = ( domDocument: Document ): HTMLBRElement => {
 	const fillerBr = domDocument.createElement( 'br' );
@@ -84,21 +82,21 @@ export const INLINE_FILLER_LENGTH = 7;
 
 /**
  * Inline filler which is a sequence of the word joiners.
- *
- * @type {String}
  */
 export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  *
- *		startsWithFiller( document.createTextNode( INLINE_FILLER ) ); // true
- *		startsWithFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // true
- *		startsWithFiller( document.createTextNode( 'foo' ) ); // false
- *		startsWithFiller( document.createElement( 'p' ) ); // false
+ * ```ts
+ * startsWithFiller( document.createTextNode( INLINE_FILLER ) ); // true
+ * startsWithFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // true
+ * startsWithFiller( document.createTextNode( 'foo' ) ); // false
+ * startsWithFiller( document.createElement( 'p' ) ); // false
+ * ```
  *
- * @param {Node} domNode DOM node.
- * @returns {Boolean} True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
+ * @param domNode DOM node.
+ * @returns True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function startsWithFiller( domNode: Node ): boolean {
 	return isText( domNode ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
@@ -107,11 +105,13 @@ export function startsWithFiller( domNode: Node ): boolean {
 /**
  * Checks if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  *
- *		isInlineFiller( document.createTextNode( INLINE_FILLER ) ); // true
- *		isInlineFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // false
+ * ```ts
+ * isInlineFiller( document.createTextNode( INLINE_FILLER ) ); // true
+ * isInlineFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // false
+ * ```
  *
- * @param {Text} domText DOM text node.
- * @returns {Boolean} True if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
+ * @param domText DOM text node.
+ * @returns True if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function isInlineFiller( domText: Text ): boolean {
 	return domText.data.length == INLINE_FILLER_LENGTH && startsWithFiller( domText );
@@ -121,11 +121,13 @@ export function isInlineFiller( domText: Text ): boolean {
  * Get string data from the text node, removing an {@link module:engine/view/filler~INLINE_FILLER inline filler} from it,
  * if text node contains it.
  *
- *		getDataWithoutFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ) == 'foo' // true
- *		getDataWithoutFiller( document.createTextNode( 'foo' ) ) == 'foo' // true
+ * ```ts
+ * getDataWithoutFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ) == 'foo' // true
+ * getDataWithoutFiller( document.createTextNode( 'foo' ) ) == 'foo' // true
+ * ```
  *
- * @param {Text} domText DOM text node, possible with inline filler.
- * @returns {String} Data without filler.
+ * @param domText DOM text node, possible with inline filler.
+ * @returns Data without filler.
  */
 export function getDataWithoutFiller( domText: Text ): string {
 	if ( startsWithFiller( domText ) ) {
@@ -139,13 +141,15 @@ export function getDataWithoutFiller( domText: Text ): string {
  * Assign key observer which move cursor from the end of the inline filler to the beginning of it when
  * the left arrow is pressed, so the filler does not break navigation.
  *
- * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
+ * @param view View controller instance we should inject quirks handling on.
  */
 export function injectQuirksHandling( view: View ): void {
-	view.document.on( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
+	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 
-// Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
+/**
+ * Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
+ */
 function jumpOverInlineFiller( evt: unknown, data: DomEventData & KeystrokeInfo ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
