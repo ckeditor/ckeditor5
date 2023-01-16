@@ -81,6 +81,6 @@ export default class SpecialCharactersMathematical extends Plugin {
 			{ character: '¼', title: t( 'Vulgar fraction one quarter' ) },
 			{ character: '½', title: t( 'Vulgar fraction one half' ) },
 			{ character: '¾', title: t( 'Vulgar fraction three quarters' ) }
-		] );
+		], { label: t( 'Mathematical' ) } );
 	}
 }

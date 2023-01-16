@@ -46,10 +46,16 @@ describe( 'SpecialCharactersArrows', () => {
 		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Arrows' );
 	} );
 
+	it( 'defines a label displayed in the toolbar', () => {
+		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
+			label: 'Arrows'
+		} );
+	} );
+
 	it( 'adds proper characters', () => {
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
-			title: 'rightwards double arrow',
-			character: '⇒'
+			title: 'leftwards arrow to bar',
+			character: '⇤'
 		} );
 
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {

@@ -89,6 +89,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	 * console.log( collection.get( 0 ) ); // -> { id: 'John' }
 	 * ```
 	 *
+	 * @label NO_ITEMS
 	 * @param options The options object.
 	 * @param options.idProperty The name of the property which is used to identify an item.
 	 * Items that do not have such a property will be assigned one when added to the collection.
@@ -115,6 +116,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	 * console.log( collection.get( 'John' ) ); // -> { name: 'John' }
 	 * ```
 	 *
+	 * @label INITIAL_ITEMS
 	 * @param initialItems The initial items of the collection.
 	 * @param options The options object.
 	 * @param options.idProperty The name of the property which is used to identify an item.

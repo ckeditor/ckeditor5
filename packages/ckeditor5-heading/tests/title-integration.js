@@ -6,7 +6,7 @@
 /* global document */
 
 import Title from '../src/title';
-import Heading from '../src/heading.js';
+import Heading from '../src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';

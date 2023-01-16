@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/arestructuresconnected
+ * @module utils/areconnectedthroughproperties
  */
 
 /* globals EventTarget, Event */

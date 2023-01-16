@@ -51,7 +51,7 @@ Now you can load CKEditor 5 inspector by using the newly created bookmark.
 
 ### Enabling the inspector
 
-Attach the inspector to the editor instance when {@link installation/getting-started/basic-api#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
+Attach the inspector to the editor instance when {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
 
 ```js
 ClassicEditor

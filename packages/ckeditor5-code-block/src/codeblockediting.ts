@@ -510,4 +510,4 @@ declare module '@ckeditor/ckeditor5-core' {
 		outdentCodeBlock: OutdentCodeBlockCommand;
 		codeBlock: CodeBlockCommand;
 	}
- }
+}
