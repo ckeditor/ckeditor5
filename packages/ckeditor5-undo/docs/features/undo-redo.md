@@ -50,7 +50,7 @@ ClassicEditor
 		plugins: [ Undo, /* ... */ ],
 
 		// Display the "Undo" and "Redo" buttons in the toolbar.
-		toolbar: [ 'undo', `redo`, /* ... */ ],
+		toolbar: [ 'undo', 'redo', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
