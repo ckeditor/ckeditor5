@@ -52,20 +52,20 @@ export default class ClipboardObserver extends DomEventObserver<
 
 		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ];
 
-		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentPasteEvent>( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentDropEvent>( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo<ViewDocumentDragOverEvent>( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
 
 		function handleInput( type: 'clipboardInput' | 'dragging' ) {
-			return ( evt: EventInfo, data: DomEventData<ClipboardEvent | DragEvent> & ClipboardEventData ) => {
+			return ( evt: EventInfo, data: DomEventData & ClipboardEventData ) => {
 				data.preventDefault();
 
 				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
 				const eventInfo = new EventInfo( viewDocument, type );
 
-				viewDocument.fire<ViewDocumentClipboardInputEvent>( eventInfo, {
+				viewDocument.fire( eventInfo, {
 					dataTransfer: data.dataTransfer,
-					method: evt.name as 'paste' | 'dragover' | 'drop',
+					method: evt.name,
 					targetRanges,
 					target: data.target
 				} );
@@ -93,39 +93,21 @@ export default class ClipboardObserver extends DomEventObserver<
 	}
 }
 
-export type ViewDocumentClipboardEvent = {
-	name: 'paste' | 'copy' | 'cut';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
-};
-
-export type ViewDocumentDragEvent = {
-	name: 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
-};
-
-export type ClipboardEventData = {
+/**
+ * The data of 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter' and 'dragleave' events.
+ */
+export interface ClipboardEventData {
 
 	/**
 	 * The data transfer instance.
 	 */
-	readonly dataTransfer: DataTransfer;
+	dataTransfer: DataTransfer;
 
 	/**
 	 * The position into which the content is dropped.
 	 */
 	dropRange?: ViewRange | null;
-};
-
-export type ViewDocumentClipboardInputEvent = {
-	name: 'clipboardInput' | 'dragging';
-	args: [ data: {
-		dataTransfer: DataTransfer;
-		method: 'paste' | 'dragover' | 'drop';
-		targetRanges: Array<ViewRange> | null;
-		target: ViewElement;
-		content?: ViewDocumentFragment;
-	} ];
-};
+}
 
 function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Node; rangeOffset?: number } ) {
 	const domDoc = ( domEvent.target as Node ).ownerDocument!;
@@ -170,9 +152,9 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * @eventName clipboardInput
  * @param data The event data.
  */
-export type ClipboardInputEvent = {
+export type ViewDocumentClipboardInputEvent = {
 	name: 'clipboardInput';
-	args: [ data: ClipboardInputEventData ];
+	args: [ data: DomEventData<ClipboardEvent | DragEvent> & ClipboardInputEventData ];
 };
 
 /**
@@ -181,7 +163,7 @@ export type ClipboardInputEvent = {
  *
  * In order to access the clipboard data, use the `dataTransfer` property.
  */
-export interface ClipboardInputEventData extends DomEventData {
+export interface ClipboardInputEventData {
 
 	/**
 	 * Data transfer instance.
@@ -203,7 +185,12 @@ export interface ClipboardInputEventData extends DomEventData {
 	 * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
 	 * then it is the drop position (which can be different than the selection at the moment of drop).
 	 */
-	targetRanges?: Array<Range>;
+	targetRanges: Array<ViewRange> | null;
+
+	/**
+	 * The content of clipboard input.
+	 */
+	content?: ViewDocumentFragment;
 }
 
 /**
@@ -221,9 +208,9 @@ export interface ClipboardInputEventData extends DomEventData {
  * @eventName dragover
  * @param data The event data.
  */
-export type DragoverEvent = {
+export type ViewDocumentDragOverEvent = {
 	name: 'dragover';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -241,9 +228,9 @@ export type DragoverEvent = {
  * @eventName drop
  * @param data The event data.
  */
-export type DropEvent = {
+export type ViewDocumentDropEvent = {
 	name: 'drop';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -261,9 +248,9 @@ export type DropEvent = {
  * @eventName paste
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
-export type PasteEvent = {
+export type ViewDocumentPasteEvent = {
 	name: 'paste';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -281,9 +268,9 @@ export type PasteEvent = {
  * @eventName copy
  * @param data The event data.
  */
-export type CopyEvent = {
+export type ViewDocumentCopyEvent = {
 	name: 'copy';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -301,9 +288,9 @@ export type CopyEvent = {
  * @eventName cut
  * @param data The event data.
  */
-export type CutEvent = {
+export type ViewDocumentCutEvent = {
 	name: 'cut';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -325,17 +312,22 @@ export type CutEvent = {
  * @eventName dragging
  * @param data The event data.
  */
-export type DraggingEvent = {
+export type ViewDocumentDraggingEvent = {
 	name: 'dragging';
-	args: [ data: DraggingEventData ];
+	args: [ data: DomEventData<DragEvent> & DraggingEventData ];
 };
 
-export type DraggingEventData = {
+export interface DraggingEventData {
 
 	/**
 	 * The data transfer instance.
 	 */
 	dataTransfer: DataTransfer;
+
+	/**
+	 * Whether the event was triggered by a paste or drop operation.
+	 */
+	method: 'dragover';
 
 	/**
 	 * The tree view element representing the target.
@@ -346,9 +338,8 @@ export type DraggingEventData = {
 	 * Ranges which are the target of the operation (usually – into which the content should be inserted).
 	 * It is the drop position (which can be different than the selection at the moment of drop).
 	 */
-	targetRanges: Array<Range>;
-
-};
+	targetRanges: Array<ViewRange> | null;
+}
 
 /**
  * Fired when the user starts dragging the content in one of the editing roots of the editor.
@@ -365,9 +356,9 @@ export type DraggingEventData = {
  * @eventName dragstart
  * @param data The event data.
  */
-export type DragStartEvent = {
+export type ViewDocumentDragStartEvent = {
 	name: 'dragstart';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -385,9 +376,9 @@ export type DragStartEvent = {
  * @eventName dragend
  * @param data The event data.
  */
-export type DragEndEvent = {
+export type ViewDocumentDragEndEvent = {
 	name: 'dragend';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -405,9 +396,9 @@ export type DragEndEvent = {
  * @eventName dragenter
  * @param data The event data.
  */
-export type DragEnterEvent = {
+export type ViewDocumentDragEnterEvent = {
 	name: 'dragenter';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -425,7 +416,7 @@ export type DragEnterEvent = {
  * @eventName dragleave
  * @param data The event data.
  */
-export type DragLeaveEvent = {
+export type ViewDocumentDragLeaveEvent = {
 	name: 'dragleave';
-	args: [ data: ClipboardEventData ];
+	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
 };

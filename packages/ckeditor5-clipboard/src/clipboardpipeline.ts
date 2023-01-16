@@ -9,18 +9,21 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { EventInfo, type GetCallback } from '@ckeditor/ckeditor5-utils';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	DataTransfer,
 	DocumentFragment,
+	DomEventData,
 	Range,
 	ViewDocumentFragment,
 	ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver, {
-	type ViewDocumentClipboardEvent,
+	type ClipboardEventData,
+	type ViewDocumentCopyEvent,
+	type ViewDocumentCutEvent,
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver';
 
@@ -249,7 +252,7 @@ export default class ClipboardPipeline extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		const onCopyCut: OmitThisParameter<GetCallback<ViewDocumentClipboardEvent>> = ( evt, data ) => {
+		const onCopyCut = ( evt: EventInfo<'copy' | 'cut'>, data: DomEventData<ClipboardEvent> & ClipboardEventData ) => {
 			const dataTransfer = data.dataTransfer;
 
 			data.preventDefault();
@@ -259,12 +262,12 @@ export default class ClipboardPipeline extends Plugin {
 			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer,
 				content,
-				method: evt.name as 'copy' | 'cut'
+				method: evt.name
 			} );
 		};
 
-		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
-		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'cut', ( evt, data ) => {
+		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
+		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => {
 			// Cutting is disabled when editor is in the read-only mode.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
 			if ( editor.isReadOnly ) {
@@ -310,6 +313,9 @@ export type ClipboardInputTransformationEvent = {
 	args: [ data: ClipboardInputTransformationData ];
 };
 
+/**
+ * The data of 'inputTransformation' event.
+ */
 export interface ClipboardInputTransformationData {
 
 	/**
@@ -361,6 +367,9 @@ export type ClipboardContentInsertionEvent = {
 	args: [ data: ClipboardContentInsertionData ];
 };
 
+/**
+ * The data of 'contentInsertion' event.
+ */
 export interface ClipboardContentInsertionData {
 
 	/**
@@ -410,7 +419,7 @@ export type ClipboardOutputEvent = {
 };
 
 /**
- * The value of the {@link module:engine/view/document~Document#event:clipboardOutput} event.
+ * The value of the 'clipboardOutput' event.
  */
 export interface ClipboardOutputEventData {
 

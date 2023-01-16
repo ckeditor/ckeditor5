@@ -28,7 +28,14 @@ import { Widget, isWidget } from '@ckeditor/ckeditor5-widget';
 import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ClipboardOutputEvent } from './clipboardpipeline';
-import ClipboardObserver, { type ViewDocumentClipboardInputEvent, type ViewDocumentDragEvent } from './clipboardobserver';
+import ClipboardObserver, {
+	type ViewDocumentDragEndEvent,
+	type ViewDocumentDragEnterEvent,
+	type ViewDocumentDraggingEvent,
+	type ViewDocumentDragLeaveEvent,
+	type ViewDocumentDragStartEvent,
+	type ViewDocumentClipboardInputEvent
+} from './clipboardobserver';
 
 import { type DebouncedFunc, throttle } from 'lodash-es';
 
@@ -233,7 +240,7 @@ export default class DragDrop extends Plugin {
 		const viewDocument = view.document;
 
 		// The handler for the drag start; it is responsible for setting data transfer object.
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragstart', ( evt, data ) => {
+		this.listenTo<ViewDocumentDragStartEvent>( viewDocument, 'dragstart', ( evt, data ) => {
 			const selection = modelDocument.selection;
 
 			// Don't drag the editable element itself.
@@ -300,12 +307,12 @@ export default class DragDrop extends Plugin {
 		// The handler for finalizing drag and drop. It should always be triggered after dragging completes
 		// even if it was completed in a different application.
 		// Note: This is not fired if source text node got removed while downcasting a marker.
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragend', ( evt, data ) => {
+		this.listenTo<ViewDocumentDragEndEvent>( viewDocument, 'dragend', ( evt, data ) => {
 			this._finalizeDragging( !data.dataTransfer.isCanceled && data.dataTransfer.dropEffect == 'move' );
 		}, { priority: 'low' } );
 
 		// Dragging over the editable.
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragenter', () => {
+		this.listenTo<ViewDocumentDragEnterEvent>( viewDocument, 'dragenter', () => {
 			if ( !this.isEnabled ) {
 				return;
 			}
@@ -314,14 +321,14 @@ export default class DragDrop extends Plugin {
 		} );
 
 		// Dragging out of the editable.
-		this.listenTo<ViewDocumentDragEvent>( viewDocument, 'dragleave', () => {
+		this.listenTo<ViewDocumentDragLeaveEvent>( viewDocument, 'dragleave', () => {
 			// We do not know if the mouse left the editor or just some element in it, so let us wait a few milliseconds
 			// to check if 'dragover' is not fired.
 			this._removeDropMarkerDelayed();
 		} );
 
 		// Handler for moving dragged content over the target area.
-		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'dragging', ( evt, data ) => {
+		this.listenTo<ViewDocumentDraggingEvent>( viewDocument, 'dragging', ( evt, data ) => {
 			if ( !this.isEnabled ) {
 				data.dataTransfer.dropEffect = 'none';
 
