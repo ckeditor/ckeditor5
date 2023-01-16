@@ -18,10 +18,31 @@ import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SpecialCharacters', () => {
-	let plugin;
+	let editor, element, command, plugin;
 
 	beforeEach( () => {
-		plugin = new SpecialCharacters( {} );
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [
+					SpecialCharacters,
+					SpecialCharactersMathematical,
+					SpecialCharactersArrows
+				]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				command = editor.commands.get( 'insertText' );
+				plugin = editor.plugins.get( SpecialCharacters );
+			} );
+	} );
+
+	afterEach( () => {
+		element.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should require proper plugins', () => {
@@ -33,32 +54,6 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	describe( 'init()', () => {
-		let editor, command, element;
-
-		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [
-						SpecialCharacters,
-						SpecialCharactersMathematical,
-						SpecialCharactersArrows
-					]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					command = editor.commands.get( 'insertText' );
-				} );
-		} );
-
-		afterEach( () => {
-			element.remove();
-
-			return editor.destroy();
-		} );
-
 		describe( '"specialCharacters" dropdown', () => {
 			let dropdown;
 
@@ -153,7 +148,7 @@ describe( 'SpecialCharacters', () => {
 					const navigation = dropdown.panelView.children.first.navigationView;
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
-					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
+					navigation.groupDropdownView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
@@ -208,36 +203,62 @@ describe( 'SpecialCharacters', () => {
 
 	describe( 'addItems()', () => {
 		it( 'adds special characters to the available symbols', () => {
-			plugin.addItems( 'Arrows', [
-				{ title: 'arrow left', character: '←' },
-				{ title: 'arrow right', character: '→' }
+			const startingGroupSize = plugin._groups.size;
+			const startingCharacterSize = plugin._characters.size;
+
+			plugin.addItems( 'Custom arrows', [
+				{ title: 'custom arrow left', character: '←' },
+				{ title: 'custom arrow right', character: '→' }
 			] );
 
-			expect( plugin._groups.size ).to.equal( 1 );
-			expect( plugin._groups.has( 'Arrows' ) ).to.equal( true );
+			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
+			expect( plugin._groups.has( 'Custom arrows' ) ).to.equal( true );
 
-			expect( plugin._characters.size ).to.equal( 2 );
-			expect( plugin._characters.has( 'arrow left' ) ).to.equal( true );
-			expect( plugin._characters.has( 'arrow right' ) ).to.equal( true );
+			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
+			expect( plugin._characters.has( 'custom arrow left' ) ).to.equal( true );
+			expect( plugin._characters.has( 'custom arrow right' ) ).to.equal( true );
 		} );
 
 		it( 'works with subsequent calls to the same group', () => {
-			plugin.addItems( 'Mathematical', [
+			const startingGroupSize = plugin._groups.size;
+			const startingCharacterSize = plugin._characters.size;
+
+			plugin.addItems( 'Custom mathematical', [
 				{
 					title: 'dot',
 					character: '.'
 				}
 			] );
 
-			plugin.addItems( 'Mathematical', [
+			plugin.addItems( 'Custom mathematical', [
 				{
 					title: ',',
 					character: 'comma'
 				}
 			] );
 
-			const groups = [ ...plugin.getGroups() ];
-			expect( groups ).to.deep.equal( [ 'Mathematical' ] );
+			const groups = Array.from( plugin.getGroups() );
+
+			expect( groups ).to.contains( 'Custom mathematical' );
+			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
+			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
+		} );
+
+		it( 'allows defining a displayed label different from a category name', () => {
+			plugin.addItems( 'Symbols', [
+				{ title: 'arrow left', character: '←' },
+				{ title: 'arrow right', character: '→' }
+			], { label: 'Custom arrows plugin' } );
+
+			expect( plugin._groups.has( 'Symbols' ) ).to.equal( true );
+
+			const arrowGroup = plugin._groups.get( 'Symbols' );
+
+			expect( arrowGroup ).to.have.property( 'label', 'Custom arrows plugin' );
+			expect( arrowGroup ).to.have.property( 'items' );
+			expect( arrowGroup.items.size ).to.equal( 2 );
+			expect( arrowGroup.items.has( 'arrow left' ) ).to.equal( true );
+			expect( arrowGroup.items.has( 'arrow right' ) ).to.equal( true );
 		} );
 
 		it( 'does not accept "All" as a group name', () => {
@@ -248,57 +269,84 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	describe( 'getGroups()', () => {
-		it( 'returns iterator of defined groups', () => {
-			plugin.addItems( 'Arrows', [
-				{ title: 'arrow left', character: '←' }
+		it( 'returns iterator of defined groups in the registration order by default', () => {
+			const groups = Array.from( plugin.getGroups() );
+
+			expect( groups ).to.deep.equal( [ 'Mathematical', 'Arrows' ] );
+		} );
+
+		it( 'returns iterator of defined groups in the order defined in the config', () => {
+			editor.config.set( 'specialCharacters.order', [
+				'Arrows',
+				'Mathematical'
 			] );
 
-			plugin.addItems( 'Mathematical', [
-				{ title: 'precedes', character: '≺' },
-				{ title: 'succeeds', character: '≻' }
-			] );
+			const groups = Array.from( plugin.getGroups() );
 
-			const groups = [ ...plugin.getGroups() ];
 			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
+		} );
+
+		it( 'returns iterator of all defined groups even if order doesn\'t contain some of them', () => {
+			editor.config.set( 'specialCharacters.order', [
+				'Arrows'
+			] );
+
+			const groups = Array.from( plugin.getGroups() );
+
+			expect( groups ).to.deep.equal( [ 'Arrows', 'Mathematical' ] );
+		} );
+
+		it( 'throws an error if order contains invalid category', () => {
+			editor.config.set( 'specialCharacters.order', [
+				'Invalid category'
+			] );
+
+			expectToThrowCKEditorError(
+				() => plugin.getGroups(),
+				'special-character-invalid-order-group-name'
+			);
 		} );
 	} );
 
 	describe( 'getCharactersForGroup()', () => {
 		it( 'returns a collection of defined special characters names', () => {
+			const startingCharacterSize = plugin.getCharactersForGroup( 'Mathematical' ).size;
 			plugin.addItems( 'Mathematical', [
-				{ title: 'precedes', character: '≺' },
-				{ title: 'succeeds', character: '≻' }
+				{ title: 'custom precedes', character: '≺' },
+				{ title: 'custom succeeds', character: '≻' }
 			] );
 
 			const characters = plugin.getCharactersForGroup( 'Mathematical' );
 
-			expect( characters.size ).to.equal( 2 );
-			expect( characters.has( 'precedes' ) ).to.equal( true );
-			expect( characters.has( 'succeeds' ) ).to.equal( true );
+			expect( characters.size ).to.equal( startingCharacterSize + 2 );
+			expect( characters.has( 'custom precedes' ) ).to.equal( true );
+			expect( characters.has( 'custom succeeds' ) ).to.equal( true );
 		} );
 
 		it( 'returns a collection of all special characters for "All" group', () => {
-			plugin.addItems( 'Arrows', [
-				{ title: 'arrow left', character: '←' },
-				{ title: 'arrow right', character: '→' }
+			const startingCharacterSize = plugin._characters.size;
+
+			plugin.addItems( 'Custom arrows', [
+				{ title: 'custom arrow left', character: '←' },
+				{ title: 'custom arrow right', character: '→' }
 			] );
 
-			plugin.addItems( 'Mathematical', [
-				{ title: 'precedes', character: '≺' },
-				{ title: 'succeeds', character: '≻' }
+			plugin.addItems( 'Custom mathematical', [
+				{ title: 'custom precedes', character: '≺' },
+				{ title: 'custom succeeds', character: '≻' }
 			] );
 
 			const characters = plugin.getCharactersForGroup( 'All' );
 
-			expect( characters.size ).to.equal( 4 );
-			expect( characters.has( 'arrow left' ) ).to.equal( true );
-			expect( characters.has( 'arrow right' ) ).to.equal( true );
-			expect( characters.has( 'precedes' ) ).to.equal( true );
-			expect( characters.has( 'succeeds' ) ).to.equal( true );
+			expect( characters.size ).to.equal( startingCharacterSize + 4 );
+			expect( characters.has( 'custom arrow left' ) ).to.equal( true );
+			expect( characters.has( 'custom arrow right' ) ).to.equal( true );
+			expect( characters.has( 'custom precedes' ) ).to.equal( true );
+			expect( characters.has( 'custom succeeds' ) ).to.equal( true );
 		} );
 
 		it( 'returns undefined for non-existing group', () => {
-			plugin.addItems( 'Mathematical', [
+			plugin.addItems( 'Custom mathematical', [
 				{ title: 'precedes', character: '≺' },
 				{ title: 'succeeds', character: '≻' }
 			] );
@@ -311,16 +359,16 @@ describe( 'SpecialCharacters', () => {
 
 	describe( 'getCharacter()', () => {
 		it( 'returns a collection of defined special characters names', () => {
-			plugin.addItems( 'Mathematical', [
-				{ title: 'precedes', character: '≺' },
-				{ title: 'succeeds', character: '≻' }
+			plugin.addItems( 'Custom mathematical', [
+				{ title: 'custom precedes', character: '≺' },
+				{ title: 'custom succeeds', character: '≻' }
 			] );
 
-			expect( plugin.getCharacter( 'succeeds' ) ).to.equal( '≻' );
+			expect( plugin.getCharacter( 'custom succeeds' ) ).to.equal( '≻' );
 		} );
 
 		it( 'returns undefined for non-existing character', () => {
-			expect( plugin.getCharacter( 'succeeds' ) ).to.be.undefined;
+			expect( plugin.getCharacter( 'custom succeeds' ) ).to.be.undefined;
 		} );
 	} );
 } );

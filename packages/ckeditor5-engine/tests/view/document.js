@@ -46,16 +46,6 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should set the observable #_isFocusChanging property', () => {
-			const spy = sinon.spy();
-
-			expect( viewDocument._isFocusChanging ).to.be.false;
-
-			viewDocument.on( 'change:_isFocusChanging', spy );
-			viewDocument._isFocusChanging = true;
-			sinon.assert.calledOnce( spy );
-		} );
-
 		it( 'should set the observable #isFocused property', () => {
 			const spy = sinon.spy();
 

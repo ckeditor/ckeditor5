@@ -9,7 +9,7 @@ import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import View from '../../../src/view';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

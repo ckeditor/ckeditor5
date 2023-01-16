@@ -228,6 +228,12 @@ describe( 'HeadingUI', () => {
 				} );
 			} );
 
+			it( 'display default title if none of the commands is active', () => {
+				return localizedEditor( [] ).then( () => {
+					expect( dropdown.buttonView.label ).to.equal( 'Wybierz nagłówek' );
+				} );
+			} );
+
 			function localizedEditor( options ) {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );

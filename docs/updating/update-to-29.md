@@ -205,7 +205,7 @@ Since v29.0.0, {@link features/images-styles image styles} and {@link features/i
 The user experience will degrade if either of these features is missing and this makes the {@link module:image/image~ImageConfig#toolbar image toolbar} configuration essential.
 
 <info-box>
-	{@link installation/getting-started/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link installation/getting-started/predefined-builds#build-customization custom editor builds} in their integrations.
+	{@link installation/getting-started/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link installation/getting-started/quick-start-other#customizing-a-predefined-build custom editor builds} in their integrations.
 </info-box>
 
 We recommended one of the following configurations as the minimum set-up for the image toolbar:

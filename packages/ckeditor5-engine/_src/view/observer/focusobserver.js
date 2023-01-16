@@ -61,7 +61,23 @@ export default class FocusObserver extends DomEventObserver {
 		 * @private
 		 * @member {Number} #_renderTimeoutId
 		 */
+
+		/**
+		 * Set to `true` if the document is in the process of setting the focus.
+		 *
+		 * The flag is used to indicate that setting the focus is in progress.
+		 *
+		 * @protected
+		 * @type {Boolean} module:engine/view/observer/focusobserver#_isFocusChanging
+		 */
 	}
+
+	/**
+	 * Finishes setting the document focus state.
+	 *
+	 * @public
+	 * @function module:engine/view/observer/focusobserver~FocusObserver#flush
+	 */
 
 	onDomEvent( domEvent ) {
 		this.fire( domEvent.type, domEvent );

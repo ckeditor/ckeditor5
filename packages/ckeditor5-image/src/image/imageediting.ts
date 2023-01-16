@@ -10,6 +10,7 @@
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
+import ReplaceImageSourceCommand from './replaceimagesourcecommand';
 import ImageUtils from '../imageutils';
 import type { ViewElement } from 'ckeditor5/src/engine';
 
@@ -75,9 +76,12 @@ export default class ImageEditing extends Plugin {
 			} );
 
 		const insertImageCommand = new InsertImageCommand( editor );
+		const replaceImageSourceCommand = new ReplaceImageSourceCommand( editor );
 
-		// Register `insertImage` command and add `imageInsert` command as an alias for backward compatibility.
 		editor.commands.add( 'insertImage', insertImageCommand );
+		editor.commands.add( 'replaceImageSource', replaceImageSourceCommand );
+
+		// `imageInsert` is an alias for backward compatibility.
 		editor.commands.add( 'imageInsert', insertImageCommand );
 	}
 }
@@ -89,6 +93,9 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface CommandsMap {
 		insertImage: InsertImageCommand;
+		replaceImageSource: ReplaceImageSourceCommand;
+
+		// `imageInsert` is an alias for backward compatibility.
 		imageInsert: InsertImageCommand;
 	}
 }

@@ -107,6 +107,7 @@ export default class ImageInsertUI extends Plugin {
 		const dropdownView = this.dropdownView!;
 		const panelView = dropdownView.panelView;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
 
 		let imageInsertView: ImageInsertPanelView;
 
@@ -126,7 +127,7 @@ export default class ImageInsertUI extends Plugin {
 
 			if ( dropdownView.isOpen ) {
 				if ( imageUtils.isImage( selectedElement ) ) {
-					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' ) as string;
+					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value as string;
 					insertButtonView.label = t( 'Update' );
 					( insertImageViaUrlForm as any ).label = t( 'Update image URL' );
 				} else {
@@ -155,11 +156,7 @@ export default class ImageInsertUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement()!;
 
 			if ( imageUtils.isImage( selectedElement ) ) {
-				editor.model.change( writer => {
-					writer.setAttribute( 'src', imageInsertView.imageURLInputValue, selectedElement );
-					writer.removeAttribute( 'srcset', selectedElement );
-					writer.removeAttribute( 'sizes', selectedElement );
-				} );
+				editor.execute( 'replaceImageSource', { source: imageInsertView.imageURLInputValue } );
 			} else {
 				editor.execute( 'insertImage', { source: imageInsertView.imageURLInputValue } );
 			}

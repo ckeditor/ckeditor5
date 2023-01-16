@@ -170,7 +170,7 @@ export default class DowncastWriter {
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 

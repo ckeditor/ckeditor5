@@ -19,7 +19,9 @@ describe( 'SpecialCahractersView', () => {
 			t: val => val
 		};
 
-		navigationView = new SpecialCharactersNavigationView( locale, [ 'groupA' ] );
+		navigationView = new SpecialCharactersNavigationView( locale, new Map( [
+			[ 'groupA', 'labelA' ]
+		] ) );
 		gridView = new CharacterGridView( locale );
 		infoView = new CharacterInfoView( locale );
 		view = new SpecialCahractersView( locale, navigationView, gridView, infoView );
