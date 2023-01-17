@@ -321,7 +321,7 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		// ...
+		// Previously registered schema.
 	}
 
 	_defineConverters() {                                                      // ADDED
@@ -462,11 +462,11 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		// ...
+		// Previously registered schema.
 	}
 
 	_defineConverters() {
-		// ...
+		// Previously defined converters.
 	}
 }
 ```
@@ -544,11 +544,11 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		// ...
+		// Previously registered schema.
 	}
 
 	_defineConverters() {
-		// ...
+		// Previously defined converters.
 	}
 }
 ```
@@ -656,10 +656,10 @@ ClassicEditor
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
 	} )
 	.then( editor => {
-		// ...
+		// This code runs after the editor initialization.
 	} )
 	.catch( error => {
-		// ...
+		// Error handling if something goes wrong during initialization.
 	} );
 ```
 
@@ -694,11 +694,11 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineConverters() {
-		// ...
+		// Previously defined converters.
 	}
 
 	_defineSchema() {
-		// ...
+		// Previously registered schema.
 	}
 }
 ```
@@ -715,7 +715,7 @@ export default class PlaceholderUI extends Plugin {
 		const placeholderNames = editor.config.get( 'placeholderConfig.types' );            // CHANGED
 
 		editor.ui.componentFactory.add( 'placeholder', locale => {
-			// ...
+			// Registered dropdown among UI components.
 		} );
 	}
 }
@@ -734,7 +734,7 @@ ClassicEditor
 			types: [ 'date', 'color', 'first name', 'surname' ]                             // ADDED
 		}
 	} )
-	// ...
+	// Promise handling.
 ```
 
 If you open the dropdown in the toolbar, you will see a new list of placeholders to insert.
