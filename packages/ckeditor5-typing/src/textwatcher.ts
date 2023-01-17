@@ -189,7 +189,7 @@ export default class TextWatcher extends ObservableMixin() {
 	}
 }
 
-export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unknown>> = {
+export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unknown> = Record<string, unknown>> = {
 	name: 'matched' | 'matched:data' | 'matched:selection';
 	args: [ {
 		text: string;
