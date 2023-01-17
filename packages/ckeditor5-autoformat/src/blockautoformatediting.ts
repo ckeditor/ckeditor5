@@ -4,13 +4,17 @@
  */
 
 import type { Command, Editor } from 'ckeditor5/src/core';
-import { type Item, type Text, LiveRange } from 'ckeditor5/src/engine';
+
+import {
+	LiveRange,
+	type DocumentChangeEvent,
+	type Item,
+	type Text
+} from 'ckeditor5/src/engine';
+
 import { first } from 'ckeditor5/src/utils';
 
 import type Autoformat from './autoformat';
-
-type CallbackVoid = ( context: { match: RegExpExecArray } ) => void;
-type CallbackBoolean = ( context: { match: RegExpExecArray } ) => boolean;
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -65,30 +69,30 @@ export default function blockAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	pattern: RegExp,
-	callbackOrCommand?: string | CallbackVoid | CallbackBoolean
+	callbackOrCommand: string | ( ( context: { match: RegExpExecArray } ) => unknown )
 ): void {
-	let callback: CallbackVoid | CallbackBoolean;
+	let callback: ( context: { match: RegExpExecArray } ) => unknown;
 	let command: Command | null = null;
 
 	if ( typeof callbackOrCommand == 'function' ) {
 		callback = callbackOrCommand;
 	} else {
 		// We assume that the actual command name was provided.
-		command = editor.commands.get( callbackOrCommand! )!;
+		command = editor.commands.get( callbackOrCommand )!;
 
 		callback = () => {
-			editor.execute( callbackOrCommand! );
+			editor.execute( callbackOrCommand );
 		};
 	}
 
-	editor.model.document.on( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( command && !command.isEnabled || !plugin.isEnabled ) {
 			return;
 		}
 
-		const range = first( editor.model.document.selection.getRanges() );
+		const range = first( editor.model.document.selection.getRanges() )!;
 
-		if ( !range!.isCollapsed ) {
+		if ( !range.isCollapsed ) {
 			return;
 		}
 
@@ -114,7 +118,7 @@ export default function blockAutoformatEditing(
 		// Only list commands and custom callbacks can be applied inside a list.
 		if ( blockToFormat.is( 'element', 'listItem' ) &&
 			typeof callbackOrCommand !== 'function' &&
-			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand! )
+			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand )
 		) {
 			return;
 		}
@@ -130,11 +134,11 @@ export default function blockAutoformatEditing(
 		const firstNodeRange = editor.model.createRangeOn( firstNode );
 
 		// Range is only expected to be within or at the very end of the first text node.
-		if ( !firstNodeRange.containsRange( range! ) && !range!.end.isEqual( firstNodeRange.end ) ) {
+		if ( !firstNodeRange.containsRange( range ) && !range.end.isEqual( firstNodeRange.end ) ) {
 			return;
 		}
 
-		const match = pattern.exec( firstNode.data.substr( 0, range!.end.offset ) );
+		const match = pattern.exec( firstNode.data.substr( 0, range.end.offset ) );
 
 		// ...and this text node's data match the pattern.
 		if ( !match ) {

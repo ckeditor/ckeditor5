@@ -19,12 +19,18 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { Writer, Model, Position, Range } from 'ckeditor5/src/engine';
+import type {
+	DocumentChangeEvent,
+	Model,
+	Position,
+	Range,
+	Writer
+} from 'ckeditor5/src/engine';
 import type { LastTextLineData } from 'ckeditor5/src/typing';
 
 import type Autoformat from './autoformat';
 
-type TestCallback = ( text: string ) => {
+export type TestCallback = ( text: string ) => {
 	remove: Array<Array<number>>;
 	format: Array<Array<number>>;
 };
@@ -103,9 +109,9 @@ export default function inlineAutoformatEditing(
 
 	// A test callback run on changed text.
 	testCallback = testCallback || ( text => {
-		let result;
-		const remove = [];
-		const format = [];
+		let result: RegExpExecArray | null;
+		const remove: Array<Array<number>> = [];
+		const format: Array<Array<number>> = [];
 
 		while ( ( result = regExp.exec( text ) ) !== null ) {
 			// There should be full match and 3 capture groups.
@@ -146,7 +152,7 @@ export default function inlineAutoformatEditing(
 		};
 	} );
 
-	editor.model.document.on( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}
@@ -203,8 +209,6 @@ export default function inlineAutoformatEditing(
 /**
  * Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
  * inside provided block.
- *
- * @internal
  */
 function testOutputToRanges( start: Position, arrays: Array<Array<number>>, model: Model ) {
 	return arrays

@@ -135,7 +135,7 @@ export default class Autoformat extends Plugin {
 	 * * ... up to `heading6` and `######`.
 	 */
 	private _addHeadingAutoformats(): void {
-		const command = this.editor.commands.get( 'heading' )! as HeadingCommand;
+		const command: HeadingCommand | undefined = this.editor.commands.get( 'heading' );
 
 		if ( command ) {
 			command.modelElements
