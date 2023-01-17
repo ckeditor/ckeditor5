@@ -422,7 +422,8 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
 			'change:data',
-			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this )
+			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ),
+			{ priority: 'high' }
 		);
 
 		// For LI verify if an ID of the attribute element is correct.
