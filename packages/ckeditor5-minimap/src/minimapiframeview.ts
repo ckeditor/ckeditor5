@@ -112,7 +112,7 @@ export default class MinimapIframeView extends IframeView {
 			}
 		` : '';
 
-		const pageStyles = this._options.pageStyles.map( ( definition: any ) => {
+		const pageStyles = this._options.pageStyles.map( definition => {
 			if ( typeof definition === 'string' ) {
 				return `<style>${ definition }</style>`;
 			} else {
