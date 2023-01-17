@@ -61,7 +61,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 		blockToolbar: [
 			'paragraph', 'heading1', 'heading2', 'heading3',
 			'|',
@@ -69,10 +69,10 @@ BalloonEditor
 			'|',
 			'blockQuote', 'uploadImage'
 		],
-		toolbar: [ ... ]
+		toolbar: [ /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can also use the `shouldNotGroupWhenFull` option to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar:
@@ -84,7 +84,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 		blockToolbar: {
 			items: [
 				'paragraph', 'heading1', 'heading2', 'heading3',
@@ -95,10 +95,10 @@ BalloonEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
-		toolbar: [ ... ]
+		toolbar: [ /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

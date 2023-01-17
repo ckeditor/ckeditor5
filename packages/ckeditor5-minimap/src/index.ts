@@ -4,8 +4,7 @@
  */
 
 /**
- * @module find-and-replace
+ * @module minimap
  */
 
-export { default as FindAndReplace } from './findandreplace';
-export { default as FindAndReplaceUtils } from './findandreplaceutils';
+export { default as Minimap } from './minimap';

@@ -22,8 +22,6 @@ import PastePlainText from './pasteplaintext';
  * * {@link module:clipboard/clipboardpipeline~ClipboardPipeline}
  * * {@link module:clipboard/dragdrop~DragDrop}
  * * {@link module:clipboard/pasteplaintext~PastePlainText}
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Clipboard extends Plugin {
 	/**

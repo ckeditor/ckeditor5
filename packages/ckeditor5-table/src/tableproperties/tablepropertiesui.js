@@ -116,6 +116,15 @@ export default class TablePropertiesUI extends Plugin {
 		 */
 		this._undoStepBatch = null;
 
+		/**
+		 * Flag used to indicate whether view is ready to execute update commands
+		 * (it finished loading initial data).
+		 *
+		 * @private
+		 * @member {Boolean}
+		 */
+		this._isReady = false;
+
 		editor.ui.componentFactory.add( 'tableProperties', locale => {
 			const view = new ButtonView( locale );
 
@@ -292,6 +301,8 @@ export default class TablePropertiesUI extends Plugin {
 
 				this.view.set( property, value );
 			} );
+
+		this._isReady = true;
 	}
 
 	/**
@@ -338,6 +349,8 @@ export default class TablePropertiesUI extends Plugin {
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
+
+		this._isReady = false;
 
 		// Blur any input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
@@ -394,14 +407,12 @@ export default class TablePropertiesUI extends Plugin {
 	 *
 	 * @private
 	 * @param {String} commandName The command that will be executed.
-	 * @param {String} defaultValue The default value of the command.
 	 * @returns {Function}
 	 */
-	_getPropertyChangeCallback( commandName, defaultValue ) {
-		return ( evt, propertyName, newValue, oldValue ) => {
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+	_getPropertyChangeCallback( commandName ) {
+		return ( evt, propertyName, newValue ) => {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
 				return;
 			}
 
@@ -423,21 +434,19 @@ export default class TablePropertiesUI extends Plugin {
 	 * @param {module:ui/view~View} options.viewField
 	 * @param {Function} options.validator
 	 * @param {String} options.errorText
-	 * @param {String} options.defaultValue
 	 * @returns {Function}
 	 */
 	_getValidatedPropertyChangeCallback( options ) {
-		const { commandName, viewField, validator, errorText, defaultValue } = options;
+		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;
 		}, ERROR_TEXT_TIMEOUT );
 
-		return ( evt, propertyName, newValue, oldValue ) => {
+		return ( evt, propertyName, newValue ) => {
 			setErrorTextDebounced.cancel();
 
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
 				return;
 			}
 

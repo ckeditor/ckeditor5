@@ -89,7 +89,8 @@ toolbar: [
 				icon: 'threeVerticalDots',
 				items: [ 'strikethrough', 'superscript', 'subscript' ]
 			},
-(...)
+// More of toolbar's config.
+// ...
 ]
 ```
 
