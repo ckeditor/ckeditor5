@@ -11,23 +11,24 @@
 
 import { Rect, global } from 'ckeditor5/src/utils';
 import { DomConverter, Renderer } from 'ckeditor5/src/engine';
+import type { Editor } from 'ckeditor5/src/core';
 
 /**
  * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~Renderer} and
  * {@link module:engine/view/domconverter~DomConverter}. The DOM root clone updates incrementally to stay in sync with the
  * source root.
  *
- * @protected
- * @param {module:core/editor/editor~Editor} editor The editor instance the original editing root belongs to.
- * @param {String} rootName The name of the root to clone.
- * @returns {HTMLElement} The editing root DOM clone element.
+ * @internal
+ * @param editor The editor instance the original editing root belongs to.
+ * @param rootName The name of the root to clone.
+ * @returns The editing root DOM clone element.
  */
-export function cloneEditingViewDomRoot( editor, rootName ) {
+export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HTMLElement {
 	const viewDocument = editor.editing.view.document;
-	const viewRoot = viewDocument.getRoot( rootName );
+	const viewRoot = viewDocument.getRoot( rootName )!;
 	const domConverter = new DomConverter( viewDocument );
 	const renderer = new Renderer( domConverter, viewDocument.selection );
-	const domRootClone = editor.editing.view.getDomRoot().cloneNode();
+	const domRootClone = editor.editing.view.getDomRoot()!.cloneNode() as HTMLElement;
 
 	domConverter.bindElements( domRootClone, viewRoot );
 
@@ -55,21 +56,22 @@ export function cloneEditingViewDomRoot( editor, rootName ) {
  *
  * The returned data format is as follows:
  *
- *		[
- *			'p { color: red; ... } h2 { font-size: 2em; ... } ...',
- *			'.spacing { padding: 1em; ... }; ...',
- *			'...',
- *			{ href: 'http://link.to.external.stylesheet' },
- *			{ href: '...' }
- *		]
+ * ```ts
+ * [
+ * 	'p { color: red; ... } h2 { font-size: 2em; ... } ...',
+ * 	'.spacing { padding: 1em; ... }; ...',
+ * 	'...',
+ * 	{ href: 'http://link.to.external.stylesheet' },
+ * 	{ href: '...' }
+ * ]
+ * ```
  *
  * **Note**: For stylesheets with `href` different than window origin, an object is returned because
  * accessing rules of these styles may cause CORS errors (depending on the configuration of the web page).
  *
- * @protected
- * @returns {Array.<String|Object>}
+ * @internal
  */
-export function getPageStyles() {
+export function getPageStyles(): Array<string | { href: string }> {
 	return Array.from( global.document.styleSheets )
 		.map( styleSheet => {
 			// CORS
@@ -85,58 +87,28 @@ export function getPageStyles() {
 }
 
 /**
- * TODO
+ * Gets dimensions rectangle according to passed DOM element. Returns whole window's size for `body` element.
  *
- * @protected
- * @returns {module:utils/dom/rect~Rect}
+ * @internal
  */
-export function getDomElementRect( domElement ) {
+export function getDomElementRect( domElement: HTMLElement ): Rect {
 	return new Rect( domElement === global.document.body ? global.window : domElement );
 }
 
 /**
- * TODO
+ * Gets client height according to passed DOM element. Returns window's height for `body` element.
  *
- * @protected
- * @returns {Number}
+ * @internal
  */
-export function getClientHeight( domElement ) {
+export function getClientHeight( domElement: HTMLElement ): number {
 	return domElement === global.document.body ? global.window.innerHeight : domElement.clientHeight;
 }
 
 /**
- * TODO
+ * Returns the DOM element itself if it's not a `body` element, whole window otherwise.
  *
- * @protected
- * @returns {HTMLElement}
+ * @internal
  */
-export function getScrollable( domElement ) {
+export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
 	return domElement === global.document.body ? global.window : domElement;
-}
-
-/**
- * Returns the closest scrollable ancestor of a DOM element.
- *
- * TODO: Move to shared utils.
- *
- * @protected
- * @param {HTMLElement} domElement
- * @returns {HTMLElement|null}
- */
-export function findClosestScrollableAncestor( domElement ) {
-	do {
-		domElement = domElement.parentElement;
-
-		if ( !domElement ) {
-			return null;
-		}
-
-		const overflow = global.window.getComputedStyle( domElement ).overflowY;
-
-		if ( overflow === 'auto' || overflow === 'scroll' ) {
-			break;
-		}
-	} while ( domElement.tagName != 'BODY' );
-
-	return domElement;
 }

@@ -8,55 +8,48 @@
  */
 
 import { IframeView } from 'ckeditor5/src/ui';
-import { toUnit } from 'ckeditor5/src/utils';
+import { toUnit, type Locale } from 'ckeditor5/src/utils';
+import type { MinimapViewOptions } from './minimapview';
 
 const toPx = toUnit( 'px' );
 
 /**
  * The internal `<iframe>` view that hosts the minimap content.
  *
- * @private
- * @extends module:ui/iframe/iframeview~IframeView
+ * @internal
  */
 export default class MinimapIframeView extends IframeView {
 	/**
-	 * Creates an instance of the internal minimap iframe.
+	 * The CSS `top` used to scroll the minimap.
 	 *
-	 * @param {module:utils/locale~Locale} locale
-	 * @param {Object} options
-	 * @param {HTMLElement} options.domRootClone
-	 * @param {Array} options.pageStyles
-	 * @param {Number} options.scaleRatio
-	 * @param {Boolean} [options.useSimplePreview]
-	 * @param {String} [options.extraClasses]
+	 * @readonly
 	 */
-	constructor( locale, options ) {
+	declare public top: number;
+
+	/**
+	 * The CSS `height` of the iframe.
+	 *
+	 * @readonly
+	 */
+	declare public height: number;
+
+	/**
+	 * Cached view constructor options for re-use in other methods.
+	 */
+	private readonly _options: MinimapViewOptions;
+
+	/**
+	 * Creates an instance of the internal minimap iframe.
+	 */
+	constructor( locale: Locale, options: MinimapViewOptions ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The CSS `top` used to scroll the minimap.
-		 *
-		 * @readonly
-		 * @member {Number} #top
-		 */
 		this.set( 'top', 0 );
 
-		/**
-		 * The CSS `height` of the iframe.
-		 *
-		 * @readonly
-		 * @member {Number} #height
-		 */
 		this.set( 'height', 0 );
 
-		/**
-		 * Cached view constructor options for re-use in other methods.
-		 *
-		 * @readonly
-		 * @member {Object} #options
-		 */
 		this._options = options;
 
 		this.extendTemplate( {
@@ -75,7 +68,7 @@ export default class MinimapIframeView extends IframeView {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): Promise<unknown> {
 		return super.render().then( () => {
 			this._prepareDocument();
 		} );
@@ -83,30 +76,24 @@ export default class MinimapIframeView extends IframeView {
 
 	/**
 	 * Sets the new height of the iframe.
-	 *
-	 * @param {Number} newHeight
 	 */
-	setHeight( newHeight ) {
+	public setHeight( newHeight: number ): void {
 		this.height = newHeight;
 	}
 
 	/**
 	 * Sets the top offset of the iframe to move it around vertically.
-	 *
-	 * @param {Number} newOffset
 	 */
-	setTopOffset( newOffset ) {
+	public setTopOffset( newOffset: number ): void {
 		this.top = newOffset;
 	}
 
 	/**
 	 * Sets the internal structure of the `<iframe>` readying it to display the
 	 * minimap element.
-	 *
-	 * @private
 	 */
-	_prepareDocument() {
-		const iframeDocument = this.element.contentWindow.document;
+	private _prepareDocument(): void {
+		const iframeDocument = this.element!.contentWindow!.document;
 		const domRootClone = iframeDocument.adoptNode( this._options.domRootClone );
 
 		const boxStyles = this._options.useSimplePreview ? `
