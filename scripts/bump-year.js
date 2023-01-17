@@ -37,6 +37,9 @@ require( '@ckeditor/ckeditor5-dev-bump-year' )
 						'**/ckeditor5-*/build/**'
 					]
 				}
+			},
+			{
+				pattern: 'packages/*/.eslintrc.js'
 			}
 		]
 	} );
