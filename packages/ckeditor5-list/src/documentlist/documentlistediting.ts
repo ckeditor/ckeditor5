@@ -67,7 +67,9 @@ import ListWalker, {
 	iterateSiblingListBlocks,
 	ListBlocksIterable
 } from './utils/listwalker';
+
 import '../../theme/documentlist.css';
+import '../../theme/list.css';
 
 /**
  * A list of base list model attributes.

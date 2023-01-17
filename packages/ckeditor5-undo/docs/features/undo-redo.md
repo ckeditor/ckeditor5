@@ -47,13 +47,13 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// Load the plugin.
-		plugins: [ Undo, ... ],
+		plugins: [ Undo, /* ... */ ],
 
 		// Display the "Undo" and "Redo" buttons in the toolbar.
-		toolbar: [ 'undo', `redo`, ... ],
+		toolbar: [ 'undo', 'redo', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

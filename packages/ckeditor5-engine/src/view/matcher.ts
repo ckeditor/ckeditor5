@@ -730,6 +730,7 @@ export type MatcherPattern =
 	( ( element: Element ) => Match | null ) |
 	{
 		name?: string | RegExp;
+		key?: string;
 		classes?: ClassPatterns;
 		styles?: PropertyPatterns;
 		attributes?: PropertyPatterns;
