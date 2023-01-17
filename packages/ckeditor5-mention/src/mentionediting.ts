@@ -16,10 +16,10 @@ import type {
 	AttributeElement,
 	DowncastConversionApi,
 	DowncastDispatcher,
-	Node,
 	Position,
 	Schema,
-	DowncastAttributeEvent
+	DowncastAttributeEvent,
+	Item
 } from 'ckeditor5/src/engine';
 import { uid } from 'ckeditor5/src/utils';
 
@@ -85,7 +85,7 @@ export default class MentionEditing extends Plugin {
  */
 export function _addMentionAttributes(
 	baseMentionData: MentionAttribute,
-	data?: string | MentionAttribute
+	data?: MentionAttribute
 ): MentionAttribute {
 	return Object.assign( { uid: uid() }, baseMentionData, data || {} );
 }
@@ -100,7 +100,7 @@ export function _addMentionAttributes(
  */
 export function _toMentionAttribute(
 	viewElementOrMention: Element,
-	data?: string | MentionAttribute
+	data?: MentionAttribute
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
 
@@ -217,12 +217,12 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
 			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
 
 			// Checks the text node where the change occurred.
-			wasChanged = checkAndFix( position.textNode!, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.textNode, writer ) || wasChanged;
 
 			// Occurs on paste inside a text node with mention.
-			wasChanged = checkAndFix( nodeAfterInsertedTextNode as Text, writer ) || wasChanged;
-			wasChanged = checkAndFix( position.nodeBefore as Text, writer ) || wasChanged;
-			wasChanged = checkAndFix( position.nodeAfter as Text, writer ) || wasChanged;
+			wasChanged = checkAndFix( nodeAfterInsertedTextNode, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeAfter, writer ) || wasChanged;
 		}
 
 		// Checks text nodes in inserted elements (might occur when splitting a paragraph or pasting content inside text with mention).
@@ -230,7 +230,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
 			const insertedNode = position.nodeAfter as Element;
 
 			for ( const item of writer.createRangeIn( insertedNode! ).getItems() ) {
-				wasChanged = checkAndFix( item as Text, writer ) || wasChanged;
+				wasChanged = checkAndFix( item, writer ) || wasChanged;
 			}
 		}
 
@@ -238,8 +238,8 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
 		if ( change.type == 'insert' && schema.isInline( change.name ) ) {
 			const nodeAfterInserted = position.nodeAfter && position.nodeAfter.nextSibling;
 
-			wasChanged = checkAndFix( position.nodeBefore as Text, writer ) || wasChanged;
-			wasChanged = checkAndFix( nodeAfterInserted as Text, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( nodeAfterInserted, writer ) || wasChanged;
 		}
 	}
 
@@ -263,7 +263,7 @@ function extendAttributeOnMentionPostFixer( writer: Writer, doc: Document ): boo
 			const nodeAfter = change.range.end.nodeAfter;
 
 			for ( const node of [ nodeBefore, nodeAfter ] ) {
-				if ( isBrokenMentionNode( node! ) && node!.getAttribute( change.attributeKey ) != change.attributeNewValue ) {
+				if ( isBrokenMentionNode( node ) && node!.getAttribute( change.attributeKey ) != change.attributeNewValue ) {
 					writer.setAttribute( change.attributeKey, change.attributeNewValue, node! );
 
 					wasChanged = true;
@@ -279,7 +279,7 @@ function extendAttributeOnMentionPostFixer( writer: Writer, doc: Document ): boo
  * Checks if a node has a correct mention attribute if present.
  * Returns `true` if the node is text and has a mention attribute whose text does not match the expected mention text.
  */
-function isBrokenMentionNode( node: Node ): boolean {
+function isBrokenMentionNode( node: Item | null ): boolean {
 	if ( !node || !( node.is( '$text' ) || node.is( '$textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
@@ -295,9 +295,9 @@ function isBrokenMentionNode( node: Node ): boolean {
 /**
  * Fixes a mention on a text node if it needs a fix.
  */
-function checkAndFix( textNode: Text, writer: Writer ): boolean {
+function checkAndFix( textNode: Item | null, writer: Writer ): boolean {
 	if ( isBrokenMentionNode( textNode ) ) {
-		writer.removeAttribute( 'mention', textNode );
+		writer.removeAttribute( 'mention', textNode! );
 
 		return true;
 	}

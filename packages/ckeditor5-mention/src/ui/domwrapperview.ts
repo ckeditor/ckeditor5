@@ -19,7 +19,7 @@ export default class DomWrapperView extends View {
 	/**
 	 * The DOM element for which wrapper was created.
 	 */
-	declare public domElement: HTMLElement;
+	public domElement: HTMLElement;
 
 	/**
 	 * Controls whether the dom wrapper view is "on". This is in line with {@link module:ui/button/button~Button#isOn} property.

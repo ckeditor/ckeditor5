@@ -14,9 +14,9 @@ import type { MentionFeedItem } from '../mention';
 import type DomWrapperView from './domwrapperview';
 
 export default class MentionListItemView extends ListItemView {
-	declare public item: MentionFeedItem;
+	public item!: MentionFeedItem;
 
-	declare public marker: string;
+	public marker!: string;
 
 	public highlight(): void {
 		const child = this.children.first as DomWrapperView;

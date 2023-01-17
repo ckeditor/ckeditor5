@@ -7,10 +7,34 @@
  * @module mention/mentionui
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ViewDocumentKeyEvent, Marker, Position } from 'ckeditor5/src/engine';
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
-import { Collection, keyCodes, env, Rect, CKEditorError, logWarning, type PositionOptions } from 'ckeditor5/src/utils';
+import {
+	Plugin,
+	type Editor,
+	type PluginDependencies
+} from 'ckeditor5/src/core';
+
+import type {
+	ViewDocumentKeyEvent,
+	Marker,
+	Position
+} from 'ckeditor5/src/engine';
+
+import {
+	ButtonView,
+	ContextualBalloon,
+	clickOutsideHandler
+} from 'ckeditor5/src/ui';
+
+import {
+	CKEditorError,
+	Collection,
+	Rect,
+	env,
+	keyCodes,
+	logWarning,
+	type PositionOptions
+} from 'ckeditor5/src/utils';
+
 import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing';
 
 import { debounce } from 'lodash-es';
@@ -18,7 +42,14 @@ import { debounce } from 'lodash-es';
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
-import type { FeedCallback, MentionFeed, MentionFeedItem, ItemRenderer } from './mention';
+
+import type {
+	FeedCallback,
+	MentionFeed,
+	MentionFeedItem,
+	ItemRenderer,
+	MentionFeedObjectItem
+} from './mention';
 
 const VERTICAL_SPACING = 3;
 
@@ -54,14 +85,14 @@ export default class MentionUI extends Plugin {
 	 */
 	private _balloon: ContextualBalloon | undefined;
 
-	declare private _items: Collection<{ item: MentionFeedItem; marker: string }>;
+	private _items = new Collection<{ item: MentionFeedObjectItem; marker: string }>();
 
-	declare private _lastRequested: string;
+	private _lastRequested?: string;
 
 	/**
 	 * Debounced feed requester. It uses `lodash#debounce` method to delay function call.
 	 */
-	declare private _requestFeedDebounced: ( marker: string, feedText: string ) => void;
+	private _requestFeedDebounced: ( marker: string, feedText: string ) => void;
 
 	/**
 	 * @inheritDoc
@@ -204,8 +235,6 @@ export default class MentionUI extends Plugin {
 
 		const mentionsView = new MentionsView( locale );
 
-		this._items = new Collection();
-
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
@@ -267,7 +296,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Returns item renderer for the marker.
 	 */
-	public _getItemRenderer( marker: string ): ItemRenderer | undefined {
+	private _getItemRenderer( marker: string ): ItemRenderer | undefined {
 		const { itemRenderer } = this._mentionsConfigurations.get( marker )!;
 
 		return itemRenderer;
@@ -336,7 +365,7 @@ export default class MentionUI extends Plugin {
 
 		const watcher = new TextWatcher( editor.model, createTestCallback( feedsWithPattern ) );
 
-		watcher.on<TextWatcherMatchedEvent<MentionFeedItem>>( 'matched', ( evt, data ) => {
+		watcher.on<TextWatcherMatchedEvent>( 'matched', ( evt, data ) => {
 			const markerDefinition = getLastValidMarkerInText( feedsWithPattern, data.text );
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
@@ -476,7 +505,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Renders a single item in the autocomplete list.
 	 */
-	private _renderItem( item: MentionFeedItem, marker: string ): DomWrapperView | ButtonView {
+	private _renderItem( item: MentionFeedObjectItem, marker: string ): DomWrapperView | ButtonView {
 		const editor = this.editor;
 
 		let view;
@@ -840,7 +869,7 @@ type RequestFeedErrorEvent = {
 type Definition = {
 	marker: string;
 	feedCallback: FeedCallback;
-	itemRenderer: ItemRenderer;
+	itemRenderer?: ItemRenderer;
 };
 
 type MarkerDefinition = {

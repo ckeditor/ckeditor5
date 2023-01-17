@@ -240,7 +240,7 @@ export type MentionFeed = {
 	 * A function that renders a {@link module:mention/mention~MentionFeedItem}
 	 * to the autocomplete panel.
 	 */
-	itemRenderer: ItemRenderer;
+	itemRenderer?: ItemRenderer;
 };
 
 /**
@@ -307,7 +307,9 @@ export type ItemRenderer = ( item: MentionFeedItem ) => HTMLElement;
  * 	.catch( ... );
  * ```
  */
-export type MentionFeedItem = {
+export type MentionFeedItem = string | MentionFeedObjectItem;
+
+export type MentionFeedObjectItem = {
 
 	/**
 	 * A unique ID of the mention. It must start with the marker character.
@@ -336,10 +338,15 @@ export type MentionAttribute = {
 	/**
 	 * A unique ID of this mention instance. Should be passed as an `option.id` when using
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
-	 * @property _text Helper property that stores the text of the inserted mention. Used for detecting a broken mention
-	 * in the editing area.
 	 */
 	uid?: string;
+
+	/**
+	 * Helper property that stores the text of the inserted mention. Used for detecting a broken mention
+	 * in the editing area.
+	 *
+	 * @internal
+	 */
 	_text?: string;
 };
 

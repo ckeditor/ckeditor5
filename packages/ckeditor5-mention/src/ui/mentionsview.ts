@@ -18,9 +18,9 @@ import '../../theme/mentionui.css';
  * The mention ui view.
  */
 export default class MentionsView extends ListView {
-	declare public selected: MentionListItemView | undefined;
+	public selected: MentionListItemView | undefined;
 
-	declare public position: string | undefined;
+	public position: string | undefined;
 
 	/**
 	 * @inheritDoc

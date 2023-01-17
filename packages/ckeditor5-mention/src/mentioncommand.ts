@@ -68,9 +68,9 @@ export default class MentionCommand extends Command {
 	 * @param options.mention The mention object to insert. When a string is passed, it will be used to create a plain
 	 * object with the name attribute that equals the passed string.
 	 * @param options.marker The marker character (e.g. `'@'`).
-	 * @param [options.text] The text of the inserted mention. Defaults to the full mention string composed from `marker` and
+	 * @param options.text The text of the inserted mention. Defaults to the full mention string composed from `marker` and
 	 * `mention` string or `mention.id` if an object is passed.
-	 * @param [options.range] The range to replace.
+	 * @param options.range The range to replace.
 	 * Note that the replaced range might be shorter than the inserted text with the mention attribute.
 	 * @fires execute
 	 */
