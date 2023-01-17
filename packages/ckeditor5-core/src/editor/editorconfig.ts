@@ -441,6 +441,7 @@ export interface EditorConfig {
 	toolbar?: ToolbarConfig;
 	ui?: UiConfig;
 	updateSourceElementOnDestroy?: boolean;
+	locale?: LocaleConfig;
 }
 
 export interface LanguageConfig {
@@ -470,3 +471,7 @@ export interface UiConfig {
 		top?: number;
 	};
 }
+
+export type LocaleConfig = {
+	dateTimeFormat?: ( date: Date ) => string;
+};

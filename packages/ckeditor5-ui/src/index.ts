@@ -59,7 +59,7 @@ export { default as ContextualBalloon } from './panel/balloon/contextualballoon'
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 
 export { default as TooltipManager } from './tooltipmanager';
-export { default as Template } from './template';
+export { default as Template, type TemplateDefinition } from './template';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
