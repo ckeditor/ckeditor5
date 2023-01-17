@@ -17,9 +17,9 @@ export { default as TextTransformation } from './texttransformation';
 
 export { default as inlineHighlight } from './utils/inlinehighlight';
 export { default as findAttributeRange } from './utils/findattributerange';
-export { default as getLastTextLine } from './utils/getlasttextline';
+export { default as getLastTextLine, type LastTextLineData } from './utils/getlasttextline';
 
 export type { TypingConfig } from './typingconfig';
 export type { ViewDocumentDeleteEvent } from './deleteobserver';
 export type { ViewDocumentInsertTextEvent } from './inserttextobserver';
-export type { LastTextLineData } from './utils/getlasttextline';
+export type { TextWatcherMatchedEvent } from './textwatcher';

@@ -41,6 +41,7 @@ The example below shows the configuration used for the [demo](#demo) above:
 ```js
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
+		// More of editor's config.
 		// ...
 		language: {
 			textPartLanguage: [
@@ -51,8 +52,8 @@ ClassicEditor
 			]
 		}
     } )
-    .then( ... )
-    .catch( ... );
+    .then( /* ... */ )
+    .catch( /* ... */ );
 ```
 
 ## Installation
@@ -70,11 +71,11 @@ import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage'
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ TextPartLanguage, ... ],
-		toolbar: [ 'textPartLanguage', ... ]
+		plugins: [ TextPartLanguage, /* ... */ ],
+		toolbar: [ 'textPartLanguage', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

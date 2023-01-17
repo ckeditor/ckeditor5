@@ -8,3 +8,4 @@
  */
 
 export { default as FindAndReplace } from './findandreplace';
+export { default as FindAndReplaceUtils } from './findandreplaceutils';

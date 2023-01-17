@@ -295,6 +295,16 @@ describe( 'table cell properties', () => {
 				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 			} );
 
+			it( 'should not reposition if view is not visible', () => {
+				const spy = sinon.spy( contextualBalloon, 'updatePosition' );
+
+				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesUI.view = false;
+				editor.ui.fire( 'update' );
+
+				expect( spy.called ).to.be.false;
+			} );
+
 			it( 'should hide if clicked outside the balloon', () => {
 				tableCellPropertiesButton.fire( 'execute' );
 				tableCellPropertiesView = tableCellPropertiesUI.view;
@@ -605,6 +615,20 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'initial data', () => {
+				it( 'should not execute commands before changing the data', () => {
+					const tableCellBackgroundCommand = editor.commands.get( 'tableCellBackgroundColor' );
+					const spy = sinon.spy( tableCellBackgroundCommand, 'execute' );
+
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+
+					expect( spy.called ).to.be.false;
+
+					tableCellPropertiesView.backgroundColor = 'red';
+
+					expect( spy.called ).to.be.true;
+				} );
+
 				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
 					// Trigger lazy init.
 					tableCellPropertiesUI._showView();
