@@ -11,6 +11,8 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Element, Model } from 'ckeditor5/src/engine';
 import { first } from 'ckeditor5/src/utils';
 
+import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
+
 /**
  * The indent block command.
  *
@@ -33,7 +35,7 @@ export default class IndentBlockCommand extends Command {
 	/**
 	 * The command's indentation behavior.
 	 */
-	private _indentBehavior: IndentBehavior;
+	private readonly _indentBehavior: IndentBehavior;
 
 	/**
 	 * Creates an instance of the command.
@@ -97,20 +99,3 @@ function getBlocksToChange( model: Model ): Array<Element> {
 
 	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
 }
-
-/**
- * Provides indentation behavior to {@link module:indent/indentblockcommand~IndentBlockCommand}.
- */
-type IndentBehavior = {
-
-	/**
-	 * Checks if the command should be enabled.
-	 */
-	checkEnabled: ( indentAttributeValue: string ) => boolean;
-
-	/**
-	 * Returns a new indent attribute value based on the current indent.
-	 * This method returns `undefined` when the indentation should be removed.
-	 */
-	getNextIndent: ( indentAttributeValue: string ) => string | undefined;
-};

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { IndentBlockConfig } from '../indentblock';
-
 /**
  * @module indent/indentcommandbehavior/indentusingclasses
  */
 
+import type { IndentBehavior } from './indentbehavior';
+
 /**
  * The block indentation behavior that uses classes to set indentation.
  */
-export default class IndentUsingClasses {
+export default class IndentUsingClasses implements IndentBehavior {
 	/**
 	 * The direction of indentation.
 	 */
@@ -29,7 +29,7 @@ export default class IndentUsingClasses {
 	 * @param config.direction The direction of indentation.
 	 * @param config.classes A list of classes used for indentation.
 	 */
-	constructor( config: IndentBlockConfig & { direction: string } ) {
+	constructor( config: { direction: 'forward' | 'backward'; classes: Array<string> } ) {
 		this.isForward = config.direction === 'forward';
 		this.classes = config.classes!;
 	}
@@ -50,7 +50,7 @@ export default class IndentUsingClasses {
 	/**
 	 * @inheritDoc
 	 */
-	public getNextIndent( indentAttributeValue: string ): string {
+	public getNextIndent( indentAttributeValue: string ): string | undefined {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 		const indexStep = this.isForward ? 1 : -1;
 

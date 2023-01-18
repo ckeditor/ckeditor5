@@ -6,12 +6,12 @@
 /**
  * @module indent/indentui
  */
+
 import { ButtonView } from 'ckeditor5/src/ui';
 import { Plugin } from 'ckeditor5/src/core';
 
 import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';
-import type AttributeCommand from '@ckeditor/ckeditor5-basic-styles/src/attributecommand';
 
 /**
  * The indent UI feature.
@@ -47,11 +47,11 @@ export default class IndentUI extends Plugin {
 	/**
 	 * Defines a UI button.
 	 */
-	private _defineButton( commandName: string, label: string, icon: string ): void {
+	private _defineButton( commandName: 'indent' | 'outdent', label: string, icon: string ): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( commandName, locale => {
-			const command = editor.commands.get( commandName )! as AttributeCommand;
+			const command = editor.commands.get( commandName )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -60,7 +60,7 @@ export default class IndentUI extends Plugin {
 				tooltip: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( commandName );

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { IndentBlockConfig } from '../indentblock';
-
 /**
  * @module indent/indentcommandbehavior/indentusingoffset
  */
 
+import type { IndentBehavior } from './indentbehavior';
+
 /**
  * The block indentation behavior that uses offsets to set indentation.
  */
-export default class IndentUsingOffset {
+export default class IndentUsingOffset implements IndentBehavior {
 	/**
 	 * The direction of indentation.
 	 */
@@ -35,7 +35,7 @@ export default class IndentUsingOffset {
 	 * @param config.offset The offset of the next indentation step.
 	 * @param config.unit Indentation unit.
 	 */
-	constructor( config: IndentBlockConfig & { direction: string } ) {
+	constructor( config: { direction: 'forward' | 'backward'; offset: number; unit: string } ) {
 		this.isForward = config.direction === 'forward';
 		this.offset = config.offset;
 		this.unit = config.unit;
@@ -45,7 +45,7 @@ export default class IndentUsingOffset {
 	 * @inheritDoc
 	 */
 	public checkEnabled( indentAttributeValue: string ): boolean {
-		const currentOffset = parseFloat( indentAttributeValue || 0 as any );
+		const currentOffset = parseFloat( indentAttributeValue || '0' );
 
 		// The command is always enabled for forward indentation.
 		return this.isForward || currentOffset > 0;
@@ -55,7 +55,7 @@ export default class IndentUsingOffset {
 	 * @inheritDoc
 	 */
 	public getNextIndent( indentAttributeValue: string ): string | undefined {
-		const currentOffset = parseFloat( indentAttributeValue || 0 as any );
+		const currentOffset = parseFloat( indentAttributeValue || '0' );
 		const isSameUnit = !indentAttributeValue || indentAttributeValue.endsWith( this.unit );
 
 		if ( !isSameUnit ) {
