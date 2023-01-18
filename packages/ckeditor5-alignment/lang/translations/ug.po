@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -30,7 +30,7 @@ msgstr "ئوتتۇرىغا توغرىلاش"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "تەكشىلەش"
+msgstr "ئوڭ سولدىن توغرىلا"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
