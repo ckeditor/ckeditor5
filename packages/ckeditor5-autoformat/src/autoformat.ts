@@ -1,13 +1,15 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module autoformat/autoformat
  */
+import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
+import type { Range, Writer } from 'ckeditor5/src/engine';
 import { Delete } from 'ckeditor5/src/typing';
 
 import blockAutoformatEditing from './blockautoformatediting';
@@ -18,28 +20,26 @@ import inlineAutoformatEditing from './inlineautoformatediting';
  *
  * For a detailed overview, check the {@glink features/autoformat Autoformatting feature documentation}
  * and the {@glink api/autoformat package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Autoformat extends Plugin {
 	/**
 	 * @inheritdoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Delete ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'Autoformat' {
 		return 'Autoformat';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		this._addListAutoformats();
 		this._addBasicStylesAutoformats();
 		this._addHeadingAutoformats();
@@ -56,10 +56,8 @@ export default class Autoformat extends Plugin {
 	 * - `1. ` or `1) ` &ndash; A paragraph will be changed to a numbered list ("1" can be any digit or a list of digits).
 	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed to a to-do list.
 	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed to a checked to-do list.
-	 *
-	 * @private
 	 */
-	_addListAutoformats() {
+	private _addListAutoformats(): void {
 		const commands = this.editor.commands;
 
 		if ( commands.get( 'bulletedList' ) ) {
@@ -94,10 +92,8 @@ export default class Autoformat extends Plugin {
 	 * - `_foobar_` &ndash; `_` characters are removed and `foobar` is set to italic,
 	 * - ``` `foobar` &ndash; ``` ` ``` characters are removed and `foobar` is set to code,
 	 * - `~~foobar~~` &ndash; `~~` characters are removed and `foobar` is set to strikethrough.
-	 *
-	 * @private
 	 */
-	_addBasicStylesAutoformats() {
+	private _addBasicStylesAutoformats(): void {
 		const commands = this.editor.commands;
 
 		if ( commands.get( 'bold' ) ) {
@@ -137,11 +133,9 @@ export default class Autoformat extends Plugin {
 	 * * `heading` with value `heading1` will be executed when typing `#`,
 	 * * `heading` with value `heading2` will be executed when typing `##`,
 	 * * ... up to `heading6` and `######`.
-	 *
-	 * @private
 	 */
-	_addHeadingAutoformats() {
-		const command = this.editor.commands.get( 'heading' );
+	private _addHeadingAutoformats(): void {
+		const command: HeadingCommand | undefined = this.editor.commands.get( 'heading' );
 
 		if ( command ) {
 			command.modelElements
@@ -167,10 +161,8 @@ export default class Autoformat extends Plugin {
 	 *
 	 * When typed:
 	 * * `> ` &ndash; A paragraph will be changed to a block quote.
-	 *
-	 * @private
 	 */
-	_addBlockQuoteAutoformats() {
+	private _addBlockQuoteAutoformats(): void {
 		if ( this.editor.commands.get( 'blockQuote' ) ) {
 			blockAutoformatEditing( this.editor, this, /^>\s$/, 'blockQuote' );
 		}
@@ -181,16 +173,14 @@ export default class Autoformat extends Plugin {
 	 *
 	 * When typed:
 	 * - `` ``` `` &ndash; A paragraph will be changed to a code block.
-	 *
-	 * @private
 	 */
-	_addCodeBlockAutoformats() {
+	private _addCodeBlockAutoformats(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
 		if ( editor.commands.get( 'codeBlock' ) ) {
 			blockAutoformatEditing( editor, this, /^```$/, () => {
-				if ( selection.getFirstPosition().parent.is( 'element', 'listItem' ) ) {
+				if ( selection.getFirstPosition()!.parent.is( 'element', 'listItem' ) ) {
 					return false;
 				}
 				this.editor.execute( 'codeBlock', {
@@ -205,24 +195,20 @@ export default class Autoformat extends Plugin {
 	 *
 	 * When typed:
 	 * - `` --- `` &ndash; Will be replaced with a horizontal line.
-	 *
-	 * @private
 	 */
-	_addHorizontalLineAutoformats() {
+	private _addHorizontalLineAutoformats(): void {
 		if ( this.editor.commands.get( 'horizontalLine' ) ) {
 			blockAutoformatEditing( this.editor, this, /^---$/, 'horizontalLine' );
 		}
 	}
 }
 
-// Helper function for getting `inlineAutoformatEditing` callbacks that checks if command is enabled.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {String} attributeKey
-// @returns {Function}
-function getCallbackFunctionForInlineAutoformat( editor, attributeKey ) {
-	return ( writer, rangesToFormat ) => {
-		const command = editor.commands.get( attributeKey );
+/**
+ * Helper function for getting `inlineAutoformatEditing` callbacks that checks if command is enabled.
+ */
+function getCallbackFunctionForInlineAutoformat( editor: Editor, attributeKey: string ) {
+	return ( writer: Writer, rangesToFormat: Array<Range> ): boolean | undefined => {
+		const command = editor.commands.get( attributeKey )!;
 
 		if ( !command.isEnabled ) {
 			return false;
@@ -238,4 +224,10 @@ function getCallbackFunctionForInlineAutoformat( editor, attributeKey ) {
 		// This way user is able to type a text without attribute used by auto formatter.
 		writer.removeSelectionAttribute( attributeKey );
 	};
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Autoformat.pluginName ]: Autoformat;
+	}
 }

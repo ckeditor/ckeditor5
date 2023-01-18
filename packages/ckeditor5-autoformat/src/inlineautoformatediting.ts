@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,23 @@
  * @module autoformat/inlineautoformatediting
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+import type {
+	DocumentChangeEvent,
+	Model,
+	Position,
+	Range,
+	Writer
+} from 'ckeditor5/src/engine';
+import type { LastTextLineData } from 'ckeditor5/src/typing';
+
+import type Autoformat from './autoformat';
+
+export type TestCallback = ( text: string ) => {
+	remove: Array<Array<number>>;
+	format: Array<Array<number>>;
+};
+
 /**
  * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
  *
@@ -26,52 +43,63 @@
  * the autoformatting engine checks the text on the left of the selection
  * and executes the provided action if the text matches given criteria (regular expression or callback).
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
- * @param {Function|RegExp} testRegexpOrCallback The regular expression or callback to execute on text.
+ * @param editor The editor instance.
+ * @param plugin The autoformat plugin instance.
+ * @param testRegexpOrCallback The regular expression or callback to execute on text.
  * Provided regular expression *must* have three capture groups. The first and the third capture group
  * should match opening and closing delimiters. The second capture group should match the text to format.
  *
- *		// Matches the `**bold text**` pattern.
- *		// There are three capturing groups:
- *		// - The first to match the starting `**` delimiter.
- *		// - The second to match the text to format.
- *		// - The third to match the ending `**` delimiter.
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, formatCallback );
+ * ```ts
+ * // Matches the `**bold text**` pattern.
+ * // There are three capturing groups:
+ * // - The first to match the starting `**` delimiter.
+ * // - The second to match the text to format.
+ * // - The third to match the ending `**` delimiter.
+ * inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, formatCallback );
+ * ```
  *
  * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
  * The function should return proper "ranges" to delete and format.
  *
- *		{
- *			remove: [
- *				[ 0, 1 ],	// Remove the first letter from the given text.
- *				[ 5, 6 ]	// Remove the 6th letter from the given text.
- *			],
- *			format: [
- *				[ 1, 5 ]	// Format all letters from 2nd to 5th.
- *			]
- *		}
+ * ```ts
+ * {
+ * 	remove: [
+ * 		[ 0, 1 ],	// Remove the first letter from the given text.
+ * 		[ 5, 6 ]	// Remove the 6th letter from the given text.
+ * 	],
+ * 	format: [
+ * 		[ 1, 5 ]	// Format all letters from 2nd to 5th.
+ * 	]
+ * }
+ * ```
  *
- * @param {Function} formatCallback A callback to apply actual formatting.
+ * @param formatCallback A callback to apply actual formatting.
  * It should return `false` if changes should not be applied (e.g. if a command is disabled).
  *
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
- *			const command = editor.commands.get( 'bold' );
+ * ```ts
+ * inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
+ * 	const command = editor.commands.get( 'bold' );
  *
- *			if ( !command.isEnabled ) {
- *				return false;
- *			}
+ * 	if ( !command.isEnabled ) {
+ * 		return false;
+ * 	}
  *
- *			const validRanges = editor.model.schema.getValidRanges( rangesToFormat, 'bold' );
+ * 	const validRanges = editor.model.schema.getValidRanges( rangesToFormat, 'bold' );
  *
- *			for ( let range of validRanges ) {
- *				writer.setAttribute( 'bold', true, range );
- *			}
- *		} );
+ * 	for ( let range of validRanges ) {
+ * 		writer.setAttribute( 'bold', true, range );
+ * 	}
+ * } );
+ * ```
  */
-export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCallback, formatCallback ) {
-	let regExp;
-	let testCallback;
+export default function inlineAutoformatEditing(
+	editor: Editor,
+	plugin: Autoformat,
+	testRegexpOrCallback: RegExp | TestCallback,
+	formatCallback: ( writer: Writer, rangesToFormat: Array<Range> ) => boolean | undefined
+): void {
+	let regExp: RegExp;
+	let testCallback: TestCallback | undefined;
 
 	if ( testRegexpOrCallback instanceof RegExp ) {
 		regExp = testRegexpOrCallback;
@@ -81,9 +109,9 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 
 	// A test callback run on changed text.
 	testCallback = testCallback || ( text => {
-		let result;
-		const remove = [];
-		const format = [];
+		let result: RegExpExecArray | null;
+		const remove: Array<Array<number>> = [];
+		const format: Array<Array<number>> = [];
 
 		while ( ( result = regExp.exec( text ) ) !== null ) {
 			// There should be full match and 3 capture groups.
@@ -124,7 +152,7 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 		};
 	} );
 
-	editor.model.document.on( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}
@@ -146,9 +174,9 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 		}
 
 		const focus = selection.focus;
-		const block = focus.parent;
-		const { text, range } = getTextAfterCode( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
-		const testOutput = testCallback( text );
+		const block = focus!.parent;
+		const { text, range } = getTextAfterCode( model.createRange( model.createPositionAt( block, 0 ), focus! ), model );
+		const testOutput = testCallback!( text );
 		const rangesToFormat = testOutputToRanges( range.start, testOutput.format, model );
 		const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, model );
 
@@ -178,14 +206,11 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 	} );
 }
 
-// Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
-// inside provided block.
-//
-// @private
-// @param {module:engine/model/position~Position} start
-// @param {Array.<Array>} arrays
-// @param {module:engine/model/model~Model} model
-function testOutputToRanges( start, arrays, model ) {
+/**
+ * Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
+ * inside provided block.
+ */
+function testOutputToRanges( start: Position, arrays: Array<Array<number>>, model: Model ) {
 	return arrays
 		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
 		.map( array => {
@@ -193,14 +218,12 @@ function testOutputToRanges( start, arrays, model ) {
 		} );
 }
 
-// Returns the last text line after the last code element from the given range.
-// It is similar to {@link module:typing/utils/getlasttextline.getLastTextLine `getLastTextLine()`},
-// but it ignores any text before the last `code`.
-//
-// @param {module:engine/model/range~Range} range
-// @param {module:engine/model/model~Model} model
-// @returns {module:typing/utils/getlasttextline~LastTextLineData}
-function getTextAfterCode( range, model ) {
+/**
+ * Returns the last text line after the last code element from the given range.
+ * It is similar to {@link module:typing/utils/getlasttextline.getLastTextLine `getLastTextLine()`},
+ * but it ignores any text before the last `code`.
+ */
+function getTextAfterCode( range: Range, model: Model ): LastTextLineData {
 	let start = range.start;
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
+import ReplaceImageSourceCommand from './replaceimagesourcecommand';
 import ImageUtils from '../imageutils';
 
 /**
@@ -76,9 +77,12 @@ export default class ImageEditing extends Plugin {
 			} );
 
 		const insertImageCommand = new InsertImageCommand( editor );
+		const replaceImageSourceCommand = new ReplaceImageSourceCommand( editor );
 
-		// Register `insertImage` command and add `imageInsert` command as an alias for backward compatibility.
 		editor.commands.add( 'insertImage', insertImageCommand );
+		editor.commands.add( 'replaceImageSource', replaceImageSourceCommand );
+
+		// `imageInsert` is an alias for backward compatibility.
 		editor.commands.add( 'imageInsert', insertImageCommand );
 	}
 }

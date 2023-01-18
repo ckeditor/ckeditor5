@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -59,7 +59,7 @@ export { default as ContextualBalloon } from './panel/balloon/contextualballoon'
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 
 export { default as TooltipManager } from './tooltipmanager';
-export { default as Template } from './template';
+export { default as Template, type TemplateDefinition } from './template';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
