@@ -208,7 +208,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( const viewElement of elementsWithMutatedChildren ) {
-			const domElement = domConverter.mapViewToDom( viewElement ) as HTMLElement;
+			const domElement = domConverter.mapViewToDom( viewElement )!;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement, { withChildren: false } ) );
 
