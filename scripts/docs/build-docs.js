@@ -31,11 +31,10 @@ function buildDocs() {
 
 	return promise
 		.then( () => {
-			if ( !options.ts ) {
-				return;
+			// Set the proper API type for Umberto if requested building the API docs for the TypeScript source code.
+			if ( options.ts ) {
+				setApiTypeForUmberto( 'typedoc' );
 			}
-
-			setApiTypeForUmberto( 'typedoc' );
 		} )
 		.then( () => {
 			return runUmberto( options );
@@ -46,11 +45,10 @@ function buildDocs() {
 			process.exitCode = 1;
 		} )
 		.finally( () => {
-			if ( !options.ts ) {
-				return;
+			// Restore the default JSDoc-based API type for Umberto if the docs were built for the TypeScript source code.
+			if ( options.ts ) {
+				setApiTypeForUmberto( 'jsdoc' );
 			}
-
-			setApiTypeForUmberto( 'jsdoc' );
 		} );
 }
 
