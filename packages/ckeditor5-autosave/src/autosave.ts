@@ -16,8 +16,11 @@ import {
 	type EditorDestroyEvent,
 	type EditorReadyEvent
 } from 'ckeditor5/src/core';
-import { DomEmitterMixin, ObservableMixin, mix, type DomEmitter, type Emitter } from 'ckeditor5/src/utils';
-import type { Batch } from 'ckeditor5/src/engine';
+
+import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils';
+
+import type { DocumentChangeEvent } from 'ckeditor5/src/engine';
+
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 /* globals window */
@@ -58,7 +61,7 @@ export default class Autosave extends Plugin {
 	 * since the event is throttled for performance reasons.
 	 */
 
-	declare public adapter: AutosaveAdapter;
+	public adapter?: AutosaveAdapter;
 
 	/**
 	 * The state of this plugin.
@@ -71,6 +74,7 @@ export default class Autosave extends Plugin {
 	 * * error &ndash When the provided save method will throw an error. This state immediately changes to the `saving` state and
 	 * the save method will be called again in the short period of time.
 	 *
+	 * @observable
 	 * @readonly
 	 */
 	declare public state: 'synchronized' | 'waiting' | 'saving' | 'error';
@@ -120,7 +124,7 @@ export default class Autosave extends Plugin {
 	/**
 	 * An action that will be added to the pending action manager for actions happening in that plugin.
 	 */
-	declare private _action: PendingAction | null;
+	private _action: PendingAction | null = null;
 
 	/**
 	 * @inheritDoc
@@ -142,17 +146,18 @@ export default class Autosave extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		const config: AutosaveConfig = editor.config.get( 'autosave' )! || {};
+		const config: AutosaveConfig = editor.config.get( 'autosave' ) || {};
 
 		// A minimum amount of time that needs to pass after the last action.
 		// After that time the provided save callbacks are being called.
 		const waitingTime = config.waitingTime || 1000;
 
 		this.set( 'state', 'synchronized' );
+
 		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
 		this._lastDocumentVersion = editor.model.document.version;
 		this._savePromise = null;
-		this._domEmitter = Object.create( DomEmitterMixin );
+		this._domEmitter = new ( DomEmitterMixin() )();
 		this._config = config;
 		this._pendingActions = editor.plugins.get( PendingActions );
 		this._makeImmediateSave = false;
@@ -167,7 +172,7 @@ export default class Autosave extends Plugin {
 
 		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
 		this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
-			this.listenTo<DocumentChangeDataEvent>( doc, 'change:data', ( evt, batch ) => {
+			this.listenTo<DocumentChangeEvent>( doc, 'change:data', ( evt, batch ) => {
 				if ( !this._saveCallbacks.length ) {
 					return;
 				}
@@ -199,7 +204,7 @@ export default class Autosave extends Plugin {
 		// It's not possible to easy test it because karma uses `beforeunload` event
 		// to warn before full page reload and this event cannot be dispatched manually.
 		/* istanbul ignore next */
-		this._domEmitter.listenTo<WindowBeforeUnloadEvent>( window as unknown as Emitter, 'beforeunload', ( evtInfo, domEvt ) => {
+		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
 			if ( this._pendingActions.hasAny ) {
 				domEvt.returnValue = this._pendingActions.first!.message;
 			}
@@ -232,7 +237,7 @@ export default class Autosave extends Plugin {
 	/**
 	 * Invokes the remaining `_save()` method call.
 	 */
-	protected _flush(): void {
+	private _flush(): void {
 		this._debouncedSave.flush();
 	}
 
@@ -325,8 +330,8 @@ export default class Autosave extends Plugin {
 	/**
 	 * Saves callbacks.
 	 */
-	private get _saveCallbacks(): Array<( editor: Editor ) => Promise<void>> {
-		const saveCallbacks = [];
+	private get _saveCallbacks(): Array<( editor: Editor ) => Promise<unknown>> {
+		const saveCallbacks: Array<( editor: Editor ) => Promise<unknown>> = [];
 
 		if ( this.adapter && this.adapter.save ) {
 			saveCallbacks.push( this.adapter.save );
@@ -340,21 +345,19 @@ export default class Autosave extends Plugin {
 	}
 }
 
-mix( Autosave, ObservableMixin );
-
 /**
  * An interface that requires the `save()` method.
  *
  * Used by {@link module:autosave/autosave~Autosave#adapter}.
  */
-type AutosaveAdapter = {
+export interface AutosaveAdapter {
 
 	/**
 	 * The method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
 	 * so the autosave plugin will wait for that action before removing it from pending actions.
 	 */
-	save: AutosaveConfig['save'];
-};
+	save( editor: Editor ): Promise<unknown>;
+}
 
 /**
  * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
@@ -378,7 +381,7 @@ type AutosaveAdapter = {
  *
  * See also the demo of the {@glink installation/getting-started/getting-and-setting-data#autosave-feature autosave feature}.
  */
-type AutosaveConfig = {
+export interface AutosaveConfig {
 
 	/**
 	 * The callback to be executed when the data needs to be saved.
@@ -398,7 +401,7 @@ type AutosaveConfig = {
 	 * 	.catch( ... );
 	 * ```
 	 */
-	save: ( editor: Editor ) => Promise<void>;
+	save?: ( editor: Editor ) => Promise<unknown>;
 
 	/**
 	 * The minimum amount of time that needs to pass after the last action to call the provided callback.
@@ -418,18 +421,8 @@ type AutosaveConfig = {
 	 * 	.catch( ... );
 	 * ```
 	 */
-	waitingTime: number;
-};
-
-type DocumentChangeDataEvent = {
-	name: 'change:data';
-	args: [ Batch ];
-};
-
-type WindowBeforeUnloadEvent = {
-	name: 'beforeunload';
-	args: [ BeforeUnloadEvent ];
-};
+	waitingTime?: number;
+}
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
