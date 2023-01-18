@@ -288,7 +288,7 @@ ClassicEditor
 					color: 'hsl(120, 75%, 60%)',
 					label: 'Green'
 				},
-				// More colors
+				// More colors.
 				// ...
 			]
 		},

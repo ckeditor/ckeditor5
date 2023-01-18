@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -19,6 +19,30 @@ msgstr ""
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
 msgstr "Speciální znaky"
+
+msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
+msgid "All"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
+msgid "Arrows"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
+msgid "Currency"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
+msgid "Latin"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
+msgid "Mathematical"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
+msgid "Text"
+msgstr ""
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"

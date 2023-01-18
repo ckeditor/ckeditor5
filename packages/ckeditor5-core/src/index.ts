@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,7 @@ export { PluginsMap } from './plugincollection';
 export { default as Context } from './context';
 export { default as ContextPlugin } from './contextplugin';
 
-export { default as Editor, type EditorReadyEvent } from './editor/editor';
+export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor';
 export type {
 	EditorConfig,
 	LanguageConfig,

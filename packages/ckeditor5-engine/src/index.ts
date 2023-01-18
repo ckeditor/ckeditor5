@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -64,12 +64,14 @@ export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
-export { default as TreeWalker } from './model/treewalker';
+export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
 export { default as Element } from './model/element';
 export { default as Position } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
+export type { default as Document } from './model/document';
+export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
 export type { DiffItem } from './model/differ';
 export type { default as Item } from './model/item';
@@ -112,6 +114,7 @@ export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
 export type { default as ViewElementDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
+export { default as AttributeElement } from './view/attributeelement';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
 export type { default as ViewPosition } from './view/position';

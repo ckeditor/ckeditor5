@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -114,6 +114,7 @@ export default class ImageInsertUI extends Plugin {
 		const dropdownView = this.dropdownView;
 		const panelView = dropdownView.panelView;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 
 		let imageInsertView;
 
@@ -133,7 +134,7 @@ export default class ImageInsertUI extends Plugin {
 
 			if ( dropdownView.isOpen ) {
 				if ( imageUtils.isImage( selectedElement ) ) {
-					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' );
+					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value;
 					insertButtonView.label = t( 'Update' );
 					insertImageViaUrlForm.label = t( 'Update image URL' );
 				} else {
@@ -162,11 +163,7 @@ export default class ImageInsertUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
 			if ( imageUtils.isImage( selectedElement ) ) {
-				editor.model.change( writer => {
-					writer.setAttribute( 'src', imageInsertView.imageURLInputValue, selectedElement );
-					writer.removeAttribute( 'srcset', selectedElement );
-					writer.removeAttribute( 'sizes', selectedElement );
-				} );
+				editor.execute( 'replaceImageSource', { source: imageInsertView.imageURLInputValue } );
 			} else {
 				editor.execute( 'insertImage', { source: imageInsertView.imageURLInputValue } );
 			}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -148,7 +148,7 @@ describe( 'SpecialCharacters', () => {
 					const navigation = dropdown.panelView.children.first.navigationView;
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
-					navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
+					navigation.groupDropdownView.fire( new EventInfo( { name: 'Arrows' }, 'execute' ) );
 
 					expect( grid.tiles.get( 0 ).label ).to.equal( '←' );
 				} );
@@ -242,6 +242,23 @@ describe( 'SpecialCharacters', () => {
 			expect( groups ).to.contains( 'Custom mathematical' );
 			expect( plugin._groups.size ).to.equal( startingGroupSize + 1 );
 			expect( plugin._characters.size ).to.equal( startingCharacterSize + 2 );
+		} );
+
+		it( 'allows defining a displayed label different from a category name', () => {
+			plugin.addItems( 'Symbols', [
+				{ title: 'arrow left', character: '←' },
+				{ title: 'arrow right', character: '→' }
+			], { label: 'Custom arrows plugin' } );
+
+			expect( plugin._groups.has( 'Symbols' ) ).to.equal( true );
+
+			const arrowGroup = plugin._groups.get( 'Symbols' );
+
+			expect( arrowGroup ).to.have.property( 'label', 'Custom arrows plugin' );
+			expect( arrowGroup ).to.have.property( 'items' );
+			expect( arrowGroup.items.size ).to.equal( 2 );
+			expect( arrowGroup.items.has( 'arrow left' ) ).to.equal( true );
+			expect( arrowGroup.items.has( 'arrow right' ) ).to.equal( true );
 		} );
 
 		it( 'does not accept "All" as a group name', () => {

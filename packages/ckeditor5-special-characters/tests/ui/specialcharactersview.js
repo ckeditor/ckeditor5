@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,9 @@ describe( 'SpecialCahractersView', () => {
 			t: val => val
 		};
 
-		navigationView = new SpecialCharactersNavigationView( locale, [ 'groupA' ] );
+		navigationView = new SpecialCharactersNavigationView( locale, new Map( [
+			[ 'groupA', 'labelA' ]
+		] ) );
 		gridView = new CharacterGridView( locale );
 		infoView = new CharacterInfoView( locale );
 		view = new SpecialCahractersView( locale, navigationView, gridView, infoView );
