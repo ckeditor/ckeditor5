@@ -909,7 +909,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! ) as DomElement;
+		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
