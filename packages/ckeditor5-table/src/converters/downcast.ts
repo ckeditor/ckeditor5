@@ -16,10 +16,9 @@ import type TableUtils from '../tableutils';
 /**
  * Model table element to view table element conversion helper.
  *
- * @param {module:table/tableutils~TableUtils} tableUtils The `TableUtils` plugin instance.
- * @param {Object} [options]
- * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
- * @returns {Function} Element creator.
+ * @param tableUtils The `TableUtils` plugin instance.
+ * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns Element creator.
  */
 export function downcastTable( tableUtils: TableUtils, options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
@@ -59,7 +58,7 @@ export function downcastTable( tableUtils: TableUtils, options: { asWidget?: boo
 /**
  * Model table row element to view `<tr>` element conversion helper.
  *
- * @returns {Function} Element creator.
+ * @returns Element creator.
  */
 export function downcastRow(): ElementCreatorFunction {
 	return ( tableRow, { writer } ) => {
@@ -75,9 +74,8 @@ export function downcastRow(): ElementCreatorFunction {
  * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
  * and `<td>` otherwise.
  *
- * @param {Object} [options]
- * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
- * @returns {Function} Element creator.
+ * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns Element creator.
  */
 export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
@@ -114,9 +112,8 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
  * * For a single paragraph without attributes it returns `<span>` to simulate data table.
  * * For all other cases it returns `<p>` element.
  *
- * @param {Object} [options]
- * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
- * @returns {Function} Element creator.
+ * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns Element creator.
  */
 export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
 	return ( modelElement, { writer, consumable, mapper } ) => {
@@ -147,9 +144,6 @@ export function convertParagraphInTableCell( options: { asWidget?: boolean } = {
  *
  * * If returned `true` - to a `<span class="ck-table-bogus-paragraph">`
  * * If returned `false` - to a `<p>`
- *
- * @param {module:engine/model/element~Element} modelElement
- * @returns {Boolean}
  */
 export function isSingleParagraphWithoutAttributes( modelElement: Element ): boolean {
 	const tableCell = modelElement.parent!;
@@ -164,12 +158,10 @@ export function isSingleParagraphWithoutAttributes( modelElement: Element ): boo
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
- * @param {module:engine/view/element~Element} viewElement
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
- * @param {String} label The element's label. It will be concatenated with the table `alt` attribute if one is present.
- * @returns {module:engine/view/element~Element}
+ * @param writer An instance of the view writer.
+ * @param label The element's label. It will be concatenated with the table `alt` attribute if one is present.
  */
-function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ) {
+function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): ViewElement {
 	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
@@ -177,10 +169,7 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ) {
 
 /**
  * Checks if an element has any attributes set.
- *
- * @param {module:engine/model/element~Element} element
- * @returns {Boolean}
  */
-function hasAnyAttribute( element: Node ) {
+function hasAnyAttribute( element: Node ): boolean {
 	return !![ ...element.getAttributeKeys() ].length;
 }

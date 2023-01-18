@@ -29,7 +29,14 @@ export function upcastStyleToAttribute(
 		shouldUpcast?: Function;
 	}
 ): void {
-	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false, shouldUpcast = () => true } = options;
+	const {
+		modelAttribute,
+		styleName,
+		viewElement,
+		defaultValue,
+		reduceBoxSides = false,
+		shouldUpcast = () => true
+	} = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {

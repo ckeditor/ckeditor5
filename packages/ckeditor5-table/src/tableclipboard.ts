@@ -8,10 +8,10 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, Model, Position, Writer } from 'ckeditor5/src/engine';
 
 import TableSelection from './tableselection';
-import TableWalker from './tablewalker';
+import TableWalker, { type TableSlot } from './tablewalker';
 import TableUtils from './tableutils';
 import {
 	cropTableToDimensions,
@@ -24,6 +24,7 @@ import {
 	adjustLastRowIndex,
 	adjustLastColumnIndex
 } from './utils/structure';
+import type { EventInfo } from 'ckeditor5/src/utils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -66,7 +67,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
 	 */
-	private _onCopyCut( evt, data ) {
+	private _onCopyCut( evt: EventInfo, data ) {
 		const tableSelection = this.editor.plugins.get( TableSelection );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
@@ -195,7 +196,13 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	private _replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer ) {
+	private _replaceSelectedCellsWithPasted(
+		pastedTable: Element,
+		pastedDimensions: Record<string, number>,
+		selectedTable: Element,
+		selection: Record<string, number>,
+		writer: Writer
+	) {
 		const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
 
 		// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
@@ -213,7 +220,7 @@ export default class TableClipboard extends Plugin {
 		const cellsToSelect: Array<Element> = [];
 
 		// Store next cell insert position.
-		let insertPosition;
+		let insertPosition: Position;
 
 		// Content table replace cells algorithm iterates over a selected table fragment and:
 		//
@@ -239,7 +246,7 @@ export default class TableClipboard extends Plugin {
 			const cellToInsert = pastedCell ? writer.cloneElement( pastedCell ) : null;
 
 			// Replace the cell from the current slot with new table cell.
-			const newTableCell = this._replaceTableSlotCell( tableSlot, cellToInsert, insertPosition, writer );
+			const newTableCell = this._replaceTableSlotCell( tableSlot, cellToInsert, insertPosition!, writer );
 
 			// The cell was only removed.
 			if ( !newTableCell ) {
@@ -281,14 +288,14 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Replaces a single table slot.
 	 *
-	 * @private
-	 * @param {module:table/tablewalker~TableSlot} tableSlot
-	 * @param {module:engine/model/element~Element} cellToInsert
-	 * @param {module:engine/model/position~Position} insertPosition
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @returns {module:engine/model/element~Element|null} Inserted table cell or null if slot should remain empty.
+	 * @returns Inserted table cell or null if slot should remain empty.
 	 */
-	private _replaceTableSlotCell( tableSlot, cellToInsert, insertPosition, writer ) {
+	private _replaceTableSlotCell(
+		tableSlot: TableSlot,
+		cellToInsert: Element | null,
+		insertPosition: Position,
+		writer: Writer
+	): Element | null {
 		const { cell, isAnchor } = tableSlot;
 
 		// If the slot is occupied by a cell in a selected table - remove it.
@@ -317,7 +324,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/model~Model} model The editor model.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	private _getTableIfOnlyTableInContent( content, model ) {
+	private _getTableIfOnlyTableInContent( content: unknown, model: Model ): Element | null {
 		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 			return null;
 		}
@@ -362,21 +369,19 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
-// Prepares a table for pasting and returns adjusted selection dimensions.
-//
-// @param {Array.<module:engine/model/element~Element>} selectedTableCells
-// @param {Object} pastedDimensions
-// @param {Number} pastedDimensions.height
-// @param {Number} pastedDimensions.width
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:table/tableutils~TableUtils} tableUtils
-// @returns {Object} selection
-// @returns {Number} selection.firstColumn
-// @returns {Number} selection.firstRow
-// @returns {Number} selection.lastColumn
-// @returns {Number} selection.lastRow
-function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils ) {
-	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
+/**
+ * Prepares a table for pasting and returns adjusted selection dimensions.
+ */
+function prepareTableForPasting(
+	selectedTableCells: Array<Element>,
+	pastedDimensions: {
+		height: number;
+		width: number;
+	},
+	writer: Writer,
+	tableUtils: TableUtils
+) {
+	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 	const columnIndexes = tableUtils.getColumnIndexes( selectedTableCells );
 	const rowIndexes = tableUtils.getRowIndexes( selectedTableCells );
@@ -428,8 +433,10 @@ function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, t
 	return selection;
 }
 
-// Expand table (in place) to expected size.
-function expandTableSize( table, expectedHeight, expectedWidth, tableUtils ) {
+/**
+ * Expand table (in place) to expected size.
+ */
+function expandTableSize( table: Element, expectedHeight: number, expectedWidth: number, tableUtils: TableUtils ) {
 	const tableWidth = tableUtils.getColumns( table );
 	const tableHeight = tableUtils.getRows( table );
 
@@ -448,36 +455,38 @@ function expandTableSize( table, expectedHeight, expectedWidth, tableUtils ) {
 	}
 }
 
-// Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
-//
-// At given row & column location it might be one of:
-//
-// * cell - cell from pasted table anchored at this location.
-// * null - if no cell is anchored at this location.
-//
-// For instance, from a table below:
-//
-//		+----+----+----+----+
-//		| 00 | 01 | 02 | 03 |
-//		+    +----+----+----+
-//		|    | 11      | 13 |
-//		+----+         +----+
-//		| 20 |         | 23 |
-//		+----+----+----+----+
-//
-// The method will return an array (numbers represents cell element):
-//
-//	const map = [
-//		[ '00', '01', '02', '03' ],
-//		[ null, '11', null, '13' ],
-//		[ '20', null, null, '23' ]
-//	]
-//
-// This allows for a quick access to table at give row & column. For instance to access table cell "13" from pasted table call:
-//
-//		const cell = map[ 1 ][ 3 ]
-//
-function createLocationMap( table, width, height ) {
+/**
+ * Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
+ *
+ * At given row & column location it might be one of:
+ *
+ * * cell - cell from pasted table anchored at this location.
+ * * null - if no cell is anchored at this location.
+ *
+ * For instance, from a table below:
+ *
+ *		+----+----+----+----+
+ *		| 00 | 01 | 02 | 03 |
+ *		+    +----+----+----+
+ *		|    | 11      | 13 |
+ *		+----+         +----+
+ *		| 20 |         | 23 |
+ *		+----+----+----+----+
+ *
+ * The method will return an array (numbers represents cell element):
+ *
+ *	const map = [
+ *		[ '00', '01', '02', '03' ],
+ *		[ null, '11', null, '13' ],
+ *		[ '20', null, null, '23' ]
+ *	]
+ *
+ * This allows for a quick access to table at give row & column. For instance to access table cell "13" from pasted table call:
+ *
+ *		const cell = map[ 1 ][ 3 ]
+ *
+ */
+function createLocationMap( table: Element, width: number, height: number ) {
 	// Create height x width (row x column) two-dimensional table to store cells.
 	const map = new Array( height ).fill( null )
 		.map( () => new Array( width ).fill( null ) );
@@ -489,44 +498,46 @@ function createLocationMap( table, width, height ) {
 	return map;
 }
 
-// Make selected cells rectangular by splitting the cells that stand out from a rectangular selection.
-//
-// In the table below a selection is shown with "::" and slots with anchor cells are named.
-//
-// +----+----+----+----+----+                    +----+----+----+----+----+
-// | 00 | 01 | 02 | 03      |                    | 00 | 01 | 02 | 03      |
-// +    +----+    +----+----+                    |    ::::::::::::::::----+
-// |    | 11 |    | 13 | 14 |                    |    ::11 |    | 13:: 14 |    <- first row
-// +----+----+    +    +----+                    +----::---|    |   ::----+
-// | 20 | 21 |    |    | 24 |   select cells:    | 20 ::21 |    |   :: 24 |
-// +----+----+    +----+----+     11 -> 33       +----::---|    |---::----+
-// | 30      |    | 33 | 34 |                    | 30 ::   |    | 33:: 34 |    <- last row
-// +         +    +----+    +                    |    ::::::::::::::::    +
-// |         |    | 43 |    |                    |         |    | 43 |    |
-// +----+----+----+----+----+                    +----+----+----+----+----+
-//                                                      ^          ^
-//                                                     first & last columns
-//
-// Will update table to:
-//
-//                       +----+----+----+----+----+
-//                       | 00 | 01 | 02 | 03      |
-//                       +    +----+----+----+----+
-//                       |    | 11 |    | 13 | 14 |
-//                       +----+----+    +    +----+
-//                       | 20 | 21 |    |    | 24 |
-//                       +----+----+    +----+----+
-//                       | 30 |    |    | 33 | 34 |
-//                       +    +----+----+----+    +
-//                       |    |    |    | 43 |    |
-//                       +----+----+----+----+----+
-//
-// In th example above:
-// - Cell "02" which have `rowspan = 4` must be trimmed at first and at after last row.
-// - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
-// - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
-// - Cell "13" cannot be cut as it is inside the trimmed area.
-function splitCellsToRectangularSelection( table, dimensions, writer ) {
+/**
+ * Make selected cells rectangular by splitting the cells that stand out from a rectangular selection.
+ *
+ * In the table below a selection is shown with "::" and slots with anchor cells are named.
+ *
+ * +----+----+----+----+----+                    +----+----+----+----+----+
+ * | 00 | 01 | 02 | 03      |                    | 00 | 01 | 02 | 03      |
+ * +    +----+    +----+----+                    |    ::::::::::::::::----+
+ * |    | 11 |    | 13 | 14 |                    |    ::11 |    | 13:: 14 |    <- first row
+ * +----+----+    +    +----+                    +----::---|    |   ::----+
+ * | 20 | 21 |    |    | 24 |   select cells:    | 20 ::21 |    |   :: 24 |
+ * +----+----+    +----+----+     11 -> 33       +----::---|    |---::----+
+ * | 30      |    | 33 | 34 |                    | 30 ::   |    | 33:: 34 |    <- last row
+ * +         +    +----+    +                    |    ::::::::::::::::    +
+ * |         |    | 43 |    |                    |         |    | 43 |    |
+ * +----+----+----+----+----+                    +----+----+----+----+----+
+ *                                                      ^          ^
+ *                                                     first & last columns
+ *
+ * Will update table to:
+ *
+ *                       +----+----+----+----+----+
+ *                       | 00 | 01 | 02 | 03      |
+ *                       +    +----+----+----+----+
+ *                       |    | 11 |    | 13 | 14 |
+ *                       +----+----+    +    +----+
+ *                       | 20 | 21 |    |    | 24 |
+ *                       +----+----+    +----+----+
+ *                       | 30 |    |    | 33 | 34 |
+ *                       +    +----+----+----+    +
+ *                       |    |    |    | 43 |    |
+ *                       +----+----+----+----+----+
+ *
+ * In th example above:
+ * - Cell "02" which have `rowspan = 4` must be trimmed at first and at after last row.
+ * - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
+ * - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
+ * - Cell "13" cannot be cut as it is inside the trimmed area.
+ */
+function splitCellsToRectangularSelection( table: Element, dimensions: Record<string, number>, writer: Writer ) {
 	const { firstRow, lastRow, firstColumn, lastColumn } = dimensions;
 
 	const rowIndexes = { first: firstRow, last: lastRow };
@@ -541,7 +552,7 @@ function splitCellsToRectangularSelection( table, dimensions, writer ) {
 	doHorizontalSplit( table, lastRow + 1, columnIndexes, writer, firstRow );
 }
 
-function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 ) {
+function doHorizontalSplit( table: Element, splitRow: number, limitColumns: Record<string, number>, writer: Writer, startRow: number = 0 ) {
 	// If selection starts at first row then no split is needed.
 	if ( splitRow < 1 ) {
 		return;
@@ -555,7 +566,7 @@ function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 
 	return cellsToSplit.map( ( { cell } ) => splitHorizontally( cell, splitRow, writer ) );
 }
 
-function doVerticalSplit( table, splitColumn, limitRows, writer ) {
+function doVerticalSplit( table: Element, splitColumn: number, limitRows: Record<string, number>, writer: Writer ) {
 	// If selection starts at first column then no split is needed.
 	if ( splitColumn < 1 ) {
 		return;
@@ -569,10 +580,12 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 	return cellsToSplit.map( ( { cell, column } ) => splitVertically( cell, column, splitColumn, writer ) );
 }
 
-// Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).
-//
-// The same check is used for row as for column.
-function isAffectedBySelection( index, span, limit ) {
+/**
+ * Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).
+ *
+ * The same check is used for row as for column.
+ */
+function isAffectedBySelection( index: number, span: number, limit: Record<string, number> ) {
 	const endIndex = index + span - 1;
 	const { first, last } = limit;
 

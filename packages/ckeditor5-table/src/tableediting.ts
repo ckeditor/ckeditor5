@@ -251,3 +251,9 @@ function upcastCellSpan( type: string ) {
 		return span;
 	};
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableEditing.pluginName ]: TableEditing;
+	}
+}

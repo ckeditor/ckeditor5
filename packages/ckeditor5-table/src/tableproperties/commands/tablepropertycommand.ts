@@ -64,7 +64,7 @@ export default class TablePropertyCommand extends Command {
 	 * @param options.batch Pass the model batch instance to the command to aggregate changes,
 	 * for example, to allow a single undo step for multiple executions.
 	 */
-	public override execute( options: { value?: any; batch?: Batch } = {} ): void {
+	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
@@ -106,7 +106,7 @@ export default class TablePropertyCommand extends Command {
 	 *
 	 * @internal
 	 */
-	public _getValueToSet( value: string ): string | undefined {
+	public _getValueToSet( value: string | undefined ): string | undefined {
 		if ( value === this._defaultValue ) {
 			return;
 		}

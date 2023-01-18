@@ -17,6 +17,7 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import TableWalker from '../tablewalker';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
+import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 
 import type TableUtils from '../tableutils';
 
@@ -41,17 +42,11 @@ import type TableUtils from '../tableutils';
 export default class MergeCellCommand extends Command {
 	/**
 	 * The direction that indicates which cell will be merged with the currently selected one.
-	 *
-	 * @readonly
-	 * @member {String} #direction
 	 */
-	public readonly direction: string;
+	public readonly direction: ArrowKeyCodeDirection;
 
 	/**
 	 * Whether the merge is horizontal (left/right) or vertical (up/down).
-	 *
-	 * @readonly
-	 * @member {Boolean} #isHorizontal
 	 */
 	public readonly isHorizontal: boolean;
 
@@ -60,12 +55,11 @@ export default class MergeCellCommand extends Command {
 	/**
 	 * Creates a new `MergeCellCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
-	 * @param {Object} options
-	 * @param {String} options.direction Indicates which cell to merge with the currently selected one.
+	 * @param editor The editor on which this command will be used.
+	 * @param options.direction Indicates which cell to merge with the currently selected one.
 	 * Possible values are: `'left'`, `'right'`, `'up'` and `'down'`.
 	 */
-	constructor( editor: Editor, options: { direction: string } ) {
+	constructor( editor: Editor, options: { direction: ArrowKeyCodeDirection } ) {
 		super( editor );
 
 		this.direction = options.direction;
@@ -128,11 +122,8 @@ export default class MergeCellCommand extends Command {
 
 	/**
 	 * Returns a cell that can be merged with the current cell depending on the command's direction.
-	 *
-	 * @returns {module:engine/model/element~Element|undefined}
-	 * @private
 	 */
-	private _getMergeableCell() {
+	private _getMergeableCell(): Node | undefined {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -208,13 +199,8 @@ function getHorizontalCell( tableCell: Element, direction: string, tableUtils: T
 
 /**
  * Returns the cell that can be merged vertically.
- *
- * @param {module:engine/model/element~Element} tableCell
- * @param {String} direction
- * @param {module:table/tableutils~TableUtils} tableUtils
- * @returns {module:engine/model/node~Node|null}
  */
-function getVerticalCell( tableCell: Element, direction: string, tableUtils: TableUtils ) {
+function getVerticalCell( tableCell: Element, direction: string, tableUtils: TableUtils ): Node | null {
 	const tableRow = tableCell.parent as Element;
 	const table = tableRow.parent as Element;
 
@@ -222,7 +208,7 @@ function getVerticalCell( tableCell: Element, direction: string, tableUtils: Tab
 
 	// Don't search for mergeable cell if direction points out of the table.
 	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
-		return;
+		return null;
 	}
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
@@ -233,7 +219,7 @@ function getVerticalCell( tableCell: Element, direction: string, tableUtils: Tab
 
 	// Don't search for mergeable cell if direction points out of the current table section.
 	if ( headingRows && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
-		return;
+		return null;
 	}
 
 	const currentCellRowSpan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
@@ -258,17 +244,13 @@ function getVerticalCell( tableCell: Element, direction: string, tableUtils: Tab
 		}
 	} );
 
-	return cellToMergeData && cellToMergeData.cell;
+	return cellToMergeData && cellToMergeData.cell ? cellToMergeData.cell : null;
 }
 
 /**
  * Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
  * paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
- *
- * @param {module:engine/model/element~Element} cellToRemove
- * @param {module:engine/model/element~Element} cellToExpand
- * @param {module:engine/model/writer~Writer} writer
  */
 function mergeTableCells( cellToRemove: Element, cellToExpand: Element, writer: Writer ) {
 	if ( !isEmpty( cellToRemove ) ) {
@@ -285,11 +267,8 @@ function mergeTableCells( cellToRemove: Element, cellToExpand: Element, writer: 
 
 /**
  * Checks if the passed table cell contains an empty paragraph.
- *
- * @param {module:engine/model/element~Element} tableCell
- * @returns {Boolean}
  */
-function isEmpty( tableCell: Element ) {
+function isEmpty( tableCell: Element ): boolean {
 	const firstTableChild = tableCell.getChild( 0 ) as Element;
 
 	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;

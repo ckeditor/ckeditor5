@@ -7,11 +7,27 @@
  * @module table/ui/colorinputview
  */
 
-import { View, InputTextView, ButtonView, createDropdown, ColorGridView, FocusCycler, ViewCollection } from 'ckeditor5/src/ui';
+import {
+	View,
+	InputTextView,
+	ButtonView,
+	createDropdown,
+	ColorGridView,
+	FocusCycler,
+	ViewCollection,
+	type ColorDefinition,
+	type DropdownView
+} from 'ckeditor5/src/ui';
 import { icons } from 'ckeditor5/src/core';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import '../../theme/colorinput.css';
+
+type ColorInputViewOptions = {
+	colorDefinitions: ColorDefinition;
+	columns: number;
+	defaultColorValue?: string;
+};
 
 /**
  * The color input view class. It allows the user to type in a color (hex, rgb, etc.)
@@ -22,121 +38,106 @@ import '../../theme/colorinput.css';
  */
 export default class ColorInputView extends View {
 	/**
+	 * The value of the input.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	public value!: string;
+
+	/**
+	 * Controls whether the input view is in read-only mode.
+	 *
+	 * @observable
+	 * @default false
+	 */
+	public isReadOnly!: boolean;
+
+	/**
+	 * An observable flag set to `true` when the input is focused by the user.
+	 * `false` otherwise.
+	 *
+	 * @observable
+	 * @default false
+	 */
+	public readonly isFocused!: boolean;
+
+	/**
+	 * An observable flag set to `true` when the input contains no text.
+	 *
+	 * @observable
+	 * @default true
+	 */
+	public readonly isEmpty!: boolean;
+
+	/**
+	 * A cached reference to the options passed to the constructor.
+	 */
+	public options: ColorInputViewOptions;
+
+	/**
+	 * Tracks information about the DOM focus in the view.
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * A collection of views that can be focused in the view.
+	 */
+	protected readonly _focusables: ViewCollection;
+
+	/**
+	 * An instance of the dropdown allowing to select a color from a grid.
+	 */
+	public dropdownView: DropdownView;
+
+	/**
+	 * An instance of the input allowing the user to type a color value.
+	 */
+	public inputView: InputTextView;
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * The flag that indicates whether the user is still typing.
+	 * If set to true, it means that the text input field ({@link #inputView}) still has the focus.
+	 * So, we should interrupt the user by replacing the input's value.
+	 */
+	protected _stillTyping: boolean;
+
+	/**
+	 * Helps cycling over focusable items in the view.
+	 */
+	protected readonly _focusCycler: FocusCycler;
+
+	/**
 	 * Creates an instance of the color input view.
 	 *
-	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Object} options The input options.
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions The colors to be displayed
-	 * in the palette inside the input's dropdown.
-	 * @param {Number} options.columns The number of columns in which the colors will be displayed.
-	 * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+	 * @param locale The locale instance.
+	 * @param options The input options.
+	 * @param options.colorDefinitions The colors to be displayed in the palette inside the input's dropdown.
+	 * @param options.columns The number of columns in which the colors will be displayed.
+	 * @param options.defaultColorValue If specified, the color input view will replace the "Remove color" button with
 	 * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
 	 */
-	constructor( locale, options ) {
+	constructor( locale: Locale, options: ColorInputViewOptions ) {
 		super( locale );
 
-		/**
-		 * The value of the input.
-		 *
-		 * @observable
-		 * @member {String} #value
-		 * @default ''
-		 */
 		this.set( 'value', '' );
-
-		/**
-		 * Controls whether the input view is in read-only mode.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 * @default false
-		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * An observable flag set to `true` when the input is focused by the user.
-		 * `false` otherwise.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isFocused
-		 * @default false
-		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * An observable flag set to `true` when the input contains no text.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isEmpty
-		 * @default true
-		 */
 		this.set( 'isEmpty', true );
 
-		/**
-		 * A cached reference to the options passed to the constructor.
-		 *
-		 * @member {Object}
-		 */
 		this.options = options;
-
-		/**
-		 * Tracks information about the DOM focus in the view.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * A collection of views that can be focused in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this._focusables = new ViewCollection();
-
-		/**
-		 * An instance of the dropdown allowing to select a color from a grid.
-		 *
-		 * @member {module:ui/dropdown/dropdown~DropdownView}
-		 */
 		this.dropdownView = this._createDropdownView();
-
-		/**
-		 * An instance of the input allowing the user to type a color value.
-		 *
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
-		 */
 		this.inputView = this._createInputTextView();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * The flag that indicates whether the user is still typing.
-		 * If set to true, it means that the text input field ({@link #inputView}) still has the focus.
-		 * So, we should interrupt the user by replacing the input's value.
-		 *
-		 * @protected
-		 * @member {Boolean}
-		 */
 		this._stillTyping = false;
 
-		/**
-		 * Helps cycling over focusable items in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -170,24 +171,24 @@ export default class ColorInputView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		// Start listening for the keystrokes coming from the dropdown panel view.
-		this.keystrokes.listenTo( this.dropdownView.panelView.element );
+		this.keystrokes.listenTo( this.dropdownView.panelView.element! );
 	}
 
 	/**
 	 * Focuses the input.
 	 */
-	focus() {
+	public focus(): void {
 		this.inputView.focus();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -196,11 +197,9 @@ export default class ColorInputView extends View {
 
 	/**
 	 * Creates and configures the {@link #dropdownView}.
-	 *
-	 * @private
 	 */
-	_createDropdownView() {
-		const locale = this.locale;
+	private _createDropdownView() {
+		const locale = this.locale!;
 		const t = locale.t;
 		const bind = this.bindTemplate;
 		const colorGrid = this._createColorGrid( locale );
@@ -258,10 +257,9 @@ export default class ColorInputView extends View {
 	/**
 	 * Creates and configures an instance of {@link module:ui/inputtext/inputtextview~InputTextView}.
 	 *
-	 * @private
 	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #inputView}.
 	 */
-	_createInputTextView() {
+	private _createInputTextView() {
 		const locale = this.locale;
 		const inputView = new InputTextView( locale );
 
@@ -276,7 +274,7 @@ export default class ColorInputView extends View {
 		this.bind( 'isFocused', 'isEmpty' ).to( inputView );
 
 		inputView.on( 'input', () => {
-			const inputValue = inputView.element.value;
+			const inputValue = inputView.element!.value;
 			// Check if the value matches one of our defined colors' label.
 			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.label );
 
@@ -286,7 +284,7 @@ export default class ColorInputView extends View {
 
 		inputView.on( 'blur', () => {
 			this._stillTyping = false;
-			this._setInputValue( inputView.element.value );
+			this._setInputValue( inputView.element!.value );
 		} );
 
 		inputView.delegate( 'input' ).to( this );
@@ -296,11 +294,9 @@ export default class ColorInputView extends View {
 
 	/**
 	 * Creates and configures the button that clears the color.
-	 *
-	 * @private
 	 */
-	_createRemoveColorButton() {
-		const locale = this.locale;
+	private _createRemoveColorButton() {
+		const locale = this.locale!;
 		const t = locale.t;
 		const removeColorButton = new ButtonView( locale );
 		const defaultColor = this.options.defaultColorValue || '';
@@ -321,10 +317,8 @@ export default class ColorInputView extends View {
 
 	/**
 	 * Creates and configures the color grid inside the {@link #dropdownView}.
-	 *
-	 * @private
 	 */
-	_createColorGrid( locale ) {
+	private _createColorGrid( locale ) {
 		const colorGrid = new ColorGridView( locale, {
 			colorDefinitions: this.options.colorDefinitions,
 			columns: this.options.columns
@@ -348,11 +342,9 @@ export default class ColorInputView extends View {
 	 *
 	 * * Someone picks the color in the grid.
 	 * * The color is set from the plugin level.
-	 *
-	 * @private
 	 * @param {String} inputValue Color value to be set.
 	 */
-	_setInputValue( inputValue ) {
+	private _setInputValue( inputValue: string ) {
 		if ( !this._stillTyping ) {
 			const normalizedInputValue = normalizeColor( inputValue );
 			// Check if the value matches one of our defined colors.
@@ -367,14 +359,15 @@ export default class ColorInputView extends View {
 	}
 }
 
-// Normalizes color value, by stripping extensive whitespace.
-// For example., transforms:
-// * `   rgb(  25 50    0 )` to `rgb(25 50 0)`,
-// * "\t  rgb(  25 ,  50,0 )		" to `rgb(25 50 0)`.
-//
-// @param {String} colorString The value to be normalized.
-// @returns {String}
-function normalizeColor( colorString ) {
+/**
+ * Normalizes color value, by stripping extensive whitespace.
+ * For example., transforms:
+ * * `   rgb(  25 50    0 )` to `rgb(25 50 0)`,
+ * * "\t  rgb(  25 ,  50,0 )		" to `rgb(25 50 0)`.
+ *
+ * @param colorString The value to be normalized.
+ */
+function normalizeColor( colorString: string ): string {
 	return colorString
 		// Remove any whitespace right after `(` or `,`.
 		.replace( /([(,])\s+/g, '$1' )

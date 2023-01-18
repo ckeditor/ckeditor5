@@ -28,19 +28,15 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 export default class InsertRowCommand extends Command {
 	/**
 	 * The order of insertion relative to the row in which the caret is located.
-	 *
-	 * @readonly
-	 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
 	 */
-	public order: string;
+	public readonly order: string;
 
 	/**
 	 * Creates a new `InsertRowCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
-	 * @param {Object} options
-	 * @param {String} [options.order="below"] The order of insertion relative to the row in which the caret is located.
-	 * Possible values: `"above"` and `"below"`.
+	 * @param editor The editor on which this command will be used.
+	 * @param options.order The order of insertion relative to the row in which the caret is located.
+	 * Possible values: `"above"` and `"below"`. Default value is "below"
 	 */
 	constructor( editor: Editor, options: { order?: string } = {} ) {
 		super( editor );

@@ -7,7 +7,7 @@
  * @module table/converters/upcasttable
  */
 
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, UpcastDispatcher } from 'ckeditor5/src/engine';
 
 import { createEmptyTableCell } from '../utils/common';
 import { first } from 'ckeditor5/src/utils';
@@ -20,11 +20,9 @@ import { first } from 'ckeditor5/src/utils';
  * to the model representation:
  *
  *		<table></table>
- *
- * @returns {Function}
  */
 export function upcastTableFigure() {
-	return dispatcher => {
+	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 			// Do not convert if this is not a "table figure".
 			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {

@@ -11,8 +11,9 @@ import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
-import { Plugin } from 'ckeditor5/src/core';
-import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { getLocalizedArrowKeyCodeDirection, type EventInfo, type ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import type { BubblingEventInfo, DocumentSelection, DomEventData, Element, Selection } from 'ckeditor5/src/engine';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -24,21 +25,21 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableKeyboard' {
 		return 'TableKeyboard';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableSelection, TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
@@ -50,12 +51,8 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
-	 *
-	 * @private
-	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTabOnSelectedTable( bubblingEventInfo, domEventData ) {
+	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -69,26 +66,22 @@ export default class TableKeyboard extends Plugin {
 		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
-			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as Element ).getChild( 0 ) as Element ) );
 		} );
 	}
 
 	/**
 	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
-	 *
-	 * @private
-	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTab( bubblingEventInfo, domEventData ) {
+	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData ) {
 		const editor = this.editor;
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		const selection = editor.model.document.selection;
 		const isForward = !domEventData.shiftKey;
 
-		let tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
+		let tableCell: Element | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 		if ( !tableCell ) {
 			tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
@@ -102,11 +95,11 @@ export default class TableKeyboard extends Plugin {
 		domEventData.stopPropagation();
 		bubblingEventInfo.stop();
 
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const tableRow = tableCell.parent as Element;
+		const table = tableRow.parent as Element;
 
-		const currentRowIndex = table.getChildIndex( tableRow );
-		const currentCellIndex = tableRow.getChildIndex( tableCell );
+		const currentRowIndex = table.getChildIndex( tableRow )!;
+		const currentCellIndex = tableRow.getChildIndex( tableCell )!;
 
 		const isFirstCellInRow = currentCellIndex === 0;
 
@@ -136,23 +129,23 @@ export default class TableKeyboard extends Plugin {
 			}
 		}
 
-		let cellToFocus;
+		let cellToFocus: Element;
 
 		// Move to the first cell in the next row.
 		if ( isForward && isLastCellInRow ) {
-			const nextRow = table.getChild( currentRowIndex + 1 );
+			const nextRow = table.getChild( currentRowIndex + 1 ) as Element;
 
-			cellToFocus = nextRow.getChild( 0 );
+			cellToFocus = nextRow.getChild( 0 ) as Element;
 		}
 		// Move to the last cell in the previous row.
 		else if ( !isForward && isFirstCellInRow ) {
-			const previousRow = table.getChild( currentRowIndex - 1 );
+			const previousRow = table.getChild( currentRowIndex - 1 ) as Element;
 
-			cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as Element;
 		}
 		// Move to the next/previous cell.
 		else {
-			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as Element;
 		}
 
 		editor.model.change( writer => {
@@ -162,16 +155,12 @@ export default class TableKeyboard extends Plugin {
 
 	/**
 	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onArrowKey( eventInfo, domEventData ) {
+	private _onArrowKey( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 
-		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection )!;
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
@@ -184,12 +173,11 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * Handles arrow keys to move the selection around the table.
 	 *
-	 * @private
-	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
-	 * @param {Boolean} expandSelection If the current selection should be expanded.
-	 * @returns {Boolean} Returns `true` if key was handled.
+	 * @param direction The direction of the arrow key.
+	 * @param expandSelection If the current selection should be expanded.
+	 * @returns Returns `true` if key was handled.
 	 */
-	_handleArrowKeys( direction, expandSelection ) {
+	private _handleArrowKeys( direction: ArrowKeyCodeDirection, expandSelection: boolean ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -208,13 +196,13 @@ export default class TableKeyboard extends Plugin {
 				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
 			}
 
-			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
+			this._navigateFromCellInDirection( focusCell!, direction, expandSelection );
 
 			return true;
 		}
 
 		// Abort if we're not in a table cell.
-		const tableCell = selection.focus.findAncestor( 'tableCell' );
+		const tableCell = selection.focus!.findAncestor( 'tableCell' );
 
 		/* istanbul ignore if: paranoid check */
 		if ( !tableCell ) {
@@ -255,17 +243,15 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * Returns `true` if the selection is at the boundary of a table cell according to the navigation direction.
 	 *
-	 * @private
-	 * @param {module:engine/model/selection~Selection} selection The current selection.
-	 * @param {module:engine/model/element~Element} tableCell The current table cell element.
-	 * @param {Boolean} isForward The expected navigation direction.
-	 * @returns {Boolean}
+	 * @param selection The current selection.
+	 * @param tableCell The current table cell element.
+	 * @param isForward The expected navigation direction.
 	 */
-	_isSelectionAtCellEdge( selection, tableCell, isForward ) {
+	private _isSelectionAtCellEdge( selection: Selection | DocumentSelection, tableCell: Element, isForward: boolean ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
-		const focus = isForward ? selection.getLastPosition() : selection.getFirstPosition();
+		const focus = isForward ? selection.getLastPosition()! : selection.getFirstPosition()!;
 
 		// If the current limit element is not table cell we are for sure not at the cell edge.
 		// Also `modifySelection` will not let us out of it.
@@ -280,25 +266,24 @@ export default class TableKeyboard extends Plugin {
 		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
 
 		// If there was no change in the focus position, then it's not possible to move the selection there.
-		return focus.isEqual( probe.focus );
+		return focus.isEqual( probe.focus! );
 	}
 
 	/**
 	 * Moves the selection from the given table cell in the specified direction.
 	 *
-	 * @protected
-	 * @param {module:engine/model/element~Element} focusCell The table cell that is current multi-cell selection focus.
-	 * @param {'left'|'up'|'right'|'down'} direction Direction in which selection should move.
-	 * @param {Boolean} [expandSelection=false] If the current selection should be expanded.
+	 * @param focusCell The table cell that is current multi-cell selection focus.
+	 * @param direction Direction in which selection should move.
+	 * @param expandSelection If the current selection should be expanded. Default value is false.
 	 */
-	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
+	protected _navigateFromCellInDirection( focusCell: Element, direction: ArrowKeyCodeDirection, expandSelection = false ): void {
 		const model = this.editor.model;
 
-		const table = focusCell.findAncestor( 'table' );
+		const table = focusCell.findAncestor( 'table' )!;
 		const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 
-		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell );
+		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell )!;
 		let { row, column } = currentCellInfo;
 
 		switch ( direction ) {
@@ -342,7 +327,7 @@ export default class TableKeyboard extends Plugin {
 			row++;
 		}
 
-		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
+		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column )!.cell;
 		const isForward = [ 'right', 'down' ].includes( direction );
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 
@@ -357,6 +342,12 @@ export default class TableKeyboard extends Plugin {
 				writer.setSelection( positionToSelect );
 			} );
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableKeyboard.pluginName ]: TableKeyboard;
 	}
 }
 

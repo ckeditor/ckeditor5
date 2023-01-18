@@ -7,11 +7,12 @@
  * @module table/tablemouse
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import TableSelection from './tableselection';
 import MouseEventsObserver from './tablemouse/mouseeventsobserver';
 import TableUtils from './tableutils';
+import type { DomEventData, Element } from 'ckeditor5/src/engine';
 
 /**
  * This plugin enables a table cells' selection with the mouse.
@@ -23,21 +24,21 @@ export default class TableMouse extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableMouse' {
 		return 'TableMouse';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ TableSelection, TableUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Currently the MouseObserver only handles `mousedown` and `mouseup` events.
@@ -51,10 +52,8 @@ export default class TableMouse extends Plugin {
 	/**
 	 * Enables making cells selection by <kbd>Shift</kbd>+click. Creates a selection from the cell which previously held
 	 * the selection to the cell which was clicked. It can be the same cell, in which case it selects a single cell.
-	 *
-	 * @private
 	 */
-	_enableShiftClickSelection() {
+	private _enableShiftClickSelection() {
 		const editor = this.editor;
 		const tableUtils = editor.plugins.get( TableUtils );
 		let blockSelectionChange = false;
@@ -124,12 +123,10 @@ export default class TableMouse extends Plugin {
 	 * However, the cells selection is enabled only after the mouse cursor left the anchor cell.
 	 * Thanks to that normal text selection within one cell works just fine. However, you can still select
 	 * just one cell by leaving the anchor cell and moving back to it.
-	 *
-	 * @private
 	 */
-	_enableMouseDragSelection() {
+	private _enableMouseDragSelection() {
 		const editor = this.editor;
-		let anchorCell, targetCell;
+		let anchorCell: Element | null, targetCell: Element | null;
 		let beganCellSelection = false;
 		let blockSelectionChange = false;
 
@@ -175,7 +172,7 @@ export default class TableMouse extends Plugin {
 			}
 
 			blockSelectionChange = true;
-			tableSelection.setCellSelection( anchorCell, targetCell );
+			tableSelection.setCellSelection( anchorCell, targetCell! );
 
 			domEventData.preventDefault();
 		} );
@@ -200,11 +197,10 @@ export default class TableMouse extends Plugin {
 	/**
 	 * Returns the model table cell element based on the target element of the passed DOM event.
 	 *
-	 * @private
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 * @returns {module:engine/model/element~Element|undefined} Returns the table cell or `undefined`.
 	 */
-	_getModelTableCellFromDomEvent( domEventData ) {
+	private _getModelTableCellFromDomEvent( domEventData: DomEventData ) {
 		// Note: Work with positions (not element mapping) because the target element can be an attribute or other non-mapped element.
 		const viewTargetElement = domEventData.target;
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
@@ -215,6 +211,12 @@ export default class TableMouse extends Plugin {
 	}
 }
 
-function haveSameTableParent( cellA, cellB ) {
-	return cellA.parent.parent == cellB.parent.parent;
+function haveSameTableParent( cellA: Element, cellB: Element ) {
+	return cellA.parent!.parent == cellB.parent!.parent;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableMouse.pluginName ]: TableMouse;
+	}
 }

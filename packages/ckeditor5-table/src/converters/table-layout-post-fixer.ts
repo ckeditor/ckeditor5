@@ -11,7 +11,8 @@ import type {
 	Element,
 	Model,
 	Writer,
-	DiffItem
+	DiffItem,
+	DiffItemAttribute
 } from 'ckeditor5/src/engine';
 
 import TableWalker from './../tablewalker';
@@ -218,7 +219,6 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *				</tr>
  *			</tbody>
  *		</table>
- * @param {module:engine/model/model~Model} model
  */
 export default function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
@@ -235,15 +235,15 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
 	// Do not analyze the same table more then once - may happen for multiple changes in the same table.
 	const analyzedTables = new Set();
 
-	for ( const entry of changes as Array<any> ) { // TODO
-		let table;
+	for ( const entry of changes ) {
+		let table: Element | null = null;
 
-		if ( entry.name == 'table' && entry.type == 'insert' ) {
-			table = entry.position.nodeAfter;
+		if ( entry.type == 'insert' && entry.name == 'table' ) {
+			table = entry.position.nodeAfter as Element;
 		}
 
 		// Fix table on adding/removing table cells and rows.
-		if ( entry.name == 'tableRow' || entry.name == 'tableCell' ) {
+		if ( ( entry.type == 'insert' || entry.type == 'remove' ) && ( entry.name == 'tableRow' || entry.name == 'tableCell' ) ) {
 			table = entry.position.findAncestor( 'table' );
 		}
 
@@ -398,13 +398,13 @@ function getChildrenLengths( table: Element ) {
 
 /**
  * Checks if the differ entry for an attribute change is one of the table's attributes.
- *
- * @param entry
- * @returns {Boolean}
  */
-function isTableAttributeEntry( entry: any ) { // TODO: DiffItem
-	const isAttributeType = entry.type === 'attribute';
+function isTableAttributeEntry( entry: DiffItem ): entry is DiffItemAttribute {
+	if ( entry.type !== 'attribute' ) {
+		return false;
+	}
+
 	const key = entry.attributeKey;
 
-	return isAttributeType && ( key === 'headingRows' || key === 'colspan' || key === 'rowspan' );
+	return key === 'headingRows' || key === 'colspan' || key === 'rowspan';
 }

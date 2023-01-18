@@ -69,7 +69,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
-export type { DiffItem } from './model/differ';
+export type { DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';

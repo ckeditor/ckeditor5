@@ -27,7 +27,7 @@ export default class TableCaptionEditing extends Plugin {
 	 *
 	 * To learn more about this system, see {@link #_saveCaption}.
 	 */
-	private _savedCaptionsMap: WeakMap<Element, unknown>; // TODO
+	private _savedCaptionsMap: WeakMap<Element, unknown>;
 
 	/**
 	 * @inheritDoc
@@ -78,7 +78,7 @@ export default class TableCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent ) ) {
+				if ( !isTable( modelElement.parent as Element ) ) {
 					return null;
 				}
 
@@ -90,7 +90,7 @@ export default class TableCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent ) ) {
+				if ( !isTable( modelElement.parent as Element ) ) {
 					return null;
 				}
 

@@ -7,7 +7,7 @@
  * @module table/tabletoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget';
 
@@ -26,21 +26,21 @@ export default class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ WidgetToolbarRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableToolbar' {
 		return 'TableToolbar';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
@@ -109,3 +109,9 @@ export default class TableToolbar extends Plugin {
  *
  * @member {Array.<String>} module:table/table~TableConfig#tableToolbar
  */
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableToolbar.pluginName ]: TableToolbar;
+	}
+}

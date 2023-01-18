@@ -134,6 +134,12 @@ declare module '@ckeditor/ckeditor5-core' {
 	* @member module:table/table~TableConfig#tableCellProperties
 	*/
 	interface EditorConfig {
-		// tableCellProperties?: TableCellPropertiesConfig; TODO
+		tableCellProperties?: TableCellPropertiesOptions;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableCellProperties.pluginName ]: TableCellProperties;
 	}
 }

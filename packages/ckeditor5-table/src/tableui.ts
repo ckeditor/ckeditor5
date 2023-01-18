@@ -7,9 +7,17 @@
  * @module table/tableui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addListToDropdown, createDropdown, Model, SplitButtonView, SwitchButtonView } from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+import { Plugin, type Command, type Editor } from 'ckeditor5/src/core';
+import {
+	addListToDropdown,
+	createDropdown,
+	Model,
+	SplitButtonView,
+	SwitchButtonView,
+	type DropdownView,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui';
+import { Collection, type Locale } from 'ckeditor5/src/utils';
 
 import InsertTableView from './ui/inserttableview';
 
@@ -48,7 +56,7 @@ export default class TableUI extends Plugin {
 		const isContentLtr = contentLanguageDirection === 'ltr';
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
-			const command = editor.commands.get( 'insertTable' );
+			const command = editor.commands.get( 'insertTable' )!;
 			const dropdownView = createDropdown( locale );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
@@ -60,7 +68,7 @@ export default class TableUI extends Plugin {
 				tooltip: true
 			} );
 
-			let insertTableView;
+			let insertTableView: InsertTableView;
 
 			dropdownView.on( 'change:isOpen', () => {
 				if ( insertTableView ) {
@@ -121,7 +129,7 @@ export default class TableUI extends Plugin {
 						label: t( 'Select column' )
 					}
 				}
-			];
+			] as Array<ListDropdownItemDefinition>;
 
 			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
 		} );
@@ -165,7 +173,7 @@ export default class TableUI extends Plugin {
 						label: t( 'Select row' )
 					}
 				}
-			];
+			] as Array<ListDropdownItemDefinition>;
 
 			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
 		} );
@@ -215,7 +223,7 @@ export default class TableUI extends Plugin {
 						label: t( 'Split cell horizontally' )
 					}
 				}
-			];
+			] as Array<ListDropdownItemDefinition>;
 
 			return this._prepareMergeSplitButtonDropdown( t( 'Merge cells' ), tableMergeCellIcon, options, locale );
 		} );
@@ -224,14 +232,11 @@ export default class TableUI extends Plugin {
 	/**
 	 * Creates a dropdown view from a set of options.
 	 *
-	 * @private
-	 * @param {String} label The dropdown button label.
-	 * @param {String} icon An icon for the dropdown button.
-	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
-	 * @param {module:utils/locale~Locale} locale
-	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 * @param label The dropdown button label.
+	 * @param icon An icon for the dropdown button.
+	 * @param options The list of options for the dropdown.
 	 */
-	_prepareDropdown( label, icon, options, locale ) {
+	private _prepareDropdown( label: string, icon: string, options: Array<ListDropdownItemDefinition>, locale: Locale ) {
 		const editor = this.editor;
 		const dropdownView = createDropdown( locale );
 		const commands = this._fillDropdownWithListOptions( dropdownView, options );
@@ -249,7 +254,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( evt.source.commandName );
+			editor.execute( ( evt.source as Record<string, unknown> ).commandName as string );
 
 			// Toggling a switch button view should not move the focus to the editable.
 			if ( !( evt.source instanceof SwitchButtonView ) ) {
@@ -264,20 +269,17 @@ export default class TableUI extends Plugin {
 	 * Creates a dropdown view with a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} for
 	 * merge (and split)–related commands.
 	 *
-	 * @private
-	 * @param {String} label The dropdown button label.
-	 * @param {String} icon An icon for the dropdown button.
-	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
-	 * @param {module:utils/locale~Locale} locale
-	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 * @param label The dropdown button label.
+	 * @param icon An icon for the dropdown button.
+	 * @param options The list of options for the dropdown.
 	 */
-	_prepareMergeSplitButtonDropdown( label, icon, options, locale ) {
+	private _prepareMergeSplitButtonDropdown( label: string, icon: string, options: Array<ListDropdownItemDefinition>, locale: Locale ) {
 		const editor = this.editor;
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mergeCommandName = 'mergeTableCells';
 
 		// Main command.
-		const mergeCommand = editor.commands.get( mergeCommandName );
+		const mergeCommand = editor.commands.get( mergeCommandName )!;
 
 		// Subcommands in the dropdown.
 		const commands = this._fillDropdownWithListOptions( dropdownView, options );
@@ -302,7 +304,7 @@ export default class TableUI extends Plugin {
 
 		// Execute commands for events coming from the list in the dropdown panel.
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( evt.source.commandName );
+			editor.execute( ( evt.source as Record<string, unknown> ).commandName as string );
 			editor.editing.view.focus();
 		} );
 
@@ -318,10 +320,10 @@ export default class TableUI extends Plugin {
 	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
 	 * @returns {Array.<module:core/command~Command>} Commands the list options are interacting with.
 	 */
-	_fillDropdownWithListOptions( dropdownView, options ) {
+	private _fillDropdownWithListOptions( dropdownView: DropdownView, options: Array<ListDropdownItemDefinition> ) {
 		const editor = this.editor;
-		const commands = [];
-		const itemDefinitions = new Collection();
+		const commands: Array<Command> = [];
+		const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
 
 		for ( const option of options ) {
 			addListOption( option, editor, commands, itemDefinitions );
@@ -333,19 +335,28 @@ export default class TableUI extends Plugin {
 	}
 }
 
-// Adds an option to a list view.
-//
-// @param {module:table/tableui~DropdownOption} option A configuration option.
-// @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:core/command~Command>} commands The list of commands to update.
-// @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemDefinitions
-// A collection of dropdown items to update with the given option.
-function addListOption( option, editor, commands, itemDefinitions ) {
+/**
+ * Adds an option to a list view.
+ *
+ * @param option A configuration option.
+ * @param commands The list of commands to update.
+ * @param itemDefinitions A collection of dropdown items to update with the given option.
+ */
+function addListOption(
+	option: ListDropdownItemDefinition,
+	editor: Editor,
+	commands: Array<Command>,
+	itemDefinitions: Collection<ListDropdownItemDefinition>
+) {
+	if ( option.type === 'separator' ) {
+		return;
+	}
+
 	const model = option.model = new Model( option.model );
 	const { commandName, bindIsOn } = option.model;
 
 	if ( option.type === 'button' || option.type === 'switchbutton' ) {
-		const command = editor.commands.get( commandName );
+		const command = editor.commands.get( commandName as string )!;
 
 		commands.push( command );
 
@@ -363,4 +374,10 @@ function addListOption( option, editor, commands, itemDefinitions ) {
 	} );
 
 	itemDefinitions.add( option );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableUI.pluginName ]: TableUI;
+	}
 }

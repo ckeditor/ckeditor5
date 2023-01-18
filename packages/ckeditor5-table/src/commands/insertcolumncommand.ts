@@ -34,10 +34,9 @@ export default class InsertColumnCommand extends Command {
 	/**
 	 * Creates a new `InsertColumnCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor on which this command will be used.
-	 * @param {Object} options
-	 * @param {String} [options.order="right"] The order of insertion relative to the column in which the caret is located.
-	 * Possible values: `"left"` and `"right"`.
+	 * @param editor An editor on which this command will be used.
+	 * @param options.order The order of insertion relative to the column in which the caret is located.
+	 * Possible values: `"left"` and `"right"`. Default value is "right".
 	 */
 	constructor( editor: Editor, options: { order?: string } = {} ) {
 		super( editor );

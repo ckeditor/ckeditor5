@@ -19,7 +19,7 @@ export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
 export * from './colorgrid/utils';
-export { default as ColorGridView } from './colorgrid/colorgridview';
+export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
 
 export { default as ComponentFactory } from './componentfactory';

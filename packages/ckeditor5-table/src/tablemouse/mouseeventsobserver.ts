@@ -25,7 +25,7 @@ import { DomEventObserver, type View } from 'ckeditor5/src/engine';
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
-export default class MouseEventsObserver extends DomEventObserver {
+export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mouseleave'> {
 	/**
 	 * @inheritDoc
 	 */

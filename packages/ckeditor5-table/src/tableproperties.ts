@@ -124,3 +124,9 @@ export type TablePropertiesOptions = {
 	borderStyle?: string;
 	alignment?: string;
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableProperties.pluginName ]: TableProperties;
+	}
+}

@@ -7,10 +7,7 @@
  * @module table/converters/table-cell-paragraph-post-fixer
  */
 
-import type { Model, Writer, Element } from 'ckeditor5/src/engine';
-
-// eslint-disable-next-line
-import type { DiffItemInsert, DiffItemRemove } from '@ckeditor/ckeditor5-engine/src/model/differ';
+import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'ckeditor5/src/engine';
 
 /**
  * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.
@@ -41,27 +38,25 @@ export default function injectTableCellParagraphPostFixer( model: Model ): void 
  * The table cell contents post-fixer.
  */
 function tableCellContentsPostFixer( writer: Writer, model: Model ) {
-	const changes = model.document.differ.getChanges() as Array<DiffItemInsert> | Array<DiffItemRemove>;
+	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
 
 	for ( const entry of changes ) {
-		const nodeAfter = entry.position!.nodeAfter as Element;
-
 		if ( entry.type == 'insert' && entry.name == 'table' ) {
-			wasFixed = fixTable( nodeAfter, writer ) || wasFixed;
+			wasFixed = fixTable( entry.position.nodeAfter as Element, writer ) || wasFixed;
 		}
 
 		if ( entry.type == 'insert' && entry.name == 'tableRow' ) {
-			wasFixed = fixTableRow( nodeAfter, writer ) || wasFixed;
+			wasFixed = fixTableRow( entry.position.nodeAfter as Element, writer ) || wasFixed;
 		}
 
 		if ( entry.type == 'insert' && entry.name == 'tableCell' ) {
-			wasFixed = fixTableCellContent( nodeAfter, writer ) || wasFixed;
+			wasFixed = fixTableCellContent( entry.position.nodeAfter as Element, writer ) || wasFixed;
 		}
 
-		if ( checkTableCellChange( entry ) ) {
-			wasFixed = fixTableCellContent( entry.position!.parent as Element, writer ) || wasFixed;
+		if ( ( entry.type == 'remove' || entry.type == 'insert' ) && checkTableCellChange( entry ) ) {
+			wasFixed = fixTableCellContent( entry.position.parent as Element, writer ) || wasFixed;
 		}
 	}
 
@@ -130,8 +125,8 @@ function fixTableCellContent( tableCell: Element, writer: Writer ) {
  * - Removing content from the table cell (i.e. `tableCell` can be left empty).
  * - Adding a text node directly into a table cell.
  */
-function checkTableCellChange( entry: DiffItemInsert | DiffItemRemove ) { // TODO: DiffItem
-	if ( !entry.position || !entry.position.parent.is( 'element', 'tableCell' ) ) {
+function checkTableCellChange( entry: DiffItemInsert | DiffItemRemove ) {
+	if ( !entry.position.parent.is( 'element', 'tableCell' ) ) {
 		return false;
 	}
 

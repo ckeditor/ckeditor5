@@ -77,10 +77,6 @@ export default class MergeCellsCommand extends Command {
  *  Merges two table cells. It will ensure that after merging cells with empty paragraphs the resulting table cell will only have one
  * paragraph. If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
- *
- * @param {module:engine/model/element~Element} cellBeingMerged
- * @param {module:engine/model/element~Element} targetCell
- * @param {module:engine/model/writer~Writer} writer
  */
 function mergeTableCells( cellBeingMerged: Element, targetCell: Element, writer: Writer ) {
 	if ( !isEmpty( cellBeingMerged ) ) {
@@ -97,11 +93,8 @@ function mergeTableCells( cellBeingMerged: Element, targetCell: Element, writer:
 
 /**
  * Checks if the passed table cell contains an empty paragraph.
- *
- * @param {module:engine/model/element~Element} tableCell
- * @returns {Boolean}
  */
-function isEmpty( tableCell: Element ) {
+function isEmpty( tableCell: Element ): boolean {
 	const firstTableChild = tableCell.getChild( 0 ) as Element;
 
 	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;

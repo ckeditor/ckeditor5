@@ -38,8 +38,8 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
 	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellWidth', defaultValue );

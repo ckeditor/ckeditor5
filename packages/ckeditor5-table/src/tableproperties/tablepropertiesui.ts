@@ -64,7 +64,7 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * The properties form view displayed inside the balloon.
 	 */
-	public view: any | null; // TODO {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
+	public view: TablePropertiesView | null = null;
 
 	/**
 	 * The batch used to undo all changes made by the form (which are live, as the user types)
@@ -109,7 +109,6 @@ export default class TablePropertiesUI extends Plugin {
 			includeAlignmentProperty: true
 		} );
 		this._balloon = editor.plugins.get( ContextualBalloon );
-		this.view = null;
 		this._undoStepBatch = null;
 
 		editor.ui.componentFactory.add( 'tableProperties', locale => {

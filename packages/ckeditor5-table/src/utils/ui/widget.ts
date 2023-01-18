@@ -7,14 +7,14 @@
  * @module table/utils/ui/widget
  */
 
-import type { DocumentSelection, ViewElement } from 'ckeditor5/src/engine';
+import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode } from 'ckeditor5/src/engine';
 
 import { isWidget } from 'ckeditor5/src/widget';
 
 /**
  * Returns a table widget editing view element if one is selected.
  */
-export function getSelectedTableWidget( selection: DocumentSelection ): ViewElement | null {
+export function getSelectedTableWidget( selection: ViewDocumentSelection ): ViewElement | null {
 	const viewElement = selection.getSelectedElement();
 
 	if ( viewElement && isTableWidget( viewElement ) ) {
@@ -27,14 +27,14 @@ export function getSelectedTableWidget( selection: DocumentSelection ): ViewElem
 /**
  * Returns a table widget editing view element if one is among the selection's ancestors.
  */
-export function getTableWidgetAncestor( selection: DocumentSelection ): ViewElement | null {
+export function getTableWidgetAncestor( selection: ViewDocumentSelection ): ViewElement | null {
 	const selectionPosition = selection.getFirstPosition();
 
 	if ( !selectionPosition ) {
 		return null;
 	}
 
-	let parent = selectionPosition.parent;
+	let parent: ViewNode | ViewDocumentFragment | null = selectionPosition.parent;
 
 	while ( parent ) {
 		if ( parent.is( 'element' ) && isTableWidget( parent ) ) {

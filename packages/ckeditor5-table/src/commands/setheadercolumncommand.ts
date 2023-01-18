@@ -32,6 +32,15 @@ import { getHorizontallyOverlappingCells, splitVertically } from '../utils/struc
  */
 export default class SetHeaderColumnCommand extends Command {
 	/**
+	 * Flag indicating whether the command is active. The command is active when the
+	 * {@link module:engine/model/selection~Selection} is in a header column.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	public declare value: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
@@ -42,15 +51,6 @@ export default class SetHeaderColumnCommand extends Command {
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
-
-		/**
-		 * Flag indicating whether the command is active. The command is active when the
-		 * {@link module:engine/model/selection~Selection} is in a header column.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
 		this.value = isInTable && selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
@@ -62,8 +62,7 @@ export default class SetHeaderColumnCommand extends Command {
 	 * When the selection is already in a header column, it will set `headingColumns` so the heading section will end before that column.
 	 *
 	 * @fires execute
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) the header columns according to
+	 * @param options.forceValue If set, the command will set (`true`) or unset (`false`) the header columns according to
 	 * the `forceValue` parameter instead of the current model state.
 	 */
 	public override execute( options: { forceValue?: boolean } = {} ): void {

@@ -83,7 +83,7 @@ export default class TableUtils extends Plugin {
 
 		const rowIndex = table.getChildIndex( tableRow as Node );
 
-		const tableWalker = new TableWalker( table, { row: rowIndex as number | undefined } ); // TODO
+		const tableWalker = new TableWalker( table, { row: rowIndex as number | undefined } );
 
 		for ( const { cell, row, column } of tableWalker ) {
 			if ( cell === tableCell ) {
@@ -546,7 +546,7 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
 				// Each inserted cell will have the same attributes:
-				const newCellsAttributes: Record<string, any> = {};
+				const newCellsAttributes: { colspan?: number; rowspan?: number } = {};
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
@@ -588,7 +588,7 @@ export default class TableUtils extends Plugin {
 				// Second step: create columns after split cell.
 
 				// Each inserted cell will have the same attributes:
-				const newCellsAttributes: Record<string, any> = {};
+				const newCellsAttributes: { rowspan?: number } = {};
 
 				// Do not store default value in the model.
 

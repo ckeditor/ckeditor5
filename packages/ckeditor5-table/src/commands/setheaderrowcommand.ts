@@ -29,6 +29,15 @@ import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/struc
  */
 export default class SetHeaderRowCommand extends Command {
 	/**
+	 * Flag indicating whether the command is active. The command is active when the
+	 * {@link module:engine/model/selection~Selection} is in a header row.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	public declare value: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
@@ -38,15 +47,6 @@ export default class SetHeaderRowCommand extends Command {
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
-
-		/**
-		 * Flag indicating whether the command is active. The command is active when the
-		 * {@link module:engine/model/selection~Selection} is in a header row.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
 		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
 	}
 
@@ -58,8 +58,7 @@ export default class SetHeaderRowCommand extends Command {
 	 * When the selection is already in a header row, it will set `headingRows` so the heading section will end before that row.
 	 *
 	 * @fires execute
-	 * @param {Object} options
-	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) the header rows according to
+	 * @param options.forceValue If set, the command will set (`true`) or unset (`false`) the header rows according to
 	 * the `forceValue` parameter instead of the current model state.
 	 */
 	public override execute( options: { forceValue?: boolean } = {} ): void {
@@ -95,13 +94,8 @@ export default class SetHeaderRowCommand extends Command {
 
 	/**
 	 * Checks if a table cell is in the heading section.
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @param {module:engine/model/element~Element} table
-	 * @returns {Boolean}
-	 * @private
 	 */
-	private _isInHeading( tableCell: Element, table: Element ) {
+	private _isInHeading( tableCell: Element, table: Element ): boolean {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;

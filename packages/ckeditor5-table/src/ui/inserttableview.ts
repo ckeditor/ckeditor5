@@ -7,9 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
+import { View, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
 
-import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
 
 import './../../theme/inserttable.css';
 
@@ -23,61 +23,55 @@ import './../../theme/inserttable.css';
  */
 export default class InsertTableView extends View {
 	/**
+	 * A collection of table size box items.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * Listen to `keydown` events fired in this view's main element.
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * Tracks information about the DOM focus in the grid.
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * The currently selected number of rows of the new table.
+	 *
+	 * @observable
+	 */
+	public rows!: number;
+
+	/**
+	 * The currently selected number of columns of the new table.
+	 *
+	 * @observable
+	 */
+	public columns!: number;
+
+	/**
+	 * The label text displayed under the boxes.
+	 *
+	 * @observable
+	 * @member {String} #label
+	 */
+	// this.bind( 'label' ).to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` );
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
-
-		/**
-		 * A collection of table size box items.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.items = this._createGridCollection();
-
-		/**
-		 * Listen to `keydown` events fired in this view's main element.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokeHandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * Tracks information about the DOM focus in the grid.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * The currently selected number of rows of the new table.
-		 *
-		 * @observable
-		 * @member {Number} #rows
-		 */
 		this.set( 'rows', 0 );
-
-		/**
-		 * The currently selected number of columns of the new table.
-		 *
-		 * @observable
-		 * @member {Number} #columns
-		 */
 		this.set( 'columns', 0 );
-
-		/**
-		 * The label text displayed under the boxes.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
-		this.bind( 'label' )
-			.to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` );
+		this.bind( 'label' ).to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -127,7 +121,7 @@ export default class InsertTableView extends View {
 		// #rows and #columns are set via changes to #focusTracker on mouse over.
 		this.on( 'boxover', ( evt, domEvt ) => {
 			const { row, column } = domEvt.target.dataset;
-			this.items.get( ( parseInt( row, 10 ) - 1 ) * 10 + ( parseInt( column, 10 ) - 1 ) ).focus();
+			this.items.get( ( parseInt( row, 10 ) - 1 ) * 10 + ( parseInt( column, 10 ) - 1 ) )!.focus();
 		} );
 
 		// This allows the #rows and #columns to be updated when:
@@ -151,7 +145,7 @@ export default class InsertTableView extends View {
 		this.on( 'change:rows', () => this._highlightGridBoxes() );
 	}
 
-	render() {
+	public override render(): void {
 		super.render();
 
 		addKeyboardHandlingForGrid( {
@@ -172,15 +166,15 @@ export default class InsertTableView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	focus() {
-		this.items.get( 0 ).focus();
+	public focus(): void {
+		this.items.get( 0 )!.focus();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	focusLast() {
-		this.items.get( 0 ).focus();
+	public focusLast(): void {
+		this.items.get( 0 )!.focus();
 	}
 
 	/**
@@ -188,7 +182,7 @@ export default class InsertTableView extends View {
 	 *
 	 * @private
 	 */
-	_highlightGridBoxes() {
+	private _highlightGridBoxes() {
 		const rows = this.rows;
 		const columns = this.columns;
 

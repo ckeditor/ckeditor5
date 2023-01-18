@@ -7,8 +7,8 @@
  * @module table/plaintableoutput
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ViewContainerElement, Element, Writer } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine';
 
 import Table from './table';
 
@@ -72,21 +72,21 @@ export default class PlainTableOutput extends Plugin {
  * @param conversionApi The conversion API object.
  * @returns Created element.
  */
-function downcastTableElement( table: Element, { writer }: { writer: Writer } ) {
+function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 	// Table head rows slot.
-	const headRowsSlot = writer.createSlot( ( element: Element ) =>
+	const headRowsSlot = writer.createSlot( ( element: Node ) =>
 		element.is( 'element', 'tableRow' ) && element.index! < headingRows
 	);
 
 	// Table body rows slot.
-	const bodyRowsSlot = writer.createSlot( ( element: Element ) =>
+	const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
 		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
 	);
 
 	// Table children slot.
-	const childrenSlot = writer.createSlot( ( element: Element ) => !element.is( 'element', 'tableRow' ) );
+	const childrenSlot = writer.createSlot( ( element: Node ) => !element.is( 'element', 'tableRow' ) );
 
 	// Table <thead> element with all the heading rows.
 	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );
@@ -122,7 +122,7 @@ function downcastTableElement( table: Element, { writer }: { writer: Writer } ) 
 /**
  * Register table border and background attributes converters.
  */
-function downcastTableBorderAndBackgroundAttributes( editor ) {
+function downcastTableBorderAndBackgroundAttributes( editor: Editor ) {
 	const modelAttributes = {
 		'border-width': 'tableBorderWidth',
 		'border-color': 'tableBorderColor',

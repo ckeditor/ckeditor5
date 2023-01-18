@@ -12,7 +12,8 @@ import { Command } from 'ckeditor5/src/core';
 import type {
 	DocumentSelection,
 	Schema,
-	Selection
+	Selection,
+	Element
 } from 'ckeditor5/src/engine';
 
 /**
@@ -43,15 +44,13 @@ export default class InsertTableCommand extends Command {
 	 *
 	 * Inserts a table with the given number of rows and columns into the editor.
 	 *
-	 * @param {Object} options
-	 * @param {Number} [options.rows=2] The number of rows to create in the inserted table.
-	 * @param {Number} [options.columns=2] The number of columns to create in the inserted table.
-	 * @param {Number} [options.headingRows] The number of heading rows.
-	 * If not provided it will default to {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.rows`}
-	 * table config.
-	 * @param {Number} [options.headingColumns] The number of heading columns.
-	 * If not provided it will default to {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`}
-	 * table config.
+	 * @param options
+	 * @param options.rows The number of rows to create in the inserted table. Default value is 2.
+	 * @param options.columns The number of columns to create in the inserted table. Default value is 2.
+	 * @param options.headingRows The number of heading rows. If not provided it will default to
+	 * {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.rows`} table config.
+	 * @param options.headingColumns The number of heading columns. If not provided it will default to
+	 * {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
 	 * @fires execute
 	 */
 	public override execute( options: { rows?: number; columns?: number; headingRows?: number; headingColumns?: number } = {} ): void {
@@ -82,16 +81,12 @@ export default class InsertTableCommand extends Command {
 
 /**
  * Checks if the table is allowed in the parent.
- *
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * @param {module:engine/model/schema~Schema} schema
- * @returns {Boolean}
  */
 function isAllowedInParent( selection: Selection | DocumentSelection, schema: Schema ) {
 	const positionParent = selection.getFirstPosition()!.parent;
 	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 
-	return schema.checkChild( validParent as any, 'table' ); // TODO
+	return schema.checkChild( validParent as Element, 'table' );
 }
 
 declare module '@ckeditor/ckeditor5-core' {
