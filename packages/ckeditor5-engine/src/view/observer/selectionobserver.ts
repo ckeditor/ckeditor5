@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@ import type View from '../view';
 import type DocumentSelection from '../documentselection';
 import type DomConverter from '../domconverter';
 import type Selection from '../selection';
+import FocusObserver from './focusobserver';
 
 type DomSelection = globalThis.Selection;
 
@@ -35,6 +36,7 @@ type DomSelection = globalThis.Selection;
  */
 export default class SelectionObserver extends Observer {
 	public readonly mutationObserver: MutationObserver;
+	public readonly focusObserver: FocusObserver;
 	public readonly selection: DocumentSelection;
 	public readonly domConverter: DomConverter;
 
@@ -57,6 +59,16 @@ export default class SelectionObserver extends Observer {
 		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
 		 */
 		this.mutationObserver = view.getObserver( MutationObserver )!;
+
+		/**
+		 * Instance of the focus observer. Selection observer calls
+		 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/observer/focusobserver~FocusObserver}
+		 * module:engine/view/observer/focusobserver~FocusObserver#focusObserver
+		 */
+		this.focusObserver = view.getObserver( FocusObserver )!;
 
 		/**
 		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
@@ -283,6 +295,9 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
+		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
+		this.focusObserver.flush();
+
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
@@ -300,8 +315,6 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
-
-			this.document._isFocusChanging = false;
 
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );

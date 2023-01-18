@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -92,14 +92,14 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should change document#_isFocusChanging property to false when selection is changed', done => {
+	it( 'should call focusObserver#flush when selection is changed', done => {
+		const flushSpy = testUtils.sinon.spy( selectionObserver.focusObserver, 'flush' );
+
 		viewDocument.on( 'selectionChange', () => {
-			expect( viewDocument._isFocusChanging ).to.equal( false );
+			sinon.assert.calledOnce( flushSpy );
 
 			done();
 		} );
-
-		viewDocument._isFocusChanging = true;
 
 		changeDomSelection();
 	} );

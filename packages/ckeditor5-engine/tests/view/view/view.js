@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -649,15 +649,6 @@ describe( 'view', () => {
 
 			sinon.assert.calledOnce( renderSpy );
 			sinon.assert.calledOnce( layoutChangedSpy );
-		} );
-
-		it( 'should change the document#isFocusChaning property to false', () => {
-			view.document.isFocusChaning = true;
-
-			view.document.selection._setTo( null );
-			view.forceRender();
-
-			expect( view.document._isFocusChanging ).to.equal( false );
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -170,7 +170,7 @@ export default class DowncastWriter {
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 

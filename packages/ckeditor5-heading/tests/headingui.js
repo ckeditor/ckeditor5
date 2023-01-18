@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -225,6 +225,12 @@ describe( 'HeadingUI', () => {
 					expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 						'Akapit'
 					] );
+				} );
+			} );
+
+			it( 'display default title if none of the commands is active', () => {
+				return localizedEditor( [] ).then( () => {
+					expect( dropdown.buttonView.label ).to.equal( 'Wybierz nagłówek' );
 				} );
 			} );
 

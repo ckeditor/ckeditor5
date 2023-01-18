@@ -160,9 +160,11 @@
 		"builds/guides/quick-start.html": "installation/getting-started/quick-start.html",
 		"builds/guides/predefined-builds/quick-start.html": "installation/getting-started/predefined-builds.html",
 		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
-		"builds/guides/integration/basic-api.html": "installation/getting-started/basic-api.html",
+		"builds/guides/integration/basic-api.html": "installation/getting-started/editor-lifecycle.html",
+		"installation/getting-started/basic-api.html": "installation/getting-started/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "installation/getting-started/configuration.html",
-		"builds/guides/integration/saving-data.html": "installation/advanced/saving-data.html",
+		"builds/guides/integration/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
+		"installation/advanced/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
 		"builds/guides/integration/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
 		"builds/guides/integration/features-html-output-overview.html": "installation/advanced/features-html-output-overview.html",
@@ -179,6 +181,7 @@
 		"installation/getting-started/frameworks/vuejs-v3.html": "installation/frameworks/vuejs-v3.html",
 		"installation/getting-started/frameworks/css.html": "installation/frameworks/css.html",
 		"installation/frameworks/index.html": "installation/frameworks/overview.html",
+		"installation/getting-started/predefined-builds.html#build-customization": "installation/getting-started/quick-start-other.html#build-customization",
 		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
@@ -250,7 +253,9 @@
 		]
 	},
 	"googleanalytics": {
-		"domains": [ "ckeditor5.github.io" ],
+		"domains": [
+			"ckeditor5.github.io"
+		],
 		"config": {
 			"trackingId": "UA-271067-19",
 			"cookieDomain": "ckeditor5.github.io"
@@ -304,35 +309,45 @@
 					"name": "Collaboration",
 					"id": "features-collaboration",
 					"slug": "collaboration",
-					"badges": [ "premium" ],
+					"badges": [
+						"premium"
+					],
 					"categories": [
 						{
 							"name": "Comments",
 							"id": "features-comments",
 							"slug": "comments",
 							"order": 100,
-							"badges": [ "premium" ]
+							"badges": [
+								"premium"
+							]
 						},
 						{
 							"name": "Track changes",
 							"id": "features-track-changes",
 							"slug": "track-changes",
 							"order": 200,
-							"badges": [ "premium" ]
+							"badges": [
+								"premium"
+							]
 						},
 						{
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
 							"order": 300,
-							"badges": [ "premium" ]
+							"badges": [
+								"premium"
+							]
 						},
 						{
 							"name": "Revision history",
 							"id": "features-revision-history",
 							"slug": "revision-history",
 							"order": 400,
-							"badges": [ "premium" ]
+							"badges": [
+								"premium"
+							]
 						},
 						{
 							"name": "Annotations",
@@ -359,7 +374,9 @@
 					"name": "Import from Word",
 					"id": "import-word",
 					"slug": "import-word",
-					"badges": [ "premium" ]
+					"badges": [
+						"premium"
+					]
 				},
 				{
 					"name": "Lists",
@@ -370,7 +387,9 @@
 					"name": "Pagination",
 					"id": "features-pagination",
 					"slug": "pagination",
-					"badges": [ "premium" ]
+					"badges": [
+						"premium"
+					]
 				},
 				{
 					"name": "Pasting",

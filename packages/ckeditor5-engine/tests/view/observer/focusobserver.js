@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -64,11 +64,14 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should render document after focus (after the next view change block)', () => {
+			const clock = sinon.useFakeTimers();
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
 			viewDocument.isFocused = false;
 
 			observer.onDomEvent( { type: 'focus', target: document.body } );
+			clock.tick( 50 );
+
 			view.change( () => {} );
 
 			sinon.assert.calledOnce( renderSpy );
@@ -87,9 +90,11 @@ describe( 'FocusObserver', () => {
 	} );
 
 	describe( 'handle isFocused property of the document', () => {
-		let domMain, domHeader, viewMain;
+		let domMain, domHeader, viewMain, clock;
 
 		beforeEach( () => {
+			clock = sinon.useFakeTimers();
+
 			domMain = document.createElement( 'div' );
 			domHeader = document.createElement( 'h1' );
 
@@ -97,14 +102,22 @@ describe( 'FocusObserver', () => {
 			view.attachDomRoot( domMain );
 		} );
 
-		it( 'should set isFocused to true on focus', () => {
+		afterEach( () => {
+			clock.restore();
+		} );
+
+		it( 'should set isFocused to true on focus after 50ms', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			clock.tick( 50 );
 
 			expect( viewDocument.isFocused ).to.equal( true );
 		} );
 
 		it( 'should set isFocused to false on blur', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			clock.tick( 50 );
 
 			expect( viewDocument.isFocused ).to.equal( true );
 
@@ -120,6 +133,8 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
+			clock.tick( 50 );
+
 			expect( viewDocument.isFocused ).to.equal( true );
 
 			observer.onDomEvent( { type: 'blur', target: domMain } );
@@ -134,6 +149,8 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
+			clock.tick( 50 );
+
 			expect( viewDocument.isFocused ).to.equal( true );
 
 			observer.onDomEvent( { type: 'blur', target: domHeader } );
@@ -144,28 +161,35 @@ describe( 'FocusObserver', () => {
 		it( 'should trigger fallback rendering after 50ms', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
-			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
 			clock.tick( 50 );
 			sinon.assert.called( renderSpy );
-
-			clock.restore();
 		} );
 
 		it( 'should not call render if destroyed', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
-			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
 			observer.destroy();
 			clock.tick( 50 );
 			sinon.assert.notCalled( renderSpy );
+		} );
 
-			clock.restore();
+		it( 'should not update isFocused when focusing has been cancelled', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			observer._isFocusChanging = false;
+
+			clock.tick( 50 );
+
+			expect( viewDocument.isFocused ).to.be.false;
 		} );
 	} );
 
@@ -186,7 +210,7 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument._isFocusChanging ).to.equal( true );
+			expect( observer._isFocusChanging ).to.equal( true );
 		} );
 
 		it( 'should set _isFocusChanging to false after 50ms', () => {
@@ -197,14 +221,36 @@ describe( 'FocusObserver', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
 			sinon.assert.notCalled( renderSpy );
-			expect( viewDocument._isFocusChanging ).to.equal( true );
+			expect( observer._isFocusChanging ).to.equal( true );
 
 			clock.tick( 50 );
 
 			sinon.assert.called( renderSpy );
-			expect( viewDocument._isFocusChanging ).to.equal( false );
+			expect( observer._isFocusChanging ).to.equal( false );
 
 			clock.restore();
+		} );
+	} );
+
+	describe( 'flush method', () => {
+		it( 'should set the focus properties', () => {
+			viewDocument.isFocused = false;
+			observer._isFocusChanging = true;
+
+			observer.flush();
+
+			expect( viewDocument.isFocused ).to.be.true;
+			expect( observer._isFocusChanging ).to.be.false;
+		} );
+
+		it( 'should do nothing when the _isFocusChanging property is false', () => {
+			viewDocument.isFocused = false;
+			observer._isFocusChanging = false;
+
+			observer.flush();
+
+			expect( viewDocument.isFocused ).to.be.false;
+			expect( observer._isFocusChanging ).to.be.false;
 		} );
 	} );
 
