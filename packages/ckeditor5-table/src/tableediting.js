@@ -57,6 +57,21 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Handlers for creating additional slots in the table.
+		 *
+		 * @private
+		 * @member {Array.<module:table/tablediting~AdditionalSlot>}
+		 */
+		this._additionalSlots = [];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -93,14 +108,19 @@ export default class TableEditing extends Plugin {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: downcastTable( tableUtils, { asWidget: true } )
+			view: downcastTable( tableUtils, {
+				asWidget: true,
+				additional: this._additionalSlots
+			} )
 		} );
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: downcastTable( tableUtils )
+			view: downcastTable( tableUtils, {
+				additional: this._additionalSlots
+			} )
 		} );
 
 		// Table row conversion.
@@ -195,6 +215,15 @@ export default class TableEditing extends Plugin {
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
+
+	/**
+	 * Registers downcast handler for the additional table slot.
+	 *
+	 * @param {module:table/tablediting~AdditionalSlot} slotHandler
+	 */
+	registerAdditionalSlot( slotHandler ) {
+		this._additionalSlots.push( slotHandler );
+	}
 }
 
 // Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
@@ -247,3 +276,50 @@ function upcastCellSpan( type ) {
 		return span;
 	};
 }
+
+/**
+ * By default, only the `tableRow` elements from the `table` model are downcast inside the `<table>` and
+ * all other elements are pushed outside the table. This handler allows creating additional slots inside
+ * the table for other elements.
+ *
+ * Take this model as an example:
+ *
+ *		<table>
+ *			<tableRow>...</tableRow>
+ *			<tableRow>...</tableRow>
+ *			<tableColumnGroup>...</tableColumnGroup>
+ *		</table>
+ *
+ * By default, downcasting result will be:
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>...</tr>
+ *				<tr>...</tr>
+ *			</tbody>
+ *		</table>
+ *		<colgroup>...</colgroup>
+ *
+ * To allow the `tableColumnGroup` element at the end of the table, use the following configuration:
+ *
+ *		const additionalSlot = {
+ *			filter: element => element.is( 'element', 'tableColumnGroup' ),
+ * 			positionOffset: 'end'
+ *		}
+ *
+ * Now, the downcast result will be:
+ *
+ * 		<table>
+ *			<tbody>
+ *				<tr>...</tr>
+ *				<tr>...</tr>
+ *			</tbody>
+ *			<colgroup>...</colgroup>
+ *		</table>
+ *
+ * @typedef {Object} module:table/tablediting~AdditionalSlot
+ *
+ * @property {Function} filter Filter for elements that should be placed inside given slot.
+ *
+ * @property {number|'before'|'after'|'end'} positionOffset Position of the slot within the table.
+ */

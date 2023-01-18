@@ -67,9 +67,15 @@ export function getChangedResizedTables( model ) {
 
 		// We iterate over the whole table looking for the nested tables that are also affected.
 		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
-			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
-				affectedTables.add( node );
+			if ( !node.is( 'element', 'table' ) ) {
+				continue;
 			}
+
+			if ( !Array.from( node.getChildren() ).find( element => element.is( 'element', 'tableColumnGroup' ) ) ) {
+				continue;
+			}
+
+			affectedTables.add( node );
 		}
 	}
 

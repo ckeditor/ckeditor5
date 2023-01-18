@@ -40,26 +40,21 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 *
 	 * @param {Object} options
 	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
-	 * @param {String} [options.columnWidths] The new table column widths. If skipped, the model attribute will be removed.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const table = options.table || model.document.selection.getSelectedElement();
-		const { tableWidth, columnWidths } = options;
+		const {
+			table = model.document.selection.getSelectedElement(),
+			tableWidth
+		} = options;
 
 		model.change( writer => {
 			if ( tableWidth ) {
-				writer.setAttribute( this.attributeName, tableWidth, table );
-			} else {
-				writer.removeAttribute( this.attributeName, table );
+				return writer.setAttribute( this.attributeName, tableWidth, table );
 			}
 
-			if ( columnWidths ) {
-				writer.setAttribute( 'columnWidths', columnWidths, table );
-			} else {
-				writer.removeAttribute( 'columnWidths', table );
-			}
+			writer.removeAttribute( this.attributeName, table );
 		} );
 	}
 }

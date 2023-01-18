@@ -7,6 +7,7 @@
  * @module table/tablecolumnresize/tablecolumnwidthscommand
  */
 
+import { normalizeColumnWidths } from './utils';
 import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 /**
@@ -33,22 +34,40 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	}
 
 	/**
-	 * Changes the `columnWidths` attribute value for the given or currently selected table.
+	 * Changes the `columnWidth` attribute values for the columns of the given table.
 	 *
 	 * @param {Object} options
-	 * @param {String} [options.columnWidths] New value of the `columnWidths` attribute.
+	 * @param {Array.<number>} [options.columnWidths] New value of the `columnWidths` attribute.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
-		const table = options.table || model.document.selection.getSelectedElement();
-		const { columnWidths } = options;
+		const { model } = this.editor;
+		const { table, columnWidths } = options;
 
 		model.change( writer => {
-			if ( columnWidths ) {
-				writer.setAttribute( this.attributeName, columnWidths, table );
+			const tableColumnGroup = Array
+				.from( table.getChildren() )
+				.find( element => element.is( 'element', 'tableColumnGroup' ) );
+
+			if ( !columnWidths && !tableColumnGroup ) {
+				return;
+			}
+
+			if ( !columnWidths ) {
+				return writer.remove( tableColumnGroup );
+			}
+
+			const widths = normalizeColumnWidths( columnWidths );
+
+			if ( !tableColumnGroup ) {
+				const colGroupElement = writer.createElement( 'tableColumnGroup' );
+
+				widths.forEach( columnWidth => writer.appendElement( 'tableColumn', { columnWidth }, colGroupElement ) );
+				writer.append( colGroupElement, table );
 			} else {
-				writer.removeAttribute( this.attributeName, table );
+				Array
+					.from( tableColumnGroup.getChildren() )
+					.forEach( ( column, index ) => writer.setAttribute( 'columnWidth', widths[ index ], column ) );
 			}
 		} );
 	}

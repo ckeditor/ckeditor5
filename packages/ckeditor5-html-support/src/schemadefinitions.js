@@ -91,6 +91,14 @@ export default {
 			view: 'th'
 		},
 		{
+			model: 'tableColumnGroup',
+			view: 'colgroup'
+		},
+		{
+			model: 'tableColumn',
+			view: 'col'
+		},
+		{
 			model: 'caption',
 			view: 'caption'
 		},
