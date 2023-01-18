@@ -54,8 +54,6 @@ export default class HighlightUI extends Plugin {
 	 * * `'Blue marker'`,
 	 * * `'Red pen'`,
 	 * * `'Green pen'`.
-	 *
-	 * @readonly
 	 */
 	public get localizedOptionTitles(): Record<string, string> {
 		const t = this.editor.t;
@@ -145,7 +143,7 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			buttonView.on( 'execute', () => {
-				editor.execute( 'highlight', { value: value! } );
+				editor.execute( 'highlight', { value } );
 				editor.editing.view.focus();
 			} );
 
@@ -243,7 +241,7 @@ export default class HighlightUI extends Plugin {
 			 * If current is not set or it is the same as last execute this method will return the option key (like icon or color)
 			 * of last executed highlighter. Otherwise it will return option key for current one.
 			 */
-			function getActiveOption( current: string, key: keyof HighlightOption ): string {
+			function getActiveOption<Key extends keyof HighlightOption>( current: string | undefined, key: Key ): HighlightOption[ Key ] {
 				const whichHighlighter = !current ||
 				current === splitButtonView.lastExecuted ? splitButtonView.lastExecuted : current;
 
@@ -267,7 +265,7 @@ function bindToolbarIconStyleToActiveColor( dropdownView: DropdownView ): void {
 /**
  * Returns icon for given highlighter type.
  */
-function getIconForType( type: string ) {
+function getIconForType( type: 'marker' | 'pen' ) {
 	return type === 'marker' ? markerIcon : penIcon;
 }
 

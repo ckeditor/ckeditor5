@@ -49,7 +49,7 @@ export default class Highlight extends Plugin {
  * }
  * ```
  */
-export type HighlightOption = {
+export interface HighlightOption {
 
 	/**
 	 * The user-readable title of the option.
@@ -80,7 +80,7 @@ export type HighlightOption = {
 	 * * `'pen'` &ndash; Uses the `color` as the font `color` style.
 	 */
 	type: 'marker' | 'pen';
-};
+}
 
 /**
  * The configuration of the {@link module:highlight/highlight~Highlight highlight feature}.
@@ -94,7 +94,7 @@ export type HighlightOption = {
  * ```
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
-export type HighlightConfig = {
+export interface HighlightConfig {
 
 	/**
 	 * The available highlight options. The default value is:
@@ -206,10 +206,20 @@ export type HighlightConfig = {
 	 * ```
 	 */
 	options: Array<HighlightOption>;
-};
+}
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Highlight.pluginName ]: Highlight;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:highlight/highlight~Highlight} feature.
+		 *
+		 * Read more in {@link module:highlight/highlight~HighlightConfig}.
+		 */
+		highlight?: HighlightConfig;
 	}
 }

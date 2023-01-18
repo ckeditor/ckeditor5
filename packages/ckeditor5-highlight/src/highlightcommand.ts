@@ -30,7 +30,7 @@ export default class HighlightCommand extends Command {
 	 * @observable
 	 * @readonly
 	 */
-	declare public value: string;
+	declare public value: string | undefined;
 
 	/**
 	 * @inheritDoc
@@ -39,7 +39,7 @@ export default class HighlightCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( 'highlight' ) as string;
+		this.value = doc.selection.getAttribute( 'highlight' ) as string | undefined;
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
@@ -51,7 +51,7 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: string | null } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
