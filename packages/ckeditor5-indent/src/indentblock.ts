@@ -89,8 +89,8 @@ export default class IndentBlock extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		const indentCommand: MultiCommand = editor.commands.get( 'indent' ) !;
-		const outdentCommand: MultiCommand = editor.commands.get( 'outdent' ) !;
+		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
+		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
 
 		// Enable block indentation to heading configuration options. If it is not defined enable in paragraph and default headings.
 		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
