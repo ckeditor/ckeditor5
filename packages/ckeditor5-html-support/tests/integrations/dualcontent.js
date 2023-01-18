@@ -238,17 +238,13 @@ describe( 'DualContentModelElementSupport', () => {
 			return allowAllEditor.destroy();
 		} );
 
-		it( 'should handle description list', () => {
+		it( 'should upcast description list', () => {
 			allowAllEditor.setData(
 				'<dl>' +
 					'<dt>Name</dt>' +
 					'<dd>Godzilla</dd>' +
 					'<dt>Born</dt>' +
 					'<dd>1952</dd>' +
-					'<dt>Birthplace</dt>' +
-					'<dd>Japan</dd>' +
-					'<dt>Color</dt>' +
-					'<dd>Green</dd>' +
 				'</dl>'
 			);
 
@@ -258,15 +254,11 @@ describe( 'DualContentModelElementSupport', () => {
 					'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
 					'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
 					'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
-					'<htmlDt><paragraph>Birthplace</paragraph></htmlDt>' +
-					'<htmlDd><paragraph>Japan</paragraph></htmlDd>' +
-					'<htmlDt><paragraph>Color</paragraph></htmlDt>' +
-					'<htmlDd><paragraph>Green</paragraph></htmlDd>' +
 				'</htmlDl>'
 			);
 		} );
 
-		it( 'should handle description list when name-value groups are wrapped in div elements', () => {
+		it( 'should upcast description list when name-value groups are wrapped in div elements', () => {
 			allowAllEditor.setData(
 				'<dl>' +
 					'<div>' +
@@ -277,36 +269,50 @@ describe( 'DualContentModelElementSupport', () => {
 						'<dt>Born</dt>' +
 						'<dd>1952</dd>' +
 					'</div>' +
-					'<div>' +
-						'<dt>Birthplace</dt>' +
-						'<dd>Japan</dd>' +
-					'</div>' +
-					'<div>' +
-						'<dt>Color</dt>' +
-						'<dd>Green</dd>' +
-					'</div>' +
 				'</dl>'
 			);
 
 			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDl>' +
-						'<htmlDivDl>' +
+					'<htmlDivDl>' +
 						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
-						'</htmlDivDl>' +
-						'<htmlDivDl>' +
+					'</htmlDivDl>' +
+					'<htmlDivDl>' +
 						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
-						'</htmlDivDl>' +
-						'<htmlDivDl>' +
-						'<htmlDt><paragraph>Birthplace</paragraph></htmlDt>' +
-						'<htmlDd><paragraph>Japan</paragraph></htmlDd>' +
-						'</htmlDivDl>' +
-						'<htmlDivDl>' +
-						'<htmlDt><paragraph>Color</paragraph></htmlDt>' +
-						'<htmlDd><paragraph>Green</paragraph></htmlDd>' +
-						'</htmlDivDl>' +
-						'</htmlDl>'
+					'</htmlDivDl>' +
+				'</htmlDl>'
+			);
+		} );
+
+		it( 'should upcast description list div elements as well as other mixed-content div', () => {
+			allowAllEditor.setData(
+				'<div><div>inline</div><div><p>sectioning</p></div></div>' +
+				'<dl>' +
+					'<div>' +
+						'<dt>Name</dt>' +
+						'<dd>Godzilla</dd>' +
+					'</div>' +
+					'<div>' +
+						'<dt>Born</dt>' +
+						'<dd>1952</dd>' +
+					'</div>' +
+				'</dl>'
+			);
+
+			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>' +
+				'<htmlDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+				'</htmlDl>'
 			);
 		} );
 	} );
