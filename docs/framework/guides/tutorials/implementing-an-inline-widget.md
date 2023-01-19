@@ -322,6 +322,7 @@ export default class PlaceholderEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {                                                      // ADDED
@@ -463,10 +464,12 @@ export default class PlaceholderEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {
 		// Previously defined converters.
+		// ...
 	}
 }
 ```
@@ -545,10 +548,12 @@ export default class PlaceholderEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {
 		// Previously defined converters.
+		// ...
 	}
 }
 ```
@@ -657,9 +662,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		// This code runs after the editor initialization.
+		// ...
 	} )
 	.catch( error => {
 		// Error handling if something goes wrong during initialization.
+		// ...
 	} );
 ```
 
@@ -668,7 +675,8 @@ To make this plugin extensible, placeholder types will be read from the editor c
 The first step is to define the placeholder configuration in the editing plugin:
 
 ```js
-// ... imports
+// Previously imported packages.
+// ...
 
 export default class PlaceholderEditing extends Plugin {
 	static get requires() {
@@ -695,10 +703,12 @@ export default class PlaceholderEditing extends Plugin {
 
 	_defineConverters() {
 		// Previously defined converters.
+		// ...
 	}
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 }
 ```
@@ -715,7 +725,8 @@ export default class PlaceholderUI extends Plugin {
 		const placeholderNames = editor.config.get( 'placeholderConfig.types' );            // CHANGED
 
 		editor.ui.componentFactory.add( 'placeholder', locale => {
-			// Registered dropdown among UI components.
+			// Previously registered dropdown among UI components.
+			// ...
 		} );
 	}
 }
@@ -724,7 +735,8 @@ export default class PlaceholderUI extends Plugin {
 The plugin is now ready to accept the configuration. Check how this works by adding the `placeholderConfig` configuration in the editor's `create()` method:
 
 ```js
-// ... imports
+// Previously imported packages.
+// ...
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -735,6 +747,7 @@ ClassicEditor
 		}
 	} )
 	// Promise handling.
+	// ...
 ```
 
 If you open the dropdown in the toolbar, you will see a new list of placeholders to insert.
