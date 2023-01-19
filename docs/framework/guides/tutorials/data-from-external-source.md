@@ -326,7 +326,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {                                                          // ADDED
-		// Schema definition.
+		// Previously registered schema.
 		// ...
 	}
 
@@ -476,12 +476,12 @@ export default class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		// Schema definition.
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
-		// Converter definition.
+		// Previously defined converters.
 		// ...
 	}
 }
@@ -641,12 +641,12 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		// Schema definition.
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
-		// Definition of the upcast and data downcast converters.
+		// Previously defined upcast and data downcast converters.
 		// ...
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
