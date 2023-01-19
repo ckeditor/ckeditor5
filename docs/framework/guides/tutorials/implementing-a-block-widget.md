@@ -407,6 +407,7 @@ export default class SimpleBoxEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {                                                      // ADDED
@@ -632,6 +633,7 @@ export default class SimpleBoxEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {                                                      // MODIFIED
@@ -815,10 +817,12 @@ export default class SimpleBoxEditing extends Plugin {
 
 	_defineSchema() {
 		// Previously registered schema.
+		// ...
 	}
 
 	_defineConverters() {
 		// Previously defined converters.
+		// ...
 	}
 }
 ```
@@ -847,6 +851,7 @@ Change one more thing before you move forward &mdash; disallow `simpleBox` insid
 // simplebox/simpleboxediting.js
 
 // Previously imported packages.
+// ...
 
 export default class SimpleBoxEditing extends Plugin {
 	static get requires() {
@@ -903,6 +908,7 @@ export default class SimpleBoxEditing extends Plugin {
 
 	_defineConverters() {
 		// Previously defined converters.
+		// ...
 	}
 }
 ```
@@ -970,9 +976,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		// This code runs after the editor initialization.
+		// ...
 	} )
 	.catch( error => {
 		// Error handling if something goes wrong during initialization.
+		// ...
 	} );
 ```
 
