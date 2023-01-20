@@ -29,7 +29,8 @@ import {
 	indexOf,
 	getAncestors,
 	isText,
-	isComment
+	isComment,
+	first
 } from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node';
@@ -558,7 +559,8 @@ export default class DomConverter {
 			}
 
 			const transparentRendering = childView.is( 'element' ) &&
-				( childView.getCustomProperty( 'dataPipeline:transparentRendering' ) as boolean | undefined );
+				!!childView.getCustomProperty( 'dataPipeline:transparentRendering' ) &&
+				!first( childView.getAttributes() );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
 				yield* this.viewChildrenToDom( childView, options );

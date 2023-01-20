@@ -333,7 +333,7 @@ describe( 'upcastTable()', () => {
 		);
 
 		expectModel(
-			'<fooTable><fooRow><fooCell></fooCell></fooRow></fooTable>'
+			'<fooTable><fooRow><fooCell><paragraph></paragraph></fooCell></fooRow></fooTable>'
 		);
 	} );
 
