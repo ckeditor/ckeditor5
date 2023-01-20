@@ -9,8 +9,16 @@
  * @module ckbox/ckboxuploadadapter
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { FileRepository } from 'ckeditor5/src/upload';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import {
+	FileRepository,
+	type FileLoader,
+	type UploadAdapter,
+	type UploadResponse
+} from 'ckeditor5/src/upload';
+
+import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
 import { getImageUrls } from './utils';
@@ -23,28 +31,26 @@ import { getImageUrls } from './utils';
  *
  * Check out the {@glink features/images/image-upload/image-upload Image upload overview} guide to learn about
  * other ways to upload images into CKEditor 5.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CKBoxUploadAdapter' {
 		return 'CKBoxUploadAdapter';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	async afterInit() {
+	public async afterInit(): Promise<void> {
 		const editor = this.editor;
 
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
@@ -69,6 +75,9 @@ export default class CKBoxUploadAdapter extends Plugin {
 
 		// Mark uploaded assets with the `ckboxImageId` attribute. Its value represents an ID in CKBox.
 		if ( shouldInsertDataId ) {
+			// TODO: Wait untill `ckeditor5-image` is in TypeScript.
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
 			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement, data } ) => {
 				editor.model.change( writer => {
 					writer.setAttribute( 'ckboxImageId', data.ckboxImageId, imageElement );
@@ -80,71 +89,61 @@ export default class CKBoxUploadAdapter extends Plugin {
 
 /**
  * Upload adapter for CKBox.
- *
- * @private
- * @implements module:upload/filerepository~UploadAdapter
  */
-class Adapter {
+class Adapter implements UploadAdapter {
+	/**
+	 * FileLoader instance to use during the upload.
+	 */
+	public loader: FileLoader;
+
+	/**
+	 * CKEditor Cloud Services access token.
+	 */
+	public token: InitializedToken;
+
+	/**
+	 * The editor instance.
+	 */
+	public editor: Editor;
+
+	/**
+	 * The abort controller for aborting asynchronous processes.
+	 */
+	public controller: AbortController;
+
+	/**
+	 * The base URL where all requests should be sent.
+	 */
+	public serviceOrigin: string;
+
+	/**
+	 * The base URL from where all assets are served.
+	 */
+	public assetsOrigin: string;
+
 	/**
 	 * Creates a new adapter instance.
-	 *
-	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:cloud-services/token~Token} token
-	 * @param {module:core/editor/editor~Editor} editor
 	 */
-	constructor( loader, token, editor ) {
-		/**
-		 * FileLoader instance to use during the upload.
-		 *
-		 * @member {module:upload/filerepository~FileLoader} #loader
-		 */
+	constructor( loader: FileLoader, token: InitializedToken, editor: Editor ) {
 		this.loader = loader;
-
-		/**
-		 * CKEditor Cloud Services access token.
-		 *
-		 * @member {module:cloud-services/token~Token} #token
-		 */
 		this.token = token;
-
-		/**
-		 * The editor instance.
-		 *
-		 * @member {module:core/editor/editor~Editor} #editor
-		 */
 		this.editor = editor;
-
-		/**
-		 * The abort controller for aborting asynchronous processes.
-		 *
-		 * @member {AbortController} #controller
-		 */
 		this.controller = new AbortController();
 
-		/**
-		 * The base URL where all requests should be sent.
-		 *
-		 * @member {String} #serviceOrigin
-		 */
-		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' );
-
-		/**
-		 * The base URL from where all assets are served.
-		 *
-		 * @member {String} #assetsOrigin
-		 */
-		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
+		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' )!;
+		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 	}
 
 	/**
 	 * Resolves a promise with an array containing available categories with which the uploaded file can be associated.
 	 *
 	 * If the API returns limited results, the method will collect all items.
-	 *
-	 * @param {Number} [offset=0]
-	 * @returns {Promise.<Array>}
 	 */
-	async getAvailableCategories( offset = 0 ) {
+	public async getAvailableCategories( offset: number = 0 ): Promise<Array<{
+		id: string;
+		name: string;
+		extensions: Array<string>;
+	}>> {
 		const ITEMS_PER_REQUEST = 50;
 		const categoryUrl = new URL( 'categories', this.serviceOrigin );
 
@@ -180,11 +179,8 @@ class Adapter {
 
 	/**
 	 * Resolves a promise with an object containing a category with which the uploaded file is associated or an error code.
-	 *
-	 * @param {File} file
-	 * @return {Promise.<String|null>}
 	 */
-	async getCategoryIdForFile( file ) {
+	public async getCategoryIdForFile( file: File ): Promise<string | null> {
 		const extension = getFileExtension( file.name );
 		const allCategories = await this.getAvailableCategories();
 
@@ -228,12 +224,11 @@ class Adapter {
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
-	 * @returns {Promise.<Object>}
 	 */
-	async upload() {
+	public async upload(): Promise<UploadResponse> {
 		const t = this.editor.t;
 		const cannotFindCategoryError = t( 'Cannot determine a category for the uploaded file.' );
-		const file = await this.loader.file;
+		const file = ( await this.loader.file )!;
 		const category = await this.getCategoryIdForFile( file );
 
 		if ( !category ) {
@@ -250,14 +245,14 @@ class Adapter {
 			method: 'POST',
 			url: uploadUrl,
 			data: formData,
-			onUploadProgress: evt => {
+			onUploadProgress: ( evt: ProgressEvent ) => {
 				/* istanbul ignore else */
 				if ( evt.lengthComputable ) {
 					this.loader.uploadTotal = evt.total;
 					this.loader.uploaded = evt.loaded;
 				}
 			}
-		};
+		} as const;
 
 		return this._sendHttpRequest( requestConfig )
 			.then( async data => {
@@ -289,23 +284,24 @@ class Adapter {
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#abort
 	 */
-	abort() {
+	public abort(): void {
 		this.controller.abort();
 	}
 
 	/**
 	 * Sends the HTTP request.
 	 *
-	 * @protected
-	 * @param {URL} config.url the URL where the request will be sent.
-	 * @param {'GET'|'POST'} [config.method='GET'] The HTTP method.
-	 * @param {FormData|null} [config.data] Additional data to send.
-	 * @param {Function} [config.onUploadProgress] A callback informing about the upload progress.
-	 * @returns {Promise}
+	 * @param config.url the URL where the request will be sent.
+	 * @param config.method The HTTP method.
+	 * @param config.data Additional data to send.
+	 * @param config.onUploadProgress A callback informing about the upload progress.
 	 */
-	_sendHttpRequest( config ) {
-		const { url, data, onUploadProgress } = config;
-		const method = config.method || 'GET';
+	private _sendHttpRequest( { url, method = 'GET', data, onUploadProgress }: {
+		url: URL;
+		method?: 'GET' | 'POST';
+		data?: FormData | null;
+		onUploadProgress?: ( evt: ProgressEvent ) => void;
+	} ) {
 		const signal = this.controller.signal;
 
 		const xhr = new XMLHttpRequest();
@@ -319,7 +315,7 @@ class Adapter {
 			xhr.abort();
 		};
 
-		return new Promise( ( resolve, reject ) => {
+		return new Promise<any>( ( resolve, reject ) => {
 			signal.addEventListener( 'abort', abortCallback );
 
 			xhr.addEventListener( 'loadstart', () => {
@@ -362,11 +358,8 @@ class Adapter {
 
 	/**
 	 * Resolves a promise with a number representing the width of a given image file.
-	 *
-	 * @protected
-	 * @returns {Promise.<Number>}
 	 */
-	_getImageWidth() {
+	private _getImageWidth(): Promise<number> {
 		return new Promise( resolve => {
 			const image = new Image();
 
@@ -377,19 +370,17 @@ class Adapter {
 				resolve( image.width );
 			};
 
-			image.src = this.loader.data;
+			image.src = this.loader.data!;
 		} );
 	}
 }
 
-// Returns an extension from the given value.
-//
-// @private
-// @param {String} value
-// @returns {String}
-function getFileExtension( value ) {
+/**
+ * Returns an extension from the given value.
+ */
+function getFileExtension( value: string ) {
 	const extensionRegExp = /\.(?<ext>[^.]+)$/;
 	const match = value.match( extensionRegExp );
 
-	return match.groups.ext;
+	return match!.groups!.ext;
 }

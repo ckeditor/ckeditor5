@@ -9,9 +9,28 @@
  * @module ckbox/ckboxcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+import type { Writer } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, toMap } from 'ckeditor5/src/utils';
+
+import type {
+	CKBoxAssetDefinition,
+	CKBoxAssetImageAttributesDefinition,
+	CKBoxAssetImageDefinition,
+	CKBoxAssetLinkAttributesDefinition,
+	CKBoxAssetLinkDefinition,
+	CKBoxRawAssetDefinition
+} from './ckbox';
+
 import { getEnvironmentId, getImageUrls } from './utils';
+
+declare global {
+	// eslint-disable-next-line no-var
+	var CKBox: {
+		mount( wrapper: Element, options: Record<string, unknown> ): void;
+	};
+}
 
 // Defines the waiting time (in milliseconds) for inserting the chosen asset into the model. The chosen asset is temporarily stored in the
 // `CKBoxCommand#_chosenAssets` and it is removed from there automatically after this time. See `CKBoxCommand#_chosenAssets` for more
@@ -29,43 +48,39 @@ const ASSET_INSERTION_WAIT_TIMEOUT = 1000;
  * {@link module:image/image~Image Image feature}.
  * - To insert links to other files it uses the {@link module:link/linkcommand~LinkCommand 'link'} command from the
  * {@link module:link/link~Link Link feature}.
- *
- * @extends module:core/command~Command
  */
 export default class CKBoxCommand extends Command {
+	declare public value: boolean;
+
+	/**
+	 * A set of all chosen assets. They are stored temporarily and they are automatically removed 1 second after being chosen.
+	 * Chosen assets have to be "remembered" for a while to be able to map the given asset with the element inserted into the model.
+	 * This association map is then used to set the ID on the model element.
+	 *
+	 * All chosen assets are automatically removed after the timeout, because (theoretically) it may happen that they will never be
+	 * inserted into the model, even if the {@link module:link/linkcommand~LinkCommand `'link'`} command or the
+	 * {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'`} command is enabled. Such a case may arise when
+	 * another plugin blocks the command execution. Then, in order not to keep the chosen (but not inserted) assets forever, we delete
+	 * them automatically to prevent memory leakage. The 1 second timeout is enough to insert the asset into the model and extract the
+	 * ID from the chosen asset.
+	 *
+	 * The assets are stored only if
+	 * the {@link module:ckbox/ckbox~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
+	 *
+	 * @internal
+	 */
+	public readonly _chosenAssets = new Set<CKBoxAssetDefinition>();
+
+	/**
+	 * The DOM element that acts as a mounting point for the CKBox dialog.
+	 */
+	private _wrapper: Element | null = null;
+
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
-
-		/**
-		 * A set of all chosen assets. They are stored temporarily and they are automatically removed 1 second after being chosen.
-		 * Chosen assets have to be "remembered" for a while to be able to map the given asset with the element inserted into the model.
-		 * This association map is then used to set the ID on the model element.
-		 *
-		 * All chosen assets are automatically removed after the timeout, because (theoretically) it may happen that they will never be
-		 * inserted into the model, even if the {@link module:link/linkcommand~LinkCommand `'link'`} command or the
-		 * {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'`} command is enabled. Such a case may arise when
-		 * another plugin blocks the command execution. Then, in order not to keep the chosen (but not inserted) assets forever, we delete
-		 * them automatically to prevent memory leakage. The 1 second timeout is enough to insert the asset into the model and extract the
-		 * ID from the chosen asset.
-		 *
-		 * The assets are stored only if
-		 * the {@link module:ckbox/ckbox~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
-		 *
-		 * @protected
-		 * @member {Set.<module:ckbox/ckbox~CKBoxAssetDefinition>} #_chosenAssets
-		 */
-		this._chosenAssets = new Set();
-
-		/**
-		 * The DOM element that acts as a mounting point for the CKBox dialog.
-		 *
-		 * @private
-		 * @member {Element|null} #_wrapper
-		 */
-		this._wrapper = null;
 
 		this._initListeners();
 	}
@@ -73,7 +88,7 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		this.value = this._getValue();
 		this.isEnabled = this._checkEnabled();
 	}
@@ -81,8 +96,8 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
-		this.fire( 'ckbox:open' );
+	public override execute(): void {
+		this.fire<CKBoxEvent<'open'>>( 'ckbox:open' );
 	}
 
 	/**
@@ -91,19 +106,16 @@ export default class CKBoxCommand extends Command {
 	 * @protected
 	 * @returns {Boolean}
 	 */
-	_getValue() {
+	private _getValue(): boolean {
 		return this._wrapper !== null;
 	}
 
 	/**
 	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @protected
-	 * @returns {Boolean}
 	 */
-	_checkEnabled() {
-		const imageCommand = this.editor.commands.get( 'insertImage' );
-		const linkCommand = this.editor.commands.get( 'link' );
+	private _checkEnabled() {
+		const imageCommand = this.editor.commands.get( 'insertImage' )!;
+		const linkCommand = this.editor.commands.get( 'link' )!;
 
 		if ( !imageCommand.isEnabled && !linkCommand.isEnabled ) {
 			return false;
@@ -115,21 +127,18 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * Creates the options object for the CKBox dialog.
 	 *
-	 * @protected
-	 * @returns {Object} options
-	 * @returns {String} options.theme The theme for CKBox dialog.
-	 * @returns {String} options.language The language for CKBox dialog.
-	 * @returns {String} options.tokenUrl The token endpoint URL.
-	 * @returns {String} options.serviceOrigin The base URL of the API service.
-	 * @returns {String} options.assetsOrigin The base URL for assets inserted into the editor.
-	 * @returns {Object} options.dialog
-	 * @returns {Function} options.dialog.onClose The callback function invoked after closing the CKBox dialog.
-	 * @returns {Object} options.assets
-	 * @returns {Function} options.assets.onChoose The callback function invoked after choosing the assets.
+	 * @returns The object with properties:
+	 * - theme The theme for CKBox dialog.
+	 * - language The language for CKBox dialog.
+	 * - tokenUrl The token endpoint URL.
+	 * - serviceOrigin The base URL of the API service.
+	 * - assetsOrigin The base URL for assets inserted into the editor.
+	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
+	 * - assets.onChoose The callback function invoked after choosing the assets.
 	 */
-	_prepareOptions() {
+	private _prepareOptions() {
 		const editor = this.editor;
-		const ckboxConfig = editor.config.get( 'ckbox' );
+		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
 		return {
 			theme: ckboxConfig.theme,
@@ -138,31 +147,29 @@ export default class CKBoxCommand extends Command {
 			serviceOrigin: ckboxConfig.serviceOrigin,
 			assetsOrigin: ckboxConfig.assetsOrigin,
 			dialog: {
-				onClose: () => this.fire( 'ckbox:close' )
+				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
 			},
 			assets: {
-				onChoose: assets => this.fire( 'ckbox:choose', assets )
+				onChoose: ( assets: Array<CKBoxRawAssetDefinition> ) => this.fire<CKBoxEvent<'choose'>>( 'ckbox:choose', assets )
 			}
 		};
 	}
 
 	/**
 	 * Initializes various event listeners for the `ckbox:*` events, because all functionality of the `ckbox` command is event-based.
-	 *
-	 * @protected
 	 */
-	_initListeners() {
+	private _initListeners() {
 		const editor = this.editor;
 		const model = editor.model;
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
 
 		// Refresh the command after firing the `ckbox:*` event.
-		this.on( 'ckbox', () => {
+		this.on<CKBoxEvent>( 'ckbox', () => {
 			this.refresh();
 		}, { priority: 'low' } );
 
 		// Handle opening of the CKBox dialog.
-		this.on( 'ckbox:open', () => {
+		this.on<CKBoxEvent<'open'>>( 'ckbox:open', () => {
 			if ( !this.isEnabled || this.value ) {
 				return;
 			}
@@ -174,25 +181,25 @@ export default class CKBoxCommand extends Command {
 		} );
 
 		// Handle closing of the CKBox dialog.
-		this.on( 'ckbox:close', () => {
+		this.on<CKBoxEvent<'close'>>( 'ckbox:close', () => {
 			if ( !this.value ) {
 				return;
 			}
 
-			this._wrapper.remove();
+			this._wrapper!.remove();
 			this._wrapper = null;
 		} );
 
 		// Handle choosing the assets.
-		this.on( 'ckbox:choose', ( evt, assets ) => {
+		this.on<CKBoxEvent<'choose'>>( 'ckbox:choose', ( evt, assets ) => {
 			if ( !this.isEnabled ) {
 				return;
 			}
 
-			const imageCommand = editor.commands.get( 'insertImage' );
-			const linkCommand = editor.commands.get( 'link' );
+			const imageCommand = editor.commands.get( 'insertImage' )!;
+			const linkCommand = editor.commands.get( 'link' )!;
 			const ckboxEditing = editor.plugins.get( 'CKBoxEditing' );
-			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' );
+			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 
 			const assetsToProcess = prepareAssets( {
 				assets,
@@ -226,7 +233,7 @@ export default class CKBoxCommand extends Command {
 
 		// Clean up after the editor is destroyed.
 		this.listenTo( editor, 'destroy', () => {
-			this.fire( 'ckbox:close' );
+			this.fire<CKBoxEvent<'close'>>( 'ckbox:close' );
 			this._chosenAssets.clear();
 		} );
 	}
@@ -234,12 +241,15 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * Inserts the asset into the model.
 	 *
-	 * @protected
-	 * @param {Object} asset The asset to be inserted.
-	 * @param {Boolean} isLastAsset Indicates if the current asset is the last one from the chosen set.
-	 * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+	 * @param asset The asset to be inserted.
+	 * @param isLastAsset Indicates if the current asset is the last one from the chosen set.
+	 * @param writer An instance of the model writer.
 	 */
-	_insertAsset( asset, isLastAsset, writer ) {
+	private _insertAsset(
+		asset: CKBoxAssetDefinition,
+		isLastAsset: boolean,
+		writer: Writer
+	) {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -263,10 +273,9 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * Inserts the image by calling the `insertImage` command.
 	 *
-	 * @protected
-	 * @param {module:ckbox/ckbox~CKBoxAssetDefinition} asset The asset to be inserted.
+	 * @param asset The asset to be inserted.
 	 */
-	_insertImage( asset ) {
+	private _insertImage( asset: CKBoxAssetImageDefinition ) {
 		const editor = this.editor;
 		const { imageFallbackUrl, imageSources, imageTextAlternative } = asset.attributes;
 
@@ -282,11 +291,10 @@ export default class CKBoxCommand extends Command {
 	/**
 	 * Inserts the link to the asset by calling the `link` command.
 	 *
-	 * @protected
-	 * @param {module:ckbox/ckbox~CKBoxAssetDefinition} asset The asset to be inserted.
-	 * @param {module:engine/model/writer~Writer} writer An instance of the model writer.
+	 * @param asset The asset to be inserted.
+	 * @param writer An instance of the model writer.
 	 */
-	_insertLink( asset, writer ) {
+	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -305,62 +313,79 @@ export default class CKBoxCommand extends Command {
 	}
 }
 
-// Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
-//
-// @private
-// @param {Object} data
-// @param {Array.<module:ckbox/ckbox~CKBoxRawAssetDefinition>} data.assets
-// @param {String} data.origin The base URL for assets inserted into the editor.
-// @param {module:cloud-services/token~Token} data.token
-// @param {Boolean} data.isImageAllowed
-// @param {Boolean} data.isLinkAllowed
-// @returns {Array.<module:ckbox/ckbox~CKBoxAssetDefinition>}
-function prepareAssets( { assets, origin, token, isImageAllowed, isLinkAllowed } ) {
+/**
+ * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
+ */
+function prepareAssets(
+	{ assets, origin, token, isImageAllowed, isLinkAllowed }: {
+		assets: Array<CKBoxRawAssetDefinition>;
+		origin: string;
+		token: InitializedToken;
+		isImageAllowed: boolean;
+		isLinkAllowed: boolean;
+	}
+): Array<CKBoxAssetDefinition> {
 	return assets
-		.map( asset => ( {
-			id: asset.data.id,
-			type: isImage( asset ) ? 'image' : 'link',
-			attributes: prepareAssetAttributes( asset, token, origin )
-		} ) )
+		.map( asset => isImage( asset ) ?
+			{
+				id: asset.data.id,
+				type: 'image',
+				attributes: prepareImageAssetAttributes( asset, token, origin )
+			} as const :
+			{
+				id: asset.data.id,
+				type: 'link',
+				attributes: prepareLinkAssetAttributes( asset, token, origin )
+			} as const
+		)
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
 }
 
-// Parses the assets attributes into the internal data format.
-//
-// @private
-// @param {module:ckbox/ckbox~CKBoxRawAssetDefinition} asset
-// @param {module:cloud-services/token~Token} token
-// @param {String} origin The base URL for assets inserted into the editor.
-// @returns {module:ckbox/ckbox~CKBoxAssetImageAttributesDefinition|module:ckbox/ckbox~CKBoxAssetLinkAttributesDefinition}
-function prepareAssetAttributes( asset, token, origin ) {
-	if ( isImage( asset ) ) {
-		const { imageFallbackUrl, imageSources } = getImageUrls( {
-			token,
-			origin,
-			id: asset.data.id,
-			width: asset.data.metadata.width,
-			extension: asset.data.extension
-		} );
+/**
+ * Parses the assets attributes into the internal data format.
+ *
+ * @param origin The base URL for assets inserted into the editor.
+ */
+function prepareImageAssetAttributes(
+	asset: CKBoxRawAssetDefinition,
+	token: InitializedToken,
+	origin: string
+): CKBoxAssetImageAttributesDefinition {
+	const { imageFallbackUrl, imageSources } = getImageUrls( {
+		token,
+		origin,
+		id: asset.data.id,
+		width: asset.data.metadata!.width!,
+		extension: asset.data.extension
+	} );
 
-		return {
-			imageFallbackUrl,
-			imageSources,
-			imageTextAlternative: asset.data.metadata.description || ''
-		};
-	}
+	return {
+		imageFallbackUrl,
+		imageSources,
+		imageTextAlternative: asset.data.metadata!.description || ''
+	};
+}
 
+/**
+ * Parses the assets attributes into the internal data format.
+ *
+ * @param origin The base URL for assets inserted into the editor.
+ */
+function prepareLinkAssetAttributes(
+	asset: CKBoxRawAssetDefinition,
+	token: InitializedToken,
+	origin: string
+): CKBoxAssetLinkAttributesDefinition {
 	return {
 		linkName: asset.data.name,
 		linkHref: getAssetUrl( asset, token, origin )
 	};
 }
 
-// Checks whether the asset is an image.
-//
-// @private
-// @param {module:ckbox/ckbox~CKBoxRawAssetDefinition} asset
-// @returns {Boolean}
-function isImage( asset ) {
+/**
+ * Checks whether the asset is an image.
+ */
+function isImage( asset: CKBoxRawAssetDefinition ) {
 	const metadata = asset.data.metadata;
 
 	if ( !metadata ) {
@@ -370,14 +395,16 @@ function isImage( asset ) {
 	return metadata.width && metadata.height;
 }
 
-// Creates the URL for the asset.
-//
-// @private
-// @param {module:ckbox/ckbox~CKBoxRawAssetDefinition} asset
-// @param {module:cloud-services/token~Token} token
-// @param {String} origin The base URL for assets inserted into the editor.
-// @returns {String}
-function getAssetUrl( asset, token, origin ) {
+/**
+ * Creates the URL for the asset.
+ *
+ * @param origin The base URL for assets inserted into the editor.
+ */
+function getAssetUrl(
+	asset: CKBoxRawAssetDefinition,
+	token: InitializedToken,
+	origin: string
+) {
 	const environmentId = getEnvironmentId( token );
 	const url = new URL( `${ environmentId }/assets/${ asset.data.id }/file`, origin );
 
@@ -387,20 +414,11 @@ function getAssetUrl( asset, token, origin ) {
 }
 
 /**
- * Fired when the command is executed.
+ * Fired when the command is executed, the dialog is closed or the assets are chosen.
  *
- * @event ckbox:open
+ * @eventName ckbox
  */
-
-/**
- * Fired when the CKBox dialog is closed.
- *
- * @event ckbox:close
- */
-
-/**
- * Fired after the assets are chosen.
- *
- * @event ckbox:choose
- * @param {Array.<module:ckbox/ckbox~CKBoxRawAssetDefinition>} assets Chosen assets.
- */
+type CKBoxEvent<Name extends '' | 'choose' | 'open' | 'close' = ''> = {
+	name: Name extends '' ? 'ckbox' : `ckbox:${ Name }`;
+	args: Name extends 'choose' ? [ assets: Array<CKBoxRawAssetDefinition> ] : [];
+};

@@ -8,6 +8,7 @@
  */
 
 import FileUploader from './fileuploader';
+import type { InitializedToken } from '../token/token';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
@@ -15,12 +16,22 @@ import { CKEditorError } from 'ckeditor5/src/utils';
  */
 export default class UploadGateway {
 	/**
+	 * CKEditor Cloud Services access token.
+	 */
+	private readonly _token: InitializedToken;
+
+	/**
+	 * CKEditor Cloud Services API address.
+	 */
+	private readonly _apiAddress: string;
+
+	/**
 	 * Creates `UploadGateway` instance.
 	 *
-	 * @param {module:cloud-services/token~Token} token Token used for authentication.
-	 * @param {String} apiAddress API address.
+	 * @param token Token used for authentication.
+	 * @param apiAddress API address.
 	 */
-	constructor( token, apiAddress ) {
+	constructor( token: InitializedToken, apiAddress: string ) {
 		if ( !token ) {
 			/**
 			 * Token must be provided.
@@ -39,20 +50,7 @@ export default class UploadGateway {
 			throw new CKEditorError( 'uploadgateway-missing-api-address', null );
 		}
 
-		/**
-		 * CKEditor Cloud Services access token.
-		 *
-		 * @type {module:cloud-services/token~Token}
-		 * @private
-		 */
 		this._token = token;
-
-		/**
-		 * CKEditor Cloud Services API address.
-		 *
-		 * @type {String}
-		 * @private
-		 */
 		this._apiAddress = apiAddress;
 	}
 
@@ -61,18 +59,19 @@ export default class UploadGateway {
 	 * file upload process. The file is being sent at a time when the
 	 * {@link module:cloud-services/uploadgateway/fileuploader~FileUploader#send} method is called.
 	 *
-	 *     const token = await Token.create( 'https://token-endpoint' );
-	 *     new UploadGateway( token, 'https://example.org' )
-	 *        .upload( 'FILE' )
-	 *        .onProgress( ( data ) => console.log( data ) )
-	 *        .send()
-	 *        .then( ( response ) => console.log( response ) );
+	 * ```ts
+	 * const token = await Token.create( 'https://token-endpoint' );
+	 * new UploadGateway( token, 'https://example.org' )
+	 * 	.upload( 'FILE' )
+	 * 	.onProgress( ( data ) => console.log( data ) )
+	 * 	.send()
+	 * 	.then( ( response ) => console.log( response ) );
+	 * ```
 	 *
 	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
 	 * @returns {module:cloud-services/uploadgateway/fileuploader~FileUploader} Returns `FileUploader` instance.
 	 */
-	upload( fileOrData ) {
+	public upload( fileOrData: string | Blob ): FileUploader {
 		return new FileUploader( fileOrData, this._token, this._apiAddress );
 	}
 }
-

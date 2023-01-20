@@ -11,28 +11,29 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import browseFilesIcon from '../theme/icons/browse-files.svg';
+import type CKBoxCommand from './ckboxcommand';
 
 /**
  * The CKBoxUI plugin. It introduces the `'ckbox'` toolbar button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CKBoxUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CKBoxUI' {
 		return 'CKBoxUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 
+		const command: CKBoxCommand | undefined = editor.commands.get( 'ckbox' );
+
 		// Do not register the `ckbox` button if the command does not exist.
-		if ( !editor.commands.get( 'ckbox' ) ) {
+		if ( !command ) {
 			return;
 		}
 
@@ -40,8 +41,6 @@ export default class CKBoxUI extends Plugin {
 		const componentFactory = editor.ui.componentFactory;
 
 		componentFactory.add( 'ckbox', locale => {
-			const command = editor.commands.get( 'ckbox' );
-
 			const button = new ButtonView( locale );
 
 			button.set( {

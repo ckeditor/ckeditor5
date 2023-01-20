@@ -9,3 +9,4 @@
 
 export { default as CloudServices } from './cloudservices';
 export { default as CloudServicesCore } from './cloudservicescore';
+export type { default as Token, InitializedToken } from './token/token';

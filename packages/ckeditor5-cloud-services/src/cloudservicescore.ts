@@ -8,44 +8,46 @@
  */
 
 import { ContextPlugin } from 'ckeditor5/src/core';
-import Token from './token/token';
+import type { TokenUrl } from './cloudservices';
+import Token, { type InitializedToken, type TokenOptions } from './token/token';
 import UploadGateway from './uploadgateway/uploadgateway';
 
 /**
  * The `CloudServicesCore` plugin exposes the base API for communication with CKEditor Cloud Services.
- *
- * @extends module:core/contextplugin~ContextPlugin
  */
 export default class CloudServicesCore extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CloudServicesCore' {
 		return 'CloudServicesCore';
 	}
 
 	/**
 	 * Creates the {@link module:cloud-services/token~Token} instance.
 	 *
-	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
+	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token~refreshToken} interface.
-	 * @param {Object} [options]
-	 * @param {String} [options.initValue] Initial value of the token.
-	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
-	 * @returns {module:cloud-services/token~Token}
+	 * @param initValue Initial value of the token.
+	 * @param autoRefresh Specifies whether to start the refresh automatically.
 	 */
-	createToken( tokenUrlOrRefreshToken, options ) {
+	public createToken( tokenUrlOrRefreshToken: TokenUrl, options?: TokenOptions ): Token {
 		return new Token( tokenUrlOrRefreshToken, options );
 	}
 
 	/**
 	 * Creates the {@link module:cloud-services/uploadgateway/uploadgateway~UploadGateway} instance.
 	 *
-	 * @param {module:cloud-services/token~Token} token Token used for authentication.
-	 * @param {String} apiAddress API address.
-	 * @returns {module:cloud-services/uploadgateway/uploadgateway~UploadGateway}
+	 * @param token Token used for authentication.
+	 * @param apiAddress API address.
 	 */
-	createUploadGateway( token, apiAddress ) {
+	public createUploadGateway( token: InitializedToken, apiAddress: string ): UploadGateway {
 		return new UploadGateway( token, apiAddress );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CloudServicesCore.pluginName ]: CloudServicesCore;
 	}
 }

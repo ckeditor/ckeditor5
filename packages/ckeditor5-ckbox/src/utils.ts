@@ -9,6 +9,8 @@
  * @module ckbox/utils
  */
 
+import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+
 const IMAGE_BREAKPOINT_MAX_WIDTH = 4000;
 const IMAGE_BREAKPOINT_PIXELS_THRESHOLD = 80;
 const IMAGE_BREAKPOINT_PERCENTAGE_THRESHOLD = 10;
@@ -17,16 +19,23 @@ const IMAGE_BREAKPOINT_PERCENTAGE_THRESHOLD = 10;
  * Creates URLs for the image:
  * - responsive URLs for the "webp" image format,
  * - one fallback URL for browsers that do not support the "webp" format.
- *
- * @param {Object} data
- * @param {module:cloud-services/token~Token} data.token
- * @param {String} data.id
- * @param {String} data.origin
- * @param {Number} data.width
- * @param {String} data.extension
- * @returns {Object}
  */
-export function getImageUrls( { token, id, origin, width, extension } ) {
+export function getImageUrls(
+	{ token, id, origin, width, extension }: {
+		token: InitializedToken;
+		id: string;
+		origin: string;
+		width: number;
+		extension: string;
+	}
+): {
+	imageFallbackUrl: string;
+	imageSources: Array<{
+		srcset: string;
+		sizes: string;
+		type: string;
+	}>;
+} {
 	const environmentId = getEnvironmentId( token );
 	const imageBreakpoints = getImageBreakpoints( width );
 	const imageFallbackExtension = getImageFallbackExtension( extension );
@@ -58,31 +67,26 @@ export function getImageUrls( { token, id, origin, width, extension } ) {
 
 /**
  * Returns an environment id from a token used for communication with the CKBox service.
- *
- * @param {module:cloud-services/token~Token} token
- * @returns {String}
  */
-export function getEnvironmentId( token ) {
+export function getEnvironmentId( token: InitializedToken ): string {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
 	const payload = JSON.parse( atob( binaryTokenPayload ) );
 
 	return payload.aud;
 }
 
-// Calculates the image breakpoints for the provided image width in the following way:
-//
-// 1) The breakpoint threshold (the breakpoint step in the calculations) should be equal to 10% of the image width, but not less than 80
-// pixels.
-//
-// 2) Set the max. allowed image breakpoint (4000px) or the image width (if it is smaller than 4000px) as the first calculated breakpoint.
-//
-// 3) From the last computed image breakpoint subtract the computed breakpoint threshold, as long as the calculated new breakpoint value is
-// greater than the threshold.
-//
-// @private
-// @param {Number} width
-// @returns {Array.<Number>}
-function getImageBreakpoints( width ) {
+/**
+ * Calculates the image breakpoints for the provided image width in the following way:
+ *
+ * 1) The breakpoint threshold (the breakpoint step in the calculations) should be equal to 10% of the image width, but not less than 80
+ * pixels.
+ *
+ * 2) Set the max. allowed image breakpoint (4000px) or the image width (if it is smaller than 4000px) as the first calculated breakpoint.
+ *
+ * 3) From the last computed image breakpoint subtract the computed breakpoint threshold, as long as the calculated new breakpoint value is
+ * greater than the threshold.
+ */
+function getImageBreakpoints( width: number ) {
 	// Step 1) - calculating the breakpoint threshold.
 	const imageBreakpointThresholds = [
 		width * IMAGE_BREAKPOINT_PERCENTAGE_THRESHOLD / 100,
@@ -104,12 +108,10 @@ function getImageBreakpoints( width ) {
 	return imageBreakpoints;
 }
 
-// Returns the image extension for the fallback URL.
-//
-// @private
-// @param {String} extension
-// @returns {String}
-function getImageFallbackExtension( extension ) {
+/**
+ * Returns the image extension for the fallback URL.
+ */
+function getImageFallbackExtension( extension: string ) {
 	if ( extension === 'bmp' || extension === 'tiff' || extension === 'jpg' ) {
 		return 'jpeg';
 	}
@@ -117,17 +119,18 @@ function getImageFallbackExtension( extension ) {
 	return extension;
 }
 
-// Creates the URL for the given image.
-//
-// @private
-// @param {Object} options
-// @param {String} options.environmentId
-// @param {String} options.id
-// @param {String} options.origin
-// @param {Number} options.width
-// @param {String} options.extension
-// @returns {String}
-function getResponsiveImageUrl( { environmentId, id, origin, width, extension } ) {
+/**
+ * Creates the URL for the given image.
+ */
+function getResponsiveImageUrl(
+	{ environmentId, id, origin, width, extension }: {
+		environmentId: string;
+		id: string;
+		origin: string;
+		width: number;
+		extension: string;
+	}
+) {
 	const endpoint = `${ environmentId }/assets/${ id }/images/${ width }.${ extension }`;
 
 	return new URL( endpoint, origin ).toString();

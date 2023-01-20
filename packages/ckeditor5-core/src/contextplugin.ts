@@ -11,7 +11,7 @@ import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor/editor';
 import type Context from './context';
-import type { PluginInterface } from './plugin';
+import type { PluginDependencies, PluginInterface } from './plugin';
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
@@ -64,3 +64,5 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 		return true;
 	}
 }
+
+export type ContextPluginDependencies = PluginDependencies<Context | Editor>;
