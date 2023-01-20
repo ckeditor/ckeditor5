@@ -1,0 +1,57 @@
+/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module font/fontbackgroundcolor
+ */
+
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import FontBackgroundColorEditing from './fontbackgroundcolor/fontbackgroundcolorediting';
+import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui';
+import type { FontColorConfig } from './fontcolor';
+
+/**
+ * The font background color plugin.
+ *
+ * For a detailed overview, check the {@glink features/font font feature} documentation
+ * and the {@glink api/font package page}.
+ *
+ * This is a "glue" plugin which loads
+ * the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} and
+ * {@link module:font/fontbackgroundcolor/fontbackgroundcolorui~FontBackgroundColorUI} features in the editor.
+ */
+export default class FontBackgroundColor extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires(): PluginDependencies {
+		return [ FontBackgroundColorEditing, FontBackgroundColorUI ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get pluginName(): 'FontBackgroundColor' {
+		return 'FontBackgroundColor';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FontBackgroundColor.pluginName ]: FontBackgroundColor;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the font background color feature.
+		 * It is introduced by the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} feature.
+		 *
+		 * Read more in {@link module:font/fontcolor~FontColorConfig}.
+		 */
+		fontBackgroundColor?: FontColorConfig;
+	}
+}
+

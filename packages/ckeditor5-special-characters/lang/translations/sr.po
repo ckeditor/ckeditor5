@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -20,21 +20,45 @@ msgctxt "Name of the special characters plugins, visible in a dropdown and as a 
 msgid "Special characters"
 msgstr "Специјални карактери"
 
+msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
+msgid "All"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
+msgid "Arrows"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
+msgid "Currency"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
+msgid "Latin"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
+msgid "Mathematical"
+msgstr ""
+
+msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
+msgid "Text"
+msgstr ""
+
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
-msgstr "jednostavna strelica nalevo"
+msgstr "једноставна стрелица налево"
 
 msgctxt "A label for the \"rightwards simple arrow\" symbol."
 msgid "rightwards simple arrow"
-msgstr "jednostavna strelica udesno"
+msgstr "једноставна стрелица удесно"
 
 msgctxt "A label for the \"upwards simple arrow\" symbol."
 msgid "upwards simple arrow"
-msgstr "jednostavna strelica nagore"
+msgstr "једноставна стрелица нагоре"
 
 msgctxt "A label for the \"downwards simple arrow\" symbol."
 msgid "downwards simple arrow"
-msgstr "jednostavna strelica nadole"
+msgstr "једноставна стрелица надоле"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1022,17 +1022,21 @@ export default class DomConverter {
 		return null;
 	}
 
+	public mapViewToDom( element: ViewElement ): DomElement | undefined;
+	public mapViewToDom( documentFragment: ViewDocumentFragment ): DomDocumentFragment | undefined;
+	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomElement | DomDocumentFragment | undefined;
+
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
-	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewNode
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} documentFragmentOrElement
 	 * View element or document fragment.
-	 * @returns {Node|DocumentFragment|undefined} Corresponding DOM node or document fragment.
+	 * @returns {HTMLElement|DocumentFragment|undefined} Corresponding DOM node or document fragment.
 	 */
-	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomNode | DomDocumentFragment | undefined {
+	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomElement | DomDocumentFragment | undefined {
 		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
 
@@ -1073,7 +1077,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/editableelement~EditableElement} viewEditable
 	 */
 	public focus( viewEditable: EditableElement ): void {
-		const domEditable = this.mapViewToDom( viewEditable ) as DomElement;
+		const domEditable = this.mapViewToDom( viewEditable );
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.

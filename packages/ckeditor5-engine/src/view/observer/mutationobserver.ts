@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -208,7 +208,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( const viewElement of elementsWithMutatedChildren ) {
-			const domElement = domConverter.mapViewToDom( viewElement ) as HTMLElement;
+			const domElement = domConverter.mapViewToDom( viewElement )!;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement, { withChildren: false } ) );
 
