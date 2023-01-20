@@ -69,7 +69,7 @@ export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Batch } from './model/batch';
-export type { DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
+export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as Schema } from './model/schema';
@@ -142,7 +142,7 @@ export type { ViewDocumentMouseEvent } from './view/observer/mouseobserver';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 
 // View / Styles.
-export { StylesProcessor } from './view/stylesmap';
+export { StylesProcessor, BoxSides } from './view/stylesmap';
 export * from './view/styles/background';
 export * from './view/styles/border';
 export * from './view/styles/margin';

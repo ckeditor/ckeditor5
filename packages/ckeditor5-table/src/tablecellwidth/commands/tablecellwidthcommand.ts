@@ -48,8 +48,8 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value?: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' );
+	public override _getValueToSet( value: string ): string | undefined {
+		value = addDefaultUnitToNumericValue( value, 'px' ) as string;
 
 		if ( value === this._defaultValue ) {
 			return;

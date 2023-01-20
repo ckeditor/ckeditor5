@@ -8,8 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
-import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
+import TablePropertyCommand, { type TablePropertyCommandExecuteOptions } from '../tableproperties/commands/tablepropertycommand';
 
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
@@ -18,8 +17,8 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableWidthResizeCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
 	constructor( editor: Editor, defaultValue?: string ) {
 		// We create a custom command instead of using the existing `TableWidthCommand`
@@ -40,12 +39,11 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
 	 * Changes the `tableWidth` and `columnWidths` attribute values for the given or currently selected table.
 	 *
-	 * @param {Object} options
-	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
-	 * @param {String} [options.columnWidths] The new table column widths. If skipped, the model attribute will be removed.
-	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
+	 * @param options.tableWidth The new table width. If skipped, the model attribute will be removed.
+	 * @param options.columnWidths The new table column widths. If skipped, the model attribute will be removed.
+	 * @param options.table The table that is affected by the resize.
 	 */
-	public override execute( options: { tableWidth?: string; columnWidths?: string; table?: Element } = {} ): void {
+	public override execute( options: TablePropertyCommandExecuteOptions = {} ): void {
 		const model = this.editor.model;
 		const table = options.table || model.document.selection.getSelectedElement()!;
 		const { tableWidth, columnWidths } = options;

@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
+import TablePropertyCommand, { type TablePropertyCommandExecuteOptions } from '../tableproperties/commands/tablepropertycommand';
 
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
@@ -17,10 +17,10 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableColumnWidthsCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor: Editor, defaultValue: string | undefined ) {
+	constructor( editor: Editor, defaultValue?: string | undefined ) {
 		super( editor, 'columnWidths', defaultValue );
 	}
 
@@ -36,13 +36,12 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	/**
 	 * Changes the `columnWidths` attribute value for the given or currently selected table.
 	 *
-	 * @param {Object} options
-	 * @param {String} [options.columnWidths] New value of the `columnWidths` attribute.
-	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
+	 * @param options.columnWidths New value of the `columnWidths` attribute.
+	 * @param options.table The table that is having the columns resized.
 	 */
-	public execute( options = {} ) {
+	public override execute( options: TablePropertyCommandExecuteOptions = {} ): void {
 		const model = this.editor.model;
-		const table = options.table || model.document.selection.getSelectedElement();
+		const table = options.table || model.document.selection.getSelectedElement()!;
 		const { columnWidths } = options;
 
 		model.change( writer => {

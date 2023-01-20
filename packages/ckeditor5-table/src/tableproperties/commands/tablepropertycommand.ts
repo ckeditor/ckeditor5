@@ -10,6 +10,14 @@
 import type { Batch, Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 
+export type TablePropertyCommandExecuteOptions = {
+	batch?: Batch;
+	columnWidths?: string;
+	table?: Element;
+	tableWidth?: string;
+	value?: string;
+};
+
 /**
  * The table cell attribute command.
  *
@@ -64,7 +72,7 @@ export default class TablePropertyCommand extends Command {
 	 * @param options.batch Pass the model batch instance to the command to aggregate changes,
 	 * for example, to allow a single undo step for multiple executions.
 	 */
-	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
+	public override execute( options: TablePropertyCommandExecuteOptions = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 

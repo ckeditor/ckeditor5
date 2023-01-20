@@ -7,9 +7,10 @@
  * @module table/tablecolumnresize/converters
  */
 
-import type { Plugin } from 'ckeditor5/src/core';
+import type { DowncastWriter, UpcastDispatcher, DowncastDispatcher, ViewElement } from 'ckeditor5/src/engine';
 
 import { normalizeColumnWidths } from './utils';
+import type TableUtils from '../tableutils';
 
 /**
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
@@ -20,11 +21,11 @@ import { normalizeColumnWidths } from './utils';
  * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_registerPostFixer post-fixer}, depending
  * on the available table space.
  *
- * @param {module:core/plugin~Plugin} tableUtilsPlugin The {@link module:table/tableutils~TableUtils} plugin instance.
- * @returns {Function} Conversion helper.
+ * @param tableUtilsPlugin The {@link module:table/tableutils~TableUtils} plugin instance.
+ * @returns Conversion helper.
  */
-export function upcastColgroupElement( tableUtilsPlugin: Plugin ) {
-	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
+export function upcastColgroupElement( tableUtilsPlugin: TableUtils ) {
+	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
 		const viewColgroupElement = data.viewItem;
 
 		if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
@@ -64,10 +65,10 @@ export function upcastColgroupElement( tableUtilsPlugin: Plugin ) {
 /**
  * Returns a helper for converting a model table `columnWidths` attribute to view `<colgroup>` and `<col>` elements.
  *
- * @returns {Function} Conversion helper.
+ * @returns Conversion helper.
  */
 export function downcastTableColumnWidthsAttribute() {
-	return dispatcher => dispatcher.on( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
+	return ( dispatcher: DowncastDispatcher ): void => dispatcher.on( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
 		const modelTable = data.item;
 
@@ -87,17 +88,18 @@ export function downcastTableColumnWidthsAttribute() {
 	} );
 }
 
-// Inserts the `<colgroup>` with `<col>` elements as the first child in the view table. Each `<col>` element represents a single column
-// and it has the inline width style set, taken from the appropriate slot from the `columnWidths` table attribute.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewTable View table.
-// @param {String} columnWidthsAttribute Column widths attribute from model table.
-function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
+/**
+ * Inserts the `<colgroup>` with `<col>` elements as the first child in the view table. Each `<col>` element represents a single column
+ * and it has the inline width style set, taken from the appropriate slot from the `columnWidths` table attribute.
+ *
+ * @param viewWriter View writer instance.
+ * @param viewTable View table.
+ * @param columnWidthsAttribute Column widths attribute from model table.
+ */
+function insertColgroupElement( viewWriter: DowncastWriter, viewTable: ViewElement, columnWidthsAttribute: string ) {
 	const columnWidths = columnWidthsAttribute.split( ',' );
 
-	let viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
+	let viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) ) as ViewElement;
 
 	if ( !viewColgroupElement ) {
 		viewColgroupElement = viewWriter.createContainerElement( 'colgroup' );
@@ -117,12 +119,13 @@ function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
 	viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), viewColgroupElement );
 }
 
-// Removes the `<colgroup>` with `<col>` elements from the view table.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewTable View table.
-function removeColgroupElement( viewWriter, viewTable ) {
+/**
+ * Removes the `<colgroup>` with `<col>` elements from the view table.
+ *
+ * @param viewWriter View writer instance.
+ * @param viewTable View table.
+ */
+function removeColgroupElement( viewWriter: DowncastWriter, viewTable: ViewElement ) {
 	const viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
 
 	viewWriter.remove( viewColgroupElement );

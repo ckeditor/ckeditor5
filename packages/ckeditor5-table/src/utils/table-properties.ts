@@ -7,6 +7,7 @@
  * @module table/utils/table-properties
  */
 
+import type { BoxSides } from 'ckeditor5/src/engine';
 import { isObject } from 'lodash-es';
 
 /**
@@ -21,11 +22,8 @@ import { isObject } from 'lodash-es';
  *		// Returns undefined:
  *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
  *		getSingleValue( { top: 'foo', right: 'foo' } );
- *
- * @param objectOrString
- * @returns {module:engine/view/stylesmap~BoxSides|String}
  */
-export function getSingleValue( objectOrString ) {
+export function getSingleValue( objectOrString: BoxSides | string ): BoxSides | string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
 		return objectOrString;
 	}
@@ -33,7 +31,7 @@ export function getSingleValue( objectOrString ) {
 	const { top, right, bottom, left } = objectOrString;
 
 	if ( top == right && right == bottom && bottom == left ) {
-		return top;
+		return top!;
 	}
 }
 
@@ -47,12 +45,10 @@ export function getSingleValue( objectOrString ) {
  *		getSingleValue( '25em', 'px' );	// '25em'
  *		getSingleValue( 'foo', 'px' );	// 'foo'
  *
- * @param {*} value
- * @param {String} defaultUnit A default unit added to a numeric value.
- * @returns {String|*}
+ * @param defaultUnit A default unit added to a numeric value.
  */
-export function addDefaultUnitToNumericValue( value, defaultUnit ) {
-	const numericValue = parseFloat( value );
+export function addDefaultUnitToNumericValue( value: string | number, defaultUnit: string ): string | number {
+	const numericValue = parseFloat( value as string );
 
 	if ( Number.isNaN( numericValue ) ) {
 		return value;
@@ -70,14 +66,23 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
  *
  * @param {Object} config
  * @param {Object} [options={}]
- * @param {Boolean} [options.includeAlignmentProperty=false] Whether the "alignment" property should be added.
- * @param {Boolean} [options.includePaddingProperty=false] Whether the "padding" property should be added.
- * @param {Boolean} [options.includeVerticalAlignmentProperty=false] Whether the "verticalAlignment" property should be added.
- * @param {Boolean} [options.includeHorizontalAlignmentProperty=false] Whether the "horizontalAlignment" property should be added.
- * @param {Boolean} [options.isRightToLeftContent=false] Whether the content is right-to-left.
+ * @param options.includeAlignmentProperty Whether the "alignment" property should be added.
+ * @param options.includePaddingProperty Whether the "padding" property should be added.
+ * @param options.includeVerticalAlignmentProperty Whether the "verticalAlignment" property should be added.
+ * @param options.includeHorizontalAlignmentProperty Whether the "horizontalAlignment" property should be added.
+ * @param options.isRightToLeftContent Whether the content is right-to-left.
  * @returns {Object}
  */
-export function getNormalizedDefaultProperties( config, options = {} ) {
+export function getNormalizedDefaultProperties(
+	config,
+	options: {
+		includeAlignmentProperty?: boolean;
+		includePaddingProperty?: boolean;
+		includeVerticalAlignmentProperty?: boolean;
+		includeHorizontalAlignmentProperty?: boolean;
+		isRightToLeftContent?: boolean;
+	} = {}
+) {
 	const normalizedConfig = Object.assign( {
 		borderStyle: 'none',
 		borderWidth: '',

@@ -65,10 +65,10 @@ export function upcastTableFigure() {
  *
  * This conversion helper converts the table element as well as table rows.
  *
- * @returns {Function} Conversion helper.
+ * @returns Conversion helper.
  */
 export default function upcastTable() {
-	return dispatcher => {
+	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
 
@@ -127,10 +127,10 @@ export default function upcastTable() {
  * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
  * of an improper table with all empty rows.
  *
- * @returns {Function} Conversion helper.
+ * @returns Conversion helper.
  */
 export function skipEmptyTableRow() {
-	return dispatcher => {
+	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on( 'element:tr', ( evt, data ) => {
 			if ( data.viewItem.isEmpty && data.modelCursor.index == 0 ) {
 				evt.stop();
@@ -142,10 +142,10 @@ export function skipEmptyTableRow() {
 /**
  * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
  *
- * @returns {Function} Conversion helper.
+ * @returns Conversion helper.
  */
 export function ensureParagraphInTableCell( elementName: string ) {
-	return dispatcher => {
+	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
 			// The default converter will create a model range on converted table cell.
 			if ( !data.modelRange ) {

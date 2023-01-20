@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model } from 'ckeditor5/src/engine';
+import type { Element, Model, ViewElement } from 'ckeditor5/src/engine';
 import { global } from 'ckeditor5/src/utils';
 import type TableUtils from '../tableutils';
 import {
@@ -93,14 +93,14 @@ export function getColumnMinWidthAsPercentage( modelTable: Element, editor: Edit
 /**
  * Calculates the table width in pixels.
  *
- * @param {module:engine/model/element~Element} modelTable A table model element.
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {Number} The width of the table in pixels.
+ * @param modelTable A table model element.
+ * @param editor The editor instance.
+ * @returns The width of the table in pixels.
  */
 export function getTableWidthInPixels( modelTable: Element, editor: Editor ): number {
 	// It is possible for a table to not have a <tbody> element - see #11878.
 	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
-	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement );
+	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! );
 
 	return getElementWidthInPixels( domReferenceElement );
 }
@@ -109,17 +109,14 @@ export function getTableWidthInPixels( modelTable: Element, editor: Editor ): nu
  * Returns the a view element with a given name that is nested directly in a `<table>` element
  * related to a given `modelTable`.
  *
- * @private
- * @param {module:engine/model/element~Element} table
- * @param {module:core/editor/editor~Editor} editor
- * @param {String} elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
- * @returns {module:engine/view/element~Element|undefined} Matched view or `undefined` otherwise.
+ * @param elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
+ * @returns Matched view or `undefined` otherwise.
  */
-function getChildrenViewElement( modelTable: Element, elementName: string, editor: Editor ): Element | undefined {
-	const viewFigure = editor.editing.mapper.toViewElement( modelTable );
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) );
+function getChildrenViewElement( modelTable: Element, elementName: string, editor: Editor ): ViewElement | undefined {
+	const viewFigure = editor.editing.mapper.toViewElement( modelTable )!;
+	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) ) as ViewElement;
 
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', elementName ) );
+	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', elementName ) ) as ViewElement;
 }
 
 /**
@@ -128,7 +125,7 @@ function getChildrenViewElement( modelTable: Element, elementName: string, edito
  * @param domElement A DOM element.
  * @returns The width of the DOM element in pixels.
  */
-export function getElementWidthInPixels( domElement: HTMLElement ): number {
+export function getElementWidthInPixels( domElement ): number {
 	const styles = global.window.getComputedStyle( domElement );
 
 	// In the 'border-box' box sizing algorithm, the element's width
@@ -215,7 +212,7 @@ export function createFilledArray( length: number, value: unknown ): Array<unkno
  * @param array An array of numbers.
  * @returns The sum of all array values.
  */
-export function sumArray( array: Array<number | 'auto'> ): number {
+export function sumArray( array: Array<number | string> ): number {
 	return array
 		.map( value => typeof value === 'number' ? value : parseFloat( value ) )
 		.filter( value => !Number.isNaN( value ) )
@@ -232,15 +229,15 @@ export function sumArray( array: Array<number | 'auto'> ): number {
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
-export function normalizeColumnWidths( columnWidths: Array<number> ): Array<number> {
-	columnWidths = calculateMissingColumnWidths( columnWidths );
+export function normalizeColumnWidths( columnWidths: Array<number | string> ): Array<number> {
+	const completeColumnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
 	if ( totalWidth === 100 ) {
-		return columnWidths;
+		return completeColumnWidths;
 	}
 
-	return columnWidths
+	return completeColumnWidths
 		// Adjust all the columns proportionally.
 		.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
 		// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%. Therefore, the width
@@ -266,10 +263,10 @@ export function normalizeColumnWidths( columnWidths: Array<number> ): Array<numb
  * - Otherwise, just set the minimum allowed width for all uninitialized columns. The sum of all column widths will be greater than 100%,
  *   but then it will be adjusted proportionally to 100% in {@link #normalizeColumnWidths `normalizeColumnWidths()`}.
  *
- * @param {Array.<Number>} columnWidths An array of column widths.
- * @returns {Array.<Number>} An array with 'auto' values replaced with calculated widths.
+ * @param columnWidths An array of column widths.
+ * @returns An array with 'auto' values replaced with calculated widths.
  */
-function calculateMissingColumnWidths( columnWidths: Array<number | 'auto'> ): Array<number> {
+function calculateMissingColumnWidths( columnWidths: Array<number | string> ): Array<number> {
 	const numberOfUninitializedColumns = columnWidths.filter( columnWidth => columnWidth === 'auto' ).length;
 
 	if ( numberOfUninitializedColumns === 0 ) {
