@@ -22,9 +22,10 @@ const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
 export default class Token extends ObservableMixin() {
 	/**
 	 * Value of the token.
-	 * The value of the token is null if `initValue` is not provided or `init` method was not called.
+	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.
 	 * `create` method creates token with initialized value from url.
 	 *
+	 * @see module:cloud-services/token~InitializedToken
 	 * @observable
 	 * @readonly
 	 */
@@ -188,7 +189,7 @@ export default class Token extends ObservableMixin() {
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token~refreshToken} interface.
 	 */
-	public static create( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ): Promise<Token> {
+	public static create( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ): Promise<InitializedToken> {
 		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();

@@ -28,8 +28,8 @@ export default class CloudServicesCore extends ContextPlugin {
 	 *
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token~refreshToken} interface.
-	 * @param initValue Initial value of the token.
-	 * @param autoRefresh Specifies whether to start the refresh automatically.
+	 * @param options.initValue Initial value of the token.
+	 * @param options.autoRefresh Specifies whether to start the refresh automatically.
 	 */
 	public createToken( tokenUrlOrRefreshToken: TokenUrl, options?: TokenOptions ): Token {
 		return new Token( tokenUrlOrRefreshToken, options );
