@@ -463,11 +463,19 @@ export default {
 			}
 		},
 		{
+			model: 'htmlDivDl',
+			view: 'div',
+			modelSchema: {
+				allowChildren: [ 'htmlDt', 'htmlDd' ],
+				allowIn: 'htmlDl'
+			}
+		},
+		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
 				allowWhere: '$container',
-				allowChildren: [ 'htmlDt', 'htmlDd' ],
+				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDivDl' ],
 				isBlock: false
 			}
 		},
