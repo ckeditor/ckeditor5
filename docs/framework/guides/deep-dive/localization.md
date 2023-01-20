@@ -85,28 +85,34 @@ t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'ACTION_N_EMOJIS' }, [ q
 This example shows how to create a localizable user interface of a plugin. Here is how you can create a button that will insert a smiling face emoji. The button will have a localizable tooltip.
 
 ```js
-// ...
-editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
-	const buttonView = new ButtonView( locale );
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-	// The translation function.
-	const { t } = editor.locale;
+class SmilingFaceEmoji extends Plugin {
+	init() {
+		const editor = this.editor;
 
-	// The localized label.
-	const label = t( 'Insert smiling face emoji' );
+		editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
+			const buttonView = new ButtonView( locale );
 
-	buttonView.set( {
-		label,
-		icon: emojiIcon,
-		tooltip: true
-	} );
+			// The translation function.
+			const { t } = editor.locale;
 
-	buttonView.on( 'execute', () => {
-		editor.execute( 'insertSmilingFaceEmoji' );
-		editor.editing.view.focus();
-	} );
-} );
-// ...
+			// The localized label.
+			const label = t( 'Insert smiling face emoji' );
+
+			buttonView.set( {
+				label,
+				icon: emojiIcon,
+				tooltip: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				editor.execute( 'insertSmilingFaceEmoji' );
+				editor.editing.view.focus();
+			} );
+		} );
+	}
+}
 ```
 
 <info-box warning>
@@ -119,12 +125,15 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 
 ```js
 class FileRepository {
+	// Other class properties.
 	// ...
+	
 	updatePendingAction() {
-		// ...
 		const pendingActions = this.editor.plugins.get( PendingActions );
 
-		// ...
+		// Declarations of other variables and functions.
+		//...
+		
 		const t = this.editor.t;
 		const getMessage = value => t( 'Upload in progress (%0%).', value ); // Upload in progress (12%).
 
