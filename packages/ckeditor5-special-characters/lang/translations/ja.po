@@ -22,27 +22,27 @@ msgstr "特殊文字"
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
-msgstr ""
+msgstr "全て"
 
 msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
 msgid "Arrows"
-msgstr ""
+msgstr "矢印"
 
 msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
 msgid "Currency"
-msgstr ""
+msgstr "通貨"
 
 msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
 msgid "Latin"
-msgstr ""
+msgstr "ラテン"
 
 msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
 msgid "Mathematical"
-msgstr ""
+msgstr "数学的"
 
 msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
 msgid "Text"
-msgstr ""
+msgstr "テキスト"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"

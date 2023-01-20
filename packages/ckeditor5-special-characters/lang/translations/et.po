@@ -22,27 +22,27 @@ msgstr "Erimärgid"
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
-msgstr ""
+msgstr "Kõik"
 
 msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
 msgid "Arrows"
-msgstr ""
+msgstr "Nooled"
 
 msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
 msgid "Currency"
-msgstr ""
+msgstr "Valuuta"
 
 msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
 msgid "Latin"
-msgstr ""
+msgstr "Ladina"
 
 msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
 msgid "Mathematical"
-msgstr ""
+msgstr "Matemaatiline"
 
 msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"
