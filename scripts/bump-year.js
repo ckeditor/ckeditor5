@@ -34,7 +34,8 @@ require( '@ckeditor/ckeditor5-dev-bump-year' )
 				pattern: '!(build|coverage|external)/**',
 				options: {
 					ignore: [
-						'**/ckeditor5-*/build/**'
+						'**/ckeditor5-*/build/**',
+						'**/ckeditor5-*/lang/translations/*.po'
 					]
 				}
 			},
