@@ -14,8 +14,9 @@ import {
 	View,
 	ViewCollection,
 	createLabeledInputText,
-	injectCssTransitionDisabler,
-	submitHandler
+	submitHandler,
+	type InputView,
+	CssTransitionMixin
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
@@ -29,7 +30,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 /**
  * The TextAlternativeFormView class.
  */
-export default class TextAlternativeFormView extends View {
+export default class TextAlternativeFormView extends CssTransitionMixin( View ) {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */
@@ -43,7 +44,7 @@ export default class TextAlternativeFormView extends View {
 	/**
 	 * An input with a label.
 	 */
-	public labeledInput: LabeledFieldView;
+	public labeledInput: LabeledFieldView<InputView>;
 
 	/**
 	 * A button used to submit the form.
@@ -70,7 +71,6 @@ export default class TextAlternativeFormView extends View {
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
-
 		const t = this.locale!.t;
 
 		this.focusTracker = new FocusTracker();
@@ -120,7 +120,7 @@ export default class TextAlternativeFormView extends View {
 			]
 		} );
 
-		injectCssTransitionDisabler( this );
+		this.initializeMixin();
 	}
 
 	/**
@@ -189,9 +189,9 @@ export default class TextAlternativeFormView extends View {
 	 *
 	 * @returns Labeled field view instance.
 	 */
-	private _createLabeledInputView(): LabeledFieldView {
+	private _createLabeledInputView(): LabeledFieldView<InputView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const labeledInput = new LabeledFieldView<InputView>( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Text alternative' );
 

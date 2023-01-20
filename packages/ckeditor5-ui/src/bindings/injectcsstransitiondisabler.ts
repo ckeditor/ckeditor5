@@ -80,3 +80,45 @@ export type ViewWithCssTransitionDisabler = View & {
 	disableCssTransitions(): void;
 	enableCssTransitions(): void;
 };
+
+/**
+ * @mixin CssTransitionMixin
+ */
+export function CssTransitionMixin<Base extends abstract new( ...args: Array<any> ) => View>( base: Base ): {
+	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & {
+		_isCssTransitionsDisabled: boolean;
+		disableCssTransitions(): void;
+		enableCssTransitions(): void;
+		initializeMixin(): void;
+};
+	prototype: InstanceType<Base> & {
+		_isCssTransitionsDisabled: boolean;
+		disableCssTransitions(): void;
+		enableCssTransitions(): void;
+		initializeMixin(): void;
+};
+} {
+	abstract class Mixin extends base {
+		public _isCssTransitionsDisabled: boolean = false;
+
+		public disableCssTransitions() {
+			this._isCssTransitionsDisabled = true;
+		}
+
+		public enableCssTransitions() {
+			this._isCssTransitionsDisabled = false;
+		}
+
+		protected initializeMixin(): void {
+			this.extendTemplate( {
+				attributes: {
+					class: [
+						this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
+					]
+				}
+			} );
+		}
+	}
+
+	return Mixin as any;
+}

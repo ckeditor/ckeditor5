@@ -8,7 +8,7 @@
  */
 
 export { default as Plugin, type PluginDependencies } from './plugin';
-export { default as Command } from './command';
+export { default as Command, type CommandExecuteEvent } from './command';
 export { default as MultiCommand } from './multicommand';
 export { CommandsMap } from './commandcollection';
 export { PluginsMap, type default as PluginCollection } from './plugincollection';

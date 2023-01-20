@@ -7,12 +7,12 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { type Editor, Plugin, type PluginDependencies, type CommandExecuteEvent } from 'ckeditor5/src/core';
 import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
+import type { GetCallback } from 'ckeditor5/src/utils';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
-
 import ImageUtils from '../imageutils';
 import ImageCaptionUtils from './imagecaptionutils';
 
@@ -149,13 +149,13 @@ export default class ImageCaptionEditing extends Plugin {
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
-		const handleImageTypeChange = ( evt: any ) => {
+		const handleImageTypeChange: GetCallback<CommandExecuteEvent> = evt => {
 			// The image type command execution can be unsuccessful.
 			if ( !evt.return ) {
 				return;
 			}
 
-			const { oldElement, newElement } = evt.return;
+			const { oldElement, newElement } = evt.return as { oldElement: Element; newElement: Element };
 
 			/* istanbul ignore if: paranoid check */
 			if ( !oldElement ) {
@@ -193,11 +193,11 @@ export default class ImageCaptionEditing extends Plugin {
 
 		// Presence of the commands depends on the Image(Inline|Block)Editing plugins loaded in the editor.
 		if ( imageTypeInlineCommand ) {
-			this.listenTo( imageTypeInlineCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
+			this.listenTo<CommandExecuteEvent>( imageTypeInlineCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
 		}
 
 		if ( imageTypeBlockCommand ) {
-			this.listenTo( imageTypeBlockCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
+			this.listenTo<CommandExecuteEvent>( imageTypeBlockCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
 		}
 	}
 
@@ -232,12 +232,11 @@ export default class ImageCaptionEditing extends Plugin {
 	 * See {@link #_getSavedCaption}.
 	 *
 	 * @protected
-	 * @param imageModelElement The model element the
-	 * caption is saved for.
+	 * @param imageModelElement The model element the caption is saved for.
 	 * @param caption The caption model element to be saved.
 	 */
 	public _saveCaption( imageModelElement: Element, caption: Element ): void {
-		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() as any );
+		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() as object );
 	}
 
 	/**

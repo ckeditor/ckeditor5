@@ -13,7 +13,7 @@ import ImageUtils from '../imageutils';
 import utils from './utils';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import type { ImageStyleOptionDefinition } from '../imagestyle';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -92,7 +92,7 @@ export default class ImageStyleEditing extends Plugin {
 			schema.extend( 'imageBlock', { allowAttributes: 'imageStyle' } );
 
 			// Converter for figure element from view to model.
-			editor.data.upcastDispatcher.on( 'element:figure', viewToModelConverter, { priority: 'low' } );
+			editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:figure', viewToModelConverter, { priority: 'low' } );
 		}
 
 		if ( isInlinePluginLoaded ) {

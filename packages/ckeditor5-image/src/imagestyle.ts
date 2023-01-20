@@ -51,7 +51,7 @@ export interface ImageStyleConfig {
 	/**
 	 * A list of the image style options.
 	 */
-	options: Array<ImageStyleOptionDefinition>;
+	options?: Array<string | ImageStyleOptionDefinition>;
 }
 
 /**

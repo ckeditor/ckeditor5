@@ -8,20 +8,18 @@
  */
 
 import type {
-	DowncastConversionApi,
 	DowncastDispatcher,
 	Element,
-	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
 	ViewElementAttributes,
-	UpcastConversionData,
-	DowncastAttributeEvent,
-	Range
+	DowncastAttributeEvent
 } from 'ckeditor5/src/engine';
-import { first, type EventInfo } from 'ckeditor5/src/utils';
+import { first, type GetCallback } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
+
+type SrcsetAttributeType = null | { data: unknown; width: unknown };
 
 /**
  * Returns a function that converts the image view representation:
@@ -42,11 +40,7 @@ import type ImageUtils from '../imageutils';
  * @protected
  */
 export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
-	return dispatcher => {
-		dispatcher.on<UpcastElementEvent>( 'element:figure', converter );
-	};
-
-	function converter( evt: EventInfo, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
+	const converter: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 		// Do not convert if this is not an "image figure".
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ) {
 			return;
@@ -81,7 +75,11 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
 		conversionApi.convertChildren( data.viewItem, modelImage );
 
 		conversionApi.updateConversionResult( modelImage, data );
-	}
+	};
+
+	return dispatcher => {
+		dispatcher.on<UpcastElementEvent>( 'element:figure', converter );
+	};
 }
 
 /**
@@ -102,11 +100,7 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
 export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	const sourceAttributeNames = [ 'srcset', 'media', 'type', 'sizes' ];
 
-	return dispatcher => {
-		dispatcher.on<UpcastElementEvent>( 'element:picture', converter );
-	};
-
-	function converter( evt: EventInfo, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
+	const converter: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 		const pictureViewElement = data.viewItem;
 
 		// Do not convert <picture> if already consumed.
@@ -114,12 +108,12 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 			return;
 		}
 
-		const sources = new Map();
+		const sources = new Map<ViewElement, Record<string, string | undefined>>();
 
 		// Collect all <source /> elements attribute values.
 		for ( const childSourceElement of pictureViewElement.getChildren() ) {
 			if ( childSourceElement.is( 'element', 'source' ) ) {
-				const attributes: Record<string, any> = {};
+				const attributes: Record<string, string | undefined> = {};
 
 				for ( const name of sourceAttributeNames ) {
 					if ( childSourceElement.hasAttribute( name ) ) {
@@ -176,7 +170,11 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 
 		// Convert rest of the <picture> children as an image children. Other converters may want to consume them.
 		conversionApi.convertChildren( pictureViewElement, modelImage );
-	}
+	};
+
+	return dispatcher => {
+		dispatcher.on<UpcastElementEvent>( 'element:picture', converter );
+	};
 }
 
 /**
@@ -189,21 +187,7 @@ export function downcastSrcsetAttribute(
 	imageUtils: ImageUtils,
 	imageType: 'imageBlock' | 'imageInline'
 ): ( dispatcher: DowncastDispatcher ) => void {
-	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:srcset:${ imageType }`, converter );
-	};
-
-	function converter(
-		evt: EventInfo,
-		data: {
-			item: Element;
-			range: Range;
-			attributeKey: string;
-			attributeOldValue: any;
-			attributeNewValue: any;
-		},
-		conversionApi: DowncastConversionApi
-	) {
+	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi	) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -213,9 +197,9 @@ export function downcastSrcsetAttribute(
 		const img = imageUtils.findViewImgElement( element )!;
 
 		if ( data.attributeNewValue === null ) {
-			const srcset = data.attributeOldValue;
+			const srcset = data.attributeOldValue as SrcsetAttributeType;
 
-			if ( srcset.data ) {
+			if ( srcset && srcset.data ) {
 				writer.removeAttribute( 'srcset', img );
 				writer.removeAttribute( 'sizes', img );
 
@@ -224,9 +208,9 @@ export function downcastSrcsetAttribute(
 				}
 			}
 		} else {
-			const srcset = data.attributeNewValue;
+			const srcset = data.attributeNewValue as SrcsetAttributeType;
 
-			if ( srcset.data ) {
+			if ( srcset && srcset.data ) {
 				writer.setAttribute( 'srcset', srcset.data, img );
 				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
 				writer.setAttribute( 'sizes', '100vw', img );
@@ -236,7 +220,11 @@ export function downcastSrcsetAttribute(
 				}
 			}
 		}
-	}
+	};
+
+	return dispatcher => {
+		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:srcset:${ imageType }`, converter );
+	};
 }
 
 /**
@@ -246,22 +234,7 @@ export function downcastSrcsetAttribute(
  * @protected
  */
 export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher: DowncastDispatcher ) => void {
-	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageBlock', converter );
-		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageInline', converter );
-	};
-
-	function converter(
-		evt: EventInfo,
-		data: {
-			item: Element;
-			range: Range;
-			attributeKey: string;
-			attributeOldValue: unknown;
-			attributeNewValue: any;
-		},
-		conversionApi: DowncastConversionApi
-	) {
+	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi	) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -269,11 +242,12 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 		const viewWriter = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item )!;
 		const imgElement = imageUtils.findViewImgElement( element )!;
+		const attributeNewValue = data.attributeNewValue as null | Array<ViewElementAttributes>;
 
-		if ( data.attributeNewValue && data.attributeNewValue.length ) {
+		if ( attributeNewValue && attributeNewValue.length ) {
 			// Make sure <picture> does not break attribute elements, for instance <a> in linked images.
 			const pictureElement = viewWriter.createContainerElement( 'picture', null,
-				data.attributeNewValue.map( ( sourceAttributes: ViewElementAttributes ) => {
+				attributeNewValue.map( sourceAttributes => {
 					return viewWriter.createEmptyElement( 'source', sourceAttributes );
 				} )
 			);
@@ -308,7 +282,12 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionBefore( pictureElement ) );
 			viewWriter.remove( pictureElement );
 		}
-	}
+	};
+
+	return dispatcher => {
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageBlock', converter );
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageInline', converter );
+	};
 }
 
 /**
@@ -323,21 +302,7 @@ export function downcastImageAttribute(
 	imageType: 'imageBlock' | 'imageInline',
 	attributeKey: string
 ): ( dispatcher: DowncastDispatcher ) => void {
-	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ attributeKey }:${ imageType }`, converter );
-	};
-
-	function converter(
-		evt: EventInfo,
-		data: {
-			item: Element;
-			range: Range;
-			attributeKey: string;
-			attributeOldValue: unknown;
-			attributeNewValue: unknown;
-		},
-		conversionApi: DowncastConversionApi
-	) {
+	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -347,6 +312,10 @@ export function downcastImageAttribute(
 		const img = imageUtils.findViewImgElement( element )!;
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
-	}
+	};
+
+	return dispatcher => {
+		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ attributeKey }:${ imageType }`, converter );
+	};
 }
 

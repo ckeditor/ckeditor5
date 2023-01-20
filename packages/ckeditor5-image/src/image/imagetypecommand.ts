@@ -7,6 +7,7 @@
  * @module image/image/imagetypecommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
@@ -52,7 +53,7 @@ export default class ImageTypeCommand extends Command {
 	 * (for before and after the change) so external integrations can hook into the decorated
 	 * `execute` event and handle this change. `null` if the type change failed.
 	 */
-	public override execute(): object | null {
+	public override execute(): { oldElement: Element; newElement: Element } | null {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );

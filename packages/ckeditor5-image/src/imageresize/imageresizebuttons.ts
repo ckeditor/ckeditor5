@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, icons, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor, type PluginDependencies, CommandExecuteEvent } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -147,26 +147,25 @@ export default class ImageResizeButtons extends Plugin {
 		const componentCreator = ( locale: Locale ) => {
 			const command = editor.commands.get( 'resizeImage' )!;
 			const dropdownView = createDropdown( locale, DropdownButtonView );
-			const dropdownButton = dropdownView.buttonView;
+			const dropdownButton: typeof dropdownView.buttonView & { commandValue?: string | null } = dropdownView.buttonView;
 
 			dropdownButton.set( {
 				tooltip: t( 'Resize image' ),
-				commandValue: originalSizeOption.value!,
+				commandValue: originalSizeOption.value,
 				icon: RESIZE_ICONS.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,
 				class: 'ck-resize-image-button'
-			} as any );
+			} );
 
-			dropdownButton.bind( 'label' ).to( command, 'value', ( commandValue: any ) => {
+			dropdownButton.bind( 'label' ).to( command, 'value', commandValue => {
 				if ( commandValue && commandValue.width ) {
 					return commandValue.width;
 				} else {
 					return this._getOptionLabelValue( originalSizeOption );
 				}
 			} );
-			// dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
 			addListToDropdown( dropdownView, () => this._getResizeDropdownListItemDefinitions( options, command ), {
@@ -253,13 +252,14 @@ export default class ImageResizeButtons extends Plugin {
 /**
  * A helper function for setting the `isOn` state of buttons in value bindings.
  */
-function getIsOnButtonCallback( value: string | null ) {
-	return ( commandValue: any ): boolean => {
-		if ( value === null && commandValue === value ) {
+function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown ) => boolean {
+	return ( commandValue: unknown ): boolean => {
+		const objectCommandValue = commandValue as null | { width: string | null };
+		if ( value === null && objectCommandValue === value ) {
 			return true;
 		}
 
-		return commandValue && commandValue.width === value;
+		return objectCommandValue !== null && objectCommandValue.width === value;
 	};
 }
 

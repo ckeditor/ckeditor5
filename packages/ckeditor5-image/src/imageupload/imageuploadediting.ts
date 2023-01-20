@@ -13,7 +13,7 @@ import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, 
 
 import { Notification } from 'ckeditor5/src/ui';
 import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
-import { FileRepository, type FileLoader } from 'ckeditor5/src/upload';
+import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload';
 import { env } from 'ckeditor5/src/utils';
 
 import ImageUtils from '../imageutils';
@@ -295,7 +295,7 @@ export default class ImageUploadEditing extends Plugin {
 							return;
 						}
 
-						const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent ) as any;
+						const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent ) as HTMLElement | undefined;
 
 						if ( !domFigure ) {
 							return;
@@ -306,7 +306,7 @@ export default class ImageUploadEditing extends Plugin {
 						domFigure.style.display = 'none';
 
 						// Make sure this line will never be removed during minification for having "no effect".
-						domFigure._ckHack = domFigure.offsetHeight;
+						( domFigure as any )._ckHack = domFigure.offsetHeight;
 
 						domFigure.style.display = originalDisplay;
 					} );
@@ -324,39 +324,7 @@ export default class ImageUploadEditing extends Plugin {
 
 					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
 
-					/**
-					 * An event fired when an image is uploaded. You can hook into this event to provide
-					 * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
-					 * the server.
-					 *
-					 * ```ts
-					 * const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
-					 *
-					 * imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
-					 * 	editor.model.change( writer => {
-					 * 		writer.setAttribute( 'someAttribute', 'foo', imageElement );
-					 * 	} );
-					 * } );
-					 * ```
-					 *
-					 * You can also stop the default handler that sets the `src` and `srcset` attributes
-					 * if you want to provide custom values for these attributes.
-					 *
-					 * ```ts
-					 * imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
-					 * 	evt.stop();
-					 * } );
-					 * ```
-					 *
-					 * **Note**: This event is fired by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin.
-					 *
-					 * @event uploadComplete
-					 * @param {Object} data The `uploadComplete` event data.
-					 * @param {Object} data.data The data coming from the upload adapter.
-					 * @param {module:engine/model/element~Element} data.imageElement The
-					 * model {@link module:engine/model/element~Element image element} that can be customized.
-					 */
-					this.fire( 'uploadComplete', { data, imageElement } );
+					this.fire<ImageUploadCompleteEvent>( 'uploadComplete', { data, imageElement } );
 				} );
 
 				clean();
@@ -460,3 +428,40 @@ declare module '@ckeditor/ckeditor5-core' {
 		imageUpload: UploadImageCommand;
 	}
 }
+
+/**
+ * An event fired when an image is uploaded. You can hook into this event to provide
+ * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
+ * the server.
+ *
+ * ```ts
+ * const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+ *
+ * imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
+ * 	editor.model.change( writer => {
+ * 		writer.setAttribute( 'someAttribute', 'foo', imageElement );
+ * 	} );
+ * } );
+ * ```
+ *
+ * You can also stop the default handler that sets the `src` and `srcset` attributes
+ * if you want to provide custom values for these attributes.
+ *
+ * ```ts
+ * imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
+ * 	evt.stop();
+ * } );
+ * ```
+ *
+ * **Note**: This event is fired by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin.
+ *
+ * @eventName uploadComplete
+ * @param data The `uploadComplete` event data.
+ * @param data.data The data coming from the upload adapter.
+ * @param data.imageElement The model {@link module:engine/model/element~Element image element} that can be customized.
+ */
+export type ImageUploadCompleteEvent = {
+	name: 'uploadComplete';
+	args: [ data: { data: UploadResponse; imageElement: Element }];
+
+};

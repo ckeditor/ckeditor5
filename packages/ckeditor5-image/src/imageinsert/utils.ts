@@ -9,7 +9,7 @@
 
 import type { Locale } from 'ckeditor5/src/utils';
 import type { Editor } from 'ckeditor5/src/core';
-import { LabeledFieldView, createLabeledInputText, type View } from 'ckeditor5/src/ui';
+import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } from 'ckeditor5/src/ui';
 
 /**
  * Creates integrations object that will be passed to the
@@ -23,7 +23,7 @@ export function prepareIntegrations( editor: Editor ): Record<string, View> {
 	const panelItems = editor.config.get( 'image.insert.integrations' );
 	const imageInsertUIPlugin = editor.plugins.get( 'ImageInsertUI' );
 
-	const PREDEFINED_INTEGRATIONS: Record<string, any> = {
+	const PREDEFINED_INTEGRATIONS: Record<string, View> = {
 		'insertImageViaUrl': createLabeledInputView( editor.locale )
 	};
 
@@ -33,8 +33,8 @@ export function prepareIntegrations( editor: Editor ): Record<string, View> {
 
 	// Prepares ckfinder component for the `openCKFinder` integration token.
 	if ( panelItems.find( item => item === 'openCKFinder' ) && editor.ui.componentFactory.has( 'ckfinder' ) ) {
-		const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' );
-		( ckFinderButton as any ).set( {
+		const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
+		ckFinderButton.set( {
 			withText: true,
 			class: 'ck-image-insert__ck-finder-button'
 		} );
@@ -46,7 +46,7 @@ export function prepareIntegrations( editor: Editor ): Record<string, View> {
 	}
 
 	// Creates integrations object of valid views to pass it to the ImageInsertPanelView.
-	return panelItems.reduce( ( object: any, key ) => {
+	return panelItems.reduce( ( object: Record<string, View>, key ) => {
 		if ( PREDEFINED_INTEGRATIONS[ key ] ) {
 			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
 		} else if ( editor.ui.componentFactory.has( key ) ) {

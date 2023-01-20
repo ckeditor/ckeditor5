@@ -14,6 +14,14 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class ResizeImageCommand extends Command {
 	/**
+	 * Desired image width and height.
+	 */
+	declare public value: null | {
+		width: string | null;
+		height: string | null;
+	};
+
+	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
@@ -27,7 +35,7 @@ export default class ResizeImageCommand extends Command {
 			this.value = null;
 		} else {
 			this.value = {
-				width: element.getAttribute( 'width' ),
+				width: element.getAttribute( 'width' ) as string,
 				height: null
 			};
 		}

@@ -9,7 +9,7 @@
 
 import { Plugin, icons, type Command } from 'ckeditor5/src/core';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
-import { SplitButtonView, createDropdown, type DropdownView } from 'ckeditor5/src/ui';
+import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
 import { prepareIntegrations } from './utils';
 import type { Locale } from 'ckeditor5/src/utils';
 
@@ -81,6 +81,7 @@ export default class ImageInsertUI extends Plugin {
 		if ( uploadImageCommand ) {
 			const splitButtonView = this.dropdownView.buttonView as SplitButtonView;
 
+			// We are injecting custom button replacement to readonly field.
 			( splitButtonView as any ).actionView = editor.ui.componentFactory.create( 'uploadImage' );
 			// After we replaced action button with `uploadImage` component,
 			// we have lost a proper styling and some minor visual quirks have appeared.
@@ -123,17 +124,17 @@ export default class ImageInsertUI extends Plugin {
 		dropdownView.on( 'change:isOpen', () => {
 			const selectedElement = editor.model.document.selection.getSelectedElement()!;
 			const insertButtonView = imageInsertView.insertButtonView;
-			const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
+			const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' ) as LabeledFieldView;
 
 			if ( dropdownView.isOpen ) {
 				if ( imageUtils.isImage( selectedElement ) ) {
 					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value as string;
 					insertButtonView.label = t( 'Update' );
-					( insertImageViaUrlForm as any ).label = t( 'Update image URL' );
+					insertImageViaUrlForm.label = t( 'Update image URL' );
 				} else {
 					imageInsertView.imageURLInputValue = '';
 					insertButtonView.label = t( 'Insert' );
-					( insertImageViaUrlForm as any ).label = t( 'Insert image via URL' );
+					insertImageViaUrlForm.label = t( 'Insert image via URL' );
 				}
 			}
 		// Note: Use the low priority to make sure the following listener starts working after the

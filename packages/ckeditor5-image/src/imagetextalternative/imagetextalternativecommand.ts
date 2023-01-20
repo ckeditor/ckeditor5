@@ -19,7 +19,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 * @readonly
 	 * @observable
 	 */
-	declare public value: string | boolean;
+	declare public value: string | false;
 
 	/**
 	 * @inheritDoc
@@ -32,7 +32,7 @@ export default class ImageTextAlternativeCommand extends Command {
 		this.isEnabled = !!element;
 
 		if ( this.isEnabled && element.hasAttribute( 'alt' ) ) {
-			this.value = element.getAttribute( 'alt' ) as string | boolean;
+			this.value = element.getAttribute( 'alt' ) as string | false;
 		} else {
 			this.value = false;
 		}

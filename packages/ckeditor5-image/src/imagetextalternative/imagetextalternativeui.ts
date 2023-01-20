@@ -110,7 +110,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		this.listenTo( this._form, 'submit', () => {
 			editor.execute( 'imageTextAlternative', {
-				newValue: ( this._form!.labeledInput.fieldView.element! as any ).value
+				newValue: this._form!.labeledInput.fieldView.element!.value
 			} );
 
 			this._hideForm( true );
@@ -160,7 +160,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' )!;
 		const labeledInput = this._form!.labeledInput;
 
-		( this._form as any ).disableCssTransitions();
+		this._form!.disableCssTransitions();
 
 		if ( !this._isInBalloon ) {
 			this._balloon!.add( {
@@ -174,11 +174,11 @@ export default class ImageTextAlternativeUI extends Plugin {
 		// stays unaltered) and re-opened it without changing the value of the command, they would see the
 		// old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-image/issues/114
-		( labeledInput.fieldView as any ).value = ( labeledInput.fieldView.element as any ).value = command.value || '';
+		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = command.value || '';
 
-		( this._form!.labeledInput.fieldView as any ).select();
+		this._form!.labeledInput.fieldView.select();
 
-		( this._form as any ).enableCssTransitions();
+		this._form!.enableCssTransitions();
 	}
 
 	/**

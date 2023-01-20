@@ -11,7 +11,7 @@ import type { DocumentFragment, ViewContainerElement, ViewElement } from 'ckedit
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetResize } from 'ckeditor5/src/widget';
 
-import ImageLoadObserver from '../image/imageloadobserver';
+import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver';
 
 const RESIZABLE_IMAGES_CSS_SELECTOR =
 	'figure.image.ck-widget > img,' +
@@ -65,14 +65,14 @@ export default class ImageResizeHandles extends Plugin {
 
 		editingView.addObserver( ImageLoadObserver );
 
-		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
+		this.listenTo<ImageLoadedEvent>( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
 			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
-			if ( !domEvent.target.matches( RESIZABLE_IMAGES_CSS_SELECTOR ) ) {
+			if ( !( domEvent.target as HTMLElement ).matches( RESIZABLE_IMAGES_CSS_SELECTOR ) ) {
 				return;
 			}
 
 			const domConverter = editor.editing.view.domConverter;
-			const imageView = domConverter.domToView( domEvent.target ) as ViewElement;
+			const imageView = domConverter.domToView( domEvent.target as HTMLElement ) as ViewElement;
 			const widgetView = imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ViewContainerElement;
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 

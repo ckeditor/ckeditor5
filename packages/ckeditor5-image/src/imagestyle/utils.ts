@@ -7,7 +7,7 @@
  * @module image/imagestyle/utils
  */
 
-import { icons, type PluginCollection } from 'ckeditor5/src/core';
+import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
 import type { ImageStyleConfig, ImageStyleOptionDefinition } from '../imagestyle';
 import type { ImageStyleDropdownDefinition } from './imagestyleui';
@@ -227,25 +227,25 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePl
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 				'block', 'side'
 			]
-		} as any;
+		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
 			options: [ 'block', 'side' ]
-		} as any;
+		};
 	} else if ( isInlinePluginLoaded ) {
 		return {
 			options: [ 'inline', 'alignLeft', 'alignRight' ]
-		} as any;
+		};
 	}
 
-	return {} as any;
+	return {};
 }
 
 /**
  * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
  * @protected
  */
-function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<any> ): Array<ImageStyleDropdownDefinition> {
+function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<Editor> ): Array<ImageStyleDropdownDefinition> {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
 		return [ ...DEFAULT_DROPDOWN_DEFINITIONS ];
 	} else {
@@ -340,11 +340,11 @@ function isValidOption(
  * Note: Don't override the custom–defined style object, clone it instead.
  */
 function extendStyle( source: ImageStyleOptionDefinition, style: Partial<ImageStyleOptionDefinition> ): ImageStyleOptionDefinition {
-	const extendedStyle = { ...style };
+	const extendedStyle: Record<string, any> = { ...style };
 
 	for ( const prop in source ) {
 		if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
-			( extendedStyle as any )[ prop ] = ( source as any )[ prop ];
+			extendedStyle[ prop ] = source[ prop as keyof typeof source ];
 		}
 	}
 

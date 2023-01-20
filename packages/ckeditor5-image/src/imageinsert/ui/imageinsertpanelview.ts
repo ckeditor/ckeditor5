@@ -71,13 +71,12 @@ export default class ImageInsertPanelView extends View {
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
 	 *
 	 * @param locale The localization services instance.
-	 * @param integrations An integrations object that contains
-	 * components (or tokens for components) to be shown in the panel view.
+	 * @param integrations An integrations object that contains components (or tokens for components) to be shown in the panel view.
 	 */
 	constructor( locale: Locale, integrations: Record<string, View> = {} ) {
 		super( locale );
 
-		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale ) as any;
+		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale );
 
 		this.insertButtonView = insertButtonView;
 
@@ -104,7 +103,7 @@ export default class ImageInsertPanelView extends View {
 			}
 		} );
 
-		this.set( '_integrations', new Collection<View & { name: string }>() );
+		this.set( '_integrations', new Collection<ViewWithName>() );
 
 		for ( const [ integration, integrationView ] of Object.entries( integrations ) ) {
 			if ( integration === 'insertImageViaUrl' ) {
@@ -112,7 +111,7 @@ export default class ImageInsertPanelView extends View {
 					.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );
 
 				( integrationView as LabeledFieldView<InputTextView> ).fieldView.on( 'input', () => {
-					this.imageURLInputValue = ( integrationView as any ).fieldView.element.value.trim();
+					this.imageURLInputValue = ( integrationView as LabeledFieldView<InputTextView> ).fieldView.element!.value.trim();
 				} );
 			}
 
@@ -218,7 +217,7 @@ export default class ImageInsertPanelView extends View {
 	 *
 	 * @param locale The localization services instance.
 	 */
-	private _createActionButtons( locale: Locale ): Record<string, View> {
+	private _createActionButtons( locale: Locale ): { insertButtonView: ButtonView; cancelButtonView: ButtonView } {
 		const t = locale.t;
 		const insertButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
@@ -258,11 +257,11 @@ export default class ImageInsertPanelView extends View {
  * Fired when the form view is submitted (when one of the children triggered the submit event),
  * e.g. by a click on {@link #insertButtonView}.
  *
- * @event submit
+ * @eventName submit
  */
 
 /**
  * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
  *
- * @event cancel
+ * @eventName cancel
  */

@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { View, type ViewCollection } from 'ckeditor5/src/ui';
+import { View, type ViewCollection, type LabelView } from 'ckeditor5/src/ui';
 
 import '../../../theme/imageinsertformrowview.css';
 
@@ -58,12 +58,10 @@ export default class ImageUploadFormRowView extends View {
 	 * Creates an instance of the form row class.
 	 *
 	 * @param locale The locale instance.
-	 * @param options.children
-	 * @param options.class
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: View } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -83,7 +81,7 @@ export default class ImageUploadFormRowView extends View {
 		if ( options.labelView ) {
 			this.set( {
 				_role: 'group',
-				_ariaLabelledBy: ( options.labelView as any ).id
+				_ariaLabelledBy: options.labelView.id
 			} );
 		}
 

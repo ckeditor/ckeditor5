@@ -23,13 +23,13 @@ export default class ImageLoadObserver extends Observer {
 	 */
 	public observe( domRoot: HTMLElement ): void {
 		this.listenTo( domRoot, 'load', ( event, domEvent ) => {
-			const domElement = domEvent.target;
+			const domElement = domEvent.target as HTMLElement;
 
-			if ( this.checkShouldIgnoreEventFromTarget( domElement as any ) ) {
+			if ( this.checkShouldIgnoreEventFromTarget( domElement ) ) {
 				return;
 			}
 
-			if ( ( domElement as any ).tagName == 'IMG' ) {
+			if ( domElement.tagName == 'IMG' ) {
 				this._fireEvents( domEvent );
 			}
 			// Use capture phase for better performance (#4504).
@@ -46,7 +46,7 @@ export default class ImageLoadObserver extends Observer {
 	protected _fireEvents( domEvent: Event ): void {
 		if ( this.isEnabled ) {
 			this.document.fire( 'layoutChanged' );
-			this.document.fire( 'imageLoaded', domEvent );
+			this.document.fire<ImageLoadedEvent>( 'imageLoaded', domEvent );
 		}
 	}
 }
@@ -57,6 +57,11 @@ export default class ImageLoadObserver extends Observer {
  * Introduced by {@link module:image/image/imageloadobserver~ImageLoadObserver}.
  *
  * @see module:image/image/imageloadobserver~ImageLoadObserver
- * @event module:engine/view/document~Document#event:imageLoaded
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ *
+ * @eventName imageLoaded
+ * @param data Event data.
  */
+export type ImageLoadedEvent = {
+	name: 'imageLoaded';
+	args: [ Event ];
+};
