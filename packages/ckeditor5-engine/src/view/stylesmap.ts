@@ -603,7 +603,6 @@ export class StylesProcessor {
 	 * **Note**: To define reducer callbacks use {@link #setReducer}.
 	 *
 	 * @param name Name of style property.
-	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
 	public getReducedForm( name: string, styles: Styles ): Array<PropertyDescriptor> {
 		const normalizedValue = this.getNormalized( name, styles );

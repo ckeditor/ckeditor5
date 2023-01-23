@@ -34,6 +34,9 @@ import type Range from './range';
  * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
 export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
+	/**
+	 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
+	 */
 	private readonly _selection: Selection;
 
 	// The three overloads below where added,
@@ -101,12 +104,6 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	constructor( ...args: ConstructorParameters<typeof Selection> ) {
 		super();
 
-		/**
-		 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
-		 *
-		 * @private
-		 * @member {module:engine/view/selection~Selection}
-		 */
 		this._selection = new Selection();
 
 		// Delegate change event to be fired on DocumentSelection instance.

@@ -162,7 +162,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	/**
 	 * Gets the next tree walker's value.
 	 *
-	 * @returns {module:engine/view/treewalker~TreeWalkerValue} Object implementing iterator interface, returning
+	 * @returns Object implementing iterator interface, returning
 	 * information about taken step.
 	 */
 	public next(): IteratorResult<TreeWalkerValue, undefined> {

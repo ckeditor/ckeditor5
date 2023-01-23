@@ -396,7 +396,6 @@ export default class UpcastWriter {
 	 * * {@link #createPositionAfter},
 	 *
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
-	 * @returns {module:engine/view/position~Position}
 	 */
 	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
 		return Position._createAt( itemOrPosition, offset );
