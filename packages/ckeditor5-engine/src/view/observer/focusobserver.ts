@@ -26,6 +26,12 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */
 	private _renderTimeoutId!: ReturnType<typeof setTimeout>;
+
+	/**
+	 * Set to `true` if the document is in the process of setting the focus.
+	 *
+	 * The flag is used to indicate that setting the focus is in progress.
+	 */
 	private _isFocusChanging: boolean = false;
 
 	/**
@@ -43,14 +49,6 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		const document = this.document;
 
 		document.on<ViewDocumentFocusEvent>( 'focus', () => {
-			/**
-			 * Set to `true` if the document is in the process of setting the focus.
-			 *
-			 * The flag is used to indicate that setting the focus is in progress.
-			 *
-			 * @internal
-			 * @type {Boolean} module:engine/view/observer/focusobserver#_isFocusChanging
-			 */
 			this._isFocusChanging = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
