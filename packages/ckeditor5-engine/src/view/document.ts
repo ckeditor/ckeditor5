@@ -86,11 +86,6 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	declare public isComposing: boolean;
 
 	/**
-	 * @internal
-	 */
-	declare public _isFocusChanging: boolean;
-
-	/**
 	 * Post-fixer callbacks registered to the view document.
 	 */
 	private readonly _postFixers = new Set<ViewDocumentPostFixer>();
