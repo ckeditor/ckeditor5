@@ -4,7 +4,7 @@
  */
 
 /**
- * @module module:engine/view/downcastwriter
+ * @module engine/view/downcastwriter
  */
 
 import Position, { type PositionOffset } from './position';

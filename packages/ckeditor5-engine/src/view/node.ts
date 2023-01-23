@@ -259,7 +259,7 @@ export default abstract class Node extends EmitterMixin( TypeCheckable ) {
 	/**
 	 * @internal
 	 * @param type Type of the change.
-	 * @param {module:engine/view/node~Node} node Changed node.
+	 * @param node Changed node.
 	 * @fires change
 	 */
 	public _fireChange( type: ChangeType, node: Node ): void {

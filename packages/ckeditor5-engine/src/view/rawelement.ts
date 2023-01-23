@@ -34,8 +34,6 @@ type DomElement = globalThis.HTMLElement;
  *
  * To create a new raw element, use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
- *
- * @extends module:engine/view/element~Element
  */
 export default class RawElement extends Element {
 	/**
