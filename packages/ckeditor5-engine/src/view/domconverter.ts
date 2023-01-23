@@ -83,7 +83,7 @@ export default class DomConverter {
 	/**
 	 * Elements which are considered pre-formatted elements.
 	 */
-	public readonly preElements: ReadonlyArray<string>;
+	public readonly preElements: Array<string>;
 
 	/**
 	 * Elements which are considered block elements (and hence should be filled with a
@@ -93,7 +93,7 @@ export default class DomConverter {
 	 *
 	 * You can extend this array if you introduce support for block elements which are not yet recognized here.
 	 */
-	public readonly blockElements: ReadonlyArray<string>;
+	public readonly blockElements: Array<string>;
 
 	/**
 	 * A list of elements that exist inline (in text) but their inner structure cannot be edited because
@@ -105,13 +105,13 @@ export default class DomConverter {
 	 *
 	 * You can extend this array if you introduce support for inline object elements which are not yet recognized here.
 	 */
-	public readonly inlineObjectElements: ReadonlyArray<string>;
+	public readonly inlineObjectElements: Array<string>;
 
 	/**
 	 * A list of elements which may affect the editing experience. To avoid this, those elements are replaced with
 	 * `<span data-ck-unsafe-element="[element name]"></span>` while rendering in the editing mode.
 	 */
-	public readonly unsafeElements: ReadonlyArray<string>;
+	public readonly unsafeElements: Array<string>;
 
 	/**
 	 * The DOM Document used to create DOM nodes.
