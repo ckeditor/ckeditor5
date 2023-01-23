@@ -8,7 +8,13 @@
  */
 
 import { Plugin, icons, type PluginDependencies } from 'ckeditor5/src/core';
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	ContextualBalloon,
+	clickOutsideHandler,
+	CssTransitionDisablerMixin,
+	type ViewWithCssTransitionDisabler
+} from 'ckeditor5/src/ui';
 
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
@@ -27,7 +33,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	/**
 	 * A form containing a textarea and buttons, used to change the `alt` text value.
 	 */
-	private _form?: TextAlternativeFormView;
+	private _form?: TextAlternativeFormView & ViewWithCssTransitionDisabler;
 
 	/**
 	 * @inheritDoc
@@ -103,7 +109,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		this._form = new TextAlternativeFormView( editor.locale );
+		this._form = new ( CssTransitionDisablerMixin( TextAlternativeFormView ) )( editor.locale );
 
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();

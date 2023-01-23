@@ -15,8 +15,7 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
-	type InputView,
-	CssTransitionMixin
+	type InputView
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
@@ -30,7 +29,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 /**
  * The TextAlternativeFormView class.
  */
-export default class TextAlternativeFormView extends CssTransitionMixin( View ) {
+export default class TextAlternativeFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */
@@ -119,8 +118,6 @@ export default class TextAlternativeFormView extends CssTransitionMixin( View ) 
 				this.cancelButtonView
 			]
 		} );
-
-		this.initializeMixin();
 	}
 
 	/**

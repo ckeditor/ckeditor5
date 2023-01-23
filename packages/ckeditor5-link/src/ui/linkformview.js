@@ -153,6 +153,7 @@ export default class LinkFormView extends View {
 			children: this.children
 		} );
 
+		// When rewriting to typescript try to change it to CssTransitionDisablerMixin.
 		injectCssTransitionDisabler( this );
 	}
 

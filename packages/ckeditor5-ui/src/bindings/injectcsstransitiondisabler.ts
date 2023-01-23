@@ -51,10 +51,12 @@ import type View from '../view';
  *		view.show();
  *		view.enableCssTransitions();
  *
+ * @deprecated
+ * @see module:ui/bindings/csstransitiondisablermixin~CssTransitionDisablerMixin
  * @param {module:ui/view~View} view View instance that should get this functionality.
  */
-export default function injectCssTransitionDisabler( view: View ): asserts view is ViewWithCssTransitionDisabler {
-	const decorated = view as ViewWithCssTransitionDisabler;
+export default function injectCssTransitionDisabler( view: View ): void {
+	const decorated = view as ViewWithCssTransitionDisabler & { _isCssTransitionsDisabled: boolean };
 
 	decorated.set( '_isCssTransitionsDisabled', false );
 
@@ -76,49 +78,6 @@ export default function injectCssTransitionDisabler( view: View ): asserts view 
 }
 
 export type ViewWithCssTransitionDisabler = View & {
-	_isCssTransitionsDisabled: boolean;
 	disableCssTransitions(): void;
 	enableCssTransitions(): void;
 };
-
-/**
- * @mixin CssTransitionMixin
- */
-export function CssTransitionMixin<Base extends abstract new( ...args: Array<any> ) => View>( base: Base ): {
-	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & {
-		_isCssTransitionsDisabled: boolean;
-		disableCssTransitions(): void;
-		enableCssTransitions(): void;
-		initializeMixin(): void;
-};
-	prototype: InstanceType<Base> & {
-		_isCssTransitionsDisabled: boolean;
-		disableCssTransitions(): void;
-		enableCssTransitions(): void;
-		initializeMixin(): void;
-};
-} {
-	abstract class Mixin extends base {
-		public _isCssTransitionsDisabled: boolean = false;
-
-		public disableCssTransitions() {
-			this._isCssTransitionsDisabled = true;
-		}
-
-		public enableCssTransitions() {
-			this._isCssTransitionsDisabled = false;
-		}
-
-		protected initializeMixin(): void {
-			this.extendTemplate( {
-				attributes: {
-					class: [
-						this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
-					]
-				}
-			} );
-		}
-	}
-
-	return Mixin as any;
-}

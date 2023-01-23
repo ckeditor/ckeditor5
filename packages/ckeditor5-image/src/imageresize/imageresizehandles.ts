@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import type { DocumentFragment, ViewContainerElement, ViewElement } from 'ckeditor5/src/engine';
+import type { Element, ViewContainerElement, ViewElement } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetResize } from 'ckeditor5/src/widget';
 
@@ -101,7 +101,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 					getResizeHost() {
 						// Return the model image element parent to avoid setting an inline element (<a>/<span>) as a resize host.
-						return domConverter.mapViewToDom( mapper.toViewElement( imageModel.parent as DocumentFragment )! ) as HTMLElement;
+						return domConverter.mapViewToDom( mapper.toViewElement( imageModel.parent as Element )! ) as HTMLElement;
 					},
 					// TODO consider other positions.
 					isCentered() {
