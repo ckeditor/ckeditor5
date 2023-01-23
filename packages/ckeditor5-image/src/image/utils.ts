@@ -28,7 +28,7 @@ import { first } from 'ckeditor5/src/utils';
  *
  * Note that `alt` and `src` attributes are converted separately, so they are not included.
  *
- * @protected
+ * @internal
  */
 export function createInlineImageViewElement( writer: DowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
@@ -45,7 +45,7 @@ export function createInlineImageViewElement( writer: DowncastWriter ): ViewCont
  *
  * Note that `alt` and `src` attributes are converted separately, so they are not included.
  *
- * @protected
+ * @internal
  */
 export function createBlockImageViewElement( writer: DowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
@@ -57,7 +57,7 @@ export function createBlockImageViewElement( writer: DowncastWriter ): ViewConta
 /**
  * A function returning a `MatcherPattern` for a particular type of View images.
  *
- * @protected
+ * @internal
  * @param matchImageType The type of created image.
  */
 export function getImgViewElementMatcher( editor: Editor, matchImageType: 'imageBlock' | 'imageInline' ): MatcherPattern {
@@ -111,7 +111,7 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
  * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
  * that already contain some text.
  *
- * @protected
+ * @internal
  */
 export function determineImageTypeForInsertionAtSelection(
 	schema: Schema,

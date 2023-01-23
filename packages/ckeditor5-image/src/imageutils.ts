@@ -169,7 +169,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if image can be inserted at current model selection.
 	 *
-	 * @protected
+	 * @internal
 	 */
 	public isImageAllowed(): boolean {
 		const model = this.editor.model;

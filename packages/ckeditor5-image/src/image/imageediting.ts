@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { ViewElement } from 'ckeditor5/src/engine';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
 import ReplaceImageSourceCommand from './replaceimagesourcecommand';
 import ImageUtils from '../imageutils';
-import type { ViewElement } from 'ckeditor5/src/engine';
 
 /**
  * The image engine plugin. This module loads common code shared between

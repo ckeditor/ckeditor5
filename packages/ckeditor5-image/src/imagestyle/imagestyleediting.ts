@@ -42,7 +42,7 @@ export default class ImageStyleEditing extends Plugin {
 	 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
 	 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
 	 *
-	 * @protected
+	 * @internal
 	 * @readonly
 	 */
 	public normalizedStyles?: Array<ImageStyleOptionDefinition>;

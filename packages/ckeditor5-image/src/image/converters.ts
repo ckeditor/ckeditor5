@@ -37,7 +37,7 @@ type SrcsetAttributeType = null | { data: unknown; width: unknown };
  * The entire content of the `<figure>` element except the first `<img>` is being converted as children
  * of the `<imageBlock>` model element.
  *
- * @protected
+ * @internal
  */
 export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	const converter: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
@@ -95,7 +95,7 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
  * <image[Block|Inline] ... sources="..."></image[Block|Inline]>
  * ```
  *
- * @protected
+ * @internal
  */
 export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	const sourceAttributeNames = [ 'srcset', 'media', 'type', 'sizes' ];
@@ -180,7 +180,7 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
- * @protected
+ * @internal
  * @param imageType The type of the image.
  */
 export function downcastSrcsetAttribute(
@@ -231,7 +231,7 @@ export function downcastSrcsetAttribute(
  * Converts the `source` model attribute to the `<picture><source /><source />...<img /></picture>`
  * view structure.
  *
- * @protected
+ * @internal
  */
 export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher: DowncastDispatcher ) => void {
 	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi	) => {
@@ -293,7 +293,7 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
- * @protected
+ * @internal
  * @param imageType The type of the image.
  * @param attributeKey The name of the attribute to convert.
  */

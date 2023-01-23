@@ -177,7 +177,7 @@ const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 /**
  * Returns a list of the normalized and validated image style options.
  *
- * @protected
+ * @internal
  * @param config
  * @param config.isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
@@ -207,7 +207,8 @@ function normalizeStyles( config: {
 
 /**
  * Returns the default image styles configuration depending on the loaded image editing plugins.
- * @protected
+ *
+ * @internal
  *
  * @param isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
@@ -243,7 +244,8 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePl
 
 /**
  * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
- * @protected
+ *
+ * @internal
  */
 function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<Editor> ): Array<ImageStyleDropdownDefinition> {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
@@ -353,6 +355,8 @@ function extendStyle( source: ImageStyleOptionDefinition, style: Partial<ImageSt
 
 /**
  * Displays a console warning with the 'image-style-configuration-definition-invalid' error.
+ *
+ * @internal
  */
 function warnInvalidStyle( info: object ): void {
 	/**

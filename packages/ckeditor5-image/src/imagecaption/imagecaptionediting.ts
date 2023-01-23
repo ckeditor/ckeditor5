@@ -44,7 +44,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 *
 	 * To learn more about this system, see {@link #_saveCaption}.
 	 */
-	private _savedCaptionsMap: WeakMap<Element, object>;
+	private _savedCaptionsMap: WeakMap<Element, unknown>;
 
 	/**
 	 * @inheritDoc
@@ -207,7 +207,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 *
 	 * See {@link #_saveCaption}.
 	 *
-	 * @protected
+	 * @internal
 	 * @param imageModelElement The model element the caption should be returned for.
 	 * @returns The model caption element or `null` if there is none.
 	 */
@@ -231,12 +231,12 @@ export default class ImageCaptionEditing extends Plugin {
 	 *
 	 * See {@link #_getSavedCaption}.
 	 *
-	 * @protected
+	 * @internal
 	 * @param imageModelElement The model element the caption is saved for.
 	 * @param caption The caption model element to be saved.
 	 */
 	public _saveCaption( imageModelElement: Element, caption: Element ): void {
-		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() as object );
+		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
 	}
 
 	/**

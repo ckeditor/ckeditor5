@@ -43,7 +43,7 @@ export default class ImageLoadObserver extends Observer {
 	 *
 	 * @param domEvent The DOM event.
 	 */
-	protected _fireEvents( domEvent: Event ): void {
+	private _fireEvents( domEvent: Event ): void {
 		if ( this.isEnabled ) {
 			this.document.fire( 'layoutChanged' );
 			this.document.fire<ImageLoadedEvent>( 'imageLoaded', domEvent );

@@ -84,7 +84,7 @@ export interface ImageInsertConfig {
 	 * };
 	 * ```
 	 *
-	 * @protected
+	 * @internal
 	 * @default [ 'insertImageViaUrl' ]
 	 */
 	integrations: Array<string>;

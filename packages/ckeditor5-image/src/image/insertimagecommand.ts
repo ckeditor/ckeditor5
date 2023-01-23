@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, toArray } from 'ckeditor5/src/utils';
-
 /**
  * @module image/image/insertimagecommand
  */
+
+import { Command, type Editor } from 'ckeditor5/src/core';
+import { logWarning, toArray } from 'ckeditor5/src/utils';
 
 /**
  * Insert image command.
@@ -95,8 +95,8 @@ export default class InsertImageCommand extends Command {
 	 * @param options.source The image source or an array of image sources to insert.
 	 * See the documentation of the command to learn more about accepted formats.
 	 */
-	public override execute( options: { source: string | Array<string> | Array<object> } ): void {
-		const sourceDefinitions = toArray<string | object>( options.source );
+	public override execute( options: { source: string | Array<string | Record<string, unknown>> } ): void {
+		const sourceDefinitions = toArray<string | Record<string, unknown>>( options.source );
 		const selection = this.editor.model.document.selection;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 

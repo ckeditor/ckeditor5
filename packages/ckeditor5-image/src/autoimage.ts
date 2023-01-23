@@ -45,7 +45,7 @@ export default class AutoImage extends Plugin {
 	 * The paste–to–embed `setTimeout` ID. Stored as a property to allow
 	 * cleaning of the timeout.
 	 */
-	private _timeoutId: number | null;
+	private _timeoutId: ReturnType<typeof setTimeout> | null;
 
 	/**
 	 * The position where the `<imageBlock>` element will be inserted after the timeout,
@@ -109,7 +109,7 @@ export default class AutoImage extends Plugin {
 	 * @param leftPosition Left position of the selection.
 	 * @param rightPosition Right position of the selection.
 	 */
-	protected _embedImageBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
+	private _embedImageBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
 		const editor = this.editor;
 		// TODO: Use a marker instead of LiveRange & LivePositions.
 		const urlRange = new LiveRange( leftPosition, rightPosition );
@@ -138,7 +138,7 @@ export default class AutoImage extends Plugin {
 		this._positionToInsert = LivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
-		this._timeoutId = global.window.setTimeout( () => {
+		this._timeoutId = setTimeout( () => {
 			// Do nothing if image element cannot be inserted at the current position.
 			// See https://github.com/ckeditor/ckeditor5/issues/2763.
 			// Condition must be checked after timeout - pasting may take place on an element, replacing it. The final position matters.
