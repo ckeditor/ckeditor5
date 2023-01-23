@@ -40,6 +40,9 @@ require( '@ckeditor/ckeditor5-dev-bump-year' )
 				}
 			},
 			{
+				pattern: '.husky/*'
+			},
+			{
 				pattern: 'packages/*/.eslintrc.js'
 			}
 		]
