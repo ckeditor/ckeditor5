@@ -19,6 +19,8 @@ import { Command } from 'ckeditor5/src/core';
  * ```
  */
 export default class ReplaceImageSourceCommand extends Command {
+	declare public value: string | null;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -28,7 +30,7 @@ export default class ReplaceImageSourceCommand extends Command {
 		const element = this.editor.model.document.selection.getSelectedElement()!;
 
 		this.isEnabled = imageUtils.isImage( element );
-		this.value = this.isEnabled ? element.getAttribute( 'src' ) : null;
+		this.value = this.isEnabled ? element.getAttribute( 'src' ) as string : null;
 	}
 
 	/**

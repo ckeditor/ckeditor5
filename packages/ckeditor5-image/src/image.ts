@@ -57,7 +57,6 @@ export default class Image extends Plugin {
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
 export interface ImageConfig {
-
 }
 
 declare module '@ckeditor/ckeditor5-core' {

@@ -9,12 +9,12 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { isObject, identity } from 'lodash-es';
 import ImageStyleEditing from './imagestyleediting';
 import utils from './utils';
-import { isObject, identity } from 'lodash-es';
+import type { ImageStyleOptionDefinition } from '../imagestyle';
 
 import '../../theme/imagestyle.css';
-import type { ImageStyleOptionDefinition } from '../imagestyle';
 
 /**
  * The image style UI plugin.
@@ -273,13 +273,13 @@ function getDropdownButtonTitle( dropdownTitle: string | undefined, buttonTitle:
 export interface ImageStyleDropdownDefinition {
 
 	/**
-	 * @property name The unique name of the drop-down. It is recommended to precede it with the "imageStyle:" prefix
+	 * The unique name of the drop-down. It is recommended to precede it with the "imageStyle:" prefix
 	 * to avoid collision with the components' names registered by other plugins.
 	 */
 	name: string;
 
 	/**
-	 * @property title The drop-down's title. It will be used as the split button label along with the title of the default item
+	 * The drop-down's title. It will be used as the split button label along with the title of the default item
 	 * in the following manner: "Custom drop-down title: Default item title".
 	 *
 	 * Setting `title` to one of
@@ -289,14 +289,14 @@ export interface ImageStyleDropdownDefinition {
 	title?: string;
 
 	/**
-	 * @property items The list of the names of the buttons that will be placed in the drop-down's toolbar.
+	 * The list of the names of the buttons that will be placed in the drop-down's toolbar.
 	 * Each of the buttons has to be one of the {@link module:image/image~ImageConfig#styles default image style buttons}
 	 * or to be defined as the {@link module:image/imagestyle~ImageStyleOptionDefinition image styling option}.
 	 */
 	items: Array<string>;
 
 	/**
-	 * @property defaultItem The name of one of the buttons from the items list,
+	 * defaultItem The name of one of the buttons from the items list,
 	 * which will be used as a default button for the drop-down's split button.
 	 */
 	defaultItem: string;

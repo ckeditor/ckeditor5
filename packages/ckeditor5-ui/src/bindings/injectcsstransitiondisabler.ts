@@ -4,6 +4,7 @@
  */
 
 import type View from '../view';
+import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin';
 
 /**
  * @module ui/bindings/injectcsstransitiondisabler
@@ -76,8 +77,3 @@ export default function injectCssTransitionDisabler( view: View ): void {
 		}
 	} );
 }
-
-export type ViewWithCssTransitionDisabler = View & {
-	disableCssTransitions(): void;
-	enableCssTransitions(): void;
-};

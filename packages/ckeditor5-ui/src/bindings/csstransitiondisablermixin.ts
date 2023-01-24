@@ -52,10 +52,10 @@ export default function CssTransitionDisablerMixin<Base extends new( ...args: Ar
 			super( ...args );
 
 			this.set( '_isCssTransitionsDisabled', false );
-			this.initializeMixin();
+			this.initializeCssTransitionDisablerMixin();
 		}
 
-		protected initializeMixin(): void {
+		protected initializeCssTransitionDisablerMixin(): void {
 			this.extendTemplate( {
 				attributes: {
 					class: [
@@ -68,3 +68,8 @@ export default function CssTransitionDisablerMixin<Base extends new( ...args: Ar
 
 	return Mixin;
 }
+
+export type ViewWithCssTransitionDisabler = View & {
+	disableCssTransitions(): void;
+	enableCssTransitions(): void;
+};

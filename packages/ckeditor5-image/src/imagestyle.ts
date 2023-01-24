@@ -82,7 +82,7 @@ export interface ImageStyleConfig {
 export interface ImageStyleOptionDefinition {
 
 	/**
-	 * @property name The unique name of the styling option. It will be used to:
+	 * The unique name of the styling option. It will be used to:
 	 *
 	 * * refer to one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or define the custom style,
 	 * * store the chosen style in the model by setting the `imageStyle` attribute of the model image element,
@@ -92,7 +92,7 @@ export interface ImageStyleOptionDefinition {
 	name: string;
 
 	/**
-	 * @property isDefault When set, the style will be used as the default one for the model elements
+	 * When set, the style will be used as the default one for the model elements
 	 * listed in the `modelElements` property. A default style does not apply any CSS class to the view element.
 	 *
 	 * If this property is not defined, its value is inherited
@@ -101,7 +101,7 @@ export interface ImageStyleOptionDefinition {
 	isDefault?: boolean;
 
 	/**
-	 * @property icon One of the following to be used when creating the styles's button:
+	 * One of the following to be used when creating the styles's button:
 	 *
 	 * * an SVG icon source (as an XML string),
 	 * * one of the keys in {@link module:image/imagestyle/utils~DEFAULT_ICONS} to use one of default icons provided by the plugin.
@@ -112,7 +112,7 @@ export interface ImageStyleOptionDefinition {
 	icon: string;
 
 	/**
-	 * @property title The styles's title. Setting `title` to one of
+	 * The styles's title. Setting `title` to one of
 	 * {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
 	 * will automatically translate it to the language of the editor.
 	 *
@@ -122,7 +122,7 @@ export interface ImageStyleOptionDefinition {
 	title: string;
 
 	/**
-	 * @property className The CSS class used to represent the style in the view.
+	 * The CSS class used to represent the style in the view.
 	 * It should be used only for the non-default styles.
 	 *
 	 * If this property is not defined, its value is inherited
@@ -131,7 +131,7 @@ export interface ImageStyleOptionDefinition {
 	className?: string;
 
 	/**
-	 * @property modelElements The list of the names of the model elements that are supported by the style.
+	 * The list of the names of the model elements that are supported by the style.
 	 * The possible values are:
 	 * * `[ 'imageBlock' ]` if the style can be applied to the image type introduced by the
 	 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin,
@@ -154,7 +154,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageStyle.pluginName ]: ImageStyle;
 	}
-
+}
+declare module './image' {
 	interface ImageConfig {
 
 		/**

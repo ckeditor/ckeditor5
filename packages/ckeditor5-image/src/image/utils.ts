@@ -50,7 +50,7 @@ export function createInlineImageViewElement( writer: DowncastWriter ): ViewCont
 export function createBlockImageViewElement( writer: DowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
 		writer.createEmptyElement( 'img' ),
-		writer.createSlot()
+		writer.createSlot( 'children' )
 	] );
 }
 

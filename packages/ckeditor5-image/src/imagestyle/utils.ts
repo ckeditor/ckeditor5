@@ -36,8 +36,6 @@ const {
  * * **`'inline'`** is an inline image without any CSS class,
  * * **`'block'`** is a block image without any CSS class,
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
- *
- * @readonly
  */
 const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 	// This style represents an image placed in the line of text.
@@ -136,8 +134,6 @@ const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  * See {@link module:image/imagestyle~ImageStyleOptionDefinition#icon} to learn more.
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
- *
- * @readonly
  */
 const DEFAULT_ICONS: Record<string, string> = {
 	full: objectFullWidth,
@@ -159,8 +155,6 @@ const DEFAULT_ICONS: Record<string, string> = {
  * those that wraps the text around the image,
  * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
  * those that breaks the text around the image.
- *
- * @readonly
  */
 const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 	name: 'imageStyle:wrapText',
@@ -177,7 +171,6 @@ const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 /**
  * Returns a list of the normalized and validated image style options.
  *
- * @internal
  * @param config
  * @param config.isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
@@ -207,8 +200,6 @@ function normalizeStyles( config: {
 
 /**
  * Returns the default image styles configuration depending on the loaded image editing plugins.
- *
- * @internal
  *
  * @param isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
@@ -244,8 +235,6 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePl
 
 /**
  * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
- *
- * @internal
  */
 function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<Editor> ): Array<ImageStyleDropdownDefinition> {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
@@ -355,8 +344,6 @@ function extendStyle( source: ImageStyleOptionDefinition, style: Partial<ImageSt
 
 /**
  * Displays a console warning with the 'image-style-configuration-definition-invalid' error.
- *
- * @internal
  */
 function warnInvalidStyle( info: object ): void {
 	/**

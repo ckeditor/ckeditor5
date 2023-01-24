@@ -44,7 +44,7 @@ export default class ImageUploadProgress extends Plugin {
 	 *
 	 * For the record, this image is a 1x1 px GIF with an aspect ratio set by CSS.
 	 */
-	protected placeholder: string;
+	private placeholder: string;
 
 	/**
 	 * @inheritDoc
@@ -236,8 +236,6 @@ function _createProgressBar( writer: DowncastWriter ): ViewUIElement {
 
 /**
  * Create placeholder element using {@link module:engine/view/uielement~UIElement}.
- *
- * @private
  */
 function _createPlaceholder( writer: DowncastWriter ): ViewUIElement {
 	const placeholder = writer.createUIElement( 'div', { class: 'ck-upload-placeholder-loader' } );
@@ -250,8 +248,6 @@ function _createPlaceholder( writer: DowncastWriter ): ViewUIElement {
 /**
  * Returns {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
  * Returns `undefined` if element is not found.
- *
- * @private
  */
 function _getUIElement( imageFigure: ViewElement, uniqueProperty: string ): ViewUIElement | undefined {
 	for ( const child of imageFigure.getChildren() ) {
@@ -263,8 +259,6 @@ function _getUIElement( imageFigure: ViewElement, uniqueProperty: string ): View
 
 /**
  * Removes {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
- *
- * @private
  */
 function _removeUIElement( viewFigure: ViewContainerElement, writer: DowncastWriter, uniqueProperty: string ) {
 	const element = _getUIElement( viewFigure, uniqueProperty );
@@ -284,3 +278,10 @@ function _displayLocalImage( imageUtils: ImageUtils, viewFigure: ViewElement, wr
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ImageUploadProgress.pluginName ]: ImageUploadProgress;
+	}
+}
+

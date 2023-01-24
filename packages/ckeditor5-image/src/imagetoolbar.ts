@@ -12,6 +12,7 @@ import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 import ImageUtils from './imageutils';
 import { isObject } from 'lodash-es';
 import type { ImageStyleDropdownDefinition } from './imagestyle/imagestyleui';
+import { ImageConfig } from './image';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
@@ -68,7 +69,9 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageToolbar.pluginName ]: ImageToolbar;
 	}
+}
 
+declare module './image' {
 	interface ImageConfig {
 
 		/**

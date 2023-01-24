@@ -268,7 +268,6 @@ function isImageAllowedInParent( editor: Editor, selection: Selection | Document
 
 /**
  * Checks if selection is not placed inside an image (e.g. its caption).
- * @private
  */
 function isNotInsideImage( selection: DocumentSelection ): boolean {
 	return [ ...selection.focus!.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'imageBlock' ) );
@@ -276,7 +275,6 @@ function isNotInsideImage( selection: DocumentSelection ): boolean {
 
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
- * @private
  */
 function getInsertImageParent( selection: Selection | DocumentSelection, model: Model ): Element | DocumentFragment {
 	const insertionRange = findOptimalInsertionRange( selection, model );
@@ -292,7 +290,6 @@ function getInsertImageParent( selection: Selection | DocumentSelection, model: 
 /**
  * Determine image element type name depending on editor config or place of insertion.
  *
- * @private
  * @param imageType Image element type name. Used to force return of provided element name,
  * but only if there is proper plugin enabled.
  */

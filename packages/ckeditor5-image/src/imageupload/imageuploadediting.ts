@@ -457,11 +457,21 @@ declare module '@ckeditor/ckeditor5-core' {
  *
  * @eventName uploadComplete
  * @param data The `uploadComplete` event data.
- * @param data.data The data coming from the upload adapter.
- * @param data.imageElement The model {@link module:engine/model/element~Element image element} that can be customized.
  */
 export type ImageUploadCompleteEvent = {
 	name: 'uploadComplete';
-	args: [ data: { data: UploadResponse; imageElement: Element }];
+	args: [ data: ImageUploadCompleteData];
+};
 
+export type ImageUploadCompleteData = {
+
+	/**
+	 * The data coming from the upload adapter.
+	 */
+	data: UploadResponse;
+
+	/**
+	 * The model {@link module:engine/model/element~Element image element} that can be customized.
+	 */
+	imageElement: Element;
 };

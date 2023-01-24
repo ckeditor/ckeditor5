@@ -39,7 +39,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageResize.pluginName ]: ImageResize;
 	}
-
+}
+declare module './image' {
 	interface ImageConfig {
 
 		/**

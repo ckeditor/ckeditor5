@@ -128,7 +128,7 @@ export default class ImageInsertUI extends Plugin {
 
 			if ( dropdownView.isOpen ) {
 				if ( imageUtils.isImage( selectedElement ) ) {
-					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value as string;
+					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value!;
 					insertButtonView.label = t( 'Update' );
 					insertImageViaUrlForm.label = t( 'Update image URL' );
 				} else {
