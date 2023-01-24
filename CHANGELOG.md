@@ -7,12 +7,11 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v36.0.0.
 
-* Faster editor load time thanks to delayed dropdown initialization
-* Improved performance when the editor includes the table column resize plugin
-* Ability to work on full HTML pages including elements such as DOCTYPE, Head, Body tags, and their attributes
-* Improved inline annotations positioning
-* Configurable special characters categories order
-* Vite integration
+* Faster editor load time thanks to delayed dropdown initialization.
+* Improved performance when the editor includes the table column resize plugin.
+* Improved inline annotations positioning.
+* Configurable special characters categories order.
+* Vite integration.
 
 
 <!-- TODO: Add a link to the blog post. -->
