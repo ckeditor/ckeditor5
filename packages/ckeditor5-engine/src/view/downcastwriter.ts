@@ -74,10 +74,8 @@ export default class DowncastWriter {
 		this.document = document;
 	}
 
-	// The two overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public setSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: SelectionOptions ): void;
-	public setSelection( selectable: Selectable, options: SelectionOptions ): void;
+	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
+	public setSelection( selectable: Exclude<Selectable, Node>, options?: SelectionOptions ): void;
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
@@ -1249,12 +1247,8 @@ export default class DowncastWriter {
 		return Range._createIn( element );
 	}
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public createSelection(): Selection;
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: SelectionOptions ): Selection;
-	public createSelection( selectable: Selectable, options: SelectionOptions ): Selection;
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, option?: SelectionOptions ): Selection;
 
 	/**
 	 * Creates new {@link module:engine/view/selection~Selection} instance.

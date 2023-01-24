@@ -124,12 +124,12 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 */
 	constructor(
 		...args: [] | [
-			selectable: Selectable,
-			placeOrOffset?: PlaceOrOffset,
+			selectable: Node,
+			placeOrOffset: PlaceOrOffset,
 			options?: SelectionOptions
 		] | [
-			selectable: Selectable,
-			options: SelectionOptions
+			selectable?: Exclude<Selectable, Node>,
+			options?: SelectionOptions
 		]
 	) {
 		super();
@@ -472,12 +472,12 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 */
 	public setTo(
 		...args: [
-			selectable: Selectable,
-			placeOrOffset?: PlaceOrOffset,
+			selectable: Node,
+			placeOrOffset: PlaceOrOffset,
 			options?: SelectionOptions
 		] | [
-			selectable: Selectable,
-			options: SelectionOptions
+			selectable?: Exclude<Selectable, Node>,
+			options?: SelectionOptions
 		]
 	): void {
 		let [ selectable, placeOrOffset, options ] = args;
@@ -715,4 +715,4 @@ export type ViewSelectionChangeEvent = {
  *
  * See also {@link module:engine/view/selection~Selection#setTo}
  */
-export type Selectable = Selection | DocumentSelection | Position | Iterable<Range> | Range | Item | null;
+export type Selectable = Selection | DocumentSelection | Position | Iterable<Range> | Range | Node | null;

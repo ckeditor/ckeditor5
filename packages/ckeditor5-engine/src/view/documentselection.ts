@@ -19,6 +19,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type EditableElement from './editableelement';
 import type Element from './element';
+import type Node from './node';
 import type Item from './item';
 import type { default as Position, PositionOffset } from './position';
 import type Range from './range';
@@ -39,12 +40,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 */
 	private readonly _selection: Selection;
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public constructor();
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public constructor( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: SelectionOptions );
-	public constructor( selectable: Selectable, options: SelectionOptions );
+	public constructor( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
+	public constructor( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions );
 
 	/**
 	 * Creates new DocumentSelection instance.

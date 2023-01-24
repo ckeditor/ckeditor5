@@ -23,6 +23,7 @@ import type { default as Observer, ObserverConstructor } from './observer/observ
 import type { ViewDocumentSelectionChangeEvent } from './documentselection';
 import type { StylesProcessor } from './stylesmap';
 import type Element from './element';
+import type Node from './node';
 import type Item from './item';
 
 import KeyObserver from './observer/keyobserver';
@@ -594,12 +595,8 @@ export default class View extends ObservableMixin() {
 		return Range._createIn( element );
 	}
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public createSelection(): Selection;
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: SelectionOptions ): Selection;
-	public createSelection( selectable: Selectable, options: SelectionOptions ): Selection;
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
 
 	/**
 	 Creates new {@link module:engine/view/selection~Selection} instance.
