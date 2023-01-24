@@ -4,7 +4,7 @@ order: 20
 modified_at: 2022-11-15
 ---
 
-# Data from external source
+# Data from an external source
 
 In this tutorial, you will learn how to implement a widget that fetches data from an external source and updates all own instances in a set interval of time.
 
@@ -187,7 +187,7 @@ Before building the project you still need to define the `ExternalDataWidget` pl
 ```
 
 
-You can see that the external data widget feature follows an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`) and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
+You can see that the external data widget feature follows an established plugin structure: the master (glue) plugin (`external-data-widget/externaldatawidget.js`), the "editing" (`external-data-widget/externaldatawidgetediting.js`), and the "UI" (`external-data-widget/externaldatawidgetui.js`) parts.
 
 The master (glue) plugin:
 
@@ -300,7 +300,7 @@ The HTML structure (data output) of the converter will be a `<span>` with a `dat
 ```
 
 * {@link framework/guides/deep-dive/conversion/upcast **Upcast conversion**}. This view-to-model converter will look for `<span>`s with the `data-resource-url` attribute and will create model `<externalElement>` elements with the same `data-resource-url` attribute set accordingly.
-* {@link framework/guides/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
+* {@link framework/guides/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for the "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
 // external-data-widget/externaldatawidgetediting.js
@@ -326,6 +326,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {                                                          // ADDED
+		// Previously registered schema.
 		// ...
 	}
 
@@ -376,7 +377,7 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ### Feature styles
 
-As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will look like and how it will be animated when new value arrives:
+As you might have noticed, the editing part imports the `./theme/externaldatawidget.css` CSS file which describes how the widget will look like and how it will be animated when a new value arrives:
 
 ```css
 /* external-data-widget/theme/externaldatawidget.css */
@@ -475,10 +476,12 @@ export default class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
+		// Previously defined converters.
 		// ...
 	}
 }
@@ -486,9 +489,9 @@ export default class ExternalDataWidgetEditing extends Plugin {
 
 ## Creating the UI
 
-The UI part provides a {@link module:ui/button/buttonview~ButtonView} that user can click to insert the external data widget into the editor.
+The UI part provides a {@link module:ui/button/buttonview~ButtonView} that users can click to insert the external data widget into the editor.
 
-Register and configure the toolbar button as show below. The icon of the button can be found among official [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). Put the SVG file in the `./theme` directory and import it next to the UI plugin so it can be used by the button.
+Register and configure the toolbar button as shown below. The icon of the button can be found among official [Bitcoin promotional graphics](https://en.bitcoin.it/wiki/Promotional_graphics). Put the SVG file in the `./theme` directory and import it next to the UI plugin so it can be used by the button.
 
 ```js
 // external-data-widget/externaldatawidgetui.js
@@ -572,7 +575,7 @@ In this tutorial we will use an external API that provides a current Bitcoin rat
 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
 ```
 
-The data will be fetched every 10 seconds. Eeach instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
+The data will be fetched every 10 seconds. Each instance of the widget will be updated at the same time. To achieve that, we need to modify the `ExternalDataWidgetEditing` class.
 
 ```js
 
@@ -638,10 +641,12 @@ class ExternalDataWidgetEditing extends Plugin {
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
+		// Previously defined upcast and data downcast converters.
 		// ...
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
