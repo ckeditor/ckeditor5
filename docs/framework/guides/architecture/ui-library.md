@@ -348,7 +348,7 @@ The dropdown button can display an icon too. First, import the SVG file and then
 ```js
 import iconFile from 'path/to/icon.svg';
 
-// The code for creating a dropdown view.
+// The code that creates a dropdown view.
 // ...
 
 dropdownView.buttonView.set( {
@@ -469,7 +469,7 @@ The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can obse
 ```js
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-// Other imports.
+// More imports.
 // ...
 
 const focusTracker = new FocusTracker();
@@ -505,7 +505,7 @@ The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} li
 ```js
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
-// Other imports.
+// More imports.
 // ...
 
 const keystrokeHandler = new KeystrokeHandler();
