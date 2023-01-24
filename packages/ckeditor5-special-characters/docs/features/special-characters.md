@@ -51,13 +51,13 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
-
-			// Other plugins...
+			// More plugins.
+			// ...
 		],
-		toolbar: [ 'specialCharacters', ... ],
+		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 After adding the above plugin to the editor configuration, the new category will become available in the special characters dropdown.
@@ -91,12 +91,13 @@ ClassicEditor
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
 
-			// Other plugins...
+			// More plugins.
+			// ...
 		],
-		toolbar: [ 'specialCharacters', ... ],
+		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -132,12 +133,13 @@ ClassicEditor
 		plugins: [
 			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
 
-			// Other plugins...
+			// More plugins.
+			// ...
 		],
-		toolbar: [ 'specialCharacters', ... ],
+		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Below, you can see a demo based on the example shown above. After clicking the special character icon in the editor toolbar you can see that it contains fewer categories compared to other editors on this page.
@@ -162,11 +164,11 @@ import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
-		toolbar: [ 'specialCharacters', ... ],
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
+		toolbar: [ 'specialCharacters', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

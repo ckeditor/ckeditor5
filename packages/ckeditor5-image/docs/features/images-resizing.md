@@ -45,11 +45,12 @@ import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imager
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, ... ],
-		...
+		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
+		// More of editor's config.
+		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Both ways enable resize handles by default.
@@ -79,7 +80,7 @@ const imageConfiguration = {
 			label: '60%'
 		}
 	],
-	toolbar: [ ..., 'resizeImage' ]
+	toolbar: [ 'resizeImage', /* ... */ ]
 }
 ```
 
@@ -121,10 +122,11 @@ const imageConfiguration = {
 		}
 	],
 	toolbar: [
-		...,
 		'resizeImage:50',
 		'resizeImage:75',
 		'resizeImage:original',
+		// More toolbar options.
+		// ...
 	]
 }
 ```
@@ -136,7 +138,7 @@ Try out the live demo of the individual resize buttons available in the image to
 
 If, for some reason, you want to configure the editor in such a way that images can be resized only by buttons, you can do so by omitting the {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin.
 
-As a result, your plugin setup should look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', ... ]` as opposed to `plugins: [ 'ImageResize', ... ]`.
+As a result, your plugin setup should look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', /* ... */ ]` as opposed to `plugins: [ 'ImageResize', /* ... */ ]`.
 
 This will enable the image resize feature only by means of the chosen UI: either a [dropdown](#using-resize-dropdown) or [standalone buttons](#using-standalone-resize-buttons)) in the image toolbar.
 
@@ -148,7 +150,7 @@ import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imager
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, ... ],
+		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, /* ... */ ],
 		image: {
 			resizeOptions: [
 			{
@@ -168,15 +170,15 @@ ClassicEditor
 			}
 		],
 		toolbar: [
-			// ...,
 			'resizeImage:50',
 			'resizeImage:75',
 			'resizeImage:original',
-		]
-		}
+			// More toolbar options.
+			// ...
+		] }
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Markup and styling
@@ -256,8 +258,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The following demo uses CSS to set up the fixed image aspect ratio, so a 200px wide image automatically gets the same height.
@@ -297,11 +299,12 @@ import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResize, ... ],
-		...
+		plugins: [ Image, ImageResize, /* ... */ ],
+		// More of editor's config.
+		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API
