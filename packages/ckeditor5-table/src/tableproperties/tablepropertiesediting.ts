@@ -73,7 +73,7 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.config.define( 'table.tableProperties.defaultProperties', {} );
 
-		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
+		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' )!, {
 			includeAlignmentProperty: true
 		} );
 
@@ -87,8 +87,8 @@ export default class TablePropertiesEditing extends Plugin {
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
 		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, defaultTableProperties.borderWidth ) );
 
-		enableAlignmentProperty( schema, conversion, defaultTableProperties.alignment );
-		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, defaultTableProperties.alignment ) );
+		enableAlignmentProperty( schema, conversion, defaultTableProperties.alignment! );
+		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, defaultTableProperties.alignment! ) );
 
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableWidth',

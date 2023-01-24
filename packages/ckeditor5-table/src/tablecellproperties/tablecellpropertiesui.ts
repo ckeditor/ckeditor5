@@ -115,7 +115,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const t = editor.t;
 
 		this._defaultTableCellProperties = getNormalizedDefaultProperties(
-			editor.config.get( 'table.tableCellProperties.defaultProperties' ),
+			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
 			{
 				includeVerticalAlignmentProperty: true,
 				includeHorizontalAlignmentProperty: true,
@@ -172,10 +172,10 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	private _createPropertiesView() {
 		const editor = this.editor;
-		const config = editor.config.get( 'table.tableCellProperties' );
-		const borderColorsConfig = normalizeColorOptions( config.borderColors );
+		const config = editor.config.get( 'table.tableCellProperties' )!;
+		const borderColorsConfig = normalizeColorOptions( config.borderColors! );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
-		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
+		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
 
 		const view = new TableCellPropertiesView( editor.locale, {

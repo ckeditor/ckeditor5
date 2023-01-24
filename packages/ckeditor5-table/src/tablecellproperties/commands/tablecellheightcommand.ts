@@ -48,14 +48,14 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value?: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' );
+	public override _getValueToSet( value: string ): string | undefined {
+		const newValue = addDefaultUnitToNumericValue( value, 'px' ) as string;
 
-		if ( value === this._defaultValue ) {
+		if ( newValue === this._defaultValue ) {
 			return;
 		}
 
-		return value;
+		return newValue;
 	}
 }
 

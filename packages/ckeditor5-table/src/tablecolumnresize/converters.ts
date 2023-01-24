@@ -126,7 +126,7 @@ function insertColgroupElement( viewWriter: DowncastWriter, viewTable: ViewEleme
  * @param viewTable View table.
  */
 function removeColgroupElement( viewWriter: DowncastWriter, viewTable: ViewElement ) {
-	const viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
+	const viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) )!;
 
 	viewWriter.remove( viewColgroupElement );
 }

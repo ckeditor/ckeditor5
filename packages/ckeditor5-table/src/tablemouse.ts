@@ -205,7 +205,7 @@ export default class TableMouse extends Plugin {
 		const viewTargetElement = domEventData.target;
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
-		const modelElement = modelPosition.parent;
+		const modelElement = modelPosition.parent as Element;
 
 		return modelElement.findAncestor( 'tableCell', { includeSelf: true } );
 	}

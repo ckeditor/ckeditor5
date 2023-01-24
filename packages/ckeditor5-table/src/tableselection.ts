@@ -9,7 +9,7 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { type EventInfo, first } from 'ckeditor5/src/utils';
-import type { Element, DocumentFragment, DomEventData, Writer } from 'ckeditor5/src/engine';
+import type { Element, DocumentFragment, DomEventData, Selection, DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
@@ -159,7 +159,7 @@ export default class TableSelection extends Plugin {
 	 */
 	public getFocusCell(): Element | null {
 		const selection = this.editor.model.document.selection;
-		const focusCellRange = [ ...selection.getRanges() ].pop();
+		const focusCellRange = [ ...selection.getRanges() ].pop()!;
 		const element = focusCellRange.getContainedElement();
 
 		if ( element && element.is( 'element', 'tableCell' ) ) {
@@ -197,7 +197,7 @@ export default class TableSelection extends Plugin {
 	 */
 	private _defineSelectionConverter() {
 		const editor = this.editor;
-		const highlighted = new Set();
+		const highlighted: Set<ViewElement> = new Set();
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
@@ -211,7 +211,7 @@ export default class TableSelection extends Plugin {
 			}
 
 			for ( const tableCell of selectedCells ) {
-				const viewElement = conversionApi.mapper.toViewElement( tableCell );
+				const viewElement = conversionApi.mapper.toViewElement( tableCell )!;
 
 				viewWriter.addClass( 'ck-editor__editable_selected', viewElement );
 				highlighted.add( viewElement );
@@ -221,7 +221,7 @@ export default class TableSelection extends Plugin {
 			viewWriter.setSelection( lastViewCell, 0 );
 		}, { priority: 'lowest' } ) );
 
-		function clearHighlightedTableCells( viewWriter ) {
+		function clearHighlightedTableCells( viewWriter: DowncastWriter ) {
 			for ( const previouslyHighlighted of highlighted ) {
 				viewWriter.removeClass( 'ck-editor__editable_selected', previouslyHighlighted );
 			}
@@ -261,13 +261,12 @@ export default class TableSelection extends Plugin {
 	/**
 	 * Overrides the default `model.deleteContent()` behavior over a selected table fragment.
 	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {Array.<*>} args Delete content method arguments.
+	 * @param args Delete content method arguments.
 	 */
-	private _handleDeleteContent( event: EventInfo, args ) {
+	private _handleDeleteContent( event: EventInfo, args: Array<unknown> ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
-		const [ selection, options ] = args;
+		const selection = args[ 0 ] as Selection;
+		const options = args[ 1 ] as { direction?: string };
 		const model = this.editor.model;
 		const isBackward = !options || options.direction == 'backward';
 		const selectedTableCells = tableUtils.getSelectedTableCells( selection );

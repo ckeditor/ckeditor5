@@ -8,20 +8,19 @@
  */
 
 import {
-	LabeledFieldView,
+	addListToDropdown,
+	ButtonView,
 	createLabeledDropdown,
 	createLabeledInputText,
-	LabelView,
-	addListToDropdown,
-	ToolbarView,
-	ButtonView,
 	FocusCycler,
+	FormHeaderView,
+	LabeledFieldView,
+	LabelView,
+	submitHandler,
+	ToolbarView,
 	View,
 	ViewCollection,
-	FormHeaderView,
-	submitHandler,
-	type DropdownView,
-	type InputTextView
+	type FocusableView
 } from 'ckeditor5/src/ui';
 import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
@@ -39,7 +38,6 @@ import type { TableCellPropertiesOptions } from '../../tablecellproperties';
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
-import type ColorInputView from '../../ui/colorinputview';
 
 const ALIGNMENT_ICONS = {
 	left: icons.alignLeft,
@@ -171,7 +169,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	public readonly borderStyleDropdown: DropdownView;
+	public readonly borderStyleDropdown: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the width of the table cell border.
@@ -179,7 +177,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	public readonly borderWidthInput: InputTextView;
+	public readonly borderWidthInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the color of the table cell border.
@@ -187,7 +185,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
-	public readonly borderColorInput: ColorInputView;
+	public readonly borderColorInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the table cell background color.
@@ -195,7 +193,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
-	public readonly backgroundInput: ColorInputView;
+	public readonly backgroundInput: View<HTMLElement>;
 
 	/**
 	 * An input that allows specifying the table cell padding.
@@ -203,7 +201,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	public readonly paddingInput: InputTextView;
+	public readonly paddingInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the table cell width.
@@ -211,7 +209,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	public readonly widthInput: InputTextView;
+	public readonly widthInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the table cell height.
@@ -219,7 +217,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	public readonly heightInput: InputTextView;
+	public readonly heightInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
@@ -227,7 +225,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	public readonly horizontalAlignmentToolbar: ToolbarView;
+	public readonly horizontalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * A toolbar with buttons that allow changing the vertical text alignment in a table cell.
@@ -235,21 +233,21 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	public readonly verticalAlignmentToolbar: ToolbarView;
+	public readonly verticalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * The "Save" button view.
 	 *
 	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
-	public saveButtonView: ButtonView;
+	public saveButtonView: View<HTMLElement>;
 
 	/**
 	 * The "Cancel" button view.
 	 *
 	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
-	public cancelButtonView: ButtonView;
+	public cancelButtonView: View<HTMLElement>;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -487,7 +485,12 @@ export default class TableCellPropertiesView extends View {
 	 * @private
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
-	private _createBorderFields(): Record<string, View> {
+	private _createBorderFields(): {
+		borderRowLabel: LabelView;
+		borderStyleDropdown: LabeledFieldView;
+		borderColorInput: LabeledFieldView;
+		borderWidthInput: LabeledFieldView;
+		} {
 		const defaultTableCellProperties = this.options.defaultTableCellProperties;
 		const defaultBorder = {
 			style: defaultTableCellProperties.borderStyle,
@@ -533,7 +536,7 @@ export default class TableCellPropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -577,8 +580,8 @@ export default class TableCellPropertiesView extends View {
 
 			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
 			if ( !isBorderStyleSet( oldValue ) ) {
-				this.borderColor = defaultBorder.color;
-				this.borderWidth = defaultBorder.width;
+				this.borderColor = defaultBorder.color!;
+				this.borderWidth = defaultBorder.width!;
 			}
 		} );
 
@@ -639,7 +642,12 @@ export default class TableCellPropertiesView extends View {
 	 * @private
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
-	private _createDimensionFields(): LabeledFieldView {
+	private _createDimensionFields(): {
+		dimensionsLabel: LabelView;
+		widthInput: LabeledFieldView;
+		operatorLabel: View;
+		heightInput: LabeledFieldView;
+		} {
 		const locale = this.locale;
 		const t = this.t!;
 

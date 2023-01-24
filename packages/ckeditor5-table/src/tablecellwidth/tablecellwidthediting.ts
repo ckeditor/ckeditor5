@@ -44,7 +44,7 @@ export default class TableCellWidthEditing extends Plugin {
 		const editor = this.editor;
 
 		const defaultTableCellProperties = getNormalizedDefaultProperties(
-			editor.config.get( 'table.tableCellProperties.defaultProperties' )
+			editor.config.get( 'table.tableCellProperties.defaultProperties' )!
 		);
 
 		enableProperty( editor.model.schema, editor.conversion, {

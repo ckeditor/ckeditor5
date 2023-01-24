@@ -51,7 +51,7 @@ export default class TableCaptionUI extends Plugin {
 
 				// Scroll to the selection and highlight the caption if the caption showed up.
 				if ( command.value ) {
-					const modelCaptionElement = getCaptionFromModelSelection( editor.model.document.selection );
+					const modelCaptionElement = getCaptionFromModelSelection( editor.model.document.selection )!;
 					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
 
 					if ( !figcaptionElement ) {

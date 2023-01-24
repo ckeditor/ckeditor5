@@ -139,37 +139,57 @@ export default class TablePropertiesView extends View {
 	/**
 	 * A dropdown that allows selecting the style of the table border.
 	 */
-	public readonly borderStyleDropdown?: DropdownView;
+	public readonly borderStyleDropdown?: LabeledFieldView<DropdownView>;
 
 	/**
 	 * An input that allows specifying the width of the table border.
 	 */
-	public readonly borderWidthInput?: InputTextView;
+	public readonly borderWidthInput?: LabeledFieldView<InputTextView>;
 
 	/**
 	 * An input that allows specifying the color of the table border.
 	 */
-	public readonly borderColorInput?: ColorInputView;
+	public readonly borderColorInput?: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table background color.
 	 */
-	public readonly backgroundInput?: ColorInputView;
+	public readonly backgroundInput?: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table width.
 	 */
-	public readonly widthInput?: InputTextView;
+	public readonly widthInput?: LabeledFieldView<InputTextView>;
 
 	/**
 	 * An input that allows specifying the table height.
 	 */
-	public readonly heightInput?: InputTextView;
+	public readonly heightInput?: LabeledFieldView<InputTextView>;
 
 	/**
 	 * A toolbar with buttons that allow changing the alignment of an entire table.
 	 */
 	public readonly alignmentToolbar?: ToolbarView;
+
+	/**
+	 * The "Save" button view.
+	 */
+	public saveButtonView: ButtonView;
+
+	/**
+	 * The "Cancel" button view.
+	 */
+	public cancelButtonView: ButtonView;
+
+	/**
+	 * A collection of views that can be focused in the form.
+	 */
+	protected readonly _focusables: ViewCollection;
+
+	/**
+	 * Helps cycling over {@link #_focusables} in the form.
+	 */
+	protected readonly _focusCycler: FocusCycler;
 
 	/**
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
@@ -204,59 +224,12 @@ export default class TablePropertiesView extends View {
 		this.keystrokes = new KeystrokeHandler();
 		this.children = this.createCollection();
 
-		/**
-		 * A dropdown that allows selecting the style of the table border.
-		 *
-		 * @readonly
-		 * @member {module:ui/dropdown/dropdownview~DropdownView}
-		 */
 		this.borderStyleDropdown = borderStyleDropdown;
-
-		/**
-		 * An input that allows specifying the width of the table border.
-		 *
-		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
-		 */
 		this.borderWidthInput = borderWidthInput;
-
-		/**
-		 * An input that allows specifying the color of the table border.
-		 *
-		 * @readonly
-		 * @member {module:table/ui/colorinputview~ColorInputView}
-		 */
 		this.borderColorInput = borderColorInput;
-
-		/**
-		 * An input that allows specifying the table background color.
-		 *
-		 * @readonly
-		 * @member {module:table/ui/colorinputview~ColorInputView}
-		 */
 		this.backgroundInput = backgroundInput;
-
-		/**
-		 * An input that allows specifying the table width.
-		 *
-		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
-		 */
 		this.widthInput = widthInput;
-
-		/**
-		 * An input that allows specifying the table height.
-		 *
-		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
-		 */
 		this.heightInput = heightInput;
-
-		/**
-		 * A toolbar with buttons that allow changing the alignment of an entire table.
-		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
 		this.alignmentToolbar = alignmentToolbar;
 
 		// Defer creating to make sure other fields are present and the Save button can
@@ -264,36 +237,9 @@ export default class TablePropertiesView extends View {
 		// fields are valid.
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
-		/**
-		 * The "Save" button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.saveButtonView = saveButtonView;
-
-		/**
-		 * The "Cancel" button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.cancelButtonView = cancelButtonView;
-
-		/**
-		 * A collection of views that can be focused in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this._focusables = new ViewCollection();
-
-		/**
-		 * Helps cycling over {@link #_focusables} in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -309,7 +255,7 @@ export default class TablePropertiesView extends View {
 
 		// Form header.
 		this.children.add( new FormHeaderView( locale, {
-			label: this.t( 'Table properties' )
+			label: this.t!( 'Table properties' )
 		} ) );
 
 		// Border row.
@@ -399,10 +345,10 @@ export default class TablePropertiesView extends View {
 		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
-			this.borderColorInput.fieldView.dropdownView.buttonView,
+			this.borderColorInput!.fieldView.dropdownView.buttonView,
 			this.borderWidthInput,
 			this.backgroundInput,
-			this.backgroundInput.fieldView.dropdownView.buttonView,
+			this.backgroundInput!.fieldView.dropdownView.buttonView,
 			this.widthInput,
 			this.heightInput,
 			this.alignmentToolbar,
@@ -410,14 +356,14 @@ export default class TablePropertiesView extends View {
 			this.cancelButtonView
 		].forEach( view => {
 			// Register the view as focusable.
-			this._focusables.add( view );
+			this._focusables.add( view! );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( view.element );
+			this.focusTracker.add( view!.element! );
 		} );
 
 		// Mainly for closing using "Esc" and navigation using "Tab".
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -507,7 +453,7 @@ export default class TablePropertiesView extends View {
 		borderWidthInput.fieldView.bind( 'value' ).to( this, 'borderWidth' );
 		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 		borderWidthInput.fieldView.on( 'input', () => {
-			this.borderWidth = borderWidthInput.fieldView.element.value;
+			this.borderWidth = borderWidthInput.fieldView.element!.value;
 		} );
 
 		// -- Color ---------------------------------------------------
@@ -622,7 +568,7 @@ export default class TablePropertiesView extends View {
 
 		widthInput.fieldView.bind( 'value' ).to( this, 'width' );
 		widthInput.fieldView.on( 'input', () => {
-			this.width = widthInput.fieldView.element.value;
+			this.width = widthInput.fieldView.element!.value;
 		} );
 
 		// -- Operator ---------------------------------------------------
@@ -681,7 +627,7 @@ export default class TablePropertiesView extends View {
 
 		// -- Toolbar ---------------------------------------------------
 
-		const alignmentToolbar = new ToolbarView( locale );
+		const alignmentToolbar = new ToolbarView( locale! );
 		alignmentToolbar.set( {
 			isCompact: true,
 			ariaLabel: t( 'Table alignment toolbar' )
@@ -693,7 +639,7 @@ export default class TablePropertiesView extends View {
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',
-			defaultValue: this.options.defaultTableProperties.alignment
+			defaultValue: this.options.defaultTableProperties.alignment!
 		} );
 
 		return {

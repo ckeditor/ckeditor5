@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { Element, Model, Position, Writer } from 'ckeditor5/src/engine';
+import type { DocumentFragment, Element, Item, Model, Position, Writer } from 'ckeditor5/src/engine';
 
 import TableSelection from './tableselection';
 import TableWalker, { type TableSlot } from './tablewalker';
@@ -101,12 +101,11 @@ export default class TableClipboard extends Plugin {
 	 * - If a selected table fragment is smaller than paste table it will crop pasted table to match dimensions.
 	 * - If dimensions are equal it will replace selected table fragment with a pasted table contents.
 	 *
-	 * @param evt
-	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
-	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * @param content The content to insert.
+	 * @param selectable The selection into which the content should be inserted.
+	 * If not provided the current model document selection will be used.
 	 */
-	private _onInsertContent( evt, content, selectable ) {
+	private _onInsertContent( evt: EventInfo, content: DocumentFragment | Item, selectable ) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
 			return;
 		}
@@ -115,7 +114,7 @@ export default class TableClipboard extends Plugin {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		// We might need to crop table before inserting so reference might change.
-		let pastedTable = this._getTableIfOnlyTableInContent( content, model );
+		let pastedTable = this._getTableIfOnlyTableInContent( content, model )!;
 
 		if ( !pastedTable ) {
 			return;
@@ -163,7 +162,7 @@ export default class TableClipboard extends Plugin {
 			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer );
 
 			// Content table to which we insert a pasted table.
-			const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
+			const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 			const cellsToSelect = this._replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer );
 
@@ -270,14 +269,14 @@ export default class TableClipboard extends Plugin {
 
 		if ( areHeadingRowsIntersectingSelection ) {
 			const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
-			const newCells = doHorizontalSplit( selectedTable, headingRows, columnsLimit, writer, selection.firstRow );
+			const newCells = doHorizontalSplit( selectedTable, headingRows, columnsLimit, writer, selection.firstRow ) as Array<Element>;
 
 			cellsToSelect.push( ...newCells );
 		}
 
 		if ( areHeadingColumnsIntersectingSelection ) {
 			const rowsLimit = { first: selection.firstRow, last: selection.lastRow };
-			const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer );
+			const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer ) as Array<Element>;
 
 			cellsToSelect.push( ...newCells );
 		}
@@ -289,8 +288,9 @@ export default class TableClipboard extends Plugin {
 	 * Replaces a single table slot.
 	 *
 	 * @returns Inserted table cell or null if slot should remain empty.
+	 * @private
 	 */
-	private _replaceTableSlotCell(
+	public _replaceTableSlotCell(
 		tableSlot: TableSlot,
 		cellToInsert: Element | null,
 		insertPosition: Position,
@@ -319,12 +319,10 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Extracts the table for pasting into a table.
 	 *
-	 * @protected
-	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/model~Model} model The editor model.
-	 * @returns {module:engine/model/element~Element|null}
+	 * @param content The content to insert.
+	 * @param model The editor model.
 	 */
-	private _getTableIfOnlyTableInContent( content: unknown, model: Model ): Element | null {
+	protected _getTableIfOnlyTableInContent( content: DocumentFragment | Item, model: Model ): Element | null {
 		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 			return null;
 		}
@@ -336,8 +334,8 @@ export default class TableClipboard extends Plugin {
 
 		// We do not support mixed content when pasting table into table.
 		// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-		if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
-			return content.getChild( 0 );
+		if ( content.childCount == 1 && content.getChild( 0 )!.is( 'element', 'table' ) ) {
+			return content.getChild( 0 ) as Element;
 		}
 
 		// If there are only whitespaces around a table then use that table for pasting.

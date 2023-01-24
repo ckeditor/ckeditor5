@@ -8,8 +8,8 @@
  */
 
 import type {
+	DocumentSelection,
 	Element,
-	Selection,
 	ViewElement
 } from 'ckeditor5/src/engine';
 
@@ -42,7 +42,7 @@ export function getCaptionFromTableModelElement( tableModelElement: Element ): E
  *
  * @param selection The selection checked for caption presence.
  */
-export function getCaptionFromModelSelection( selection: Selection ): Element | null {
+export function getCaptionFromModelSelection( selection: DocumentSelection ): Element | null {
 	const tableElement = getSelectionAffectedTable( selection );
 
 	if ( !tableElement ) {
@@ -78,7 +78,7 @@ export function matchTableCaptionViewElement( element: ViewElement ): { name: tr
 /**
  * Depending on the position of the selection we either return the table under cursor or look for the table higher in the hierarchy.
  */
-export function getSelectionAffectedTable( selection: Selection ): Element {
+export function getSelectionAffectedTable( selection: DocumentSelection ): Element {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

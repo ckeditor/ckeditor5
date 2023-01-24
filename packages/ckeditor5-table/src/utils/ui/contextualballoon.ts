@@ -7,10 +7,12 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { Rect } from 'ckeditor5/src/utils';
+import { Rect, type PositionOptions } from 'ckeditor5/src/utils';
 import { BalloonPanelView } from 'ckeditor5/src/ui';
 
 import { getTableWidgetAncestor } from './widget';
+import type { Editor } from 'ckeditor5/src/core';
+import type { Element, Position, Range } from 'ckeditor5/src/engine';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 
@@ -29,11 +31,10 @@ const BALLOON_POSITIONS = [
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} instance
  * with respect to the table in the editor content, if one is selected.
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {String} target Either "cell" or "table". Determines the target the balloon will
- * be attached to.
+ * @param editor The editor instance.
+ * @param target Either "cell" or "table". Determines the target the balloon will be attached to.
  */
-export function repositionContextualBalloon( editor, target ) {
+export function repositionContextualBalloon( editor: Editor, target: string ): void {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
 	if ( getTableWidgetAncestor( editor.editing.view.document.selection ) ) {
@@ -57,13 +58,13 @@ export function repositionContextualBalloon( editor, target ) {
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
-export function getBalloonTablePositionData( editor ) {
-	const firstPosition = editor.model.document.selection.getFirstPosition();
-	const modelTable = firstPosition.findAncestor( 'table' );
-	const viewTable = editor.editing.mapper.toViewElement( modelTable );
+export function getBalloonTablePositionData( editor: Editor ): PositionOptions {
+	const firstPosition = editor.model.document.selection.getFirstPosition()!;
+	const modelTable = firstPosition.findAncestor( 'table' )!;
+	const viewTable = editor.editing.mapper.toViewElement( modelTable )!;
 
 	return {
-		target: editor.editing.view.domConverter.mapViewToDom( viewTable ),
+		target: editor.editing.view.domConverter.mapViewToDom( viewTable )!,
 		positions: BALLOON_POSITIONS
 	};
 }
@@ -76,7 +77,7 @@ export function getBalloonTablePositionData( editor ) {
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
-export function getBalloonCellPositionData( editor ) {
+export function getBalloonCellPositionData( editor: Editor ): PositionOptions {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const selection = editor.model.document.selection;
@@ -88,8 +89,8 @@ export function getBalloonCellPositionData( editor ) {
 		};
 	}
 
-	const modelTableCell = getTableCellAtPosition( selection.getFirstPosition() );
-	const viewTableCell = mapper.toViewElement( modelTableCell );
+	const modelTableCell = getTableCellAtPosition( selection.getFirstPosition()! );
+	const viewTableCell = mapper.toViewElement( modelTableCell )!;
 
 	return {
 		target: domConverter.mapViewToDom( viewTableCell ),
@@ -97,22 +98,25 @@ export function getBalloonCellPositionData( editor ) {
 	};
 }
 
-// Returns the first selected table cell from a multi-cell or in-cell selection.
-//
-// @param {module:engine/model/position~Position} position Document position.
-// @returns {module:engine/model/element~Element}
-function getTableCellAtPosition( position ) {
+/**
+ * Returns the first selected table cell from a multi-cell or in-cell selection.
+ *
+ * @param position Document position.
+ */
+function getTableCellAtPosition( position: Position ): Element {
 	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'element', 'tableCell' );
 
-	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' );
+	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' )!;
 }
 
-// Returns bounding rectangle for given model ranges.
-//
-// @param {Iterable.<module:engine/model/range~Range>} ranges Model ranges that the bounding rect should be returned for.
-// @param {module:core/editor/editor~Editor} editor The editor instance.
-// @returns {module:utils/dom/rect~Rect}
-function createBoundingRect( ranges, editor ) {
+/**
+ * Returns bounding rectangle for given model ranges.
+ *
+ * @param {Iterable.<module:engine/model/range~Range>} ranges Model ranges that the bounding rect should be returned for.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {module:utils/dom/rect~Rect}
+ */
+function createBoundingRect( ranges: Range, editor: Editor ): Rect {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const rects = Array.from( ranges ).map( range => {
@@ -121,5 +125,5 @@ function createBoundingRect( ranges, editor ) {
 		return new Rect( domConverter.mapViewToDom( viewTableCell ) );
 	} );
 
-	return Rect.getBoundingRect( rects );
+	return Rect.getBoundingRect( rects )!;
 }

@@ -108,7 +108,7 @@ export default class ToggleTableCaptionCommand extends Command {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
-		const captionElement = getCaptionFromTableModelElement( tableElement );
+		const captionElement = getCaptionFromTableModelElement( tableElement )!;
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
 		tableCaptionEditing._saveCaption( tableElement, captionElement );

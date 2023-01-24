@@ -125,8 +125,20 @@ export type TablePropertiesOptions = {
 	alignment?: string;
 };
 
+export type DefaultProperties = {
+	borderStyle: 'dashed';
+	borderColor: 'hsl(0, 0%, 90%)';
+	borderWidth: '3px';
+	alignment: 'left';
+};
+
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableProperties.pluginName ]: TableProperties;
+	}
+
+	interface EditorConfig {
+		'table.tableProperties'?: TablePropertiesOptions;
+		'table.tableProperties.defaultProperties'?: DefaultProperties;
 	}
 }

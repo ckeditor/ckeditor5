@@ -34,6 +34,7 @@ import tableHeadingsRefreshHandler from './converters/table-headings-refresh-han
 import tableCellRefreshHandler from './converters/table-cell-refresh-handler';
 
 import '../theme/tableediting.css';
+import { EventInfo } from 'ckeditor5/src/utils';
 
 /**
  * The table editing feature.

@@ -46,7 +46,7 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 			return;
 		}
 
-		const value = getSingleValue( table.getAttribute( this.attributeName ) );
+		const value = getSingleValue( table.getAttribute( this.attributeName ) as string );
 
 		if ( value === this._defaultValue ) {
 			return;

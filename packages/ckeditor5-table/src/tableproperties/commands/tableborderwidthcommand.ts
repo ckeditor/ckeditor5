@@ -54,7 +54,7 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 			return;
 		}
 
-		const value = getSingleValue( table.getAttribute( this.attributeName ) );
+		const value = getSingleValue( table.getAttribute( this.attributeName ) as string );
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -67,13 +67,13 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	 * @inheritDoc
 	 */
 	public override _getValueToSet( value: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' );
+		const newValue = addDefaultUnitToNumericValue( value, 'px' ) as string;
 
-		if ( value === this._defaultValue ) {
+		if ( newValue === this._defaultValue ) {
 			return;
 		}
 
-		return value;
+		return newValue;
 	}
 }
 

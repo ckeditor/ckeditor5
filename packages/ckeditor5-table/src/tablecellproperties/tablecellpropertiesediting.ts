@@ -74,7 +74,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
 
 		const defaultTableCellProperties = getNormalizedDefaultProperties(
-			editor.config.get( 'table.tableCellProperties.defaultProperties' ),
+			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
 			{
 				includeVerticalAlignmentProperty: true,
 				includeHorizontalAlignmentProperty: true,
@@ -105,9 +105,9 @@ export default class TableCellPropertiesEditing extends Plugin {
 			modelAttribute: 'tableCellPadding',
 			styleName: 'padding',
 			reduceBoxSides: true,
-			defaultValue: defaultTableCellProperties.padding
+			defaultValue: defaultTableCellProperties.padding!
 		} );
-		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding ) );
+		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding! ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, {
@@ -120,16 +120,16 @@ export default class TableCellPropertiesEditing extends Plugin {
 			new TableCellBackgroundColorCommand( editor, defaultTableCellProperties.backgroundColor )
 		);
 
-		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment );
+		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment! );
 		editor.commands.add(
 			'tableCellHorizontalAlignment',
-			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment )
+			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment! )
 		);
 
-		enableVerticalAlignmentProperty( schema, conversion, defaultTableCellProperties.verticalAlignment );
+		enableVerticalAlignmentProperty( schema, conversion, defaultTableCellProperties.verticalAlignment! );
 		editor.commands.add(
 			'tableCellVerticalAlignment',
-			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment )
+			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
 	}
 }

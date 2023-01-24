@@ -18,6 +18,7 @@ import TableKeyboard from './tablekeyboard';
 import TableMouse from './tablemouse';
 
 import '../theme/table.css';
+import type { ColorOption } from 'ckeditor5/src/ui';
 
 /**
  * The table plugin.
@@ -132,7 +133,7 @@ type DefaultHeadings = {
  * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
  */
 export type TableColorConfig = Array<
-	string | { color: string; label: string; hasBorder?: boolean }
+	string | ColorOption
 >;
 
 declare module '@ckeditor/ckeditor5-core' {

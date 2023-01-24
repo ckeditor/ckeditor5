@@ -24,7 +24,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 import '../../theme/colorinput.css';
 
 type ColorInputViewOptions = {
-	colorDefinitions: ColorDefinition;
+	colorDefinitions: Array<ColorDefinition>;
 	columns: number;
 	defaultColorValue?: string;
 };
@@ -248,8 +248,8 @@ export default class ColorInputView extends View {
 		this._focusables.add( removeColorButton );
 		this._focusables.add( colorGrid );
 
-		this.focusTracker.add( removeColorButton.element );
-		this.focusTracker.add( colorGrid.element );
+		this.focusTracker.add( removeColorButton.element! );
+		this.focusTracker.add( colorGrid.element! );
 
 		return dropdown;
 	}
@@ -257,9 +257,9 @@ export default class ColorInputView extends View {
 	/**
 	 * Creates and configures an instance of {@link module:ui/inputtext/inputtextview~InputTextView}.
 	 *
-	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #inputView}.
+	 * @returns A configured instance to be set as {@link #inputView}.
 	 */
-	private _createInputTextView() {
+	private _createInputTextView(): InputTextView {
 		const locale = this.locale;
 		const inputView = new InputTextView( locale );
 
@@ -318,7 +318,7 @@ export default class ColorInputView extends View {
 	/**
 	 * Creates and configures the color grid inside the {@link #dropdownView}.
 	 */
-	private _createColorGrid( locale ) {
+	private _createColorGrid( locale: Locale ) {
 		const colorGrid = new ColorGridView( locale, {
 			colorDefinitions: this.options.colorDefinitions,
 			columns: this.options.columns
@@ -342,7 +342,7 @@ export default class ColorInputView extends View {
 	 *
 	 * * Someone picks the color in the grid.
 	 * * The color is set from the plugin level.
-	 * @param {String} inputValue Color value to be set.
+	 * @param inputValue Color value to be set.
 	 */
 	private _setInputValue( inputValue: string ) {
 		if ( !this._stillTyping ) {

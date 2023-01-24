@@ -54,7 +54,7 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 			return;
 		}
 
-		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) as string );
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -66,14 +66,14 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value?: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' );
+	public override _getValueToSet( value: string ): string | undefined {
+		const newValue = addDefaultUnitToNumericValue( value, 'px' ) as string;
 
-		if ( value === this._defaultValue ) {
+		if ( newValue === this._defaultValue ) {
 			return;
 		}
 
-		return value;
+		return newValue;
 	}
 }
 

@@ -8,8 +8,10 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+
 import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
+import type { TableColorConfig } from './table';
 
 /**
  * The table cell properties feature. Enables support for setting properties of table cells (size, border, background, etc.).
@@ -63,15 +65,24 @@ export default class TableCellProperties extends Plugin {
  * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table cell.
  */
 export type TableCellPropertiesOptions = {
-	width: string;
-	height: string;
-	padding: string;
-	backgroundColor: string;
-	borderColor: string;
-	borderWidth: string;
-	borderStyle: string;
-	horizontalAlignment: string;
-	verticalAlignment: string;
+	width?: string;
+	height?: string;
+	padding?: string;
+	backgroundColor?: string;
+	borderColor?: string;
+	borderWidth?: string;
+	borderStyle?: string;
+	horizontalAlignment?: string;
+	verticalAlignment?: string;
+	defaultProperties?: DefaultCellProperties;
+	borderColors?: TableColorConfig;
+	backgroundColors?: TableColorConfig;
+};
+
+export type DefaultCellProperties = {
+	horizontalAlignment: 'right';
+	verticalAlignment: 'bottom';
+	padding: '5px';
 };
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -134,7 +145,8 @@ declare module '@ckeditor/ckeditor5-core' {
 	* @member module:table/table~TableConfig#tableCellProperties
 	*/
 	interface EditorConfig {
-		tableCellProperties?: TableCellPropertiesOptions;
+		'table.tableCellProperties'?: TableCellPropertiesOptions;
+		'table.tableCellProperties.defaultProperties'?: DefaultCellProperties;
 	}
 }
 

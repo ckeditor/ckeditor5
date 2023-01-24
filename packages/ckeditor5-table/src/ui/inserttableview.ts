@@ -57,7 +57,7 @@ export default class InsertTableView extends View {
 	 * @observable
 	 * @member {String} #label
 	 */
-	// this.bind( 'label' ).to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` );
+	// this.bind( 'label' ).to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` ); // TODO
 
 	/**
 	 * @inheritDoc
@@ -157,10 +157,10 @@ export default class InsertTableView extends View {
 		} );
 
 		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
+			this.focusTracker.add( item.element! );
 		}
 
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -201,14 +201,12 @@ export default class InsertTableView extends View {
 	/**
 	 * Creates a new Button for the grid.
 	 *
-	 * @private
-	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Number} row Row number.
-	 * @param {Number} column Column number.
-	 * @param {String} label The grid button label.
-	 * @returns {module:ui/button/buttonview~ButtonView}
+	 * @param locale The locale instance.
+	 * @param row Row number.
+	 * @param column Column number.
+	 * @param label The grid button label.
 	 */
-	_createGridButton( locale, row, column, label ) {
+	private _createGridButton( locale: Locale, row: number, column: number, label: string ): ButtonView {
 		const button = new ButtonView( locale );
 
 		button.set( {
@@ -227,10 +225,9 @@ export default class InsertTableView extends View {
 	}
 
 	/**
-	 * @private
-	 * @returns {module:ui/viewcollection~ViewCollection} A view collection containing boxes to be placed in a table grid.
+	 * @returns A view collection containing boxes to be placed in a table grid.
 	 */
-	_createGridCollection() {
+	private _createGridCollection(): ViewCollection {
 		const boxes = [];
 
 		// Add grid boxes to table selection view.
@@ -239,7 +236,7 @@ export default class InsertTableView extends View {
 			const column = index % 10;
 			const label = `${ row + 1 } × ${ column + 1 }`;
 
-			boxes.push( this._createGridButton( this.locale, row + 1, column + 1, label ) );
+			boxes.push( this._createGridButton( this.locale!, row + 1, column + 1, label ) );
 		}
 
 		return this.createCollection( boxes );

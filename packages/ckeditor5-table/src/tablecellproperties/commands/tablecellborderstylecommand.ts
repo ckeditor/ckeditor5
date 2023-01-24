@@ -46,7 +46,7 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 			return;
 		}
 
-		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) as string );
 
 		if ( value === this._defaultValue ) {
 			return;

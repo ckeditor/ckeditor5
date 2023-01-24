@@ -81,8 +81,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 	 *
 	 * @observable
+	 * @private
 	 */
-	private _isResizingAllowed!: boolean;
+	public _isResizingAllowed!: boolean;
 
 	/**
 	 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is

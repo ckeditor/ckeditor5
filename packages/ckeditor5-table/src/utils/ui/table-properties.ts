@@ -7,7 +7,14 @@
  * @module table/utils/ui/table-properties
  */
 
-import { ButtonView, Model, type ToolbarView, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	Model,
+	type ColorOption,
+	type LabeledFieldView,
+	type ListDropdownItemDefinition,
+	type ToolbarView
+} from 'ckeditor5/src/ui';
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
 import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
 
@@ -15,6 +22,7 @@ import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecell
 import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';
 
 import ColorInputView from '../../ui/colorinputview';
+import type { TableColorConfig } from '../../table';
 
 const isEmpty = ( val: string ) => val === '';
 
@@ -108,11 +116,11 @@ export function getBorderStyleDefinitions(
 	view: TableCellPropertiesView | TablePropertiesView,
 	defaultStyle: string
 ): Collection<ListDropdownItemDefinition> {
-	const itemDefinitions = new Collection();
+	const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
 	const styleLabels = getBorderStyleLabels( view.t! );
 
 	for ( const style in styleLabels ) {
-		const definition = {
+		const definition: ListDropdownItemDefinition = {
 			type: 'button',
 			model: new Model( {
 				_borderStyleValue: style,
@@ -273,7 +281,7 @@ export function fillToolbar(
  *			}
  *		];
  */
-export const defaultColors = [
+export const defaultColors: Array<ColorOption> = [
 	{
 		color: 'hsl(0, 0%, 0%)',
 		label: 'Black'
@@ -371,9 +379,9 @@ export const defaultColors = [
  * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
  * @returns {Function}
  */
-export function getLabeledColorInputCreator( options ) {
-	return ( labeledFieldView, viewUid, statusUid ) => {
-		const colorInputView = new ColorInputView( labeledFieldView.locale, {
+export function getLabeledColorInputCreator( options: { colorConfig: TableColorConfig; columns: number; defaultColorValue?: string } ) {
+	return ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ): ColorInputView => {
+		const colorInputView = new ColorInputView( labeledFieldView.locale!, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
 			columns: options.columns,
 			defaultColorValue: options.defaultColorValue
@@ -413,7 +421,7 @@ function isNumberString( value: string ) {
  * @param {Array.<Object>} colorConfig
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
-function colorConfigToColorGridDefinitions( colorConfig ) {
+function colorConfigToColorGridDefinitions( colorConfig: TableColorConfig ) {
 	return colorConfig.map( item => ( {
 		color: item.model,
 		label: item.label,

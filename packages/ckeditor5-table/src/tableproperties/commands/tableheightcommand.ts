@@ -48,7 +48,7 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	 * @inheritDoc
 	 */
 	public override _getValueToSet( value: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' );
+		value = addDefaultUnitToNumericValue( value, 'px' ) as string;
 
 		if ( value === this._defaultValue ) {
 			return;

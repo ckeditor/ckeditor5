@@ -9,6 +9,8 @@
 
 import type { BoxSides } from 'ckeditor5/src/engine';
 import { isObject } from 'lodash-es';
+import type { DefaultCellProperties } from '../tablecellproperties';
+import type { DefaultProperties } from '../tableproperties';
 
 /**
  * Returns a string if all four values of box sides are equal.
@@ -23,7 +25,7 @@ import { isObject } from 'lodash-es';
  *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
  *		getSingleValue( { top: 'foo', right: 'foo' } );
  */
-export function getSingleValue( objectOrString: BoxSides | string ): BoxSides | string | undefined {
+export function getSingleValue( objectOrString: BoxSides | string ): string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
 		return objectOrString;
 	}
@@ -61,6 +63,19 @@ export function addDefaultUnitToNumericValue( value: string | number, defaultUni
 	return `${ numericValue }${ defaultUnit }`;
 }
 
+type NormalizedDefaultProperties = {
+	borderStyle: string;
+	borderWidth: string;
+	borderColor: string;
+	backgroundColor: string;
+	width: string;
+	height: string;
+	alignment?: string;
+	padding?: string;
+	verticalAlignment?: string;
+	horizontalAlignment?: string;
+};
+
 /**
  * Returns the normalized configuration.
  *
@@ -74,7 +89,7 @@ export function addDefaultUnitToNumericValue( value: string | number, defaultUni
  * @returns {Object}
  */
 export function getNormalizedDefaultProperties(
-	config,
+	config: DefaultProperties | DefaultCellProperties,
 	options: {
 		includeAlignmentProperty?: boolean;
 		includePaddingProperty?: boolean;
@@ -82,8 +97,8 @@ export function getNormalizedDefaultProperties(
 		includeHorizontalAlignmentProperty?: boolean;
 		isRightToLeftContent?: boolean;
 	} = {}
-) {
-	const normalizedConfig = Object.assign( {
+): NormalizedDefaultProperties {
+	const normalizedConfig: NormalizedDefaultProperties = Object.assign( {
 		borderStyle: 'none',
 		borderWidth: '',
 		borderColor: '',
