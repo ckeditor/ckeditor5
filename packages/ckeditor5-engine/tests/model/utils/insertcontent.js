@@ -69,34 +69,6 @@ describe( 'DataController utils', () => {
 			expect( selection.isEqual( insertionSelection ) ).to.be.true;
 		} );
 
-		it( 'should be able to insert content at custom position', () => {
-			model.schema.extend( '$text', { allowIn: '$root' } );
-			setData( model, 'a[]bc' );
-
-			const position = new Position( doc.getRoot(), [ 2 ] );
-
-			model.change( writer => {
-				const affectedRange = insertContent( model, writer.createText( 'x' ), position );
-
-				expect( getData( model ) ).to.equal( 'a[]bxc' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'ab[x]c' );
-			} );
-		} );
-
-		it( 'should be able to insert content at custom range', () => {
-			model.schema.extend( '$text', { allowIn: '$root' } );
-			setData( model, 'a[]bc' );
-
-			const range = new Range( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 3 ] ) );
-
-			model.change( writer => {
-				const affectedRange = insertContent( model, writer.createText( 'x' ), range );
-
-				expect( getData( model ) ).to.equal( 'a[]bx' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'ab[x]' );
-			} );
-		} );
-
 		it( 'should be able to insert content at model selection if document selection is passed', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
@@ -118,75 +90,6 @@ describe( 'DataController utils', () => {
 
 				expect( getData( model ) ).to.equal( 'ax[]bc' );
 				expect( stringify( root, affectedRange ) ).to.equal( 'a[x]bc' );
-			} );
-		} );
-
-		it( 'should be able to insert content at model element (numeric offset)', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-
-			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
-
-			const element = doc.getRoot().getNodeByPath( [ 1 ] );
-
-			model.change( writer => {
-				const text = writer.createText( 'x' );
-
-				const affectedRange = insertContent( model, text, element, 2 );
-
-				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baxr</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>ba[x]r</paragraph>' );
-			} );
-		} );
-
-		it( 'should be able to insert content at model element (offset="in")', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-
-			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
-
-			const element = doc.getRoot().getNodeByPath( [ 1 ] );
-
-			model.change( writer => {
-				const text = writer.createText( 'x' );
-
-				const affectedRange = insertContent( model, text, element, 'in' );
-
-				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>x</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[x]</paragraph>' );
-			} );
-		} );
-
-		it( 'should be able to insert content at model element (offset="on")', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			model.schema.register( 'foo', { inheritAllFrom: '$block' } );
-
-			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
-
-			const element = doc.getRoot().getNodeByPath( [ 1 ] );
-
-			model.change( writer => {
-				const insertElement = writer.createElement( 'foo' );
-
-				const affectedRange = insertContent( model, insertElement, element, 'on' );
-
-				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><foo></foo>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<foo></foo>]' );
-			} );
-		} );
-
-		it( 'should be able to insert content at model element (offset="end")', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-
-			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
-
-			const element = doc.getRoot().getNodeByPath( [ 1 ] );
-
-			model.change( writer => {
-				const text = writer.createText( 'x' );
-
-				const affectedRange = insertContent( model, text, element, 'end' );
-
-				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>barx</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[x]</paragraph>' );
 			} );
 		} );
 

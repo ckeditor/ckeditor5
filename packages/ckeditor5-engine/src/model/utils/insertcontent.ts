@@ -13,14 +13,14 @@ import LivePosition from '../liveposition';
 import LiveRange from '../liverange';
 import Position from '../position';
 import Range from '../range';
-import Selection, { type PlaceOrOffset, type Selectable } from '../selection';
 
 import type DocumentFragment from '../documentfragment';
 import type Item from '../item';
 import type Model from '../model';
-import type Node from '../node';
 import type Schema from '../schema';
 import type Writer from '../writer';
+import type Node from '../node';
+import type Selection from '../selection';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -59,19 +59,10 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export default function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
-	selectable?: Selectable,
-	placeOrOffset?: PlaceOrOffset
+	selectable?: Selection | DocumentSelection
 ): Range {
 	return model.change( writer => {
-		let selection: Selection | DocumentSelection;
-
-		if ( !selectable ) {
-			selection = model.document.selection;
-		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
-			selection = selectable;
-		} else {
-			selection = writer.createSelection( selectable, placeOrOffset );
-		}
+		const selection: Selection | DocumentSelection = selectable ? selectable : model.document.selection;
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );

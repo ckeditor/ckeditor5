@@ -117,5 +117,5 @@ export type EnterCommandAfterExecuteEvent = {
 
 function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
-	writer.setSelection( splitPos.parent.nextSibling, 0 );
+	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

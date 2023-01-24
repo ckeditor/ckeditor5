@@ -785,7 +785,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
  * <listItem listType="bulleted" listIndent=2>C</listItem>
  * ```
  */
-export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = function( evt, [ content, selectable, placeOrOffset ] ) {
+export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = function( evt, [ content, selectable ] ) {
 	const model = this as Model;
 
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
@@ -800,7 +800,7 @@ export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = funct
 	if ( !selectable ) {
 		selection = model.document.selection;
 	} else {
-		selection = model.createSelection( selectable, placeOrOffset );
+		selection = model.createSelection( selectable );
 	}
 
 	if ( item && item.is( 'element', 'listItem' ) ) {

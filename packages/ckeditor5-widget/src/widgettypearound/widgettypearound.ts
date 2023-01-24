@@ -589,7 +589,7 @@ export default class WidgetTypeAround extends Plugin {
 		// There is a widget at the collapse position so collapse the selection to the fake caret on it.
 		if ( isTypeAroundWidget( selectedViewNode, selectedModelNode as any, schema ) ) {
 			model.change( writer => {
-				writer.setSelection( selectedModelNode, 'on' );
+				writer.setSelection( selectedModelNode!, 'on' );
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
 			} );
 
@@ -767,7 +767,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			if ( shouldDeleteEntireWidget ) {
 				editor.execute( 'delete', {
-					selection: model.createSelection( selectedModelWidget, 'on' )
+					selection: model.createSelection( selectedModelWidget!, 'on' )
 				} );
 			} else {
 				const range = schema.getNearestSelectionRange(
