@@ -14,8 +14,10 @@ import ModelPosition, { type PositionOffset, type PositionStickiness } from './p
 import ModelRange from './range';
 import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection';
 import OperationFactory from './operation/operationfactory';
+import DocumentSelection from './documentselection';
 import Schema from './schema';
 import Writer from './writer';
+import Node from './node';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
@@ -26,7 +28,6 @@ import insertObject from './utils/insertobject';
 import modifySelection from './utils/modifyselection';
 
 import type ModelDocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Item from './item';
 import type ModelElement from './element';
 import type Operation from './operation/operation';
@@ -81,7 +82,7 @@ export default class Model extends ObservableMixin() {
 		this._pendingChanges = [];
 		this._currentWriter = null;
 
-		( [ 'insertContent', 'insertObject', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ] as const )
+		( [ 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ] as const )
 			.forEach( methodName => this.decorate( methodName ) );
 
 		// Adding operation validation with `highest` priority, so it is called before any other feature would like
@@ -152,6 +153,16 @@ export default class Model extends ObservableMixin() {
 
 		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
 		this.document.registerPostFixer( autoParagraphEmptyRoots );
+
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelInsertContentEvent>( 'insertContent', ( evt, [ content, selectable ] ) => {
+			evt.return = insertContent( this, content, selectable );
+		} );
+
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ object, selection, options ] ) => {
+			evt.return = insertObject( this, object, selection, options );
+		} );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
@@ -370,6 +381,16 @@ export default class Model extends ObservableMixin() {
 	// @if CK_DEBUG_ENGINE //	return new OperationReplayer( this, '-------', stringifiedOperations );
 	// @if CK_DEBUG_ENGINE // }
 
+	public insertContent(
+		content: Item | ModelDocumentFragment,
+		selectable: Node,
+		placeOrOffset: PlaceOrOffset
+	): ModelRange;
+	public insertContent(
+		content: Item | ModelDocumentFragment,
+		selectable?: Exclude<Selectable, Node>
+	): ModelRange;
+
 	/**
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
@@ -517,8 +538,29 @@ export default class Model extends ObservableMixin() {
 		selectable?: Selectable,
 		placeOrOffset?: PlaceOrOffset
 	): ModelRange {
-		return insertContent( this, content, selectable, placeOrOffset );
+		const selection = normalizeSelectable( selectable, placeOrOffset );
+
+		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection ] )!;
 	}
+
+	public insertObject(
+		object: ModelElement,
+		selectable: Node,
+		placeOrOffset: PlaceOrOffset,
+		options?: {
+			findOptimalPosition?: 'auto' | 'before' | 'after';
+			setSelection?: 'on' | 'after';
+		}
+	): ModelRange;
+	public insertObject(
+		object: ModelElement,
+		selectable?: Exclude<Selectable, Node>,
+		placeOrOffset?: null,
+		options?: {
+			findOptimalPosition?: 'auto' | 'before' | 'after';
+			setSelection?: 'on' | 'after';
+		}
+	): ModelRange;
 
 	/**
 	 * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.
@@ -612,7 +654,10 @@ export default class Model extends ObservableMixin() {
 			setSelection?: 'on' | 'after';
 		}
 	): ModelRange {
-		return insertObject( this, object, selectable, placeOrOffset, options );
+		const selection = normalizeSelectable( selectable, placeOrOffset );
+
+		// Note that options are fired as 2 arguments for backward compatibility with the decorated method.
+		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ object, selection, options, options ] )!;
 	}
 
 	/**
@@ -930,12 +975,8 @@ export default class Model extends ObservableMixin() {
 		return ModelRange._createOn( item );
 	}
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public createSelection(): ModelSelection;
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
-	public createSelection( selectable: Selectable, options: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -1062,6 +1103,28 @@ export default class Model extends ObservableMixin() {
 }
 
 /**
+ * Normalizes a selectable to a Selection or DocumentSelection.
+ */
+function normalizeSelectable(
+	selectable?: Selectable,
+	placeOrOffset?: PlaceOrOffset | null
+): ModelSelection | DocumentSelection | undefined {
+	if ( !selectable ) {
+		return;
+	}
+
+	if ( selectable instanceof ModelSelection || selectable instanceof DocumentSelection ) {
+		return selectable;
+	}
+
+	if ( selectable instanceof Node ) {
+		return new ModelSelection( selectable, placeOrOffset! );
+	}
+
+	return new ModelSelection( selectable );
+}
+
+/**
  * Fired when entering the outermost {@link module:engine/model/model~Model#enqueueChange} or
  * {@link module:engine/model/model~Model#change} block.
  *
@@ -1119,7 +1182,14 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
  * @eventName insertContent
  * @param args The arguments passed to the original method.
  */
-export type ModelInsertContentEvent = DecoratedMethodEvent<Model, 'insertContent'>;
+export type ModelInsertContentEvent = {
+	name: 'insertContent';
+	args: [ [
+		content: Item | ModelDocumentFragment,
+		selectable?: ModelSelection | DocumentSelection
+	] ];
+	return: ModelRange;
+};
 
 /**
  * Event fired when the {@link #insertObject} method is called.
@@ -1133,7 +1203,22 @@ export type ModelInsertContentEvent = DecoratedMethodEvent<Model, 'insertContent
  * @eventName insertObject
  * @param args The arguments passed to the original method.
  */
-export type ModelInsertObjectEvent = DecoratedMethodEvent<Model, 'insertObject'>;
+export type ModelInsertObjectEvent = {
+	name: 'insertObject';
+	args: [ [
+		object: ModelElement,
+		selectable?: ModelSelection | DocumentSelection | null,
+		options?: {
+			findOptimalPosition?: 'auto' | 'before' | 'after';
+			setSelection?: 'on' | 'after';
+		},
+		optionsLegacy?: {
+			findOptimalPosition?: 'auto' | 'before' | 'after';
+			setSelection?: 'on' | 'after';
+		}
+	] ];
+	return: ModelRange;
+};
 
 /**
  * Event fired when {@link #deleteContent} method is called.
