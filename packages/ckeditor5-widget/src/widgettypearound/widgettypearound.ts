@@ -871,7 +871,7 @@ export default class WidgetTypeAround extends Plugin {
 		const documentSelection = model.document.selection;
 
 		this._listenToIfEnabled<ModelInsertObjectEvent>( editor.model, 'insertObject', ( evt, args ) => {
-			const [ , selectable, , options = {} ] = args;
+			const [ , selectable, options = {} ] = args;
 
 			if ( selectable && !( selectable as any ).is( 'documentSelection' ) ) {
 				return;

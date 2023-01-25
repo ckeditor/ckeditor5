@@ -1212,10 +1212,7 @@ export type ModelInsertObjectEvent = {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
 		},
-		optionsLegacy?: {
-			findOptimalPosition?: 'auto' | 'before' | 'after';
-			setSelection?: 'on' | 'after';
-		}
+		_?: unknown
 	] ];
 	return: ModelRange;
 };
