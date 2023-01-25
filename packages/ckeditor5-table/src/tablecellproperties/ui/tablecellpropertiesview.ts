@@ -20,7 +20,8 @@ import {
 	ToolbarView,
 	View,
 	ViewCollection,
-	type FocusableView
+	type FocusableView,
+	type NormalizedColorOption
 } from 'ckeditor5/src/ui';
 import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
@@ -32,7 +33,6 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
-import type { TableColorConfig } from '../../table';
 import type { TableCellPropertiesOptions } from '../../tablecellproperties';
 
 import '../../../theme/form.css';
@@ -50,8 +50,8 @@ const ALIGNMENT_ICONS = {
 };
 
 type TableCellPropertiesViewOptions = {
-	borderColors: TableColorConfig;
-	backgroundColors: TableColorConfig;
+	borderColors: Array<NormalizedColorOption>;
+	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
 };
 

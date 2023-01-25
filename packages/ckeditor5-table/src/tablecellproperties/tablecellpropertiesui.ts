@@ -211,7 +211,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: view,
 			activator: () => this._isViewInBalloon,
-			contextElements: [ this._balloon.view.element ],
+			contextElements: [ this._balloon!.view.element! ],
 			callback: () => this._hideView()
 		} );
 

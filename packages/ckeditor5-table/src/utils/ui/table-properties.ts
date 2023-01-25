@@ -10,10 +10,10 @@
 import {
 	ButtonView,
 	Model,
-	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
-	type ToolbarView
+	type ToolbarView,
+	type NormalizedColorOption
 } from 'ckeditor5/src/ui';
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
 import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
@@ -281,7 +281,7 @@ export function fillToolbar(
  *			}
  *		];
  */
-export const defaultColors: Array<ColorOption> = [
+export const defaultColors: TableColorConfig = [
 	{
 		color: 'hsl(0, 0%, 0%)',
 		label: 'Black'
@@ -379,7 +379,13 @@ export const defaultColors: Array<ColorOption> = [
  * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
  * @returns {Function}
  */
-export function getLabeledColorInputCreator( options: { colorConfig: TableColorConfig; columns: number; defaultColorValue?: string } ) {
+export function getLabeledColorInputCreator(
+	options: {
+		colorConfig: Array<NormalizedColorOption>;
+		columns: number;
+		defaultColorValue?: string;
+	}
+) {
 	return ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ): ColorInputView => {
 		const colorInputView = new ColorInputView( labeledFieldView.locale!, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
@@ -421,7 +427,7 @@ function isNumberString( value: string ) {
  * @param {Array.<Object>} colorConfig
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
-function colorConfigToColorGridDefinitions( colorConfig: TableColorConfig ) {
+function colorConfigToColorGridDefinitions( colorConfig: Array<NormalizedColorOption> ) {
 	return colorConfig.map( item => ( {
 		color: item.model,
 		label: item.label,
