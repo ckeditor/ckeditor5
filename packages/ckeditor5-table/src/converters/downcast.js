@@ -65,7 +65,7 @@ export function downcastTable( tableUtils, options = {} ) {
 					return false;
 				}
 
-				return additional.some( ( { filter } ) => !filter( element ) );
+				return !additional.some( ( { filter } ) => filter( element ) );
 			} )
 		] );
 
