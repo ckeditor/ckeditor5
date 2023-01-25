@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -91,7 +91,7 @@ export default class DualContentModelElementSupport extends Plugin {
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 1
+				converterPriority: priorities.get( 'low' ) + 0.5
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {

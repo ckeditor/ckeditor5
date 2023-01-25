@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -152,6 +152,10 @@ describe( 'ImageTextAlternativeUI', () => {
 		beforeEach( () => {
 			plugin._createForm();
 			form = plugin._form;
+		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( form.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-image/issues/114

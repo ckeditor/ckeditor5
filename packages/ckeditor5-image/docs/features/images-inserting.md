@@ -19,8 +19,8 @@ import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ... , ImageInsert ],
-		toolbar: [ ... , 'insertImage' ]
+		plugins: [ /* ... */ , ImageInsert ],
+		toolbar: [ /* ... */ , 'insertImage' ]
 	} )
 ```
 
@@ -41,7 +41,7 @@ import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ... , AutoImage ]
+		plugins: [ /* ... */ , AutoImage ]
 	} )
 ```
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ElementDefinition } from 'ckeditor5/src/engine';
+import type { ViewElementDefinition } from 'ckeditor5/src/engine';
 
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
@@ -117,7 +117,7 @@ export interface HeadingElementOption {
 	/**
 	 * Definition of a view element to convert from/to.
 	 */
-	view: ElementDefinition;
+	view: ViewElementDefinition;
 
 	/**
 	 * The user-readable title of the option.
