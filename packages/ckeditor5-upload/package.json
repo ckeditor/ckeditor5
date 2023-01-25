@@ -11,9 +11,9 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^35.4.0",
-    "@ckeditor/ckeditor5-utils": "^35.4.0",
-    "@ckeditor/ckeditor5-ui": "^35.4.0"
+    "@ckeditor/ckeditor5-core": "^36.0.0",
+    "@ckeditor/ckeditor5-utils": "^36.0.0",
+    "@ckeditor/ckeditor5-ui": "^36.0.0"
   },
   "devDependencies": {
     "typescript": "^4.8.4",
