@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,7 @@ type DomFileReader = globalThis.FileReader;
 
 /**
  * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)
- * in the {@glink installation/advanced/saving-data editor output}.
+ * in the {@glink installation/getting-started/getting-and-setting-data editor output}.
  *
  * This kind of image upload does not require server processing – images are stored with the rest of the text and
  * displayed by the web browser without additional requests.

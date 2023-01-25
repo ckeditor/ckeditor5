@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -59,6 +59,6 @@ export default class SpecialCharactersArrows extends Plugin {
 			{ title: t( 'on with exclamation mark with left right arrow above' ), character: '🔛' },
 			{ title: t( 'soon with rightwards arrow above' ), character: '🔜' },
 			{ title: t( 'top with upwards arrow above' ), character: '🔝' }
-		] );
+		], { label: t( 'Arrows' ) } );
 	}
 }

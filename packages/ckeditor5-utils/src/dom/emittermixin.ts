@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,6 +43,8 @@ const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
  * 	console.log( evt, domEvt );
  * } );
  * ```
+ *
+ * @label EXTENDS
  */
 export default function DomEmitterMixin<Base extends abstract new ( ...args: Array<any> ) => Emitter>(
 	base: Base
@@ -70,6 +72,8 @@ export default function DomEmitterMixin<Base extends abstract new ( ...args: Arr
  * 	console.log( evt, domEvt );
  * } );
  * ```
+ *
+ * @label NO_ARGUMENTS
  */
 export default function DomEmitterMixin(): {
 	new (): DomEmitter;
@@ -376,6 +380,9 @@ function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: 
 	return id;
 }
 
+export interface DomEventMap extends HTMLElementEventMap, WindowEventMap {
+}
+
 /**
  * Interface representing classes which mix in {@link module:utils/dom/emittermixin~DomEmitterMixin}.
  *
@@ -393,6 +400,7 @@ export interface DomEmitter extends Emitter {
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link module:utils/emittermixin~Emitter#listenTo}.
 	 *
+	 * @label HTML_EMITTER
 	 * @param emitter The object that fires the event.
 	 * @param event The name of the event.
 	 * @param callback The function to be called on event.
@@ -402,10 +410,10 @@ export interface DomEmitter extends Emitter {
 	 * @param options.usePassive Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
-	listenTo<K extends keyof HTMLElementEventMap>(
+	listenTo<K extends keyof DomEventMap>(
 		emitter: Node | Window,
 		event: K,
-		callback: ( this: this, ev: EventInfo, event: HTMLElementEventMap[ K ] ) => void,
+		callback: ( this: this, ev: EventInfo, event: DomEventMap[ K ] ) => void,
 		options?: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
 	): void;
 
@@ -431,7 +439,8 @@ export interface DomEmitter extends Emitter {
 	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
 	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
 	 *
-	 * @typeParam TEvent The type descibing the event. See {@link module:utils/emittermixin~BaseEvent}.
+	 * @label DOM_EMITTER
+	 * @typeParam TEvent The type describing the event. See {@link module:utils/emittermixin~BaseEvent}.
 	 * @param emitter The object that fires the event.
 	 * @param event The name of the event.
 	 * @param callback The function to be called on event.
@@ -453,6 +462,7 @@ export interface DomEmitter extends Emitter {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all objects.
 	 *
+	 * @label DOM_STOP
 	 * @param emitter The object to stop listening to.
 	 * If omitted, stops it for all objects.
 	 * @param event (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it

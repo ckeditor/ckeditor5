@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,9 +11,16 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-tooltip' ), {
 		toolbar: [
 			{
-				label: 'Others',
-				tooltip: 'Additional editing features',
-				items: [ 'bold', 'italic' ]
+				label: 'Formatting',
+				tooltip: 'Basic formatting features',
+				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+			},
+			'|',
+			{
+				label: 'Inserting',
+				icon: 'plus',
+				tooltip: 'Insert media',
+				items: [ 'uploadImage', 'insertTable' ]
 			},
 			'|',
 			'undo', 'redo'

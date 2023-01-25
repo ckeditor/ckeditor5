@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Easy Image integration
 
-The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible.
+The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible. Unlike the {@link features/ckbox CKBox} feature, which is a full-fledged file manager, Easy Image concentrates on upload only.
 
 <info-box info>
 	This is a premium feature and you need a license for it on top of your CKEditor 5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
@@ -52,8 +52,8 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 			}
 		} )
-		.then( ... )
-		.catch( ... );
+		.then( /* ... */ )
+		.catch( /* ... */ );
 	```
 
 This is all. At this point, image upload will be automatically enabled in your application.
@@ -137,8 +137,8 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EasyImage, Image, ... ],
-		toolbar: [ 'uploadImage', ... ],
+		plugins: [ EasyImage, Image, /* ... */ ],
+		toolbar: [ 'uploadImage', /* ... */ ],
 
 		// Configure the endpoint. See the "Configuration" section above.
 		cloudServices: {
@@ -146,8 +146,8 @@ ClassicEditor
 			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

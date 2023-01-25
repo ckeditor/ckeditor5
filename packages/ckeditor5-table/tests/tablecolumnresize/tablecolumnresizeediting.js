@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,7 @@ import TableCaption from '../../src/tablecaption';
 import TableToolbar from '../../src/tabletoolbar';
 import Table from '../../src/table';
 import TableProperties from '../../src/tableproperties';
+import PlainTableOutput from '../../src/plaintableoutput';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -2556,6 +2557,53 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( ghsEditor.editing.view ) );
 
 				expect( initialViewColumnWidthsPx ).to.deep.equal( finalViewColumnWidthsPx );
+			} );
+		} );
+
+		describe( 'PlainTableOutput', () => {
+			let ptoEditor;
+
+			beforeEach( async () => {
+				ptoEditor = await createEditor( {
+					plugins: [ Table, TableColumnResize, Paragraph, PlainTableOutput ]
+				} );
+			} );
+
+			afterEach( async () => {
+				await ptoEditor.destroy();
+			} );
+
+			it( 'should not crash', () => {
+				const table = modelTable(
+					[ [ 'Some', 'Data' ] ],
+					{ columnWidths: '80%,20%', tableWidth: '100%' }
+				);
+				setModelData( ptoEditor.model, table );
+
+				expect( () => ptoEditor.getData() ).to.not.throw();
+			} );
+
+			it( 'should produce table not wrapped in <figure>', () => {
+				const table = modelTable(
+					[ [ 'Some', 'Data' ] ],
+					{ columnWidths: '80%,20%', tableWidth: '100%' }
+				);
+				setModelData( ptoEditor.model, table );
+
+				expect( ptoEditor.getData() ).to.equal(
+					'<table class="ck-table-resized" style="width:100%;">' +
+						'<colgroup>' +
+							'<col style="width:80%;">' +
+							'<col style="width:20%;">' +
+						'</colgroup>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>Some</td>' +
+								'<td>Data</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>'
+				);
 			} );
 		} );
 	} );

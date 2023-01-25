@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -49,6 +49,8 @@ export default class SpecialCharacters extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		const t = editor.t;
+
 		/**
 		 * Registered characters. A pair of a character name and its symbol.
 		 *
@@ -58,12 +60,20 @@ export default class SpecialCharacters extends Plugin {
 		this._characters = new Map();
 
 		/**
-		 * Registered groups. Each group contains a collection with symbol names.
+		 * Registered groups. Each group contains a displayed label and a collection with symbol names.
 		 *
 		 * @private
-		 * @member {Map.<String, Set.<String>>} #_groups
+		 * @member {Map.<String, {items: Set.<String>, label: String}>} #_groups
 		 */
 		this._groups = new Map();
+
+		/**
+		 * A label describing the "All" special characters category.
+		 *
+		 * @private
+		 * @member {String} #_allSpecialCharactersGroupLabel
+		 */
+		this._allSpecialCharactersGroupLabel = t( 'All' );
 	}
 
 	/**
@@ -126,8 +136,10 @@ export default class SpecialCharacters extends Plugin {
 	 *
 	 * @param {String} groupName
 	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} items
+	 * @param {Object} options
+	 * @param {String} [options.label=groupName]
 	 */
-	addItems( groupName, items ) {
+	addItems( groupName, items, options = { label: groupName } ) {
 		if ( groupName === ALL_SPECIAL_CHARACTERS_GROUP ) {
 			/**
 			 * The name "All" for a special category group cannot be used because it is a special category that displays all
@@ -135,26 +147,41 @@ export default class SpecialCharacters extends Plugin {
 			 *
 			 * @error special-character-invalid-group-name
 			 */
-			throw new CKEditorError(
-				`special-character-invalid-group-name: The name "${ ALL_SPECIAL_CHARACTERS_GROUP }" is reserved and cannot be used.`
-			);
+			throw new CKEditorError( 'special-character-invalid-group-name', null );
 		}
 
-		const group = this._getGroup( groupName );
+		const group = this._getGroup( groupName, options.label );
 
 		for ( const item of items ) {
-			group.add( item.title );
+			group.items.add( item.title );
 			this._characters.set( item.title, item.character );
 		}
 	}
 
 	/**
-	 * Returns an iterator of special characters groups.
+	 * Returns special character groups in an order determined based on configuration and registration sequence.
 	 *
 	 * @returns {Iterable.<String>}
 	 */
 	getGroups() {
-		return this._groups.keys();
+		const groups = Array.from( this._groups.keys() );
+		const order = this.editor.config.get( 'specialCharacters.order' ) || [];
+
+		const invalidGroup = order.find( item => !groups.includes( item ) );
+
+		if ( invalidGroup ) {
+			/**
+			 * One of the special character groups in the "specialCharacters.order" configuration doesn't exist.
+			 *
+			 * @error special-character-invalid-order-group-name
+			 */
+			throw new CKEditorError( 'special-character-invalid-order-group-name', null, { invalidGroup } );
+		}
+
+		return new Set( [
+			...order,
+			...groups
+		] );
 	}
 
 	/**
@@ -168,7 +195,11 @@ export default class SpecialCharacters extends Plugin {
 			return new Set( this._characters.keys() );
 		}
 
-		return this._groups.get( groupName );
+		const group = this._groups.get( groupName );
+
+		if ( group ) {
+			return group.items;
+		}
 	}
 
 	/**
@@ -187,10 +218,14 @@ export default class SpecialCharacters extends Plugin {
 	 *
 	 * @private
 	 * @param {String} groupName The name of the group to create.
+	 * @param {String} label The label describing the new group.
 	 */
-	_getGroup( groupName ) {
+	_getGroup( groupName, label ) {
 		if ( !this._groups.has( groupName ) ) {
-			this._groups.set( groupName, new Set() );
+			this._groups.set( groupName, {
+				items: new Set(),
+				label
+			} );
 		}
 
 		return this._groups.get( groupName );
@@ -225,10 +260,14 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns {Object} Returns an object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	_createDropdownPanelContent( locale, dropdownView ) {
-		const specialCharsGroups = [ ...this.getGroups() ];
+		// The map contains a name of category (an identifier) and its label (a translational string).
+		const specialCharsGroups = new Map( [
+			// Add a special group that shows all available special characters.
+			[ ALL_SPECIAL_CHARACTERS_GROUP, this._allSpecialCharactersGroupLabel ],
 
-		// Add a special group that shows all available special characters.
-		specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
+			...Array.from( this.getGroups() )
+				.map( name => ( [ name, this._groups.get( name ).label ] ) )
+		] );
 
 		const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
 		const gridView = new CharacterGridView( locale );
@@ -261,4 +300,56 @@ export default class SpecialCharacters extends Plugin {
  *
  * @property {String} title A unique name of the character (e.g. "greek small letter epsilon").
  * @property {String} character A human-readable character displayed as the label (e.g. "ε").
+ */
+
+/**
+ * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
+ *
+ * Read more in {@link module:special-characters/specialcharacters~SpecialCharactersConfig}.
+ *
+ * @member {module:special-characters/specialcharacters~SpecialCharactersConfig}
+ * module:core/editor/editorconfig~EditorConfig#specialCharacters
+ */
+
+/**
+ * The configuration of the special characters feature.
+ *
+ * Read more about {@glink features/special-characters#configuration configuring the special characters feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				specialCharacters: ... // Special characters feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * @interface SpecialCharactersConfig
+ */
+
+/**
+ * The configuration of the special characters category order.
+ *
+ * Special characters categories are displayed in the UI in the order in which they were registered. Using the `order` property
+ * allows to override this behaviour and enforce specific order. Categories not listed in the `order` property will be displayed
+ * in the default order below categories listed in the configuration.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+ *				specialCharacters: {
+ *					order: [
+ *						'Text',
+ *						'Latin',
+ *						'Mathematical',
+ *						'Currency',
+ *						'Arrows'
+ *					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Array.<String>} module:special-characters/specialcharacters~SpecialCharactersConfig#order
  */

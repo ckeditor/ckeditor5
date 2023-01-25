@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -369,11 +369,14 @@ export function bogusParagraphCreator(
 			return null;
 		}
 
-		const viewElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-
-		if ( dataPipeline ) {
-			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+		if ( !dataPipeline ) {
+			return writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 		}
+
+		// Using `<p>` in case there are some markers on it and transparentRendering will render it anyway.
+		const viewElement = writer.createContainerElement( 'p' );
+
+		writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
 
 		return viewElement;
 	};

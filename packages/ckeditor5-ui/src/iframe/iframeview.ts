@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,20 +13,20 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 /**
  * The iframe view class.
  *
- * 		const iframe = new IframeView();
+ * ```ts
+ * const iframe = new IframeView();
  *
- *		iframe.render();
- *		document.body.appendChild( iframe.element );
+ * iframe.render();
+ * document.body.appendChild( iframe.element );
  *
- * 		iframe.on( 'loaded', () => {
- *			console.log( 'The iframe has loaded', iframe.element.contentWindow );
- *		} );
+ * iframe.on( 'loaded', () => {
+ * 	console.log( 'The iframe has loaded', iframe.element.contentWindow );
+ * } );
  *
- * 		iframe.element.src = 'https://ckeditor.com';
- *
- * @extends module:ui/view~View
+ * iframe.element.src = 'https://ckeditor.com';
+ * ```
  */
-export default class IframeView extends View {
+export default class IframeView extends View<HTMLIFrameElement> {
 	/**
 	 * Creates a new instance of the iframe view.
 	 *

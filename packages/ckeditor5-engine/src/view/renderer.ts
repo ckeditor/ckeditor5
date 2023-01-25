@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -62,7 +62,6 @@ export default class Renderer extends ObservableMixin() {
 	public readonly selection: DocumentSelection;
 
 	declare public readonly isFocused: boolean;
-	declare public readonly _isFocusChanging: boolean;
 	declare public readonly isSelecting: boolean;
 	declare public readonly isComposing: boolean;
 
@@ -134,15 +133,6 @@ export default class Renderer extends ObservableMixin() {
 		 * @observable
 		 */
 		this.set( 'isFocused', false );
-
-		/**
-         * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
-		 *
-		 * @internal
-		 * @observable
-		 * @member {Boolean}
-		 */
-		this.set( '_isFocusChanging', false );
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
@@ -911,12 +901,6 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// The focus is still in progress and we are waiting for new values from `selectionchange` event.
-		// In that case, we need to prevent update selection since it would be updated using old values.
-		if ( this._isFocusChanging ) {
-			return;
-		}
-
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();
@@ -925,7 +909,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! ) as DomElement;
+		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
