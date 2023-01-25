@@ -369,11 +369,14 @@ export function bogusParagraphCreator(
 			return null;
 		}
 
-		const viewElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-
-		if ( dataPipeline ) {
-			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+		if ( !dataPipeline ) {
+			return writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 		}
+
+		// Using `<p>` in case there are some markers on it and transparentRendering will render it anyway.
+		const viewElement = writer.createContainerElement( 'p' );
+
+		writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
 
 		return viewElement;
 	};
