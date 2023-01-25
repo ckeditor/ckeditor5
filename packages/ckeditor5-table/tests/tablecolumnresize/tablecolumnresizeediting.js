@@ -22,7 +22,7 @@ import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { modelTable } from '../_utils/utils';
+import { getTableColumnWidths, modelTable } from '../_utils/utils';
 import {
 	getDomTable,
 	getModelTable,
@@ -81,9 +81,7 @@ describe( 'TableColumnResizeEditing', () => {
 			[ '10', '11', '12' ]
 		], { columnWidths: '25%,25%,50%' } ) );
 
-		const tableWidths = model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' );
-
-		expect( tableWidths ).to.be.equal( '25%,25%,50%' );
+		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ 25, 25, 50 ] );
 	} );
 
 	it( 'should have defined col widths in view', () => {
@@ -124,7 +122,7 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="50%,50%" tableWidth="100%">' +
+					'<table tableWidth="100%">' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>11</paragraph>' +
@@ -133,6 +131,10 @@ describe( 'TableColumnResizeEditing', () => {
 								'<paragraph>12</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50"></tableColumn>' +
+							'<tableColumn columnWidth="50"></tableColumn>' +
+						'</tableColumnGroup>' +
 					'</table>'
 				);
 			} );
@@ -159,7 +161,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="33.33%,33.33%,33.34%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -171,6 +173,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.34"></tableColumn>' +
+						'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -195,7 +202,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="33.33%,33.33%,33.34%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -207,6 +214,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.34"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -233,7 +245,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="33.33%,33.33%,33.34%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -245,6 +257,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.34"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -268,7 +285,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="50%,25%,25%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -280,6 +297,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="50"></tableColumn>' +
+								'<tableColumn columnWidth="25"></tableColumn>' +
+								'<tableColumn columnWidth="25"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -303,7 +325,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="33.33%,33.33%,33.34%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -315,6 +337,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.34"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -379,7 +406,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="33.33%,33.33%,33.34%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>11</paragraph>' +
@@ -391,6 +418,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>13</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.33"></tableColumn>' +
+								'<tableColumn columnWidth="33.34"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -1342,10 +1374,10 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: -10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%" tableWidth="100%">' +
+						'<table tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'[<table columnWidths="50%,50%">' +
+									'[<table>' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1354,9 +1386,16 @@ describe( 'TableColumnResizeEditing', () => {
 												'<paragraph>bar</paragraph>' +
 											'</tableCell>' +
 										'</tableRow>' +
+										'<tableColumnGroup>' +
+											'<tableColumn columnWidth="50"></tableColumn>' +
+											'<tableColumn columnWidth="50"></tableColumn>' +
+										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
@@ -1391,10 +1430,10 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="100%" tableWidth="100%">' +
+							'<table tableWidth="100%">' +
 								'<tableRow>' +
 									'<tableCell>' +
-										'<table columnWidths="55\\.5[\\d]%,44\\.4[\\d]%" tableWidth="46\\.7[\\d]%">' +
+										'<table tableWidth="46\\.7[\\d]%">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>foo</paragraph>' +
@@ -1403,9 +1442,16 @@ describe( 'TableColumnResizeEditing', () => {
 													'<paragraph>bar</paragraph>' +
 												'</tableCell>' +
 											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="55.5"></tableColumn>' +
+												'<tableColumn columnWidth="44.4"></tableColumn>' +
+											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100"></tableColumn>' +
+								'</tableColumnGroup>' +
 							'</table>'
 						)
 					);
@@ -1417,10 +1463,10 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: 10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%" tableWidth="100%">' +
+						'<table tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'[<table tableWidth="90%" columnWidths="50%,50%">' +
+									'[<table tableWidth="90%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1429,9 +1475,16 @@ describe( 'TableColumnResizeEditing', () => {
 												'<paragraph>bar</paragraph>' +
 											'</tableCell>' +
 										'</tableRow>' +
+										'<tableColumnGroup>' +
+											'<tableColumn columnWidth="50"></tableColumn>' +
+											'<tableColumn columnWidth="50"></tableColumn>' +
+										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
@@ -1466,10 +1519,10 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="100%" tableWidth="100%">' +
+							'<table tableWidth="100%">' +
 								'<tableRow>' +
 									'<tableCell>' +
-										'<table columnWidths="45\\.45%,54\\.55%" tableWidth="77\\.1[\\d]%">' +
+										'<table tableWidth="77\\.1[\\d]%">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>foo</paragraph>' +
@@ -1478,9 +1531,16 @@ describe( 'TableColumnResizeEditing', () => {
 													'<paragraph>bar</paragraph>' +
 												'</tableCell>' +
 											'</tableRow>' +
+											'<tableColumnGroup>' +
+												'<tableColumn columnWidth="45.45"></tableColumn>' +
+												'<tableColumn columnWidth="54.55"></tableColumn>' +
+											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="100"></tableColumn>' +
+								'</tableColumnGroup>' +
 							'</table>'
 						)
 					);
@@ -1492,10 +1552,10 @@ describe( 'TableColumnResizeEditing', () => {
 					const mouseMovementVector = { x: 10, y: 0 };
 
 					setModelData( editor.model,
-						'<table columnWidths="100%" tableWidth="100%">' +
+						'<table tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'[<table columnWidths="25%,25%,50%" tableWidth="100%">' +
+									'[<table tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1507,9 +1567,17 @@ describe( 'TableColumnResizeEditing', () => {
 												'<paragraph>baz</paragraph>' +
 											'</tableCell>' +
 										'</tableRow>' +
+										'<tableColumnGroup>' +
+											'<tableColumn columnWidth="25"></tableColumn>' +
+											'<tableColumn columnWidth="25"></tableColumn>' +
+											'<tableColumn columnWidth="50"></tableColumn>' +
+										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
@@ -1543,10 +1611,10 @@ describe( 'TableColumnResizeEditing', () => {
 					assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<table columnWidths="100%" tableWidth="100%">' +
+						'<table tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<table columnWidths="25%,28.52%,46.48%" tableWidth="100%">' +
+									'<table tableWidth="100%">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>foo</paragraph>' +
@@ -1558,9 +1626,17 @@ describe( 'TableColumnResizeEditing', () => {
 												'<paragraph>baz</paragraph>' +
 											'</tableCell>' +
 										'</tableRow>' +
+										'<tableColumnGroup>' +
+											'<tableColumn columnWidth="25"></tableColumn>' +
+											'<tableColumn columnWidth="28.52"></tableColumn>' +
+											'<tableColumn columnWidth="46.48"></tableColumn>' +
+										'</tableColumnGroup>' +
 									'</table>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -1969,9 +2045,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( item.item.getAttribute( 'columnWidths' ).split( ',' ).length ).to.equal( 4 );
+								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the first position.
-								expect( parseFloat( item.item.getAttribute( 'columnWidths' ).split( ',' )[ 0 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnWidths( item.item )[ 0 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -1989,9 +2065,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( item.item.getAttribute( 'columnWidths' ).split( ',' ).length ).to.equal( 4 );
+								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the second position.
-								expect( parseFloat( item.item.getAttribute( 'columnWidths' ).split( ',' )[ 1 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnWidths( item.item )[ 1 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -2009,9 +2085,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( item.item.getAttribute( 'columnWidths' ).split( ',' ).length ).to.equal( 4 );
+								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the last position.
-								expect( parseFloat( item.item.getAttribute( 'columnWidths' ).split( ',' )[ 3 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnWidths( item.item )[ 3 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -2029,7 +2105,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the next column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 								expect( columnWidths[ 1 ] ).to.equal( '55%' );
@@ -2050,7 +2126,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 								expect( columnWidths[ 1 ] ).to.equal( '55%' );
@@ -2071,7 +2147,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '20%' );
 								expect( columnWidths[ 1 ] ).to.equal( '80%' );
@@ -2099,7 +2175,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 							}
@@ -2128,7 +2204,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 1 );
 								expect( columnWidths[ 0 ] ).to.equal( '100%' );
 							}
@@ -2155,7 +2231,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 3 unchanged values.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = item.item.getAttribute( 'columnWidths' ).split( ',' );
+								const columnWidths = getTableColumnWidths( item.item );
 								expect( columnWidths.length ).to.equal( 3 );
 								expect( columnWidths[ 0 ] ).to.equal( '20%' );
 								expect( columnWidths[ 1 ] ).to.equal( '25%' );
@@ -2193,7 +2269,7 @@ describe( 'TableColumnResizeEditing', () => {
 					], { columnWidths: '20%,25%,55%' } ) );
 
 					expect( getModelData( model ) ).to.equal(
-						'[<table columnWidths="20%,25%,55%">' +
+						'[<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -2205,6 +2281,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>02</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="20"></tableColumn>' +
+								'<tableColumn columnWidth="25"></tableColumn>' +
+								'<tableColumn columnWidth="55"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>]'
 					);
 				} );
@@ -2237,7 +2318,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="29\\.1%,29\\.1%,41\\.8%" tableWidth="52\\.4[\\d]%">' +
+							'<table tableWidth="52\\.4[\\d]%">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>00</paragraph>' +
@@ -2249,6 +2330,11 @@ describe( 'TableColumnResizeEditing', () => {
 										'<paragraph>02</paragraph>' +
 									'</tableCell>' +
 								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="29.1"></tableColumn>' +
+									'<tableColumn columnWidth="29.1"></tableColumn>' +
+									'<tableColumn columnWidth="41.8"></tableColumn>' +
+								'</tableColumnGroup>' +
 							'</table>'
 						)
 					);
@@ -2267,7 +2353,7 @@ describe( 'TableColumnResizeEditing', () => {
 					tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'[<table columnWidths="22.73%,22.73%,54.54%" tableWidth="73.33%">' +
+						'[<table tableWidth="73.33%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>00</paragraph>' +
@@ -2279,6 +2365,11 @@ describe( 'TableColumnResizeEditing', () => {
 									'<paragraph>02</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="22.73"></tableColumn>' +
+								'<tableColumn columnWidth="22.73"></tableColumn>' +
+								'<tableColumn columnWidth="54.54"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>]'
 					);
 				} );
@@ -2299,7 +2390,7 @@ describe( 'TableColumnResizeEditing', () => {
 					// while the rest (column widths) is covered elsewhere not very important.
 					expect( getModelData( model, { withoutSelection: true } ) ).to.match(
 						new RegExp(
-							'<table columnWidths="25%,2[\\d]\\.[\\d][\\d]%,4[\\d]\\.[\\d][\\d]%" tableWidth="40%">' +
+							'<table tableWidth="40%">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>00</paragraph>' +
@@ -2311,6 +2402,11 @@ describe( 'TableColumnResizeEditing', () => {
 										'<paragraph>02</paragraph>' +
 									'</tableCell>' +
 								'</tableRow>' +
+								'<tableColumnGroup>' +
+									'<tableColumn columnWidth="25%"></tableColumn>' +
+									'<tableColumn columnWidth="2[\\d]\\.[\\d][\\d]"></tableColumn>' +
+									'<tableColumn columnWidth="4[\\d]\\.[\\d][\\d]"></tableColumn>' +
+								'</tableColumnGroup>' +
 							'</table>'
 						)
 					);
@@ -2346,7 +2442,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const unlinkCommand = editor.commands.get( 'unlink' );
 
 					setModelData( model,
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2354,6 +2450,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
@@ -2362,12 +2461,15 @@ describe( 'TableColumnResizeEditing', () => {
 					unlinkCommand.execute();
 
 					expect( getModelData( model ) ).to.equal(
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[foo]</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -2376,7 +2478,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const highlightCommand = editor.commands.get( 'highlight' );
 
 					setModelData( model,
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2384,6 +2486,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
@@ -2392,19 +2497,22 @@ describe( 'TableColumnResizeEditing', () => {
 					highlightCommand.execute();
 
 					expect( getModelData( model ) ).to.equal(
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[foo]</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
 
 				it( 'when bold is being removed', () => {
 					setModelData( model,
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2412,18 +2520,24 @@ describe( 'TableColumnResizeEditing', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
 					editor.commands.get( 'bold' ).execute();
 
 					expect( getModelData( model ) ).to.equal(
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[foo]</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 				} );
@@ -2433,7 +2547,7 @@ describe( 'TableColumnResizeEditing', () => {
 					const toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 
 					setModelData( model,
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2441,18 +2555,24 @@ describe( 'TableColumnResizeEditing', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>'
 					);
 
 					toolbar.items.get( 0 ).fire( 'execute' );
 
 					expect( getModelData( model ) ).to.equal(
-						'<table columnWidths="100%">' +
+						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foo</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 							'<caption>[]</caption>' +
 						'</table>'
 					);
@@ -2460,7 +2580,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				it( 'when table is being removed', () => {
 					setModelData( model,
-						'[<table columnWidths="100%" tableWidth="100%">' +
+						'[<table tableWidth="100%">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>' +
@@ -2468,6 +2588,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100"></tableColumn>' +
+							'</tableColumnGroup>' +
 						'</table>]'
 					);
 

@@ -715,11 +715,19 @@ describe( 'TableColumnResize utils', () => {
 } );
 
 function createTable( rows, cols ) {
-	// We need to set the `columnWidths` attribute because tables without it are ignored.
-	const colWidth = `${ 100 / cols }%`;
-	const columnWidths = new Array( cols ).fill( colWidth ).join( ',' );
+	return new Element( 'table', {}, [
+		...createTableRows( rows, cols ),
+		createColGroupRow( cols )
+	] );
+}
 
-	return new Element( 'table', { columnWidths }, createTableRows( rows, cols ) );
+function createColGroupRow( cols ) {
+	const colWidth = `${ 100 / cols }%`;
+	const columns = new Array( cols )
+		.fill( colWidth )
+		.map( columnWidth => new Element( 'tableColumn', { columnWidth } ) );
+
+	return new Element( 'tableColumnGroup', {}, columns );
 }
 
 function createTableRows( rows, cols ) {

@@ -47,10 +47,10 @@ describe( 'TableColumnWidthsCommand', () => {
 			[ '21', '22' ]
 		] ) );
 
-		command.execute( { columnWidths: '40%,60%' } );
+		command.execute( { columnWidths: [ 40, 60 ] } );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<table columnWidths="40%,60%">' +
+			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
 						'<paragraph>11</paragraph>' +
@@ -67,6 +67,10 @@ describe( 'TableColumnWidthsCommand', () => {
 						'<paragraph>22</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
+				'<tableColumnGroup>' +
+					'<tableColumn columnWidth="40"></tableColumn>' +
+					'<tableColumn columnWidth="60"></tableColumn>' +
+				'</tableColumnGroup>' +
 			'</table>'
 		);
 	} );

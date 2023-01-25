@@ -42,7 +42,10 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	 */
 	execute( options = {} ) {
 		const { model } = this.editor;
-		const { table, columnWidths } = options;
+		const {
+			table = model.document.selection.getSelectedElement(),
+			columnWidths
+		} = options;
 
 		model.change( writer => {
 			const tableColumnGroup = Array

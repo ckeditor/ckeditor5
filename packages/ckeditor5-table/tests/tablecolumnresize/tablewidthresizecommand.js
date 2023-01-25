@@ -54,7 +54,7 @@ describe( 'TableWidthResizeCommand', () => {
 
 	it( 'should remove the attributes if new value was not passed', () => {
 		const data = [ [ '11', '12' ], [ '21', '22' ] ];
-		const attributesBefore = { tableWidth: '40%', columnWidths: '40%,60%' };
+		const attributesBefore = { tableWidth: '40%' };
 		setModelData( model, modelTable( data, attributesBefore ) );
 
 		command.execute();
@@ -63,20 +63,9 @@ describe( 'TableWidthResizeCommand', () => {
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
 	} );
 
-	it( 'should work when only columnWidths is provided', () => {
-		const data = [ [ '11', '12' ], [ '21', '22' ] ];
-		const attributesBefore = { tableWidth: '40%', columnWidths: '40%,60%' };
-		setModelData( model, modelTable( data, attributesBefore ) );
-
-		command.execute( { columnWidths: '40%,60%' } );
-
-		const attributesAfter = { columnWidths: '40%,60%' };
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
-	} );
-
 	it( 'should work when only tableWidth is provided', () => {
 		const data = [ [ '11', '12' ], [ '21', '22' ] ];
-		const attributesBefore = { tableWidth: '40%', columnWidths: '40%,60%' };
+		const attributesBefore = { tableWidth: '40%' };
 		setModelData( model, modelTable( data, attributesBefore ) );
 
 		command.execute( { tableWidth: '40%' } );
@@ -90,20 +79,20 @@ describe( 'TableWidthResizeCommand', () => {
 		const attributesBefore = {};
 		setModelData( model, modelTable( data, attributesBefore ) );
 
-		command.execute( { tableWidth: '40%', columnWidths: '40%,60%' } );
+		command.execute( { tableWidth: '40%' } );
 
-		const attributesAfter = { tableWidth: '40%', columnWidths: '40%,60%' };
+		const attributesAfter = { tableWidth: '40%' };
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
 	} );
 
 	it( 'should change attributes when they were present before', () => {
 		const data = [ [ '11', '12' ], [ '21', '22' ] ];
-		const attributesBefore = { tableWidth: '40%', columnWidths: '40%,60%' };
+		const attributesBefore = { tableWidth: '40%' };
 		setModelData( model, modelTable( data, attributesBefore ) );
 
-		command.execute( { tableWidth: '30%', columnWidths: '30%,70%' } );
+		command.execute( { tableWidth: '30%' } );
 
-		const attributesAfter = { tableWidth: '30%', columnWidths: '30%,70%' };
+		const attributesAfter = { tableWidth: '30%' };
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
 	} );
 } );
