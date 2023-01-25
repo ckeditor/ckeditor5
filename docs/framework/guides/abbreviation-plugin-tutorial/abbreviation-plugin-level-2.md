@@ -69,6 +69,7 @@ import {
 
 export default class FormView extends View {
 	constructor( locale ) {
+		// Set the template.
 		// ...
 
 		this.abbrInputView = this._createInput( 'Add abbreviation' );
@@ -106,6 +107,7 @@ import { icons } from '@ckeditor/ckeditor5-core';	// ADDED
 
 export default class FormView extends View {
 	constructor( locale ) {
+		// Previously created inputs.
 		// ...
 
 		// Create the save and cancel buttons.
@@ -122,6 +124,7 @@ export default class FormView extends View {
 	}
 
 	_createInput( label ) {
+		// Initialize an input.
 		// ...
 	}
 
@@ -150,10 +153,13 @@ For now, we delegate `cancelButtonView#execute` to the FormView, so pressing the
 
 ```js
 // abbreviation/abbreviationview.js
+
+// Previously imported packages.
 // ...
 
 export default class FormView extends View {
 	constructor( locale ) {
+		// Previously created inputs.
 		// ...
 
 		this.saveButtonView = this._createButton(
@@ -168,10 +174,12 @@ export default class FormView extends View {
 	}
 
 	_createInput( label ) {
+		// Initialize an input.
 		// ...
 	}
 
 	_createButton( label, icon, className ) {
+		// Create a button.
 		// ...
 	}
 }
@@ -221,6 +229,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import './styles.css';											// ADDED
 
 export default class AbbreviationUI extends Plugin {
+	// Definition of Abbreviation UI class.
 	// ...
 }
 ```
@@ -249,6 +258,7 @@ import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
 	constructor( locale ) {
+		// Previously created elements.
 		// ...
 
 		this.childViews = this.createCollection( [
@@ -261,6 +271,7 @@ export default class FormView extends View {
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
+				// Attributes for a form template.
 				// ...
 			},
 			children: this.childViews				// ADDED
@@ -282,10 +293,12 @@ export default class FormView extends View {
 	}
 
 	_createInput( label ) {
+		// Initialiaze an input.
 		// ...
 	}
 
 	_createButton( label, icon, className ) {
+		// Create a button.
 		// ...
 	}
 }
@@ -364,6 +377,7 @@ export default class AbbreviationUI extends Plugin {
 		this.formView = this._createFormView();
 
 		editor.ui.componentFactory.add( 'abbreviation', () => {
+			// A component factory callback that creates a button.
 			// ...
 		} );
 	}
@@ -398,12 +412,16 @@ Let's write a `_showUI()` method which will show our UI elements by adding the f
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationUI extends Plugin {
+	// More methods.
 	// ...
 
 	init() {
+		// Create the balloon and the view.
 		// ...
 
 		editor.ui.componentFactory.add( 'abbreviation', () => {
@@ -412,10 +430,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_createFormView() {
+		// Create the form view.
 		// ...
 	}
 
 	_getBalloonPositionData() {
+		// Get position data for the balloon.
 		// ...
 	}
 
@@ -442,6 +462,8 @@ We use the same callback function we had in the toolbar button in the first part
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationUI extends Plugin {
@@ -450,6 +472,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	init() {
+		// Create the balloon and the view.
 		// ...
 	}
 
@@ -473,10 +496,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
+		// Get position data for the balloon.
 		// ...
 	}
 
 	_showUI() {
+		// Display balloon for the user.
 		// ...
 	}
 }
@@ -498,6 +523,7 @@ Additionally, we will import the `clickOutsideHandler()` method, which will take
 ```js
 // abbreviation/abbreviationui.js
 
+// Previously imported packages.
 // ...
 
 import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui'; // ADDED
@@ -508,6 +534,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	init() {
+		// Create the balloon and the view.
 		// ...
 	}
 
@@ -516,6 +543,7 @@ export default class AbbreviationUI extends Plugin {
 		const formView = new FormView( editor.locale );
 
 		this.listenTo( formView, 'submit', () => {
+			// Set texts: title and abbreviation.
 			// ...
 
 			// Hide the form view after submit.
@@ -550,10 +578,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
+		// Get position data for the balloon.
 		// ...
 	}
 
 	_showUI() {
+		// Display balloon for the user.
 		// ...
 	}
 }
