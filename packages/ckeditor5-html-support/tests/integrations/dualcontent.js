@@ -205,4 +205,115 @@ describe( 'DualContentModelElementSupport', () => {
 
 		expect( editor.getData() ).to.equal( '<p>xyz</p>' );
 	} );
+
+	describe( 'with ghs configured to allow all', () => {
+		let allowAllEditor, allowAllModel, allowAllEditorElement;
+
+		beforeEach( () => {
+			allowAllEditorElement = document.createElement( 'div' );
+			document.body.appendChild( allowAllEditorElement );
+			return ClassicTestEditor
+				.create( allowAllEditorElement, {
+					plugins: [ Paragraph, Bold, Italic, ShiftEnter, LinkEditing, GeneralHtmlSupport ],
+					htmlSupport: {
+						allow: [
+							{
+								name: /^.*$/,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					allowAllEditor = newEditor;
+					allowAllModel = newEditor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			allowAllEditorElement.remove();
+
+			return allowAllEditor.destroy();
+		} );
+
+		it( 'should upcast description list', () => {
+			allowAllEditor.setData(
+				'<dl>' +
+					'<dt>Name</dt>' +
+					'<dd>Godzilla</dd>' +
+					'<dt>Born</dt>' +
+					'<dd>1952</dd>' +
+				'</dl>'
+			);
+
+			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlDl>' +
+					'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
+					'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
+					'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
+					'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
+				'</htmlDl>'
+			);
+		} );
+
+		it( 'should upcast description list when name-value groups are wrapped in div elements', () => {
+			allowAllEditor.setData(
+				'<dl>' +
+					'<div>' +
+						'<dt>Name</dt>' +
+						'<dd>Godzilla</dd>' +
+					'</div>' +
+					'<div>' +
+						'<dt>Born</dt>' +
+						'<dd>1952</dd>' +
+					'</div>' +
+				'</dl>'
+			);
+
+			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+				'</htmlDl>'
+			);
+		} );
+
+		it( 'should upcast description list div elements as well as other mixed-content div', () => {
+			allowAllEditor.setData(
+				'<div><div>inline</div><div><p>sectioning</p></div></div>' +
+				'<dl>' +
+					'<div>' +
+						'<dt>Name</dt>' +
+						'<dd>Godzilla</dd>' +
+					'</div>' +
+					'<div>' +
+						'<dt>Born</dt>' +
+						'<dd>1952</dd>' +
+					'</div>' +
+				'</dl>'
+			);
+
+			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>' +
+				'<htmlDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+					'<htmlDivDl>' +
+						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
+					'</htmlDivDl>' +
+				'</htmlDl>'
+			);
+		} );
+	} );
 } );

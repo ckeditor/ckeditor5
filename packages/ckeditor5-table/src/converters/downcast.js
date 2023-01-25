@@ -114,7 +114,7 @@ export function downcastCell( options = {} ) {
  * @returns {Function} Element creator.
  */
 export function convertParagraphInTableCell( options = {} ) {
-	return ( modelElement, { writer, consumable, mapper } ) => {
+	return ( modelElement, { writer } ) => {
 		if ( !modelElement.parent.is( 'element', 'tableCell' ) ) {
 			return;
 		}
@@ -126,9 +126,12 @@ export function convertParagraphInTableCell( options = {} ) {
 		if ( options.asWidget ) {
 			return writer.createContainerElement( 'span', { class: 'ck-table-bogus-paragraph' } );
 		} else {
-			// Additional requirement for data pipeline to have backward compatible data tables.
-			consumable.consume( modelElement, 'insert' );
-			mapper.bindElements( modelElement, mapper.toViewElement( modelElement.parent ) );
+			// Using `<p>` in case there are some markers on it and transparentRendering will render it anyway.
+			const viewElement = writer.createContainerElement( 'p' );
+
+			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+
+			return viewElement;
 		}
 	};
 }

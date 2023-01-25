@@ -48,6 +48,7 @@ packages/ckeditor5-font/src/**/*.js
 packages/ckeditor5-heading/src/**/*.js
 packages/ckeditor5-highlight/src/**/*.js
 packages/ckeditor5-horizontal-line/src/**/*.js
+packages/ckeditor5-image/src/**/*.js
 packages/ckeditor5-indent/src/**/*.js
 packages/ckeditor5-language/src/**/*.js
 packages/ckeditor5-list/src/**/*.js

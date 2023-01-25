@@ -1291,6 +1291,68 @@ describe( 'DomConverter', () => {
 					sinon.match.string // Link to the documentation
 				);
 			} );
+
+			it( 'should not be transparent in the data pipeline if has any attribute', () => {
+				converter.renderingMode = 'data';
+				converter.blockFillerMode = 'nbsp';
+
+				const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+				const viewList = parse(
+					'<container:div>' +
+						'<attribute:ul>' +
+							'<attribute:li>' +
+								'<container:p class="style">foo</container:p>' +
+							'</attribute:li>' +
+							'<attribute:li>' +
+								'<container:p data-foo="123">bar</container:p>' +
+							'</attribute:li>' +
+							'<attribute:li>' +
+								'<container:p>baz</container:p>' +
+							'</attribute:li>' +
+						'</attribute:ul>' +
+					'</container:div>'
+				);
+
+				const bogusParagraph1 = viewList.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const bogusParagraph2 = viewList.getChild( 0 ).getChild( 1 ).getChild( 0 );
+				const bogusParagraph3 = viewList.getChild( 0 ).getChild( 2 ).getChild( 0 );
+
+				bogusParagraph1._setCustomProperty( 'dataPipeline:transparentRendering', true );
+				bogusParagraph2._setCustomProperty( 'dataPipeline:transparentRendering', true );
+				bogusParagraph3._setCustomProperty( 'dataPipeline:transparentRendering', true );
+
+				const domDivChildren = Array.from( converter.viewChildrenToDom( viewList ) );
+
+				expect( domDivChildren.length ).to.equal( 1 );
+				expect( domDivChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'ul' );
+
+				const domUlChildren = Array.from( domDivChildren[ 0 ].childNodes );
+
+				expect( domUlChildren.length ).to.equal( 3 );
+				expect( domUlChildren[ 0 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'li' );
+				expect( domUlChildren[ 2 ].tagName.toLowerCase() ).to.equal( 'li' );
+
+				const domUl1Children = Array.from( domUlChildren[ 0 ].childNodes );
+				const domUl2Children = Array.from( domUlChildren[ 1 ].childNodes );
+				const domUl3Children = Array.from( domUlChildren[ 2 ].childNodes );
+
+				expect( domUl1Children.length ).to.equal( 1 );
+				expect( domUl1Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl1Children[ 0 ].getAttribute( 'class' ) ).to.equal( 'style' );
+				expect( domUl1Children[ 0 ].firstChild.data ).to.equal( 'foo' );
+
+				expect( domUl2Children.length ).to.equal( 1 );
+				expect( domUl2Children[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+				expect( domUl2Children[ 0 ].getAttribute( 'data-foo' ) ).to.equal( '123' );
+				expect( domUl2Children[ 0 ].firstChild.data ).to.equal( 'bar' );
+
+				expect( domUl3Children.length ).to.equal( 1 );
+				expect( domUl3Children[ 0 ].data ).to.equal( 'baz' );
+
+				sinon.assert.notCalled( warnStub );
+			} );
 		} );
 	} );
 

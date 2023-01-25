@@ -1157,8 +1157,8 @@ describe( 'HtmlComment integration', () => {
 						'<tbody>' +
 							'<tr>' +
 								'<td>' +
-									'<!-- c1 -->' +
 									'&nbsp;' +
+									'<!-- c1 -->' +
 								'</td>' +
 							'</tr>' +
 						'</tbody>' +
