@@ -400,7 +400,8 @@ HelpjuiceEditor.defaultConfig = {
 			{
 				name: /.*/,
 				classes: true,
-				styles: true
+				styles: true,
+				attributes: true
 			}
 		],
 		disallow: [ /* HTML features to disallow */ ]
