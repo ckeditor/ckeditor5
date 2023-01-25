@@ -15,7 +15,7 @@ modified_at: 2022-10-05
 
 ## Update to CKEditor 5 v35.2.0
 
-For the entire list of changes introduced in version 35.2.0, see the [changelog for CKEditor 5 v34.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3520-2022-10-04).
+For the entire list of changes introduced in version 35.2.0, see the [release notes for CKEditor 5 v35.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.2.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.2.0.
 
@@ -92,7 +92,7 @@ The rest of the import path remained unchanged (`/theme/icons/`).
 
 ## Update to CKEditor 5 v35.1.0
 
-For the entire list of changes introduced in version 35.1.0, see the [changelog for CKEditor 5 v35.1.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3510-2022-08-29).
+For the entire list of changes introduced in version 35.1.0, see the [release notes for CKEditor 5 v35.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.1.0.
 
@@ -257,7 +257,7 @@ The `BalloonPanelView.arrowVerticalOffset` static property is now `arrowHeightOf
 
 ## Update to CKEditor 5 v35.0.0
 
-For the entire list of changes introduced in version 35.0.0, see the [changelog for CKEditor 5 v35.0.0](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md#3500-2022-07-29).
+For the entire list of changes introduced in version 35.0.0, see the [release notes for CKEditor 5 v35.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.0.0.
 
