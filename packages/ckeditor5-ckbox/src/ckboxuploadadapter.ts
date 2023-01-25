@@ -18,6 +18,7 @@ import {
 } from 'ckeditor5/src/upload';
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+import type { ImageUploadCompleteEvent } from '@ckeditor/ckeditor5-image';
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
@@ -75,10 +76,7 @@ export default class CKBoxUploadAdapter extends Plugin {
 
 		// Mark uploaded assets with the `ckboxImageId` attribute. Its value represents an ID in CKBox.
 		if ( shouldInsertDataId ) {
-			// TODO: Wait untill `ckeditor5-image` is in TypeScript.
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement, data } ) => {
+			imageUploadEditing.on<ImageUploadCompleteEvent>( 'uploadComplete', ( evt, { imageElement, data } ) => {
 				editor.model.change( writer => {
 					writer.setAttribute( 'ckboxImageId', data.ckboxImageId, imageElement );
 				} );
