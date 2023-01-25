@@ -32,9 +32,8 @@ import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
-import { getNormalizedDefaultProperties } from '../utils/table-properties';
-import type { TableCellPropertiesOptions } from '../tablecellproperties';
-import { GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
+import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -55,10 +54,7 @@ const propertyToCommandMap = {
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
  * that opens a form allowing to specify the visual styling of a table cell.
  *
- * It uses the
- * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
- *
- * @extends module:core/plugin~Plugin
+ * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
 export default class TableCellPropertiesUI extends Plugin {
 	/**
@@ -167,9 +163,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * Creates the {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} instance.
 	 *
-	 * @private
-	 * @returns {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} The cell
-	 * properties form view instance.
+	 * @returns The cell properties form view instance.
 	 */
 	private _createPropertiesView() {
 		const editor = this.editor;
@@ -250,7 +244,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			commandName: 'tableCellPadding',
 			errorText: lengthErrorText,
 			validator: lengthFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.padding
+			defaultValue: this._defaultTableCellProperties!.padding!
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:width', this._getValidatedPropertyChangeCallback( {
@@ -279,11 +273,11 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		view.on<ObservableChangeEvent<string>>(
 			'change:horizontalAlignment',
-			this._getPropertyChangeCallback( 'tableCellHorizontalAlignment', this._defaultTableCellProperties!.horizontalAlignment )
+			this._getPropertyChangeCallback( 'tableCellHorizontalAlignment', this._defaultTableCellProperties!.horizontalAlignment! )
 		);
 		view.on<ObservableChangeEvent<string>>(
 			'change:verticalAlignment',
-			this._getPropertyChangeCallback( 'tableCellVerticalAlignment', this._defaultTableCellProperties!.verticalAlignment )
+			this._getPropertyChangeCallback( 'tableCellVerticalAlignment', this._defaultTableCellProperties!.verticalAlignment! )
 		);
 
 		return view;
@@ -401,10 +395,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * Creates a callback that when executed upon the {@link #view view's} property change
 	 * executes a related editor command with the new property value.
 	 *
-	 * @private
-	 * @param {String} commandName
-	 * @param {String} defaultValue The default value of the command.
-	 * @returns {Function}
+	 * @param defaultValue The default value of the command.
 	 */
 	private _getPropertyChangeCallback( commandName: string, defaultValue: string ) {
 		return ( evt, propertyName, newValue, oldValue ) => {
@@ -425,15 +416,6 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * Creates a callback that when executed upon the {@link #view view's} property change:
 	 * * Executes a related editor command with the new property value if the value is valid,
 	 * * Or sets the error text next to the invalid field, if the value did not pass the validation.
-	 *
-	 * @private
-	 * @param {Object} options
-	 * @param {String} options.commandName
-	 * @param {module:ui/view~View} options.viewField
-	 * @param {Function} options.validator
-	 * @param {String} options.errorText
-	 * @param {String} options.defaultValue
-	 * @returns {Function}
 	 */
 	private _getValidatedPropertyChangeCallback(
 		options: {

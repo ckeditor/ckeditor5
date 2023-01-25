@@ -35,7 +35,6 @@ type ColorInputViewOptions = {
  * or choose it from the configurable color palette with a preview.
  *
  * @private
- * @extends module:ui/view~View
  */
 export default class ColorInputView extends View {
 	/**
@@ -345,6 +344,7 @@ export default class ColorInputView extends View {
 	 *
 	 * * Someone picks the color in the grid.
 	 * * The color is set from the plugin level.
+	 *
 	 * @param inputValue Color value to be set.
 	 */
 	private _setInputValue( inputValue: string ) {

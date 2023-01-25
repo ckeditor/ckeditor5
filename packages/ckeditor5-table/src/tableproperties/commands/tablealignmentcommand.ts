@@ -18,11 +18,11 @@ import TablePropertyCommand from './tablepropertycommand';
  *
  * To change the alignment of the selected table, execute the command:
  *
- *		editor.execute( 'tableAlignment', {
- *			value: 'right'
- *		} );
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
+ * ```ts
+ * editor.execute( 'tableAlignment', {
+ *   value: 'right'
+ * } );
+ * ```
  */
 export default class TableAlignmentCommand extends TablePropertyCommand {
 	/**

@@ -21,11 +21,11 @@ import { getSingleValue } from '../../utils/table-properties';
  *
  * To change the border color of the selected table, execute the command:
  *
- *		editor.execute( 'tableBorderColor', {
- *			value: '#f00'
- *		} );
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
+ * ```ts
+ * editor.execute( 'tableBorderColor', {
+ *   value: '#f00'
+ * } );
+ * ```
  */
 export default class TableBorderColorCommand extends TablePropertyCommand {
 	/**

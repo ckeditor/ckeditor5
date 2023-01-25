@@ -21,18 +21,18 @@ import { getSingleValue } from '../../utils/table-properties';
  *
  * To change the border style of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellBorderStyle', {
- *			value: 'dashed'
- *		} );
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
+ * ```ts
+ * editor.execute( 'tableCellBorderStyle', {
+ *   value: 'dashed'
+ * } );
+ * ```
  */
 export default class TableCellBorderStyleCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellBorderStyleCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
 	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellBorderStyle', defaultValue );

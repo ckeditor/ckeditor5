@@ -15,11 +15,11 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a function that converts the table view representation:
  *
- *		<figure class="table"><table>...</table></figure>
+ * <figure class="table"><table>...</table></figure>
  *
  * to the model representation:
  *
- *		<table></table>
+ * <table></table>
  */
 export function upcastTableFigure() {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -192,11 +192,11 @@ function scanTable( viewTable: Element ) {
 	// As the model does not have these sections, rows from different sections must be sorted.
 	// For example, below is a valid HTML table:
 	//
-	//		<table>
-	//			<tbody><tr><td>2</td></tr></tbody>
-	//			<thead><tr><td>1</td></tr></thead>
-	//			<tbody><tr><td>3</td></tr></tbody>
-	//		</table>
+	// <table>
+	//   <tbody><tr><td>2</td></tr></tbody>
+	//   <thead><tr><td>1</td></tr></thead>
+	//   <tbody><tr><td>3</td></tr></tbody>
+	// </table>
 	//
 	// But browsers will render rows in order as: 1 as the heading and 2 and 3 as the body.
 	const headRows = [];

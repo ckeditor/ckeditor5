@@ -31,13 +31,13 @@ import type TableUtils from '../tableutils';
  *
  * For example, to merge with a cell to the right:
  *
- *		editor.execute( 'mergeTableCellRight' );
+ * ```ts
+ * editor.execute( 'mergeTableCellRight' );
+ * ```
  *
  * **Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan)
  * (for `'mergeTableCellRight'` and `'mergeTableCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan)
  * (for `'mergeTableCellUp'` and `'mergeTableCellDown'`), the command will be disabled.
- *
- * @extends module:core/command~Command
  */
 export default class MergeCellCommand extends Command {
 	/**
@@ -156,11 +156,6 @@ export default class MergeCellCommand extends Command {
 
 /**
  * Returns the cell that can be merged horizontally.
- *
- * @param {module:engine/model/element~Element} tableCell
- * @param {String} direction
- * @param {module:table/tableutils~TableUtils} tableUtils
- * @returns {module:engine/model/node~Node|null}
  */
 function getHorizontalCell( tableCell: Element, direction: string, tableUtils: TableUtils ) {
 	const tableRow = tableCell.parent!;

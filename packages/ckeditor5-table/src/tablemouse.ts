@@ -17,8 +17,6 @@ import type { DomEventData, Element } from 'ckeditor5/src/engine';
 /**
  * This plugin enables a table cells' selection with the mouse.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableMouse extends Plugin {
 	/**
@@ -197,8 +195,7 @@ export default class TableMouse extends Plugin {
 	/**
 	 * Returns the model table cell element based on the target element of the passed DOM event.
 	 *
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
-	 * @returns {module:engine/model/element~Element|undefined} Returns the table cell or `undefined`.
+	 * @returns Returns the table cell or `undefined`.
 	 */
 	private _getModelTableCellFromDomEvent( domEventData: DomEventData ) {
 		// Note: Work with positions (not element mapping) because the target element can be an attribute or other non-mapped element.

@@ -15,8 +15,6 @@ import { getCaptionFromModelSelection } from './utils';
 
 /**
   * The table caption UI plugin. It introduces the `'toggleTableCaption'` UI button.
-  *
-  * @extends module:core/plugin~Plugin
   */
 export default class TableCaptionUI extends Plugin {
 	/**

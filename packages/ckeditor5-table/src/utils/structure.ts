@@ -23,27 +23,29 @@ type CellAttributes = {
 
  * To return a cropped table that starts at first row and first column and end in third row and column:
  *
- *		const croppedTable = cropTableToDimensions( table, {
- *			startRow: 1,
- *			endRow: 3,
- *			startColumn: 1,
- *			endColumn: 3
- *		}, writer );
+ * ```ts
+ * const croppedTable = cropTableToDimensions( table, {
+ *   startRow: 1,
+ *   endRow: 3,
+ *   startColumn: 1,
+ *   endColumn: 3
+ * }, writer );
+ * ```
  *
  * Calling the code above for the table below:
  *
- *		      0   1   2   3   4                      0   1   2
- *		    ┌───┬───┬───┬───┬───┐
- *		 0  │ a │ b │ c │ d │ e │
- *		    ├───┴───┤   ├───┴───┤                  ┌───┬───┬───┐
- *		 1  │ f     │   │ g     │                  │   │   │ g │  0
- *		    ├───┬───┴───┼───┬───┤   will return:   ├───┴───┼───┤
- *		 2  │ h │ i     │ j │ k │                  │ i     │ j │  1
- *		    ├───┤       ├───┤   │                  │       ├───┤
- *		 3  │ l │       │ m │   │                  │       │ m │  2
- *		    ├───┼───┬───┤   ├───┤                  └───────┴───┘
- *		 4  │ n │ o │ p │   │ q │
- *		    └───┴───┴───┴───┴───┘
+ *        0   1   2   3   4                      0   1   2
+ *      ┌───┬───┬───┬───┬───┐
+ *   0  │ a │ b │ c │ d │ e │
+ *      ├───┴───┤   ├───┴───┤                  ┌───┬───┬───┐
+ *   1  │ f     │   │ g     │                  │   │   │ g │  0
+ *      ├───┬───┴───┼───┬───┤   will return:   ├───┴───┼───┤
+ *   2  │ h │ i     │ j │ k │                  │ i     │ j │  1
+ *      ├───┤       ├───┤   │                  │       ├───┤
+ *   3  │ l │       │ m │   │                  │       │ m │  2
+ *      ├───┼───┬───┤   ├───┤                  └───────┴───┘
+ *   4  │ n │ o │ p │   │ q │
+ *      └───┴───┴───┴───┴───┘
  */
 export function cropTableToDimensions(
 	sourceTable: Element,
@@ -104,17 +106,17 @@ export function cropTableToDimensions(
  *
  * In a table below, passing `overlapRow = 3`
  *
- *		   ┌───┬───┬───┬───┬───┐
- *		0  │ a │ b │ c │ d │ e │
- *		   │   ├───┼───┼───┼───┤
- *		1  │   │ f │ g │ h │ i │
- *		   ├───┤   ├───┼───┤   │
- *		2  │ j │   │ k │ l │   │
- *		   │   │   │   ├───┼───┤
- *		3  │   │   │   │ m │ n │  <- overlap row to check
- *		   ├───┼───┤   │   ├───│
- *		4  │ o │ p │   │   │ q │
- *		   └───┴───┴───┴───┴───┘
+ *     ┌───┬───┬───┬───┬───┐
+ *  0  │ a │ b │ c │ d │ e │
+ *     │   ├───┼───┼───┼───┤
+ *  1  │   │ f │ g │ h │ i │
+ *     ├───┤   ├───┼───┤   │
+ *  2  │ j │   │ k │ l │   │
+ *     │   │   │   ├───┼───┤
+ *  3  │   │   │   │ m │ n │  <- overlap row to check
+ *     ├───┼───┤   │   ├───│
+ *  4  │ o │ p │   │   │ q │
+ *     └───┴───┴───┴───┴───┘
  *
  * will return slot info for cells: "j", "f", "k".
  *
@@ -195,20 +197,20 @@ export function splitHorizontally( tableCell: Element, splitRow: number, writer:
  *
  * In a table below, passing `overlapColumn = 3`
  *
- *		  0   1   2   3   4
- *		┌───────┬───────┬───┐
- *		│ a     │ b     │ c │
- *		│───┬───┴───────┼───┤
- *		│ d │ e         │ f │
- *		├───┼───┬───────┴───┤
- *		│ g │ h │ i         │
- *		├───┼───┼───┬───────┤
- *		│ j │ k │ l │ m     │
- *		├───┼───┴───┼───┬───┤
- *		│ n │ o     │ p │ q │
- *		└───┴───────┴───┴───┘
- *		              ^
- *		              Overlap column to check
+ *    0   1   2   3   4
+ *  ┌───────┬───────┬───┐
+ *  │ a     │ b     │ c │
+ *  │───┬───┴───────┼───┤
+ *  │ d │ e         │ f │
+ *  ├───┼───┬───────┴───┤
+ *  │ g │ h │ i         │
+ *  ├───┼───┼───┬───────┤
+ *  │ j │ k │ l │ m     │
+ *  ├───┼───┴───┼───┬───┤
+ *  │ n │ o     │ p │ q │
+ *  └───┴───────┴───┴───┘
+ *                ^
+ *                Overlap column to check
  *
  * will return slot info for cells: "b", "e", "i".
  *
@@ -235,11 +237,9 @@ export function getHorizontallyOverlappingCells( table: Element, overlapColumn: 
 /**
  * Splits the table cell vertically.
  *
- * @param {module:engine/model/element~Element} tableCell
- * @param {Number} columnIndex The table cell column index.
- * @param {Number} splitColumn The index of column to split cell on.
- * @param {module:engine/model/writer~Writer} writer
- * @returns {module:engine/model/element~Element} Created table cell.
+ * @param columnIndex The table cell column index.
+ * @param splitColumn The index of column to split cell on.
+ * @returns Created table cell.
  */
 export function splitVertically( tableCell: Element, columnIndex: number, splitColumn: number, writer: Writer ): Element {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string );

@@ -19,11 +19,11 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * To change the background color of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellBackgroundColor', {
- *			value: '#f00'
- *		} );
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
+ * ```ts
+ * editor.execute( 'tableCellBackgroundColor', {
+ *   value: '#f00'
+ * } );
+ * ```
  */
 export default class TableCellBackgroundColorCommand extends TableCellPropertyCommand {
 	/**

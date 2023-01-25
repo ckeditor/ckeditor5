@@ -22,8 +22,6 @@ export type TablePropertyCommandExecuteOptions = {
  * The table cell attribute command.
  *
  * This command is a base command for other table property commands.
- *
- * @extends module:core/command~Command
  */
 export default class TablePropertyCommand extends Command {
 	/**

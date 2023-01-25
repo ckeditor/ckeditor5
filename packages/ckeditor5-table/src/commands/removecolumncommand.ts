@@ -24,9 +24,9 @@ import type TableUtils from '../tableutils';
  *
  * To remove the column containing the selected cell, execute the command:
  *
- *		editor.execute( 'removeTableColumn' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'removeTableColumn' );
+ * ```
  */
 export default class RemoveColumnCommand extends Command {
 	/**

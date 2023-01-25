@@ -19,8 +19,6 @@ import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widge
  *
  * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
  * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableToolbar extends Plugin {
 	/**
@@ -80,9 +78,11 @@ export default class TableToolbar extends Plugin {
  *
  * You can thus configure the toolbar like this:
  *
- *		const tableConfig = {
- *			contentToolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
- *		};
+ * ```ts
+ * const tableConfig = {
+ *   contentToolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
+ * };
+ * ```
  *
  * Of course, the same buttons can also be used in the
  * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
@@ -98,9 +98,11 @@ export default class TableToolbar extends Plugin {
  *
  * You can thus configure the toolbar like this:
  *
- *		const tableConfig = {
- *			tableToolbar: [ 'blockQuote' ]
- *		};
+ * ```ts
+ * const tableConfig = {
+ *   tableToolbar: [ 'blockQuote' ]
+ * };
+ * ```
  *
  * Of course, the same buttons can also be used in the
  * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.

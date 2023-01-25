@@ -17,9 +17,9 @@ import type { Range, Element } from 'ckeditor5/src/engine';
  *
  * To select the rows containing the selected cells, execute the command:
  *
- *		editor.execute( 'selectTableRow' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'selectTableRow' );
+ * ```
  */
 export default class SelectRowCommand extends Command {
 	/**

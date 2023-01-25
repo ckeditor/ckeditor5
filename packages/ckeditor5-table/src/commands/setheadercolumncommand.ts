@@ -23,12 +23,12 @@ import { getHorizontallyOverlappingCells, splitVertically } from '../utils/struc
  * You can make the column containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element)
  * by executing:
  *
- *		editor.execute( 'setTableColumnHeader' );
+ * ```ts
+ * editor.execute( 'setTableColumnHeader' );
+ * ```
  *
  * **Note:** All preceding columns will also become headers. If the current column is already a header, executing this command
  * will make it a regular column back again (including the following columns).
- *
- * @extends module:core/command~Command
  */
 export default class SetHeaderColumnCommand extends Command {
 	/**

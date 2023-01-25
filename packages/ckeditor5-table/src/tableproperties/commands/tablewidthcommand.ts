@@ -19,19 +19,21 @@ import type { Editor } from 'ckeditor5/src/core';
  *
  * To change the width of the selected table, execute the command:
  *
- *		editor.execute( 'tableWidth', {
- *			value: '400px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableWidth', {
+ *   value: '400px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableWidth', {
- *			value: '50'
- *		} );
+ * ```ts
+ * editor.execute( 'tableWidth', {
+ *   value: '50'
+ * } );
+ * ```
  *
  * will set the `width` attribute to `'50px'` in the model.
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableWidthCommand extends TablePropertyCommand {
 	/**

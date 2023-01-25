@@ -17,9 +17,9 @@ import type { Element, Node } from 'ckeditor5/src/engine';
  *
  * To remove the row containing the selected cell, execute the command:
  *
- *		editor.execute( 'removeTableRow' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'removeTableRow' );
+ * ```
  */
 export default class RemoveRowCommand extends Command {
 	/**

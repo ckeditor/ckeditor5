@@ -24,9 +24,9 @@ import { removeEmptyRowsColumns } from '../utils/structure';
  *
  * For example, to merge selected table cells:
  *
- *		editor.execute( 'mergeTableCells' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'mergeTableCells' );
+ * ```
  */
 export default class MergeCellsCommand extends Command {
 	/**

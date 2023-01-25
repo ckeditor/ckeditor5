@@ -33,8 +33,6 @@ import type { ColorOption } from 'ckeditor5/src/ui';
  * * {@link module:table/tablemouse~TableMouse mouse selection feature},
  * * {@link module:table/tableclipboard~TableClipboard clipboard feature},
  * * {@link module:table/tableui~TableUI UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Table extends Plugin {
 	/**

@@ -41,8 +41,6 @@ import {
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableClipboard extends Plugin {
 	/**
@@ -81,8 +79,8 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
+	 * @param evt An object containing information about the handled event.
+	 * @param data Clipboard event data.
 	 */
 	private _onCopyCut( evt: EventInfo, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
 		const tableSelection = this.editor.plugins.get( TableSelection );
@@ -198,19 +196,6 @@ export default class TableClipboard extends Plugin {
 
 	/**
 	 * Replaces the part of selectedTable with pastedTable.
-	 *
-	 * @param {module:engine/model/element~Element} pastedTable
-	 * @param {Object} pastedDimensions
-	 * @param {Number} pastedDimensions.height
-	 * @param {Number} pastedDimensions.width
-	 * @param {module:engine/model/element~Element} selectedTable
-	 * @param {Object} selection
-	 * @param {Number} selection.firstColumn
-	 * @param {Number} selection.firstRow
-	 * @param {Number} selection.lastColumn
-	 * @param {Number} selection.lastRow
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
 	private _replaceSelectedCellsWithPasted(
 		pastedTable: Element,
@@ -480,26 +465,29 @@ function expandTableSize( table: Element, expectedHeight: number, expectedWidth:
  *
  * For instance, from a table below:
  *
- *		+----+----+----+----+
- *		| 00 | 01 | 02 | 03 |
- *		+    +----+----+----+
- *		|    | 11      | 13 |
- *		+----+         +----+
- *		| 20 |         | 23 |
- *		+----+----+----+----+
+ *   +----+----+----+----+
+ *   | 00 | 01 | 02 | 03 |
+ *   +    +----+----+----+
+ *   |    | 11      | 13 |
+ *   +----+         +----+
+ *   | 20 |         | 23 |
+ *   +----+----+----+----+
  *
  * The method will return an array (numbers represents cell element):
  *
- *	const map = [
- *		[ '00', '01', '02', '03' ],
- *		[ null, '11', null, '13' ],
- *		[ '20', null, null, '23' ]
- *	]
+ * ```ts
+ * const map = [
+ *   [ '00', '01', '02', '03' ],
+ *   [ null, '11', null, '13' ],
+ *   [ '20', null, null, '23' ]
+ * ]
+ * ```
  *
  * This allows for a quick access to table at give row & column. For instance to access table cell "13" from pasted table call:
  *
- *		const cell = map[ 1 ][ 3 ]
- *
+ * ```ts
+ * const cell = map[ 1 ][ 3 ]
+ * ```
  */
 function createLocationMap( table: Element, width: number, height: number ) {
 	// Create height x width (row x column) two-dimensional table to store cells.

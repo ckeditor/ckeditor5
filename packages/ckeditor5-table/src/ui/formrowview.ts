@@ -20,7 +20,6 @@ import '../../theme/formrow.css';
  * it will become a component in ckeditor5-ui.
  *
  * @private
- * @extends module:ui/view~View
  */
 export default class FormRowView extends View {
 	/**
@@ -28,7 +27,7 @@ export default class FormRowView extends View {
 	 *
 	 * @observable
 	 */
-	public class!: string | null;
+	public declare class: string | null;
 
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
@@ -43,7 +42,7 @@ export default class FormRowView extends View {
 	 * @observable
 	 * @private
 	 */
-	public _role!: string | null;
+	public declare _role: string | null;
 
 	/**
 	 * The ARIA property reflected by the `aria-labelledby` DOM attribute of the {@link #element}.
@@ -53,7 +52,7 @@ export default class FormRowView extends View {
 	 * @observable
 	 * @private
 	 */
-	public _ariaLabelledBy!: string | null;
+	public declare _ariaLabelledBy: string | null;
 
 	/**
 	 * Creates an instance of the form row class.

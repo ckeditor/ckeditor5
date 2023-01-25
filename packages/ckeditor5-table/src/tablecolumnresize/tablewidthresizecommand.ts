@@ -10,9 +10,6 @@
 import type { Editor } from 'ckeditor5/src/core';
 import TablePropertyCommand, { type TablePropertyCommandExecuteOptions } from '../tableproperties/commands/tablepropertycommand';
 
-/**
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
- */
 export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableWidthResizeCommand` instance.

@@ -38,8 +38,6 @@ import '../theme/tableediting.css';
 
 /**
  * The table editing feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableEditing extends Plugin {
 	/**
@@ -208,8 +206,6 @@ export default class TableEditing extends Plugin {
  * <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
  *
  * <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
- *
- * @returns {Function}
  */
 function mapTableCellModelPositionToView(): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
@@ -239,7 +235,7 @@ function mapTableCellModelPositionToView(): GetCallback<MapperModelToViewPositio
  * Returns fixed colspan and rowspan attrbutes values.
  *
  * @param type colspan or rowspan.
- * @returns {Function} conversion value function.
+ * @returns conversion value function.
  */
 function upcastCellSpan( type: string ) {
 	return ( cell: ViewElement ) => {

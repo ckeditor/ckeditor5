@@ -23,9 +23,9 @@ import type {
  *
  * To insert a table at the current selection, execute the command and specify the dimensions:
  *
- *		editor.execute( 'insertTable', { rows: 20, columns: 5 } );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'insertTable', { rows: 20, columns: 5 } );
+ * ```
  */
 export default class InsertTableCommand extends Command {
 	/**
@@ -44,7 +44,6 @@ export default class InsertTableCommand extends Command {
 	 *
 	 * Inserts a table with the given number of rows and columns into the editor.
 	 *
-	 * @param options
 	 * @param options.rows The number of rows to create in the inserted table. Default value is 2.
 	 * @param options.columns The number of columns to create in the inserted table. Default value is 2.
 	 * @param options.headingRows The number of heading rows. If not provided it will default to

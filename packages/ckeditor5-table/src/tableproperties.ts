@@ -21,8 +21,6 @@ import TablePropertiesUI from './tableproperties/tablepropertiesui';
  * This is a "glue" plugin that loads the
  * {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table properties editing feature} and
  * the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI table properties UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableProperties extends Plugin {
 	/**
@@ -46,39 +44,43 @@ export default class TableProperties extends Plugin {
  * * The color palette for the table border color style field (`tableProperties.borderColors`),
  * * The color palette for the table background style field (`tableProperties.backgroundColors`).
  *
- *		const tableConfig = {
- *			tableProperties: {
- *				borderColors: [
- *					{
- *						color: 'hsl(0, 0%, 90%)',
- *						label: 'Light grey'
- *					},
- *					// ...
- *				],
- *				backgroundColors: [
- *					{
- *						color: 'hsl(120, 75%, 60%)',
- *						label: 'Green'
- *					},
- *					// ...
- *				]
- *			}
- *		};
+ * ```ts
+ * const tableConfig = {
+ *   tableProperties: {
+ *     borderColors: [
+ *       {
+ *         color: 'hsl(0, 0%, 90%)',
+ *         label: 'Light grey'
+ *       },
+ *       // ...
+ *     ],
+ *     backgroundColors: [
+ *       {
+ *         color: 'hsl(120, 75%, 60%)',
+ *         label: 'Green'
+ *       },
+ *       // ...
+ *     ]
+ *   }
+ * };
+ * ```
  *
  * * The default styles for tables (`tableProperties.defaultProperties`):
  *
- *		const tableConfig = {
- *			tableProperties: {
- *				defaultProperties: {
- *					borderStyle: 'dashed',
- *					borderColor: 'hsl(0, 0%, 90%)',
- *					borderWidth: '3px',
- *					alignment: 'left'
- *				}
- *			}
- *		}
+ * ```ts
+ * const tableConfig = {
+ *   tableProperties: {
+ *     defaultProperties: {
+ *       borderStyle: 'dashed',
+ *       borderColor: 'hsl(0, 0%, 90%)',
+ *       borderWidth: '3px',
+ *       alignment: 'left'
+ *     }
+ *   }
+ * }
+ * ```
  *
- * 	 {@link module:table/tableproperties~TablePropertiesOptions Read more about the supported properties.}
+ * {@link module:table/tableproperties~TablePropertiesOptions Read more about the supported properties.}
  *
  * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface

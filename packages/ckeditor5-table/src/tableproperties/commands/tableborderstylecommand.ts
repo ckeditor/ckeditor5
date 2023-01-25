@@ -21,11 +21,11 @@ import type { Editor } from 'ckeditor5/src/core';
  *
  * To change the border style of the selected table, execute the command:
  *
- *		editor.execute( 'tableBorderStyle', {
- *			value: 'dashed'
- *		} );
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
+ * ```ts
+ * editor.execute( 'tableBorderStyle', {
+ *   value: 'dashed'
+ * } );
+ * ```
  */
 export default class TableBorderStyleCommand extends TablePropertyCommand {
 	/**

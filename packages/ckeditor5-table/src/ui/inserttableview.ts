@@ -18,7 +18,6 @@ import './../../theme/inserttable.css';
  *
  * It renders a 10x10 grid to choose the inserted table size.
  *
- * @extends module:ui/view~View
  * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class InsertTableView extends View {
@@ -55,7 +54,6 @@ export default class InsertTableView extends View {
 	 * The label text displayed under the boxes.
 	 *
 	 * @observable
-	 * @member {String} #label
 	 */
 	declare public label: string;
 
@@ -179,8 +177,6 @@ export default class InsertTableView extends View {
 
 	/**
 	 * Highlights grid boxes depending on rows and columns selected.
-	 *
-	 * @private
 	 */
 	private _highlightGridBoxes() {
 		const rows = this.rows;

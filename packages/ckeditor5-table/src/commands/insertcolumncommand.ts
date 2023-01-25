@@ -17,13 +17,15 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  *
  * To insert a column to the left of the selected cell, execute the following command:
  *
- *		editor.execute( 'insertTableColumnLeft' );
+ * ```ts
+ * editor.execute( 'insertTableColumnLeft' );
+ * ```
  *
  * To insert a column to the right of the selected cell, execute the following command:
  *
- *		editor.execute( 'insertTableColumnRight' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'insertTableColumnRight' );
+ * ```
  */
 export default class InsertColumnCommand extends Command {
 	/**

@@ -41,33 +41,33 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * For example, see the following table which has a cell (FOO) with the rowspan attribute (2):
  *
- *		<table headingRows="1">
- *			<tableRow>
- *				<tableCell rowspan="2"><paragraph>FOO</paragraph></tableCell>
- *				<tableCell colspan="2"><paragraph>BAR</paragraph></tableCell>
- *			</tableRow>
- *			<tableRow>
- *				<tableCell><paragraph>BAZ</paragraph></tableCell>
- *				<tableCell><paragraph>XYZ</paragraph></tableCell>
- *			</tableRow>
- *		</table>
+ * <table headingRows="1">
+ *   <tableRow>
+ *     <tableCell rowspan="2"><paragraph>FOO</paragraph></tableCell>
+ *     <tableCell colspan="2"><paragraph>BAR</paragraph></tableCell>
+ *   </tableRow>
+ *   <tableRow>
+ *     <tableCell><paragraph>BAZ</paragraph></tableCell>
+ *     <tableCell><paragraph>XYZ</paragraph></tableCell>
+ *   </tableRow>
+ * </table>
  *
  * It will be rendered in the view as:
  *
- *		<table>
- *			<thead>
- *				<tr>
- *					<td rowspan="2">FOO</td>
- *					<td colspan="2">BAR</td>
- *				</tr>
- *			</thead>
- *			<tbody>
- *				<tr>
- *					<td>BAZ</td>
- *					<td>XYZ</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <thead>
+ *     <tr>
+ *       <td rowspan="2">FOO</td>
+ *       <td colspan="2">BAR</td>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>BAZ</td>
+ *       <td>XYZ</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * In the above example the table will be rendered as a table with two rows: one in the header and second one in the body.
  * The table cell (FOO) cannot span over multiple rows as it would extend from the header to the body section.
@@ -89,20 +89,20 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * The table from the above example will be fixed and rendered to the view as below:
  *
- *		<table>
- *			<thead>
- *				<tr>
- *					<td rowspan="2">FOO</td>
- *					<td colspan="2">BAR</td>
- *				</tr>
- *			</thead>
- *			<tbody>
- *				<tr>
- *					<td>BAZ</td>
- *					<td>XYZ</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <thead>
+ *     <tr>
+ *       <td rowspan="2">FOO</td>
+ *       <td colspan="2">BAR</td>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>BAZ</td>
+ *       <td>XYZ</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * ## Collaboration and undo - Expectations vs post-fixer results
  *
@@ -114,18 +114,18 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * As an example see the table below:
  *
- *		<table>
- *			<tbody>
- *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *				</tr>
- *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>11</td>
+ *       <td>12</td>
+ *     </tr>
+ *     <tr>
+ *       <td>21</td>
+ *       <td>22</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * and the user actions:
  *
@@ -135,90 +135,90 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  * 4. Both users will have a table as below:
  *
  *
- *		<table>
- *			<tbody>
- *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by A)</td>
- *				</tr>
- *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *					<td>(empty, inserted by A)</td>
- *				</tr>
- *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>11</td>
+ *       <td>12</td>
+ *       <td>(empty, inserted by A)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>21</td>
+ *       <td>22</td>
+ *       <td>(empty, inserted by A)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by B)</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * The last row is shorter then others so the table post-fixer will add an empty row to the last row:
  *
- *		<table>
- *			<tbody>
- *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by A)</td>
- *				</tr>
- *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *					<td>(empty, inserted by A)</td>
- *				</tr>
- *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by the post-fixer)</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>11</td>
+ *       <td>12</td>
+ *       <td>(empty, inserted by A)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>21</td>
+ *       <td>22</td>
+ *       <td>(empty, inserted by A)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by the post-fixer)</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * Unfortunately undo does not know the nature of the changes and depending on which user applies the post-fixer changes, undoing them
  * might lead to a broken table. If User B undoes inserting the column to the table, the undo engine will undo only the operations of
  * inserting empty cells to rows from the initial table state (row 1 and 2) but the cell in the post-fixed row will remain:
  *
- *		<table>
- *			<tbody>
- *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *				</tr>
- *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *				</tr>
- *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by a post-fixer)</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>11</td>
+ *       <td>12</td>
+ *     </tr>
+ *     <tr>
+ *       <td>21</td>
+ *       <td>22</td>
+ *     </tr>
+ *     <tr>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by a post-fixer)</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * After undo, the table post-fixer will detect that two rows are shorter than others and will fix the table to:
  *
- *		<table>
- *			<tbody>
- *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by a post-fixer after undo)</td>
- *				</tr>
- *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *					<td>(empty, inserted by a post-fixer after undo)</td>
- *				</tr>
- *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by a post-fixer)</td>
- *				</tr>
- *			</tbody>
- *		</table>
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>11</td>
+ *       <td>12</td>
+ *       <td>(empty, inserted by a post-fixer after undo)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>21</td>
+ *       <td>22</td>
+ *       <td>(empty, inserted by a post-fixer after undo)</td>
+ *     </tr>
+ *     <tr>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by B)</td>
+ *       <td>(empty, inserted by a post-fixer)</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  */
 export default function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );

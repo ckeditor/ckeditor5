@@ -109,10 +109,7 @@ export function lineWidthFieldValidator( value: string ): boolean {
 /**
  * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
- * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
- * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
- * @param {String} defaultStyle The default border.
- * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
+ * @param defaultStyle The default border.
  */
 export function getBorderStyleDefinitions(
 	view: TableCellPropertiesView | TablePropertiesView,
@@ -158,14 +155,7 @@ export function getBorderStyleDefinitions(
  * * have some icons,
  * * set a certain UI view property value upon execution.
  *
- * @param {Object} options
- * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
- * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} options.view
- * @param {Array.<String>} options.icons
- * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
- * @param {Object.<String,String>} labels
- * @param {String} propertyName
- * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
+ * @param nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
 export function fillToolbar<TView extends View, TPropertyName extends keyof TView>(
 	options: {
@@ -219,69 +209,71 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
  * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
  * and contains the following color definitions:
  *
- *		const defaultColors = [
- *			{
- *				color: 'hsl(0, 0%, 0%)',
- *				label: 'Black'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 30%)',
- *				label: 'Dim grey'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 60%)',
- *				label: 'Grey'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 90%)',
- *				label: 'Light grey'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 100%)',
- *				label: 'White',
- *				hasBorder: true
- *			},
- *			{
- *				color: 'hsl(0, 75%, 60%)',
- *				label: 'Red'
- *			},
- *			{
- *				color: 'hsl(30, 75%, 60%)',
- *				label: 'Orange'
- *			},
- *			{
- *				color: 'hsl(60, 75%, 60%)',
- *				label: 'Yellow'
- *			},
- *			{
- *				color: 'hsl(90, 75%, 60%)',
- *				label: 'Light green'
- *			},
- *			{
- *				color: 'hsl(120, 75%, 60%)',
- *				label: 'Green'
- *			},
- *			{
- *				color: 'hsl(150, 75%, 60%)',
- *				label: 'Aquamarine'
- *			},
- *			{
- *				color: 'hsl(180, 75%, 60%)',
- *				label: 'Turquoise'
- *			},
- *			{
- *				color: 'hsl(210, 75%, 60%)',
- *				label: 'Light blue'
- *			},
- *			{
- *				color: 'hsl(240, 75%, 60%)',
- *				label: 'Blue'
- *			},
- *			{
- *				color: 'hsl(270, 75%, 60%)',
- *				label: 'Purple'
- *			}
- *		];
+ * ```ts
+ * const defaultColors = [
+ *   {
+ *     color: 'hsl(0, 0%, 0%)',
+ *     label: 'Black'
+ *   },
+ *   {
+ *     color: 'hsl(0, 0%, 30%)',
+ *     label: 'Dim grey'
+ *   },
+ *   {
+ *     color: 'hsl(0, 0%, 60%)',
+ *     label: 'Grey'
+ *   },
+ *   {
+ *     color: 'hsl(0, 0%, 90%)',
+ *     label: 'Light grey'
+ *   },
+ *   {
+ *     color: 'hsl(0, 0%, 100%)',
+ *     label: 'White',
+ *     hasBorder: true
+ *   },
+ *   {
+ *     color: 'hsl(0, 75%, 60%)',
+ *     label: 'Red'
+ *   },
+ *   {
+ *     color: 'hsl(30, 75%, 60%)',
+ *     label: 'Orange'
+ *   },
+ *   {
+ *     color: 'hsl(60, 75%, 60%)',
+ *     label: 'Yellow'
+ *   },
+ *   {
+ *     color: 'hsl(90, 75%, 60%)',
+ *     label: 'Light green'
+ *   },
+ *   {
+ *     color: 'hsl(120, 75%, 60%)',
+ *     label: 'Green'
+ *   },
+ *   {
+ *     color: 'hsl(150, 75%, 60%)',
+ *     label: 'Aquamarine'
+ *   },
+ *   {
+ *     color: 'hsl(180, 75%, 60%)',
+ *     label: 'Turquoise'
+ *   },
+ *   {
+ *     color: 'hsl(210, 75%, 60%)',
+ *     label: 'Light blue'
+ *   },
+ *   {
+ *     color: 'hsl(240, 75%, 60%)',
+ *     label: 'Blue'
+ *   },
+ *   {
+ *     color: 'hsl(270, 75%, 60%)',
+ *     label: 'Purple'
+ *   }
+ * ];
+ * ```
  */
 export const defaultColors: TableColorConfig = [
 	{
@@ -363,23 +355,22 @@ export const defaultColors: TableColorConfig = [
  *
  * Usage:
  *
- *		const colorInputCreator = getLabeledColorInputCreator( {
- *			colorConfig: [ ... ],
- *			columns: 3,
- *		} );
+ * ```ts
+ * const colorInputCreator = getLabeledColorInputCreator( {
+ *   colorConfig: [ ... ],
+ *   columns: 3,
+ * } );
  *
- *		const labeledInputView = new LabeledFieldView( locale, colorInputCreator );
- *		console.log( labeledInputView.view ); // A color input instance.
+ * const labeledInputView = new LabeledFieldView( locale, colorInputCreator );
+ * console.log( labeledInputView.view ); // A color input instance.
+ * ```
  *
  * @private
  * @param options Color input options.
- * @param {module:table/table~TableColorConfig} options.colorConfig The configuration of the color palette
- * displayed in the input's dropdown.
- * @param {Number} options.columns The configuration of the number of columns the color palette consists of
- * in the input's dropdown.
- * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+ * @param options.colorConfig The configuration of the color palette displayed in the input's dropdown.
+ * @param options.columns The configuration of the number of columns the color palette consists of in the input's dropdown.
+ * @param options.defaultColorValue If specified, the color input view will replace the "Remove color" button with
  * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
- * @returns {Function}
  */
 export function getLabeledColorInputCreator(
 	options: {
@@ -425,10 +416,6 @@ function isNumberString( value: string ) {
 	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
 }
 
-/**
- * @param {Array.<Object>} colorConfig
- * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
- */
 function colorConfigToColorGridDefinitions( colorConfig: Array<NormalizedColorOption> ) {
 	return colorConfig.map( item => ( {
 		color: item.model,

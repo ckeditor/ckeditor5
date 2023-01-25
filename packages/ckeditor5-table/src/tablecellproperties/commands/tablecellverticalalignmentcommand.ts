@@ -19,9 +19,11 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * To change the vertical text alignment of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellVerticalAlignment', {
- *			value: 'top'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellVerticalAlignment', {
+ *   value: 'top'
+ * } );
+ * ```
  *
  * The following values, corresponding to the
  * [`vertical-align` CSS attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align), are allowed:
@@ -30,8 +32,6 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * * `'bottom'`
  *
  * The `'middle'` value is the default one so there is no need to set it.
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellVerticalAlignmentCommand extends TableCellPropertyCommand {
 	/**

@@ -19,8 +19,6 @@ import { enableProperty } from '../utils/common';
  *
  * Introduces `tableCellWidth` table cell model attribute alongside with its converters
  * and a command.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableCellWidthEditing extends Plugin {
 	/**

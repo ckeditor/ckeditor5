@@ -19,9 +19,9 @@ import TableWalker from '../tablewalker';
  *
  * To select the columns containing the selected cells, execute the command:
  *
- *		editor.execute( 'selectTableColumn' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'selectTableColumn' );
+ * ```
  */
 export default class SelectColumnCommand extends Command {
 	/**

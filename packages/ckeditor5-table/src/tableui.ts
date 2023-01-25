@@ -35,8 +35,6 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'mergeTableCells'` split button.
  *
  * The `'tableColumn'`, `'tableRow'` and `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableUI extends Plugin {
 	/**
@@ -315,10 +313,8 @@ export default class TableUI extends Plugin {
 	 * Injects a {@link module:ui/list/listview~ListView} into the passed dropdown with buttons
 	 * which execute editor commands as configured in passed options.
 	 *
-	 * @private
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
-	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
-	 * @returns {Array.<module:core/command~Command>} Commands the list options are interacting with.
+	 * @param options The list of options for the dropdown.
+	 * @returns Commands the list options are interacting with.
 	 */
 	private _fillDropdownWithListOptions( dropdownView: DropdownView, options: Array<ListDropdownItemDefinition> ) {
 		const editor = this.editor;

@@ -17,13 +17,15 @@ import type { DefaultProperties } from '../tableproperties';
  *
  * If a string is passed, it is treated as a single value (pass-through).
  *
- *		// Returns 'foo':
- *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
- *		getSingleValue( 'foo' );
+ * ```ts
+ * // Returns 'foo':
+ * getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
+ * getSingleValue( 'foo' );
  *
- *		// Returns undefined:
- *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
- *		getSingleValue( { top: 'foo', right: 'foo' } );
+ * // Returns undefined:
+ * getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
+ * getSingleValue( { top: 'foo', right: 'foo' } );
+ * ```
  */
 export function getSingleValue( objectOrString: BoxSides | string ): string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
@@ -42,10 +44,12 @@ export function getSingleValue( objectOrString: BoxSides | string ): string | un
  *
  * **Note**: It does nothing to non-numeric values.
  *
- *		getSingleValue( 25, 'px' );		// '25px'
- *		getSingleValue( 25, 'em' );		// '25em'
- *		getSingleValue( '25em', 'px' );	// '25em'
- *		getSingleValue( 'foo', 'px' );	// 'foo'
+ * ```ts
+ * getSingleValue( 25, 'px' ); // '25px'
+ * getSingleValue( 25, 'em' ); // '25em'
+ * getSingleValue( '25em', 'px' ); // '25em'
+ * getSingleValue( 'foo', 'px' ); // 'foo'
+ * ```
  *
  * @param defaultUnit A default unit added to a numeric value.
  */
@@ -79,14 +83,11 @@ export type NormalizedDefaultProperties = {
 /**
  * Returns the normalized configuration.
  *
- * @param {Object} config
- * @param {Object} [options={}]
  * @param options.includeAlignmentProperty Whether the "alignment" property should be added.
  * @param options.includePaddingProperty Whether the "padding" property should be added.
  * @param options.includeVerticalAlignmentProperty Whether the "verticalAlignment" property should be added.
  * @param options.includeHorizontalAlignmentProperty Whether the "horizontalAlignment" property should be added.
  * @param options.isRightToLeftContent Whether the content is right-to-left.
- * @returns {Object}
  */
 export function getNormalizedDefaultProperties(
 	config: DefaultProperties | DefaultCellProperties,

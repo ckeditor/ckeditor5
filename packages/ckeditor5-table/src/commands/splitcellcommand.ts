@@ -20,24 +20,18 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  * ```ts
  * editor.execute( 'splitTableCellVertically' );
  * ```
- *
- * @extends module:core/command~Command
  */
 export default class SplitCellCommand extends Command {
 	/**
 	 * The direction that indicates which cell will be split.
-	 *
-	 * @readonly
-	 * @member {String} #direction
 	 */
 	public readonly direction: string;
 
 	/**
 	 * Creates a new `SplitCellCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
-	 * @param {Object} options
-	 * @param {String} options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
+	 * @param editor The editor on which this command will be used.
+	 * @param options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
 	constructor( editor: Editor, options: { direction?: string } = {} ) {
 		super( editor );

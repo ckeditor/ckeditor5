@@ -20,19 +20,21 @@ import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
  *
  * To change the height of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellHeight', {
- *			value: '50px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellHeight', {
+ *   value: '50px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableCellHeight', {
- *			value: '50'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellHeight', {
+ *   value: '50'
+ * } );
+ * ```
  *
  * will set the `height` attribute to `'50px'` in the model.
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	/**

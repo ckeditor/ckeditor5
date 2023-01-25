@@ -21,19 +21,21 @@ import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-
  *
  * To change the padding of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellPadding', {
- *			value: '5px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellPadding', {
+ *   value: '5px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableCellPadding', {
- *			value: '5'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellPadding', {
+ *   value: '5'
+ * } );
+ * ```
  *
  * will set the `padding` attribute to `'5px'` in the model.
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**

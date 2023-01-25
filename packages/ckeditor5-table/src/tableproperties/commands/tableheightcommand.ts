@@ -19,19 +19,21 @@ import type { Editor } from 'ckeditor5/src/core';
  *
  * To change the height of the selected table, execute the command:
  *
- *		editor.execute( 'tableHeight', {
- *			value: '500px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableHeight', {
+ *   value: '500px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableHeight', {
- *			value: '50'
- *		} );
+ * ```ts
+ * editor.execute( 'tableHeight', {
+ *   value: '50'
+ * } );
+ * ```
  *
  * will set the `height` attribute to `'50px'` in the model.
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableHeightCommand extends TablePropertyCommand {
 	/**

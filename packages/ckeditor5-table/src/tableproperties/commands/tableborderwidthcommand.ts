@@ -21,19 +21,21 @@ import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-
  *
  * To change the border width of the selected table, execute the command:
  *
- *		editor.execute( 'tableBorderWidth', {
- *			value: '5px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableBorderWidth', {
+ *   value: '5px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableBorderWidth', {
- *			value: '5'
- *		} );
+ * ```ts
+ * editor.execute( 'tableBorderWidth', {
+ *   value: '5'
+ * } );
+ * ```
  *
  * will set the `borderWidth` attribute to `'5px'` in the model.
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**

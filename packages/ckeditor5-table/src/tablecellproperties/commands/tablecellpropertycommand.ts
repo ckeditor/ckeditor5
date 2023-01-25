@@ -14,8 +14,6 @@ import type { Element, Batch } from 'ckeditor5/src/engine';
  * The table cell attribute command.
  *
  * The command is a base command for other table cell property commands.
- *
- * @extends module:core/command~Command
  */
 export default class TableCellPropertyCommand extends Command {
 	/**

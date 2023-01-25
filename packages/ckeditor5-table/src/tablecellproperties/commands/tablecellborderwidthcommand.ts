@@ -21,26 +21,28 @@ import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-
  *
  * To change the border width of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellBorderWidth', {
- *			value: '5px'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellBorderWidth', {
+ *   value: '5px'
+ * } );
+ * ```
  *
  * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
- *		editor.execute( 'tableCellBorderWidth', {
- *			value: '5'
- *		} );
+ * ```ts
+ * editor.execute( 'tableCellBorderWidth', {
+ *   value: '5'
+ * } );
+ * ```
  *
  * will set the `borderWidth` attribute to `'5px'` in the model.
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBorderWidthCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellBorderWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
+	 * @param editor An editor in which this command will be used.
+	 * @param defaultValue The default value of the attribute.
 	 */
 	constructor( editor: Editor, defaultValue: string ) {
 		super( editor, 'tableCellBorderWidth', defaultValue );

@@ -34,8 +34,6 @@ import '../theme/tableselection.css';
 /**
  * This plugin enables the advanced table cells, rows and columns selection.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableSelection extends Plugin {
 	/**
@@ -155,15 +153,14 @@ export default class TableSelection extends Plugin {
 	 * Sets the model selection based on given anchor and target cells (can be the same cell).
 	 * Takes care of setting the backward flag.
 	 *
-	 *		const modelRoot = editor.model.document.getRoot();
-	 *		const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
-	 *		const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+	 * ```ts
+	 * const modelRoot = editor.model.document.getRoot();
+	 * const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+	 * const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 	 *
-	 *		const tableSelection = editor.plugins.get( 'TableSelection' );
-	 *		tableSelection.setCellSelection( firstCell, lastCell );
-	 *
-	 * @param {module:engine/model/element~Element} anchorCell
-	 * @param {module:engine/model/element~Element} targetCell
+	 * const tableSelection = editor.plugins.get( 'TableSelection' );
+	 * tableSelection.setCellSelection( firstCell, lastCell );
+	 * ```
 	 */
 	public setCellSelection( anchorCell: Element, targetCell: Element ): void {
 		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
@@ -178,8 +175,6 @@ export default class TableSelection extends Plugin {
 
 	/**
 	 * Returns the focus cell from the current selection.
-	 *
-	 * @returns {module:engine/model/element~Element}
 	 */
 	public getFocusCell(): Element | null {
 		const selection = this.editor.model.document.selection;
@@ -195,8 +190,6 @@ export default class TableSelection extends Plugin {
 
 	/**
 	 * Returns the anchor cell from the current selection.
-	 *
-	 * @returns {module:engine/model/element~Element} anchorCell
 	 */
 	public getAnchorCell(): Element | null {
 		const selection = this.editor.model.document.selection;
@@ -337,9 +330,7 @@ export default class TableSelection extends Plugin {
 	 * the event and injects the custom view selection in the data that translates correctly to the actual state
 	 * of the multi-cell selection in the model.
 	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Insert text event data.
+	 * @param data Insert text event data.
 	 */
 	private _handleInsertTextEvent( evt: EventInfo, data: InsertTextEventData ) {
 		const editor = this.editor;

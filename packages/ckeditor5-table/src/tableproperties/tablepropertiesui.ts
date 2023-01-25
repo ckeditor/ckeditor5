@@ -8,7 +8,14 @@
  */
 
 import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { ButtonView, ContextualBalloon, clickOutsideHandler, getLocalizedColorOptions, normalizeColorOptions, LabelView, LabeledFieldView } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	ContextualBalloon,
+	clickOutsideHandler,
+	getLocalizedColorOptions,
+	normalizeColorOptions,
+	type LabeledFieldView
+} from 'ckeditor5/src/ui';
 
 import { debounce } from 'lodash-es';
 
@@ -46,10 +53,7 @@ const propertyToCommandMap = {
  * The table properties UI plugin. It introduces the `'tableProperties'` button
  * that opens a form allowing to specify visual styling of an entire table.
  *
- * It uses the
- * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
- *
- * @extends module:core/plugin~Plugin
+ * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
 export default class TablePropertiesUI extends Plugin {
 	/**
@@ -150,9 +154,7 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * Creates the {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} instance.
 	 *
-	 * @private
-	 * @returns {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} The table
-	 * properties form view instance.
+	 * @returns The table properties form view instance.
 	 */
 	private _createPropertiesView() {
 		const editor = this.editor;
@@ -374,10 +376,8 @@ export default class TablePropertiesUI extends Plugin {
 	 *
 	 * If new value will be set to the default value, the command will not be executed.
 	 *
-	 * @private
-	 * @param {String} commandName The command that will be executed.
-	 * @param {String} defaultValue The default value of the command.
-	 * @returns {Function}
+	 * @param commandName The command that will be executed.
+	 * @param defaultValue The default value of the command.
 	 */
 	private _getPropertyChangeCallback( commandName: string, defaultValue: string ) {
 		return ( evt: EventInfo, propertyName: string, newValue: string, oldValue?: string ) => {
@@ -398,15 +398,6 @@ export default class TablePropertiesUI extends Plugin {
 	 * Creates a callback that when executed upon {@link #view view's} property change:
 	 * * executes a related editor command with the new property value if the value is valid,
 	 * * or sets the error text next to the invalid field, if the value did not pass the validation.
-	 *
-	 * @private
-	 * @param {Object} options
-	 * @param {String} options.commandName
-	 * @param {module:ui/view~View} options.viewField
-	 * @param {Function} options.validator
-	 * @param {String} options.errorText
-	 * @param {String} options.defaultValue
-	 * @returns {Function}
 	 */
 	private _getValidatedPropertyChangeCallback(
 		options: {

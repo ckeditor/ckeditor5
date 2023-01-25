@@ -45,8 +45,6 @@ const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
  * - background color: `'tableBackgroundColor'`
  * - horizontal alignment: `'tableAlignment'`
  * - width & height: `'tableWidth'` & `'tableHeight'`
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TablePropertiesEditing extends Plugin {
 	/**
@@ -214,7 +212,7 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 /**
  * Enables conversion for an attribute for simple view-model mappings.
  *
- * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
+ * @param options.defaultValue The default value for the specified `modelAttribute`.
  */
 function enableProperty(
 	schema: Schema,

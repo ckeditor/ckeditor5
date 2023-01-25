@@ -122,47 +122,51 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 *
 	 * To iterate over a given row:
 	 *
-	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 2 } );
+	 * ```ts
+	 * const tableWalker = new TableWalker( table, { startRow: 1, endRow: 2 } );
 	 *
-	 *		for ( const tableSlot of tableWalker ) {
-	 *			console.log( 'A cell at row', tableSlot.row, 'and column', tableSlot.column );
-	 *		}
+	 * for ( const tableSlot of tableWalker ) {
+	 *   console.log( 'A cell at row', tableSlot.row, 'and column', tableSlot.column );
+	 * }
+	 * ```
 	 *
 	 * For instance the code above for the following table:
 	 *
-	 *		+----+----+----+----+----+----+
-	 *		| 00      | 02 | 03 | 04 | 05 |
-	 *		|         +----+----+----+----+
-	 *		|         | 12      | 14 | 15 |
-	 *		|         +----+----+----+    +
-	 *		|         | 22           |    |
-	 *		|----+----+----+----+----+    +
-	 *		| 30 | 31 | 32 | 33 | 34 |    |
-	 *		+----+----+----+----+----+----+
+	 *  +----+----+----+----+----+----+
+	 *  | 00      | 02 | 03 | 04 | 05 |
+	 *  |         +----+----+----+----+
+	 *  |         | 12      | 14 | 15 |
+	 *  |         +----+----+----+    +
+	 *  |         | 22           |    |
+	 *  |----+----+----+----+----+    +
+	 *  | 30 | 31 | 32 | 33 | 34 |    |
+	 *  +----+----+----+----+----+----+
 	 *
 	 * will log in the console:
 	 *
-	 *		'A cell at row 1 and column 2'
-	 *		'A cell at row 1 and column 4'
-	 *		'A cell at row 1 and column 5'
-	 *		'A cell at row 2 and column 2'
+	 *  'A cell at row 1 and column 2'
+	 *  'A cell at row 1 and column 4'
+	 *  'A cell at row 1 and column 5'
+	 *  'A cell at row 2 and column 2'
 	 *
 	 * To also iterate over spanned cells:
 	 *
-	 *		const tableWalker = new TableWalker( table, { row: 1, includeAllSlots: true } );
+	 * ```ts
+	 * const tableWalker = new TableWalker( table, { row: 1, includeAllSlots: true } );
 	 *
-	 *		for ( const tableSlot of tableWalker ) {
-	 *			console.log( 'Slot at', tableSlot.row, 'x', tableSlot.column, ':', tableSlot.isAnchor ? 'is anchored' : 'is spanned' );
-	 *		}
+	 * for ( const tableSlot of tableWalker ) {
+	 *   console.log( 'Slot at', tableSlot.row, 'x', tableSlot.column, ':', tableSlot.isAnchor ? 'is anchored' : 'is spanned' );
+	 * }
+	 * ```
 	 *
 	 * will log in the console for the table from the previous example:
 	 *
-	 *		'Cell at 1 x 0 : is spanned'
-	 *		'Cell at 1 x 1 : is spanned'
-	 *		'Cell at 1 x 2 : is anchored'
-	 *		'Cell at 1 x 3 : is spanned'
-	 *		'Cell at 1 x 4 : is anchored'
-	 *		'Cell at 1 x 5 : is anchored'
+	 *  'Cell at 1 x 0 : is spanned'
+	 *  'Cell at 1 x 1 : is spanned'
+	 *  'Cell at 1 x 2 : is anchored'
+	 *  'Cell at 1 x 3 : is spanned'
+	 *  'Cell at 1 x 4 : is anchored'
+	 *  'Cell at 1 x 5 : is anchored'
 	 *
 	 * **Note**: Option `row` is a shortcut that sets both `startRow` and `endRow` to the same row.
 	 * (Use either `row` or `startRow` and `endRow` but never together). Similarly the `column` option sets both `startColumn`

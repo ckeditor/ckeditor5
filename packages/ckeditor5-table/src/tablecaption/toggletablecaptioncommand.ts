@@ -23,15 +23,17 @@ import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './ut
  * * either adds or removes the table caption of a selected table (depending on whether the caption is present or not),
  * * removes the table caption if the selection is anchored in one.
  *
- *		// Toggle the presence of the caption.
- *		editor.execute( 'toggleTableCaption' );
+ * ```ts
+ * // Toggle the presence of the caption.
+ * editor.execute( 'toggleTableCaption' );
+ * ```
  *
  * **Note**: You can move the selection to the caption right away as it shows up upon executing this command by using
  * the `focusCaptionOnShow` option:
  *
- *		editor.execute( 'toggleTableCaption', { focusCaptionOnShow: true } );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'toggleTableCaption', { focusCaptionOnShow: true } );
+ * ```
  */
 export default class ToggleTableCaptionCommand extends Command {
 	declare public value: boolean;
@@ -55,10 +57,12 @@ export default class ToggleTableCaptionCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 *		editor.execute( 'toggleTableCaption' );
+	 * ```ts
+	 * editor.execute( 'toggleTableCaption' );
+	 * ```
 	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.focusCaptionOnShow] When true and the caption shows up, the selection will be moved into it straight away.
+	 * @param options Options for the executed command.
+	 * @param options.focusCaptionOnShow When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
 	public override execute( { focusCaptionOnShow }: { focusCaptionOnShow: boolean } ): void {
@@ -77,9 +81,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * * it attempts to restore the caption content from the `TableCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {Boolean} focusCaptionOnShow Default focus behavior when showing the caption.
+	 * @param focusCaptionOnShow Default focus behavior when showing the caption.
 	 */
 	private _showTableCaption( writer: Writer, focusCaptionOnShow: boolean ) {
 		const model = this.editor.model;
@@ -102,9 +104,6 @@ export default class ToggleTableCaptionCommand extends Command {
 	 *
 	 * The content of the caption is stored in the `TableCaptionEditing` caption registry to make this
 	 * a reversible action.
-	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	private _hideTableCaption( writer: Writer ) {
 		const model = this.editor.model;

@@ -17,8 +17,6 @@ import { isTable, matchTableCaptionViewElement } from './utils';
 
 /**
  * The table caption editing plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableCaptionEditing extends Plugin {
 	/**

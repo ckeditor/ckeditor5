@@ -55,8 +55,7 @@ export function repositionContextualBalloon( editor: Editor, target: string ): v
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} with respect
  * to the selected table in the editor content.
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {module:utils/dom/position~Options}
+ * @param editor The editor instance.
  */
 export function getBalloonTablePositionData( editor: Editor ): Partial<PositionOptions> {
 	const firstPosition = editor.model.document.selection.getFirstPosition()!;
@@ -74,8 +73,7 @@ export function getBalloonTablePositionData( editor: Editor ): Partial<PositionO
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} with respect
  * to the selected table cell in the editor content.
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {module:utils/dom/position~Options}
+ * @param editor The editor instance.
  */
 export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOptions> {
 	const mapper = editor.editing.mapper;
@@ -112,9 +110,8 @@ function getTableCellAtPosition( position: Position ): Element {
 /**
  * Returns bounding rectangle for given model ranges.
  *
- * @param {Iterable.<module:engine/model/range~Range>} ranges Model ranges that the bounding rect should be returned for.
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @returns {module:utils/dom/rect~Rect}
+ * @param ranges Model ranges that the bounding rect should be returned for.
+ * @param editor The editor instance.
  */
 function createBoundingRect( ranges: Iterable<Range>, editor: Editor ): Rect {
 	const mapper = editor.editing.mapper;

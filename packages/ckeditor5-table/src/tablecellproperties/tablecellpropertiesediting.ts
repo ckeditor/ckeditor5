@@ -45,8 +45,6 @@ const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
  * - cell padding: the `'tableCellPadding'` command
  * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
  * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableCellPropertiesEditing extends Plugin {
 	/**

@@ -18,11 +18,11 @@ import TablePropertyCommand from './tablepropertycommand';
  *
  * To change the background color of the selected table, execute the command:
  *
- *		editor.execute( 'tableBackgroundColor', {
- *			value: '#f00'
- *		} );
- *
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
+ * ```ts
+ * editor.execute( 'tableBackgroundColor', {
+ *   value: '#f00'
+ * } );
+ * ```
  */
 export default class TableBackgroundColorCommand extends TablePropertyCommand {
 	/**

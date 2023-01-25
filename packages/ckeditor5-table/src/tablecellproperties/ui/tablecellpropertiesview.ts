@@ -64,8 +64,6 @@ type TableCellPropertiesViewOptions = {
 /**
  * The class representing a table cell properties form, allowing users to customize
  * certain style aspects of a table cell, for instance, border, padding, text alignment, etc..
- *
- * @extends module:ui/view~View
  */
 export default class TableCellPropertiesView extends View {
 	/**
@@ -74,7 +72,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderStyle!: string;
+	public declare borderStyle: string;
 
 	/**
 	 * The value of the cell border width style.
@@ -82,7 +80,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderWidth!: string;
+	public declare borderWidth: string;
 
 	/**
 	 * The value of the cell border color style.
@@ -90,7 +88,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderColor!: string;
+	public declare borderColor: string;
 
 	/**
 	 * The value of the cell padding style.
@@ -98,7 +96,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public padding!: string;
+	public declare padding: string;
 
 	/**
 	 * The value of the cell background color style.
@@ -106,7 +104,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public backgroundColor!: string;
+	public declare backgroundColor: string;
 
 	/**
 	 * The value of the table cell width style.
@@ -114,7 +112,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public width!: string;
+	public declare width: string;
 
 	/**
 	 * The value of the table cell height style.
@@ -122,7 +120,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public height!: string;
+	public declare height: string;
 
 	/**
 	 * The value of the horizontal text alignment style.
@@ -130,7 +128,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public horizontalAlignment!: string;
+	public declare horizontalAlignment: string;
 
 	/**
 	 * The value of the vertical text alignment style.
@@ -138,7 +136,7 @@ export default class TableCellPropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public verticalAlignment!: string;
+	public declare verticalAlignment: string;
 
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
@@ -147,131 +145,83 @@ export default class TableCellPropertiesView extends View {
 
 	/**
 	 * Tracks information about the DOM focus in the form.
-	 *
-	 * @readonly
-	 * @member {module:utils/focustracker~FocusTracker}
 	 */
 	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 *
-	 * @readonly
-	 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
 	 * A collection of child views in the form.
-	 *
-	 * @readonly
-	 * @type {module:ui/viewcollection~ViewCollection}
 	 */
 	public readonly children: ViewCollection;
 
 	/**
 	 * A dropdown that allows selecting the style of the table cell border.
-	 *
-	 * @readonly
-	 * @member {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	public readonly borderStyleDropdown: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the width of the table cell border.
-	 *
-	 * @readonly
-	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
 	public readonly borderWidthInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the color of the table cell border.
-	 *
-	 * @readonly
-	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
 	public readonly borderColorInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table cell background color.
-	 *
-	 * @readonly
-	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
 	public readonly backgroundInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table cell padding.
-	 *
-	 * @readonly
-	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
 	public readonly paddingInput: LabeledFieldView;
 
 	/**
 	 * An input that allows specifying the table cell width.
-	 *
-	 * @readonly
-	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
 	public readonly widthInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the table cell height.
-	 *
-	 * @readonly
-	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
 	public readonly heightInput: LabeledFieldView<FocusableView>;
 
 	/**
 	 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
-	 *
-	 * @readonly
-	 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	public readonly horizontalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * A toolbar with buttons that allow changing the vertical text alignment in a table cell.
-	 *
-	 * @readonly
-	 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	public readonly verticalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * The "Save" button view.
-	 *
-	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
 	public saveButtonView: ButtonView;
 
 	/**
 	 * The "Cancel" button view.
-	 *
-	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
 	public cancelButtonView: ButtonView;
 
 	/**
 	 * A collection of views that can be focused in the form.
-	 *
-	 * @readonly
-	 * @protected
-	 * @member {module:ui/viewcollection~ViewCollection}
 	 */
-	protected _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
-	 *
-	 * @readonly
-	 * @protected
-	 * @member {module:ui/focuscycler~FocusCycler}
 	 */
-	protected _focusCycler: FocusCycler;
+	protected readonly _focusCycler: FocusCycler;
 
 	/**
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
@@ -487,9 +437,6 @@ export default class TableCellPropertiesView extends View {
 	 * * {@link #borderStyleDropdown},
 	 * * {@link #borderWidthInput},
 	 * * {@link #borderColorInput}.
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	private _createBorderFields(): {
 		borderRowLabel: LabelView;
@@ -644,9 +591,6 @@ export default class TableCellPropertiesView extends View {
 	 *
 	 * * {@link #widthInput}.
 	 * * {@link #heightInput}.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	private _createDimensionFields(): {
 		dimensionsLabel: LabelView;
@@ -812,9 +756,6 @@ export default class TableCellPropertiesView extends View {
 	 *
 	 * * {@link #saveButtonView},
 	 * * {@link #cancelButtonView}.
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	private _createActionButtons() {
 		const locale = this.locale;

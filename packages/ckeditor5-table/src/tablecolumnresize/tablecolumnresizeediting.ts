@@ -8,7 +8,7 @@
  */
 
 import { throttle } from 'lodash-es';
-import { global, DomEmitterMixin, type EventInfo, DomEmitter } from 'ckeditor5/src/utils';
+import { global, DomEmitterMixin, type EventInfo, type DomEmitter } from 'ckeditor5/src/utils';
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import type { Element, Differ, ViewElement, DomEventData, DowncastWriter } from 'ckeditor5/src/engine';
 
@@ -67,8 +67,6 @@ type ResizingData = {
 
 /**
  * The table column resize editing plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableColumnResizeEditing extends Plugin {
 	/**
@@ -83,7 +81,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @observable
 	 * @private
 	 */
-	public _isResizingAllowed!: boolean;
+	public declare _isResizingAllowed: boolean;
 
 	/**
 	 * A temporary storage for the required data needed to correctly calculate the widths of the resized columns. This storage is
@@ -179,8 +177,6 @@ export default class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * Registers new attributes for a table model element.
-	 *
-	 * @private
 	 */
 	private _extendSchema() {
 		this.editor.model.schema.extend( 'table', {
@@ -194,8 +190,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * It checks if the change from the differ concerns a table-related element or attribute. For detected changes it:
 	 *  * Adjusts the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 	 *  * Checks if the `columnWidths` attribute gets updated accordingly after columns have been added or removed.
-	 *
-	 * @private
 	 */
 	private _registerPostFixer() {
 		const editor = this.editor;
@@ -228,9 +222,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		/**
 		 * Adjusts if necessary the `columnWidths` in case if the number of column has changed.
 		 *
-		 * @param {Array.<Number>} columnWidths Note: this array **may be modified** by the function.
-		 * @param {module:engine/model/element~Element} table Table to be checked.
-		 * @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} plugin
+		 * @param columnWidths Note: this array **may be modified** by the function.
+		 * @param table Table to be checked.
 		 */
 		function adjustColumnWidths( columnWidths: Array<number>, table: Element, plugin: TableColumnResizeEditing ) {
 			const newTableColumnsCount = plugin._tableUtilsPlugin.getColumns( table );
@@ -403,10 +396,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * from each table column (we rely on the  {@link module:table/tablewalker~TableWalker}
 		 * to determine which column the cell belongs to).
 		 *
-		 * @param {module:engine/model/element~Element} modelTable A table which columns should be measured.
-		 * @param {module:table/tableutils~TableUtils} tableUtils The Table Utils plugin instance.
-		 * @param {module:core/editor/editor~Editor} editor The editor instance.
-		 * @returns {Array.<Number>} Columns' widths expressed in pixels (without unit).
+		 * @param modelTable A table which columns should be measured.
+		 * @param tableUtils The Table Utils plugin instance.
+		 * @param editor The editor instance.
+		 * @returns Columns' widths expressed in pixels (without unit).
 		 */
 		function _calculateDomColumnWidths( modelTable: Element, tableUtilsPlugin: TableUtils, editor: Editor ) {
 			const columnWidthsInPx = Array( tableUtilsPlugin.getColumns( modelTable ) );
@@ -428,9 +421,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		/**
 		 * Creates a `<colgroup>` element with `<col>`s and inserts it into a given view table.
 		 *
-		 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter A writer instance.
-		 * @param {Array.<Number>} columnWidthsInPx Column widths.
-		 * @param {module:engine/view/element~Element} viewTable A table view element.
+		 * @param viewWriter A writer instance.
+		 * @param columnWidthsInPx Column widths.
+		 * @param viewTable A table view element.
 		 */
 		function _insertColgroupElement( viewWriter: DowncastWriter, columnWidthsInPx: Array<number>, viewTable: ViewElement ) {
 			const colgroup = viewWriter.createContainerElement( 'colgroup' );

@@ -32,8 +32,6 @@ import type {
 /**
  * This plugin enables keyboard navigation for tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableKeyboard extends Plugin {
 	/**

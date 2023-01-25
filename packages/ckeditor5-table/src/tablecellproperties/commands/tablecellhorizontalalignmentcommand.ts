@@ -19,11 +19,11 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * To change the horizontal text alignment of selected cells, execute the command:
  *
- *		editor.execute( 'tableCellHorizontalAlignment', {
- *			value: 'right'
- *		} );
- *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
+ * ```ts
+ * editor.execute( 'tableCellHorizontalAlignment', {
+ *  value: 'right'
+ * } );
+ * ```
  */
 export default class TableCellHorizontalAlignmentCommand extends TableCellPropertyCommand {
 	/**

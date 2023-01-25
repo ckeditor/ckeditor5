@@ -31,8 +31,6 @@ type IndexesObject = { first: number; last: number };
 
 /**
  * The table utilities plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableUtils extends Plugin {
 	/**
@@ -55,27 +53,28 @@ export default class TableUtils extends Plugin {
 	 *
 	 * For instance, in the table below:
 	 *
-	 *		    0   1   2   3
-	 *		  +---+---+---+---+
-	 *		0 | a     | b | c |
-	 *		  +       +   +---+
-	 *		1 |       |   | d |
-	 *		  +---+---+   +---+
-	 *		2 | e     |   | f |
-	 *		  +---+---+---+---+
+	 *      0   1   2   3
+	 *    +---+---+---+---+
+	 *  0 | a     | b | c |
+	 *    +       +   +---+
+	 *  1 |       |   | d |
+	 *    +---+---+   +---+
+	 *  2 | e     |   | f |
+	 *    +---+---+---+---+
 	 *
 	 * the method will return:
 	 *
-	 *		const cellA = table.getNodeByPath( [ 0, 0 ] );
-	 *		editor.plugins.get( 'TableUtils' ).getCellLocation( cellA );
-	 *		// will return { row: 0, column: 0 }
+	 * ```ts
+	 * const cellA = table.getNodeByPath( [ 0, 0 ] );
+	 * editor.plugins.get( 'TableUtils' ).getCellLocation( cellA );
+	 * // will return { row: 0, column: 0 }
 	 *
-	 *		const cellD = table.getNodeByPath( [ 1, 0 ] );
-	 *		editor.plugins.get( 'TableUtils' ).getCellLocation( cellD );
-	 *		// will return { row: 1, column: 3 }
+	 * const cellD = table.getNodeByPath( [ 1, 0 ] );
+	 * editor.plugins.get( 'TableUtils' ).getCellLocation( cellD );
+	 * // will return { row: 1, column: 3 }
+	 * ```
 	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @returns {Object} Returns a `{row, column}` object.
+	 * @returns Returns a `{row, column}` object.
 	 */
 	public getCellLocation( tableCell: Element ): { row: number; column: number } | undefined {
 		const tableRow = tableCell.parent!;
@@ -143,22 +142,24 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Inserts rows into a table.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
+	 * ```
 	 *
 	 * Assuming the table on the left, the above code will transform it to the table on the right:
 	 *
-	 *		row index
-	 *		  0 +---+---+---+       `at` = 1,      +---+---+---+ 0
-	 *		    | a | b | c |       `rows` = 2,    | a | b | c |
-	 *		  1 +   +---+---+   <-- insert here    +   +---+---+ 1
-	 *		    |   | d | e |                      |   |   |   |
-	 *		  2 +   +---+---+       will give:     +   +---+---+ 2
-	 *		    |   | f | g |                      |   |   |   |
-	 *		  3 +---+---+---+                      +   +---+---+ 3
-	 *		                                       |   | d | e |
-	 *		                                       +   +---+---+ 4
-	 *		                                       +   + f | g |
-	 *		                                       +---+---+---+ 5
+	 *  row index
+	 *    0 +---+---+---+       `at` = 1,      +---+---+---+ 0
+	 *      | a | b | c |       `rows` = 2,    | a | b | c |
+	 *    1 +   +---+---+   <-- insert here    +   +---+---+ 1
+	 *      |   | d | e |                      |   |   |   |
+	 *    2 +   +---+---+       will give:     +   +---+---+ 2
+	 *      |   | f | g |                      |   |   |   |
+	 *    3 +---+---+---+                      +   +---+---+ 3
+	 *                                         |   | d | e |
+	 *                                         +   +---+---+ 4
+	 *                                         +   + f | g |
+	 *                                         +---+---+---+ 5
 	 *
 	 * @param table The table model element where the rows will be inserted.
 	 * @param options.at The row index at which the rows will be inserted.  Default value is 0.
@@ -256,28 +257,29 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Inserts columns into a table.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
+	 * ```
 	 *
 	 * Assuming the table on the left, the above code will transform it to the table on the right:
 	 *
-	 *		0   1   2   3                   0   1   2   3   4   5
-	 *		+---+---+---+                   +---+---+---+---+---+
-	 *		| a     | b |                   | a             | b |
-	 *		+       +---+                   +               +---+
-	 *		|       | c |                   |               | c |
-	 *		+---+---+---+     will give:    +---+---+---+---+---+
-	 *		| d | e | f |                   | d |   |   | e | f |
-	 *		+---+   +---+                   +---+---+---+   +---+
-	 *		| g |   | h |                   | g |   |   |   | h |
-	 *		+---+---+---+                   +---+---+---+---+---+
-	 *		| i         |                   | i                 |
-	 *		+---+---+---+                   +---+---+---+---+---+
-	 *		    ^---- insert here, `at` = 1, `columns` = 2
+	 *  0   1   2   3                   0   1   2   3   4   5
+	 *  +---+---+---+                   +---+---+---+---+---+
+	 *  | a     | b |                   | a             | b |
+	 *  +       +---+                   +               +---+
+	 *  |       | c |                   |               | c |
+	 *  +---+---+---+     will give:    +---+---+---+---+---+
+	 *  | d | e | f |                   | d |   |   | e | f |
+	 *  +---+   +---+                   +---+---+---+   +---+
+	 *  | g |   | h |                   | g |   |   |   | h |
+	 *  +---+---+---+                   +---+---+---+---+---+
+	 *  | i         |                   | i                 |
+	 *  +---+---+---+                   +---+---+---+---+---+
+	 *      ^---- insert here, `at` = 1, `columns` = 2
 	 *
-	 * @param {module:engine/model/element~Element} table The table model element where the columns will be inserted.
-	 * @param {Object} options
-	 * @param {Number} [options.at=0] The column index at which the columns will be inserted.
-	 * @param {Number} [options.columns=1] The number of columns to insert.
+	 * @param table The table model element where the columns will be inserted.
+	 * @param options.at The column index at which the columns will be inserted. Default value is 0.
+	 * @param options.columns The number of columns to insert. Default value is 1.
 	 */
 	public insertColumns( table: Element, options: { at?: number; columns?: number } = {} ): void {
 		const model = this.editor.model;
@@ -345,27 +347,27 @@ export default class TableUtils extends Plugin {
 	 * This method re-calculates the table geometry including `rowspan` attribute of table cells overlapping removed rows
 	 * and table headings values.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
+	 * ```
 	 *
 	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
 	 *
-	 *		row index
-	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
-	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
-	 *		    │   ├───┼───┤                        │   ├───┼───┤
-	 *		  1 │   │ d │ e │  <-- remove from here  │   │ d │ g │ 1
-	 *		    │   │   ├───┤        will give:      ├───┼───┼───┤
-	 *		  2 │   │   │ f │                        │ h │ i │ j │ 2
-	 *		    │   │   ├───┤                        └───┴───┴───┘
-	 *		  3 │   │   │ g │
-	 *		    ├───┼───┼───┤
-	 *		  4 │ h │ i │ j │
-	 *		    └───┴───┴───┘
+	 *  row index
+	 *      ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
+	 *    0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
+	 *      │   ├───┼───┤                        │   ├───┼───┤
+	 *    1 │   │ d │ e │  <-- remove from here  │   │ d │ g │ 1
+	 *      │   │   ├───┤        will give:      ├───┼───┼───┤
+	 *    2 │   │   │ f │                        │ h │ i │ j │ 2
+	 *      │   │   ├───┤                        └───┴───┴───┘
+	 *    3 │   │   │ g │
+	 *      ├───┼───┼───┤
+	 *    4 │ h │ i │ j │
+	 *      └───┴───┴───┘
 	 *
-	 * @param {module:engine/model/element~Element} table
-	 * @param {Object} options
-	 * @param {Number} options.at The row index at which the removing rows will start.
-	 * @param {Number} [options.rows=1] The number of rows to remove.
+	 * @param options.at The row index at which the removing rows will start.
+	 * @param options.rows The number of rows to remove. Default value is 1.
 	 */
 	public removeRows( table: Element, options: { at: number; rows?: number } ): void {
 		const model = this.editor.model;
@@ -434,23 +436,25 @@ export default class TableUtils extends Plugin {
 	 * This method re-calculates the table geometry including the `colspan` attribute of table cells overlapping removed columns
 	 * and table headings values.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).removeColumns( table, { at: 1, columns: 2 } );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).removeColumns( table, { at: 1, columns: 2 } );
+	 * ```
 	 *
 	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
 	 *
-	 *		  0   1   2   3   4                       0   1   2
-	 *		┌───────────────┬───┐                   ┌───────┬───┐
-	 *		│ a             │ b │                   │ a     │ b │
-	 *		│               ├───┤                   │       ├───┤
-	 *		│               │ c │                   │       │ c │
-	 *		├───┬───┬───┬───┼───┤     will give:    ├───┬───┼───┤
-	 *		│ d │ e │ f │ g │ h │                   │ d │ g │ h │
-	 *		├───┼───┼───┤   ├───┤                   ├───┤   ├───┤
-	 *		│ i │ j │ k │   │ l │                   │ i │   │ l │
-	 *		├───┴───┴───┴───┴───┤                   ├───┴───┴───┤
-	 *		│ m                 │                   │ m         │
-	 *		└───────────────────┘                   └───────────┘
-	 *		      ^---- remove from here, `at` = 1, `columns` = 2
+	 *    0   1   2   3   4                       0   1   2
+	 *  ┌───────────────┬───┐                   ┌───────┬───┐
+	 *  │ a             │ b │                   │ a     │ b │
+	 *  │               ├───┤                   │       ├───┤
+	 *  │               │ c │                   │       │ c │
+	 *  ├───┬───┬───┬───┼───┤     will give:    ├───┬───┼───┤
+	 *  │ d │ e │ f │ g │ h │                   │ d │ g │ h │
+	 *  ├───┼───┼───┤   ├───┤                   ├───┤   ├───┤
+	 *  │ i │ j │ k │   │ l │                   │ i │   │ l │
+	 *  ├───┴───┴───┴───┴───┤                   ├───┴───┴───┤
+	 *  │ m                 │                   │ m         │
+	 *  └───────────────────┘                   └───────────┘
+	 *        ^---- remove from here, `at` = 1, `columns` = 2
 	 *
 	 * @param options.at The row index at which the removing columns will start.
 	 * @param options.columns The number of columns to remove.
@@ -493,41 +497,38 @@ export default class TableUtils extends Plugin {
 	 *
 	 * In the table below, if cell "a" is split into 3 cells:
 	 *
-	 *		+---+---+---+
-	 *		| a | b | c |
-	 *		+---+---+---+
-	 *		| d | e | f |
-	 *		+---+---+---+
+	 *  +---+---+---+
+	 *  | a | b | c |
+	 *  +---+---+---+
+	 *  | d | e | f |
+	 *  +---+---+---+
 	 *
 	 * it will result in the table below:
 	 *
-	 *		+---+---+---+---+---+
-	 *		| a |   |   | b | c |
-	 *		+---+---+---+---+---+
-	 *		| d         | e | f |
-	 *		+---+---+---+---+---+
+	 *  +---+---+---+---+---+
+	 *  | a |   |   | b | c |
+	 *  +---+---+---+---+---+
+	 *  | d         | e | f |
+	 *  +---+---+---+---+---+
 	 *
 	 * So cell "d" will get its `colspan` updated to `3` and 2 cells will be added (2 columns will be created).
 	 *
 	 * Splitting a cell that already has a `colspan` attribute set will distribute the cell `colspan` evenly and the remainder
 	 * will be left to the original cell:
 	 *
-	 *		+---+---+---+
-	 *		| a         |
-	 *		+---+---+---+
-	 *		| b | c | d |
-	 *		+---+---+---+
+	 *  +---+---+---+
+	 *  | a         |
+	 *  +---+---+---+
+	 *  | b | c | d |
+	 *  +---+---+---+
 	 *
 	 * Splitting cell "a" with `colspan=3` into 2 cells will create 1 cell with a `colspan=a` and cell "a" that will have `colspan=2`:
 	 *
-	 *		+---+---+---+
-	 *		| a     |   |
-	 *		+---+---+---+
-	 *		| b | c | d |
-	 *		+---+---+---+
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @param {Number} numberOfCells
+	 *  +---+---+---+
+	 *  | a     |   |
+	 *  +---+---+---+
+	 *  | b | c | d |
+	 *  +---+---+---+
 	 */
 	public splitCellVertically( tableCell: Element, numberOfCells = 2 ): void {
 		const model = this.editor.model;
@@ -617,53 +618,50 @@ export default class TableUtils extends Plugin {
 	 *
 	 * If in the table below cell "b" is split into 3 cells:
 	 *
-	 *		+---+---+---+
-	 *		| a | b | c |
-	 *		+---+---+---+
-	 *		| d | e | f |
-	 *		+---+---+---+
+	 *  +---+---+---+
+	 *  | a | b | c |
+	 *  +---+---+---+
+	 *  | d | e | f |
+	 *  +---+---+---+
 	 *
 	 * It will result in the table below:
 	 *
-	 *		+---+---+---+
-	 *		| a | b | c |
-	 *		+   +---+   +
-	 *		|   |   |   |
-	 *		+   +---+   +
-	 *		|   |   |   |
-	 *		+---+---+---+
-	 *		| d | e | f |
-	 *		+---+---+---+
+	 *  +---+---+---+
+	 *  | a | b | c |
+	 *  +   +---+   +
+	 *  |   |   |   |
+	 *  +   +---+   +
+	 *  |   |   |   |
+	 *  +---+---+---+
+	 *  | d | e | f |
+	 *  +---+---+---+
 	 *
 	 * So cells "a" and "b" will get their `rowspan` updated to `3` and 2 rows with a single cell will be added.
 	 *
 	 * Splitting a cell that already has a `rowspan` attribute set will distribute the cell `rowspan` evenly and the remainder
 	 * will be left to the original cell:
 	 *
-	 *		+---+---+---+
-	 *		| a | b | c |
-	 *		+   +---+---+
-	 *		|   | d | e |
-	 *		+   +---+---+
-	 *		|   | f | g |
-	 *		+   +---+---+
-	 *		|   | h | i |
-	 *		+---+---+---+
+	 *  +---+---+---+
+	 *  | a | b | c |
+	 *  +   +---+---+
+	 *  |   | d | e |
+	 *  +   +---+---+
+	 *  |   | f | g |
+	 *  +   +---+---+
+	 *  |   | h | i |
+	 *  +---+---+---+
 	 *
 	 * Splitting cell "a" with `rowspan=4` into 3 cells will create 2 cells with a `rowspan=1` and cell "a" will have `rowspan=2`:
 	 *
-	 *		+---+---+---+
-	 *		| a | b | c |
-	 *		+   +---+---+
-	 *		|   | d | e |
-	 *		+---+---+---+
-	 *		|   | f | g |
-	 *		+---+---+---+
-	 *		|   | h | i |
-	 *		+---+---+---+
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @param {Number} numberOfCells
+	 *  +---+---+---+
+	 *  | a | b | c |
+	 *  +   +---+---+
+	 *  |   | d | e |
+	 *  +---+---+---+
+	 *  |   | f | g |
+	 *  +---+---+---+
+	 *  |   | h | i |
+	 *  +---+---+---+
 	 */
 	public splitCellHorizontally( tableCell: Element, numberOfCells = 2 ): void {
 		const model = this.editor.model;
@@ -767,10 +765,11 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns the number of columns for a given table.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).getColumns( table );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).getColumns( table );
+	 * ```
 	 *
-	 * @param {module:engine/model/element~Element} table The table to analyze.
-	 * @returns {Number}
+	 * @param table The table to analyze.
 	 */
 	public getColumns( table: Element ): number {
 		// Analyze first row only as all the rows should have the same width.
@@ -788,10 +787,11 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns the number of rows for a given table. Any other element present in the table model is omitted.
 	 *
-	 *		editor.plugins.get( 'TableUtils' ).getRows( table );
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).getRows( table );
+	 * ```
 	 *
-	 * @param {module:engine/model/element~Element} table The table to analyze.
-	 * @returns {Number}
+	 * @param table The table to analyze.
 	 */
 	public getRows( table: Element ): number {
 		// Rowspan not included due to #6427.
@@ -808,17 +808,17 @@ export default class TableUtils extends Plugin {
 	 * pass the `includeAllSlots` option.
 	 *
 	 * @protected
-	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
-	 * @param {Object} [options={}] An object with configuration.
-	 * @param {Number} [options.row] A row index for which this iterator will output cells.
-	 * Can't be used together with `startRow` and `endRow`.
-	 * @param {Number} [options.startRow=0] A row index from which this iterator should start. Can't be used together with `row`.
-	 * @param {Number} [options.endRow] A row index at which this iterator should end. Can't be used together with `row`.
-	 * @param {Number} [options.column] A column index for which this iterator will output cells.
+	 * @param table A table over which the walker iterates.
+	 * @param options An object with configuration.
+	 * @param options.row A row index for which this iterator will output cells. Can't be used together with `startRow` and `endRow`.
+	 * @param options.startRow A row index from which this iterator should start. Can't be used together with `row`. Default value is 0.
+	 * @param options.endRow A row index at which this iterator should end. Can't be used together with `row`.
+	 * @param options.column A column index for which this iterator will output cells.
 	 * Can't be used together with `startColumn` and `endColumn`.
-	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
-	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
-	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
+	 * @param options.startColumn A column index from which this iterator should start.
+	 * Can't be used together with `column`. Default value is 0.
+	 * @param options.endColumn A column index at which this iterator should end. Can't be used together with `column`.
+	 * @param options.includeAllSlots Also return values for spanned cells. Default value is false.
 	 */
 	public createTableWalker( table: Element, options: TableWalkerOptions = {} ): TableWalker {
 		return new TableWalker( table, options );
@@ -830,9 +830,6 @@ export default class TableUtils extends Plugin {
 	 *
 	 * To obtain the cells selected from the inside, use
 	 * {@link #getTableCellsContainingSelection}.
-	 *
-	 * @param {module:engine/model/selection~Selection} selection
-	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
 	public getSelectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
 		const cells = [];
@@ -854,9 +851,6 @@ export default class TableUtils extends Plugin {
 	 *
 	 * To obtain the cells selected from the outside, use
 	 * {@link #getSelectedTableCells}.
-	 *
-	 * @param {module:engine/model/selection~Selection} selection
-	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
 	public getTableCellsContainingSelection( selection: Selection | DocumentSelection ): Array<Element> {
 		const cells = [];
@@ -879,9 +873,6 @@ export default class TableUtils extends Plugin {
 	 *
 	 * Combines {@link #getTableCellsContainingSelection} and
 	 * {@link #getSelectedTableCells}.
-	 *
-	 * @param {module:engine/model/selection~Selection} selection
-	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
 	public getSelectionAffectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
 		const selectedCells = this.getSelectedTableCells( selection );
@@ -896,15 +887,16 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns an object with the `first` and `last` row index contained in the given `tableCells`.
 	 *
-	 *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
-	*
-	*		const { first, last } = getRowIndexes( selectedTableCells );
-	*
-	*		console.log( `Selected rows: ${ first } to ${ last }` );
-	*
-	* @param {Array.<module:engine/model/element~Element>} tableCells
-	* @returns {Object} Returns an object with the `first` and `last` table row indexes.
-	*/
+	 * ```ts
+	 * const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+	 *
+	 * const { first, last } = getRowIndexes( selectedTableCells );
+	 *
+	 * console.log( `Selected rows: ${ first } to ${ last }` );
+	 * ```
+	 *
+	 * @returns Returns an object with the `first` and `last` table row indexes.
+	 */
 	public getRowIndexes( tableCells: Array<Element> ): IndexesObject {
 		const indexes = tableCells.map( cell => ( cell.parent as Element ).index! );
 
@@ -914,15 +906,16 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns an object with the `first` and `last` column index contained in the given `tableCells`.
 	 *
-	 *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
-	*
-	*		const { first, last } = getColumnIndexes( selectedTableCells );
-	*
-	*		console.log( `Selected columns: ${ first } to ${ last }` );
-	*
-	* @param {Array.<module:engine/model/element~Element>} tableCells
-	* @returns {Object} Returns an object with the `first` and `last` table column indexes.
-	*/
+	 * ```ts
+	 * const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+	 *
+	 * const { first, last } = getColumnIndexes( selectedTableCells );
+	 *
+	 * console.log( `Selected columns: ${ first } to ${ last }` );
+	 * ```
+	 *
+	 * @returns Returns an object with the `first` and `last` table column indexes.
+	 */
 	public getColumnIndexes( tableCells: Array<Element> ): IndexesObject {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 		const tableMap = [ ...new TableWalker( table ) ];
@@ -939,24 +932,24 @@ export default class TableUtils extends Plugin {
 	 *
 	 * In a table below:
 	 *
-	 *		┌───┬───┬───┬───┐
-	*		│ a │ b │ c │ d │
-	*		├───┴───┼───┤   │
-	*		│ e     │ f │   │
-	*		│       ├───┼───┤
-	*		│       │ g │ h │
-	*		└───────┴───┴───┘
-	*
-	* Valid selections are these which create a solid rectangle (without gaps), such as:
-	*   - a, b (two horizontal cells)
-	*   - c, f (two vertical cells)
-	*   - a, b, e (cell "e" spans over four cells)
-	*   - c, d, f (cell d spans over a cell in the row below)
-	*
-	* While an invalid selection would be:
-	*   - a, c (the unselected cell "b" creates a gap)
-	*   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
-	*/
+	 *  ┌───┬───┬───┬───┐
+	 *  │ a │ b │ c │ d │
+	 *  ├───┴───┼───┤   │
+	 *  │ e     │ f │   │
+	 *  │       ├───┼───┤
+	 *  │       │ g │ h │
+	 *  └───────┴───┴───┘
+	 *
+	 * Valid selections are these which create a solid rectangle (without gaps), such as:
+	 *   - a, b (two horizontal cells)
+	 *   - c, f (two vertical cells)
+	 *   - a, b, e (cell "e" spans over four cells)
+	 *   - c, d, f (cell d spans over a cell in the row below)
+	 *
+	 * While an invalid selection would be:
+	 *   - a, c (the unselected cell "b" creates a gap)
+	 *   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
+	 */
 	public isSelectionRectangular( selectedTableCells: Array<Element> ): boolean {
 		if ( selectedTableCells.length < 2 || !this._areCellInTheSameTableSection( selectedTableCells ) ) {
 			return false;
@@ -1000,9 +993,6 @@ export default class TableUtils extends Plugin {
 
 	/**
 	 * Returns array of sorted ranges.
-	 *
-	 * @param {Iterable.<module:engine/model/range~Range>} ranges
-	 * @return {Array.<module:engine/model/range~Range>}
 	 */
 	public sortRanges( ranges: Iterable<Range> ): Array<Range> {
 		return Array.from( ranges ).sort( compareRangeOrder );
@@ -1027,14 +1017,14 @@ export default class TableUtils extends Plugin {
 	 * So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
 	 *
 	 * header columns
-	 *		  ↓   ↓
-	 *		┌───┬───┬───┬───┐
-	 *		│ a │ a │ b │ b │  ← header row
-	 *		├───┼───┼───┼───┤
-	 *		│ c │ c │ d │ d │
-	 *		├───┼───┼───┼───┤
-	 *		│ c │ c │ d │ d │
-	 *		└───┴───┴───┴───┘
+	 *    ↓   ↓
+	 *  ┌───┬───┬───┬───┐
+	 *  │ a │ a │ b │ b │  ← header row
+	 *  ├───┼───┼───┼───┤
+	 *  │ c │ c │ d │ d │
+	 *  ├───┼───┼───┼───┤
+	 *  │ c │ c │ d │ d │
+	 *  └───┴───┴───┴───┘
 	 */
 	private _areCellInTheSameTableSection( tableCells: Array<Element> ): boolean {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
@@ -1099,7 +1089,9 @@ function createCells( cells: number, writer: Writer, insertPosition: Position, a
  *
  * For instance breaking a span of 7 into 3 cells will return:
  *
- *		{ newCellsSpan: 2, updatedSpan: 3 }
+ * ```ts
+ * { newCellsSpan: 2, updatedSpan: 3 }
+ * ```
  *
  * as two cells will have a span of 2 and the remainder will go the first cell so its span will change to 3.
  *

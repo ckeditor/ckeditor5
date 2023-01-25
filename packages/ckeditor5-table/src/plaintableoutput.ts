@@ -14,8 +14,6 @@ import Table from './table';
 
 /**
  * The plain table output feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class PlainTableOutput extends Plugin {
 	/**

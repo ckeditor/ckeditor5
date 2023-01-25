@@ -56,8 +56,6 @@ type TablePropertiesViewOptions = {
 /**
  * The class representing a table properties form, allowing users to customize
  * certain style aspects of a table, for instance, border, background color, alignment, etc..
- *
- * @extends module:ui/view~View
  */
 export default class TablePropertiesView extends View {
 	/**
@@ -389,9 +387,6 @@ export default class TablePropertiesView extends View {
 	 * * {@link #borderStyleDropdown},
 	 * * {@link #borderWidthInput},
 	 * * {@link #borderColorInput}.
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	private _createBorderFields() {
 		const defaultTableProperties = this.options.defaultTableProperties;
@@ -500,9 +495,6 @@ export default class TablePropertiesView extends View {
 	 * Creates the following form fields:
 	 *
 	 * * {@link #backgroundInput}.
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	private _createBackgroundFields() {
 		const locale = this.locale;
@@ -542,11 +534,8 @@ export default class TablePropertiesView extends View {
 	/**
 	 * Creates the following form fields:
 	 *
-	 * * {@link #widthInput}.
+	 * * {@link #widthInput},
 	 * * {@link #heightInput}.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	private _createDimensionFields() {
 		const locale = this.locale;
@@ -611,10 +600,7 @@ export default class TablePropertiesView extends View {
 	/**
 	 * Creates the following form fields:
 	 *
-	 * * {@link #alignmentToolbar},
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
+	 * * {@link #alignmentToolbar}.
 	 */
 	private _createAlignmentFields() {
 		const locale = this.locale;
@@ -653,9 +639,6 @@ export default class TablePropertiesView extends View {
 	 *
 	 * * {@link #saveButtonView},
 	 * * {@link #cancelButtonView}.
-	 *
-	 * @private
-	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	private _createActionButtons() {
 		const locale = this.locale;
