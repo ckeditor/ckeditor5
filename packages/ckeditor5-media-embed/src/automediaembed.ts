@@ -7,7 +7,7 @@
  * @module media-embed/automediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Delete } from 'ckeditor5/src/typing';
@@ -22,53 +22,48 @@ const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 /**
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
  * them shortly after they are injected into the document.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class AutoMediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Clipboard, Delete, Undo ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'AutoMediaEmbed' {
 		return 'AutoMediaEmbed';
 	}
 
 	/**
+	 * The paste–to–embed `setTimeout` ID. Stored as a property to allow
+	 * cleaning of the timeout.
+	 */
+	private _timeoutId: number | null;
+
+	/**
+	 * The position where the `<media>` element will be inserted after the timeout,
+	 * determined each time the new content is pasted into the document.
+	 */
+	private _positionToInsert: LivePosition | null;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * The paste–to–embed `setTimeout` ID. Stored as a property to allow
-		 * cleaning of the timeout.
-		 *
-		 * @private
-		 * @member {Number} #_timeoutId
-		 */
 		this._timeoutId = null;
-
-		/**
-		 * The position where the `<media>` element will be inserted after the timeout,
-		 * determined each time the new content is pasted into the document.
-		 *
-		 * @private
-		 * @member {module:engine/model/liveposition~LivePosition} #_positionToInsert
-		 */
 		this._positionToInsert = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const modelDocument = editor.model.document;
 
@@ -76,7 +71,7 @@ export default class AutoMediaEmbed extends Plugin {
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into media.
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', () => {
-			const firstRange = modelDocument.selection.getFirstRange();
+			const firstRange = modelDocument.selection.getFirstRange()!;
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
 			leftLivePosition.stickiness = 'toPrevious';
@@ -92,10 +87,10 @@ export default class AutoMediaEmbed extends Plugin {
 			}, { priority: 'high' } );
 		} );
 
-		editor.commands.get( 'undo' ).on( 'execute', () => {
+		editor.commands.get( 'undo' )!.on( 'execute', () => {
 			if ( this._timeoutId ) {
 				global.window.clearTimeout( this._timeoutId );
-				this._positionToInsert.detach();
+				this._positionToInsert!.detach();
 
 				this._timeoutId = null;
 				this._positionToInsert = null;
@@ -107,11 +102,10 @@ export default class AutoMediaEmbed extends Plugin {
 	 * Analyzes the part of the document between provided positions in search for a URL representing media.
 	 * When the URL is found, it is automatically converted into media.
 	 *
-	 * @protected
-	 * @param {module:engine/model/liveposition~LivePosition} leftPosition Left position of the selection.
-	 * @param {module:engine/model/liveposition~LivePosition} rightPosition Right position of the selection.
+	 * @param leftPosition Left position of the selection.
+	 * @param rightPosition Right position of the selection.
 	 */
-	_embedMediaBetweenPositions( leftPosition, rightPosition ) {
+	protected _embedMediaBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 		// TODO: Use marker instead of LiveRange & LivePositions.
@@ -142,7 +136,7 @@ export default class AutoMediaEmbed extends Plugin {
 			return;
 		}
 
-		const mediaEmbedCommand = editor.commands.get( 'mediaEmbed' );
+		const mediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
 
 		// Do not anything if media element cannot be inserted at the current position (#47).
 		if ( !mediaEmbedCommand.isEnabled ) {
@@ -162,17 +156,17 @@ export default class AutoMediaEmbed extends Plugin {
 				writer.remove( urlRange );
 				urlRange.detach();
 
-				let insertionPosition;
+				let insertionPosition: LivePosition | null = null;
 
 				// Check if position where the media element should be inserted is still valid.
 				// Otherwise leave it as undefined to use document.selection - default behavior of model.insertContent().
-				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
+				if ( this._positionToInsert!.root.rootName !== '$graveyard' ) {
 					insertionPosition = this._positionToInsert;
 				}
 
 				insertMedia( editor.model, url, insertionPosition, false );
 
-				this._positionToInsert.detach();
+				this._positionToInsert!.detach();
 				this._positionToInsert = null;
 			} );
 

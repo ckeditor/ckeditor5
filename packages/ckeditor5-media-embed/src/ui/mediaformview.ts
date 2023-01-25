@@ -8,16 +8,16 @@
  */
 
 import {
+	type InputTextView,
 	ButtonView,
 	FocusCycler,
 	LabeledFieldView,
 	View,
 	ViewCollection,
 	createLabeledInputText,
-	injectCssTransitionDisabler,
 	submitHandler
 } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 // See: #8833.
@@ -29,82 +29,90 @@ import '../../theme/mediaform.css';
  * The media form view controller class.
  *
  * See {@link module:media-embed/ui/mediaformview~MediaFormView}.
- *
- * @extends module:ui/view~View
  */
 export default class MediaFormView extends View {
 	/**
-	 * @param {Array.<Function>} validators Form validators used by {@link #isValid}.
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * Tracks information about the DOM focus in the form.
+	 *
+	 * @readonly
 	 */
-	constructor( validators, locale ) {
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 *
+	 * @readonly
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * The value of the URL input.
+	 */
+	declare public mediaURLInputValue: string;
+
+	/**
+	 * The URL input view.
+	 */
+	public urlInputView: LabeledFieldView<InputTextView>;
+
+	/**
+	 * The Save button view.
+	 */
+	public saveButtonView: ButtonView;
+
+	/**
+	 * The Cancel button view.
+	 */
+	public cancelButtonView: ButtonView;
+
+	/**
+	 * A collection of views that can be focused in the form.
+	 */
+	protected readonly _focusables: ViewCollection;
+
+	/**
+	 * Helps cycling over {@link #_focusables} in the form.
+	 */
+	protected readonly _focusCycler: FocusCycler;
+
+	/**
+	 * An array of form validators used by {@link #isValid}.
+	 */
+	protected readonly _validators: Array<( v: MediaFormView ) => string | undefined>;
+
+	/**
+	 * The default info text for the {@link #urlInputView}.
+	 */
+	private _urlInputViewInfoDefault?: string;
+
+	/**
+	 * The info text with an additional tip for the {@link #urlInputView},
+	 * displayed when the input has some value.
+	 */
+	private _urlInputViewInfoTip?: string;
+
+	/**
+	 * @param validators Form validators used by {@link #isValid}.
+	 * @param locale The localization services instance.
+	 */
+	constructor( validators: Array<( v: MediaFormView ) => string | undefined>, locale: Locale ) {
 		super( locale );
 
 		const t = locale.t;
 
-		/**
-		 * Tracks information about the DOM focus in the form.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * The value of the URL input.
-		 *
-		 * @member {String} #mediaURLInputValue
-		 * @observable
-		 */
 		this.set( 'mediaURLInputValue', '' );
-
-		/**
-		 * The URL input view.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
 		this.urlInputView = this._createUrlInput();
 
-		/**
-		 * The Save button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
-		/**
-		 * The Cancel button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
-		/**
-		 * A collection of views that can be focused in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this._focusables = new ViewCollection();
 
-		/**
-		 * Helps cycling over {@link #_focusables} in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -118,13 +126,6 @@ export default class MediaFormView extends View {
 			}
 		} );
 
-		/**
-		 * An array of form validators used by {@link #isValid}.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {Array.<Function>}
-		 */
 		this._validators = validators;
 
 		this.setTemplate( {
@@ -146,30 +147,12 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
-
-		// When rewriting to typescript try to change it to CssTransitionDisablerMixin.
-		injectCssTransitionDisabler( this );
-
-		/**
-		 * The default info text for the {@link #urlInputView}.
-		 *
-		 * @private
-		 * @member {String} #_urlInputViewInfoDefault
-		 */
-
-		/**
-		 * The info text with an additional tip for the {@link #urlInputView},
-		 * displayed when the input has some value.
-		 *
-		 * @private
-		 * @member {String} #_urlInputViewInfoTip
-		 */
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		submitHandler( {
@@ -187,13 +170,13 @@ export default class MediaFormView extends View {
 			this._focusables.add( v );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+			this.focusTracker.add( v.element! );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 
-		const stopPropagation = data => data.stopPropagation();
+		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
 
 		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 		// keystroke handler would take over the key management in the URL input. We need to prevent
@@ -206,7 +189,7 @@ export default class MediaFormView extends View {
 		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView.
 		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( this.urlInputView.element, 'selectstart', ( evt, domEvt ) => {
+		this.listenTo( this.urlInputView.element!, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
 	}
@@ -214,7 +197,7 @@ export default class MediaFormView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -224,7 +207,7 @@ export default class MediaFormView extends View {
 	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
-	focus() {
+	public focus(): void {
 		this._focusCycler.focusFirst();
 	}
 
@@ -233,23 +216,19 @@ export default class MediaFormView extends View {
 	 *
 	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
 	 * which works one way only and may not represent the actual state of the component in the DOM.
-	 *
-	 * @type {String}
 	 */
-	get url() {
-		return this.urlInputView.fieldView.element.value.trim();
+	public get url(): string {
+		return this.urlInputView.fieldView.element!.value.trim();
 	}
 
-	set url( url ) {
-		this.urlInputView.fieldView.element.value = url.trim();
+	public set url( url: string ) {
+		this.urlInputView.fieldView.element!.value = url.trim();
 	}
 
 	/**
 	 * Validates the form and returns `false` when some fields are invalid.
-	 *
-	 * @returns {Boolean}
 	 */
-	isValid() {
+	public isValid(): boolean {
 		this.resetFormStatus();
 
 		for ( const validator of this._validators ) {
@@ -273,19 +252,18 @@ export default class MediaFormView extends View {
 	 *
 	 * See {@link #isValid}.
 	 */
-	resetFormStatus() {
+	public resetFormStatus(): void {
 		this.urlInputView.errorText = null;
-		this.urlInputView.infoText = this._urlInputViewInfoDefault;
+		this.urlInputView.infoText = this._urlInputViewInfoDefault!;
 	}
 
 	/**
 	 * Creates a labeled input view.
 	 *
-	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
+	 * @returns Labeled input view instance.
 	 */
-	_createUrlInput() {
-		const t = this.locale.t;
+	private _createUrlInput(): LabeledFieldView<InputTextView> {
+		const t = this.locale!.t;
 
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
@@ -298,8 +276,8 @@ export default class MediaFormView extends View {
 
 		inputField.on( 'input', () => {
 			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
-			labeledInput.infoText = inputField.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
-			this.mediaURLInputValue = inputField.element.value.trim();
+			labeledInput.infoText = inputField.element!.value ? this._urlInputViewInfoTip! : this._urlInputViewInfoDefault!;
+			this.mediaURLInputValue = inputField.element!.value.trim();
 		} );
 
 		return labeledInput;
@@ -308,14 +286,13 @@ export default class MediaFormView extends View {
 	/**
 	 * Creates a button view.
 	 *
-	 * @private
-	 * @param {String} label The button label.
-	 * @param {String} icon The button icon.
-	 * @param {String} className The additional button CSS class name.
-	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
+	 * @param label The button label.
+	 * @param icon The button icon.
+	 * @param className The additional button CSS class name.
+	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
+	 * @returns The button view instance.
 	 */
-	_createButton( label, icon, className, eventName ) {
+	private _createButton( label: string, icon: string, className: string, eventName?: string ): ButtonView {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
@@ -342,11 +319,11 @@ export default class MediaFormView extends View {
  * Fired when the form view is submitted (when one of the children triggered the submit event),
  * e.g. click on {@link #saveButtonView}.
  *
- * @event submit
+ * @eventName submit
  */
 
 /**
  * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
  *
- * @event cancel
+ * @eventName cancel
  */

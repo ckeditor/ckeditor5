@@ -7,39 +7,40 @@
  * @module media-embed/mediaembedui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown } from 'ckeditor5/src/ui';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from 'ckeditor5/src/ui';
 
 import MediaFormView from './ui/mediaformview';
 import MediaEmbedEditing from './mediaembedediting';
 import mediaIcon from '../theme/icons/media.svg';
+import type MediaEmbedCommand from './mediaembedcommand';
+import type { LocaleTranslate } from 'ckeditor5/src/utils';
+import type MediaRegistry from './mediaregistry';
 
 /**
  * The media embed UI plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ MediaEmbedEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'MediaEmbedUI' {
 		return 'MediaEmbedUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'mediaEmbed' );
+		const command = editor.commands.get( 'mediaEmbed' )!;
 
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
@@ -50,19 +51,14 @@ export default class MediaEmbedUI extends Plugin {
 		} );
 	}
 
-	/**
-	 * @private
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
-	 */
-	_setUpDropdown( dropdown, command ) {
+	private _setUpDropdown( dropdown: DropdownView, command: MediaEmbedCommand ): void {
 		const editor = this.editor;
 		const t = editor.t;
 		const button = dropdown.buttonView;
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		dropdown.once( 'change:isOpen', () => {
-			const form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
+			const form = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
 
 			dropdown.panelView.children.add( form );
 
@@ -95,10 +91,10 @@ export default class MediaEmbedUI extends Plugin {
 			} );
 
 			form.delegate( 'submit', 'cancel' ).to( dropdown );
-			form.urlInputView.bind( 'value' ).to( command, 'value' );
+			form.urlInputView.fieldView.bind( 'value' ).to( command, 'value' );
 
 			// Form elements should be read-only when corresponding commands are disabled.
-			form.urlInputView.bind( 'isReadOnly' ).to( command, 'isEnabled', value => !value );
+			form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		} );
 
 		dropdown.bind( 'isEnabled' ).to( command );
@@ -111,7 +107,7 @@ export default class MediaEmbedUI extends Plugin {
 	}
 }
 
-function getFormValidators( t, registry ) {
+function getFormValidators( t: LocaleTranslate, registry: MediaRegistry ): Array<( v: MediaFormView ) => string | undefined> {
 	return [
 		form => {
 			if ( !form.url.length ) {
@@ -124,4 +120,10 @@ function getFormValidators( t, registry ) {
 			}
 		}
 	];
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ MediaEmbedUI.pluginName ]: MediaEmbedUI;
+	}
 }

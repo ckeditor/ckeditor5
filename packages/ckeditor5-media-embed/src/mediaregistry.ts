@@ -7,10 +7,13 @@
  * @module media-embed/mediaregistry
  */
 
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 import { IconView, Template } from 'ckeditor5/src/ui';
-import { logWarning, toArray } from 'ckeditor5/src/utils';
+import { type Locale, logWarning, toArray } from 'ckeditor5/src/utils';
 
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
+import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembed';
+import type { MediaOptions } from './utils';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 
@@ -23,13 +26,24 @@ const mediaPlaceholderIconViewBox = '0 0 64 42';
  */
 export default class MediaRegistry {
 	/**
+	 * The {@link module:utils/locale~Locale} instance.
+	 */
+	public locale: Locale;
+
+	/**
+	 * The media provider definitions available for the registry. Usually corresponding with the
+	 * {@link module:media-embed/mediaembed~MediaEmbedConfig media configuration}.
+	 */
+	public providerDefinitions: Array<MediaEmbedProvider>;
+
+	/**
 	 * Creates an instance of the {@link module:media-embed/mediaregistry~MediaRegistry} class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {module:media-embed/mediaembed~MediaEmbedConfig} config The configuration of the media embed feature.
+	 * @param locale The localization services instance.
+	 * @param config The configuration of the media embed feature.
 	 */
-	constructor( locale, config ) {
-		const providers = config.providers;
+	constructor( locale: Locale, config: MediaEmbedConfig ) {
+		const providers = config.providers!;
 		const extraProviders = config.extraProviders || [];
 		const removedProviders = new Set( config.removeProviders );
 		const providerDefinitions = providers
@@ -53,29 +67,16 @@ export default class MediaRegistry {
 				return !removedProviders.has( name );
 			} );
 
-		/**
-		 * The {@link module:utils/locale~Locale} instance.
-		 *
-		 * @member {module:utils/locale~Locale}
-		 */
 		this.locale = locale;
-
-		/**
-		 * The media provider definitions available for the registry. Usually corresponding with the
-		 * {@link module:media-embed/mediaembed~MediaEmbedConfig media configuration}.
-		 *
-		 * @member {Array}
-		 */
 		this.providerDefinitions = providerDefinitions;
 	}
 
 	/**
 	 * Checks whether the passed URL is representing a certain media type allowed in the editor.
 	 *
-	 * @param {String} url The URL to be checked
-	 * @returns {Boolean}
+	 * @param url The URL to be checked
 	 */
-	hasMedia( url ) {
+	public hasMedia( url: string ): boolean {
 		return !!this._getMedia( url );
 	}
 
@@ -85,26 +86,25 @@ export default class MediaRegistry {
 	 *
 	 * **Note:** If no URL is specified, an empty view element is returned.
 	 *
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
-	 * @param {String} url The URL to be translated into a view element.
-	 * @param {Object} options
-	 * @param {String} [options.elementName]
-	 * @param {Boolean} [options.renderMediaPreview]
-	 * @param {Boolean} [options.renderForEditingView]
-	 * @returns {module:engine/view/element~Element}
+	 * @param writer The view writer used to produce a view element.
+	 * @param url The URL to be translated into a view element.
 	 */
-	getMediaViewElement( writer, url, options ) {
-		return this._getMedia( url ).getViewElement( writer, options );
+	public getMediaViewElement(
+		writer: DowncastWriter,
+		url: string,
+		options: MediaOptions
+	): ViewElement {
+		return this._getMedia( url )!.getViewElement( writer, options );
 	}
 
 	/**
 	 * Returns a `Media` instance for the given URL.
 	 *
 	 * @protected
-	 * @param {String} url The URL of the media.
-	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there is none.
+	 * @param url The URL of the media.
+	 * @returns The `Media` instance or `null` when there is none.
 	 */
-	_getMedia( url ) {
+	protected _getMedia( url: string ): Media | null {
 		if ( !url ) {
 			return new Media( this.locale );
 		}
@@ -131,11 +131,10 @@ export default class MediaRegistry {
 	 * Tries to match `url` to `pattern`.
 	 *
 	 * @private
-	 * @param {String} url The URL of the media.
-	 * @param {RegExp} pattern The pattern that should accept the media URL.
-	 * @returns {Array|null}
+	 * @param url The URL of the media.
+	 * @param pattern The pattern that should accept the media URL.
 	 */
-	_getUrlMatches( url, pattern ) {
+	private _getUrlMatches( url: string, pattern: RegExp ): RegExpMatchArray | null {
 		// 1. Try to match without stripping the protocol and "www" subdomain.
 		let match = url.match( pattern );
 
@@ -171,49 +170,46 @@ export default class MediaRegistry {
  * @private
  */
 class Media {
-	constructor( locale, url, match, previewRenderer ) {
-		/**
-		 * The URL this Media instance represents.
-		 *
-		 * @member {String}
-		 */
+	/**
+	 * The URL this Media instance represents.
+	 */
+	public url: string | null;
+
+	/**
+	 * Shorthand for {@link module:utils/locale~Locale#t}.
+	 *
+	 * @see module:utils/locale~Locale#t
+	 * @method
+	 */
+	private _locale: Locale;
+
+	/**
+	 * The output of the `RegExp.match` which validated the {@link #url} of this media.
+	 */
+	private _match?: object;
+
+	/**
+	 * The function returning the HTML string preview of this media.
+	 */
+	private _previewRenderer?: Function;
+
+	constructor( locale: Locale, url?: string, match?: object, previewRenderer?: Function ) {
 		this.url = this._getValidUrl( url );
-
-		/**
-		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * @see module:utils/locale~Locale#t
-		 * @method
-		 */
 		this._locale = locale;
-
-		/**
-		 * The output of the `RegExp.match` which validated the {@link #url} of this media.
-		 *
-		 * @member {Object}
-		 */
 		this._match = match;
-
-		/**
-		 * The function returning the HTML string preview of this media.
-		 *
-		 * @member {Function}
-		 */
 		this._previewRenderer = previewRenderer;
 	}
 
 	/**
 	 * Returns the view element representation of the media.
 	 *
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
-	 * @param {Object} options
-	 * @param {String} [options.elementName]
-	 * @param {Boolean} [options.renderMediaPreview]
-	 * @param {Boolean} [options.renderForEditingView]
-	 * @returns {module:engine/view/element~Element}
+	 * @param writer The view writer used to produce a view element.
 	 */
-	getViewElement( writer, options ) {
-		const attributes = {};
+	public getViewElement(
+		writer: DowncastWriter,
+		options: MediaOptions
+	): ViewElement {
+		const attributes: Record<string, unknown> = {};
 		let viewElement;
 
 		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._previewRenderer ) ) {
@@ -228,7 +224,7 @@ class Media {
 			const mediaHtml = this._getPreviewHtml( options );
 
 			viewElement = writer.createRawElement( 'div', attributes, ( domElement, domConverter ) => {
-				domConverter.setContentOf( domElement, mediaHtml );
+				domConverter!.setContentOf( domElement, mediaHtml );
 			} );
 		} else {
 			if ( this.url ) {
@@ -245,13 +241,8 @@ class Media {
 
 	/**
 	 * Returns the HTML string of the media content preview.
-	 *
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
-	 * @param {Object} options
-	 * @param {Boolean} [options.renderForEditingView]
-	 * @returns {String}
 	 */
-	_getPreviewHtml( options ) {
+	private _getPreviewHtml( options: { renderForEditingView?: boolean } ): string {
 		if ( this._previewRenderer ) {
 			return this._previewRenderer( this._match );
 		} else {
@@ -267,10 +258,8 @@ class Media {
 
 	/**
 	 * Returns the placeholder HTML when the media has no content preview.
-	 *
-	 * @returns {String}
 	 */
-	_getPlaceholderHtml() {
+	private _getPlaceholderHtml(): string {
 		const icon = new IconView();
 		const t = this._locale.t;
 
@@ -310,7 +299,7 @@ class Media {
 					]
 				}
 			]
-		} ).render();
+		} ).render() as HTMLElement;
 
 		return placeholder.outerHTML;
 	}
@@ -318,10 +307,9 @@ class Media {
 	/**
 	 * Returns the full URL to the specified media.
 	 *
-	 * @param {String} url The URL of the media.
-	 * @returns {String|null}
+	 * @param url The URL of the media.
 	 */
-	_getValidUrl( url ) {
+	private _getValidUrl( url: string | undefined ): string | null {
 		if ( !url ) {
 			return null;
 		}

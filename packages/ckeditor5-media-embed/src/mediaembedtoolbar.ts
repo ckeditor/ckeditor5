@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedtoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type ToolbarConfigItem, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 
 import { getSelectedMediaViewWidget } from './utils';
@@ -17,32 +17,29 @@ import { getSelectedMediaViewWidget } from './utils';
  *
  * Instances of toolbar components (e.g. buttons) are created based on the
  * {@link module:media-embed/mediaembed~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class MediaEmbedToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ WidgetToolbarRepository ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'MediaEmbedToolbar' {
 		return 'MediaEmbedToolbar';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-
 		widgetToolbarRepository.register( 'mediaEmbed', {
 			ariaLabel: t( 'Media toolbar' ),
 			items: editor.config.get( 'mediaEmbed.toolbar' ) || [],
@@ -51,11 +48,22 @@ export default class MediaEmbedToolbar extends Plugin {
 	}
 }
 
-/**
- * Items to be placed in the media embed toolbar.
- * This option requires adding {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} to the plugin list.
- *
- * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * @member {Array.<String>} module:media-embed/mediaembed~MediaEmbedConfig#toolbar
- */
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ MediaEmbedToolbar.pluginName ]: MediaEmbedToolbar;
+	}
+}
+
+declare module './mediaembed'
+{
+	interface MediaEmbedConfig {
+
+		/**
+		 * Items to be placed in the media embed toolbar.
+		 * This option requires adding {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} to the plugin list.
+		 *
+		 * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+		 */
+		toolbar?: Array<ToolbarConfigItem>;
+	}
+}

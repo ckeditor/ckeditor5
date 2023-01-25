@@ -7,8 +7,8 @@
  * @module media-embed/mediaembedediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { first, type GetCallback } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
@@ -16,26 +16,31 @@ import MediaRegistry from './mediaregistry';
 import { toMediaWidget, createMediaFigureElement } from './utils';
 
 import '../theme/mediaembedediting.css';
+import type { MediaEmbedConfig } from './mediaembed';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 
 /**
  * The media embed editing feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class MediaEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'MediaEmbedEditing' {
 		return 'MediaEmbedEditing';
 	}
 
 	/**
+	 * The media registry managing the media providers in the editor.
+	 */
+	public registry: MediaRegistry;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
-
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		editor.config.define( 'mediaEmbed', {
 			elementName: 'oembed',
 			providers: [
@@ -151,26 +156,21 @@ export default class MediaEmbedEditing extends Plugin {
 					url: /^facebook\.com/
 				}
 			]
-		} );
+		} as MediaEmbedConfig );
 
-		/**
-		 * The media registry managing the media providers in the editor.
-		 *
-		 * @member {module:media-embed/mediaregistry~MediaRegistry} #registry
-		 */
-		this.registry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' ) );
+		this.registry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' )! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
-		const elementName = editor.config.get( 'mediaEmbed.elementName' );
+		const elementName = editor.config.get( 'mediaEmbed.elementName' )!;
 
 		const registry = this.registry;
 
@@ -186,11 +186,11 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
-				const url = modelElement.getAttribute( 'url' );
+				const url = modelElement.getAttribute( 'url' ) as string;
 
 				return createMediaFigureElement( writer, registry, url, {
 					elementName,
-					renderMediaPreview: url && renderMediaPreview
+					renderMediaPreview: !!url && renderMediaPreview
 				} );
 			}
 		} );
@@ -206,7 +206,7 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
-				const url = modelElement.getAttribute( 'url' );
+				const url = modelElement.getAttribute( 'url' ) as string;
 				const figure = createMediaFigureElement( writer, registry, url, {
 					elementName,
 					renderForEditingView: true
@@ -231,11 +231,13 @@ export default class MediaEmbedEditing extends Plugin {
 					{ name: true } :
 					null,
 				model: ( viewMedia, { writer } ) => {
-					const url = viewMedia.getAttribute( 'url' );
+					const url = viewMedia.getAttribute( 'url' ) as string;
 
 					if ( registry.hasMedia( url ) ) {
 						return writer.createElement( 'media', { url } );
 					}
+
+					return null;
 				}
 			} )
 			// Upcast non-semantic media.
@@ -247,18 +249,18 @@ export default class MediaEmbedEditing extends Plugin {
 					}
 				},
 				model: ( viewMedia, { writer } ) => {
-					const url = viewMedia.getAttribute( 'data-oembed-url' );
+					const url = viewMedia.getAttribute( 'data-oembed-url' ) as string;
 
 					if ( registry.hasMedia( url ) ) {
 						return writer.createElement( 'media', { url } );
 					}
+
+					return null;
 				}
 			} )
 			// Consume `<figure class="media">` elements, that were left after upcast.
 			.add( dispatcher => {
-				dispatcher.on( 'element:figure', converter );
-
-				function converter( evt, data, conversionApi ) {
+				const converter: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
 						return;
 					}
@@ -268,13 +270,25 @@ export default class MediaEmbedEditing extends Plugin {
 					data.modelRange = modelRange;
 					data.modelCursor = modelCursor;
 
-					const modelElement = first( modelRange.getItems() );
+					const modelElement = first( modelRange!.getItems() );
 
 					if ( !modelElement ) {
 						// Revert consumed figure so other features can convert it.
 						conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'media' } );
 					}
-				}
+				};
+				dispatcher.on<UpcastElementEvent>( 'element:figure', converter );
 			} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ MediaEmbedEditing.pluginName ]: MediaEmbedEditing;
+	}
+
+	interface CommandsMap {
+
+		mediaEmbed: MediaEmbedCommand;
 	}
 }
