@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -44,7 +44,7 @@ export default class ColorInputView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public value!: string;
+	declare public value: string;
 
 	/**
 	 * Controls whether the input view is in read-only mode.
@@ -52,7 +52,7 @@ export default class ColorInputView extends View {
 	 * @observable
 	 * @default false
 	 */
-	public isReadOnly!: boolean;
+	declare public isReadOnly: boolean;
 
 	/**
 	 * An observable flag set to `true` when the input is focused by the user.
@@ -61,7 +61,7 @@ export default class ColorInputView extends View {
 	 * @observable
 	 * @default false
 	 */
-	public readonly isFocused!: boolean;
+	declare public readonly isFocused: boolean;
 
 	/**
 	 * An observable flag set to `true` when the input contains no text.
@@ -69,7 +69,9 @@ export default class ColorInputView extends View {
 	 * @observable
 	 * @default true
 	 */
-	public readonly isEmpty!: boolean;
+	declare public readonly isEmpty: boolean;
+
+	declare public hasError: boolean;
 
 	/**
 	 * A cached reference to the options passed to the constructor.

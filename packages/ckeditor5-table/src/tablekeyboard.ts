@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,8 +12,22 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { getLocalizedArrowKeyCodeDirection, type EventInfo, type ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
-import type { BubblingEventInfo, DocumentSelection, DomEventData, Element, Selection } from 'ckeditor5/src/engine';
+import {
+	getLocalizedArrowKeyCodeDirection,
+	type EventInfo,
+	type ArrowKeyCodeDirection,
+	type KeystrokeInfo
+} from 'ckeditor5/src/utils';
+
+import type {
+	BubblingEventInfo,
+	DocumentSelection,
+	DomEventData,
+	Element,
+	Selection,
+	ViewDocumentArrowKeyEvent,
+	ViewDocumentTabEvent
+} from 'ckeditor5/src/engine';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -43,9 +57,26 @@ export default class TableKeyboard extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
-		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { context: 'figure' } );
-		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: [ 'th', 'td' ] } );
+		this.listenTo<ViewDocumentArrowKeyEvent>(
+			viewDocument,
+			'arrowKey',
+			( ...args ) => this._onArrowKey( ...args ),
+			{ context: 'table' }
+		);
+
+		this.listenTo<ViewDocumentTabEvent>(
+			viewDocument,
+			'tab',
+			( ...args ) => this._handleTabOnSelectedTable( ...args ),
+			{ context: 'figure' }
+		);
+
+		this.listenTo<ViewDocumentTabEvent>(
+			viewDocument,
+			'tab',
+			( ...args ) => this._handleTab( ...args ),
+			{ context: [ 'th', 'td' ] }
+		);
 	}
 
 	/**
@@ -74,7 +105,7 @@ export default class TableKeyboard extends Plugin {
 	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
-	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData ) {
+	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
@@ -156,7 +187,7 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
 	 */
-	private _onArrowKey( eventInfo: EventInfo, domEventData: DomEventData ) {
+	private _onArrowKey( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 

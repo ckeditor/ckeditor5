@@ -13,6 +13,12 @@ export {
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData
 } from './clipboardpipeline';
+
+export type {
+	ClipboardEventData,
+	ViewDocumentClipboardEvent
+} from './clipboardobserver';
+
 export { default as DragDrop } from './dragdrop';
 export { default as PastePlainText } from './pasteplaintext';
 export type { ViewDocumentClipboardInputEvent } from './clipboardobserver';

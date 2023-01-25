@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/ui/formrowview
  */
 
-import { View, type ViewCollection } from 'ckeditor5/src/ui';
+import { View, type LabelView, type ViewCollection } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 import '../../theme/formrow.css';
@@ -62,7 +62,7 @@ export default class FormRowView extends View {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: View } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;

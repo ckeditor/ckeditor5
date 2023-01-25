@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,20 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { type EventInfo, first } from 'ckeditor5/src/utils';
-import type { Element, DocumentFragment, DomEventData, Selection, DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+
+import type {
+	Element,
+	DocumentFragment,
+	Selection,
+	DowncastWriter,
+	ViewElement,
+	ModelDeleteContentEvent
+} from 'ckeditor5/src/engine';
+
+import type {
+	ViewDocumentInsertTextEvent,
+	InsertTextEventData
+} from 'ckeditor5/src/typing';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
@@ -47,8 +60,19 @@ export default class TableSelection extends Plugin {
 		const model = editor.model;
 		const view = editor.editing.view;
 
-		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
-		this.listenTo( view.document, 'insertText', ( evt, data ) => this._handleInsertTextEvent( evt, data ), { priority: 'high' } );
+		this.listenTo<ModelDeleteContentEvent>(
+			model,
+			'deleteContent',
+			( evt, args ) => this._handleDeleteContent( evt, args ),
+			{ priority: 'high' }
+		);
+
+		this.listenTo<ViewDocumentInsertTextEvent>(
+			view.document,
+			'insertText',
+			( evt, data ) => this._handleInsertTextEvent( evt, data ),
+			{ priority: 'high' }
+		);
 
 		this._defineSelectionConverter();
 		this._enablePluginDisabling(); // sic!
@@ -317,7 +341,7 @@ export default class TableSelection extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} event
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Insert text event data.
 	 */
-	private _handleInsertTextEvent( evt: EventInfo, data: DomEventData ) {
+	private _handleInsertTextEvent( evt: EventInfo, data: InsertTextEventData ) {
 		const editor = this.editor;
 		const selectedCells = this.getSelectedTableCells();
 

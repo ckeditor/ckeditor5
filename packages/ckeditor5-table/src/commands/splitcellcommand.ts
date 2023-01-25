@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,9 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  *
  * You can split any cell vertically or horizontally by executing this command. For example, to split the selected table cell vertically:
  *
- *		editor.execute( 'splitTableCellVertically' );
+ * ```ts
+ * editor.execute( 'splitTableCellVertically' );
+ * ```
  *
  * @extends module:core/command~Command
  */

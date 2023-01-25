@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,7 +63,7 @@ export function addDefaultUnitToNumericValue( value: string | number, defaultUni
 	return `${ numericValue }${ defaultUnit }`;
 }
 
-type NormalizedDefaultProperties = {
+export type NormalizedDefaultProperties = {
 	borderStyle: string;
 	borderWidth: string;
 	borderColor: string;
@@ -98,14 +98,15 @@ export function getNormalizedDefaultProperties(
 		isRightToLeftContent?: boolean;
 	} = {}
 ): NormalizedDefaultProperties {
-	const normalizedConfig: NormalizedDefaultProperties = Object.assign( {
+	const normalizedConfig: NormalizedDefaultProperties = {
 		borderStyle: 'none',
 		borderWidth: '',
 		borderColor: '',
 		backgroundColor: '',
 		width: '',
-		height: ''
-	}, config );
+		height: '',
+		...config
+	};
 
 	if ( options.includeAlignmentProperty && !normalizedConfig.alignment ) {
 		normalizedConfig.alignment = 'center';

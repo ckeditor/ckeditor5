@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,8 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ViewElement } from 'ckeditor5/src/engine';
+import type { MapperModelToViewPositionEvent, ViewElement } from 'ckeditor5/src/engine';
+import type { GetCallback } from 'ckeditor5/src/utils';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
@@ -34,7 +35,6 @@ import tableHeadingsRefreshHandler from './converters/table-headings-refresh-han
 import tableCellRefreshHandler from './converters/table-cell-refresh-handler';
 
 import '../theme/tableediting.css';
-import { EventInfo } from 'ckeditor5/src/utils';
 
 /**
  * The table editing feature.
@@ -157,7 +157,7 @@ export default class TableEditing extends Plugin {
 		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
 		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
 		// because only during this conversion a paragraph can be bound to its parent.
-		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView() );
+		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapTableCellModelPositionToView() );
 
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
@@ -211,7 +211,7 @@ export default class TableEditing extends Plugin {
  *
  * @returns {Function}
  */
-function mapTableCellModelPositionToView() {
+function mapTableCellModelPositionToView(): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const modelParent = data.modelPosition.parent;
 		const modelNodeBefore = data.modelPosition.nodeBefore;
@@ -225,7 +225,7 @@ function mapTableCellModelPositionToView() {
 		}
 
 		const viewNodeBefore = data.mapper.toViewElement( modelNodeBefore );
-		const viewParent = data.mapper.toViewElement( modelParent );
+		const viewParent = data.mapper.toViewElement( modelParent )!;
 
 		if ( viewNodeBefore === viewParent ) {
 			// Since the paragraph has already been bound to its parent, update the current position in the model with paragraph's

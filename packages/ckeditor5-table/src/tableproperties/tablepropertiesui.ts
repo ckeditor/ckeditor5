@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { ButtonView, ContextualBalloon, clickOutsideHandler, getLocalizedColorOptions, normalizeColorOptions } from 'ckeditor5/src/ui';
+import { ButtonView, ContextualBalloon, clickOutsideHandler, getLocalizedColorOptions, normalizeColorOptions, LabelView, LabeledFieldView } from 'ckeditor5/src/ui';
 
 import { debounce } from 'lodash-es';
 
@@ -411,8 +411,8 @@ export default class TablePropertiesUI extends Plugin {
 	private _getValidatedPropertyChangeCallback(
 		options: {
 			commandName: string;
-			viewField: string;
-			validator: Function;
+			viewField: LabeledFieldView;
+			validator: ( value: string ) => boolean;
 			errorText: string;
 			defaultValue: string;
 		}

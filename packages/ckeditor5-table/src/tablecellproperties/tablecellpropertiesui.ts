@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -34,6 +34,7 @@ import { getBalloonCellPositionData, repositionContextualBalloon } from '../util
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
 import type { TableCellPropertiesOptions } from '../tablecellproperties';
+import { GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -63,7 +64,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * The default table cell properties.
 	 */
-	protected _defaultTableCellProperties?: TableCellPropertiesOptions;
+	private _defaultTableCellProperties!: NormalizedDefaultProperties;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -223,12 +224,12 @@ export default class TableCellPropertiesUI extends Plugin {
 		// property of the view has changed. They also validate the value and display errors in the UI
 		// when necessary. This makes the view live, which means the changes are
 		// visible in the editing as soon as the user types or changes fields' values.
-		view.on(
+		view.on<ObservableChangeEvent<string>>(
 			'change:borderStyle',
-			this._getPropertyChangeCallback( 'tableCellBorderStyle', this._defaultTableCellProperties!.borderStyle )
+			this._getPropertyChangeCallback( 'tableCellBorderStyle', this._defaultTableCellProperties.borderStyle )
 		);
 
-		view.on( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderColorInput,
 			commandName: 'tableCellBorderColor',
 			errorText: colorErrorText,
@@ -236,7 +237,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.borderColor
 		} ) );
 
-		view.on( 'change:borderWidth', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:borderWidth', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderWidthInput,
 			commandName: 'tableCellBorderWidth',
 			errorText: lengthErrorText,
@@ -244,7 +245,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.borderWidth
 		} ) );
 
-		view.on( 'change:padding', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:padding', this._getValidatedPropertyChangeCallback( {
 			viewField: view.paddingInput,
 			commandName: 'tableCellPadding',
 			errorText: lengthErrorText,
@@ -252,7 +253,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.padding
 		} ) );
 
-		view.on( 'change:width', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:width', this._getValidatedPropertyChangeCallback( {
 			viewField: view.widthInput,
 			commandName: 'tableCellWidth',
 			errorText: lengthErrorText,
@@ -260,7 +261,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.width
 		} ) );
 
-		view.on( 'change:height', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:height', this._getValidatedPropertyChangeCallback( {
 			viewField: view.heightInput,
 			commandName: 'tableCellHeight',
 			errorText: lengthErrorText,
@@ -268,7 +269,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.height
 		} ) );
 
-		view.on( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
+		view.on<ObservableChangeEvent<string>>( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.backgroundInput,
 			commandName: 'tableCellBackgroundColor',
 			errorText: colorErrorText,
@@ -276,11 +277,11 @@ export default class TableCellPropertiesUI extends Plugin {
 			defaultValue: this._defaultTableCellProperties!.backgroundColor
 		} ) );
 
-		view.on(
+		view.on<ObservableChangeEvent<string>>(
 			'change:horizontalAlignment',
 			this._getPropertyChangeCallback( 'tableCellHorizontalAlignment', this._defaultTableCellProperties!.horizontalAlignment )
 		);
-		view.on(
+		view.on<ObservableChangeEvent<string>>(
 			'change:verticalAlignment',
 			this._getPropertyChangeCallback( 'tableCellVerticalAlignment', this._defaultTableCellProperties!.verticalAlignment )
 		);
@@ -442,7 +443,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			errorText: string;
 			defaultValue: string;
 		}
-	): Function {
+	): GetCallback<ObservableChangeEvent<string>> {
 		const { commandName, viewField, validator, errorText, defaultValue } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;

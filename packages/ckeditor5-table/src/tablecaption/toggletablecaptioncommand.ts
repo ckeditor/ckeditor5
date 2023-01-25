@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -34,6 +34,8 @@ import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './ut
  * @extends module:core/command~Command
  */
 export default class ToggleTableCaptionCommand extends Command {
+	declare public value: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -59,7 +61,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * @param {String} [options.focusCaptionOnShow] When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
-	public override execute( { focusCaptionOnShow }: { focusCaptionOnShow: string } ): void {
+	public override execute( { focusCaptionOnShow }: { focusCaptionOnShow: boolean } ): void {
 		this.editor.model.change( writer => {
 			if ( this.value ) {
 				this._hideTableCaption( writer );

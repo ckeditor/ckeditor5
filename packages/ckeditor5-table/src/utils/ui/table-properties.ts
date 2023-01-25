@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,11 +10,13 @@
 import {
 	ButtonView,
 	Model,
+	type View,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
 	type ToolbarView,
 	type NormalizedColorOption
 } from 'ckeditor5/src/ui';
+
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
 import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
 
@@ -165,15 +167,15 @@ export function getBorderStyleDefinitions(
  * @param {String} propertyName
  * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
-export function fillToolbar(
+export function fillToolbar<TView extends View, TPropertyName extends keyof TView>(
 	options: {
-		view: TableCellPropertiesView | TablePropertiesView;
-		icons: Array<string>;
+		view: TView;
+		icons: Record<string, string>;
 		toolbar: ToolbarView;
 		labels: Record<number, string>;
-		propertyName: string;
-		nameToValue: ( arg0: string ) => string;
-		defaultValue: string;
+		propertyName: TPropertyName;
+		nameToValue?: ( arg0: string ) => string;
+		defaultValue?: string;
 	}
 ): void {
 	const { view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
@@ -195,14 +197,14 @@ export function fillToolbar(
 
 			// If it's empty, and the `defaultValue` is specified, use it instead.
 			if ( value === '' && defaultValue ) {
-				valueToCompare = defaultValue;
+				valueToCompare = defaultValue as any;
 			}
 
 			return buttonValue === valueToCompare;
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = buttonValue;
+			view[ propertyName ] = buttonValue as any;
 		} );
 
 		toolbar.items.add( button );

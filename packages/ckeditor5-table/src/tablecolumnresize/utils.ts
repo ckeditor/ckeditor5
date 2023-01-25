@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -100,7 +100,7 @@ export function getColumnMinWidthAsPercentage( modelTable: Element, editor: Edit
 export function getTableWidthInPixels( modelTable: Element, editor: Editor ): number {
 	// It is possible for a table to not have a <tbody> element - see #11878.
 	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
-	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! );
+	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! )!;
 
 	return getElementWidthInPixels( domReferenceElement );
 }
@@ -125,7 +125,7 @@ function getChildrenViewElement( modelTable: Element, elementName: string, edito
  * @param domElement A DOM element.
  * @returns The width of the DOM element in pixels.
  */
-export function getElementWidthInPixels( domElement ): number {
+export function getElementWidthInPixels( domElement: HTMLElement ): number {
 	const styles = global.window.getComputedStyle( domElement );
 
 	// In the 'border-box' box sizing algorithm, the element's width

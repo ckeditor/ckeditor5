@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -58,7 +58,7 @@ export function repositionContextualBalloon( editor: Editor, target: string ): v
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
-export function getBalloonTablePositionData( editor: Editor ): PositionOptions {
+export function getBalloonTablePositionData( editor: Editor ): Partial<PositionOptions> {
 	const firstPosition = editor.model.document.selection.getFirstPosition()!;
 	const modelTable = firstPosition.findAncestor( 'table' )!;
 	const viewTable = editor.editing.mapper.toViewElement( modelTable )!;
@@ -77,7 +77,7 @@ export function getBalloonTablePositionData( editor: Editor ): PositionOptions {
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
-export function getBalloonCellPositionData( editor: Editor ): PositionOptions {
+export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOptions> {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const selection = editor.model.document.selection;
@@ -116,13 +116,13 @@ function getTableCellAtPosition( position: Position ): Element {
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/rect~Rect}
  */
-function createBoundingRect( ranges: Range, editor: Editor ): Rect {
+function createBoundingRect( ranges: Iterable<Range>, editor: Editor ): Rect {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const rects = Array.from( ranges ).map( range => {
 		const modelTableCell = getTableCellAtPosition( range.start );
-		const viewTableCell = mapper.toViewElement( modelTableCell );
-		return new Rect( domConverter.mapViewToDom( viewTableCell ) );
+		const viewTableCell = mapper.toViewElement( modelTableCell )!;
+		return new Rect( domConverter.mapViewToDom( viewTableCell )! );
 	} );
 
 	return Rect.getBoundingRect( rects )!;

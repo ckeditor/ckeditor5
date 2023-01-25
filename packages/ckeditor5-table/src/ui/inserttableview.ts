@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,7 +25,7 @@ export default class InsertTableView extends View {
 	/**
 	 * A collection of table size box items.
 	 */
-	public readonly items: ViewCollection;
+	public readonly items: ViewCollection<ButtonView>;
 
 	/**
 	 * Listen to `keydown` events fired in this view's main element.
@@ -42,14 +42,14 @@ export default class InsertTableView extends View {
 	 *
 	 * @observable
 	 */
-	public rows!: number;
+	declare public rows: number;
 
 	/**
 	 * The currently selected number of columns of the new table.
 	 *
 	 * @observable
 	 */
-	public columns!: number;
+	declare public columns: number;
 
 	/**
 	 * The label text displayed under the boxes.
@@ -57,7 +57,7 @@ export default class InsertTableView extends View {
 	 * @observable
 	 * @member {String} #label
 	 */
-	// this.bind( 'label' ).to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` ); // TODO
+	declare public label: string;
 
 	/**
 	 * @inheritDoc
@@ -227,7 +227,7 @@ export default class InsertTableView extends View {
 	/**
 	 * @returns A view collection containing boxes to be placed in a table grid.
 	 */
-	private _createGridCollection(): ViewCollection {
+	private _createGridCollection() {
 		const boxes = [];
 
 		// Add grid boxes to table selection view.

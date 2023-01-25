@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,12 @@ import {
 	type FocusableView,
 	type NormalizedColorOption
 } from 'ckeditor5/src/ui';
-import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
+import {
+	KeystrokeHandler,
+	FocusTracker,
+	type Locale,
+	type ObservableChangeEvent
+} from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 import {
@@ -33,6 +38,7 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
+import type ColorInputView from '../../ui/colorinputview';
 import type { TableCellPropertiesOptions } from '../../tablecellproperties';
 
 import '../../../theme/form.css';
@@ -185,7 +191,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
-	public readonly borderColorInput: LabeledFieldView<FocusableView>;
+	public readonly borderColorInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table cell background color.
@@ -193,7 +199,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:table/ui/colorinputview~ColorInputView}
 	 */
-	public readonly backgroundInput: View<HTMLElement>;
+	public readonly backgroundInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table cell padding.
@@ -201,7 +207,7 @@ export default class TableCellPropertiesView extends View {
 	 * @readonly
 	 * @member {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	public readonly paddingInput: LabeledFieldView<FocusableView>;
+	public readonly paddingInput: LabeledFieldView;
 
 	/**
 	 * An input that allows specifying the table cell width.
@@ -240,14 +246,14 @@ export default class TableCellPropertiesView extends View {
 	 *
 	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
-	public saveButtonView: View<HTMLElement>;
+	public saveButtonView: ButtonView;
 
 	/**
 	 * The "Cancel" button view.
 	 *
 	 * @member {module:ui/button/buttonview~ButtonView}
 	 */
-	public cancelButtonView: View<HTMLElement>;
+	public cancelButtonView: ButtonView;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -451,7 +457,7 @@ export default class TableCellPropertiesView extends View {
 			this._focusables.add( view );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( view.element );
+			this.focusTracker.add( view.element! );
 		} );
 
 		// Mainly for closing using "Esc" and navigation using "Tab".
@@ -488,7 +494,7 @@ export default class TableCellPropertiesView extends View {
 	private _createBorderFields(): {
 		borderRowLabel: LabelView;
 		borderStyleDropdown: LabeledFieldView;
-		borderColorInput: LabeledFieldView;
+		borderColorInput: LabeledFieldView<ColorInputView>;
 		borderWidthInput: LabeledFieldView;
 		} {
 		const defaultTableCellProperties = this.options.defaultTableCellProperties;
@@ -570,7 +576,7 @@ export default class TableCellPropertiesView extends View {
 		} );
 
 		// Reset the border color and width fields depending on the `border-style` value.
-		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+		this.on<ObservableChangeEvent<string>>( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
 			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
 			if ( !isBorderStyleSet( newValue ) ) {
@@ -598,7 +604,7 @@ export default class TableCellPropertiesView extends View {
 	 *
 	 * * {@link #backgroundInput}.
 	 */
-	private _createBackgroundFields(): Record<string, View> {
+	private _createBackgroundFields() {
 		const locale = this.locale;
 		const t = this.t!;
 
@@ -737,7 +743,7 @@ export default class TableCellPropertiesView extends View {
 	 * * {@link #horizontalAlignmentToolbar},
 	 * * {@link #verticalAlignmentToolbar}.
 	 */
-	private _createAlignmentFields(): Record<string, View> {
+	private _createAlignmentFields() {
 		const locale = this.locale!;
 		const t = this.t!;
 
@@ -810,7 +816,7 @@ export default class TableCellPropertiesView extends View {
 	 * @private
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
-	private _createActionButtons(): Record<string, View> {
+	private _createActionButtons() {
 		const locale = this.locale;
 		const t = this.t!;
 		const saveButtonView = new ButtonView( locale );

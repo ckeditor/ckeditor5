@@ -21,5 +21,5 @@ export { default as getLastTextLine, type LastTextLineData } from './utils/getla
 
 export type { TypingConfig } from './typingconfig';
 export type { ViewDocumentDeleteEvent } from './deleteobserver';
-export type { ViewDocumentInsertTextEvent } from './inserttextobserver';
+export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver';
 export type { TextWatcherMatchedEvent } from './textwatcher';

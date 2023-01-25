@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -66,7 +66,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderStyle?: string;
+	declare public borderStyle: string;
 
 	/**
 	 * The value of the border width style.
@@ -74,7 +74,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderWidth?: string;
+	declare public borderWidth: string;
 
 	/**
 	 * The value of the border color style.
@@ -82,7 +82,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public borderColor?: string;
+	declare public borderColor: string;
 
 	/**
 	 * The value of the background color style.
@@ -90,7 +90,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public backgroundColor?: string;
+	declare public backgroundColor: string;
 
 	/**
 	 * The value of the table width style.
@@ -98,7 +98,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public width?: string;
+	declare public width: string;
 
 	/**
 	 * The value of the table height style.
@@ -106,7 +106,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public height?: string;
+	declare public height: string;
 
 	/**
 	 * The value of the table alignment style.
@@ -114,7 +114,7 @@ export default class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
-	public alignment?: string;
+	declare public alignment: string;
 
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
@@ -139,37 +139,37 @@ export default class TablePropertiesView extends View {
 	/**
 	 * A dropdown that allows selecting the style of the table border.
 	 */
-	public readonly borderStyleDropdown?: LabeledFieldView<DropdownView>;
+	public readonly borderStyleDropdown: LabeledFieldView<DropdownView>;
 
 	/**
 	 * An input that allows specifying the width of the table border.
 	 */
-	public readonly borderWidthInput?: LabeledFieldView<InputTextView>;
+	public readonly borderWidthInput: LabeledFieldView<InputTextView>;
 
 	/**
 	 * An input that allows specifying the color of the table border.
 	 */
-	public readonly borderColorInput?: LabeledFieldView<ColorInputView>;
+	public readonly borderColorInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table background color.
 	 */
-	public readonly backgroundInput?: LabeledFieldView<ColorInputView>;
+	public readonly backgroundInput: LabeledFieldView<ColorInputView>;
 
 	/**
 	 * An input that allows specifying the table width.
 	 */
-	public readonly widthInput?: LabeledFieldView<InputTextView>;
+	public readonly widthInput: LabeledFieldView<InputTextView>;
 
 	/**
 	 * An input that allows specifying the table height.
 	 */
-	public readonly heightInput?: LabeledFieldView<InputTextView>;
+	public readonly heightInput: LabeledFieldView<InputTextView>;
 
 	/**
 	 * A toolbar with buttons that allow changing the alignment of an entire table.
 	 */
-	public readonly alignmentToolbar?: ToolbarView;
+	public readonly alignmentToolbar: ToolbarView;
 
 	/**
 	 * The "Save" button view.

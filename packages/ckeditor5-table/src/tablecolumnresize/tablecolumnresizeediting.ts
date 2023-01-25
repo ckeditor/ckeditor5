@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import { throttle } from 'lodash-es';
-import { global, DomEmitterMixin, type EventInfo } from 'ckeditor5/src/utils';
+import { global, DomEmitterMixin, type EventInfo, DomEmitter } from 'ckeditor5/src/utils';
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import type { Element, Differ, ViewElement, DomEventData, DowncastWriter } from 'ckeditor5/src/engine';
 
@@ -94,7 +94,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * DOM emitter.
 	 */
-	private _domEmitter: typeof DomEmitterMixin;
+	private _domEmitter: DomEmitter;
 
 	/**
 	 * A local reference to the {@link module:table/tableutils~TableUtils} plugin.
@@ -124,7 +124,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._isResizingActive = false;
 		this.set( '_isResizingAllowed', true );
 		this._resizingData = null;
-		this._domEmitter = Object.create( DomEmitterMixin );
+		this._domEmitter = new ( DomEmitterMixin() )();
 		this._tableUtilsPlugin = editor.plugins.get( 'TableUtils' );
 
 		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
@@ -377,7 +377,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		eventInfo.stop();
 
 		const editor = this.editor;
-		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! );
+		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );
@@ -396,7 +396,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// At this point we change only the editor view - we don't want other users to see our changes yet,
 		// so we can't apply them in the model.
-		editingView.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData ) );
+		editingView.change( writer => _applyResizingAttributesToTable( writer, viewTable, this._resizingData! ) );
 
 		/**
 		 * Calculates the DOM columns' widths. It is done by taking the width of the widest cell
@@ -414,7 +414,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 			for ( const cellSlot of tableWalker ) {
 				const viewCell = editor.editing.mapper.toViewElement( cellSlot.cell )!;
-				const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell );
+				const domCell = editor.editing.view.domConverter.mapViewToDom( viewCell )!;
 				const domCellWidth = getDomCellOuterWidth( domCell );
 
 				if ( !columnWidthsInPx[ cellSlot.column ] || domCellWidth < columnWidthsInPx[ cellSlot.column ] ) {
@@ -443,6 +443,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
 			}
 
+			// TODO: start?
 			viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), colgroup );
 		}
 
@@ -471,7 +472,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @param eventInfo An object containing information about the fired event.
 	 * @param mouseEventData The native DOM event.
 	 */
-	private _onMouseMoveHandler( eventInfo: EventInfo, mouseEventData: Event ) {
+	private _onMouseMoveHandler( eventInfo: EventInfo, mouseEventData: MouseEvent ) {
 		if ( !this._isResizingActive ) {
 			return;
 		}
@@ -665,8 +666,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex ) as ViewElement;
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 ) as ViewElement;
 
-		const viewFigureParentWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure.parent! ) );
-		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure ) );
+		const viewFigureParentWidth = getElementWidthInPixels(
+			editor.editing.view.domConverter.mapViewToDom( viewFigure.parent! ) as HTMLElement
+		);
+		const viewFigureWidth = getElementWidthInPixels( editor.editing.view.domConverter.mapViewToDom( viewFigure )! );
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];

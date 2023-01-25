@@ -54,7 +54,7 @@ import type View from './view';
  * @extends module:utils/collection~Collection
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ViewCollection extends Collection<View> {
+export default class ViewCollection<TView extends View = View> extends Collection<TView> {
 	public id?: string;
 
 	private _parentElement: DocumentFragment | HTMLElement | null;
@@ -64,7 +64,7 @@ export default class ViewCollection extends Collection<View> {
 	 *
 	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( initialItems: Iterable<View> = [] ) {
+	constructor( initialItems: Iterable<TView> = [] ) {
 		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
@@ -72,12 +72,12 @@ export default class ViewCollection extends Collection<View> {
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
-		this.on<CollectionAddEvent<View>>( 'add', ( evt, view, index ) => {
+		this.on<CollectionAddEvent<TView>>( 'add', ( evt, view, index ) => {
 			this._renderViewIntoCollectionParent( view, index );
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
-		this.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
+		this.on<CollectionRemoveEvent<TView>>( 'remove', ( evt, view ) => {
 			if ( view.element && this._parentElement ) {
 				view.element.remove();
 			}

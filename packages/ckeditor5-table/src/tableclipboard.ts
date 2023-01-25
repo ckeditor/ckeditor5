@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,21 @@
  * @module table/tableclipboard
  */
 
+import type { ClipboardEventData, ViewDocumentClipboardEvent } from 'ckeditor5/src/clipboard';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { DocumentFragment, Element, Item, Model, Position, Writer } from 'ckeditor5/src/engine';
+
+import type {
+	DocumentFragment,
+	DomEventData,
+	Element,
+	Item,
+	Model,
+	ModelInsertContentEvent,
+	Position,
+	Writer
+} from 'ckeditor5/src/engine';
+
+import type { EventInfo } from 'ckeditor5/src/utils';
 
 import TableSelection from './tableselection';
 import TableWalker, { type TableSlot } from './tablewalker';
@@ -24,7 +37,6 @@ import {
 	adjustLastRowIndex,
 	adjustLastColumnIndex
 } from './utils/structure';
-import type { EventInfo } from 'ckeditor5/src/utils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -54,9 +66,14 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
-		this.listenTo( editor.model, 'insertContent', ( evt, args ) => this._onInsertContent( evt, ...args ), { priority: 'high' } );
+		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo<ModelInsertContentEvent>(
+			editor.model,
+			'insertContent',
+			( evt, [ content, selectable ] ) => this._onInsertContent( evt, content, selectable ),
+			{ priority: 'high' }
+		);
 
 		this.decorate( '_replaceTableSlotCell' );
 	}
@@ -67,7 +84,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
 	 */
-	private _onCopyCut( evt: EventInfo, data ) {
+	private _onCopyCut( evt: EventInfo, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
 		const tableSelection = this.editor.plugins.get( TableSelection );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
