@@ -416,7 +416,7 @@ export default class DowncastWriter {
 	public createUIElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
+		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: DomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
 
@@ -459,7 +459,7 @@ export default class DowncastWriter {
 	public createRawElement(
 		name: string,
 		attributes: ElementAttributes,
-		renderFunction: ( domElement: DomElement, domConverter?: DomConverter ) => void,
+		renderFunction: ( domElement: DomElement, domConverter: DomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}

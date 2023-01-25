@@ -102,8 +102,7 @@ export default class RawElement extends Element {
 	 * @param domElement The native DOM element representing the raw view element.
 	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
-	public render( domElement?: DomElement, domConverter?: DomConverter ): void {
-	}
+	public render( domElement: DomElement, domConverter: DomConverter ): void {}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
