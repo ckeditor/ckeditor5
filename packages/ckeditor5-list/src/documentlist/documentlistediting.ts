@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -67,7 +67,9 @@ import ListWalker, {
 	iterateSiblingListBlocks,
 	ListBlocksIterable
 } from './utils/listwalker';
+
 import '../../theme/documentlist.css';
+import '../../theme/list.css';
 
 /**
  * A list of base list model attributes.
@@ -422,7 +424,8 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
 			'change:data',
-			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this )
+			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ),
+			{ priority: 'high' }
 		);
 
 		// For LI verify if an ID of the attribute element is correct.

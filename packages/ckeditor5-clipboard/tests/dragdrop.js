@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -863,7 +863,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
+					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
 				);
 
 				dataTransferMock.dropEffect = 'move';
@@ -929,7 +929,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
+					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
 				);
 			} );
 
