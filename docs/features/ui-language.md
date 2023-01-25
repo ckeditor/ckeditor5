@@ -122,7 +122,9 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
 	module.exports = {
-		// Define webpack plugins...
+		// Define webpack plugins.
+		// ...
+		
 		plugins: [
 			new CKEditorTranslationsPlugin( {
 				// The main language that will be built into the main bundle.
