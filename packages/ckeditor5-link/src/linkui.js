@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -55,14 +55,14 @@ export default class LinkUI extends Plugin {
 		 *
 		 * @member {module:link/ui/linkactionsview~LinkActionsView}
 		 */
-		this.actionsView = this._createActionsView();
+		this.actionsView = null;
 
 		/**
 		 * The form view displayed inside the balloon.
 		 *
 		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
-		this.formView = this._createFormView();
+		this.formView = null;
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -74,9 +74,7 @@ export default class LinkUI extends Plugin {
 
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
-
-		// Attach lifecycle actions to the the balloon.
-		this._enableUserBalloonInteractions();
+		this._enableBalloonActivators();
 
 		// Renders a fake visual selection marker on an expanded selection.
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
@@ -103,7 +101,26 @@ export default class LinkUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
-		this.formView.destroy();
+		if ( this.formView ) {
+			this.formView.destroy();
+		}
+
+		if ( this.actionsView ) {
+			this.actionsView.destroy();
+		}
+	}
+
+	/**
+	 * Creates...
+	 *
+	 * @private
+	 */
+	_createViews() {
+		this.actionsView = this._createActionsView();
+		this.formView = this._createFormView();
+
+		// Attach lifecycle actions to the the balloon.
+		this._enableUserBalloonInteractions();
 	}
 
 	/**
@@ -200,16 +217,6 @@ export default class LinkUI extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
-		// Handle the `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( LINK_KEYSTROKE, ( keyEvtData, cancel ) => {
-			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
-			cancel();
-
-			if ( linkCommand.isEnabled ) {
-				this._showUI( true );
-			}
-		} );
-
 		editor.ui.componentFactory.add( 'link', locale => {
 			const button = new ButtonView( locale );
 
@@ -233,12 +240,13 @@ export default class LinkUI extends Plugin {
 
 	/**
 	 * Attaches actions that control whether the balloon panel containing the
-	 * {@link #formView} is visible or not.
+	 * {@link #formView} should be displayed.
 	 *
 	 * @private
 	 */
-	_enableUserBalloonInteractions() {
-		const viewDocument = this.editor.editing.view.document;
+	_enableBalloonActivators() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -251,6 +259,24 @@ export default class LinkUI extends Plugin {
 			}
 		} );
 
+		// Handle the `Ctrl+K` keystroke and show the panel.
+		editor.keystrokes.set( LINK_KEYSTROKE, ( keyEvtData, cancel ) => {
+			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
+			cancel();
+
+			if ( editor.commands.get( 'link' ).isEnabled ) {
+				this._showUI( true );
+			}
+		} );
+	}
+
+	/**
+	 * Attaches actions that control whether the balloon panel containing the
+	 * {@link #formView} is visible or not.
+	 *
+	 * @private
+	 */
+	_enableUserBalloonInteractions() {
 		// Focus the form if the balloon is visible and the Tab key has been pressed.
 		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
 			if ( this._areActionsVisible && !this.actionsView.focusTracker.isFocused ) {
@@ -276,7 +302,7 @@ export default class LinkUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: this.formView,
 			activator: () => this._isUIInPanel,
-			contextElements: [ this._balloon.view.element ],
+			contextElements: () => [ this._balloon.view.element ],
 			callback: () => this._hideUI()
 		} );
 	}
@@ -287,6 +313,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addActionsView() {
+		if ( !this.actionsView ) {
+			this._createViews();
+		}
+
 		if ( this._areActionsInPanel ) {
 			return;
 		}
@@ -303,6 +333,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addFormView() {
+		if ( !this.formView ) {
+			this._createViews();
+		}
+
 		if ( this._isFormInPanel ) {
 			return;
 		}
@@ -384,6 +418,10 @@ export default class LinkUI extends Plugin {
 	 * @private
 	 */
 	_showUI( forceVisible = false ) {
+		if ( !this.formView ) {
+			this._createViews();
+		}
+
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
 			// Show visual selection on a text without a link when the contextual balloon is displayed.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -561,7 +561,7 @@ export default class Mapper extends EmitterMixin() {
 	 * @param {module:engine/view/element~Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
-	public getModelLength( viewNode: ViewNode ): number {
+	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
 		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
 			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
 

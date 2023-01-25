@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -167,9 +167,9 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
-			addListToDropdown( dropdownView, this._getResizeDropdownListItemDefinitions( options, command ) );
-
-			dropdownView.listView.ariaLabel = t( 'Image resize list' );
+			addListToDropdown( dropdownView, () => this._getResizeDropdownListItemDefinitions( options, command ), {
+				ariaLabel: t( 'Image resize list' )
+			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {

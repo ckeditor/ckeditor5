@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,7 @@ import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -193,6 +193,60 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
 			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
+		} );
+
+		describe( 'lazy init', () => {
+			it( 'should not fill toolbar items immediately', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => null
+				} );
+
+				const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+				toolbarView.render();
+
+				expect( toolbarView.items.length ).to.equal( 0 );
+
+				toolbarView.destroy();
+			} );
+
+			it( 'should fill toolbar items on first show', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+			} );
+
+			it( 'should fill toolbar items on first show (and only on the first)', () => {
+				widgetToolbarRepository.register( 'fake', {
+					items: editor.config.get( 'fake.toolbar' ),
+					getRelatedElement: () => editor.editing.view.document.getRoot()
+				} );
+
+				const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+
+				widgetToolbarRepository._hideToolbar( toolbarDefinition );
+
+				expect( balloon.visibleView ).to.equal( null );
+
+				widgetToolbarRepository._showToolbar( toolbarDefinition, editor.editing.view.document.getRoot() );
+
+				expect( balloon.visibleView ).to.equal( toolbarDefinition.view );
+				expect( toolbarDefinition.view.items.length ).to.equal( 1 );
+			} );
 		} );
 	} );
 

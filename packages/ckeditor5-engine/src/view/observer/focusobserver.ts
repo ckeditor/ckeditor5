@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,6 +25,7 @@ import type View from '../view';
  */
 export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	private _renderTimeoutId!: ReturnType<typeof setTimeout>;
+	private _isFocusChanging: boolean = false;
 
 	constructor( view: View ) {
 		super( view );
@@ -34,8 +35,15 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		const document = this.document;
 
 		document.on<ViewDocumentFocusEvent>( 'focus', () => {
-			document.isFocused = true;
-			document._isFocusChanging = true;
+			/**
+			 * Set to `true` if the document is in the process of setting the focus.
+			 *
+			 * The flag is used to indicate that setting the focus is in progress.
+			 *
+			 * @internal
+			 * @type {Boolean} module:engine/view/observer/focusobserver#_isFocusChanging
+			 */
+			this._isFocusChanging = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
 			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
@@ -46,7 +54,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
 			// in a situation where `selectionchange` already caused selection change.
 			this._renderTimeoutId = setTimeout( () => {
-				document._isFocusChanging = false;
+				this.flush();
 				view.change( () => {} );
 			}, 50 );
 		} );
@@ -56,6 +64,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
 				document.isFocused = false;
+				this._isFocusChanging = false;
 
 				// Re-render the document to update view elements
 				// (changing document.isFocused already marked view as changed since last rendering).
@@ -69,6 +78,16 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		 * @private
 		 * @member {Number} #_renderTimeoutId
 		 */
+	}
+
+	/**
+	 * Finishes setting the document focus state.
+	 */
+	public flush(): void {
+		if ( this._isFocusChanging ) {
+			this._isFocusChanging = false;
+			this.document.isFocused = true;
+		}
 	}
 
 	public onDomEvent( domEvent: FocusEvent ): void {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -68,6 +68,16 @@ describe( 'CodeBlockUI', () => {
 
 		it( 'executes the command when executed one of the available language buttons from the list', () => {
 			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+			dropdown.render();
+			document.body.appendChild( dropdown.element );
+
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const executeSpy = sinon.stub( editor, 'execute' );
 			const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 			const listView = dropdown.panelView.children.first;
@@ -82,11 +92,20 @@ describe( 'CodeBlockUI', () => {
 				language: 'cs',
 				forceValue: true
 			} );
+
+			dropdown.element.remove();
 		} );
 
 		describe( 'language list', () => {
 			it( 'corresponds to the config', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.panelView.children.first;
 
 				expect( listView.items
@@ -157,6 +176,13 @@ describe( 'CodeBlockUI', () => {
 
 			it( 'sets item\'s #isOn depending on the value of the CodeBlockCommand', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.panelView.children.first;
 
 				expect( listView.items.get( 2 ).children.first.isOn ).to.be.false;
@@ -177,6 +203,13 @@ describe( 'CodeBlockUI', () => {
 						const editor = newEditor;
 
 						const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+						// Make sure that list view is not created before first dropdown open.
+						expect( dropdown.listView ).to.be.undefined;
+
+						// Trigger list view creation (lazy init).
+						dropdown.isOpen = true;
+
 						const listView = dropdown.panelView.children.first;
 
 						expect( listView.items.first.children.first.label ).to.equal( 'Zwykły tekst' );

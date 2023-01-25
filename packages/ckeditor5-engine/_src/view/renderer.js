@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -104,14 +104,6 @@ export default class Renderer {
 		 * @observable
 		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * Indicates if the view document is changing the focus (`true`) and selection rendering should be prevented.
-		 *
-		 * @protected
-		 * @observable
-		 * @member {Boolean} #_isFocusChanging
-		 */
 
 		/**
 		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).

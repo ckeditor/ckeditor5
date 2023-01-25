@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -47,29 +47,33 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * an instance of this class by your own.
  */
 export default class TextProxy extends TypeCheckable {
+	/**
+	 * Text node which part is represented by this text proxy.
+	 */
 	public readonly textNode: Text;
+
+	/**
+	 * Text data represented by this text proxy.
+	 */
 	public readonly data: string;
+
+	/**
+	 * Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy starts.
+	 */
 	public readonly offsetInText: number;
 
 	/**
 	 * Creates a text proxy.
 	 *
-	 * @protected
-	 * @param {module:engine/model/text~Text} textNode Text node which part is represented by this text proxy.
-	 * @param {Number} offsetInText Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy
+	 * @internal
+	 * @param textNode Text node which part is represented by this text proxy.
+	 * @param offsetInText Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy
 	 * starts.
-	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
-	 * @constructor
+	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 */
 	constructor( textNode: Text, offsetInText: number, length: number ) {
 		super();
 
-		/**
-		 * Text node which part is represented by this text proxy.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/text~Text}
-		 */
 		this.textNode = textNode;
 
 		if ( offsetInText < 0 || offsetInText > textNode.offsetSize ) {
@@ -89,21 +93,8 @@ export default class TextProxy extends TypeCheckable {
 			 */
 			throw new CKEditorError( 'model-textproxy-wrong-length', this );
 		}
-
-		/**
-		 * Text data represented by this text proxy.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.data = textNode.data.substring( offsetInText, offsetInText + length );
 
-		/**
-		 * Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy starts.
-		 *
-		 * @readonly
-		 * @member {Number}
-		 */
 		this.offsetInText = offsetInText;
 	}
 
@@ -111,8 +102,6 @@ export default class TextProxy extends TypeCheckable {
 	 * Offset at which this text proxy starts in it's parent.
 	 *
 	 * @see module:engine/model/node~Node#startOffset
-	 * @readonly
-	 * @type {Number|null}
 	 */
 	public get startOffset(): number | null {
 		return this.textNode.startOffset !== null ? this.textNode.startOffset + this.offsetInText : null;
@@ -122,8 +111,6 @@ export default class TextProxy extends TypeCheckable {
 	 * Offset size of this text proxy. Equal to the number of characters represented by the text proxy.
 	 *
 	 * @see module:engine/model/node~Node#offsetSize
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get offsetSize(): number {
 		return this.data.length;
@@ -133,8 +120,6 @@ export default class TextProxy extends TypeCheckable {
 	 * Offset at which this text proxy ends in it's parent.
 	 *
 	 * @see module:engine/model/node~Node#endOffset
-	 * @readonly
-	 * @type {Number|null}
 	 */
 	public get endOffset(): number | null {
 		return this.startOffset !== null ? this.startOffset + this.offsetSize : null;
@@ -147,9 +132,6 @@ export default class TextProxy extends TypeCheckable {
 	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/model/textproxy~TextProxy#textNode textNode}
 	 * ({@link module:engine/model/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
-	 *
-	 * @readonly
-	 * @type {Boolean}
 	 */
 	public get isPartial(): boolean {
 		return this.offsetSize !== this.textNode.offsetSize;
@@ -157,9 +139,6 @@ export default class TextProxy extends TypeCheckable {
 
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	public get parent(): Element | DocumentFragment | null {
 		return this.textNode.parent;
@@ -167,9 +146,6 @@ export default class TextProxy extends TypeCheckable {
 
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	public get root(): Node | DocumentFragment {
 		return this.textNode.root;
@@ -179,7 +155,6 @@ export default class TextProxy extends TypeCheckable {
 	 * Gets path to this text proxy.
 	 *
 	 * @see module:engine/model/node~Node#getPath
-	 * @returns {Array.<Number>}
 	 */
 	public getPath(): Array<number> {
 		const path = this.textNode.getPath();
@@ -194,13 +169,16 @@ export default class TextProxy extends TypeCheckable {
 	/**
 	 * Returns ancestors array of this text proxy.
 	 *
-	 * @param {Object} options Options object.
-	 * @param {Boolean} [options.includeSelf=false] When set to `true` this text proxy will be also included in parent's array.
-	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from text proxy parent to root element,
+	 * @param options Options object.
+	 * @param options.includeSelf When set to `true` this text proxy will be also included in parent's array.
+	 * @param options.parentFirst When set to `true`, array will be sorted from text proxy parent to root element,
 	 * otherwise root element will be the first item in the array.
-	 * @returns {Array} Array with ancestors.
+	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<TextProxy | Element | DocumentFragment> {
+	public getAncestors( options: {
+		includeSelf?: boolean;
+		parentFirst?: boolean;
+	} = {} ): Array<TextProxy | Element | DocumentFragment> {
 		const ancestors: Array<TextProxy | Element | DocumentFragment> = [];
 		let parent: TextProxy | Element | DocumentFragment | null = options.includeSelf ? this : this.parent;
 
@@ -215,8 +193,8 @@ export default class TextProxy extends TypeCheckable {
 	/**
 	 * Checks if this text proxy has an attribute for given key.
 	 *
-	 * @param {String} key Key of attribute to check.
-	 * @returns {Boolean} `true` if attribute with given key is set on text proxy, `false` otherwise.
+	 * @param key Key of attribute to check.
+	 * @returns `true` if attribute with given key is set on text proxy, `false` otherwise.
 	 */
 	public hasAttribute( key: string ): boolean {
 		return this.textNode.hasAttribute( key );
@@ -225,8 +203,8 @@ export default class TextProxy extends TypeCheckable {
 	/**
 	 * Gets an attribute value for given key or `undefined` if that attribute is not set on text proxy.
 	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Attribute value or `undefined`.
+	 * @param key Key of attribute to look for.
+	 * @returns Attribute value or `undefined`.
 	 */
 	public getAttribute( key: string ): unknown {
 		return this.textNode.getAttribute( key );
@@ -237,8 +215,6 @@ export default class TextProxy extends TypeCheckable {
 	 * items. First one is attribute key and second is attribute value.
 	 *
 	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
-	 *
-	 * @returns {Iterable.<*>}
 	 */
 	public getAttributes(): IterableIterator<[ string, unknown ]> {
 		return this.textNode.getAttributes();
@@ -246,8 +222,6 @@ export default class TextProxy extends TypeCheckable {
 
 	/**
 	 * Returns iterator that iterates over this node's attribute keys.
-	 *
-	 * @returns {Iterable.<String>}
 	 */
 	public getAttributeKeys(): IterableIterator<string> {
 		return this.textNode.getAttributeKeys();
@@ -267,23 +241,8 @@ export default class TextProxy extends TypeCheckable {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		textProxy.is( '$textProxy' ); // -> true
- *		textProxy.is( 'model:$textProxy' ); // -> true
- *
- *		textProxy.is( 'view:$textProxy' ); // -> false
- *		textProxy.is( 'range' ); // -> false
- *
- * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
- *
- * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxt'` type is still
- * accepted for backward compatibility.
- *
- * @param {String} type Type to check.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 TextProxy.prototype.is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'model:$textProxy' ||
 		// This are legacy values kept for backward compatibility.

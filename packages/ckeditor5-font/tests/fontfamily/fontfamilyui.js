@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -91,6 +91,12 @@ describe( 'FontFamilyUI', () => {
 		} );
 
 		it( 'should activate current option in dropdown', () => {
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const listView = dropdown.listView;
 
 			command.value = undefined;
@@ -131,6 +137,12 @@ describe( 'FontFamilyUI', () => {
 			} );
 
 			it( 'should activate the current option in the dropdown for full font family definitions', () => {
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				command.value = undefined;
@@ -147,6 +159,15 @@ describe( 'FontFamilyUI', () => {
 			} );
 
 			it( 'should apply the complete font-family value (list of font-families)', () => {
+				dropdown.render();
+				document.body.appendChild( dropdown.element );
+
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 				const fontFamilyArialButton = listView.items.get( 1 ).children.first;
 
@@ -159,6 +180,8 @@ describe( 'FontFamilyUI', () => {
 				);
 
 				expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">oo</span></p>' );
+
+				dropdown.element.remove();
 			} );
 		} );
 
@@ -193,6 +216,12 @@ describe( 'FontFamilyUI', () => {
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [

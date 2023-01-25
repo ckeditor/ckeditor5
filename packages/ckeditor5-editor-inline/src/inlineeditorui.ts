@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,13 +8,17 @@
  */
 
 import {
-	EditorUI,
-	type EditorUIReadyEvent,
 	type ElementApi,
-	type Editor,
-	type EditorUIUpdateEvent
+	type Editor
 } from 'ckeditor5/src/core';
-import { normalizeToolbarConfig } from 'ckeditor5/src/ui';
+
+import {
+	EditorUI,
+	normalizeToolbarConfig,
+	type EditorUIReadyEvent,
+	type EditorUIUpdateEvent
+} from 'ckeditor5/src/ui';
+
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 import type InlineEditorUIView from './inlineeditoruiview';

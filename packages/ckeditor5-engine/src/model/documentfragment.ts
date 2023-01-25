@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,11 +30,27 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  * {@link module:engine/model/writer~Writer#insert} function.
  */
 export default class DocumentFragment extends TypeCheckable implements Iterable<Node> {
-	public readonly markers: Map<string, Range>;
+	/**
+	 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
+	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
+	 * when DocumentFragment will be inserted to the document.
+	 */
+	public readonly markers: Map<string, Range> = new Map();
+
+	/**
+	 * Artificial element name. Returns `undefined`. Added for compatibility reasons.
+	 */
 	declare public name?: undefined;
+
+	/**
+	 * Artificial root name. Returns `undefined`. Added for compatibility reasons.
+	 */
 	declare public rootName?: undefined;
 
-	private readonly _children: NodeList;
+	/**
+	 * List of nodes contained inside the document fragment.
+	 */
+	private readonly _children: NodeList = new NodeList();
 
 	/**
 	 * Creates an empty `DocumentFragment`.
@@ -42,30 +58,11 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
 	 * Use the {@link module:engine/model/writer~Writer#createDocumentFragment} method instead.
 	 *
-	 * @protected
-	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
-	 * Nodes to be contained inside the `DocumentFragment`.
+	 * @internal
+	 * @param children Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children?: Node | Iterable<Node> ) {
 		super();
-
-		/**
-		 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
-		 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
-		 * when DocumentFragment will be inserted to the document.
-		 *
-		 * @readonly
-		 * @member {Map<String,module:engine/model/range~Range>} module:engine/model/documentfragment~DocumentFragment#markers
-		 */
-		this.markers = new Map();
-
-		/**
-		 * List of nodes contained inside the document fragment.
-		 *
-		 * @private
-		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/documentfragment~DocumentFragment#_children
-		 */
-		this._children = new NodeList();
 
 		if ( children ) {
 			this._insertChild( 0, children );
@@ -74,8 +71,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
-	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
 	 */
 	public [ Symbol.iterator ](): IterableIterator<Node> {
 		return this.getChildren();
@@ -83,9 +78,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Number of this document fragment's children.
-	 *
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get childCount(): number {
 		return this._children.length;
@@ -93,9 +85,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all of this document fragment's children.
-	 *
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get maxOffset(): number {
 		return this._children.maxOffset;
@@ -103,9 +92,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Is `true` if there are no nodes inside this document fragment, `false` otherwise.
-	 *
-	 * @readonly
-	 * @type {Boolean}
 	 */
 	public get isEmpty(): boolean {
 		return this.childCount === 0;
@@ -113,9 +99,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Artificial next sibling. Returns `null`. Added for compatibility reasons.
-	 *
-	 * @readonly
-	 * @type {null}
 	 */
 	public get nextSibling(): null {
 		return null;
@@ -123,9 +106,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Artificial previous sibling. Returns `null`. Added for compatibility reasons.
-	 *
-	 * @readonly
-	 * @type {null}
 	 */
 	public get previousSibling(): null {
 		return null;
@@ -133,9 +113,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/documentfragment~DocumentFragment}
 	 */
 	public get root(): DocumentFragment {
 		return this;
@@ -143,9 +120,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Artificial parent of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
-	 *
-	 * @readonly
-	 * @type {null}
 	 */
 	public get parent(): null {
 		return null;
@@ -153,9 +127,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Artificial owner of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
-	 *
-	 * @readonly
-	 * @type {null}
 	 */
 	public get document(): null {
 		return null;
@@ -163,8 +134,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Returns empty array. Added for compatibility reasons.
-	 *
-	 * @returns {Array}
 	 */
 	public getAncestors(): Array<never> {
 		return [];
@@ -173,8 +142,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	/**
 	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
 	 *
-	 * @param {Number} index Index of child.
-	 * @returns {module:engine/model/node~Node|null} Child node.
+	 * @param index Index of child.
+	 * @returns Child node.
 	 */
 	public getChild( index: number ): Node | null {
 		return this._children.getNode( index );
@@ -182,8 +151,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Returns an iterator that iterates over all of this document fragment's children.
-	 *
-	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	public getChildren(): IterableIterator<Node> {
 		return this._children[ Symbol.iterator ]();
@@ -192,8 +159,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	/**
 	 * Returns an index of the given child node. Returns `null` if given node is not a child of this document fragment.
 	 *
-	 * @param {module:engine/model/node~Node} node Child node to look for.
-	 * @returns {Number|null} Child node's index.
+	 * @param node Child node to look for.
+	 * @returns Child node's index.
 	 */
 	public getChildIndex( node: Node ): number | null {
 		return this._children.getNodeIndex( node );
@@ -204,8 +171,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
 	 * given node is not a child of this document fragment.
 	 *
-	 * @param {module:engine/model/node~Node} node Child node to look for.
-	 * @returns {Number|null} Child node's starting offset.
+	 * @param node Child node to look for.
+	 * @returns Child node's starting offset.
 	 */
 	public getChildStartOffset( node: Node ): number | null {
 		return this._children.getNodeStartOffset( node );
@@ -213,8 +180,6 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 
 	/**
 	 * Returns path to a `DocumentFragment`, which is an empty array. Added for compatibility reasons.
-	 *
-	 * @returns {Array}
 	 */
 	public getPath(): Array<number> {
 		return [];
@@ -223,13 +188,14 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	/**
 	 * Returns a descendant node by its path relative to this element.
 	 *
-	 *		// <this>a<b>c</b></this>
-	 *		this.getNodeByPath( [ 0 ] );     // -> "a"
-	 *		this.getNodeByPath( [ 1 ] );     // -> <b>
-	 *		this.getNodeByPath( [ 1, 0 ] );  // -> "c"
+	 * ```ts
+	 * // <this>a<b>c</b></this>
+	 * this.getNodeByPath( [ 0 ] );     // -> "a"
+	 * this.getNodeByPath( [ 1 ] );     // -> <b>
+	 * this.getNodeByPath( [ 1, 0 ] );  // -> "c"
+	 * ```
 	 *
-	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
-	 * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
+	 * @param relativePath Path of the node to find, relative to this element.
 	 */
 	public getNodeByPath( relativePath: Array<number> ): Node | DocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
@@ -248,18 +214,20 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
 	 * too high, returns index after last child}.
 	 *
-	 *		const textNode = new Text( 'foo' );
-	 *		const pElement = new Element( 'p' );
-	 *		const docFrag = new DocumentFragment( [ textNode, pElement ] );
-	 *		docFrag.offsetToIndex( -1 ); // Returns 0, because offset is too low.
-	 *		docFrag.offsetToIndex( 0 ); // Returns 0, because offset 0 is taken by `textNode` which is at index 0.
-	 *		docFrag.offsetToIndex( 1 ); // Returns 0, because `textNode` has `offsetSize` equal to 3, so it occupies offset 1 too.
-	 *		docFrag.offsetToIndex( 2 ); // Returns 0.
-	 *		docFrag.offsetToIndex( 3 ); // Returns 1.
-	 *		docFrag.offsetToIndex( 4 ); // Returns 2. There are no nodes at offset 4, so last available index is returned.
+	 * ```ts
+	 * const textNode = new Text( 'foo' );
+	 * const pElement = new Element( 'p' );
+	 * const docFrag = new DocumentFragment( [ textNode, pElement ] );
+	 * docFrag.offsetToIndex( -1 ); // Returns 0, because offset is too low.
+	 * docFrag.offsetToIndex( 0 ); // Returns 0, because offset 0 is taken by `textNode` which is at index 0.
+	 * docFrag.offsetToIndex( 1 ); // Returns 0, because `textNode` has `offsetSize` equal to 3, so it occupies offset 1 too.
+	 * docFrag.offsetToIndex( 2 ); // Returns 0.
+	 * docFrag.offsetToIndex( 3 ); // Returns 1.
+	 * docFrag.offsetToIndex( 4 ); // Returns 2. There are no nodes at offset 4, so last available index is returned.
+	 * ```
 	 *
-	 * @param {Number} offset Offset to look for.
-	 * @returns {Number} Index of a node that occupies given offset.
+	 * @param offset Offset to look for.
+	 * @returns Index of a node that occupies given offset.
 	 */
 	public offsetToIndex( offset: number ): number {
 		return this._children.offsetToIndex( offset );
@@ -269,7 +237,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Converts `DocumentFragment` instance to plain object and returns it.
 	 * Takes care of converting all of this document fragment's children.
 	 *
-	 * @returns {Object} `DocumentFragment` instance converted to plain object.
+	 * @returns `DocumentFragment` instance converted to plain object.
 	 */
 	public toJSON(): unknown {
 		const json = [];
@@ -285,8 +253,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Creates a `DocumentFragment` instance from given plain object (i.e. parsed JSON string).
 	 * Converts `DocumentFragment` children to proper nodes.
 	 *
-	 * @param {Object} json Plain object to be converted to `DocumentFragment`.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} `DocumentFragment` instance created using given plain object.
+	 * @param json Plain object to be converted to `DocumentFragment`.
+	 * @returns `DocumentFragment` instance created using given plain object.
 	 */
 	public static fromJSON( json: any ): DocumentFragment {
 		const children = [];
@@ -308,8 +276,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * {@link #_insertChild Inserts} one or more nodes at the end of this document fragment.
 	 *
 	 * @internal
-	 * @protected
-	 * @param {String|module:engine/model/item~Item|Iterable.<String|module:engine/model/item~Item>} items Items to be inserted.
+	 * @param items Items to be inserted.
 	 */
 	public _appendChild( items: string | Item | Iterable<string | Item> ): void {
 		this._insertChild( this.childCount, items );
@@ -320,9 +287,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * to this document fragment.
 	 *
 	 * @internal
-	 * @protected
-	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {String|module:engine/model/item~Item|Iterable.<String|module:engine/model/item~Item>} items Items to be inserted.
+	 * @param index Index at which nodes should be inserted.
+	 * @param items Items to be inserted.
 	 */
 	public _insertChild( index: number, items: string | Item | Iterable<string | Item> ): void {
 		const nodes = normalize( items );
@@ -333,7 +299,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 				node._remove();
 			}
 
-			node.parent = this;
+			( node as any ).parent = this;
 		}
 
 		this._children._insertNodes( index, nodes );
@@ -344,16 +310,15 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
 	 * @internal
-	 * @protected
-	 * @param {Number} index Index of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
+	 * @param index Index of the first node to remove.
+	 * @param howMany Number of nodes to remove.
+	 * @returns Array containing removed nodes.
 	 */
 	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
 		const nodes = this._children._removeNodes( index, howMany );
 
 		for ( const node of nodes ) {
-			node.parent = null;
+			( node as any ).parent = null;
 		}
 
 		return nodes;
@@ -398,29 +363,15 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	// @if CK_DEBUG_ENGINE // }
 }
 
-/**
- * Checks whether this object is of the given type.
- *
- *		docFrag.is( 'documentFragment' ); // -> true
- *		docFrag.is( 'model:documentFragment' ); // -> true
- *
- *		docFrag.is( 'view:documentFragment' ); // -> false
- *		docFrag.is( 'element' ); // -> false
- *		docFrag.is( 'node' ); // -> false
- *
- * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
- *
- * @param {String} type
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 DocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
 };
 
-// Converts strings to Text and non-iterables to arrays.
-//
-// @param {String|module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>}
-// @returns {Iterable.<module:engine/model/node~Node>}
+/**
+ * Converts strings to Text and non-iterables to arrays.
+ */
 function normalize( nodes: string | Item | Iterable<string | Item> ): Iterable<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

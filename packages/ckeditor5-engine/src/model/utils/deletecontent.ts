@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -27,12 +27,9 @@ import type Writer from '../writer';
  * which change the {@link module:engine/model/model~Model#deleteContent}
  * method's behavior.
  *
- * @param {module:engine/model/model~Model} model The model in context of which the insertion
- * should be performed.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * Selection of which the content should be deleted.
- * @param {Object} [options]
- * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
+ * @param model The model in context of which the insertion should be performed.
+ * @param selection Selection of which the content should be deleted.
+ * @param options.leaveUnmerged Whether to merge elements after removing the content of the selection.
  *
  * For example `<heading>x[x</heading><paragraph>y]y</paragraph>` will become:
  *
@@ -42,7 +39,7 @@ import type Writer from '../writer';
  * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
  * elements will not be merged.
  *
- * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
+ * @param options.doNotResetEntireContent Whether to skip replacing the entire content with a
  * paragraph when the entire content was selected.
  *
  * For example `<heading>[x</heading><paragraph>y]</paragraph>` will become:
@@ -50,7 +47,7 @@ import type Writer from '../writer';
  * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
  * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
  *
- * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
+ * @param options.doNotAutoparagraph Whether to create a paragraph if after content deletion selection is moved
  * to a place where text cannot be inserted.
  *
  * For example `<paragraph>x</paragraph>[<imageBlock src="foo.jpg"></imageBlock>]` will become:
@@ -68,7 +65,11 @@ import type Writer from '../writer';
 export default function deleteContent(
 	model: Model,
 	selection: Selection | DocumentSelection,
-	options: { leaveUnmerged?: boolean; doNotResetEntireContent?: boolean; doNotAutoparagraph?: boolean } = {}
+	options: {
+		leaveUnmerged?: boolean;
+		doNotResetEntireContent?: boolean;
+		doNotAutoparagraph?: boolean;
+	} = {}
 ): void {
 	if ( selection.isCollapsed ) {
 		return;
@@ -145,13 +146,17 @@ export default function deleteContent(
 	} );
 }
 
-// Returns the live positions for the range adjusted to span only blocks selected from the user perspective. Example:
-//
-//     <heading1>[foo</heading1>
-//     <paragraph>bar</paragraph>
-//     <heading1>]abc</heading1>  <-- this block is not considered as selected
-//
-// This is the same behavior as in Selection#getSelectedBlocks() "special case".
+/**
+ * Returns the live positions for the range adjusted to span only blocks selected from the user perspective. Example:
+ *
+ * ```
+ * <heading1>[foo</heading1>
+ * <paragraph>bar</paragraph>
+ * <heading1>]abc</heading1>  <-- this block is not considered as selected
+ * ```
+ *
+ * This is the same behavior as in Selection#getSelectedBlocks() "special case".
+ */
 function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: LivePosition, endPosition: LivePosition ] {
 	const model = range.root.document!.model;
 
@@ -194,8 +199,10 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Liv
 	];
 }
 
-// Finds the lowest element in position's ancestors which is a block.
-// Returns null if a limit element is encountered before reaching a block element.
+/**
+ * Finds the lowest element in position's ancestors which is a block.
+ * Returns null if a limit element is encountered before reaching a block element.
+ */
 function getParentBlock( position: Position ): Element | null | undefined {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
@@ -212,8 +219,10 @@ function getParentBlock( position: Position ): Element | null | undefined {
 	}
 }
 
-// This function is a result of reaching the Ballmer's peak for just the right amount of time.
-// Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
+/**
+ * This function is a result of reaching the Ballmer's peak for just the right amount of time.
+ * Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
+ */
 function mergeBranches( writer: Writer, startPosition: Position, endPosition: Position ) {
 	const model = writer.model;
 
@@ -268,19 +277,26 @@ function mergeBranches( writer: Writer, startPosition: Position, endPosition: Po
 	}
 }
 
-// Merging blocks to the left (properties of the left block are preserved).
-// Simple example:
-//     <heading1>foo[</heading1>    ->  <heading1>foo[bar</heading1>]
-//     <paragraph>]bar</paragraph>  ->              --^
-//
-// Nested example:
-//     <blockQuote>                     ->  <blockQuote>
-//         <heading1>foo[</heading1>    ->      <heading1>foo[bar</heading1>
-//     </blockQuote>                    ->  </blockQuote>]    ^
-//     <blockBlock>                     ->                    |
-//         <paragraph>]bar</paragraph>  ->                 ---
-//     </blockBlock>                    ->
-//
+/**
+ * Merging blocks to the left (properties of the left block are preserved).
+ * Simple example:
+ *
+ * ```
+ * <heading1>foo[</heading1>    ->  <heading1>foo[bar</heading1>]
+ * <paragraph>]bar</paragraph>  ->              --^
+ * ```
+ *
+ * Nested example:
+ *
+ * ```
+ * <blockQuote>                     ->  <blockQuote>
+ *     <heading1>foo[</heading1>    ->      <heading1>foo[bar</heading1>
+ * </blockQuote>                    ->  </blockQuote>]    ^
+ * <blockBlock>                     ->                    |
+ *     <paragraph>]bar</paragraph>  ->                 ---
+ * </blockBlock>                    ->
+ * ```
+ */
 function mergeBranchesLeft(
 	writer: Writer,
 	startPosition: Position,
@@ -352,19 +368,26 @@ function mergeBranchesLeft(
 	mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor );
 }
 
-// Merging blocks to the right (properties of the right block are preserved).
-// Simple example:
-//     <heading1>foo[</heading1>    ->            --v
-//     <paragraph>]bar</paragraph>  ->  [<paragraph>foo]bar</paragraph>
-//
-// Nested example:
-//     <blockQuote>                     ->
-//         <heading1>foo[</heading1>    ->              ---
-//     </blockQuote>                    ->                 |
-//     <blockBlock>                     ->  [<blockBlock>  v
-//         <paragraph>]bar</paragraph>  ->      <paragraph>foo]bar</paragraph>
-//     </blockBlock>                    ->  </blockBlock>
-//
+/**
+ * Merging blocks to the right (properties of the right block are preserved).
+ * Simple example:
+ *
+ * ```
+ * <heading1>foo[</heading1>    ->            --v
+ * <paragraph>]bar</paragraph>  ->  [<paragraph>foo]bar</paragraph>
+ * ```
+ *
+ * Nested example:
+ *
+ * ```
+ * <blockQuote>                     ->
+ *     <heading1>foo[</heading1>    ->              ---
+ * </blockQuote>                    ->                 |
+ * <blockBlock>                     ->  [<blockBlock>  v
+ *     <paragraph>]bar</paragraph>  ->      <paragraph>foo]bar</paragraph>
+ * </blockBlock>                    ->  </blockBlock>
+ * ```
+ */
 function mergeBranchesRight(
 	writer: Writer,
 	startPosition: Position,
@@ -438,7 +461,9 @@ function mergeBranchesRight(
 	mergeBranchesRight( writer, startPosition, endPosition, commonAncestor );
 }
 
-// There is no right merge operation so we need to simulate it.
+/**
+ * There is no right merge operation so we need to simulate it.
+ */
 function mergeRight( writer: Writer, position: Position ) {
 	const startElement: any = position.nodeBefore;
 	const endElement: any = position.nodeAfter;
@@ -453,8 +478,10 @@ function mergeRight( writer: Writer, position: Position ) {
 	writer.merge( position );
 }
 
-// Verifies if merging is needed and possible. It's not needed if both positions are in the same element
-// and it's not possible if some element is a limit or the range crosses a limit element.
+/**
+ * Verifies if merging is needed and possible. It's not needed if both positions are in the same element
+ * and it's not possible if some element is a limit or the range crosses a limit element.
+ */
 function checkShouldMerge( schema: Schema, startPosition: Position, endPosition: Position ): boolean {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -476,7 +503,9 @@ function checkShouldMerge( schema: Schema, startPosition: Position, endPosition:
 	return isCrossingLimitElement( startPosition, endPosition, schema );
 }
 
-// Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
+/**
+ * Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
+ */
 function getAncestorsJustBelowCommonAncestor( positionA: Position, positionB: Position ) {
 	const ancestorsA = positionA.getAncestors();
 	const ancestorsB = positionB.getAncestors();
@@ -497,12 +526,14 @@ function shouldAutoparagraph( schema: Schema, position: Position ) {
 	return !isTextAllowed && isParagraphAllowed;
 }
 
-// Check if parents of two positions can be merged by checking if there are no limit/object
-// boundaries between those two positions.
-//
-// E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
-// we'll check <p>, <bQ>, <widget> and <caption>.
-// Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
+/**
+ * Check if parents of two positions can be merged by checking if there are no limit/object
+ * boundaries between those two positions.
+ *
+ * E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
+ * we'll check <p>, <bQ>, <widget> and <caption>.
+ * Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
+ */
 function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: Schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
@@ -537,10 +568,12 @@ function replaceEntireContentWithParagraph( writer: Writer, selection: Selection
 	insertParagraph( writer, writer.createPositionAt( limitElement, 0 ), selection );
 }
 
-// We want to replace the entire content with a paragraph when:
-// * the entire content is selected,
-// * selection contains at least two elements,
-// * whether the paragraph is allowed in schema in the common ancestor.
+/**
+ * We want to replace the entire content with a paragraph when:
+ * * the entire content is selected,
+ * * selection contains at least two elements,
+ * * whether the paragraph is allowed in schema in the common ancestor.
+ */
 function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: Selection | DocumentSelection ) {
 	const limitElement = schema.getLimitElement( selection );
 
@@ -557,8 +590,10 @@ function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: 
 	return schema.checkChild( limitElement, 'paragraph' );
 }
 
-// Helper function that sets the selection. Depending whether given `selection` is a document selection or not,
-// uses a different method to set it.
+/**
+ * Helper function that sets the selection. Depending whether given `selection` is a document selection or not,
+ * uses a different method to set it.
+ */
 function collapseSelectionAt(
 	writer: Writer,
 	selection: Selection | DocumentSelection,

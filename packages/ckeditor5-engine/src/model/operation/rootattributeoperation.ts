@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,24 +23,45 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * requires a range to change and root element can't
  * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.
  * {@link module:engine/model/position~Position} can't be created before a root element.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class RootAttributeOperation extends Operation {
+	/**
+	 * Root element to change.
+	 *
+	 * @readonly
+	 */
 	public root: RootElement;
+
+	/**
+	 * Key of an attribute to change or remove.
+	 *
+	 * @readonly
+	 */
 	public key: string;
+
+	/**
+	 * Old value of the attribute with given key or `null` if adding a new attribute.
+	 *
+	 * @readonly
+	 */
 	public oldValue: unknown;
+
+	/**
+	 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
+	 *
+	 * @readonly
+	 */
 	public newValue: unknown;
 
 	/**
 	 * Creates an operation that changes, removes or adds attributes on root element.
 	 *
 	 * @see module:engine/model/operation/attributeoperation~AttributeOperation
-	 * @param {module:engine/model/rootelement~RootElement} root Root element to change.
-	 * @param {String} key Key of an attribute to change or remove.
-	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
-	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param root Root element to change.
+	 * @param key Key of an attribute to change or remove.
+	 * @param oldValue Old value of the attribute with given key or `null` if adding a new attribute.
+	 * @param newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
@@ -52,36 +73,9 @@ export default class RootAttributeOperation extends Operation {
 	) {
 		super( baseVersion );
 
-		/**
-		 * Root element to change.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/rootelement~RootElement}
-		 */
 		this.root = root;
-
-		/**
-		 * Key of an attribute to change or remove.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.key = key;
-
-		/**
-		 * Old value of the attribute with given key or `null` if adding a new attribute.
-		 *
-		 * @readonly
-		 * @member {*}
-		 */
 		this.oldValue = oldValue;
-
-		/**
-		 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
-		 *
-		 * @readonly
-		 * @member {*}
-		 */
 		this.newValue = newValue;
 	}
 
@@ -101,7 +95,7 @@ export default class RootAttributeOperation extends Operation {
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
-	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation} Clone of this operation.
+	 * @returns Clone of this operation.
 	 */
 	public clone(): RootAttributeOperation {
 		return new RootAttributeOperation( this.root, this.key, this.oldValue, this.newValue, this.baseVersion );
@@ -109,8 +103,6 @@ export default class RootAttributeOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
 	 */
 	public getReversed(): Operation {
 		return new RootAttributeOperation( this.root, this.key, this.newValue, this.oldValue, this.baseVersion! + 1 );
@@ -126,9 +118,9 @@ export default class RootAttributeOperation extends Operation {
 			 * The element to change is not a root element.
 			 *
 			 * @error rootattribute-operation-not-a-root
-			 * @param {module:engine/model/rootelement~RootElement} root
-			 * @param {String} key
-			 * @param {*} value
+			 * @param root
+			 * @param key
+			 * @param value
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-not-a-root',
@@ -142,9 +134,9 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute which should be removed does not exists for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
-			 * @param {module:engine/model/rootelement~RootElement} root
-			 * @param {String} key
-			 * @param {*} value
+			 * @param root
+			 * @param key
+			 * @param value
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-wrong-old-value',
@@ -158,8 +150,8 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute with given key already exists for the given node.
 			 *
 			 * @error rootattribute-operation-attribute-exists
-			 * @param {module:engine/model/rootelement~RootElement} root
-			 * @param {String} key
+			 * @param root
+			 * @param key
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-attribute-exists',
@@ -202,9 +194,8 @@ export default class RootAttributeOperation extends Operation {
 	/**
 	 * Creates RootAttributeOperation object from deserilized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): RootAttributeOperation {
 		if ( !document.getRoot( json.root ) ) {
@@ -212,7 +203,7 @@ export default class RootAttributeOperation extends Operation {
 			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
 			 *
 			 * @error rootattribute-operation-fromjson-no-root
-			 * @param {String} rootName
+			 * @param rootName
 			 */
 			throw new CKEditorError( 'rootattribute-operation-fromjson-no-root', this, { rootName: json.root } );
 		}

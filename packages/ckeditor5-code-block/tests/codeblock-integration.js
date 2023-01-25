@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -133,6 +135,17 @@ describe( 'CodeBlock - integration', () => {
 		it( 'should create a second code block with the same language as the first one', () => {
 			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 			const codeBlock = dropdown.buttonView;
+
+			dropdown.render();
+			document.body.appendChild( dropdown.element );
+
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+			dropdown.isOpen = false;
+
 			const listView = dropdown.panelView.children.first;
 			const cSharpButton = listView.items.get( 2 ).children.first;
 
@@ -153,6 +166,8 @@ describe( 'CodeBlock - integration', () => {
 			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
 			codeBlock.fire( 'execute' );
 			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+
+			dropdown.element.remove();
 		} );
 	} );
 

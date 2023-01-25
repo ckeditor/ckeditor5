@@ -1,9 +1,10 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import EditorUI from '../../../src/editorui/editorui';
 import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
@@ -13,13 +14,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';

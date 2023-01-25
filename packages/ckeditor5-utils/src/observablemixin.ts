@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,6 +40,8 @@ const defaultObservableClass = ObservableMixin( EmitterMixin() );
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
  * * {@glink framework/guides/deep-dive/observables Observables deep-dive guide}.
+ *
+ * @label EXTENDS
  */
 export default function ObservableMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
 	base: Base
@@ -64,6 +66,8 @@ export default function ObservableMixin<Base extends abstract new( ...args: Arra
  * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
  * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
  * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ *
+ * @label NO_ARGUMENTS
  */
 export default function ObservableMixin(): {
 	new (): Observable;
@@ -803,6 +807,7 @@ export interface Observable extends Emitter {
 	 * }
 	 * ```
 	 *
+	 * @label KEY_VALUE
 	 * @param name The property's name.
 	 * @param value The property's value.
 	 */
@@ -831,7 +836,7 @@ export interface Observable extends Emitter {
 	 * 	} );
 	 * }
 	 * ```
-	 *
+	 * @label OBJECT
 	 * @param values An object with `name=>value` pairs.
 	 */
 	set( values: object & { readonly [ K in keyof this ]?: unknown } ): void;
@@ -905,6 +910,7 @@ export interface Observable extends Emitter {
 	 * 	( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
 	 * ```
 	 *
+	 * @label SINGLE_BIND
 	 * @param bindProperty Observable property that will be bound to other observable(s).
 	 * @returns The bind chain with the `to()` and `toMany()` methods.
 	 */
@@ -981,6 +987,7 @@ export interface Observable extends Emitter {
 	 * 	( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
 	 * ```
 	 *
+	 * @label DUAL_BIND
 	 * @param bindProperty1 Observable property that will be bound to other observable(s).
 	 * @param bindProperty2 Observable property that will be bound to other observable(s).
 	 * @returns The bind chain with the `to()` and `toMany()` methods.
@@ -1059,6 +1066,7 @@ export interface Observable extends Emitter {
 	 * 	( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
 	 * ```
 	 *
+	 * @label MANY_BIND
 	 * @param bindProperties Observable properties that will be bound to other observable(s).
 	 * @returns The bind chain with the `to()` and `toMany()` methods.
 	 */
@@ -1173,7 +1181,7 @@ interface ObservableInternal extends Observable {
  * observable.prop = 2; // -> 'prop has changed from 1 to 2'
  * ```
  *
- * @eventName change:{property}
+ * @eventName change:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
@@ -1211,7 +1219,7 @@ export type ObservableChangeEvent<TValue = any> = {
  *
  * **Note:** The event is fired even when the new value is the same as the old value.
  *
- * @eventName set:{property}
+ * @eventName set:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.

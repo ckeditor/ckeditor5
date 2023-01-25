@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,7 +22,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Iterable.<String>} groupNames The names of the character groups.
+	 * @param {Map.<String, String>} groupNames The names of the character groups and their displayed labels.
 	 */
 	constructor( locale, groupNames ) {
 		super( locale );
@@ -70,7 +70,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * Returns a dropdown that allows selecting character groups.
 	 *
 	 * @private
-	 * @param {Iterable.<String>} groupNames The names of the character groups.
+	 * @param {Map.<String, String>} groupNames The names of the character groups and their displayed labels.
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	_createGroupDropdown( groupNames ) {
@@ -79,9 +79,9 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		const dropdown = createDropdown( locale );
 		const groupDefinitions = this._getCharacterGroupListItemDefinitions( dropdown, groupNames );
 
-		dropdown.set( 'value', groupDefinitions.first.model.label );
+		dropdown.set( 'value', groupDefinitions.first.model.name );
 
-		dropdown.buttonView.bind( 'label' ).to( dropdown, 'value' );
+		dropdown.buttonView.bind( 'label' ).to( dropdown, 'value', value => groupNames.get( value ) );
 
 		dropdown.buttonView.set( {
 			isOn: false,
@@ -91,7 +91,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		} );
 
 		dropdown.on( 'execute', evt => {
-			dropdown.value = evt.source.label;
+			dropdown.value = evt.source.name;
 		} );
 
 		dropdown.delegate( 'execute' ).to( this );
@@ -107,23 +107,24 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 *
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {Iterable.<String>} groupNames The names of the character groups.
+	 * @param {Map.<String, String>} groupNames The names of the character groups and their displayed labels.
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
 	 */
 	_getCharacterGroupListItemDefinitions( dropdown, groupNames ) {
 		const groupDefs = new Collection();
 
-		for ( const name of groupNames ) {
+		for ( const [ name, label ] of groupNames ) {
 			const definition = {
 				type: 'button',
 				model: new Model( {
-					label: name,
+					name,
+					label,
 					withText: true
 				} )
 			};
 
 			definition.model.bind( 'isOn' ).to( dropdown, 'value', value => {
-				return value === definition.model.label;
+				return value === definition.model.name;
 			} );
 
 			groupDefs.add( definition );
