@@ -18,7 +18,7 @@ import '../theme/heading.css';
 /**
  * The headings feature.
  *
- * For a detailed overview, check the {@glink features/headings Headings feature documentation}
+ * For a detailed overview, check the {@glink features/headings Headings feature} guide
  * and the {@glink api/heading package page}.
  *
  * This is a "glue" plugin which loads the {@link module:heading/headingediting~HeadingEditing heading editing feature}

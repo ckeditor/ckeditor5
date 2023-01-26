@@ -38,13 +38,13 @@ import type Autoformat from './autoformat';
  *
  * Examples of usage:
  *
- * To convert a paragraph to heading 1 when `- ` is typed, using just the command name:
+ * To convert a paragraph into heading 1 when `- ` is typed, using just the command name:
  *
  * ```ts
  * blockAutoformatEditing( editor, plugin, /^\- $/, 'heading1' );
  * ```
  *
- * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
+ * To convert a paragraph into heading 1 when `- ` is typed, using just the callback:
  *
  * ```ts
  * blockAutoformatEditing( editor, plugin, /^\- $/, ( context ) => {
@@ -123,8 +123,8 @@ export default function blockAutoformatEditing(
 			return;
 		}
 
-		// In case a command is bound, do not re-execute it over an existing block style which would result with a style removal.
-		// Instead just drop processing so that autoformat trigger text is not lost. E.g. writing "# " in a level 1 heading.
+		// In case a command is bound, do not re-execute it over an existing block style which would result in a style removal.
+		// Instead, just drop processing so that autoformat trigger text is not lost. E.g. writing "# " in a level 1 heading.
 		if ( command && command.value === true ) {
 			return;
 		}

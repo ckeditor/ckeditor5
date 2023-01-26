@@ -130,7 +130,7 @@ Load the classic editor build (here, the [CDN](https://cdn.ckeditor.com/) locati
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor from `npm`:
+Alternatively, you may install CKEditor 5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
@@ -200,7 +200,7 @@ Load the inline editor build (here, the [CDN](https://cdn.ckeditor.com/) locatio
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor from `npm:
+Alternatively, you may install CKEditor 5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-inline
@@ -268,7 +268,7 @@ Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor from `npm:
+Alternatively, you may install CKEditor 5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-balloon
@@ -336,7 +336,7 @@ Load the balloon block editor build (here, the [CDN](https://cdn.ckeditor.com/) 
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor from `npm:
+Alternatively, you may install CKEditor 5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-balloon-block
@@ -400,7 +400,7 @@ Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) locat
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
 
-Alternatively, you may install CKEditor from `npm:
+Alternatively, you may install CKEditor 5 from `npm`:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-decoupled-document

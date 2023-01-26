@@ -18,7 +18,7 @@ import inlineAutoformatEditing from './inlineautoformatediting';
 /**
  * Enables a set of predefined autoformatting actions.
  *
- * For a detailed overview, check the {@glink features/autoformat Autoformatting feature documentation}
+ * For a detailed overview, check the {@glink features/autoformat Autoformatting} feature guide
  * and the {@glink api/autoformat package page}.
  */
 export default class Autoformat extends Plugin {
@@ -52,10 +52,10 @@ export default class Autoformat extends Plugin {
 	 * Adds autoformatting related to the {@link module:list/list~List}.
 	 *
 	 * When typed:
-	 * - `* ` or `- ` &ndash; A paragraph will be changed to a bulleted list.
-	 * - `1. ` or `1) ` &ndash; A paragraph will be changed to a numbered list ("1" can be any digit or a list of digits).
-	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed to a to-do list.
-	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed to a checked to-do list.
+	 * - `* ` or `- ` &ndash; A paragraph will be changed into a bulleted list.
+	 * - `1. ` or `1) ` &ndash; A paragraph will be changed into a numbered list ("1" can be any digit or a list of digits).
+	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed into a to-do list.
+	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed into a checked to-do list.
 	 */
 	private _addListAutoformats(): void {
 		const commands = this.editor.commands;
@@ -130,9 +130,9 @@ export default class Autoformat extends Plugin {
 	 *
 	 * It is using a number at the end of the command name to associate it with the proper trigger:
 	 *
-	 * * `heading` with value `heading1` will be executed when typing `#`,
-	 * * `heading` with value `heading2` will be executed when typing `##`,
-	 * * ... up to `heading6` and `######`.
+	 * * `heading` with a `heading1` value will be executed when typing `#`,
+	 * * `heading` with a `heading2` value will be executed when typing `##`,
+	 * * ... up to `heading6` for `######`.
 	 */
 	private _addHeadingAutoformats(): void {
 		const command: HeadingCommand | undefined = this.editor.commands.get( 'heading' );
