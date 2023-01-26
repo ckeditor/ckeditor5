@@ -110,7 +110,7 @@ export default class TableEditing extends Plugin {
 			},
 			view: downcastTable( tableUtils, {
 				asWidget: true,
-				additional: this._additionalSlots
+				additionalSlots: this._additionalSlots
 			} )
 		} );
 		conversion.for( 'dataDowncast' ).elementToStructure( {
@@ -119,7 +119,7 @@ export default class TableEditing extends Plugin {
 				attributes: [ 'headingRows' ]
 			},
 			view: downcastTable( tableUtils, {
-				additional: this._additionalSlots
+				additionalSlots: this._additionalSlots
 			} )
 		} );
 

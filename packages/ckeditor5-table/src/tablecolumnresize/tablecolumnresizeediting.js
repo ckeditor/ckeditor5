@@ -205,7 +205,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					.find( element => element.is( 'element', 'tableColumnGroup' ) );
 
 				const columns = Array.from( tableColumnGroup.getChildren() );
-				const columnWidths = columns.map( element => element.getAttribute( 'columnWidth' ) );
+				const columnWidths = columns.map( element => Number( element.getAttribute( 'columnWidth' ).replace( '%', '' ) ) );
 
 				// Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				const normalizedWidths = normalizeColumnWidths( columnWidths );
@@ -219,17 +219,17 @@ export default class TableColumnResizeEditing extends Plugin {
 
 				for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
 					const column = columns[ i ];
-					const columnWidth = normalizedWidths[ i ];
+					const width = normalizedWidths[ i ];
 
-					if ( !columnWidth ) {
+					if ( !width ) {
 						// Number of `<tableColumn>` elements exceeds actual number of columns
 						writer.remove( column );
 					} else if ( !column ) {
 						// There is fewer `<tableColumn>` elements than actual columns
-						writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
+						writer.appendElement( 'tableColumn', { columnWidth: `${ width }%` }, tableColumnGroup );
 					} else {
 						// Update column width
-						writer.setAttribute( 'columnWidth', columnWidth, column );
+						writer.setAttribute( 'columnWidth', `${ width }%`, column );
 					}
 				}
 
@@ -363,7 +363,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				name: 'tableColumn',
 				key: 'columnWidth'
 			},
-			view: width => ( { key: 'style', value: { width: `${ width }%` } } )
+			view: width => ( { key: 'style', value: { width } } )
 		} );
 	}
 

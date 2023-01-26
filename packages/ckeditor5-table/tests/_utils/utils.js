@@ -418,7 +418,6 @@ function makeColGroup( columnWidths ) {
 
 	const cols = columnWidths
 		.split( ',' )
-		.map( width => width.replace( '%', '' ) )
 		.map( width => `<tableColumn columnWidth="${ width }"></tableColumn>` )
 		.join( '' );
 
@@ -581,6 +580,5 @@ export function getTableColumnWidths( table ) {
 		.filter( element => element.is( 'element', 'tableColumnGroup' ) )
 		.map( element => Array.from( element.getChildren() ) )
 		.flat()
-		.map( element => element.getAttribute( 'columnWidth' ) )
-		.map( width => Number( width ) );
+		.map( element => element.getAttribute( 'columnWidth' ) );
 }

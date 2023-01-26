@@ -68,8 +68,8 @@ describe( 'TableColumnWidthsCommand', () => {
 					'</tableCell>' +
 				'</tableRow>' +
 				'<tableColumnGroup>' +
-					'<tableColumn columnWidth="40"></tableColumn>' +
-					'<tableColumn columnWidth="60"></tableColumn>' +
+					'<tableColumn columnWidth="40%"></tableColumn>' +
+					'<tableColumn columnWidth="60%"></tableColumn>' +
 				'</tableColumnGroup>' +
 			'</table>'
 		);

@@ -16,12 +16,13 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * @param {module:table/tableutils~TableUtils} tableUtils The `TableUtils` plugin instance.
  * @param {Object} [options]
  * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
+ * @param {Array.<module:table/tablediting~AdditionalSlot>} [options.additionalSlots] Array of additional slot handlers.
  * @returns {Function} Element creator.
  */
 export function downcastTable( tableUtils, options = {} ) {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const additional = options.additional || [];
+		const additionalSlots = options.additionalSlots || [];
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 
 		// Table head slot.
@@ -49,7 +50,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		}
 
 		// Dynamic slots.
-		for ( const { positionOffset, filter } of additional ) {
+		for ( const { positionOffset, filter } of additionalSlots ) {
 			writer.insert(
 				writer.createPositionAt( tableElement, positionOffset ),
 				writer.createSlot( filter )
@@ -65,7 +66,7 @@ export function downcastTable( tableUtils, options = {} ) {
 					return false;
 				}
 
-				return !additional.some( ( { filter } ) => filter( element ) );
+				return !additionalSlots.some( ( { filter } ) => filter( element ) );
 			} )
 		] );
 

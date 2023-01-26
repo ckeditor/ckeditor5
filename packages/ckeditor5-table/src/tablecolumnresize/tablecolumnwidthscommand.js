@@ -60,7 +60,8 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 				return writer.remove( tableColumnGroup );
 			}
 
-			const widths = normalizeColumnWidths( columnWidths );
+			let widths = columnWidths.map( widths => Number( widths.replace( '%', '' ) ) );
+			widths = normalizeColumnWidths( widths ).map( width => `${ width }%` );
 
 			if ( !tableColumnGroup ) {
 				const colGroupElement = writer.createElement( 'tableColumnGroup' );

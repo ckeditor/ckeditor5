@@ -48,11 +48,11 @@ export function upcastColgroupElement( tableUtilsPlugin ) {
 					return 'auto';
 				}
 
-				return Number( viewColWidth.replace( '%', '' ) );
+				return viewColWidth;
 			} );
 
 		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths );
+			columnWidths = normalizeColumnWidths( columnWidths ).map( width => `${ width }%` );
 		}
 
 		const colGroupElement = conversionApi.writer.createElement( 'tableColumnGroup' );

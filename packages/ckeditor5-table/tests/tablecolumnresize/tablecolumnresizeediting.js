@@ -81,7 +81,7 @@ describe( 'TableColumnResizeEditing', () => {
 			[ '10', '11', '12' ]
 		], { columnWidths: '25%,25%,50%' } ) );
 
-		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ 25, 25, 50 ] );
+		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ '25%', '25%', '50%' ] );
 	} );
 
 	it( 'should have defined col widths in view', () => {
@@ -132,8 +132,8 @@ describe( 'TableColumnResizeEditing', () => {
 							'</tableCell>' +
 						'</tableRow>' +
 						'<tableColumnGroup>' +
-							'<tableColumn columnWidth="50"></tableColumn>' +
-							'<tableColumn columnWidth="50"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
 						'</tableColumnGroup>' +
 					'</table>'
 				);
@@ -174,9 +174,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.34"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
 						'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -215,9 +215,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.34"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -258,9 +258,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.34"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -298,9 +298,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="50"></tableColumn>' +
-								'<tableColumn columnWidth="25"></tableColumn>' +
-								'<tableColumn columnWidth="25"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -338,9 +338,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.34"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -419,9 +419,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.33"></tableColumn>' +
-								'<tableColumn columnWidth="33.34"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -474,33 +474,6 @@ describe( 'TableColumnResizeEditing', () => {
 									'<td>12</td>' +
 								'</tr>' +
 							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should do nothing if columnWidths value was changed to the same value', () => {
-				setModelData( model, modelTable( [
-					[ '11', '12' ]
-				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
-
-				model.change( writer => {
-					writer.setAttribute( 'columnWidths', '50%,50%', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				expect( editor.getData() ).to.equal(
-					'<figure class="table" style="width:100%;">' +
-						'<table class="ck-table-resized">' +
-							'<tbody>' +
-								'<tr>' +
-									'<td>11</td>' +
-									'<td>12</td>' +
-								'</tr>' +
-							'</tbody>' +
-							'<colgroup>' +
-								'<col style="width:50%;">' +
-								'<col style="width:50%;">' +
-							'</colgroup>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -753,7 +726,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.down( editor, view.getDomRoot() );
 
 			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'if resizing is not allowed', () => {
@@ -767,7 +740,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 
 			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'without dragging', () => {
@@ -818,7 +791,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 		} );
 	} );
 
@@ -841,7 +814,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does nothing on mouseup if resizing was not started', () => {
@@ -857,7 +830,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does not change the widths if the movement vector was {0,0}', () => {
@@ -914,7 +887,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if columnWidths was set for the first time', () => {
@@ -935,7 +908,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.be.undefined;
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
 			} );
 
 			it( 'if tableWidth was changed', () => {
@@ -956,7 +929,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if tableWidth was set for the first time', () => {
@@ -977,7 +950,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'columnWidths' ) ).to.equal( '20%,25%,55%' );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
 			} );
 		} );
 
@@ -1390,14 +1363,14 @@ describe( 'TableColumnResizeEditing', () => {
 											'</tableCell>' +
 										'</tableRow>' +
 										'<tableColumnGroup>' +
-											'<tableColumn columnWidth="50"></tableColumn>' +
-											'<tableColumn columnWidth="50"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
 										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -1446,14 +1419,14 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="55.5"></tableColumn>' +
-												'<tableColumn columnWidth="44.4"></tableColumn>' +
+												'<tableColumn columnWidth="55.5%"></tableColumn>' +
+												'<tableColumn columnWidth="44.4%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="100"></tableColumn>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
 								'</tableColumnGroup>' +
 							'</table>'
 						)
@@ -1479,14 +1452,14 @@ describe( 'TableColumnResizeEditing', () => {
 											'</tableCell>' +
 										'</tableRow>' +
 										'<tableColumnGroup>' +
-											'<tableColumn columnWidth="50"></tableColumn>' +
-											'<tableColumn columnWidth="50"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
 										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -1535,14 +1508,14 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="45.45"></tableColumn>' +
-												'<tableColumn columnWidth="54.55"></tableColumn>' +
+												'<tableColumn columnWidth="45.45%"></tableColumn>' +
+												'<tableColumn columnWidth="54.55%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="100"></tableColumn>' +
+									'<tableColumn columnWidth="100%"></tableColumn>' +
 								'</tableColumnGroup>' +
 							'</table>'
 						)
@@ -1571,15 +1544,15 @@ describe( 'TableColumnResizeEditing', () => {
 											'</tableCell>' +
 										'</tableRow>' +
 										'<tableColumnGroup>' +
-											'<tableColumn columnWidth="25"></tableColumn>' +
-											'<tableColumn columnWidth="25"></tableColumn>' +
-											'<tableColumn columnWidth="50"></tableColumn>' +
+											'<tableColumn columnWidth="25%"></tableColumn>' +
+											'<tableColumn columnWidth="25%"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
 										'</tableColumnGroup>' +
 									'</table>]' +
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -1630,15 +1603,15 @@ describe( 'TableColumnResizeEditing', () => {
 											'</tableCell>' +
 										'</tableRow>' +
 										'<tableColumnGroup>' +
-											'<tableColumn columnWidth="25"></tableColumn>' +
-											'<tableColumn columnWidth="28.52"></tableColumn>' +
-											'<tableColumn columnWidth="46.48"></tableColumn>' +
+											'<tableColumn columnWidth="25%"></tableColumn>' +
+											'<tableColumn columnWidth="28.52%"></tableColumn>' +
+											'<tableColumn columnWidth="46.48%"></tableColumn>' +
 										'</tableColumnGroup>' +
 									'</table>' +
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2285,9 +2258,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="20"></tableColumn>' +
-								'<tableColumn columnWidth="25"></tableColumn>' +
-								'<tableColumn columnWidth="55"></tableColumn>' +
+								'<tableColumn columnWidth="20%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="55%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>]'
 					);
@@ -2334,9 +2307,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="29.1"></tableColumn>' +
-									'<tableColumn columnWidth="29.1"></tableColumn>' +
-									'<tableColumn columnWidth="41.8"></tableColumn>' +
+									'<tableColumn columnWidth="29.1%"></tableColumn>' +
+									'<tableColumn columnWidth="29.1%"></tableColumn>' +
+									'<tableColumn columnWidth="41.8%"></tableColumn>' +
 								'</tableColumnGroup>' +
 							'</table>'
 						)
@@ -2369,9 +2342,9 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="22.73"></tableColumn>' +
-								'<tableColumn columnWidth="22.73"></tableColumn>' +
-								'<tableColumn columnWidth="54.54"></tableColumn>' +
+								'<tableColumn columnWidth="22.73%"></tableColumn>' +
+								'<tableColumn columnWidth="22.73%"></tableColumn>' +
+								'<tableColumn columnWidth="54.54%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>]'
 					);
@@ -2406,9 +2379,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="25%"></tableColumn>' +
-									'<tableColumn columnWidth="2[\\d]\\.[\\d][\\d]"></tableColumn>' +
-									'<tableColumn columnWidth="4[\\d]\\.[\\d][\\d]"></tableColumn>' +
+									'<tableColumn columnWidth="25%%"></tableColumn>' +
+									'<tableColumn columnWidth="2[\\d]\\.[\\d][\\d]%"></tableColumn>' +
+									'<tableColumn columnWidth="4[\\d]\\.[\\d][\\d]%"></tableColumn>' +
 								'</tableColumnGroup>' +
 							'</table>'
 						)
@@ -2454,7 +2427,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2471,7 +2444,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2490,7 +2463,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2507,7 +2480,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2524,7 +2497,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2539,7 +2512,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2559,7 +2532,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2574,7 +2547,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 							'<caption>[]</caption>' +
 						'</table>'
@@ -2592,7 +2565,7 @@ describe( 'TableColumnResizeEditing', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 							'<tableColumnGroup>' +
-								'<tableColumn columnWidth="100"></tableColumn>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>]'
 					);
