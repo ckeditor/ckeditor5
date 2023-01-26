@@ -245,38 +245,46 @@ function upcastCellSpan( type ) {
  *
  * Take this model as an example:
  *
- *		<table>
- *			<tableRow>...</tableRow>
- *			<tableRow>...</tableRow>
- *			<tableColumnGroup>...</tableColumnGroup>
- *		</table>
+ * ```
+ * <table>
+ *   <tableRow>...</tableRow>
+ *   <tableRow>...</tableRow>
+ *   <tableColumnGroup>...</tableColumnGroup>
+ * </table>
+ * ```
  *
  * By default, downcasting result will be:
  *
- *		<table>
- *			<tbody>
- *				<tr>...</tr>
- *				<tr>...</tr>
- *			</tbody>
- *		</table>
- *		<colgroup>...</colgroup>
+ * ```
+ * <table>
+ *   <tbody>
+ *     <tr>...</tr>
+ *     <tr>...</tr>
+ *   </tbody>
+ * </table>
+ * <colgroup>...</colgroup>
+ * ```
  *
  * To allow the `tableColumnGroup` element at the end of the table, use the following configuration:
  *
- *		const additionalSlot = {
- *			filter: element => element.is( 'element', 'tableColumnGroup' ),
- * 			positionOffset: 'end'
- *		}
+ * ```
+ * const additionalSlot = {
+ *   filter: element => element.is( 'element', 'tableColumnGroup' ),
+ *   positionOffset: 'end'
+ * }
+ * ```
  *
  * Now, the downcast result will be:
  *
- * 		<table>
- *			<tbody>
- *				<tr>...</tr>
- *				<tr>...</tr>
- *			</tbody>
- *			<colgroup>...</colgroup>
- *		</table>
+ * ```
+ * <table>
+ *   <tbody>
+ *     <tr>...</tr>
+ *     <tr>...</tr>
+ *   </tbody>
+ *   <colgroup>...</colgroup>
+ * </table>
+ * ```
  *
  * @typedef {Object} module:table/tablediting~AdditionalSlot
  *

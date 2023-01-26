@@ -52,11 +52,39 @@ export function upcastColgroupElement( tableUtilsPlugin ) {
 			} );
 
 		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths ).map( width => `${ width }%` );
+			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
 		}
 
 		const colGroupElement = conversionApi.writer.createElement( 'tableColumnGroup' );
+
 		columnWidths.forEach( columnWidth => conversionApi.writer.appendElement( 'tableColumn', { columnWidth }, colGroupElement ) );
 		conversionApi.writer.append( colGroupElement, modelTable );
 	} );
+}
+
+/**
+ * Returns downcast helper for adding `ck-table-resized` class if there is a `<tableColumnGroup>` element inside the table
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function downcastTableResizedClass() {
+	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+		const viewWriter = conversionApi.writer;
+		const modelTable = data.item;
+		const viewElement = conversionApi.mapper.toViewElement( modelTable );
+
+		const viewTable = viewElement.is( 'element', 'table' ) ?
+			viewElement :
+			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) );
+
+		const tableColumnGroup = Array
+			.from( data.item.getChildren() )
+			.find( element => element.is( 'element', 'tableColumnGroup' ) );
+
+		if ( tableColumnGroup ) {
+			viewWriter.addClass( 'ck-table-resized', viewTable );
+		} else {
+			viewWriter.removeClass( 'ck-table-resized', viewTable );
+		}
+	}, { priority: 'low' } );
 }

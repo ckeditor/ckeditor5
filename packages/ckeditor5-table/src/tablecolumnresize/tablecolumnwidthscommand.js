@@ -37,7 +37,7 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	 * Changes the `columnWidth` attribute values for the columns of the given table.
 	 *
 	 * @param {Object} options
-	 * @param {Array.<number>} [options.columnWidths] New value of the `columnWidths` attribute.
+	 * @param {Array.<string>} [options.columnWidths] New value of the `columnWidths` attribute.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
 	execute( options = {} ) {

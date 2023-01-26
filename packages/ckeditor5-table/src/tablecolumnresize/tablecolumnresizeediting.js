@@ -19,7 +19,10 @@ import TableWalker from '../tablewalker';
 import TableWidthResizeCommand from './tablewidthresizecommand';
 import TableColumnWidthsCommand from './tablecolumnwidthscommand';
 
-import { upcastColgroupElement } from './converters';
+import {
+	upcastColgroupElement,
+	downcastTableResizedClass
+} from './converters';
 
 import {
 	clamp,
@@ -353,8 +356,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			} )
 		} );
 
-		// Table <colgroup> conversion
 		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
+		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
 		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
 		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumn', view: 'col' } );
 
@@ -613,20 +616,21 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
 			if ( this._isResizingAllowed ) {
-				// Commit all changes to the model.
-				if ( isTableWidthAttributeChanged ) {
-					editor.execute( 'resizeTableWidth', {
-						table: modelTable,
-						tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`
-					} );
-				}
+				editor.model.change( () => {
+					if ( isTableWidthAttributeChanged ) {
+						editor.execute( 'resizeTableWidth', {
+							table: modelTable,
+							tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`
+						} );
+					}
 
-				if ( isColumnWidthsAttributeChanged ) {
-					editor.execute( 'resizeColumnWidths', {
-						columnWidths: columnWidthsAttributeNew,
-						table: modelTable
-					} );
-				}
+					if ( isColumnWidthsAttributeChanged ) {
+						editor.execute( 'resizeColumnWidths', {
+							columnWidths: columnWidthsAttributeNew,
+							table: modelTable
+						} );
+					}
+				} );
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
 				// This case can occur if the read-only mode kicks in during the resizing process.
