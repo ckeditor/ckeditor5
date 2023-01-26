@@ -47,7 +47,6 @@
   },
   "files": [
     "lang",
-    "src",
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
