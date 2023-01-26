@@ -460,7 +460,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 				model.change( writer => {
 					const tableColumnGroup = Array
-						.from( model.document.getRoot().getChild( 0 ) )
+						.from( model.document.getRoot().getChild( 0 ).getChildren() )
 						.find( element => element.is( 'element', 'tableColumnGroup' ) );
 					writer.remove( tableColumnGroup );
 				} );
@@ -1159,7 +1159,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 1 ) // tbody
+					.getChild( 0 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
@@ -1202,7 +1202,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 1 ) // tbody
+					.getChild( 0 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
@@ -1419,8 +1419,8 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="55.5%"></tableColumn>' +
-												'<tableColumn columnWidth="44.4%"></tableColumn>' +
+												'<tableColumn columnWidth="55\\.5[\\d]%"></tableColumn>' +
+												'<tableColumn columnWidth="44\\.4[\\d]%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
@@ -1773,7 +1773,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 1 ) // tbody
+					.getChild( 0 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
@@ -1978,7 +1978,8 @@ describe( 'TableColumnResizeEditing', () => {
 				editor.execute( 'undo' );
 				editor.execute( 'undo' );
 
-				const tableRow = getDomTable( view ).children[ 1 ] // table
+				const tableRow = getDomTable( view )
+					.children[ 1 ] // table
 					.children[ 0 ] // tbody
 					.children[ 0 ]; // tr
 
@@ -2379,7 +2380,7 @@ describe( 'TableColumnResizeEditing', () => {
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="25%%"></tableColumn>' +
+									'<tableColumn columnWidth="25%"></tableColumn>' +
 									'<tableColumn columnWidth="2[\\d]\\.[\\d][\\d]%"></tableColumn>' +
 									'<tableColumn columnWidth="4[\\d]\\.[\\d][\\d]%"></tableColumn>' +
 								'</tableColumnGroup>' +
