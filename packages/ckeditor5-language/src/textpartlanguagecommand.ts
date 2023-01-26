@@ -17,7 +17,7 @@ import { stringifyLanguageAttribute } from './utils';
 export default class TextPartLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute, the value is set to
-	 * the value of that language in a format:
+	 * the value of that language in the following format:
 	 *
 	 * ```
 	 * <languageCode>:<textDirection>
