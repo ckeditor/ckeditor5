@@ -7,6 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
+import type { DocumentSelection, Item, Schema } from 'ckeditor5/src/engine';
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
@@ -16,15 +17,17 @@ import { first } from 'ckeditor5/src/utils';
  * It is used by the {@link module:remove-format/removeformat~RemoveFormat remove format feature}
  * to clear the formatting in the selection.
  *
- *		editor.execute( 'removeFormat' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'removeFormat' );
+ * ```
  */
 export default class RemoveFormatCommand extends Command {
+	declare public value: boolean;
+
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 
 		this.isEnabled = !!first( this._getFormattingItems( model.document.selection, model.schema ) );
@@ -33,7 +36,7 @@ export default class RemoveFormatCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const model = this.editor.model;
 		const schema = model.schema;
 
@@ -60,13 +63,11 @@ export default class RemoveFormatCommand extends Command {
 	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
 	 *
-	 * @protected
-	 * @param {module:engine/model/documentselection~DocumentSelection} selection
-	 * @param {module:engine/model/schema~Schema} schema The schema describing the item.
-	 * @returns {Iterable.<module:engine/model/item~Item>|Iterable.<module:engine/model/documentselection~DocumentSelection>}
+	 * @param selection
+	 * @param schema The schema describing the item.
 	 */
-	* _getFormattingItems( selection, schema ) {
-		const itemHasRemovableFormatting = item => {
+	private* _getFormattingItems( selection: DocumentSelection, schema: Schema ) {
+		const itemHasRemovableFormatting = ( item: Item | DocumentSelection ) => {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
@@ -98,11 +99,11 @@ export default class RemoveFormatCommand extends Command {
 	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
 	 * @protected
-	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
-	 * @param {module:engine/model/schema~Schema} schema The schema describing the item.
-	 * @returns {Iterable.<String>} The names of formatting attributes found in a given item.
+	 * @param item
+	 * @param schema The schema describing the item.
+	 * @returns The names of formatting attributes found in a given item.
 	 */
-	* _getFormattingAttributes( item, schema ) {
+	private* _getFormattingAttributes( item: Item | DocumentSelection, schema: Schema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			const attributeProperties = schema.getAttributeProperties( attributeName );
 

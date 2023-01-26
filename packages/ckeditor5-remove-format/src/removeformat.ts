@@ -7,7 +7,7 @@
  * @module remove-format/removeformat
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import RemoveFormatUI from './removeformatui';
 import RemoveFormatEditing from './removeformatediting';
@@ -19,21 +19,25 @@ import RemoveFormatEditing from './removeformatediting';
  * and {@link module:remove-format/removeformatui~RemoveFormatUI} plugins.
  *
  * For a detailed overview, check out the {@glink features/remove-format remove format} feature documentation.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class RemoveFormat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ RemoveFormatEditing, RemoveFormatUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'RemoveFormat' {
 		return 'RemoveFormat';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ RemoveFormat.pluginName ]: RemoveFormat;
 	}
 }

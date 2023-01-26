@@ -17,26 +17,24 @@ const REMOVE_FORMAT = 'removeFormat';
 /**
  * The remove format UI plugin. It registers the `'removeFormat'` button which can be
  * used in the toolbar.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class RemoveFormatUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'RemoveFormatUI' {
 		return 'RemoveFormatUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( REMOVE_FORMAT, locale => {
-			const command = editor.commands.get( REMOVE_FORMAT );
+			const command = editor.commands.get( REMOVE_FORMAT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -55,5 +53,11 @@ export default class RemoveFormatUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ RemoveFormatUI.pluginName ]: RemoveFormatUI;
 	}
 }
