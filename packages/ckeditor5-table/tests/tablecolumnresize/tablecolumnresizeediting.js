@@ -438,28 +438,31 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
 						'<table class="ck-table-resized">' +
-							'<colgroup>' +
-								'<col style="width:50%;">' +
-								'<col style="width:50%;">' +
-							'</colgroup>' +
 							'<tbody>' +
 								'<tr>' +
 									'<td>11</td>' +
 									'<td>12</td>' +
 								'</tr>' +
 							'</tbody>' +
+							'<colgroup>' +
+								'<col style="width:50%;">' +
+								'<col style="width:50%;">' +
+							'</colgroup>' +
 						'</table>' +
 					'</figure>'
 				);
 			} );
 
-			it( 'should remove <colgroup> element if columnWidths attribute was removed', () => {
+			it( 'should remove <colgroup> element if <tableColumnGroup> element was removed', () => {
 				setModelData( model, modelTable( [
 					[ '11', '12' ]
 				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
 
 				model.change( writer => {
-					writer.removeAttribute( 'columnWidths', model.document.getRoot().getChild( 0 ) );
+					const tableColumnGroup = Array
+						.from( model.document.getRoot().getChild( 0 ) )
+						.find( element => element.is( 'element', 'tableColumnGroup' ) );
+					writer.remove( tableColumnGroup );
 				} );
 
 				expect( editor.getData() ).to.equal(
@@ -488,16 +491,16 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
 						'<table class="ck-table-resized">' +
-							'<colgroup>' +
-								'<col style="width:50%;">' +
-								'<col style="width:50%;">' +
-							'</colgroup>' +
 							'<tbody>' +
 								'<tr>' +
 									'<td>11</td>' +
 									'<td>12</td>' +
 								'</tr>' +
 							'</tbody>' +
+							'<colgroup>' +
+								'<col style="width:50%;">' +
+								'<col style="width:50%;">' +
+							'</colgroup>' +
 						'</table>' +
 					'</figure>'
 				);

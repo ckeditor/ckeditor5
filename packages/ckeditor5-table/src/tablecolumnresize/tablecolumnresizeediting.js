@@ -19,6 +19,8 @@ import TableWalker from '../tablewalker';
 import TableWidthResizeCommand from './tablewidthresizecommand';
 import TableColumnWidthsCommand from './tablecolumnwidthscommand';
 
+import { upcastColgroupElement } from './converters';
+
 import {
 	clamp,
 	createFilledArray,
@@ -220,10 +222,13 @@ export default class TableColumnResizeEditing extends Plugin {
 					const columnWidth = normalizedWidths[ i ];
 
 					if ( !columnWidth ) {
+						// Number of `<tableColumn>` elements exceeds actual number of columns
 						writer.remove( column );
 					} else if ( !column ) {
+						// There is fewer `<tableColumn>` elements than actual columns
 						writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
 					} else {
+						// Update column width
 						writer.setAttribute( 'columnWidth', columnWidth, column );
 					}
 				}
@@ -349,26 +354,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		} );
 
 		// Table <colgroup> conversion
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
-
-		// Table <col> conversion
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableColumn', view: 'col' } );
 		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumn', view: 'col' } );
-
-		// Table column width conversion
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				name: 'col',
-				key: 'style',
-				value: { width: /[\s\S]+/ }
-			},
-			model: {
-				name: 'tableColumn',
-				key: 'columnWidth',
-				value: element => Number( element.getStyle( 'width' ).replace( '%', '' ) )
-			}
-		} );
 
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
