@@ -11,7 +11,7 @@
 
 import CKEditorError from './ckeditorerror';
 
-const version = '35.4.0';
+const version = '36.0.0';
 
 export default version;
 

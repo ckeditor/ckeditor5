@@ -146,18 +146,33 @@ export function skipEmptyTableRow() {
  */
 export function ensureParagraphInTableCell( elementName ) {
 	return dispatcher => {
-		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+		dispatcher.on( `element:${ elementName }`, ( evt, data, { writer } ) => {
 			// The default converter will create a model range on converted table cell.
 			if ( !data.modelRange ) {
 				return;
 			}
 
+			const tableCell = data.modelRange.start.nodeAfter;
+			const modelCursor = writer.createPositionAt( tableCell, 0 );
+
 			// Ensure a paragraph in the model for empty table cells for converted table cells.
 			if ( data.viewItem.isEmpty ) {
-				const tableCell = data.modelRange.start.nodeAfter;
-				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
+				writer.insertElement( 'paragraph', modelCursor );
 
-				conversionApi.writer.insertElement( 'paragraph', modelCursor );
+				return;
+			}
+
+			const childNodes = Array.from( tableCell.getChildren() );
+
+			// In case there are only markers inside the table cell then move them to the paragraph.
+			if ( childNodes.every( node => node.is( 'element', '$marker' ) ) ) {
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insert( paragraph, writer.createPositionAt( tableCell, 0 ) );
+
+				for ( const node of childNodes ) {
+					writer.move( writer.createRangeOn( node ), writer.createPositionAt( paragraph, 'end' ) );
+				}
 			}
 		}, { priority: 'low' } );
 	};
