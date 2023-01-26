@@ -18,7 +18,7 @@ import '../theme/mention.css';
 /**
  * The mention plugin.
  *
- * For a detailed overview, check the {@glink features/mentions Mention feature documentation}.
+ * For a detailed overview, check the {@glink features/mentions Mention feature} guide.
  */
 export default class Mention extends Plugin {
 	/**
@@ -131,7 +131,7 @@ export type MentionConfig = {
 	 *
 	 * Customizing the number of visible mentions allows you to specify how many available elements will the users be able to see
 	 * in the dropdown list. You can specify any number you see fit. For example, in the snippets below you will find the
-	 * dropdownLimit set to `20` and `Infinity` (this will result in showing all available mentions).
+	 * dropdownLimit set to `20` and `Infinity` (the latter will result in showing all available mentions).
 	 *
 	 * ```ts
 	 * ClassicEditor
