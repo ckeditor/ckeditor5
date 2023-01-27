@@ -40,7 +40,7 @@ export default class SpecialCharactersEmojis extends Plugin {
 			{ title: 'smiley face', character: '😊' },
 			{ title: 'grining', character: '😃' },
 			{ title: 'neutral face', character: '😐' },
-			{ title: 'rofl', character: '🤣' },
+			{ title: 'rolling_on_the_floor_laughing', character: '🤣' },
 			{ title: 'heart', character: '❤️' },
 			{ title: 'rocket', character: '🚀' },
 			{ title: '100', character: '💯' },
