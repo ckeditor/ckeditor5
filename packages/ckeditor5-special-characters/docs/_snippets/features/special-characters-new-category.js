@@ -7,19 +7,21 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-function SpecialCharactersEmoji( editor ) {
-	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
-		{ title: 'smiley face', character: '😊' },
-		{ title: 'rocket', character: '🚀' },
-		{ title: 'wind blowing face', character: '🌬️' },
-		{ title: 'floppy disk', character: '💾' },
-		{ title: 'heart', character: '❤️' }
-	], { label: 'Emoticons' } );
+function SpecialCharactersBorders( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Borders', [
+		{ title: 'horizontal', character: ' ━ ' },
+		{ title: 'vertical', character: '┃' },
+		{ title: 'top left', character: '┏' },
+		{ title: 'top right', character: '┓' },
+		{ title: 'bottom left', character: '┗' },
+		{ title: 'bottom right', character: '┛' },
+		{ title: 'cross', character: '╋' }
+	], { label: 'Borders' } );
 }
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-new-category' ), {
-		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersEmoji ],
+		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersBorders ],
 		toolbar: {
 			items: [
 				'heading',

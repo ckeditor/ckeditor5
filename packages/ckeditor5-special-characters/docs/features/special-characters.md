@@ -31,26 +31,28 @@ By default, a few categories of special characters have been defined. You can ea
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
-For example, the following plugin adds the "Emoji" category to the special characters dropdown.
+For example, the following plugin adds the "Borders" category to the special characters dropdown.
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
 function SpecialCharactersEmoji( editor ) {
-	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
-		{ title: 'smiley face', character: '😊' },
-		{ title: 'rocket', character: '🚀' },
-		{ title: 'wind blowing face', character: '🌬️' },
-		{ title: 'floppy disk', character: '💾' },
-		{ title: 'heart', character: '❤️' }
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Borders', [
+		{ title: 'horizontal', character: ' ━ ' },
+		{ title: 'vertical', character: '┃' },
+		{ title: 'top left', character: '┏' },
+		{ title: 'top right', character: '┓' },
+		{ title: 'bottom left', character: '┗' },
+		{ title: 'bottom right', character: '┛' },
+		{ title: 'cross', character: '╋' }
 	], { label: 'Emoticons' } );
 }
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersBorders,
 
 			// Other plugins...
 		],
