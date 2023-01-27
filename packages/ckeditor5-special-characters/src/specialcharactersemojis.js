@@ -37,11 +37,17 @@ export default class SpecialCharactersEmojis extends Plugin {
 		const t = editor.t;
 
 		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emojis', [
-			{ title: 'smiley face', character: '😊' },
-			{ title: 'grining', character: '😃' },
+			{ title: 'smiley_face', character: '😊' },
+			{ title: 'grining_face', character: '😄' },
+			{ title: 'grinning_face_with_big_eyes', character: '😃' },
+			{ title: 'grinning_face_with_sweat', character: '😅' },
+			{ title: 'beaming_face_with_smiling_eyes', character: '😃' },
 			{ title: 'neutral face', character: '😐' },
 			{ title: 'rolling_on_the_floor_laughing', character: '🤣' },
+			{ title: 'face_with_tears_of_joy', character: '😂' },
 			{ title: 'heart', character: '❤️' },
+			{ title: 'hands_pressed_together', character: '🙏' },
+			{ title: 'thumbs_up', character: '👍' },
 			{ title: 'rocket', character: '🚀' },
 			{ title: '100', character: '💯' },
 			{ title: 'wind blowing face', character: '🌬️' },
