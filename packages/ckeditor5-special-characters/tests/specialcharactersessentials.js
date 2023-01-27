@@ -10,6 +10,7 @@ import SpecialCharactersText from '../src/specialcharacterstext';
 import SpecialCharactersMathematical from '../src/specialcharactersmathematical';
 import SpecialCharactersArrows from '../src/specialcharactersarrows';
 import SpecialCharactersLatin from '../src/specialcharacterslatin';
+import SpecialCharactersEmojis from './specialcharactersemojis';
 
 describe( 'SpecialCharactersEssentials', () => {
 	it( 'includes other required plugins', () => {
@@ -18,7 +19,8 @@ describe( 'SpecialCharactersEssentials', () => {
 			SpecialCharactersText,
 			SpecialCharactersMathematical,
 			SpecialCharactersArrows,
-			SpecialCharactersLatin
+			SpecialCharactersLatin,
+			SpecialCharactersEmojis
 		] );
 	} );
 } );
