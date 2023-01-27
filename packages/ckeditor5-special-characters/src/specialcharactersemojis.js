@@ -4,7 +4,7 @@
  */
 
 /**
- * @module special-characters/specialcharactersarrows
+ * @module special-characters/specialcharactersemojis
  */
 
 import { Plugin } from 'ckeditor5/src/core';
