@@ -14,6 +14,7 @@ import SpecialCharactersMathematical from './specialcharactersmathematical';
 import SpecialCharactersArrows from './specialcharactersarrows';
 import SpecialCharactersLatin from './specialcharacterslatin';
 import SpecialCharactersText from './specialcharacterstext';
+import SpecialCharactersEmojis from './specialcharactersemojis';
 
 /**
  * A plugin combining a basic set of characters for the special characters plugin.
@@ -37,7 +38,8 @@ export default class SpecialCharactersEssentials extends Plugin {
 			SpecialCharactersText,
 			SpecialCharactersMathematical,
 			SpecialCharactersArrows,
-			SpecialCharactersLatin
+			SpecialCharactersLatin,
+			SpecialCharactersEmojis
 		];
 	}
 }
