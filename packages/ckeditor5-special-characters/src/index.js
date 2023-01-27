@@ -14,3 +14,4 @@ export { default as SpecialCharactersMathematical } from './specialcharactersmat
 export { default as SpecialCharactersLatin } from './specialcharacterslatin';
 export { default as SpecialCharactersEssentials } from './specialcharactersessentials';
 export { default as SpecialCharactersCurrency } from './specialcharacterscurrency';
+export { default as SpecialCharactersEmojis } from './specialcharactersemojis';
