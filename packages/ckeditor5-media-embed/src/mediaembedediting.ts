@@ -8,16 +8,16 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 import { first, type GetCallback } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
+import type { MediaEmbedConfig } from './mediaembed';
 import MediaEmbedCommand from './mediaembedcommand';
 import MediaRegistry from './mediaregistry';
 import { toMediaWidget, createMediaFigureElement } from './utils';
 
 import '../theme/mediaembedediting.css';
-import type { MediaEmbedConfig } from './mediaembed';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 
 /**
  * The media embed editing feature.
@@ -40,7 +40,6 @@ export default class MediaEmbedEditing extends Plugin {
 	 */
 	constructor( editor: Editor ) {
 		super( editor );
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		editor.config.define( 'mediaEmbed', {
 			elementName: 'oembed',
 			providers: [
@@ -277,6 +276,7 @@ export default class MediaEmbedEditing extends Plugin {
 						conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'media' } );
 					}
 				};
+
 				dispatcher.on<UpcastElementEvent>( 'element:figure', converter );
 			} );
 	}

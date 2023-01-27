@@ -54,8 +54,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 }
 
-declare module './mediaembed'
-{
+declare module './mediaembed' {
 	interface MediaEmbedConfig {
 
 		/**

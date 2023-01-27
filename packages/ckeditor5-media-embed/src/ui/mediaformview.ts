@@ -68,17 +68,17 @@ export default class MediaFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	protected readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
 	 */
-	protected readonly _focusCycler: FocusCycler;
+	private readonly _focusCycler: FocusCycler;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
 	 */
-	protected readonly _validators: Array<( v: MediaFormView ) => string | undefined>;
+	private readonly _validators: Array<( v: MediaFormView ) => string | undefined>;
 
 	/**
 	 * The default info text for the {@link #urlInputView}.

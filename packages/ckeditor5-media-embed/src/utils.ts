@@ -118,6 +118,9 @@ export function insertMedia( model: Model, url: string, selectable: Selectable, 
 	} );
 }
 
+/**
+ * Type for commonly grouped function parameters across this package.
+ */
 export type MediaOptions = {
 	elementName: string;
 	renderMediaPreview?: boolean;

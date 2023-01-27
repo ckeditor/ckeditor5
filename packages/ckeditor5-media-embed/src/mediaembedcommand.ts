@@ -68,7 +68,7 @@ export default class MediaEmbedCommand extends Command {
 }
 
 /**
- * Checks if the table is allowed in the parent.
+ * Checks if the media embed is allowed in the parent.
  */
 function isAllowedInParent( selection: Selection | DocumentSelection, model: Model ): boolean {
 	const insertionRange = findOptimalInsertionRange( selection, model );

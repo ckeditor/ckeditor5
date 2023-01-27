@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module media-embed/converters
+ */
+
 import type { GetCallback } from 'ckeditor5/src/utils';
 import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine';
 import type MediaRegistry from './mediaregistry';
 import type { MediaOptions } from './utils';
-
-/**
- * @module media-embed/converters
- */
 
 /**
  * Returns a function that converts the model "url" attribute to the view representation.

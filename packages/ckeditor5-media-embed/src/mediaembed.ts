@@ -9,13 +9,13 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
+import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 import MediaEmbedEditing from './mediaembedediting';
 import AutoMediaEmbed from './automediaembed';
 import MediaEmbedUI from './mediaembedui';
 
 import '../theme/mediaembed.css';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 /**
  * The media embed plugin.
@@ -123,7 +123,7 @@ export interface MediaEmbedProvider {
 	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
 	 * is `true`, the rendering function **will always** be used for the media in the editor data output.
 	 */
-	html?: ( match: RegExpExecArray ) => string;
+	html?: ( match: RegExpMatchArray ) => string;
 }
 
 /**

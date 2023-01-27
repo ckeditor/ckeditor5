@@ -100,11 +100,10 @@ export default class MediaRegistry {
 	/**
 	 * Returns a `Media` instance for the given URL.
 	 *
-	 * @protected
 	 * @param url The URL of the media.
 	 * @returns The `Media` instance or `null` when there is none.
 	 */
-	protected _getMedia( url: string ): Media | null {
+	private _getMedia( url: string ): Media | null {
 		if ( !url ) {
 			return new Media( this.locale );
 		}
@@ -112,7 +111,7 @@ export default class MediaRegistry {
 		url = url.trim();
 
 		for ( const definition of this.providerDefinitions ) {
-			const previewRenderer = definition.html;
+			const previewRenderer = definition.html!;
 			const pattern = toArray( definition.url );
 
 			for ( const subPattern of pattern ) {
@@ -130,7 +129,6 @@ export default class MediaRegistry {
 	/**
 	 * Tries to match `url` to `pattern`.
 	 *
-	 * @private
 	 * @param url The URL of the media.
 	 * @param pattern The pattern that should accept the media URL.
 	 */
@@ -166,8 +164,6 @@ export default class MediaRegistry {
  * Represents media defined by the provider configuration.
  *
  * It can be rendered to the {@link module:engine/view/element~Element view element} and used in the editing or data pipeline.
- *
- * @private
  */
 class Media {
 	/**
@@ -186,14 +182,14 @@ class Media {
 	/**
 	 * The output of the `RegExp.match` which validated the {@link #url} of this media.
 	 */
-	private _match?: object;
+	private _match?: RegExpMatchArray;
 
 	/**
 	 * The function returning the HTML string preview of this media.
 	 */
-	private _previewRenderer?: Function;
+	private _previewRenderer?: ( match: RegExpMatchArray ) => string;
 
-	constructor( locale: Locale, url?: string, match?: object, previewRenderer?: Function ) {
+	constructor( locale: Locale, url?: string, match?: RegExpMatchArray, previewRenderer?: ( match: RegExpMatchArray ) => string ) {
 		this.url = this._getValidUrl( url );
 		this._locale = locale;
 		this._match = match;
@@ -244,7 +240,7 @@ class Media {
 	 */
 	private _getPreviewHtml( options: { renderForEditingView?: boolean } ): string {
 		if ( this._previewRenderer ) {
-			return this._previewRenderer( this._match );
+			return this._previewRenderer( this._match! );
 		} else {
 			// The placeholder only makes sense for editing view and media which have URLs.
 			// Placeholder is never displayed in data and URL-less media have no content.

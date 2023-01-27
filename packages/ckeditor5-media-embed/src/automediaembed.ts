@@ -105,7 +105,7 @@ export default class AutoMediaEmbed extends Plugin {
 	 * @param leftPosition Left position of the selection.
 	 * @param rightPosition Right position of the selection.
 	 */
-	protected _embedMediaBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
+	private _embedMediaBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 		// TODO: Use marker instead of LiveRange & LivePositions.
@@ -172,5 +172,11 @@ export default class AutoMediaEmbed extends Plugin {
 
 			editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
 		}, 100 );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ AutoMediaEmbed.pluginName ]: AutoMediaEmbed;
 	}
 }
