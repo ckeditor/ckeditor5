@@ -908,7 +908,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [] );
 			} );
 
 			it( 'if tableWidth was changed', () => {

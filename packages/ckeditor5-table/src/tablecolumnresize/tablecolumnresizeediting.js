@@ -637,7 +637,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				editingView.change( writer => {
 					// If table had resized columns before, restore the previous column widths.
 					// Otherwise clean up the view from the temporary column resizing markup.
-					if ( columnWidthsAttributeOld ) {
+					if ( columnWidthsAttributeOld.length > 0 ) {
 						for ( const viewCol of viewColgroup.getChildren() ) {
 							writer.setStyle( 'width', columnWidthsAttributeOld.shift(), viewCol );
 						}
