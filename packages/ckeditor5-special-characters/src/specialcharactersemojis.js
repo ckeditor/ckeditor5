@@ -38,7 +38,7 @@ export default class SpecialCharactersEmojis extends Plugin {
 
 		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emojis', [
 			{ title: 'smiley face', character: '😊' },
-			{ title: 'grining face', character: '😄' },
+			{ title: 'grinning face', character: '😄' },
 			{ title: 'grinning face with big eyes', character: '😃' },
 			{ title: 'grinning face with sweat', character: '😅' },
 			{ title: 'beaming face with smiling eyes', character: '😃' },

@@ -54,7 +54,7 @@ describe( 'SpecialCharactersEmojis', () => {
 
 	it( 'adds proper characters', () => {
 		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
-			title: 'smilay face',
+			title: 'smiley face',
 			character: '😊'
 		} );
 
