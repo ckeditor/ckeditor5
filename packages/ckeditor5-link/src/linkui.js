@@ -172,10 +172,11 @@ export default class LinkUI extends Plugin {
 			const { value } = formView.urlInputView.fieldView.element;
 			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 			try {
-				const _url = new URL(parsedUrl).toString();
+				// eslint-disable-next-line
+				const _url = new URL( parsedUrl ).toString();
 				editor.execute( 'link', _url, formView.getDecoratorSwitchesState() );
 				this._closeFormView();
-			} catch(err) { console.error(err.message); }
+			} catch ( err ) { /**/ }
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
