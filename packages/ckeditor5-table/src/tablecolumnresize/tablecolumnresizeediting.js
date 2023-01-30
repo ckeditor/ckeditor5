@@ -133,7 +133,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
 			filter: element => element.is( 'element', 'tableColumnGroup' ),
-			positionOffset: 'end'
+			positionOffset: 0
 		} );
 
 		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );

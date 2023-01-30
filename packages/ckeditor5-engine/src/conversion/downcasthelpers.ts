@@ -2450,8 +2450,21 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 				data.reconvertedElements.add( node );
 
 				const position = ModelPosition._createBefore( node );
+				let idx = reducedChanges.length;
 
-				reducedChanges.push( {
+				// We need to insert remove+reinsert before any attribute change on the same node.
+				// This is important because otherwise we would remove node that had already modified attribute.
+				for ( let i = reducedChanges.length - 1; i >= 0; i-- ) {
+					const change = reducedChanges[ i ];
+
+					if ( change.type == 'attribute' && change.range.start.isEqual( position ) ) {
+						idx = i;
+					} else {
+						break;
+					}
+				}
+
+				reducedChanges.splice( idx, 0, {
 					type: 'remove',
 					name: ( node as ModelElement ).name,
 					position,
