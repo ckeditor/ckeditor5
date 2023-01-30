@@ -81,6 +81,7 @@ export default class TablePropertiesEditing extends Plugin {
 			style: defaultTableProperties.borderStyle,
 			width: defaultTableProperties.borderWidth
 		} );
+
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, defaultTableProperties.borderColor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
 		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, defaultTableProperties.borderWidth ) );
@@ -112,6 +113,22 @@ export default class TablePropertiesEditing extends Plugin {
 			'tableBackgroundColor',
 			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TablePropertiesEditing.pluginName ]: TablePropertiesEditing;
+	}
+
+	interface CommandsMap {
+		tableBorderColor: TableBorderColorCommand;
+		tableBorderStyle: TableBorderStyleCommand;
+		tableBorderWidth: TableBorderWidthCommand;
+		tableAlignment: TableAlignmentCommand;
+		tableWidth: TableWidthCommand;
+		tableHeight: TableHeightCommand;
+		tableBackgroundColor: TableBackgroundColorCommand;
 	}
 }
 

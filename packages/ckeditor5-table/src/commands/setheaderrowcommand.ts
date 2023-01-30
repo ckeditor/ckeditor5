@@ -33,7 +33,6 @@ export default class SetHeaderRowCommand extends Command {
 	 * {@link module:engine/model/selection~Selection} is in a header row.
 	 *
 	 * @observable
-	 * @readonly
 	 */
 	public declare value: boolean;
 
@@ -99,11 +98,5 @@ export default class SetHeaderRowCommand extends Command {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		setHeaderRow: SetHeaderRowCommand;
 	}
 }

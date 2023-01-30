@@ -253,4 +253,25 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableEditing.pluginName ]: TableEditing;
 	}
+
+	interface CommandsMap {
+		insertTable: InsertTableCommand;
+		insertTableRowAbove: InsertRowCommand;
+		insertTableRowBelow: InsertRowCommand;
+		insertTableColumnLeft: InsertColumnCommand;
+		insertTableColumnRight: InsertColumnCommand;
+		removeTableRow: RemoveRowCommand;
+		removeTableColumn: RemoveColumnCommand;
+		splitTableCellVertically: SplitCellCommand;
+		splitTableCellHorizontally: SplitCellCommand;
+		mergeTableCells: MergeCellsCommand;
+		mergeTableCellRight: MergeCellCommand;
+		mergeTableCellLeft: MergeCellCommand;
+		mergeTableCellDown: MergeCellCommand;
+		mergeTableCellUp: MergeCellCommand;
+		setTableColumnHeader: SetHeaderColumnCommand;
+		setTableRowHeader: SetHeaderRowCommand;
+		selectTableRow: SelectRowCommand;
+		selectTableColumn: SelectColumnCommand;
+	}
 }

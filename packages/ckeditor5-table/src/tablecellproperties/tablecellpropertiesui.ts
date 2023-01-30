@@ -48,7 +48,7 @@ const propertyToCommandMap = {
 	backgroundColor: 'tableCellBackgroundColor',
 	horizontalAlignment: 'tableCellHorizontalAlignment',
 	verticalAlignment: 'tableCellVerticalAlignment'
-};
+} as const;
 
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
@@ -76,7 +76,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * The batch used to undo all changes made by the form (which are live, as the user types)
 	 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
 	 */
-	protected _undoStepBatch?: Batch | null;
+	private _undoStepBatch?: Batch;
 
 	/**
 	 * @inheritDoc
@@ -123,7 +123,6 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this.view = null;
-		this._undoStepBatch = null;
 
 		editor.ui.componentFactory.add( 'tableCellProperties', locale => {
 			const view = new ButtonView( locale );
@@ -293,17 +292,20 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	private _fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
-		const borderStyleCommand = commands.get( 'tableCellBorderStyle' );
+		const borderStyleCommand = commands.get( 'tableCellBorderStyle' )!;
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
-				const defaultValue = this._defaultTableCellProperties[ property ] || '';
+				const defaultValue = this._defaultTableCellProperties[ property as keyof NormalizedDefaultProperties ] || '';
 
-				return [ property, commands.get( commandName )!.value || defaultValue ];
+				return [
+					property as keyof typeof propertyToCommandMap,
+					commands.get( commandName )!.value as string || defaultValue
+				] as const;
 			} )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
-				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand!.value === 'none' ) {
+				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
 					return;
 				}
 
@@ -397,7 +399,10 @@ export default class TableCellPropertiesUI extends Plugin {
 	 *
 	 * @param defaultValue The default value of the command.
 	 */
-	private _getPropertyChangeCallback( commandName: string, defaultValue: string ) {
+	private _getPropertyChangeCallback(
+		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment',
+		defaultValue: string
+	): GetCallback<ObservableChangeEvent<string>> {
 		return ( evt, propertyName, newValue, oldValue ) => {
 			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
 			// It is an initial call (when opening the table properties view).
@@ -419,7 +424,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	private _getValidatedPropertyChangeCallback(
 		options: {
-			commandName: string;
+			commandName: `tableCell${ 'BorderColor' | 'BorderWidth' | 'Padding' | 'Width' | 'Height' | 'BackgroundColor' }`;
 			viewField: View & { errorText?: string | null };
 			validator: ( arg0: string ) => boolean;
 			errorText: string;

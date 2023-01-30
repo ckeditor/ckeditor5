@@ -105,14 +105,14 @@ function getMergeDimensions( firstTableCell: Element, selectedTableCells: Array<
 	let maxHeightOffset = 0;
 
 	for ( const tableCell of selectedTableCells ) {
-		const { row, column } = tableUtils.getCellLocation( tableCell )!;
+		const { row, column } = tableUtils.getCellLocation( tableCell );
 
 		maxWidthOffset = getMaxOffset( tableCell, column, maxWidthOffset, 'colspan' );
 		maxHeightOffset = getMaxOffset( tableCell, row, maxHeightOffset, 'rowspan' );
 	}
 
 	// Update table cell span attribute and merge set selection on a merged contents.
-	const { row: firstCellRow, column: firstCellColumn } = tableUtils.getCellLocation( firstTableCell )!;
+	const { row: firstCellRow, column: firstCellColumn } = tableUtils.getCellLocation( firstTableCell );
 
 	const mergeWidth = maxWidthOffset - firstCellColumn;
 	const mergeHeight = maxHeightOffset - firstCellRow;
@@ -124,10 +124,4 @@ function getMaxOffset( tableCell: Element, start: number, currentMaxOffset: numb
 	const dimensionValue = parseInt( tableCell.getAttribute( which ) as string || '1' );
 
 	return Math.max( currentMaxOffset, start + dimensionValue );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		mergeCells: MergeCellsCommand;
-	}
 }

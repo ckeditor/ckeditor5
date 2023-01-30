@@ -7,7 +7,16 @@
  * @module table/tablecolumnresize/converters
  */
 
-import type { DowncastWriter, UpcastDispatcher, DowncastDispatcher, ViewElement } from 'ckeditor5/src/engine';
+import type {
+	DowncastAttributeEvent,
+	DowncastDispatcher,
+	DowncastWriter,
+	Element,
+	UpcastDispatcher,
+	UpcastElementEvent,
+	ViewElement,
+	ViewNode
+} from 'ckeditor5/src/engine';
 
 import { normalizeColumnWidths } from './utils';
 import type TableUtils from '../tableutils';
@@ -25,41 +34,43 @@ import type TableUtils from '../tableutils';
  * @returns Conversion helper.
  */
 export function upcastColgroupElement( tableUtilsPlugin: TableUtils ) {
-	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		const viewColgroupElement = data.viewItem;
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:colgroup', ( evt, data, conversionApi ) => {
+			const viewColgroupElement = data.viewItem;
 
-		if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
-			return;
-		}
+			if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
+				return;
+			}
 
-		conversionApi.consumable.consume( viewColgroupElement, { name: true } );
+			conversionApi.consumable.consume( viewColgroupElement, { name: true } );
 
-		const modelTable = data.modelCursor.findAncestor( 'table' );
-		const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
+			const modelTable = data.modelCursor.findAncestor( 'table' )!;
+			const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
 
-		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
-			.map( columnIndex => {
-				const viewChild = viewColgroupElement.getChild( columnIndex );
+			let columnWidths = [ ...Array( numberOfColumns ).keys() ]
+				.map( columnIndex => {
+					const viewChild = viewColgroupElement.getChild( columnIndex );
 
-				if ( !viewChild || !viewChild.is( 'element', 'col' ) ) {
-					return 'auto';
-				}
+					if ( !viewChild || !viewChild.is( 'element', 'col' ) ) {
+						return 'auto';
+					}
 
-				const viewColWidth = viewChild.getStyle( 'width' );
+					const viewColWidth = viewChild.getStyle( 'width' );
 
-				if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
-					return 'auto';
-				}
+					if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
+						return 'auto';
+					}
 
-				return viewColWidth;
-			} );
+					return viewColWidth;
+				} );
 
-		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
-		}
+			if ( columnWidths.includes( 'auto' ) ) {
+				columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
+			}
 
-		conversionApi.writer.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
-	} );
+			conversionApi.writer.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
+		} );
+	};
 }
 
 /**
@@ -68,24 +79,26 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ) {
  * @returns Conversion helper.
  */
 export function downcastTableColumnWidthsAttribute() {
-	return ( dispatcher: DowncastDispatcher ): void => dispatcher.on( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
-		const viewWriter = conversionApi.writer;
-		const modelTable = data.item;
+	return ( dispatcher: DowncastDispatcher ): void => {
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const modelTable = data.item;
 
-		const viewTable = [ ...conversionApi.mapper.toViewElement( modelTable ).getChildren() ]
-			.find( viewChild => viewChild.is( 'element', 'table' ) );
+			const viewTable = [ ...conversionApi.mapper.toViewElement( modelTable )!.getChildren() ]
+				.find( ( node: ViewNode ): node is ViewElement & { name: 'table' } => node.is( 'element', 'table' ) )!;
 
-		if ( data.attributeNewValue ) {
-			// If new value is the same as the old, the operation is not applied (see the `writer.setAttributeOnItem()`).
-			// OTOH the model element has the attribute already applied, so we can't compare the values.
-			// Hence we need to just recreate the <colgroup> element every time.
-			insertColgroupElement( viewWriter, viewTable, data.attributeNewValue );
-			viewWriter.addClass( 'ck-table-resized', viewTable );
-		} else {
-			removeColgroupElement( viewWriter, viewTable );
-			viewWriter.removeClass( 'ck-table-resized', viewTable );
-		}
-	} );
+			if ( data.attributeNewValue ) {
+				// If new value is the same as the old, the operation is not applied (see the `writer.setAttributeOnItem()`).
+				// OTOH the model element has the attribute already applied, so we can't compare the values.
+				// Hence we need to just recreate the <colgroup> element every time.
+				insertColgroupElement( viewWriter, viewTable, data.attributeNewValue as string );
+				viewWriter.addClass( 'ck-table-resized', viewTable );
+			} else {
+				removeColgroupElement( viewWriter, viewTable );
+				viewWriter.removeClass( 'ck-table-resized', viewTable );
+			}
+		} );
+	};
 }
 
 /**
@@ -99,7 +112,8 @@ export function downcastTableColumnWidthsAttribute() {
 function insertColgroupElement( viewWriter: DowncastWriter, viewTable: ViewElement, columnWidthsAttribute: string ) {
 	const columnWidths = columnWidthsAttribute.split( ',' );
 
-	let viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) ) as ViewElement;
+	let viewColgroupElement: ViewElement | undefined = [ ...viewTable.getChildren() ]
+		.find( ( node: ViewNode ): node is ViewElement & { name: 'colgroup' } => node.is( 'element', 'colgroup' ) );
 
 	if ( !viewColgroupElement ) {
 		viewColgroupElement = viewWriter.createContainerElement( 'colgroup' );
@@ -117,7 +131,7 @@ function insertColgroupElement( viewWriter: DowncastWriter, viewTable: ViewEleme
 	}
 
 	// TODO: start?
-	viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), viewColgroupElement );
+	viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' as any as number ), viewColgroupElement );
 }
 
 /**

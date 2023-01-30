@@ -15,17 +15,16 @@ import {
 	ColorGridView,
 	FocusCycler,
 	ViewCollection,
+	type ColorDefinition,
 	type DropdownView
 } from 'ckeditor5/src/ui';
 import { icons } from 'ckeditor5/src/core';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
-import type { TableColorConfig } from '../table';
-
 import '../../theme/colorinput.css';
 
-type ColorInputViewOptions = {
-	colorDefinitions: TableColorConfig;
+export type ColorInputViewOptions = {
+	colorDefinitions: Array<ColorDefinition>;
 	columns: number;
 	defaultColorValue?: string;
 };

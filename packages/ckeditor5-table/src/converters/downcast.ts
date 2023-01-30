@@ -171,5 +171,7 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): View
  * Checks if an element has any attributes set.
  */
 function hasAnyAttribute( element: Node ): boolean {
-	return !![ ...element.getAttributeKeys() ].length;
+	const iteratorItem = element.getAttributeKeys().next();
+
+	return !iteratorItem.done;
 }

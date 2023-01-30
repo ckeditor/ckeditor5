@@ -41,6 +41,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * For example, see the following table which has a cell (FOO) with the rowspan attribute (2):
  *
+ * ```xml
  * <table headingRows="1">
  *   <tableRow>
  *     <tableCell rowspan="2"><paragraph>FOO</paragraph></tableCell>
@@ -51,9 +52,11 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     <tableCell><paragraph>XYZ</paragraph></tableCell>
  *   </tableRow>
  * </table>
+ * ```
  *
  * It will be rendered in the view as:
  *
+ * ```xml
  * <table>
  *   <thead>
  *     <tr>
@@ -68,6 +71,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * In the above example the table will be rendered as a table with two rows: one in the header and second one in the body.
  * The table cell (FOO) cannot span over multiple rows as it would extend from the header to the body section.
@@ -89,6 +93,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * The table from the above example will be fixed and rendered to the view as below:
  *
+ * ```xml
  * <table>
  *   <thead>
  *     <tr>
@@ -103,6 +108,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * ## Collaboration and undo - Expectations vs post-fixer results
  *
@@ -114,6 +120,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *
  * As an example see the table below:
  *
+ * ```xml
  * <table>
  *   <tbody>
  *     <tr>
@@ -126,6 +133,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * and the user actions:
  *
@@ -134,7 +142,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  * 3. User B adds a row at the end of the table. This will insert a row with two empty table cells.
  * 4. Both users will have a table as below:
  *
- *
+ * ```xml
  * <table>
  *   <tbody>
  *     <tr>
@@ -153,9 +161,11 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * The last row is shorter then others so the table post-fixer will add an empty row to the last row:
  *
+ * ```xml
  * <table>
  *   <tbody>
  *     <tr>
@@ -175,11 +185,13 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * Unfortunately undo does not know the nature of the changes and depending on which user applies the post-fixer changes, undoing them
  * might lead to a broken table. If User B undoes inserting the column to the table, the undo engine will undo only the operations of
  * inserting empty cells to rows from the initial table state (row 1 and 2) but the cell in the post-fixed row will remain:
  *
+ * ```xml
  * <table>
  *   <tbody>
  *     <tr>
@@ -197,9 +209,11 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  *
  * After undo, the table post-fixer will detect that two rows are shorter than others and will fix the table to:
  *
+ * ```xml
  * <table>
  *   <tbody>
  *     <tr>
@@ -219,6 +233,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *     </tr>
  *   </tbody>
  * </table>
+ * ```
  */
 export default function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );

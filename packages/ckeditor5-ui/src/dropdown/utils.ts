@@ -103,11 +103,9 @@ import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observ
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
-export function createDropdown<
-	ButtonClassConstructor extends new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView
->(
+export function createDropdown(
 	locale: Locale | undefined,
-	ButtonClass: ButtonClassConstructor
+	ButtonClass: new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView
 ): DropdownView {
 	const buttonView = new ButtonClass( locale );
 

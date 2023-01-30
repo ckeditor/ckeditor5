@@ -76,7 +76,7 @@ export default class TableCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent as Element ) ) {
+				if ( !isTable( modelElement.parent ) ) {
 					return null;
 				}
 
@@ -88,7 +88,7 @@ export default class TableCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent as Element ) ) {
+				if ( !isTable( modelElement.parent ) ) {
 					return null;
 				}
 

@@ -10,13 +10,13 @@
 import type { Batch, Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 
-export type TablePropertyCommandExecuteOptions = {
+export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;
 	columnWidths?: string;
 	table?: Element;
 	tableWidth?: string;
 	value?: string;
-};
+}
 
 /**
  * The table cell attribute command.
@@ -27,7 +27,7 @@ export default class TablePropertyCommand extends Command {
 	/**
 	 * The attribute that will be set by the command.
 	 */
-	public declare readonly attributeName: string;
+	public readonly attributeName: string;
 
 	/**
 	 * The default value for the attribute.
@@ -90,15 +90,13 @@ export default class TablePropertyCommand extends Command {
 
 	/**
 	 * Returns the attribute value for a table.
-	 *
-	 * @internal
 	 */
-	public _getValue( table: Element ): string | undefined {
+	protected _getValue( table: Element ): unknown {
 		if ( !table ) {
 			return;
 		}
 
-		const value = table.getAttribute( this.attributeName ) as string;
+		const value = table.getAttribute( this.attributeName );
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -109,20 +107,12 @@ export default class TablePropertyCommand extends Command {
 
 	/**
 	 * Returns the proper model value. It can be used to add a default unit to numeric values.
-	 *
-	 * @internal
 	 */
-	public _getValueToSet( value: string | undefined ): string | undefined {
+	protected _getValueToSet( value: string | number | undefined ): unknown {
 		if ( value === this._defaultValue ) {
 			return;
 		}
 
 		return value;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableProperty: TablePropertyCommand;
 	}
 }

@@ -59,7 +59,7 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.findAncestor( 'table' )!;
 
-		const columnIndexToFocus = tableUtils.getCellLocation( firstCell )!.column;
+		const columnIndexToFocus = tableUtils.getCellLocation( firstCell ).column;
 
 		model.change( writer => {
 			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
@@ -99,10 +99,4 @@ function getCellToFocus( table: Element, removedRowIndex: number, columnToFocus:
 	}
 
 	return cellToFocus;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		removeRow: RemoveRowCommand;
-	}
 }

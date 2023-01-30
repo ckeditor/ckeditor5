@@ -9,8 +9,6 @@
 
 import type { BoxSides } from 'ckeditor5/src/engine';
 import { isObject } from 'lodash-es';
-import type { DefaultCellProperties } from '../tablecellproperties';
-import type { DefaultProperties } from '../tableproperties';
 
 /**
  * Returns a string if all four values of box sides are equal.
@@ -27,7 +25,7 @@ import type { DefaultProperties } from '../tableproperties';
  * getSingleValue( { top: 'foo', right: 'foo' } );
  * ```
  */
-export function getSingleValue( objectOrString: BoxSides | string ): string | undefined {
+export function getSingleValue( objectOrString: BoxSides | string | undefined ): string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
 		return objectOrString;
 	}
@@ -53,8 +51,8 @@ export function getSingleValue( objectOrString: BoxSides | string ): string | un
  *
  * @param defaultUnit A default unit added to a numeric value.
  */
-export function addDefaultUnitToNumericValue( value: string | number, defaultUnit: string ): string | number {
-	const numericValue = parseFloat( value as string );
+export function addDefaultUnitToNumericValue( value: string | number | undefined, defaultUnit: string ): string | number | undefined {
+	const numericValue = parseFloat( value as any );
 
 	if ( Number.isNaN( numericValue ) ) {
 		return value;
@@ -67,7 +65,7 @@ export function addDefaultUnitToNumericValue( value: string | number, defaultUni
 	return `${ numericValue }${ defaultUnit }`;
 }
 
-export type NormalizedDefaultProperties = {
+export interface NormalizedDefaultProperties {
 	borderStyle: string;
 	borderWidth: string;
 	borderColor: string;
@@ -78,7 +76,7 @@ export type NormalizedDefaultProperties = {
 	padding?: string;
 	verticalAlignment?: string;
 	horizontalAlignment?: string;
-};
+}
 
 /**
  * Returns the normalized configuration.
@@ -90,7 +88,7 @@ export type NormalizedDefaultProperties = {
  * @param options.isRightToLeftContent Whether the content is right-to-left.
  */
 export function getNormalizedDefaultProperties(
-	config: DefaultProperties | DefaultCellProperties,
+	config: Partial<NormalizedDefaultProperties> | undefined,
 	options: {
 		includeAlignmentProperty?: boolean;
 		includePaddingProperty?: boolean;

@@ -50,19 +50,13 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value: string ): string | undefined {
-		const newValue = addDefaultUnitToNumericValue( value, 'px' ) as string;
+	protected override _getValueToSet( value: string | number | undefined ): unknown {
+		const newValue = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( newValue === this._defaultValue ) {
 			return;
 		}
 
 		return newValue;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableCellHeight: TableCellHeightCommand;
 	}
 }

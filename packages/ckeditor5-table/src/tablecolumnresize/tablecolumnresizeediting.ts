@@ -8,9 +8,25 @@
  */
 
 import { throttle } from 'lodash-es';
-import { global, DomEmitterMixin, type EventInfo, type DomEmitter } from 'ckeditor5/src/utils';
+
+import {
+	global,
+	DomEmitterMixin,
+	type EventInfo,
+	type DomEmitter,
+	type ObservableChangeEvent
+} from 'ckeditor5/src/utils';
+
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
-import type { Element, Differ, ViewElement, DomEventData, DowncastWriter } from 'ckeditor5/src/engine';
+
+import type {
+	Differ,
+	DomEventData,
+	DowncastInsertEvent,
+	DowncastWriter,
+	Element,
+	ViewElement
+} from 'ckeditor5/src/engine';
 
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 import TableEditing from '../tableediting';
@@ -79,7 +95,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 	 *
 	 * @observable
-	 * @private
+	 * @internal
 	 */
 	public declare _isResizingAllowed: boolean;
 
@@ -125,7 +141,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._domEmitter = new ( DomEmitterMixin() )();
 		this._tableUtilsPlugin = editor.plugins.get( 'TableUtils' );
 
-		this.on( 'change:_isResizingAllowed', ( evt, name, value ) => {
+		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			editor.editing.view.change( writer => {
 				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot()! );
@@ -147,11 +163,11 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
 
-		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
-		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
+		const resizeTableWidthCommand = new TableWidthResizeCommand( editor );
+		const resizeColumnWidthsCommand = new TableColumnWidthsCommand( editor );
 
-		const resizeTableWidthCommand = editor.commands.get( 'resizeTableWidth' )!;
-		const resizeColumnWidthsCommand = editor.commands.get( 'resizeColumnWidths' )!;
+		editor.commands.add( 'resizeTableWidth', resizeTableWidthCommand );
+		editor.commands.add( 'resizeColumnWidths', resizeColumnWidthsCommand );
 
 		// Currently the states of column resize and table resize (which is actually the last column resize) features
 		// are bound together. They can be separated in the future by adding distinct listeners and applying
@@ -245,11 +261,11 @@ export default class TableColumnResizeEditing extends Plugin {
 
 				// If the column count in the table changed, adjust the widths of the affected columns.
 				const hasMoreColumns = currentColumnsDelta > 0;
-				const currentColumnIndex = plugin._tableUtilsPlugin.getCellLocation( cell )!.column;
+				const currentColumnIndex = plugin._tableUtilsPlugin.getCellLocation( cell ).column;
 
 				if ( hasMoreColumns ) {
 					const columnMinWidthAsPercentage = getColumnMinWidthAsPercentage( table, plugin.editor );
-					const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage ) as Array<number>;
+					const columnWidthsToInsert = createFilledArray( currentColumnsDelta, columnMinWidthAsPercentage );
 
 					columnWidths.splice( currentColumnIndex, 0, ...columnWidthsToInsert );
 				} else {
@@ -267,7 +283,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		 * Returns a set of cells that have been changed in a given table.
 		 */
 		function getAffectedCells( differ: Differ, table: Element ): Set<Element> {
-			const cellSet: Set<Element> = new Set();
+			const cellSet = new Set<Element>();
 
 			for ( const change of differ.getChanges() ) {
 				if (
@@ -437,7 +453,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 
 			// TODO: start?
-			viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), colgroup );
+			viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' as any ), colgroup );
 		}
 
 		/**
@@ -717,16 +733,27 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	private _registerResizerInserter() {
 		this.editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastInsertEvent<Element>>( 'insert:tableCell', ( evt, data, conversionApi ) => {
 				const modelElement = data.item;
 				const viewElement = conversionApi.mapper.toViewElement( modelElement );
 				const viewWriter = conversionApi.writer;
 
 				viewWriter.insert(
-					viewWriter.createPositionAt( viewElement, 'end' ),
+					viewWriter.createPositionAt( viewElement!, 'end' ),
 					viewWriter.createUIElement( 'div', { class: 'ck-table-column-resizer' } )
 				);
 			}, { priority: 'lowest' } );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
+	}
+
+	interface CommandsMap {
+		resizeTableWidth: TableWidthResizeCommand;
+		resizeColumnWidths: TableColumnWidthsCommand;
 	}
 }

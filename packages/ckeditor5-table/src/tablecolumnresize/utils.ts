@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model, ViewElement } from 'ckeditor5/src/engine';
+import type { Element, Model, ViewElement, ViewNode } from 'ckeditor5/src/engine';
 import { global } from 'ckeditor5/src/utils';
 import type TableUtils from '../tableutils';
 import {
@@ -65,12 +65,12 @@ export function getChangedResizedTables( model: Model ): Set<Element> {
 			continue;
 		}
 
-		const tableNode = ( referencePosition.nodeAfter && ( referencePosition.nodeAfter as Element ).name === 'table' ) ?
+		const tableNode = ( referencePosition.nodeAfter && referencePosition.nodeAfter.is( 'element', 'table' ) ) ?
 			referencePosition.nodeAfter : referencePosition.findAncestor( 'table' )!;
 
 		// We iterate over the whole table looking for the nested tables that are also affected.
 		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
-			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
+			if ( node.is( 'element', 'table' ) && node.hasAttribute( 'columnWidths' ) ) {
 				affectedTables.add( node );
 			}
 		}
@@ -112,11 +112,13 @@ export function getTableWidthInPixels( modelTable: Element, editor: Editor ): nu
  * @param elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
  * @returns Matched view or `undefined` otherwise.
  */
-function getChildrenViewElement( modelTable: Element, elementName: string, editor: Editor ): ViewElement | undefined {
+function getChildrenViewElement( modelTable: Element, elementName: string, editor: Editor ) {
 	const viewFigure = editor.editing.mapper.toViewElement( modelTable )!;
-	const viewTable = [ ...viewFigure.getChildren() ].find( viewChild => viewChild.is( 'element', 'table' ) ) as ViewElement;
+	const viewTable = [ ...viewFigure.getChildren() ]
+		.find( ( node: ViewNode ): node is ViewElement & { name: 'table' } => node.is( 'element', 'table' ) )!;
 
-	return [ ...viewTable.getChildren() ].find( viewChild => viewChild.is( 'element', elementName ) ) as ViewElement;
+	return [ ...viewTable.getChildren() ]
+		.find( ( node: ViewNode ): node is ViewElement => node.is( 'element', elementName ) );
 }
 
 /**
@@ -148,11 +150,9 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
  * @param cell A table cell model element.
  * @param tableUtils The Table Utils plugin instance.
  * @returns An object containing the indexes of the left and right edges of the cell.
- * @returns return.leftEdge The index of the left edge of the cell.
- * @returns return.rightEdge The index of the right edge of the cell.
  */
 export function getColumnEdgesIndexes( cell: Element, tableUtils: TableUtils ): { leftEdge: number; rightEdge: number } {
-	const cellColumnIndex = tableUtils.getCellLocation( cell )!.column;
+	const cellColumnIndex = tableUtils.getCellLocation( cell ).column;
 	const cellWidth = cell.getAttribute( 'colspan' ) as number || 1;
 
 	return {
@@ -202,7 +202,7 @@ export function clamp( number: number, min: number, max: number ): number {
  * @param value The value to fill the array with.
  * @returns An array with defined length and filled with defined value.
  */
-export function createFilledArray( length: number, value: unknown ): Array<unknown> {
+export function createFilledArray<T>( length: number, value: T ): Array<T> {
 	return Array( length ).fill( value );
 }
 

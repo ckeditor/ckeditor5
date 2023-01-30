@@ -355,8 +355,8 @@ export default class TableSelection extends Plugin {
 	 */
 	private _getCellsToSelect( anchorCell: Element, targetCell: Element ) {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const startLocation = tableUtils.getCellLocation( anchorCell )!;
-		const endLocation = tableUtils.getCellLocation( targetCell )!;
+		const startLocation = tableUtils.getCellLocation( anchorCell );
+		const endLocation = tableUtils.getCellLocation( targetCell );
 
 		const startRow = Math.min( startLocation.row, endLocation.row );
 		const endRow = Math.max( startLocation.row, endLocation.row );

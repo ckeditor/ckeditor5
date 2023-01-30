@@ -31,7 +31,7 @@ export default class InsertRowCommand extends Command {
 	/**
 	 * The order of insertion relative to the row in which the caret is located.
 	 */
-	public readonly order: string;
+	public readonly order: 'above' | 'below';
 
 	/**
 	 * Creates a new `InsertRowCommand` instance.
@@ -40,7 +40,7 @@ export default class InsertRowCommand extends Command {
 	 * @param options.order The order of insertion relative to the row in which the caret is located.
 	 * Possible values: `"above"` and `"below"`. Default value is "below"
 	 */
-	constructor( editor: Editor, options: { order?: string } = {} ) {
+	constructor( editor: Editor, options: { order?: 'above' | 'below' } = {} ) {
 		super( editor );
 
 		this.order = options.order || 'below';
@@ -77,11 +77,5 @@ export default class InsertRowCommand extends Command {
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		insertRow: InsertRowCommand;
 	}
 }

@@ -65,12 +65,12 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * @param options.focusCaptionOnShow When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
-	public override execute( { focusCaptionOnShow }: { focusCaptionOnShow: boolean } ): void {
+	public override execute( { focusCaptionOnShow = false }: { focusCaptionOnShow?: boolean } = {} ): void {
 		this.editor.model.change( writer => {
 			if ( this.value ) {
 				this._hideTableCaption( writer );
 			} else {
-				this._showTableCaption( writer, !!focusCaptionOnShow );
+				this._showTableCaption( writer, focusCaptionOnShow );
 			}
 		} );
 	}

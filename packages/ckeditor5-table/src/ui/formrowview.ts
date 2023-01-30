@@ -19,7 +19,7 @@ import '../../theme/formrow.css';
  * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
  * it will become a component in ckeditor5-ui.
  *
- * @private
+ * @internal
  */
 export default class FormRowView extends View {
 	/**
@@ -40,7 +40,7 @@ export default class FormRowView extends View {
 	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
 	 *
 	 * @observable
-	 * @private
+	 * @internal
 	 */
 	public declare _role: string | null;
 
@@ -50,7 +50,7 @@ export default class FormRowView extends View {
 	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
 	 *
 	 * @observable
-	 * @private
+	 * @internal
 	 */
 	public declare _ariaLabelledBy: string | null;
 

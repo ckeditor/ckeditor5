@@ -25,7 +25,7 @@ export default class SplitCellCommand extends Command {
 	/**
 	 * The direction that indicates which cell will be split.
 	 */
-	public readonly direction: string;
+	public readonly direction: 'horizontally' | 'vertically';
 
 	/**
 	 * Creates a new `SplitCellCommand` instance.
@@ -33,7 +33,7 @@ export default class SplitCellCommand extends Command {
 	 * @param editor The editor on which this command will be used.
 	 * @param options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
-	constructor( editor: Editor, options: { direction?: string } = {} ) {
+	constructor( editor: Editor, options: { direction?: 'horizontally' | 'vertically' } = {} ) {
 		super( editor );
 
 		this.direction = options.direction || 'horizontally';
@@ -62,11 +62,5 @@ export default class SplitCellCommand extends Command {
 		} else {
 			tableUtils.splitCellVertically( tableCell, 2 );
 		}
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		splitCell: SplitCellCommand;
 	}
 }

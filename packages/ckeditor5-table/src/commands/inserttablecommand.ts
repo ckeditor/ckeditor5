@@ -47,12 +47,19 @@ export default class InsertTableCommand extends Command {
 	 * @param options.rows The number of rows to create in the inserted table. Default value is 2.
 	 * @param options.columns The number of columns to create in the inserted table. Default value is 2.
 	 * @param options.headingRows The number of heading rows. If not provided it will default to
-	 * {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.rows`} table config.
+	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.rows`} table config.
 	 * @param options.headingColumns The number of heading columns. If not provided it will default to
-	 * {@link module:table/table~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
+	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
 	 * @fires execute
 	 */
-	public override execute( options: { rows?: number; columns?: number; headingRows?: number; headingColumns?: number } = {} ): void {
+	public override execute(
+		options: {
+			rows?: number;
+			columns?: number;
+			headingRows?: number;
+			headingColumns?: number;
+		} = {}
+	): void {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const config = this.editor.config.get( 'table' )!;
@@ -86,10 +93,4 @@ function isAllowedInParent( selection: Selection | DocumentSelection, schema: Sc
 	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 
 	return schema.checkChild( validParent as Element, 'table' );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		insertTable: InsertTableCommand;
-	}
 }

@@ -7,7 +7,7 @@
  * @module table/tableselection/mouseeventsobserver
  */
 
-import { DomEventObserver, type View } from 'ckeditor5/src/engine';
+import { DomEventObserver, type DomEventData, type View } from 'ckeditor5/src/engine';
 
 /**
  * The mouse selection event observer.
@@ -15,7 +15,6 @@ import { DomEventObserver, type View } from 'ckeditor5/src/engine';
  * It registers listeners for the following DOM events:
  *
  * - `'mousemove'`
- * - `'mouseup'`
  * - `'mouseleave'`
  *
  * Note that this observer is disabled by default. To enable this observer, it needs to be added to
@@ -51,9 +50,13 @@ export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
- * @event module:engine/view/document~Document#event:mousemove
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ * @eventName mousemove
+ * @param data Event data.
  */
+export type ViewDocumentMouseMoveEvent = {
+	name: 'mousemove';
+	args: [ data: DomEventData<MouseEvent> ];
+};
 
 /**
  * Fired when the mouse is moved out of one of the editables.
@@ -65,6 +68,10 @@ export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
- * @event module:engine/view/document~Document#event:mouseleave
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ * @eventName mouseleave
+ * @param data Event data.
  */
+export type ViewDocumentMouseLeaveEvent = {
+	name: 'mouseleave';
+	args: [ data: DomEventData<MouseEvent> ];
+};

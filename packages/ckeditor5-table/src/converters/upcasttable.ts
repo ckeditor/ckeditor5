@@ -7,7 +7,7 @@
  * @module table/converters/upcasttable
  */
 
-import type { Element, UpcastDispatcher } from 'ckeditor5/src/engine';
+import type { Element, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine';
 
 import { createEmptyTableCell } from '../utils/common';
 import { first } from 'ckeditor5/src/utils';
@@ -15,15 +15,19 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a function that converts the table view representation:
  *
+ * ```xml
  * <figure class="table"><table>...</table></figure>
+ * ```
  *
  * to the model representation:
  *
+ * ```xml
  * <table></table>
+ * ```
  */
 export function upcastTableFigure() {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:figure', ( evt, data, conversionApi ) => {
 			// Do not convert if this is not a "table figure".
 			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
 				return;
@@ -44,7 +48,7 @@ export function upcastTableFigure() {
 			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
 
 			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange.getItems() );
+			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<Element> );
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable ) {
@@ -69,7 +73,7 @@ export function upcastTableFigure() {
  */
 export default function upcastTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
 
 			// When element was already consumed then skip it.
@@ -131,7 +135,7 @@ export default function upcastTable() {
  */
 export function skipEmptyTableRow() {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on( 'element:tr', ( evt, data ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:tr', ( evt, data ) => {
 			if ( data.viewItem.isEmpty && data.modelCursor.index == 0 ) {
 				evt.stop();
 			}
@@ -146,7 +150,7 @@ export function skipEmptyTableRow() {
  */
 export function ensureParagraphInTableCell( elementName: string ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+		dispatcher.on<UpcastElementEvent>( `element:${ elementName }`, ( evt, data, conversionApi ) => {
 			// The default converter will create a model range on converted table cell.
 			if ( !data.modelRange ) {
 				return;
@@ -155,7 +159,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
 			// Ensure a paragraph in the model for empty table cells for converted table cells.
 			if ( data.viewItem.isEmpty ) {
 				const tableCell = data.modelRange.start.nodeAfter;
-				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
+				const modelCursor = conversionApi.writer.createPositionAt( tableCell!, 0 );
 
 				conversionApi.writer.insertElement( 'paragraph', modelCursor );
 			}
@@ -166,7 +170,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
 /**
  * Get view `<table>` element from the view widget (`<figure>`).
  */
-function getViewTableFromFigure( figureView: Element ) {
+function getViewTableFromFigure( figureView: ViewElement ) {
 	for ( const figureChild of figureView.getChildren() ) {
 		if ( figureChild.is( 'element', 'table' ) ) {
 			return figureChild;
@@ -181,7 +185,7 @@ function getViewTableFromFigure( figureView: Element ) {
  * headingColumns - The maximum number of row headings.
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
  */
-function scanTable( viewTable: Element ) {
+function scanTable( viewTable: ViewElement ) {
 	const tableMeta = {
 		headingRows: 0,
 		headingColumns: 0
@@ -206,7 +210,7 @@ function scanTable( viewTable: Element ) {
 	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
 	let firstTheadElement;
 
-	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<Element> ) ) {
+	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ) ) {
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
 		// The else is for future purposes (mainly `<caption>`).
 		if ( tableChild.name === 'tbody' || tableChild.name === 'thead' || tableChild.name === 'tfoot' ) {
@@ -217,11 +221,13 @@ function scanTable( viewTable: Element ) {
 
 			// There might be some extra empty text nodes between the `<tr>`s.
 			// Make sure further code operates on `tr`s only. (#145)
-			const trs = Array.from( tableChild.getChildren() as Iterable<Element> ).filter( el => el.is( 'element', 'tr' ) );
+			const trs = Array.from( tableChild.getChildren() ).filter(
+				( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
+			);
 
 			for ( const tr of trs ) {
 				// This <tr> is a child of a first <thead> element.
-				if ( tr.parent!.name === 'thead' && tr.parent === firstTheadElement ) {
+				if ( ( tr.parent as ViewElement ).name === 'thead' && tr.parent === firstTheadElement ) {
 					tableMeta.headingRows++;
 					headRows.push( tr );
 				} else {
@@ -252,12 +258,12 @@ function scanTable( viewTable: Element ) {
  * - For body rows:
  *     - Calculates the number of column headings.
  */
-function scanRowForHeadingColumns( tr: Element ) {
+function scanRowForHeadingColumns( tr: ViewElement ) {
 	let headingColumns = 0;
 	let index = 0;
 
 	// Filter out empty text nodes from tr children.
-	const children = Array.from( tr.getChildren() as IterableIterator<Element> )
+	const children = Array.from( tr.getChildren() as IterableIterator<ViewElement> )
 		.filter( child => child.name === 'th' || child.name === 'td' );
 
 	// Count starting adjacent <th> elements of a <tr>.

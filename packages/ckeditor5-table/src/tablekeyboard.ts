@@ -379,4 +379,3 @@ declare module '@ckeditor/ckeditor5-core' {
 			[ TableKeyboard.pluginName ]: TableKeyboard;
 	}
 }
-

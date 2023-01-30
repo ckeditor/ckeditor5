@@ -41,7 +41,7 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValue( table: Element ): string | undefined {
+	protected override _getValue( table: Element ): unknown {
 		if ( !table ) {
 			return;
 		}
@@ -53,11 +53,5 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 		}
 
 		return value;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableBorderColor: TableBorderColorCommand;
 	}
 }

@@ -50,6 +50,9 @@ export default class MergeCellCommand extends Command {
 	 */
 	public readonly isHorizontal: boolean;
 
+	/**
+	 * @inheritdoc
+	 */
 	public declare value: Node | undefined;
 
 	/**
@@ -157,7 +160,7 @@ export default class MergeCellCommand extends Command {
 /**
  * Returns the cell that can be merged horizontally.
  */
-function getHorizontalCell( tableCell: Element, direction: string, tableUtils: TableUtils ) {
+function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ) {
 	const tableRow = tableCell.parent!;
 	const table = tableRow.parent as Element;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
@@ -172,8 +175,8 @@ function getHorizontalCell( tableCell: Element, direction: string, tableUtils: T
 	const cellOnRight = ( direction == 'right' ? horizontalCell : tableCell ) as Element;
 
 	// Get their column indexes:
-	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft )!;
-	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight )!;
+	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft );
+	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) as string || '1' );
 
@@ -195,7 +198,7 @@ function getHorizontalCell( tableCell: Element, direction: string, tableUtils: T
 /**
  * Returns the cell that can be merged vertically.
  */
-function getVerticalCell( tableCell: Element, direction: string, tableUtils: TableUtils ): Node | null {
+function getVerticalCell( tableCell: Element, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ): Node | null {
 	const tableRow = tableCell.parent as Element;
 	const table = tableRow.parent as Element;
 
@@ -267,10 +270,4 @@ function isEmpty( tableCell: Element ): boolean {
 	const firstTableChild = tableCell.getChild( 0 ) as Element;
 
 	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		mergeCell: MergeCellCommand;
-	}
 }

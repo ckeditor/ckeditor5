@@ -8,6 +8,7 @@
  */
 
 import type {
+	DocumentFragment,
 	DocumentSelection,
 	Element,
 	ViewElement
@@ -18,7 +19,7 @@ import type {
  *
  * @param modelElement Element to check if it is a table.
  */
-export function isTable( modelElement: Element ): boolean {
+export function isTable( modelElement: Element | DocumentFragment | null ): boolean {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }
 
@@ -62,13 +63,13 @@ export function getCaptionFromModelSelection( selection: DocumentSelection ): El
  * @returns Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element cannot be matched.
  */
 export function matchTableCaptionViewElement( element: ViewElement ): { name: true } | null {
-	const parent = element.parent as ViewElement;
+	const parent = element.parent;
 
-	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'table' ) ) {
+	if ( element.name == 'figcaption' && parent && parent.is( 'element', 'figure' ) && parent.hasClass( 'table' ) ) {
 		return { name: true };
 	}
 
-	if ( element.name == 'caption' && parent && parent.name == 'table' ) {
+	if ( element.name == 'caption' && parent && parent.is( 'element', 'table' ) ) {
 		return { name: true };
 	}
 

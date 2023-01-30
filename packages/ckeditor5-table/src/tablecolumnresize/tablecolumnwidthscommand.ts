@@ -8,7 +8,9 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import TablePropertyCommand, { type TablePropertyCommandExecuteOptions } from '../tableproperties/commands/tablepropertycommand';
+import type { Element } from 'ckeditor5/src/engine';
+
+import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	/**
@@ -36,7 +38,7 @@ export default class TableColumnWidthsCommand extends TablePropertyCommand {
 	 * @param options.columnWidths New value of the `columnWidths` attribute.
 	 * @param options.table The table that is having the columns resized.
 	 */
-	public override execute( options: TablePropertyCommandExecuteOptions = {} ): void {
+	public override execute( options: { columnWidths?: string; table?: Element } = {} ): void {
 		const model = this.editor.model;
 		const table = options.table || model.document.selection.getSelectedElement()!;
 		const { columnWidths } = options;

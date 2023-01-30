@@ -54,3 +54,13 @@ export default class TableCellWidthEditing extends Plugin {
 		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor, defaultTableCellProperties.width ) );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+			[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
+	}
+
+	interface CommandsMap {
+		tableCellWidth: TableCellWidthCommand;
+	}
+}

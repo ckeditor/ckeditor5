@@ -63,11 +63,11 @@ export function upcastStyleToAttribute(
 	} );
 }
 
-type StyleValues = {
+export interface StyleValues {
 	color: string;
 	style: string;
 	width: string;
-};
+}
 
 /**
  * Conversion helper for upcasting border styles for view elements.
@@ -188,6 +188,7 @@ export function downcastTableAttribute(
 	}
 ): void {
 	const { modelAttribute, styleName } = options;
+
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;

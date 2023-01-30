@@ -44,9 +44,3 @@ export default class TableCellVerticalAlignmentCommand extends TableCellProperty
 		super( editor, 'tableCellVerticalAlignment', defaultValue );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
-	}
-}

@@ -10,11 +10,12 @@
 import {
 	ButtonView,
 	Model,
-	type View,
+	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
+	type NormalizedColorOption,
 	type ToolbarView,
-	type NormalizedColorOption
+	type View
 } from 'ckeditor5/src/ui';
 
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
@@ -24,7 +25,6 @@ import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecell
 import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';
 
 import ColorInputView from '../../ui/colorinputview';
-import type { TableColorConfig } from '../../table';
 
 const isEmpty = ( val: string ) => val === '';
 
@@ -164,7 +164,7 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 		toolbar: ToolbarView;
 		labels: Record<number, string>;
 		propertyName: TPropertyName;
-		nameToValue?: ( arg0: string ) => string;
+		nameToValue?: ( name: string ) => string;
 		defaultValue?: string;
 	}
 ): void {
@@ -206,7 +206,7 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
  * by {@link module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI} or
  * {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI}.
  *
- * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
+ * The color palette follows the {@link module:table/tableconfig~TableColorConfig table color configuration format}
  * and contains the following color definitions:
  *
  * ```ts
@@ -275,7 +275,7 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
  * ];
  * ```
  */
-export const defaultColors: TableColorConfig = [
+export const defaultColors: Array<ColorOption> = [
 	{
 		color: 'hsl(0, 0%, 0%)',
 		label: 'Black'
@@ -365,7 +365,7 @@ export const defaultColors: TableColorConfig = [
  * console.log( labeledInputView.view ); // A color input instance.
  * ```
  *
- * @private
+ * @internal
  * @param options Color input options.
  * @param options.colorConfig The configuration of the color palette displayed in the input's dropdown.
  * @param options.columns The configuration of the number of columns the color palette consists of in the input's dropdown.

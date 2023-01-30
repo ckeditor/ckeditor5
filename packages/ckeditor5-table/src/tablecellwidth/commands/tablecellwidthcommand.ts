@@ -50,8 +50,8 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' ) as string;
+	public override _getValueToSet( value: string | number | undefined ): unknown {
+		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -61,8 +61,3 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableCellWidth: TableCellWidthCommand;
-	}
-}

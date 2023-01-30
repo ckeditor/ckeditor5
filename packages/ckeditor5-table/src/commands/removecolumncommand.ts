@@ -139,9 +139,3 @@ function getBoundaryCells( selection: Selection | DocumentSelection, tableUtils:
 
 	return firstCell.isBefore( lastCell ) ? returnValue : returnValue.reverse();
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		removeColumn: RemoveColumnCommand;
-	}
-}

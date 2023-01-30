@@ -252,7 +252,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( ( evt.source as Record<string, unknown> ).commandName as string );
+			editor.execute( ( evt.source as any ).commandName );
 
 			// Toggling a switch button view should not move the focus to the editable.
 			if ( !( evt.source instanceof SwitchButtonView ) ) {
@@ -302,7 +302,7 @@ export default class TableUI extends Plugin {
 
 		// Execute commands for events coming from the list in the dropdown panel.
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( ( evt.source as Record<string, unknown> ).commandName as string );
+			editor.execute( ( evt.source as any ).commandName );
 			editor.editing.view.focus();
 		} );
 
@@ -319,7 +319,7 @@ export default class TableUI extends Plugin {
 	private _fillDropdownWithListOptions( dropdownView: DropdownView, options: Array<ListDropdownItemDefinition> ) {
 		const editor = this.editor;
 		const commands: Array<Command> = [];
-		const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
+		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 		for ( const option of options ) {
 			addListOption( option, editor, commands, itemDefinitions );

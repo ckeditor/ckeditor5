@@ -11,21 +11,52 @@ import type { Element, Position } from 'ckeditor5/src/engine';
 
 // @if CK_DEBUG // const { CKEditorError } = require( 'ckeditor5/src/utils' );
 
-type CellData = {
+interface CellData {
 	cell: Element;
 	row: number;
 	column: number;
-};
+}
 
-export type TableWalkerOptions = {
-	row?: number;
+/**
+ * An object with configuration for `TableWalker`.
+ */
+export interface TableWalkerOptions {
+
+	/**
+	 * A row index for which this iterator will output cells. Can't be used together with `startRow` and `endRow`.
+	 */
+	row?: number | null;
+
+	/**
+	 * A row index from which this iterator should start. Can't be used together with `row`. Default value is 0.
+	 */
 	startRow?: number;
+
+	/**
+	 * A row index at which this iterator should end. Can't be used together with `row`.
+	 */
 	endRow?: number;
+
+	/**
+	 * A column index for which this iterator will output cells. Can't be used together with `startColumn` and `endColumn`.
+	 */
 	column?: number;
+
+	/**
+	 * A column index from which this iterator should start. Can't be used together with `column`. Default value is 0.
+	 */
 	startColumn?: number;
+
+	/**
+	 * A column index at which this iterator should end. Can't be used together with `column`.
+	 */
 	endColumn?: number;
+
+	/**
+	 * Also return values for spanned cells. Default value is false.
+	 */
 	includeAllSlots?: boolean;
-};
+}
 
 /**
  * The table iterator class. It allows to iterate over table cells. For each cell the iterator yields
@@ -42,12 +73,12 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	/**
 	 * A row index from which this iterator will start.
 	 */
-	private readonly _startRow: number;
+	private readonly _startRow: number | null;
 
 	/**
 	 * A row index at which this iterator will end.
 	 */
-	private readonly _endRow?: number;
+	private readonly _endRow?: number | null;
 
 	/**
 	 * If set, the table walker will only output cells from a given column and following ones or cells that overlap them.
@@ -231,7 +262,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 			return this._advanceToNextRow();
 		}
 
-		let outValue = null;
+		let outValue: IteratorYieldResult<TableSlot> | null = null;
 
 		const spanData = this._getSpanned();
 
@@ -301,7 +332,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 */
 	private _isOverEndRow() {
 		// If #_endRow is defined skip all rows after it.
-		return this._endRow !== undefined && this._row > this._endRow;
+		return this._endRow !== undefined && this._row > this._endRow!;
 	}
 
 	/**
@@ -319,7 +350,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 * @param anchorRow The row index of a cell anchor slot.
 	 * @param anchorColumn The column index of a cell anchor slot.
 	 */
-	private _formatOutValue( cell: Element, anchorRow = this._row, anchorColumn = this._column ) {
+	private _formatOutValue( cell: Element, anchorRow = this._row, anchorColumn = this._column ): IteratorYieldResult<TableSlot> {
 		return {
 			done: false,
 			value: new TableSlot( this, cell, anchorRow, anchorColumn )
@@ -331,7 +362,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 */
 	private _shouldSkipSlot(): boolean {
 		const rowIsMarkedAsSkipped = this._skipRows.has( this._row );
-		const rowIsBeforeStartRow = this._row < this._startRow;
+		const rowIsBeforeStartRow = this._row < this._startRow!;
 
 		const columnIsBeforeStartColumn = this._column < this._startColumn;
 		const columnIsAfterEndColumn = this._endColumn !== undefined && this._column > this._endColumn;
@@ -460,8 +491,6 @@ class TableSlot {
 
 	/**
 	 * Whether the cell is anchored in the current slot.
-	 *
-	 * @readonly
 	 */
 	public get isAnchor(): boolean {
 		return this.row === this.cellAnchorRow && this.column === this.cellAnchorColumn;
@@ -469,8 +498,6 @@ class TableSlot {
 
 	/**
 	 * The width of a cell defined by a `colspan` attribute. If the model attribute is not present, it is set to `1`.
-	 *
-	 * @readonly
 	 */
 	public get cellWidth(): number {
 		return parseInt( this.cell.getAttribute( 'colspan' ) as string || '1' );
@@ -478,8 +505,6 @@ class TableSlot {
 
 	/**
 	 * The height of a cell defined by a `rowspan` attribute. If the model attribute is not present, it is set to `1`.
-	 *
-	 * @readonly
 	 */
 	public get cellHeight(): number {
 		return parseInt( this.cell.getAttribute( 'rowspan' ) as string || '1' );
@@ -487,8 +512,6 @@ class TableSlot {
 
 	/**
 	 * The index of the current row element in the table.
-	 *
-	 * @readonly
 	 */
 	public get rowIndex(): number {
 		return this._rowIndex;
@@ -517,7 +540,7 @@ export type { TableSlot };
  * Check out the new `TableWalker`'s API in the documentation.
  *
  * @error tableslot-getter-removed
- * @param {String} getterName
+ * @param getterName
  */
 
 // @if CK_DEBUG // function throwMissingGetterError( getterName ) {

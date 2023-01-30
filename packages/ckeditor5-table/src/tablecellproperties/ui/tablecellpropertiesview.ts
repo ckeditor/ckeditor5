@@ -39,7 +39,7 @@ import {
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 import type ColorInputView from '../../ui/colorinputview';
-import type { TableCellPropertiesOptions } from '../../tablecellproperties';
+import type { TableCellPropertiesOptions } from '../../tableconfig';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
@@ -55,11 +55,11 @@ const ALIGNMENT_ICONS = {
 	bottom: icons.alignBottom
 };
 
-type TableCellPropertiesViewOptions = {
+export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
-};
+}
 
 /**
  * The class representing a table cell properties form, allowing users to customize
@@ -141,7 +141,7 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
 	 */
-	public options: TableCellPropertiesViewOptions;
+	public readonly options: TableCellPropertiesViewOptions;
 
 	/**
 	 * Tracks information about the DOM focus in the form.

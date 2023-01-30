@@ -58,7 +58,7 @@ export function createEmptyTableCell( writer: Writer, insertPosition: Position, 
 export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: Element ): boolean {
 	const table = tableCell.parent!.parent as Element;
 	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string || '0' );
-	const { column } = tableUtils.getCellLocation( tableCell )!;
+	const { column } = tableUtils.getCellLocation( tableCell );
 
 	return !!headingColumns && column < headingColumns;
 }

@@ -21,9 +21,10 @@ import {
 	View,
 	ViewCollection,
 	type DropdownView,
-	type InputTextView
+	type InputTextView,
+	type NormalizedColorOption
 } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 import {
@@ -38,8 +39,7 @@ import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 import type ColorInputView from '../../ui/colorinputview';
-import type { TablePropertiesOptions } from '../../tableproperties';
-import type { TableColorConfig } from '../../table';
+import type { TablePropertiesOptions } from '../../tableconfig';
 
 const ALIGNMENT_ICONS = {
 	left: icons.objectLeft,
@@ -47,11 +47,28 @@ const ALIGNMENT_ICONS = {
 	right: icons.objectRight
 };
 
-type TablePropertiesViewOptions = {
-	borderColors: TableColorConfig;
-	backgroundColors: TableColorConfig;
+/**
+ * Additional configuration of the view.
+ */
+export interface TablePropertiesViewOptions {
+
+	/**
+	 * A configuration of the border color palette used by the
+	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#borderColorInput}.
+	 */
+	borderColors: Array<NormalizedColorOption>;
+
+	/**
+	 * A configuration of the background color palette used by the
+	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
+	 */
+	backgroundColors: Array<NormalizedColorOption>;
+
+	/**
+	 * The default table properties.
+	 */
 	defaultTableProperties: TablePropertiesOptions;
-};
+}
 
 /**
  * The class representing a table properties form, allowing users to customize
@@ -117,7 +134,7 @@ export default class TablePropertiesView extends View {
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
 	 */
-	protected options: TablePropertiesViewOptions;
+	public readonly options: TablePropertiesViewOptions;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -192,11 +209,6 @@ export default class TablePropertiesView extends View {
 	/**
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param options Additional configuration of the view.
-	 * @param options.borderColors A configuration of the border color palette used by the
-	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#borderColorInput}.
-	 * @param options.backgroundColors A configuration of the background color palette used by the
-	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
-	 * @param options.defaultTableProperties The default table properties.
 	 */
 	constructor( locale: Locale, options: TablePropertiesViewOptions ) {
 		super( locale );
@@ -429,7 +441,7 @@ export default class TablePropertiesView extends View {
 		} );
 
 		borderStyleDropdown.fieldView.on( 'execute', evt => {
-			this.borderStyle = evt.source._borderStyleValue;
+			this.borderStyle = ( evt.source as any )._borderStyleValue;
 		} );
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
@@ -468,7 +480,7 @@ export default class TablePropertiesView extends View {
 		} );
 
 		// Reset the border color and width fields depending on the `border-style` value.
-		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+		this.on<ObservableChangeEvent<string>>( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
 			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
 			if ( !isBorderStyleSet( newValue ) ) {
@@ -478,8 +490,8 @@ export default class TablePropertiesView extends View {
 
 			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
 			if ( !isBorderStyleSet( oldValue ) ) {
-				this.borderColor = defaultBorder.color;
-				this.borderWidth = defaultBorder.width;
+				this.borderColor = defaultBorder.color!;
+				this.borderWidth = defaultBorder.width!;
 			}
 		} );
 

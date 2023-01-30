@@ -41,23 +41,17 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 	/**
 	 * @inheritDoc
 	 */
-	public override _getAttribute( tableCell: Element ): string | undefined {
+	protected override _getAttribute( tableCell: Element ): unknown {
 		if ( !tableCell ) {
 			return;
 		}
 
-		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) as string );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) as string | undefined );
 
 		if ( value === this._defaultValue ) {
 			return;
 		}
 
 		return value;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableCellBorderColor: TableCellBorderColorCommand;
 	}
 }

@@ -7,7 +7,12 @@
  * @module table/tableclipboard
  */
 
-import type { ClipboardEventData, ViewDocumentClipboardEvent } from 'ckeditor5/src/clipboard';
+import type {
+	ClipboardEventData,
+	ClipboardOutputEvent,
+	ViewDocumentCopyEvent,
+	ViewDocumentCutEvent
+} from 'ckeditor5/src/clipboard';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import type {
@@ -64,8 +69,8 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
-		this.listenTo<ViewDocumentClipboardEvent>( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo<ModelInsertContentEvent>(
 			editor.model,
 			'insertContent',
@@ -82,7 +87,7 @@ export default class TableClipboard extends Plugin {
 	 * @param evt An object containing information about the handled event.
 	 * @param data Clipboard event data.
 	 */
-	private _onCopyCut( evt: EventInfo, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
+	private _onCopyCut( evt: EventInfo<'copy' | 'cut'>, data: DomEventData<ClipboardEvent> & ClipboardEventData ) {
 		const tableSelection = this.editor.plugins.get( TableSelection );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
@@ -101,7 +106,7 @@ export default class TableClipboard extends Plugin {
 
 		const content = dataController.toView( tableSelection.getSelectionAsFragment()! );
 
-		viewDocument.fire( 'clipboardOutput', {
+		viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,
 			content,
 			method: evt.name
@@ -120,7 +125,8 @@ export default class TableClipboard extends Plugin {
 	 * @param selectable The selection into which the content should be inserted.
 	 * If not provided the current model document selection will be used.
 	 */
-	private _onInsertContent( evt: EventInfo, content: DocumentFragment | Item, selectable ) {
+	// TODO: selectable
+	private _onInsertContent( evt: EventInfo, content: DocumentFragment | Item, selectable: any ) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
 			return;
 		}

@@ -49,19 +49,13 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value: string ): string | undefined {
-		value = addDefaultUnitToNumericValue( value, 'px' ) as string;
+	protected override _getValueToSet( value: string | number | undefined ): unknown {
+		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this._defaultValue ) {
 			return;
 		}
 
 		return value;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableHeight: TableHeightCommand;
 	}
 }

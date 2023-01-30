@@ -31,7 +31,7 @@ export default class InsertColumnCommand extends Command {
 	/**
 	 * The order of insertion relative to the column in which the caret is located.
 	 */
-	public readonly order: string;
+	public readonly order: 'left' | 'right';
 
 	/**
 	 * Creates a new `InsertColumnCommand` instance.
@@ -40,7 +40,7 @@ export default class InsertColumnCommand extends Command {
 	 * @param options.order The order of insertion relative to the column in which the caret is located.
 	 * Possible values: `"left"` and `"right"`. Default value is "right".
 	 */
-	constructor( editor: Editor, options: { order?: string } = {} ) {
+	constructor( editor: Editor, options: { order?: 'left' | 'right' } = {} ) {
 		super( editor );
 
 		this.order = options.order || 'right';
@@ -78,11 +78,5 @@ export default class InsertColumnCommand extends Command {
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		insertColumn: InsertColumnCommand;
 	}
 }

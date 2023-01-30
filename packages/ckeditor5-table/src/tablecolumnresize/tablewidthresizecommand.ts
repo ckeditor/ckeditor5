@@ -7,8 +7,10 @@
  * @module table/tablecolumnresize/tablewidthresizecommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
 import type { Editor } from 'ckeditor5/src/core';
-import TablePropertyCommand, { type TablePropertyCommandExecuteOptions } from '../tableproperties/commands/tablepropertycommand';
+
+import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 export default class TableWidthResizeCommand extends TablePropertyCommand {
 	/**
@@ -40,7 +42,13 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * @param options.columnWidths The new table column widths. If skipped, the model attribute will be removed.
 	 * @param options.table The table that is affected by the resize.
 	 */
-	public override execute( options: TablePropertyCommandExecuteOptions = {} ): void {
+	public override execute(
+		options: {
+			tableWidth?: string;
+			columnWidths?: string;
+			table?: Element;
+		} = {}
+	): void {
 		const model = this.editor.model;
 		const table = options.table || model.document.selection.getSelectedElement()!;
 		const { tableWidth, columnWidths } = options;

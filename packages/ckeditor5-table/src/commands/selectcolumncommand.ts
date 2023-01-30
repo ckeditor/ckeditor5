@@ -55,8 +55,8 @@ export default class SelectColumnCommand extends Command {
 		const lastCell = referenceCells.pop()!;
 		const table = firstCell.findAncestor( 'table' )!;
 
-		const startLocation = tableUtils.getCellLocation( firstCell )!;
-		const endLocation = tableUtils.getCellLocation( lastCell )!;
+		const startLocation = tableUtils.getCellLocation( firstCell );
+		const endLocation = tableUtils.getCellLocation( lastCell );
 
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
@@ -70,11 +70,5 @@ export default class SelectColumnCommand extends Command {
 		model.change( writer => {
 			writer.setSelection( rangesToSelect );
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		selectColumn: SelectColumnCommand;
 	}
 }

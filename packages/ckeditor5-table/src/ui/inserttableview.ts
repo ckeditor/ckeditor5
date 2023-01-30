@@ -17,8 +17,6 @@ import './../../theme/inserttable.css';
  * The table size view.
  *
  * It renders a 10x10 grid to choose the inserted table size.
- *
- * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class InsertTableView extends View {
 	/**
@@ -237,10 +235,4 @@ export default class InsertTableView extends View {
 
 		return this.createCollection( boxes );
 	}
-
-	/**
-	 * Fired when the mouse hover over one of the {@link #items child grid boxes}.
-	 *
-	 * @event boxover
-	 */
 }

@@ -284,4 +284,15 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableCellPropertiesEditing.pluginName ]: TableCellPropertiesEditing;
 	}
+
+	interface CommandsMap {
+		tableCellBorderStyle: TableCellBorderStyleCommand;
+		tableCellBorderColor: TableCellBorderColorCommand;
+		tableCellBorderWidth: TableCellBorderWidthCommand;
+		tableCellHeight: TableCellHeightCommand;
+		tableCellPadding: TableCellPaddingCommand;
+		tableCellBackgroundColor: TableCellBackgroundColorCommand;
+		tableCellHorizontalAlignment: TableCellHorizontalAlignmentCommand;
+		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
+	}
 }

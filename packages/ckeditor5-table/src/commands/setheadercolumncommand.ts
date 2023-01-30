@@ -36,7 +36,6 @@ export default class SetHeaderColumnCommand extends Command {
 	 * {@link module:engine/model/selection~Selection} is in a header column.
 	 *
 	 * @observable
-	 * @readonly
 	 */
 	public declare value: boolean;
 
@@ -91,11 +90,5 @@ export default class SetHeaderColumnCommand extends Command {
 
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		setHeaderColumn: SetHeaderColumnCommand;
 	}
 }

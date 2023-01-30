@@ -61,7 +61,7 @@ export default class TableCellPropertyCommand extends Command {
 	 * @param options.batch Pass the model batch instance to the command to aggregate changes,
 	 * for example to allow a single undo step for multiple executions.
 	 */
-	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
+	public override execute( options: { value?: string | number; batch?: Batch } = {} ): void {
 		const { value, batch } = options;
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -79,15 +79,13 @@ export default class TableCellPropertyCommand extends Command {
 
 	/**
 	 * Returns the attribute value for a table cell.
-	 *
-	 * @internal
 	 */
-	public _getAttribute( tableCell: Element ): string | undefined {
+	protected _getAttribute( tableCell: Element | undefined ): unknown {
 		if ( !tableCell ) {
 			return;
 		}
 
-		const value = tableCell.getAttribute( this.attributeName ) as string;
+		const value = tableCell.getAttribute( this.attributeName );
 
 		if ( value === this._defaultValue ) {
 			return;
@@ -98,10 +96,8 @@ export default class TableCellPropertyCommand extends Command {
 
 	/**
 	 * Returns the proper model value. It can be used to add a default unit to numeric values.
-	 *
-	 * @internal
 	 */
-	public _getValueToSet( value?: string ): string | undefined {
+	protected _getValueToSet( value: string | number | undefined ): unknown {
 		if ( value === this._defaultValue ) {
 			return;
 		}
@@ -119,11 +115,5 @@ export default class TableCellPropertyCommand extends Command {
 		const everyCellHasAttribute = tableCells.every( tableCells => this._getAttribute( tableCells ) === firstCellValue );
 
 		return everyCellHasAttribute ? firstCellValue : undefined;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableCellProperty: TableCellPropertyCommand;
 	}
 }

@@ -76,19 +76,23 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @returns Returns a `{row, column}` object.
 	 */
-	public getCellLocation( tableCell: Element ): { row: number; column: number } | undefined {
+	public getCellLocation( tableCell: Element ): { row: number; column: number } {
 		const tableRow = tableCell.parent!;
 		const table = tableRow.parent as Element;
 
 		const rowIndex = table.getChildIndex( tableRow as Node );
 
-		const tableWalker = new TableWalker( table, { row: rowIndex as number | undefined } );
+		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
 		for ( const { cell, row, column } of tableWalker ) {
 			if ( cell === tableCell ) {
 				return { row, column };
 			}
 		}
+
+		// Should be unreachable code.
+		/* istanbul ignore next */
+		return undefined as any;
 	}
 
 	/**
@@ -807,18 +811,9 @@ export default class TableUtils extends Plugin {
 	 * By default it will output only the locations that are occupied by a cell. To include also spanned rows and columns,
 	 * pass the `includeAllSlots` option.
 	 *
-	 * @protected
+	 * @internal
 	 * @param table A table over which the walker iterates.
 	 * @param options An object with configuration.
-	 * @param options.row A row index for which this iterator will output cells. Can't be used together with `startRow` and `endRow`.
-	 * @param options.startRow A row index from which this iterator should start. Can't be used together with `row`. Default value is 0.
-	 * @param options.endRow A row index at which this iterator should end. Can't be used together with `row`.
-	 * @param options.column A column index for which this iterator will output cells.
-	 * Can't be used together with `startColumn` and `endColumn`.
-	 * @param options.startColumn A column index from which this iterator should start.
-	 * Can't be used together with `column`. Default value is 0.
-	 * @param options.endColumn A column index at which this iterator should end. Can't be used together with `column`.
-	 * @param options.includeAllSlots Also return values for spanned cells. Default value is false.
 	 */
 	public createTableWalker( table: Element, options: TableWalkerOptions = {} ): TableWalker {
 		return new TableWalker( table, options );
@@ -964,7 +959,7 @@ export default class TableUtils extends Plugin {
 		let areaOfSelectedCells = 0;
 
 		for ( const tableCell of selectedTableCells ) {
-			const { row, column } = this.getCellLocation( tableCell )!;
+			const { row, column } = this.getCellLocation( tableCell );
 			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string ) || 1;
 			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string ) || 1;
 

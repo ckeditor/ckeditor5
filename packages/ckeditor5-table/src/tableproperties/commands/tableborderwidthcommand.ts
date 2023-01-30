@@ -51,7 +51,7 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValue( table: Element ): string | undefined {
+	protected override _getValue( table: Element ): string | undefined {
 		if ( !table ) {
 			return;
 		}
@@ -68,19 +68,13 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	public override _getValueToSet( value: string ): string | undefined {
-		const newValue = addDefaultUnitToNumericValue( value, 'px' ) as string;
+	protected override _getValueToSet( value: string | number | undefined ): unknown {
+		const newValue = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( newValue === this._defaultValue ) {
 			return;
 		}
 
 		return newValue;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableBorderWidth: TableBorderWidthCommand;
 	}
 }
