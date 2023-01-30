@@ -56,6 +56,7 @@ packages/ckeditor5-minimap/src/**/*.js
 packages/ckeditor5-page-break/src/**/*.js
 packages/ckeditor5-paragraph/src/**/*.js
 packages/ckeditor5-paste-from-office/src/**/*.js
+packages/ckeditor5-remove-fromat/src/**/*.js
 packages/ckeditor5-select-all/src/**/*.js
 packages/ckeditor5-typing/src/**/*.js
 packages/ckeditor5-ui/src/**/*.js
