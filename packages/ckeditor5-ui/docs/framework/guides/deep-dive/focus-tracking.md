@@ -194,6 +194,7 @@ class MyListItemView extends View {
 	constructor( locale, text ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		this.setTemplate( {
@@ -205,6 +206,7 @@ class MyListItemView extends View {
 		} );
 	}
 
+	// More methods.
 	// ...
 
 	focus() {
@@ -222,6 +224,7 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		this.items = this.createCollection();
@@ -232,6 +235,7 @@ class MyListView extends View {
 		} );
 	}
 
+	// More methods.
 	// ...
 
 	focus() {
@@ -293,17 +297,20 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		// A view collection containing items of the list.
 		this.items = this.createCollection();
 
+		// Set the template.
 		// ...
 
 		// The instance of the focus tracker that tracks focus in #items.
 		this.focusTracker = new FocusTracker();
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -311,13 +318,16 @@ class MyListView extends View {
 To make sure your focus tracker instance and the `items` view collection stay synchronized, create  listeners that will update the tracker when a new child view is added or some are removed ({@link module:ui/viewcollection~ViewCollection view collections fire events}). The best way to do that is inside the {@link module:ui/view~View#render `render()`} method:
 
 ```js
+// Previously imported packages.
 // ...
 
 class MyListView extends View {
 	constructor( locale ) {
+		// Initializations.
 		// ...
 	}
 
+	// Methods.
 	// ...
 
 	render() {
@@ -339,6 +349,7 @@ class MyListView extends View {
 		} );
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -361,6 +372,7 @@ export default class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		// The keystroke handler that will help the focus cycler respond to the keystrokes.
@@ -370,6 +382,7 @@ export default class MyListView extends View {
 	render() {
 		super.render();
 
+		// Set the focus tracker.
 		// ...
 
 		// Start listening for the keystrokes coming from #element, which will allow
@@ -382,6 +395,7 @@ export default class MyListView extends View {
 		this.keystrokes.destroy();
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -404,6 +418,7 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		// The view collection containing items of the list.
@@ -430,6 +445,7 @@ class MyListView extends View {
 		} );
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -437,17 +453,17 @@ class MyListView extends View {
 Similarly to the previous sections of this guide, feed the focus tracker and synchronize it with the list items collection in the `render()` method. Since the {@link module:ui/view~View#element `MyListView#element`} has already been rendered at that stage, this is also the right moment to start listening to the keyboard events:
 
 ```js
+// Previously imported packages.
 // ...
 
 class MyListView extends View {
 	constructor( locale ) {
+		// Initializations.
 		// ...
 	}
 
 	render() {
 		super.render();
-
-		// ...
 
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
@@ -481,6 +497,7 @@ class MyListView extends View {
 		this.keystrokes.destroy();
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -522,6 +539,7 @@ class MyListView extends View {
 			}
 		} );
 
+		// More intializations.
 		// ...
 
 		this.setTemplate( {
@@ -532,8 +550,6 @@ class MyListView extends View {
 
 	render() {
 		super.render();
-
-		// ...
 
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
@@ -572,6 +588,7 @@ class MyListItemView extends View {
 	constructor( locale, text ) {
 		super( locale );
 
+		// Initializations.
 		// ...
 
 		this.setTemplate( {
@@ -583,6 +600,7 @@ class MyListItemView extends View {
 		} );
 	}
 
+	// More methods.
 	// ...
 
 	focus() {
@@ -596,6 +614,7 @@ You can quickly run it in the context of an existing editor in the following way
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// The editor config goes here.
 		// ...
 	} )
 	.then( editor => {
