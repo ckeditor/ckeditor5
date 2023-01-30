@@ -43,7 +43,7 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 	 * @param {module:engine/model/element~Element} [options.table] The table that is affected by the resize.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
+		const { model } = this.editor;
 		const {
 			table = model.document.selection.getSelectedElement(),
 			tableWidth

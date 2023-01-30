@@ -7,23 +7,13 @@
  * @module table/tablecolumnresize/tablecolumnwidthscommand
  */
 
+import { Command } from 'ckeditor5/src/core';
 import { normalizeColumnWidths } from './utils';
-import TablePropertyCommand from '../tableproperties/commands/tablepropertycommand';
 
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
-export default class TableColumnWidthsCommand extends TablePropertyCommand {
-	/**
-	 * Creates a new `TableColumnWidthsCommand` instance.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
-	 * @param {String} defaultValue The default value of the attribute.
-	 */
-	constructor( editor, defaultValue ) {
-		super( editor, 'columnWidths', defaultValue );
-	}
-
+export default class TableColumnWidthsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

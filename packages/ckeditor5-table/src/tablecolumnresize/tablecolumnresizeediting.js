@@ -356,6 +356,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			} )
 		} );
 
+		// Table <colgroup> and <col> elements and styles
 		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
 		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
@@ -601,7 +602,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const columnWidthsAttributeOld = tableColumnGroup ?
 			Array.from( tableColumnGroup.getChildren() ).map( element => element.getAttribute( 'columnWidth' ) ) :
-			[];
+			null;
 
 		const columnWidthsAttributeNew = Array
 			.from( viewColgroup.getChildren() )
@@ -637,7 +638,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				editingView.change( writer => {
 					// If table had resized columns before, restore the previous column widths.
 					// Otherwise clean up the view from the temporary column resizing markup.
-					if ( columnWidthsAttributeOld.length > 0 ) {
+					if ( columnWidthsAttributeOld ) {
 						for ( const viewCol of viewColgroup.getChildren() ) {
 							writer.setStyle( 'width', columnWidthsAttributeOld.shift(), viewCol );
 						}

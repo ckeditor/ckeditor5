@@ -438,16 +438,16 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( editor.getData() ).to.equal(
 					'<figure class="table" style="width:100%;">' +
 						'<table class="ck-table-resized">' +
+							'<colgroup>' +
+								'<col style="width:50%;">' +
+								'<col style="width:50%;">' +
+							'</colgroup>' +
 							'<tbody>' +
 								'<tr>' +
 									'<td>11</td>' +
 									'<td>12</td>' +
 								'</tr>' +
 							'</tbody>' +
-							'<colgroup>' +
-								'<col style="width:50%;">' +
-								'<col style="width:50%;">' +
-							'</colgroup>' +
 						'</table>' +
 					'</figure>'
 				);
@@ -1159,7 +1159,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 0 ) // tbody
+					.getChild( 1 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
@@ -1202,7 +1202,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 0 ) // tbody
+					.getChild( 1 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
@@ -1773,7 +1773,7 @@ describe( 'TableColumnResizeEditing', () => {
 				expect( view.document.getRoot()
 					.getChild( 0 ) // figure
 					.getChild( 1 ) // table
-					.getChild( 0 ) // tbody
+					.getChild( 1 ) // tbody
 					.getChild( 0 ) // tr
 					.childCount
 				).to.equal( 3 );
