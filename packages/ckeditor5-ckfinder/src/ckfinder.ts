@@ -87,7 +87,7 @@ interface CKFinderConfig {
 	 * Check the file manager [documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language)
 	 * for the complete list of options.
 	 */
-	options: CKFinderOptions;
+	options?: CKFinderOptions;
 
 	/**
 	 * The type of the CKFinder opener method.
@@ -99,7 +99,7 @@ interface CKFinderConfig {
 	 *
 	 * Defaults to `'modal'`.
 	 */
-	openerMethod: string;
+	openerMethod?: string;
 
 	/**
 	 * The path (URL) to the connector which handles the file upload in CKFinder file manager.
@@ -122,7 +122,7 @@ interface CKFinderConfig {
 	 *
 	 * Used by the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter upload adapter}.
 	 */
-	uploadUrl: string;
+	uploadUrl?: string;
 }
 
 interface CKFinderOptions extends Record<string, unknown> {
