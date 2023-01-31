@@ -7,7 +7,7 @@
  * @module ckfinder/ckfinderediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { Notification } from 'ckeditor5/src/ui';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
@@ -15,28 +15,26 @@ import CKFinderCommand from './ckfindercommand';
 
 /**
  * The CKFinder editing feature. It introduces the {@link module:ckfinder/ckfindercommand~CKFinderCommand CKFinder command}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CKFinderEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CKFinderEditing' {
 		return 'CKFinderEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Notification, 'LinkEditing' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		if ( !editor.plugins.has( 'ImageBlockEditing' ) && !editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -56,5 +54,15 @@ export default class CKFinderEditing extends Plugin {
 		}
 
 		editor.commands.add( 'ckfinder', new CKFinderCommand( editor ) );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CKFinderEditing.pluginName ]: CKFinderEditing;
+	}
+
+	interface CommandsMap {
+		ckfinder: CKFinderCommand;
 	}
 }

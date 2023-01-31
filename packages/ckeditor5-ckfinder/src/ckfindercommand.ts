@@ -9,32 +9,32 @@
  * @module ckfinder/ckfindercommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing CKFinder editing feature}
  * to open the CKFinder file manager to insert an image or a link to a file into the editor content.
  *
- *		editor.execute( 'ckfinder' );
+ * ```ts
+ * editor.execute( 'ckfinder' );
+ * ```
  *
  * **Note:** This command uses other features to perform tasks:
  * - To insert images the {@link module:image/image/insertimagecommand~InsertImageCommand 'insertImage'} command
  * from the {@link module:image/image~Image Image feature}.
  * - To insert links to files the {@link module:link/linkcommand~LinkCommand 'link'} command
  * from the {@link module:link/link~Link Link feature}.
- *
- * @extends module:core/command~Command
  */
 export default class CKFinderCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		// The CKFinder command does not affect data by itself.
-		this._affectsData = false;
+		this.affectsData = false;
 
 		// Remove default document listener to lower its priority.
 		this.stopListening( this.editor.model.document, 'change' );
@@ -46,9 +46,9 @@ export default class CKFinderCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
-		const imageCommand = this.editor.commands.get( 'insertImage' );
-		const linkCommand = this.editor.commands.get( 'link' );
+	public override refresh(): void {
+		const imageCommand = this.editor.commands.get( 'insertImage' )!;
+		const linkCommand = this.editor.commands.get( 'link' )!;
 
 		// The CKFinder command is enabled when one of image or link command is enabled.
 		this.isEnabled = imageCommand.isEnabled || linkCommand.isEnabled;
@@ -57,7 +57,7 @@ export default class CKFinderCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 
 		const openerMethod = this.editor.config.get( 'ckfinder.openerMethod' ) || 'modal';
@@ -76,7 +76,7 @@ export default class CKFinderCommand extends Command {
 		options.chooseFiles = true;
 
 		// Cache the user-defined onInit method
-		const originalOnInit = options.onInit;
+		const originalOnInit = options.onInit as Function | undefined;
 
 		// Pass the lang code to the CKFinder if not defined by user.
 		if ( !options.language ) {
@@ -90,12 +90,12 @@ export default class CKFinderCommand extends Command {
 				originalOnInit( finder );
 			}
 
-			finder.on( 'files:choose', evt => {
+			finder.on( 'files:choose', ( evt: any ) => {
 				const files = evt.data.files.toArray();
 
 				// Insert links
-				const links = files.filter( file => !file.isImage() );
-				const images = files.filter( file => file.isImage() );
+				const links = files.filter( ( file: any ) => !file.isImage() );
+				const images = files.filter( ( file: any ) => file.isImage() );
 
 				for ( const linkFile of links ) {
 					editor.execute( 'link', linkFile.getUrl() );
@@ -114,7 +114,7 @@ export default class CKFinderCommand extends Command {
 				}
 			} );
 
-			finder.on( 'file:choose:resizedImage', evt => {
+			finder.on( 'file:choose:resizedImage', ( evt: any ) => {
 				const resizedUrl = evt.data.resizedUrl;
 
 				if ( !resizedUrl ) {
@@ -133,12 +133,12 @@ export default class CKFinderCommand extends Command {
 			} );
 		};
 
-		window.CKFinder[ openerMethod ]( options );
+		( window as any ).CKFinder[ openerMethod ]( options );
 	}
 }
 
-function insertImages( editor, urls ) {
-	const imageCommand = editor.commands.get( 'insertImage' );
+function insertImages( editor: Editor, urls: Array<string> ): void {
+	const imageCommand = editor.commands.get( 'insertImage' )!;
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {

@@ -14,27 +14,25 @@ import browseFilesIcon from '../theme/icons/browse-files.svg';
 
 /**
  * The CKFinder UI plugin. It introduces the `'ckfinder'` toolbar button.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CKFinderUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CKFinderUI' {
 		return 'CKFinderUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
 
 		componentFactory.add( 'ckfinder', locale => {
-			const command = editor.commands.get( 'ckfinder' );
+			const command = editor.commands.get( 'ckfinder' )!;
 
 			const button = new ButtonView( locale );
 
