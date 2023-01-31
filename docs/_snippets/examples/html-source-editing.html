@@ -1,0 +1,240 @@
+<div id="html-source-code">
+	<article>
+		<h1>HTML playground</h1>
+		<p data-foo="bar">
+			This is a sample paragraph with a
+			<strong><code>data</code> attribute</strong>.
+		</p>
+		<details style="margin: 10px auto" id="details-example">
+			<summary>
+				<span style="color: #d32f2f"
+					><strong>Spoiler alert</strong></span
+				>
+				created with a <code>details</code>
+				element!
+			</summary>
+			<p>
+				This demo uses elements such as <code>abbr</code>,
+				<code>article</code>, <code>section</code>, <code>aside</code>,
+				and <code>details</code>.
+			</p>
+		</details>
+		<hr />
+		<section>
+			<h2>Responsive column layout</h2>
+			<div class="columns" style="gap: 10px">
+				<div class="column" style="border: 1px solid orange">
+					<figure class="image">
+						<img
+							src="%BASE_PATH%/assets/img/html-source-editing-html.png"
+						/>
+						<figcaption>
+							<abbr title="HyperText Markup Language">HTML</abbr>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="column" style="border: 1px dotted blue">
+					<figure class="image">
+						<img
+							src="%BASE_PATH%/assets/img/html-source-editing-css.png"
+						/>
+						<figcaption>
+							<abbr title="Cascading Style Sheets">CSS</abbr>
+						</figcaption>
+					</figure>
+				</div>
+				<div class="column" style="border: 1px dashed olive">
+					<figure class="image">
+						<img
+							src="%BASE_PATH%/assets/img/html-source-editing-js.png"
+						/>
+						<figcaption>
+							<abbr title="JavaScript">JS</abbr>
+						</figcaption>
+					</figure>
+				</div>
+			</div>
+		</section>
+		<hr />
+		<aside>
+			<h2>HTML-related features</h2>
+			<ul>
+				<li>
+					<a
+						href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html"
+						>HTML embed</a
+					>
+				</li>
+				<li>
+					<a
+						href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html"
+						>Styles</a
+					>
+				</li>
+				<li>
+					<a
+						href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html"
+						>General HTML Support</a
+					>
+				</li>
+			</ul>
+		</aside>
+	</article>
+</div>
+
+<style>
+	.ck-content .columns {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+	}
+
+	.ck-content .column {
+		flex: 33.33%;
+	}
+
+	@media all and (max-width: 768px) {
+		.ck-content .columns {
+			flex-wrap: wrap;
+		}
+		.ck-content .column {
+			flex: 100%;
+		}
+	}
+
+	.ck-content h1.document-title {
+		font-family: var(--ck-georgia-serif-font-stack);
+		font-size: 50px;
+		font-weight: bold;
+		border: 0;
+	}
+
+	.ck-content h2.document-subtitle {
+		font-family: var(--ck-georgia-serif-font-stack);
+		font-size: 20px;
+		font-weight: bold;
+		color: #d1d1d1;
+		letter-spacing: 10px;
+	}
+
+	.ck-content p.callout {
+		--border-color: #e91e1e;
+		padding: 1.2em 2em;
+		border: 1px solid var(--border-color);
+		border-left: 10px solid var(--border-color);
+		background: #fff9fb;
+		border-radius: 5px;
+		margin: 1.5em 2em;
+		box-shadow: 5px 5px 0 #ffe6ef;
+	}
+
+	.ck-content blockquote.side-quote {
+		font-family: var(--ck-georgia-serif-font-stack);
+		font-style: normal;
+		float: right;
+		width: 35%;
+		position: relative;
+		border: 0;
+		overflow: visible;
+		z-index: 1;
+		margin-left: 1em;
+	}
+
+	.ck-content blockquote.side-quote::before {
+		content: "“";
+		position: absolute;
+		top: -37px;
+		left: -10px;
+		display: block;
+		font-size: 200px;
+		color: #e7e7e7;
+		z-index: -1;
+		line-height: 1;
+	}
+
+	.ck-content blockquote.side-quote p {
+		font-size: 2em;
+		line-height: 1;
+	}
+
+	.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+		font-size: 1.3em;
+		text-align: right;
+		color: #555;
+	}
+
+	.ck-content span.needs-clarification {
+		outline: 1px dashed #c8a24b;
+		background: #ffe19c;
+		border-radius: 2px;
+		position: relative;
+	}
+
+	.ck-content span.needs-clarification::after {
+		content: "?";
+		display: inline-block;
+		color: #fff;
+		background: #3b3b3b;
+		font-size: 12px;
+		vertical-align: super;
+		width: 12px;
+		height: 12px;
+		line-height: 12px;
+		border-radius: 10px;
+		text-align: center;
+		position: absolute;
+		right: -6px;
+		top: -6px;
+		font-weight: bold;
+		letter-spacing: initial;
+	}
+
+	.ck-content span.wide-spacing {
+		letter-spacing: 0.3em;
+	}
+
+	.ck-content span.small-caps {
+		font-variant: small-caps;
+	}
+
+	.ck-content pre.stylish-code {
+		border-color: transparent;
+		margin-left: 2em;
+		margin-right: 2em;
+		border-radius: 10px;
+	}
+
+	.ck-content pre.stylish-code::before {
+		content: "";
+		display: block;
+		height: 13px;
+		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		margin-bottom: 8px;
+		background-repeat: no-repeat;
+	}
+
+	.ck-content pre.stylish-code-dark,
+	.ck-content pre.stylish-code-bright {
+		padding: 1em;
+	}
+
+	.ck-content pre.stylish-code-dark {
+		background: #272822;
+		box-shadow: 5px 5px 0 #0000001f;
+		color: white;
+	}
+
+	.ck-content pre.stylish-code-dark code {
+		color: white;
+	}
+
+	.ck-content pre.stylish-code-bright {
+		background: #dddfe0;
+		color: #000;
+		box-shadow: 5px 5px 0 #b3b3b3;
+	}
+
+	.ck-content pre.stylish-code-bright code {
+		color: #222;
+	}
+</style>
