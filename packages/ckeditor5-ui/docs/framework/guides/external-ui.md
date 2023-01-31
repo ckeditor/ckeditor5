@@ -321,12 +321,14 @@ class BootstrapEditorUI extends EditorUI {
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
 	_setupBootstrapToolbarButtons() {
-		...
+		// Implementation details are in the following snippets.
+		// ...
 	}
 
 	// This method activates the headings dropdown in the toolbar.
 	_setupBootstrapHeadingDropdown() {
-		...
+		// Implementation details are in the following snippets.
+		// ...
 	}
 }
 ```
