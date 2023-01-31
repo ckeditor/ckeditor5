@@ -19,10 +19,9 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * @param {Array.<module:table/tablediting~AdditionalSlot>} [options.additionalSlots] Array of additional slot handlers.
  * @returns {Function} Element creator.
  */
-export function downcastTable( tableUtils, options = {} ) {
+export function downcastTable( tableUtils, options ) {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const additionalSlots = options.additionalSlots || [];
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 
 		// Table head slot.
@@ -50,7 +49,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		}
 
 		// Dynamic slots.
-		for ( const { positionOffset, filter } of additionalSlots ) {
+		for ( const { positionOffset, filter } of options.additionalSlots ) {
 			writer.insert(
 				writer.createPositionAt( tableElement, positionOffset ),
 				writer.createSlot( filter )
@@ -66,7 +65,7 @@ export function downcastTable( tableUtils, options = {} ) {
 					return false;
 				}
 
-				return !additionalSlots.some( ( { filter } ) => filter( element ) );
+				return !options.additionalSlots.some( ( { filter } ) => filter( element ) );
 			} )
 		] );
 

@@ -104,4 +104,17 @@ describe( 'TableColumnWidthsCommand', () => {
 			'</table>'
 		);
 	} );
+
+	it( 'shouldn\'t do anything if the new value is not passed and <tableColumnGroup> doesn\'t exists', () => {
+		setModelData( model, modelTable( [
+			[ '11', '12' ],
+			[ '21', '22' ]
+		] ) );
+
+		const modelDataBeforeExecute = getModelData( model, { withoutSelection: true } );
+
+		command.execute();
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelDataBeforeExecute );
+	} );
 } );
