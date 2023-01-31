@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "include": [
     "./packages/*/src/**/*.ts",
+    "./external/*/packages/*/src/**/*.ts",
     "./typings/"
   ],
   "exclude": [
