@@ -61,11 +61,11 @@ import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentList, ... ],
-		toolbar: [ 'bulletedList', 'numberedList', ... ]
+		plugins: [ DocumentList, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Document list properties
@@ -83,8 +83,8 @@ import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistpro
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentListProperties, ... ],
-		toolbar: [ 'bulletedList', 'numberedList', ... ],
+		plugins: [ DocumentListProperties, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			properties: {
 				styles: true,
@@ -93,8 +93,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
