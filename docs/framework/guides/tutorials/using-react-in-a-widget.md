@@ -653,7 +653,7 @@ The JavaScript code is ready, but to run the application you need to specify a c
 // app.js
 
 class App extends React.Component {
-	// App class definition.
+	// App class definition from the previous example.
 	// ...
 }
 
