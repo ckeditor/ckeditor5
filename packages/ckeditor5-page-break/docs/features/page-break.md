@@ -46,11 +46,11 @@ import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ PageBreak, ... ],
-		toolbar: [ 'pageBreak', ... ],
+		plugins: [ PageBreak, /* ... */ ],
+		toolbar: [ 'pageBreak', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
