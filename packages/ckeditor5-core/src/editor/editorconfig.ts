@@ -28,7 +28,7 @@ import type Editor from './editor';
  *			.then( ... )
  *			.catch( ... );
  *
- * Check the {@glink installation/getting-started/predefined-builds Configuration guide} for more information
+ * Check the {@glink installation/getting-started/predefined-builds Configuration} guide for more information
  * about setting configuration options.
  *
  * @interface EditorConfig
@@ -338,7 +338,7 @@ import type Editor from './editor';
  *
  * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
  *
- * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ * Check the {@glink features/ui-language UI language} guide for more information about the localization options and translation process.
  *
  * @member {String|module:core/editor/editorconfig~LanguageConfig} module:core/editor/editorconfig~EditorConfig#language
  */
@@ -383,7 +383,7 @@ import type Editor from './editor';
  * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a `<textarea>`
  * element passed to the `create()` method.
  *
- * See the {@glink features/editor-placeholder "Editor placeholder" guide} for more information and live examples.
+ * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
  */

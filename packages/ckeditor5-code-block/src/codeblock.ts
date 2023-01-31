@@ -19,7 +19,7 @@ import type OutdentCodeBlockCommand from './outdentcodeblockcommand';
  * The code block plugin.
  *
  * For more information about this feature check the {@glink api/code-block package page} and the
- * {@glink features/code-blocks code block feature guide}.
+ * {@glink features/code-blocks code block} feature guide.
  *
  * This is a "glue" plugin that loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
  * and the {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.

@@ -130,7 +130,7 @@ import viewToPlainText from './utils/viewtoplaintext';
  * 3. For the `cut` method, calls {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
  *    on the current selection.
  *
- * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
+ * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
  */
 export default class ClipboardPipeline extends Plugin {
 	/**
@@ -321,7 +321,7 @@ export interface ClipboardInputTransformationData {
 	/**
 	 * The event data.
 	 * The content to be inserted into the editor. It can be modified by event listeners. Read more about the clipboard pipelines in
-	 * the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
+	 * the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
 
@@ -336,7 +336,7 @@ export interface ClipboardInputTransformationData {
 	targetRanges: Array<ViewRange> | null;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
 }
@@ -374,12 +374,12 @@ export interface ClipboardContentInsertionData {
 
 	/**
 	 * The content to be inserted into the editor.
-	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
+	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: DocumentFragment;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
 
@@ -432,7 +432,7 @@ export interface ClipboardOutputEventData {
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
-	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive guide}.
+	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
 

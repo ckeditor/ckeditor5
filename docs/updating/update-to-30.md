@@ -12,7 +12,7 @@ order: 94
 
 # Update to CKEditor 5 v30.0.0
 
-For the entire list of changes introduced in version 30.0.0, see the [changelog for CKEditor 5 v30.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3000-2021-09-27).
+For the entire list of changes introduced in version 30.0.0, see the [release notes for CKEditor 5 v31.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v31.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v30.0.0.
 
