@@ -297,7 +297,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
-	// Initialize the schema and converters.
+	// Schema and converters initialization.
 	// ...
 	}
 

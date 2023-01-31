@@ -46,18 +46,18 @@ import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
 	constructor( locale ) {
-		// Set the template.
+		// View class constructor invoke.
 		// ...
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		// Create inputs.
+		// Code prepared in the previous part.
 		// ...
 	}
 
     render() {
-		// Handle the form submission.
+		// View.render() invocation and adding a submit handler.
 		// ...
 
 		this.childViews._items.forEach( view => {
@@ -121,7 +121,7 @@ export default class FormView extends View {
 		} );
 
 		this.setTemplate( {
-			// Options for the form template.
+			// Setting the form template.
 			// ...
 		} );
 	}
@@ -144,7 +144,7 @@ export default class AbbreviationUI extends Plugin {
 	// ...
 
 	_createFormView() {
-		// Initialize the form view.
+		// Form view initialization.
 		// ...
 
 		// Close the panel on esc key press when the form has focus.
@@ -346,7 +346,7 @@ export default class AbbreviationUI extends Plugin {
 			this._hideUI();
 		} );
 
-		// Handle clicking outside the balloon.
+		// Handle clicking outside the balloon and on the "Cancel" button.
 		// ...
 	}
 
@@ -456,7 +456,8 @@ export default class AbbreviationCommand extends Command {
 		const firstRange = selection.getFirstRange();
 
 		if ( firstRange.isCollapsed ) {
-			// When the selection is collapsed, the code runs.
+			// When the selection is collapsed, the command has a value
+			// if the caret is in an abbreviation.
 			// ...
 		}
 		// When the selection is not collapsed, the command has a value if the selection
@@ -641,7 +642,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
-				// When the selection is non-collapsed, the code runs.
+				// When the selection has non-collapsed node ranges, change the attributes of nodes.
+				// Nodes that can't have the "abbreviation" attribute are exceptions.
 				// ...
 			}
 		} );
@@ -702,7 +704,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
-				// When the selection is non-collapsed, the code runs.
+				// When the selection has non-collapsed node ranges, change the attributes of nodes.
+				// Nodes that can't have the "abbreviation" attribute are exceptions.
 				// ...
 			}
 		} );

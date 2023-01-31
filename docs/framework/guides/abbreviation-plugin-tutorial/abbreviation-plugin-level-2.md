@@ -69,11 +69,12 @@ import {
 
 export default class FormView extends View {
 	constructor( locale ) {
-		// Set the template.
-		// ...
+		// Previously set template.
 
 		this.abbrInputView = this._createInput( 'Add abbreviation' );
 		this.titleInputView = this._createInput( 'Add title' );
+		
+		// ...
 	}
 
 	_createInput( label ) {
@@ -121,10 +122,13 @@ export default class FormView extends View {
 		this.cancelButtonView = this._createButton(
 			'Cancel', icons.cancel, 'ck-button-cancel'
 		);
+
+		// Previously set template.
+		// ...
 	}
 
 	_createInput( label ) {
-		// Initialize an input.
+		// Input initialization.
 		// ...
 	}
 
@@ -171,15 +175,18 @@ export default class FormView extends View {
 		);
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
+
+		// Previously set template.
+		// ...
 	}
 
 	_createInput( label ) {
-		// Initialize an input.
+		// Input initialization.
 		// ...
 	}
 
 	_createButton( label, icon, className ) {
-		// Create a button.
+		// Button initialization.
 		// ...
 	}
 }
@@ -271,7 +278,7 @@ export default class FormView extends View {
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
-				// Attributes for a form template.
+				// Attributes of a form template.
 				// ...
 			},
 			children: this.childViews				// ADDED
@@ -293,12 +300,12 @@ export default class FormView extends View {
 	}
 
 	_createInput( label ) {
-		// Initialiaze an input.
+		// Input initialization.
 		// ...
 	}
 
 	_createButton( label, icon, className ) {
-		// Create a button.
+		// Button initialization.
 		// ...
 	}
 }
@@ -421,7 +428,7 @@ export default class AbbreviationUI extends Plugin {
 	// ...
 
 	init() {
-		// Create the balloon and the view.
+		// The balloon and the view initialization.
 		// ...
 
 		editor.ui.componentFactory.add( 'abbreviation', () => {
@@ -430,12 +437,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_createFormView() {
-		// Create the form view.
+		// The form view initialization.
 		// ...
 	}
 
 	_getBalloonPositionData() {
-		// Get position data for the balloon.
+		// Getting position data for the balloon.
 		// ...
 	}
 
@@ -472,7 +479,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	init() {
-		// Create the balloon and the view.
+		// The balloon and the view initialization.
 		// ...
 	}
 
@@ -496,12 +503,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
-		// Get position data for the balloon.
+		// Getting position data for the balloon.
 		// ...
 	}
 
 	_showUI() {
-		// Display balloon for the user.
+		// Displaying balloon for the user.
 		// ...
 	}
 }
@@ -534,7 +541,7 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	init() {
-		// Create the balloon and the view.
+		// The balloon and the view initialization.
 		// ...
 	}
 
@@ -543,7 +550,7 @@ export default class AbbreviationUI extends Plugin {
 		const formView = new FormView( editor.locale );
 
 		this.listenTo( formView, 'submit', () => {
-			// Set texts: title and abbreviation.
+			// Setting texts: title and abbreviation.
 			// ...
 
 			// Hide the form view after submit.
@@ -578,12 +585,12 @@ export default class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
-		// Get position data for the balloon.
+		// Getting position data for the balloon.
 		// ...
 	}
 
 	_showUI() {
-		// Display balloon for the user.
+		// Displaying balloon for the user.
 		// ...
 	}
 }
