@@ -82,7 +82,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 		const config = this.context.config;
 
 		const options = config.get( 'cloudServices' ) || {};
-		
+
 		for ( const [ key, value ] of Object.entries( options ) as Array<[key: keyof CloudServicesConfig, value: any]> ) {
 			( this as CloudServicesConfig )[ key ] = value;
 		}
