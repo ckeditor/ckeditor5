@@ -125,7 +125,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._registerPostFixer();
 		this._registerConverters();
 		this._registerResizingListeners();
-		this._registerColgroupFixer();
 		this._registerResizerInserter();
 
 		const editor = this.editor;
@@ -736,35 +735,6 @@ export default class TableColumnResizeEditing extends Plugin {
 				rightColumnWidth
 			}
 		};
-	}
-
-	/**
-	 * Inserts the `<colgroup>` element if it is missing in the view table (e.g. after table insertion into table).
-	 *
-	 * @private
-	 */
-	_registerColgroupFixer() {
-		const editor = this.editor;
-
-		this.listenTo( editor.editing.view.document, 'layoutChanged', () => {
-			const viewTable = editor.editing.view.document.selection.getFirstPosition().getAncestors().reverse().find(
-				viewElement => viewElement.name === 'table'
-			);
-			const viewTableContainsColgroup = viewTable && Array.from( viewTable.getChildren() ).find(
-				viewElement => viewElement.is( 'element', 'colgroup' )
-			);
-			const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
-
-			if ( !modelTable ) {
-				return;
-			}
-
-			const hasColumnGroup = Array.from( modelTable.getChildren() ).find( element => element.is( 'element', 'tableColumnGroup' ) );
-
-			if ( hasColumnGroup && viewTable && !viewTableContainsColgroup ) {
-				editor.editing.reconvertItem( modelTable );
-			}
-		}, { priority: 'low' } );
 	}
 
 	/**
