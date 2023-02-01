@@ -194,7 +194,7 @@ class MyListItemView extends View {
 	constructor( locale, text ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		this.setTemplate( {
@@ -224,7 +224,7 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		this.items = this.createCollection();
@@ -297,13 +297,13 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		// A view collection containing items of the list.
 		this.items = this.createCollection();
 
-		// Set the template.
+		// Setting the template.
 		// ...
 
 		// The instance of the focus tracker that tracks focus in #items.
@@ -323,11 +323,11 @@ To make sure your focus tracker instance and the `items` view collection stay sy
 
 class MyListView extends View {
 	constructor( locale ) {
-		// Initializations.
+		// More initializations.
 		// ...
 	}
 
-	// Methods.
+	// More methods.
 	// ...
 
 	render() {
@@ -372,7 +372,7 @@ export default class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		// The keystroke handler that will help the focus cycler respond to the keystrokes.
@@ -418,7 +418,7 @@ class MyListView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		// The view collection containing items of the list.
@@ -458,7 +458,7 @@ Similarly to the previous sections of this guide, feed the focus tracker and syn
 
 class MyListView extends View {
 	constructor( locale ) {
-		// Initializations.
+		// More initializations.
 		// ...
 	}
 
@@ -588,7 +588,7 @@ class MyListItemView extends View {
 	constructor( locale, text ) {
 		super( locale );
 
-		// Initializations.
+		// More initializations.
 		// ...
 
 		this.setTemplate( {
