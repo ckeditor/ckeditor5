@@ -63,7 +63,6 @@ export default class RemoveFormatCommand extends Command {
 	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
 	 *
-	 * @param selection
 	 * @param schema The schema describing the item.
 	 */
 	private* _getFormattingItems( selection: DocumentSelection, schema: Schema ) {
@@ -98,8 +97,6 @@ export default class RemoveFormatCommand extends Command {
 	 *
 	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
-	 * @protected
-	 * @param item
 	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
@@ -111,5 +108,11 @@ export default class RemoveFormatCommand extends Command {
 				yield attributeName;
 			}
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		removeFormat: RemoveFormatCommand;
 	}
 }
