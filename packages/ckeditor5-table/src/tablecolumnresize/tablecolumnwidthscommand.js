@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { normalizeColumnWidths } from './utils';
+import { getTableColumnGroup, normalizeColumnWidths } from './utils';
 
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
@@ -38,9 +38,7 @@ export default class TableColumnWidthsCommand extends Command {
 		} = options;
 
 		model.change( writer => {
-			const tableColumnGroup = Array
-				.from( table.getChildren() )
-				.find( element => element.is( 'element', 'tableColumnGroup' ) );
+			const tableColumnGroup = getTableColumnGroup( table );
 
 			if ( !columnWidths && !tableColumnGroup ) {
 				return;
@@ -50,8 +48,7 @@ export default class TableColumnWidthsCommand extends Command {
 				return writer.remove( tableColumnGroup );
 			}
 
-			let widths = columnWidths.map( widths => Number( widths.replace( '%', '' ) ) );
-			widths = normalizeColumnWidths( widths ).map( width => `${ width }%` );
+			const widths = normalizeColumnWidths( columnWidths );
 
 			if ( !tableColumnGroup ) {
 				const colGroupElement = writer.createElement( 'tableColumnGroup' );

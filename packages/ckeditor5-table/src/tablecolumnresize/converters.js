@@ -52,7 +52,7 @@ export function upcastColgroupElement( tableUtilsPlugin ) {
 			} );
 
 		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
+			columnWidths = normalizeColumnWidths( columnWidths );
 		}
 
 		const colGroupElement = conversionApi.writer.createElement( 'tableColumnGroup' );

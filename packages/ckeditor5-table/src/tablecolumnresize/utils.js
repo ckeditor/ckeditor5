@@ -230,10 +230,20 @@ export function sumArray( array ) {
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {Array.<Number>} columnWidths An array of column widths.
- * @returns {Array.<Number>} An array of column widths guaranteed to sum up to 100%.
+ * @param {Array.<Number|String>} columnWidths An array of column widths.
+ * @returns {Array.<String>} An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths ) {
+	columnWidths = columnWidths.map( width => {
+		// Possible values are 'auto', number or string ending with '%'
+		if ( width === 'auto' || !isNaN( width ) ) {
+			// Leave 'auto' and number widths unchanged
+			return width;
+		}
+
+		return Number( width.replace( '%', '' ) );
+	} );
+
 	columnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
@@ -256,7 +266,8 @@ export function normalizeColumnWidths( columnWidths ) {
 			const totalWidth = sumArray( columnWidths );
 
 			return toPrecision( columnWidth + 100 - totalWidth );
-		} );
+		} )
+		.map( width => width + '%' );
 }
 
 // Initializes the column widths by parsing the attribute value and calculating the uninitialized column widths. The special value 'auto'
@@ -310,4 +321,40 @@ export function getDomCellOuterWidth( domCell ) {
 			parseFloat( styles.paddingRight ) +
 			parseFloat( styles.borderWidth );
 	}
+}
+
+/**
+ * Returns a 'tableColumnGroup' element from the 'table'.
+ *
+ * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
+ * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
+ */
+export function getTableColumnGroup( element ) {
+	if ( element.is( 'element', 'tableColumnGroup' ) ) {
+		return element;
+	}
+
+	return Array
+		.from( element.getChildren() )
+		.find( element => element.is( 'element', 'tableColumnGroup' ) );
+}
+
+/**
+ * Returns an array of 'tableColumn' elements.
+ *
+ * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
+ */
+export function getTableColumns( element ) {
+	return Array.from( getTableColumnGroup( element ).getChildren() );
+}
+
+/**
+ * Returns an array of table column widths.
+ *
+ * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<String>} An array of table column widths.
+ */
+export function getColumnWidths( element ) {
+	return getTableColumns( element ).map( column => column.getAttribute( 'columnWidth' ) );
 }
