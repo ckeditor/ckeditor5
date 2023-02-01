@@ -166,10 +166,30 @@
 	}
 
 	.ck.ck-content pre.fancy-code::before {
+		--ck-fancy-code-disc-radius: 6px;
+
 		content: "";
 		display: block;
-		height: 13px;
-		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		height: calc(var(--ck-fancy-code-disc-radius) * 2);
+		background-image: radial-gradient(
+			circle,
+			#f16b5d var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		),
+		radial-gradient(
+			circle,
+			#f5be4d var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		),
+		radial-gradient(
+			circle,
+			#56c452 var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		);
+		background-size: calc(var(--ck-fancy-code-disc-radius) * 2)
+			calc(var(--ck-fancy-code-disc-radius) * 2);
+		background-position: 0 0, calc(var(--ck-fancy-code-disc-radius) * 3) 0,
+			calc(var(--ck-fancy-code-disc-radius) * 6) 0;
 		margin-bottom: 8px;
 		background-repeat: no-repeat;
 	}
