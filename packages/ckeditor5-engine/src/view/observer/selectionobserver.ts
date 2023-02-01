@@ -42,7 +42,7 @@ export default class SelectionObserver extends Observer {
 
 	private readonly _documents: WeakSet<Document>;
 	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
-	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
+	private _clearInfiniteLoopInterval: ReturnType<typeof setInterval> | undefined
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
 	private _loopbackCounter: number;
 
@@ -118,7 +118,8 @@ export default class SelectionObserver extends Observer {
 		 * @private
 		 * @member {Number} #_clearInfiniteLoopInterval
 		 */
-		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
+		// Removing this interval and moving this into onFocusIn
+		// this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
 		/**
 		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
@@ -167,6 +168,26 @@ export default class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 		};
 
+		const onFocusIn = () => {
+			// remove the interval if there exists.
+			// Now setup new interval to reset the _loopbackCounter
+			if (this._clearInfiniteLoopInterval !== undefined) {
+				clearInterval(this._clearInfiniteLoopInterval);
+				this._clearInfiniteLoopInterval = undefined;
+			}
+			this._clearInfiniteLoopInterval = setInterval(() => { 
+                return this._clearInfiniteLoop();
+            }, 1000);
+		}
+
+		const onFocusOut = () => {
+			// clear the interval when focus is out.
+			if (this._clearInfiniteLoopInterval !== undefined) {
+				clearInterval(this._clearInfiniteLoopInterval);
+				this._clearInfiniteLoopInterval = undefined;
+			}
+		}
+
 		// The document has the "is selecting" state while the user keeps making (extending) the selection
 		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
 		// the mouse button or interrupted the process by pressing or releasing any key.
@@ -184,6 +205,9 @@ export default class SelectionObserver extends Observer {
 		// handler would like to check it and update (for example table multi cell selection).
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
+		this.listenTo( domDocument, 'focusin', onFocusIn, { priority: 'highest' } );
+		this.listenTo( domDocument, 'focusout', onFocusOut, { priority: 'highest' } );
+		
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView.getSelection();
