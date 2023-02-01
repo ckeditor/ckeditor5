@@ -11,6 +11,9 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
+import type { Notification } from 'ckeditor5/src/ui';
+
+import './ckfinderconfig';
 
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing CKFinder editing feature}
@@ -76,7 +79,7 @@ export default class CKFinderCommand extends Command {
 		options.chooseFiles = true;
 
 		// Cache the user-defined onInit method
-		const originalOnInit = options.onInit as Function | undefined;
+		const originalOnInit = options.onInit;
 
 		// Pass the lang code to the CKFinder if not defined by user.
 		if ( !options.language ) {
@@ -142,7 +145,7 @@ function insertImages( editor: Editor, urls: Array<string> ): void {
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {
-		const notification = editor.plugins.get( 'Notification' );
+		const notification: Notification = editor.plugins.get( 'Notification' );
 		const t = editor.locale.t;
 
 		notification.showWarning( t( 'Could not insert image at the current position.' ), {

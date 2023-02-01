@@ -10,6 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
+import type CKFinderCommand from './ckfindercommand';
+
 import browseFilesIcon from '../theme/icons/browse-files.svg';
 
 /**
@@ -32,7 +34,7 @@ export default class CKFinderUI extends Plugin {
 		const t = editor.t;
 
 		componentFactory.add( 'ckfinder', locale => {
-			const command = editor.commands.get( 'ckfinder' )!;
+			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
 
 			const button = new ButtonView( locale );
 

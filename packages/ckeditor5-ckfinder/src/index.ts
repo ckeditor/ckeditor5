@@ -10,3 +10,4 @@
 export { default as CKFinder } from './ckfinder';
 export { default as CKFinderEditing } from './ckfinderediting';
 export { default as CKFinderUI } from './ckfinderui';
+export type { CKFinderConfig } from './ckfinderconfig';
