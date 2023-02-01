@@ -15,6 +15,7 @@ import utils from './utils';
 import type { ImageStyleOptionDefinition } from '../imagestyle';
 
 import '../../theme/imagestyle.css';
+import '../index';
 
 /**
  * The image style UI plugin.

@@ -11,6 +11,8 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ImageStyleEditing from './imagestyle/imagestyleediting';
 import ImageStyleUI from './imagestyle/imagestyleui';
 
+import './index';
+
 /**
  * The image style plugin.
  *

@@ -12,6 +12,8 @@ import ImageUploadUI from './imageupload/imageuploadui';
 import ImageUploadProgress from './imageupload/imageuploadprogress';
 import ImageUploadEditing from './imageupload/imageuploadediting';
 
+import './index';
+
 /**
  * The image upload plugin.
  *

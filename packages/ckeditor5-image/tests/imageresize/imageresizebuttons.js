@@ -5,6 +5,8 @@
 
 /* global document */
 
+import '@ckeditor/ckeditor5-image';
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Image from '../../src/image';
@@ -23,7 +25,6 @@ import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.sv
 import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
 import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
 import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
-
 describe( 'ImageResizeButtons', () => {
 	let plugin, command, editor, editorElement;
 

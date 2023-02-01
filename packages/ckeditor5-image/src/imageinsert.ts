@@ -12,6 +12,8 @@ import ImageUpload from './imageupload';
 import ImageInsertViaUrl from './imageinsertviaurl';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
+import './index';
+
 /**
  * The image insert plugin.
  *

@@ -12,6 +12,8 @@ import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core
 import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
 
+import '../index';
+
 /**
  * The image resize editing feature.
  *
