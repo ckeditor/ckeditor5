@@ -3,14 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /**
  * @module engine/view/rawelement
  */
 
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
 import Node from './node';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
+import type Document from './document';
 import type DomConverter from './domconverter';
 import type Item from './item';
 
@@ -31,12 +34,8 @@ type DomElement = globalThis.HTMLElement;
  *
  * To create a new raw element, use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
- *
- * @extends module:engine/view/element~Element
  */
 export default class RawElement extends Element {
-	public override getFillerOffset: () => null;
-
 	/**
 	 * Creates a new instance of a raw element.
 	 *
@@ -44,22 +43,21 @@ export default class RawElement extends Element {
 	 * parameter is passed to inform that the usage of `RawElement` is incorrect (adding child nodes to `RawElement` is forbidden).
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createRawElement
-	 * @protected
-	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
-	 * @param {String} name A node name.
-	 * @param {Object|Iterable} [attrs] The collection of attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into the created element.
+	 * @internal
+	 * @param document The document instance to which this element belongs.
+	 * @param name Node name.
+	 * @param attrs Collection of attributes.
+	 * @param children A list of nodes to be inserted into created element.
 	 */
-	constructor( ...args: ConstructorParameters<typeof Element> ) {
-		super( ...args );
+	constructor(
+		document: Document,
+		name: string,
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
+	) {
+		super( document, name, attrs, children );
 
-		/**
-		 * Returns `null` because filler is not needed for raw elements.
-		 *
-		 * @method #getFillerOffset
-		 * @returns {null} Always returns null.
-		 */
+		// Returns `null` because filler is not needed for raw elements.
 		this.getFillerOffset = getFillerOffset;
 	}
 
@@ -68,7 +66,7 @@ export default class RawElement extends Element {
 	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} to prevent
 	 * adding any child nodes to a raw element.
 	 *
-	 * @protected
+	 * @internal
 	 */
 	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
 		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
@@ -93,48 +91,22 @@ export default class RawElement extends Element {
 	 *
 	 * This method **must be defined** for the raw element to work:
 	 *
-	 *		const myRawElement = downcastWriter.createRawElement( 'div' );
+	 * ```ts
+	 * const myRawElement = downcastWriter.createRawElement( 'div' );
 	 *
-	 *		myRawElement.render = function( domElement, domConverter ) {
-	 *			domConverter.setContentOf( domElement, '<b>This is the raw content of myRawElement.</b>' );
-	 *		};
+	 * myRawElement.render = function( domElement, domConverter ) {
+	 * 	domConverter.setContentOf( domElement, '<b>This is the raw content of myRawElement.</b>' );
+	 * };
+	 * ```
 	 *
-	 * @method #render
-	 * @param {HTMLElement} domElement The native DOM element representing the raw view element.
-	 * @param {module:engine/view/domconverter~DomConverter} domConverter Instance of the DomConverter used to optimize the output.
+	 * @param domElement The native DOM element representing the raw view element.
+	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
-	public render( domElement?: DomElement, domConverter?: DomConverter ): void;
-	public render(): void {}
-	// TODO
+	public render( domElement: DomElement, domConverter: DomConverter ): void {}
 }
 
-/**
- * Checks whether this object is of the given type or name.
- *
- *		rawElement.is( 'rawElement' ); // -> true
- *		rawElement.is( 'element' ); // -> true
- *		rawElement.is( 'node' ); // -> true
- *		rawElement.is( 'view:rawElement' ); // -> true
- *		rawElement.is( 'view:element' ); // -> true
- *		rawElement.is( 'view:node' ); // -> true
- *
- *		rawElement.is( 'model:element' ); // -> false
- *		rawElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is a raw element, you can also check its
- * {@link module:engine/view/rawelement~RawElement#name name}:
- *
- *		rawElement.is( 'img' ); // -> true if this is an img element
- *		rawElement.is( 'rawElement', 'img' ); // -> same as above
- *		text.is( 'img' ); -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type The type to check when the `name` parameter is present.
- * Otherwise, it acts like the `name` parameter.
- * @param {String} [name] The element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 RawElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rawElement' || type === 'view:rawElement' ||
@@ -150,9 +122,9 @@ RawElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
-// Returns `null` because block filler is not needed for raw elements.
-//
-// @returns {null}
+/**
+ * Returns `null` because block filler is not needed for raw elements.
+ */
 function getFillerOffset() {
 	return null;
 }
