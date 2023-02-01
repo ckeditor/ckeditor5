@@ -47,7 +47,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// This feature is not available in any of the builds.
 		// See the "Installation" section.
-		plugins: [ Mention, ... ],
+		plugins: [ Mention, /* ... */ ],
 
 		mention: {
 			feeds: [
@@ -59,8 +59,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Additionally, you can configure:
@@ -91,7 +91,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// This feature is not available in any of the builds.
 		// See the "Installation" section.
-		plugins: [ Mention, ... ],
+		plugins: [ Mention, /* ... */ ],
 
 		mention: {
 			feeds: [
@@ -102,8 +102,8 @@ ClassicEditor
 			}
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 const items = [
 	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
@@ -157,19 +157,19 @@ This callback takes a feed item (it contains at least the `name` property) and m
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, ... ],
+		plugins: [ Mention, /* ... */ ],
 		mention: {
 			feeds: [
 				{
-					feed: [ ... ],
+					feed: [ /* ... */ ],
 					// Define the custom item renderer.
 					itemRenderer: customItemRenderer
 				}
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
@@ -198,18 +198,19 @@ The number of items displayed in the autocomplete list can be customized by defi
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, ... ],
+		plugins: [ Mention, /* ... */ ],
 		mention: {
 			// Define the custom number of visible mentions.
 			dropdownLimit: 4
 			feeds: [
-				{ ... }
-				...
+				{ /* ... */ }
+				// More feeds.
+				// ...
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
@@ -241,13 +242,14 @@ By default, attribute elements that are next to each other and have the same val
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, MentionCustomization, ... ], // Add the custom mention plugin function.
+		plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
 		mention: {
-			// Configuration...
+			// Configuration.
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 function MentionCustomization( editor ) {
 	// The upcast converter will convert view <a class="mention" href="" data-user-id="">
@@ -324,7 +326,7 @@ Below is an example of a customized mention feature that:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
-		plugins: [ Mention, MentionCustomization, ... ],
+		plugins: [ Mention, MentionCustomization, /* ... */ ],
 		mention: {
 			dropdownLimit: 4,
 			feeds: [
@@ -492,13 +494,14 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, ... ],
+		plugins: [ Mention, /* ... */ ],
 		mention: {
-			// Configuration...
+			// Configuration.
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

@@ -102,8 +102,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Presentational styles
@@ -146,8 +146,8 @@ import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplede
 
 DecoupledEditor.
 	.create( document.querySelector( '#editor' ) )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box warning>
@@ -176,7 +176,8 @@ The editor presented above uses custom image styles, custom image toolbar config
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		...
+		// More of editor's config.
+		// ...
 		image: {
 			styles: {
 				// Defining custom styling options for the images.
@@ -232,8 +233,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link installation/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.

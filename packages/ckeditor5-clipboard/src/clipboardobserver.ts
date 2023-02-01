@@ -173,7 +173,7 @@ export interface ClipboardInputEventData {
 	dataTransfer: DataTransfer;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
 
@@ -183,9 +183,9 @@ export interface ClipboardInputEventData {
 	target: ViewElement;
 
 	/**
-	 * Ranges which are the target of the operation (usually – into which the content should be inserted).
+	 * The ranges which are the target of the operation (usually – into which the content should be inserted).
 	 * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
-	 * then it is the drop position (which can be different than the selection at the moment of drop).
+	 * then it is the drop position (which can be different than the selection at the moment of the drop).
 	 */
 	targetRanges: Array<ViewRange> | null;
 
@@ -327,7 +327,7 @@ export interface DraggingEventData {
 	dataTransfer: DataTransfer;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'dragover';
 

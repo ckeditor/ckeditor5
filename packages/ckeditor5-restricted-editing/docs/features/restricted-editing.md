@@ -61,14 +61,14 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Bold, RestrictedEditingMode, ... ],
-		toolbar: [ 'bold', '|', 'restrictedEditing', ... ],
+		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig `config.restrictedEditing`} documentation.
@@ -104,11 +104,11 @@ import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/stan
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ StandardEditingMode, ... ],
-		toolbar: [ 'restrictedEditingException', ... ]
+		plugins: [ StandardEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditingException', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Running the restricted editing mode
@@ -120,11 +120,11 @@ import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/re
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ RestrictedEditingMode, ... ],
-		toolbar: [ 'restrictedEditing', ... ]
+		plugins: [ RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditing', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
