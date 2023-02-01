@@ -387,6 +387,10 @@ export default class TooltipManager extends DomEmitterMixin() {
 		targetDomElement: HTMLElement,
 		{ text, position, cssClass }: TooltipData
 	): void {
+		if ( !isVisible( targetDomElement ) ) {
+			return;
+		}
+
 		// Use the body collection of the first editor.
 		const bodyViewCollection = first( TooltipManager._editors.values() )!.ui.view.body;
 
