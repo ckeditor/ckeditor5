@@ -13,7 +13,7 @@ modified_at: 2021-06-01
 
 # Update to CKEditor 5 v28.0.0
 
-For the entire list of changes introduced in version 28.0.0, see the [changelog for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2800-2021-05-31).
+For the entire list of changes introduced in version 28.0.0, see the [release notes for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v28.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0.
 

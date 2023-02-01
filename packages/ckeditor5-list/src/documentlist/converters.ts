@@ -53,7 +53,7 @@ import type {
 } from './documentlistediting';
 
 /**
- * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) is converted.
+ * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) are converted.
  *
  * @internal
  */
@@ -104,8 +104,8 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 
 /**
  * Returns the upcast converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
- * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
- * incorrect data can be cleared if the view was incorrect.
+ * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element. However,
+ * incorrect data can also be cleared if the view was incorrect.
  *
  * @internal
  */
@@ -316,7 +316,7 @@ export function reconvertItemsOnDataChange(
  * Returns the list item downcast converter.
  *
  * @internal
- * @param attributeNames A list of attribute names that should be converted if are set.
+ * @param attributeNames A list of attribute names that should be converted if they are set.
  * @param strategies The strategies.
  * @param model The model.
  */
@@ -369,11 +369,14 @@ export function bogusParagraphCreator(
 			return null;
 		}
 
-		const viewElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-
-		if ( dataPipeline ) {
-			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+		if ( !dataPipeline ) {
+			return writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 		}
+
+		// Using `<p>` in case there are some markers on it and transparentRendering will render it anyway.
+		const viewElement = writer.createContainerElement( 'p' );
+
+		writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
 
 		return viewElement;
 	};

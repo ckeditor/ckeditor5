@@ -14,7 +14,7 @@ import ItalicUI from './italic/italicui';
 /**
  * The italic feature.
  *
- * For a detailed overview check the {@glink features/basic-styles Basic styles feature documentation}
+ * For a detailed overview check the {@glink features/basic-styles Basic styles feature} guide
  * and the {@glink api/basic-styles package page}.
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/italic/italicediting~ItalicEditing} and

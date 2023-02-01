@@ -253,7 +253,7 @@ describe( 'Table feature – integration with markers', () => {
 			editor.setData( '<table><tr><td><p></p><foo></foo></td></tr></table>' );
 
 			expect( editor.getData() ).to.equal(
-				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
+				'<figure class="table"><table><tbody><tr><td>&nbsp;<foo></foo></td></tr></tbody></table></figure>'
 			);
 		} );
 
@@ -279,6 +279,313 @@ describe( 'Table feature – integration with markers', () => {
 			expect( editor.getData() ).to.equal(
 				'<figure class="table"><table><tbody><tr><td><foo></foo>foobar</td></tr></tbody></table></figure>'
 			);
+		} );
+	} );
+
+	describe( 'markers converted to data and vice versa', () => {
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( '', { plugins: [ Paragraph, TableEditing ] } );
+
+			editor.conversion.for( 'upcast' ).dataToMarker( { view: 'foo' } );
+			editor.conversion.for( 'dataDowncast' ).markerToData( { model: 'foo' } );
+		} );
+
+		function addMarker( range ) {
+			editor.model.change( writer => {
+				writer.addMarker( 'foo:bar', {
+					usingOperation: true,
+					affectsData: true,
+					range
+				} );
+			} );
+		}
+
+		function checkMarker( range ) {
+			const marker = editor.model.markers.get( 'foo:bar' );
+
+			expect( marker ).to.not.be.null;
+			expect( marker.getRange().isEqual( range ) ).to.be.true;
+		}
+
+		describe( 'single empty paragraph', () => {
+			let paragraph;
+
+			beforeEach( async () => {
+				setModelData( editor.model, modelTable( [ [ '' ] ] ) );
+
+				paragraph = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+			} );
+
+			it( 'marker beginning before a paragraph and ending inside', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionBefore( paragraph ),
+					editor.model.createPositionAt( paragraph, 'end' )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-start-before="bar"><foo-end name="bar"></foo-end>&nbsp;</p>' +
+					'</td></tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker beginning in a paragraph and ending after it', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 0 ),
+					editor.model.createPositionAfter( paragraph )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-end-after="bar"><foo-start name="bar"></foo-start>&nbsp;</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker on the paragraph', async () => {
+				const range = editor.model.createRangeOn( paragraph );
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-end-after="bar" data-foo-start-before="bar">&nbsp;</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker inside a paragraph', async () => {
+				const range = editor.model.createRangeIn( paragraph );
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><foo-start name="bar"></foo-start><foo-end name="bar"></foo-end>&nbsp;</td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+		} );
+
+		describe( 'single paragraph', () => {
+			let paragraph;
+
+			beforeEach( async () => {
+				setModelData( editor.model, modelTable( [ [ 'text' ] ] ) );
+
+				paragraph = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+			} );
+
+			it( 'marker beginning before a paragraph and ending inside', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionBefore( paragraph ),
+					editor.model.createPositionAt( paragraph, 'end' )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-start-before="bar">text<foo-end name="bar"></foo-end></p>' +
+					'</td></tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker beginning in a paragraph and ending after it', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 0 ),
+					editor.model.createPositionAfter( paragraph )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-end-after="bar"><foo-start name="bar"></foo-start>text</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker on the paragraph', async () => {
+				const range = editor.model.createRangeOn( paragraph );
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-end-after="bar" data-foo-start-before="bar">text</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker inside a paragraph', async () => {
+				const range = editor.model.createRangeIn( paragraph );
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><foo-start name="bar"></foo-start>text<foo-end name="bar"></foo-end></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+		} );
+
+		describe( 'multiple paragraphs', () => {
+			let paragraphA, paragraphB, tableCell;
+
+			beforeEach( async () => {
+				setModelData( editor.model, modelTable( [ [ '<paragraph>a</paragraph><paragraph>b</paragraph>' ] ] ) );
+
+				tableCell = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				paragraphA = tableCell.getChild( 0 );
+				paragraphB = tableCell.getChild( 1 );
+			} );
+
+			it( 'marker beginning before a paragraph and ending inside another paragraph', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionBefore( paragraphA ),
+					editor.model.createPositionAt( paragraphB, 'end' )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-start-before="bar">a</p><p>b<foo-end name="bar"></foo-end></p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker beginning in a paragraph and ending after another paragraph', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionAt( paragraphA, 0 ),
+					editor.model.createPositionAfter( paragraphB )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p><foo-start name="bar"></foo-start>a</p><p data-foo-end-after="bar">b</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker on multiple paragraphs', async () => {
+				const range = editor.model.createRangeIn( tableCell );
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p data-foo-start-before="bar">a</p><p data-foo-end-after="bar">b</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'marker inside starting in a paragraph and ending in an other paragraph', async () => {
+				const range = editor.model.createRange(
+					editor.model.createPositionAt( paragraphA, 'end' ),
+					editor.model.createPositionAt( paragraphB, 0 )
+				);
+
+				addMarker( range );
+
+				const data = editor.getData();
+
+				expect( data ).to.equal(
+					'<figure class="table"><table><tbody><tr>' +
+						'<td><p>a<foo-start name="bar"></foo-start></p><p><foo-end name="bar"></foo-end>b</p></td>' +
+					'</tr></tbody></table></figure>'
+				);
+
+				editor.setData( data );
+
+				checkMarker( range );
+				expect( editor.getData() ).to.equal( data );
+			} );
 		} );
 	} );
 } );

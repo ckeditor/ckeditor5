@@ -13,7 +13,7 @@ modified_at: 2021-12-10
 
 # Update to CKEditor 5 v32.0.0
 
-For the entire list of changes introduced in version 32.0.0, see the [changelog for CKEditor 5 v32.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3200-2022-01-26).
+For the entire list of changes introduced in version 32.0.0, see the [release notes for CKEditor 5 v32.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v32.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v32.0.0.
 

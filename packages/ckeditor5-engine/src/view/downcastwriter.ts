@@ -318,7 +318,7 @@ export default class DowncastWriter {
 	 */
 	public createEditableElement(
 		name: string,
-		attributes: ElementAttributes,
+		attributes?: ElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
