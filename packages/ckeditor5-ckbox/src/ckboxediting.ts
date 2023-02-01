@@ -118,7 +118,7 @@ export default class CKBoxEditing extends Plugin {
 			ignoreDataId: false,
 			language: editor.locale.uiLanguage,
 			theme: 'default',
-			tokenUrl: editor.config.get( 'cloudServices.tokenUrl' )!
+			tokenUrl: editor.config.get( 'cloudServices.tokenUrl' )
 		} );
 
 		const tokenUrl = editor.config.get( 'ckbox.tokenUrl' );

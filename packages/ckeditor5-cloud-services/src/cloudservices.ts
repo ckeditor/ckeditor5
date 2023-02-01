@@ -23,7 +23,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
 	 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
 	 */
-	public readonly tokenUrl!: TokenUrl;
+	public readonly tokenUrl?: TokenUrl;
 
 	/**
 	 * The URL to which the files should be uploaded.
@@ -236,7 +236,7 @@ export interface CloudServicesConfig {
 	 *
 	 * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
 	 */
-	tokenUrl: TokenUrl;
+	tokenUrl?: TokenUrl;
 
 	/**
 	 * The endpoint URL for [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) uploads.

@@ -137,11 +137,7 @@ class Adapter implements UploadAdapter {
 	 *
 	 * If the API returns limited results, the method will collect all items.
 	 */
-	public async getAvailableCategories( offset: number = 0 ): Promise<Array<{
-		id: string;
-		name: string;
-		extensions: Array<string>;
-	}>> {
+	public async getAvailableCategories( offset: number = 0 ): Promise<Array<AvailableCategory>> {
 		const ITEMS_PER_REQUEST = 50;
 		const categoryUrl = new URL( 'categories', this.serviceOrigin );
 
@@ -371,6 +367,12 @@ class Adapter implements UploadAdapter {
 			image.src = this.loader.data!;
 		} );
 	}
+}
+
+export interface AvailableCategory {
+	id: string;
+	name: string;
+	extensions: Array<string>;
 }
 
 /**

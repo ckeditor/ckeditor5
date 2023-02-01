@@ -9,9 +9,10 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
+import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+
 import CKBoxUI from './ckboxui';
 import CKBoxEditing from './ckboxediting';
-import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 /**
  * The CKBox feature, a bridge between the CKEditor 5 WYSIWYG editor and the CKBox file manager and uploader.
@@ -89,7 +90,7 @@ export interface CKBoxConfig {
 	 *
 	 * Defaults to {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}
 	 */
-	tokenUrl: TokenUrl;
+	tokenUrl?: TokenUrl;
 
 	/**
 	 * The theme for CKBox dialog.
