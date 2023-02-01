@@ -13,8 +13,15 @@ type DomDataTransfer = globalThis.DataTransfer;
  * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
 export default class DataTransfer {
-	private _native: DomDataTransfer;
+	/**
+	 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
+	 */
 	private _files: Array<File> | null;
+
+	/**
+	 * The native DataTransfer object.
+	 */
+	private _native: DomDataTransfer;
 
 	constructor( nativeDataTransfer: DomDataTransfer, options: { cacheFiles?: boolean } = {} ) {
 		// We should store references to the File instances in case someone would like to process this files
@@ -23,9 +30,6 @@ export default class DataTransfer {
 		// See https://github.com/ckeditor/ckeditor5/issues/13366.
 		this._files = options.cacheFiles ? getFiles( nativeDataTransfer ) : null;
 
-		/**
-		 * The native DataTransfer object.
-		 */
 		this._native = nativeDataTransfer;
 	}
 
@@ -42,8 +46,6 @@ export default class DataTransfer {
 
 	/**
 	 * Returns an array of available native content types.
-	 *
-	 * @returns {Array.<String>}
 	 */
 	public get types(): ReadonlyArray<string> {
 		return this._native.types;
@@ -52,10 +54,11 @@ export default class DataTransfer {
 	/**
 	 * Gets the data from the data transfer by its MIME type.
 	 *
-	 *		dataTransfer.getData( 'text/plain' );
+	 * ```ts
+	 * dataTransfer.getData( 'text/plain' );
+	 * ```
 	 *
-	 * @param {String} type The MIME type. E.g. `text/html` or `text/plain`.
-	 * @returns {String}
+	 * @param type The MIME type. E.g. `text/html` or `text/plain`.
 	 */
 	public getData( type: string ): string {
 		return this._native.getData( type );
@@ -64,8 +67,7 @@ export default class DataTransfer {
 	/**
 	 * Sets the data in the data transfer.
 	 *
-	 * @param {String} type The MIME type. E.g. `text/html` or `text/plain`.
-	 * @param {String} data
+	 * @param type The MIME type. E.g. `text/html` or `text/plain`.
 	 */
 	public setData( type: string, data: string ): void {
 		this._native.setData( type, data );
@@ -73,39 +75,43 @@ export default class DataTransfer {
 
 	/**
 	 * The effect that is allowed for a drag operation.
-	 *
-	 * @param {String} value
 	 */
-	public set effectAllowed( value: DomDataTransfer[ 'effectAllowed' ] ) {
+	public set effectAllowed( value: EffectAllowed ) {
 		this._native.effectAllowed = value;
 	}
 
-	public get effectAllowed(): DomDataTransfer[ 'effectAllowed' ] {
+	public get effectAllowed(): EffectAllowed {
 		return this._native.effectAllowed;
 	}
 
 	/**
 	 * The actual drop effect.
-	 *
-	 * @param {String} value
 	 */
-	public set dropEffect( value: DomDataTransfer[ 'dropEffect' ] ) {
+	public set dropEffect( value: DropEffect ) {
 		this._native.dropEffect = value;
 	}
 
-	public get dropEffect(): DomDataTransfer[ 'dropEffect' ] {
+	public get dropEffect(): DropEffect {
 		return this._native.dropEffect;
 	}
 
 	/**
 	 * Whether the dragging operation was canceled.
-	 *
-	 * @returns {Boolean}
 	 */
 	public get isCanceled(): boolean {
 		return this._native.dropEffect == 'none' || !!( this._native as any ).mozUserCancelled;
 	}
 }
+
+/**
+ * The effect that is allowed for a drag operation.
+ */
+export type EffectAllowed = DomDataTransfer[ 'effectAllowed' ];
+
+/**
+ * The actual drop effect.
+ */
+export type DropEffect = DomDataTransfer[ 'dropEffect' ];
 
 function getFiles( nativeDataTransfer: DomDataTransfer ): Array<File> {
 	// DataTransfer.files and items are array-like and might not have an iterable interface.

@@ -17,7 +17,7 @@ import type View from './view';
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
-const documentPlaceholders: WeakMap<Document, Map<Element, PlaceholderConfig>> = new WeakMap();
+const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
 
 /**
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
@@ -27,25 +27,23 @@ const documentPlaceholders: WeakMap<Document, Map<Element, PlaceholderConfig>> =
  *
  * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
  *
- * @param {Object} [options] Configuration options of the placeholder.
- * @param {module:engine/view/view~View} options.view Editing view instance.
- * @param {module:engine/view/element~Element} options.element Element that will gain a placeholder.
- * See `options.isDirectHost` to learn more.
- * @param {String} options.text Placeholder text.
- * @param {Boolean} [options.isDirectHost=true] If set `false`, the placeholder will not be enabled directly
+ * @param options Configuration options of the placeholder.
+ * @param options.view Editing view instance.
+ * @param options.element Element that will gain a placeholder. See `options.isDirectHost` to learn more.
+ * @param options.text Placeholder text.
+ * @param options.isDirectHost If set `false`, the placeholder will not be enabled directly
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
- * @param {Boolean} [options.keepOnFocus=false] If set `true`, the placeholder stay visible when the host element is focused.
+ * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( options: {
+export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
 	element: Element;
 	text: string;
 	isDirectHost?: boolean;
 	keepOnFocus?: boolean;
 } ): void {
-	const { view, element, text, isDirectHost = true, keepOnFocus = false } = options;
 	const doc = view.document;
 
 	// Use a single a single post fixer per—document to update all placeholders.
@@ -78,9 +76,6 @@ export function enablePlaceholder( options: {
  * Disables the placeholder functionality from a given element.
  *
  * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
- *
- * @param {module:engine/view/view~View} view
- * @param {module:engine/view/element~Element} element
  */
 export function disablePlaceholder( view: View, element: Element ): void {
 	const doc = element.document;
@@ -114,9 +109,7 @@ export function disablePlaceholder( view: View, element: Element ): void {
  * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
  * in that case or make sure the correct element is passed to the helper.
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {module:engine/view/element~Element} element
- * @returns {Boolean} `true`, if any changes were made to the `element`.
+ * @returns `true`, if any changes were made to the `element`.
  */
 export function showPlaceholder( writer: DowncastWriter, element: Element ): boolean {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
@@ -137,9 +130,7 @@ export function showPlaceholder( writer: DowncastWriter, element: Element ): boo
  * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
  * placeholder functionality.
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {module:engine/view/element~Element} element
- * @returns {Boolean} `true`, if any changes were made to the `element`.
+ * @returns `true`, if any changes were made to the `element`.
  */
 export function hidePlaceholder( writer: DowncastWriter, element: Element ): boolean {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
@@ -161,9 +152,8 @@ export function hidePlaceholder( writer: DowncastWriter, element: Element ): boo
  * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
- * @param {module:engine/view/element~Element} element Element that holds the placeholder.
- * @param {Boolean} keepOnFocus Focusing the element will keep the placeholder visible.
- * @returns {Boolean}
+ * @param element Element that holds the placeholder.
+ * @param keepOnFocus Focusing the element will keep the placeholder visible.
  */
 export function needsPlaceholder( element: Element, keepOnFocus: boolean ): boolean {
 	if ( !element.isAttached() ) {
@@ -200,12 +190,11 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 	return !!selectionAnchor && selectionAnchor.parent !== element;
 }
 
-// Updates all placeholders associated with a document in a post–fixer callback.
-//
-// @private
-// @param { module:engine/view/document~Document} doc
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @returns {Boolean} True if any changes were made to the view document.
+/**
+ * Updates all placeholders associated with a document in a post–fixer callback.
+ *
+ * @returns True if any changes were made to the view document.
+ */
 function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): boolean {
 	const placeholders = documentPlaceholders.get( doc )!;
 	const directHostElements: Array<Element> = [];
@@ -252,15 +241,11 @@ function updateDocumentPlaceholders( doc: Document, writer: DowncastWriter ): bo
 	return wasViewModified;
 }
 
-// Updates a single placeholder in a post–fixer callback.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {module:engine/view/element~Element} element
-// @param {Object} config Configuration of the placeholder
-// @param {String} config.text
-// @param {Boolean} config.isDirectHost
-// @returns {Boolean} True if any changes were made to the view document.
+/**
+ * Updates a single placeholder in a post–fixer callback.
+ *
+ * @returns True if any changes were made to the view document.
+ */
 function updatePlaceholder( writer: DowncastWriter, element: Element, config: PlaceholderConfig ) {
 	const { text, isDirectHost, hostElement } = config;
 
@@ -286,13 +271,11 @@ function updatePlaceholder( writer: DowncastWriter, element: Element, config: Pl
 	return wasViewModified;
 }
 
-// Gets a child element capable of displaying a placeholder if a parent element can host more
-// than just text (for instance, when it is a root editable element). The child element
-// can then be used in other placeholder helpers as a substitute of its parent.
-//
-// @private
-// @param {module:engine/view/element~Element} parent
-// @returns {module:engine/view/element~Element|null}
+/**
+ * Gets a child element capable of displaying a placeholder if a parent element can host more
+ * than just text (for instance, when it is a root editable element). The child element
+ * can then be used in other placeholder helpers as a substitute of its parent.
+ */
 function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 )!;
@@ -306,7 +289,7 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 }
 
 /**
- * TODO
+ * Configuration of the placeholder.
  */
 interface PlaceholderConfig {
 	text: string;
