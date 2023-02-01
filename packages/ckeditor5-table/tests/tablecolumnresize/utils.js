@@ -587,7 +587,7 @@ describe( 'TableColumnResize utils', () => {
 			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
 			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
 			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ '20%', '20%', '20%', '40%' ] );
-			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ '5%', '45%', '45%', '55%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ '5%', '45%', '45%', '5%' ] );
 			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ '100%' ] );
 		} );
 

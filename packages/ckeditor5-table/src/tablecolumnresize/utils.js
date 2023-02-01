@@ -247,27 +247,27 @@ export function normalizeColumnWidths( columnWidths ) {
 	columnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
-	if ( totalWidth === 100 ) {
-		return columnWidths;
+	if ( totalWidth !== 100 ) {
+		columnWidths = columnWidths
+			// Adjust all the columns proportionally.
+			.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
+			// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%.
+			// Therefore, the width of the last column is explicitly adjusted (narrowed or expanded), since all the columns
+			// have been proportionally changed already.
+			.map( ( columnWidth, columnIndex, columnWidths ) => {
+				const isLastColumn = columnIndex === columnWidths.length - 1;
+
+				if ( !isLastColumn ) {
+					return columnWidth;
+				}
+
+				const totalWidth = sumArray( columnWidths );
+
+				return toPrecision( columnWidth + 100 - totalWidth );
+			} );
 	}
 
-	return columnWidths
-		// Adjust all the columns proportionally.
-		.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
-		// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%. Therefore, the width
-		// of the last column is explicitly adjusted (narrowed or expanded), since all the columns have been proportionally changed already.
-		.map( ( columnWidth, columnIndex, columnWidths ) => {
-			const isLastColumn = columnIndex === columnWidths.length - 1;
-
-			if ( !isLastColumn ) {
-				return columnWidth;
-			}
-
-			const totalWidth = sumArray( columnWidths );
-
-			return toPrecision( columnWidth + 100 - totalWidth );
-		} )
-		.map( width => width + '%' );
+	return columnWidths.map( width => width + '%' );
 }
 
 // Initializes the column widths by parsing the attribute value and calculating the uninitialized column widths. The special value 'auto'

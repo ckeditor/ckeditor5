@@ -9,13 +9,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import TableColumnWidthsCommand from '../../src/tablecolumnresize/tablecolumnwidthscommand';
+import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
 import Table from '../../src/table';
 import { modelTable } from '../_utils/utils';
 
-describe( 'TableColumnWidthsCommand', () => {
+describe( 'TableWidthsCommand', () => {
 	let model, editor, editorElement, command;
 
 	beforeEach( async () => {
@@ -27,7 +27,7 @@ describe( 'TableColumnWidthsCommand', () => {
 		} ).then( newEditor => {
 			editor = newEditor;
 			model = editor.model;
-			command = new TableColumnWidthsCommand( editor );
+			command = new TableWidthsCommand( editor );
 		} );
 	} );
 
@@ -47,10 +47,10 @@ describe( 'TableColumnWidthsCommand', () => {
 			[ '21', '22' ]
 		] ) );
 
-		command.execute( { columnWidths: [ '40%', '%60' ] } );
+		command.execute( { columnWidths: [ '40%', '%60' ], tableWidth: '40%' } );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<table>' +
+			'<table tableWidth="40%">' +
 				'<tableRow>' +
 					'<tableCell>' +
 						'<paragraph>11</paragraph>' +
@@ -116,5 +116,49 @@ describe( 'TableColumnWidthsCommand', () => {
 		command.execute();
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelDataBeforeExecute );
+	} );
+
+	it( 'should remove the attributes if new value was not passed', () => {
+		const data = [ [ '11', '12' ], [ '21', '22' ] ];
+		const attributesBefore = { tableWidth: '40%' };
+		setModelData( model, modelTable( data, attributesBefore ) );
+
+		command.execute();
+
+		const attributesAfter = {};
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
+	} );
+
+	it( 'should work when only tableWidth is provided', () => {
+		const data = [ [ '11', '12' ], [ '21', '22' ] ];
+		const attributesBefore = { tableWidth: '40%' };
+		setModelData( model, modelTable( data, attributesBefore ) );
+
+		command.execute( { tableWidth: '40%' } );
+
+		const attributesAfter = { tableWidth: '40%' };
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
+	} );
+
+	it( 'should add attributes when they are provided, but were not present before', () => {
+		const data = [ [ '11', '12' ], [ '21', '22' ] ];
+		const attributesBefore = {};
+		setModelData( model, modelTable( data, attributesBefore ) );
+
+		command.execute( { tableWidth: '40%' } );
+
+		const attributesAfter = { tableWidth: '40%' };
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
+	} );
+
+	it( 'should change attributes when they were present before', () => {
+		const data = [ [ '11', '12' ], [ '21', '22' ] ];
+		const attributesBefore = { tableWidth: '40%' };
+		setModelData( model, modelTable( data, attributesBefore ) );
+
+		command.execute( { tableWidth: '30%' } );
+
+		const attributesAfter = { tableWidth: '30%' };
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelTable( data, attributesAfter ) );
 	} );
 } );

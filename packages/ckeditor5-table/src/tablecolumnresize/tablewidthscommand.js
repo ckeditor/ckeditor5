@@ -24,20 +24,28 @@ export default class TableColumnWidthsCommand extends Command {
 	}
 
 	/**
-	 * Changes the `columnWidth` attribute values for the columns of the given table.
+	 * Updated the `tableWidth` attribute of the table and the `columnWidth` attribute of the columns of that table.
 	 *
 	 * @param {Object} options
 	 * @param {Array.<string>} [options.columnWidths] New value of the `columnWidths` attribute.
+	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
 	execute( options = {} ) {
 		const { model } = this.editor;
 		const {
 			table = model.document.selection.getSelectedElement(),
-			columnWidths
+			columnWidths,
+			tableWidth
 		} = options;
 
 		model.change( writer => {
+			if ( tableWidth ) {
+				writer.setAttribute( 'tableWidth', tableWidth, table );
+			} else {
+				writer.removeAttribute( 'tableWidth', table );
+			}
+
 			const tableColumnGroup = getTableColumnGroup( table );
 
 			if ( !columnWidths && !tableColumnGroup ) {

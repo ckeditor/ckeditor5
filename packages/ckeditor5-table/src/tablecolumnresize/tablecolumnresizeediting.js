@@ -16,8 +16,7 @@ import TableEditing from '../tableediting';
 import TableUtils from '../tableutils';
 import TableWalker from '../tablewalker';
 
-import TableWidthResizeCommand from './tablewidthresizecommand';
-import TableColumnWidthsCommand from './tablecolumnwidthscommand';
+import TableWidthsCommand from './tablewidthscommand';
 
 import {
 	upcastColgroupElement,
@@ -138,8 +137,9 @@ export default class TableColumnResizeEditing extends Plugin {
 			positionOffset: 0
 		} );
 
-		editor.commands.add( 'resizeTableWidth', new TableWidthResizeCommand( editor ) );
-		editor.commands.add( 'resizeColumnWidths', new TableColumnWidthsCommand( editor ) );
+		const tableWidthsCommand = new TableWidthsCommand( editor );
+		editor.commands.add( 'resizeTableWidth', tableWidthsCommand );
+		editor.commands.add( 'resizeColumnWidths', tableWidthsCommand );
 
 		const resizeTableWidthCommand = editor.commands.get( 'resizeTableWidth' );
 		const resizeColumnWidthsCommand = editor.commands.get( 'resizeColumnWidths' );
@@ -210,10 +210,10 @@ export default class TableColumnResizeEditing extends Plugin {
 				const columnWidths = getColumnWidths( tableColumnGroup );
 
 				// Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
-				const normalizedWidths = normalizeColumnWidths( columnWidths );
+				let normalizedWidths = normalizeColumnWidths( columnWidths );
 
 				// If the number of columns has changed, then we need to adjust the widths of the affected columns.
-				adjustColumnWidths( normalizedWidths, table, this );
+				normalizedWidths = adjustColumnWidths( normalizedWidths, table, this );
 
 				if ( isEqual( columnWidths, normalizedWidths ) ) {
 					continue;
@@ -252,8 +252,10 @@ export default class TableColumnResizeEditing extends Plugin {
 			const columnsCountDelta = newTableColumnsCount - columnWidths.length;
 
 			if ( columnsCountDelta === 0 ) {
-				return;
+				return columnWidths;
 			}
+
+			columnWidths = columnWidths.map( width => Number( width.replace( '%', '' ) ) );
 
 			// Collect all cells that are affected by the change.
 			const cellSet = getAffectedCells( plugin.editor.model.document.differ, table );
@@ -283,6 +285,8 @@ export default class TableColumnResizeEditing extends Plugin {
 					columnWidths[ currentColumnIndex ] += sumArray( removedColumnWidths );
 				}
 			}
+
+			return columnWidths.map( width => width + '%' );
 		}
 
 		// Returns a set of cells that have been changed in a given table.
@@ -614,20 +618,10 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		if ( isColumnWidthsAttributeChanged || isTableWidthAttributeChanged ) {
 			if ( this._isResizingAllowed ) {
-				editor.model.change( () => {
-					if ( isTableWidthAttributeChanged ) {
-						editor.execute( 'resizeTableWidth', {
-							table: modelTable,
-							tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`
-						} );
-					}
-
-					if ( isColumnWidthsAttributeChanged ) {
-						editor.execute( 'resizeColumnWidths', {
-							columnWidths: columnWidthsAttributeNew,
-							table: modelTable
-						} );
-					}
+				editor.execute( 'resizeTableWidth', {
+					table: modelTable,
+					tableWidth: `${ toPrecision( tableWidthAttributeNew ) }%`,
+					columnWidths: columnWidthsAttributeNew
 				} );
 			} else {
 				// In read-only mode revert all changes in the editing view. The model is not touched so it does not need to be restored.
