@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import Heading from '../src/heading.js';
+import Heading from '../src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';

@@ -20,7 +20,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 
 ## Migrating from CKEditor 4
 
-If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration.
+If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too.
 
 ## Start using CKEditor 5 instantly with CDN
 
@@ -40,7 +40,7 @@ Get to know the supported {@link installation/frameworks/overview integrations w
 
 ## Advanced installation concepts
 
-Find out more about the {@link installation/advanced/plugins plugin development}, how to {@link installation/advanced/saving-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or {@link installation/advanced/integrating-from-source integrating CKEditor 5 from source}.
+Find out more about the {@link installation/advanced/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or {@link installation/advanced/integrating-from-source integrating CKEditor 5 from source}.
 
 **Related links**
 

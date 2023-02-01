@@ -76,10 +76,10 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ GeneralHtmlSupport, ... ],
+		plugins: [ GeneralHtmlSupport, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

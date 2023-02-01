@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -426,6 +426,14 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 		} );
+
+		it( 'should set custom property to given document fragment', () => {
+			const fragment = writer.createDocumentFragment();
+
+			writer.setCustomProperty( 'foo', 'bar', fragment );
+
+			expect( fragment.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'removeCustomProperty()', () => {
@@ -437,6 +445,16 @@ describe( 'DowncastWriter', () => {
 
 			writer.removeCustomProperty( 'foo', element );
 			expect( element.getCustomProperty( 'foo' ) ).to.be.undefined;
+		} );
+
+		it( 'should remove custom property from given document fragment', () => {
+			const fragment = writer.createDocumentFragment();
+
+			writer.setCustomProperty( 'foo', 'bar', fragment );
+			expect( fragment.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+
+			writer.removeCustomProperty( 'foo', fragment );
+			expect( fragment.getCustomProperty( 'foo' ) ).to.be.undefined;
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,6 @@ import {
 	Plugin,
 	icons,
 	type Editor,
-	type EditorUIUpdateEvent,
 	type ToolbarConfig
 } from '@ckeditor/ckeditor5-core';
 
@@ -35,6 +34,7 @@ import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 
 import type { ButtonExecuteEvent } from '../../button/button';
+import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;

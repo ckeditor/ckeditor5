@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -89,6 +89,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	 * console.log( collection.get( 0 ) ); // -> { id: 'John' }
 	 * ```
 	 *
+	 * @label NO_ITEMS
 	 * @param options The options object.
 	 * @param options.idProperty The name of the property which is used to identify an item.
 	 * Items that do not have such a property will be assigned one when added to the collection.
@@ -115,6 +116,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	 * console.log( collection.get( 'John' ) ); // -> { name: 'John' }
 	 * ```
 	 *
+	 * @label INITIAL_ITEMS
 	 * @param initialItems The initial items of the collection.
 	 * @param options The options object.
 	 * @param options.idProperty The name of the property which is used to identify an item.
@@ -523,7 +525,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	}
 
 	/**
-	 * Finalizes and activates a binding initiated by {#bindTo}.
+	 * Finalizes and activates a binding initiated by {@link #bindTo}.
 	 *
 	 * @param factory A function which produces collection items.
 	 */
@@ -764,17 +766,32 @@ export type CollectionAddEvent<T = any> = {
  * Fired when the collection was changed due to adding or removing items.
  *
  * @eventName change
- * @param added A list of added items.
- * @param removed A list of removed items.
- * @param index An index where the addition or removal occurred.
+ * @param data Changed items.
  */
 export type CollectionChangeEvent<T = any> = {
 	name: 'change';
-	args: [ {
-		added: Iterable<T>;
-		removed: Iterable<T>;
-		index: number;
-	} ];
+	args: [ data: CollectionChangeEventData<T> ];
+};
+
+/**
+ * A structure describing the {@link ~Collection#event:change `Collection#change`} event.
+ */
+export type CollectionChangeEventData<T = any> = {
+
+	/**
+	 * A list of added items.
+	 */
+	added: Iterable<T>;
+
+	/**
+	 * A list of removed items.
+	 */
+	removed: Iterable<T>;
+
+	/**
+	 * An index where the addition or removal occurred.
+	 */
+	index: number;
 };
 
 /**

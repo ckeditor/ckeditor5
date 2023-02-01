@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,6 +28,7 @@ import type Node from './node';
 export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	public readonly document: Document;
 	private readonly _children: Array<Node>;
+	private readonly _customProperties: Map<string | symbol, unknown>;
 
 	/**
 	 * Creates new DocumentFragment instance.
@@ -59,6 +60,15 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 		if ( children ) {
 			this._insertChild( 0, children );
 		}
+
+		/**
+		 * Map of custom properties.
+		 * Custom properties can be added to document fragment instance.
+		 *
+		 * @protected
+		 * @member {Map}
+		 */
+		this._customProperties = new Map();
 	}
 
 	/**
@@ -113,13 +123,33 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
+	 * Returns the custom property value for the given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @returns {*}
+	 */
+	public getCustomProperty( key: string | symbol ): unknown {
+		return this._customProperties.get( key );
+	}
+
+	/**
+	 * Returns an iterator which iterates over this document fragment's custom properties.
+	 * Iterator provides `[ key, value ]` pairs for each stored property.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	public* getCustomProperties(): Iterable<[ string | symbol, unknown ]> {
+		yield* this._customProperties.entries();
+	}
+
+	/**
 	 * {@link module:engine/view/documentfragment~DocumentFragment#_insertChild Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
-	public _appendChild( items: Item | Iterable<Item> ): number {
+	public _appendChild( items: Item | string | Iterable<Item | string> ): number {
 		return this._insertChild( this.childCount, items );
 	}
 
@@ -160,7 +190,7 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	public _insertChild( index: number, items: Item | Iterable<Item> ): number {
+	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
 		this._fireChange( 'children', this );
 		let count = 0;
 
@@ -212,6 +242,30 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) {
 		this.fire( 'change:' + type, node );
 	}
 
+	/**
+	 * Sets a custom property. They can be used to add special data to elements.
+	 *
+	 * @see module:engine/view/downcastwriter~DowncastWriter#setCustomProperty
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	public _setCustomProperty( key: string | symbol, value: unknown ): void {
+		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Removes the custom property stored under the given key.
+	 *
+	 * @see module:engine/view/downcastwriter~DowncastWriter#removeCustomProperty
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	public _removeCustomProperty( key: string | symbol ): boolean {
+		return this._customProperties.delete( key );
+	}
+
 	// @if CK_DEBUG_ENGINE // printTree() {
 	// @if CK_DEBUG_ENGINE //	let string = 'ViewDocumentFragment: [';
 
@@ -256,7 +310,7 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( document: Document, nodes: Item | Iterable<Item> ): Array<Node> {
+function normalize( document: Document, nodes: Item | string | Iterable<Item | string> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

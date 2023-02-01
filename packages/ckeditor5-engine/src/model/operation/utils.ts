@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,22 +21,12 @@ import type Position from '../position';
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Contains functions used for composing model tree by {@link module:engine/model/operation/operation~Operation operations}.
- * Those functions are built on top of {@link module:engine/model/node~Node node}, and it's child classes', APIs.
- *
- * @protected
- * @namespace utils
- */
-
-/**
  * Inserts given nodes at given position.
  *
  * @internal
- * @protected
- * @function module:engine/model/operation/utils~utils.insert
- * @param {module:engine/model/position~Position} position Position at which nodes should be inserted.
- * @param {module:engine/model/node~NodeSet} normalizedNodes Nodes to insert.
- * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
+ * @param position Position at which nodes should be inserted.
+ * @param normalizedNodes Nodes to insert.
+ * @returns Range spanning over inserted elements.
  */
 export function _insert( position: Position, nodes: NodeSet ): Range {
 	const normalizedNodes = _normalizeNodes( nodes );
@@ -64,10 +54,7 @@ export function _insert( position: Position, nodes: NodeSet ): Range {
  * Removed nodes in given range. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
  * @internal
- * @protected
- * @function module:engine/model/operation/utils~utils._remove
- * @param {module:engine/model/range~Range} range Range containing nodes to remove.
- * @returns {Array.<module:engine/model/node~Node>}
+ * @param range Range containing nodes to remove.
  */
 export function _remove( this: any, range: Range ): Array<Node> {
 	if ( !range.isFlat ) {
@@ -102,11 +89,9 @@ export function _remove( this: any, range: Range ): Array<Node> {
  * Moves nodes in given range to given target position. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
  * @internal
- * @protected
- * @function module:engine/model/operation/utils~utils.move
- * @param {module:engine/model/range~Range} sourceRange Range containing nodes to move.
- * @param {module:engine/model/position~Position} targetPosition Position to which nodes should be moved.
- * @returns {module:engine/model/range~Range} Range containing moved nodes.
+ * @param sourceRange Range containing nodes to move.
+ * @param targetPosition Position to which nodes should be moved.
+ * @returns Range containing moved nodes.
  */
 export function _move( this: any, sourceRange: Range, targetPosition: Position ): Range {
 	if ( !sourceRange.isFlat ) {
@@ -134,11 +119,9 @@ export function _move( this: any, sourceRange: Range, targetPosition: Position )
  * Sets given attribute on nodes in given range. The attributes are only set on top-level nodes of the range, not on its children.
  *
  * @internal
- * @protected
- * @function module:engine/model/operation/utils~utils._setAttribute
- * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Must be a flat range.
- * @param {String} key Key of attribute to set.
- * @param {*} value Attribute value.
+ * @param range Range containing nodes that should have the attribute set. Must be a flat range.
+ * @param key Key of attribute to set.
+ * @param value Attribute value.
  */
 export function _setAttribute( range: Range, key: string, value: unknown ): void {
 	// Range might start or end in text nodes, so we have to split them.
@@ -170,10 +153,9 @@ export function _setAttribute( range: Range, key: string, value: unknown ): void
  * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~Node nodes}. See
  * {@link module:engine/model/node~NodeSet NodeSet} for details on how normalization is performed.
  *
- * @protected
- * @function module:engine/model/operation/utils~utils.normalizeNodes
- * @param {module:engine/model/node~NodeSet} nodes Objects to normalize.
- * @returns {Array.<module:engine/model/node~Node>} Normalized nodes.
+ * @internal
+ * @param nodes Objects to normalize.
+ * @returns Normalized nodes.
  */
 export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
 	const normalized: Array<Node> = [];
@@ -210,14 +192,15 @@ export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
 	return normalized;
 }
 
-// Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
-// merges them into one node if they have same attributes.
-//
-// Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
-//
-// @private
-// @param {module:engine/model/element~Element} element Parent element of nodes to merge.
-// @param {Number} index Index between nodes to merge.
+/**
+ * Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
+ * merges them into one node if they have same attributes.
+ *
+ * Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
+ *
+ * @param element Parent element of nodes to merge.
+ * @param index Index between nodes to merge.
+ */
 function _mergeNodesAtIndex( element: Element | DocumentFragment, index: number ) {
 	const nodeBefore = element.getChild( index - 1 );
 	const nodeAfter = element.getChild( index );
@@ -235,11 +218,12 @@ function _mergeNodesAtIndex( element: Element | DocumentFragment, index: number 
 	}
 }
 
-// Checks if given position is in a text node, and if so, splits the text node in two text nodes, each of them
-// containing a part of original text node.
-//
-// @private
-// @param {module:engine/model/position~Position} position Position at which node should be split.
+/**
+ * Checks if given position is in a text node, and if so, splits the text node in two text nodes, each of them
+ * containing a part of original text node.
+ *
+ * @param position Position at which node should be split.
+ */
 function _splitNodeAtPosition( position: Position ): void {
 	const textNode = position.textNode;
 	const element = position.parent;
@@ -257,12 +241,13 @@ function _splitNodeAtPosition( position: Position ): void {
 	}
 }
 
-// Checks whether two given nodes have same attributes.
-//
-// @private
-// @param {module:engine/model/node~Node} nodeA Node to check.
-// @param {module:engine/model/node~Node} nodeB Node to check.
-// @returns {Boolean} `true` if nodes have same attributes, `false` otherwise.
+/**
+ * Checks whether two given nodes have same attributes.
+ *
+ * @param nodeA Node to check.
+ * @param nodeB Node to check.
+ * @returns `true` if nodes have same attributes, `false` otherwise.
+ */
 function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
 	const iteratorA = nodeA.getAttributes();
 	const iteratorB = nodeB.getAttributes();
@@ -283,7 +268,7 @@ function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
  *
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~Node Node} is left as is,
- * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `String` are normalized to {@link module:engine/model/text~Text Text},
+ * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to {@link module:engine/model/text~Text Text},
  * * {@link module:engine/model/nodelist~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} is normalized to an array containing all of it's
  * * children.
@@ -291,10 +276,5 @@ function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
  * Arrays are processed item by item like non-array values and flattened to one array. Normalization always results in
  * a flat array of {@link module:engine/model/node~Node nodes}. Consecutive text nodes (or items normalized to text nodes) will be
  * merged if they have same attributes.
- *
- * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy|String|
- * module:engine/model/nodelist~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
- * module:engine/model/node~NodeSet
  */
-
 export type NodeSet = Item | string | NodeList | DocumentFragment | Iterable<Item | string | NodeList | DocumentFragment>;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -34,11 +34,11 @@ export interface GlobalType {
  * console.log( global.window.innerWidth );
  * ```
  */
-let global: GlobalType;
+let globalVar: GlobalType; // named globalVar instead of global: https://github.com/ckeditor/ckeditor5/issues/12971
 
 // In some environments window and document API might not be available.
 try {
-	global = { window, document };
+	globalVar = { window, document };
 } catch ( e ) {
 	// It's not possible to mock a window object to simulate lack of a window object without writing extremely convoluted code.
 	/* istanbul ignore next */
@@ -47,7 +47,7 @@ try {
 	// We only handle this so loading editor in environments without window and document doesn't fail.
 	// For better DX we shouldn't introduce mixed types and require developers to check the type manually.
 	// This module should not be used on purpose in any environment outside browser.
-	global = { window: {} as any, document: {} as any };
+	globalVar = { window: {} as any, document: {} as any };
 }
 
-export default global;
+export default globalVar;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,7 @@ import {
 	type EditorConfig,
 	type EditorReadyEvent
 } from 'ckeditor5/src/core';
+
 import { BalloonToolbar } from 'ckeditor5/src/ui';
 import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
 
@@ -201,7 +202,7 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * you need to define the list of
 	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated guide}.
+	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated} guide.
 	 *
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.

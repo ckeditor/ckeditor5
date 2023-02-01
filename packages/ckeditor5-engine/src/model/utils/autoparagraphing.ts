@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,9 +15,9 @@ import type Writer from '../writer';
 /**
  * Fixes all empty roots.
  *
- * @protected
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
+ * @internal
+ * @param writer The model writer.
+ * @returns `true` if any change has been applied, `false` otherwise.
  */
 export function autoParagraphEmptyRoots( writer: Writer ): boolean {
 	const { schema, document } = writer.model;
@@ -45,10 +45,9 @@ export function autoParagraphEmptyRoots( writer: Writer ): boolean {
  * Checks if the given node wrapped with a paragraph would be accepted by the schema in the given position.
  *
  * @internal
- * @protected
- * @param {module:engine/model/position~Position} position The position at which to check.
- * @param {module:engine/model/node~Node|String} nodeOrType The child node or child type to check.
- * @param {module:engine/model/schema~Schema} schema A schema instance used for element validation.
+ * @param position The position at which to check.
+ * @param nodeOrType The child node or child type to check.
+ * @param schema A schema instance used for element validation.
  */
 export function isParagraphable(
 	position: Position,
@@ -73,10 +72,10 @@ export function isParagraphable(
 /**
  * Inserts a new paragraph at the given position and returns a position inside that paragraph.
  *
- * @protected
- * @param {module:engine/model/position~Position} position The position where a paragraph should be inserted.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {module:engine/model/position~Position} Position inside the created paragraph.
+ * @internal
+ * @param position The position where a paragraph should be inserted.
+ * @param writer The model writer.
+ * @returns  Position inside the created paragraph.
  */
 export function wrapInParagraph( position: Position, writer: Writer ): Position {
 	const paragraph = writer.createElement( 'paragraph' );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,14 @@ import { keyCodes, env } from 'ckeditor5/src/utils';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators, openLink } from './utils';
+import {
+	createLinkElement,
+	ensureSafeUrl,
+	getLocalizedDecorators,
+	normalizeDecorators,
+	openLink,
+	addLinkProtocolIfApplicable
+} from './utils';
 
 import '../theme/link.css';
 
@@ -121,6 +128,9 @@ export default class LinkEditing extends Plugin {
 
 		// Handle removing the content after the link element.
 		this._handleDeleteContentAfterLink();
+
+		// Handle adding default protocol to pasted links.
+		this._enableClipboardIntegration();
 	}
 
 	/**
@@ -577,6 +587,35 @@ export default class LinkEditing extends Plugin {
 				removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 			} );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Enables URL fixing on pasting.
+	 *
+	 * @private
+	 */
+	_enableClipboardIntegration() {
+		const editor = this.editor;
+		const model = editor.model;
+		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+
+		if ( !defaultProtocol ) {
+			return;
+		}
+
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'contentInsertion', ( evt, data ) => {
+			model.change( writer => {
+				const range = writer.createRangeIn( data.content );
+
+				for ( const item of range.getItems() ) {
+					if ( item.hasAttribute( 'linkHref' ) ) {
+						const newLink = addLinkProtocolIfApplicable( item.getAttribute( 'linkHref' ), defaultProtocol );
+
+						writer.setAttribute( 'linkHref', newLink, item );
+					}
+				}
+			} );
+		} );
 	}
 }
 

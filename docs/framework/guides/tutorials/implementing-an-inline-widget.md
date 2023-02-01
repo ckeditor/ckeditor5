@@ -245,7 +245,7 @@ The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefi
 
 ### Defining the schema
 
-The `<placeholder>` element should be treated as `$text` so it must be defined with `isInline: true`. You want to allow it wherever the `$text` is allowed so you add `allowWhere: '$text'`. Finally, you will also need the `name` attribute.
+The `<placeholder>` element should be treated as an object in `$text` so it must be defined with `inheritAllFrom: '$inlineObject'`. You will also need the `name` attribute.
 
 You will also use this opportunity to import the theme file (`theme/placeholder.css`).
 
@@ -267,17 +267,10 @@ export default class PlaceholderEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'placeholder', {
-			// Allow wherever text is allowed:
-			allowWhere: '$text',
-
-			// The placeholder will act as an inline node:
-			isInline: true,
-
-			// The inline widget is self-contained so it cannot be split by the caret and can be selected:
-			isObject: true,
-
+			// Behaves like a self-contained inline object (e.g. an inline image)
+			// allowed in places where $text is allowed (e.g. in paragraphs).
 			// The inline widget can have the same attributes as text (for example linkHref, bold).
-			allowAttributesOf: '$text',
+			inheritAllFrom: '$inlineObject',
 
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
@@ -321,6 +314,7 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 
@@ -414,11 +408,8 @@ export default class PlaceholderCommand extends Command {
                 name: value
 			} );
 
-			// ... and insert it into the document.
-			editor.model.insertContent( placeholder );
-
-			// Put the selection on the inserted element.
-			writer.setSelection( placeholder, 'on' );
+			// ... and insert it into the document. Put the selection on the inserted element.
+			editor.model.insertObject( placeholder, null, null, { setSelection: 'on' } );
 		} );
 	}
 
@@ -462,10 +453,12 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
+		// Previously defined converters.
 		// ...
 	}
 }
@@ -544,10 +537,12 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 
 	_defineConverters() {
+		// Previously defined converters.
 		// ...
 	}
 }
@@ -656,9 +651,11 @@ ClassicEditor
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
 	} )
 	.then( editor => {
+		// This code runs after the editor initialization.
 		// ...
 	} )
 	.catch( error => {
+		// Error handling if something goes wrong during initialization.
 		// ...
 	} );
 ```
@@ -668,7 +665,8 @@ To make this plugin extensible, placeholder types will be read from the editor c
 The first step is to define the placeholder configuration in the editing plugin:
 
 ```js
-// ... imports
+// Previously imported packages.
+// ...
 
 export default class PlaceholderEditing extends Plugin {
 	static get requires() {
@@ -694,10 +692,12 @@ export default class PlaceholderEditing extends Plugin {
 	}
 
 	_defineConverters() {
+		// Previously defined converters.
 		// ...
 	}
 
 	_defineSchema() {
+		// Previously registered schema.
 		// ...
 	}
 }
@@ -715,6 +715,7 @@ export default class PlaceholderUI extends Plugin {
 		const placeholderNames = editor.config.get( 'placeholderConfig.types' );            // CHANGED
 
 		editor.ui.componentFactory.add( 'placeholder', locale => {
+			// Previously registered dropdown among UI components.
 			// ...
 		} );
 	}
@@ -724,7 +725,8 @@ export default class PlaceholderUI extends Plugin {
 The plugin is now ready to accept the configuration. Check how this works by adding the `placeholderConfig` configuration in the editor's `create()` method:
 
 ```js
-// ... imports
+// Previously imported packages.
+// ...
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -734,6 +736,7 @@ ClassicEditor
 			types: [ 'date', 'color', 'first name', 'surname' ]                             // ADDED
 		}
 	} )
+	// Promise handling.
 	// ...
 ```
 
@@ -787,11 +790,8 @@ class PlaceholderCommand extends Command {
 				name: value
 			} );
 
-			// ... and insert it into the document.
-			editor.model.insertContent( placeholder );
-
-			// Put the selection on the inserted element.
-			writer.setSelection( placeholder, 'on' );
+			// ... and insert it into the document. Put the selection on the inserted element.
+			editor.model.insertObject( placeholder, null, null, { setSelection: 'on' } );
 		} );
 	}
 
@@ -888,17 +888,10 @@ class PlaceholderEditing extends Plugin {
 		const schema = this.editor.model.schema;
 
 		schema.register( 'placeholder', {
-			// Allow wherever text is allowed:
-			allowWhere: '$text',
-
-			// The placeholder will act as an inline node:
-			isInline: true,
-
-			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
-			isObject: true,
-
+			// Behaves like a self-contained inline object (e.g. an inline image)
+			// allowed in places where $text is allowed (e.g. in paragraphs).
 			// The inline widget can have the same attributes as text (for example linkHref, bold).
-			allowAttributesOf: '$text',
+			inheritAllFrom: '$inlineObject',
 
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]

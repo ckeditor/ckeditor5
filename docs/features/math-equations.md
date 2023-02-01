@@ -73,11 +73,11 @@ import MathType from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MathType, ... ],
-		toolbar: [ 'MathType', 'ChemType', ... ]
+		plugins: [ MathType, /* ... */ ],
+		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -100,13 +100,13 @@ To install the Java service, follow the steps below:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
-			plugins: [ ..., MathType, ... ],
+			plugins: [ MathType, /* ... */ ],
 			toolbar: {
 				items: [
-					...,
 					'MathType',
 					'ChemType',
-					...,
+					// More toolbar items. 
+					// ...
 				]
 			},
 			language: 'en',
@@ -132,13 +132,13 @@ To install the PHP service, follow the steps below:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
-			plugins: [ ..., MathType, ... ],
+			plugins: [ MathType, /* ... */ ],
 			toolbar: {
 				items: [
-					...,
 					'MathType',
 					'ChemType',
-					...,
+					// More toolbar items. 
+					// ...
 				]
 			},
 			language: 'en',
@@ -164,13 +164,13 @@ To install the .NET service, follow the steps below:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
-			plugins: [ ..., MathType, ... ],
+			plugins: [ MathType, /* ... */ ],
 			toolbar: {
 				items: [
-					...,
 					'MathType',
 					'ChemType',
-					...,
+					// More toolbar items. 
+					// ...
 				]
 			},
 			language: 'en',
@@ -201,13 +201,13 @@ To install the Ruby on Rails service, follow the steps below:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
-			plugins: [ ..., MathType, ... ],
+			plugins: [ MathType, /* ... */ ],
 			toolbar: {
 				items: [
-					...,
 					'MathType',
 					'ChemType',
-					...,
+					// More toolbar items. 
+					// ...
 				]
 			},
 			language: 'en',

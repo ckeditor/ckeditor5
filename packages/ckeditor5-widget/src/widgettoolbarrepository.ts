@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,6 @@
 import {
 	Plugin,
 	type Editor,
-	type EditorUIUpdateEvent,
 	type PluginDependencies,
 	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
@@ -22,6 +21,7 @@ import {
 	ContextualBalloon,
 	ToolbarView,
 	type BaloonToolbarShowEvent,
+	type EditorUIUpdateEvent,
 	type View
 } from '@ckeditor/ckeditor5-ui';
 
@@ -189,12 +189,12 @@ export default class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
-
 		const toolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName
+			balloonClassName,
+			itemsConfig: items,
+			initialized: false
 		};
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
@@ -282,6 +282,11 @@ export default class WidgetToolbarRepository extends Plugin {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
 			repositionContextualBalloon( this.editor, relatedElement );
 		} else if ( !this._isToolbarInBalloon( toolbarDefinition ) ) {
+			if ( !toolbarDefinition.initialized ) {
+				toolbarDefinition.initialized = true;
+				toolbarDefinition.view.fillFromConfig( toolbarDefinition.itemsConfig, this.editor.ui.componentFactory );
+			}
+
 			this._balloon.add( {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
@@ -368,9 +373,11 @@ function isWidgetSelected( selection: ViewDocumentSelection ) {
  * @property {String} balloonClassName CSS class for the widget balloon when a toolbar is displayed.
  */
 interface WidgetRepositoryToolbarDefinition {
-	view: View;
+	view: ToolbarView;
 	getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement | null | undefined;
 	balloonClassName: string;
+	itemsConfig: Array<ToolbarConfigItem>;
+	initialized: boolean;
 }
 
 declare module '@ckeditor/ckeditor5-core' {

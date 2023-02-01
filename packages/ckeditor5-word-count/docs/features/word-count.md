@@ -47,7 +47,7 @@ ClassicEditor
 
 		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
 	} )
-	.catch( ... );
+	.catch( /* ... */ );
 ```
 
 ## Related features
@@ -55,7 +55,7 @@ ClassicEditor
 CKEditor 5 provides other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link installation/advanced/saving-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
+* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
 * {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
 * {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
 
@@ -95,7 +95,7 @@ You can execute your custom callback every time content statistics change by def
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, ... ],
+		plugins: [ WordCount, /* ... */ ],
 		wordCount: {
 			onUpdate: stats => {
 				// Prints the current content statistics.
@@ -103,8 +103,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
@@ -156,7 +156,7 @@ BalloonEditor
 			}
 		}
 	} )
-	.catch( ... );
+	.catch( /* ... */ );
 ```
 
 Here is the HTML structure used to create the customized word and character count implementation above:
@@ -259,10 +259,10 @@ import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ WordCount, ... ],
+		plugins: [ WordCount, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

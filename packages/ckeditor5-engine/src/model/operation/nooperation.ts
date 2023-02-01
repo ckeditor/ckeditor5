@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,8 +16,6 @@ import Operation from './operation';
  * In most cases this operation is a result of transforming operations. When transformation returns
  * {@link module:engine/model/operation/nooperation~NoOperation} it means that changes done by the transformed operation
  * have already been applied.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class NoOperation extends Operation {
 	public get type(): 'noop' {
@@ -26,8 +24,6 @@ export default class NoOperation extends Operation {
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
-	 *
-	 * @returns {module:engine/model/operation/nooperation~NoOperation} Clone of this operation.
 	 */
 	public clone(): NoOperation {
 		return new NoOperation( this.baseVersion );
@@ -35,8 +31,6 @@ export default class NoOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/nooperation~NoOperation}
 	 */
 	public getReversed(): Operation {
 		return new NoOperation( this.baseVersion! + 1 );

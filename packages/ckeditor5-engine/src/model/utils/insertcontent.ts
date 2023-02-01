@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,9 +10,10 @@
 import DocumentSelection from '../documentselection';
 import Element from '../element';
 import LivePosition from '../liveposition';
+import LiveRange from '../liverange';
 import Position from '../position';
 import Range from '../range';
-import Selection, { type Selectable } from '../selection';
+import Selection, { type PlaceOrOffset, type Selectable } from '../selection';
 
 import type DocumentFragment from '../documentfragment';
 import type Item from '../item';
@@ -22,7 +23,6 @@ import type Schema from '../schema';
 import type Writer from '../writer';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import { LiveRange } from '../../index';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste functionality to work.
@@ -31,11 +31,13 @@ import { LiveRange } from '../../index';
  *
  * Some examples:
  *
- * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
- * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
- * 		<p>x^y</p> + <img /> => <p>x</p>^<p>y</p> + <img /> => <p>x</p><img /><p>y</p>
- * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p> (no merging)
- * 		<p>x</p>[<img />]<p>z</p> + <p>y</p> => <p>x</p>^<p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p>
+ * ```html
+ * <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+ * <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
+ * <p>x^y</p> + <img /> => <p>x</p>^<p>y</p> + <img /> => <p>x</p><img /><p>y</p>
+ * <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p> (no merging)
+ * <p>x</p>[<img />]<p>z</p> + <p>y</p> => <p>x</p>^<p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p>
+ * ```
  *
  * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
@@ -46,13 +48,11 @@ import { LiveRange } from '../../index';
  * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
  *
- * @param {module:engine/model/model~Model} model The model in context of which the insertion
- * should be performed.
- * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
- * Selection into which the content should be inserted.
- * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
- * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
+ * @param model The model in context of which the insertion should be performed.
+ * @param content The content to insert.
+ * @param selectable Selection into which the content should be inserted.
+ * @param placeOrOffset Sets place or offset of the selection.
+ * @returns Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
  */
@@ -60,7 +60,7 @@ export default function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
 	selectable?: Selectable,
-	placeOrOffset?: number | 'before' | 'end' | 'after' | 'on' | 'in'
+	placeOrOffset?: PlaceOrOffset
 ): Range {
 	return model.change( writer => {
 		let selection: Selection | DocumentSelection;
@@ -236,137 +236,97 @@ export default function insertContent(
 
 /**
  * Utility class for performing content insertion.
- *
- * @private
  */
 class Insertion {
+	/**
+	 * The model in context of which the insertion should be performed.
+	 */
 	public readonly model: Model;
+
+	/**
+	 * Batch to which operations will be added.
+	 */
 	public readonly writer: Writer;
+
+	/**
+	 * The position at which (or near which) the next node will be inserted.
+	 */
 	public position: Position;
+
+	/**
+	 * Elements with which the inserted elements can be merged.
+	 *
+	 * ```html
+	 * <p>x^</p><p>y</p> + <p>z</p> (can merge to <p>x</p>)
+	 * <p>x</p><p>^y</p> + <p>z</p> (can merge to <p>y</p>)
+	 * <p>x^y</p> + <p>z</p> (can merge to <p>xy</p> which will be split during the action,
+	 * 						so both its pieces will be added to this set)
+	 * ```
+	 */
 	public readonly canMergeWith: Set<Node | DocumentFragment | null>;
+
+	/**
+	 * Schema of the model.
+	 */
 	public readonly schema: Schema;
 
+	/**
+	 * The temporary DocumentFragment used for grouping multiple nodes for single insert operation.
+	 */
 	private readonly _documentFragment: DocumentFragment;
+
+	/**
+	 * The current position in the temporary DocumentFragment.
+	 */
 	private _documentFragmentPosition: Position;
-	private _firstNode: Node | null;
-	private _lastNode: Node | null;
-	private _lastAutoParagraph: Element | null;
-	private _filterAttributesOf: Array<Node>;
-	private _affectedStart: LivePosition | null;
-	private _affectedEnd: LivePosition | null;
-	private _nodeToSelect?: Node | null;
+
+	/**
+	 * The reference to the first inserted node.
+	 */
+	private _firstNode: Node | null = null;
+
+	/**
+	 * The reference to the last inserted node.
+	 */
+	private _lastNode: Node | null = null;
+
+	/**
+	 * The reference to the last auto paragraph node.
+	 */
+	private _lastAutoParagraph: Element | null = null;
+
+	/**
+	 * The array of nodes that should be cleaned of not allowed attributes.
+	 */
+	private _filterAttributesOf: Array<Node> = [];
+
+	/**
+	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
+	 */
+	private _affectedStart: LivePosition | null = null;
+
+	/**
+	 * End of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
+	 */
+	private _affectedEnd: LivePosition | null = null;
+
+	private _nodeToSelect: Node | null = null;
 
 	constructor( model: Model, writer: Writer, position: Position ) {
-		/**
-		 * The model in context of which the insertion should be performed.
-		 *
-		 * @member {module:engine/model~Model} #model
-		 */
 		this.model = model;
-
-		/**
-		 * Batch to which operations will be added.
-		 *
-		 * @member {module:engine/controller/writer~Batch} #writer
-		 */
 		this.writer = writer;
-
-		/**
-		 * The position at which (or near which) the next node will be inserted.
-		 *
-		 * @member {module:engine/model/position~Position} #position
-		 */
 		this.position = position;
-
-		/**
-		 * Elements with which the inserted elements can be merged.
-		 *
-		 *		<p>x^</p><p>y</p> + <p>z</p> (can merge to <p>x</p>)
-		 *		<p>x</p><p>^y</p> + <p>z</p> (can merge to <p>y</p>)
-		 *		<p>x^y</p> + <p>z</p> (can merge to <p>xy</p> which will be split during the action,
-		 *								so both its pieces will be added to this set)
-		 *
-		 *
-		 * @member {Set} #canMergeWith
-		 */
 		this.canMergeWith = new Set( [ this.position.parent ] );
-
-		/**
-		 * Schema of the model.
-		 *
-		 * @member {module:engine/model/schema~Schema} #schema
-		 */
 		this.schema = model.schema;
 
-		/**
-		 * The temporary DocumentFragment used for grouping multiple nodes for single insert operation.
-		 *
-		 * @private
-		 * @type {module:engine/model/documentfragment~DocumentFragment}
-		 */
 		this._documentFragment = writer.createDocumentFragment();
-
-		/**
-		 * The current position in the temporary DocumentFragment.
-		 *
-		 * @private
-		 * @type {module:engine/model/position~Position}
-		 */
 		this._documentFragmentPosition = writer.createPositionAt( this._documentFragment, 0 );
-
-		/**
-		 * The reference to the first inserted node.
-		 *
-		 * @private
-		 * @type {module:engine/model/node~Node}
-		 */
-		this._firstNode = null;
-
-		/**
-		 * The reference to the last inserted node.
-		 *
-		 * @private
-		 * @type {module:engine/model/node~Node}
-		 */
-		this._lastNode = null;
-
-		/**
-		 * The reference to the last auto paragraph node.
-		 *
-		 * @private
-		 * @type {module:engine/model/node~Node}
-		 */
-		this._lastAutoParagraph = null;
-
-		/**
-		 * The array of nodes that should be cleaned of not allowed attributes.
-		 *
-		 * @private
-		 * @type {Array.<module:engine/model/node~Node>}
-		 */
-		this._filterAttributesOf = [];
-
-		/**
-		 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
-		 *
-		 * @private
-		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedStart
-		 */
-		this._affectedStart = null;
-
-		/**
-		 * End of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
-		 *
-		 * @private
-		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedEnd
-		 */
-		this._affectedEnd = null;
 	}
 
 	/**
 	 * Handles insertion of a set of nodes.
 	 *
-	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to insert.
+	 * @param nodes Nodes to insert.
 	 */
 	public handleNodes( nodes: Iterable<Node> ): void {
 		for ( const node of Array.from( nodes ) ) {
@@ -393,8 +353,7 @@ class Insertion {
 	/**
 	 * Updates the last node after the auto paragraphing.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The last auto paragraphing node.
+	 * @param node The last auto paragraphing node.
 	 */
 	private _updateLastNodeFromAutoParagraph( node: Node ): void {
 		const positionAfterLastNode = this.writer.createPositionAfter( this._lastNode! );
@@ -420,8 +379,6 @@ class Insertion {
 	/**
 	 * Returns range to be selected after insertion.
 	 * Returns `null` if there is no valid range to select after insertion.
-	 *
-	 * @returns {module:engine/model/range~Range|null}
 	 */
 	public getSelectionRange(): Range | null {
 		if ( this._nodeToSelect ) {
@@ -434,8 +391,6 @@ class Insertion {
 	/**
 	 * Returns a range which contains all the performed changes. This is a range that, if removed, would return the model to the state
 	 * before the insertion. Returns `null` if no changes were done.
-	 *
-	 * @returns {module:engine/model/range~Range|null}
 	 */
 	public getAffectedRange(): Range | null {
 		if ( !this._affectedStart ) {
@@ -460,9 +415,6 @@ class Insertion {
 
 	/**
 	 * Handles insertion of a single node.
-	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node
 	 */
 	private _handleNode( node: Node ): void {
 		// Let's handle object in a special way.
@@ -505,8 +457,6 @@ class Insertion {
 
 	/**
 	 * Inserts the temporary DocumentFragment into the model.
-	 *
-	 * @private
 	 */
 	private _insertPartialFragment(): void {
 		if ( this._documentFragment.isEmpty ) {
@@ -542,8 +492,7 @@ class Insertion {
 	}
 
 	/**
-	 * @private
-	 * @param {module:engine/model/element~Element} node The object element.
+	 * @param node The object element.
 	 */
 	private _handleObject( node: Element ): void {
 		// Try finding it a place in the tree.
@@ -557,8 +506,7 @@ class Insertion {
 	}
 
 	/**
-	 * @private
-	 * @param {module:engine/model/node~Node} node The disallowed node which needs to be handled.
+	 * @param node The disallowed node which needs to be handled.
 	 */
 	private _handleDisallowedNode( node: Node ): void {
 		// If the node is an element, try inserting its children (strip the parent).
@@ -574,8 +522,7 @@ class Insertion {
 	/**
 	 * Append a node to the temporary DocumentFragment.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The node to insert.
+	 * @param node The node to insert.
 	 */
 	private _appendToFragment( node: Node ): void {
 		/* istanbul ignore if */
@@ -587,8 +534,8 @@ class Insertion {
 			 * Given node cannot be inserted on the given position.
 			 *
 			 * @error insertcontent-wrong-position
-			 * @param {module:engine/model/node~Node} node Node to insert.
-			 * @param {module:engine/model/position~Position} position Position to insert the node at.
+			 * @param node Node to insert.
+			 * @param position Position to insert the node at.
 			 */
 			throw new CKEditorError(
 				'insertcontent-wrong-position',
@@ -616,9 +563,6 @@ class Insertion {
 	 *
 	 * This method is used before inserting a node or splitting a parent node. `_affectedStart` and `_affectedEnd` are also changed
 	 * during merging, but the logic there is more complicated so it is left out of this function.
-	 *
-	 * @private
-	 * @param {module:engine/model/position~Position} position
 	 */
 	private _setAffectedBoundaries( position: Position ): void {
 		// Set affected boundaries stickiness so that those position will "expand" when something is inserted in between them:
@@ -646,8 +590,6 @@ class Insertion {
 	 *
 	 * After the content was inserted we may try to merge it with its siblings.
 	 * This should happen only if the selection was in those elements initially.
-	 *
-	 * @private
 	 */
 	private _mergeOnLeft(): void {
 		const node = this._firstNode;
@@ -726,8 +668,6 @@ class Insertion {
 	 *
 	 * After the content was inserted we may try to merge it with its siblings.
 	 * This should happen only if the selection was in those elements initially.
-	 *
-	 * @private
 	 */
 	private _mergeOnRight(): void {
 		const node = this._lastNode;
@@ -810,9 +750,7 @@ class Insertion {
 	/**
 	 * Checks whether specified node can be merged with previous sibling element.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
-	 * @returns {Boolean}
+	 * @param node The node which could potentially be merged.
 	 */
 	private _canMergeLeft( node: Element ): boolean {
 		const previousSibling = node.previousSibling;
@@ -825,9 +763,7 @@ class Insertion {
 	/**
 	 * Checks whether specified node can be merged with next sibling element.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
-	 * @returns {Boolean}
+	 * @param node The node which could potentially be merged.
 	 */
 	private _canMergeRight( node: Element ): boolean {
 		const nextSibling = node.nextSibling;
@@ -840,8 +776,7 @@ class Insertion {
 	/**
 	 * Tries wrapping the node in a new paragraph and inserting it this way.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The node which needs to be autoparagraphed.
+	 * @param node The node which needs to be autoparagraphed.
 	 */
 	private _tryAutoparagraphing( node: Node ): void {
 		const paragraph = this.writer.createElement( 'paragraph' );
@@ -859,9 +794,7 @@ class Insertion {
 	 * Checks if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
 	 * It also handles inserting the paragraph.
 	 *
-	 * @private
-	 * @param {module:engine/model/node~Node} node The node.
-	 * @returns {Boolean} Whether an allowed position was found.
+	 * @returns Whether an allowed position was found.
 	 * `false` is returned if the node isn't allowed at the current position or in auto paragraph, `true` if was.
 	 */
 	private _checkAndAutoParagraphToAllowedPosition( node: Node ): boolean {
@@ -892,9 +825,7 @@ class Insertion {
 	}
 
 	/**
-	 * @private
-	 * @param {module:engine/model/node~Node} node
-	 * @returns {Boolean} Whether an allowed position was found.
+	 * @returns Whether an allowed position was found.
 	 * `false` is returned if the node isn't allowed at any position up in the tree, `true` if was.
 	 */
 	private _checkAndSplitToAllowedPosition( node: Node ): boolean {
@@ -951,10 +882,8 @@ class Insertion {
 	/**
 	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} contextElement The element in which context the node should be checked.
-	 * @param {module:engine/model/node~Node} childNode The node to check.
-	 * @returns {module:engine/model/element~Element|null}
+	 * @param contextElement The element in which context the node should be checked.
+	 * @param childNode The node to check.
 	 */
 	private _getAllowedIn( contextElement: Element, childNode: Node ): Element | null {
 		if ( this.schema.checkChild( contextElement, childNode ) ) {

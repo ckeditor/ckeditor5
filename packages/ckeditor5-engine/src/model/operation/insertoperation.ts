@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,49 +21,43 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to insert one or more nodes at given position in the model.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class InsertOperation extends Operation {
+	/**
+	 * Position of insertion.
+	 *
+	 * @readonly
+	 */
 	public position: Position;
+
+	/**
+	 * List of nodes to insert.
+	 *
+	 * @readonly
+	 */
 	public nodes: NodeList;
+
+	/**
+	 * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
+	 * during operational transformation. This happens when the operation insertion position is inside of a range
+	 * where attributes have changed.
+	 */
 	public shouldReceiveAttributes: boolean;
 
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param {module:engine/model/position~Position} position Position of insertion.
-	 * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param position Position of insertion.
+	 * @param nodes The list of nodes to be inserted.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position: Position, nodes: NodeSet, baseVersion: number | null ) {
 		super( baseVersion );
 
-		/**
-		 * Position of insertion.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~InsertOperation#position
-		 */
 		this.position = position.clone();
 		this.position.stickiness = 'toNone';
-
-		/**
-		 * List of nodes to insert.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
-		 */
 		this.nodes = new NodeList( _normalizeNodes( nodes ) );
-
-		/**
-		 * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
-		 * during operational transformation. This happens when the operation insertion position is inside of a range
-		 * where attributes have changed.
-		 *
-		 * @member {Boolean} module:engine/model/operation/insertoperation~InsertOperation#shouldReceiveAttributes
-		 */
 		this.shouldReceiveAttributes = false;
 	}
 
@@ -76,8 +70,6 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * Total offset size of inserted nodes.
-	 *
-	 * @returns {Number}
 	 */
 	public get howMany(): number {
 		return this.nodes.maxOffset;
@@ -85,8 +77,6 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
-	 *
-	 * @returns {module:engine/model/operation/insertoperation~InsertOperation} Clone of this operation.
 	 */
 	public clone(): InsertOperation {
 		const nodes = new NodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
@@ -99,8 +89,6 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	public getReversed(): Operation {
 		const graveyard = this.position.root.document!.graveyard;
@@ -166,9 +154,8 @@ export default class InsertOperation extends Operation {
 	/**
 	 * Creates `InsertOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): InsertOperation {
 		const children = [];

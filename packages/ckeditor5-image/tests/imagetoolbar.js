@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -83,11 +83,25 @@ describe( 'ImageToolbar', () => {
 
 	describe( 'toolbar', () => {
 		it( 'should use the config.image.toolbar to create items', () => {
+			// Make sure that toolbar is empty before first show.
+			expect( toolbar.items.length ).to.equal( 0 );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
+
 			expect( toolbar.items ).to.have.length( 2 );
 			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
 		} );
 
 		it( 'should convert the declarative dropdown definition to the component factory item name', () => {
+			// Make sure that toolbar is empty before first show.
+			expect( toolbar.items.length ).to.equal( 0 );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
+
 			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Centered image' );
 			expect( toolbar.items.get( 1 ).buttonView.arrowView.label ).to.equal( 'Fake dropdown' );
 		} );

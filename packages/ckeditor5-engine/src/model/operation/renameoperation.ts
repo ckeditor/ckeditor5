@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,47 +19,40 @@ import type Document from '../document';
  * Operation to change element's name.
  *
  * Using this class you can change element's name.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class RenameOperation extends Operation {
+	/**
+	 * Position before an element to change.
+	 */
 	public position: Position;
+
+	/**
+	 * Current name of the element.
+	 */
 	public oldName: string;
+
+	/**
+	 * New name for the element.
+	 */
 	public newName: string;
 
 	/**
 	 * Creates an operation that changes element's name.
 	 *
-	 * @param {module:engine/model/position~Position} position Position before an element to change.
-	 * @param {String} oldName Current name of the element.
-	 * @param {String} newName New name for the element.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param position Position before an element to change.
+	 * @param oldName Current name of the element.
+	 * @param newName New name for the element.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position: Position, oldName: string, newName: string, baseVersion: number | null ) {
 		super( baseVersion );
 
-		/**
-		 * Position before an element to change.
-		 *
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/renameoperation~RenameOperation#position
-		 */
 		this.position = position;
 		// This position sticks to the next node because it is a position before the node that we want to change.
 		this.position.stickiness = 'toNext';
 
-		/**
-		 * Current name of the element.
-		 *
-		 * @member {String} module:engine/model/operation/renameoperation~RenameOperation#oldName
-		 */
 		this.oldName = oldName;
-
-		/**
-		 * New name for the element.
-		 *
-		 * @member {String} module:engine/model/operation/renameoperation~RenameOperation#newName
-		 */
 		this.newName = newName;
 	}
 
@@ -73,7 +66,7 @@ export default class RenameOperation extends Operation {
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
-	 * @returns {module:engine/model/operation/renameoperation~RenameOperation} Clone of this operation.
+	 * @returns Clone of this operation.
 	 */
 	public clone(): RenameOperation {
 		return new RenameOperation( this.position.clone(), this.oldName, this.newName, this.baseVersion );
@@ -81,8 +74,6 @@ export default class RenameOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/renameoperation~RenameOperation}
 	 */
 	public getReversed(): Operation {
 		return new RenameOperation( this.position.clone(), this.newName, this.oldName, this.baseVersion! + 1 );
@@ -149,9 +140,8 @@ export default class RenameOperation extends Operation {
 	/**
 	 * Creates `RenameOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): RenameOperation {
 		return new RenameOperation( Position.fromJSON( json.position, document ), json.oldName, json.newName, json.baseVersion );

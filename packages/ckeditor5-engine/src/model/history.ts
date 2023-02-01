@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,73 +15,42 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * `History` keeps the track of all the operations applied to the {@link module:engine/model/document~Document document}.
  */
 export default class History {
-	private _operations: Array<Operation>;
-	private _undoPairs: Map<Operation, Operation>;
-	private _undoneOperations: Set<Operation>;
-	private _baseVersionToOperationIndex: Map<number, number>;
-	private _version: number;
-	private _gaps: Map<number, number>;
+	/**
+	 * Operations added to the history.
+	 */
+	private _operations: Array<Operation> = [];
 
 	/**
-	 * Creates an empty History instance.
+	 * Holds an information which {@link module:engine/model/operation/operation~Operation operation} undoes which
+	 * {@link module:engine/model/operation/operation~Operation operation}.
+	 *
+	 * Keys of the map are "undoing operations", that is operations that undone some other operations. For each key, the
+	 * value is an operation that has been undone by the "undoing operation".
 	 */
-	constructor() {
-		/**
-		 * Operations added to the history.
-		 *
-		 * @private
-		 * @readonly
-		 * @type {Array.<module:engine/model/operation/operation~Operation>}
-		 */
-		this._operations = [];
+	private _undoPairs: Map<Operation, Operation> = new Map();
 
-		/**
-		 * Holds an information which {@link module:engine/model/operation/operation~Operation operation} undoes which
-		 * {@link module:engine/model/operation/operation~Operation operation}.
-		 *
-		 * Keys of the map are "undoing operations", that is operations that undone some other operations. For each key, the
-		 * value is an operation that has been undone by the "undoing operation".
-		 *
-		 * @private
-		 * @member {Map} module:engine/model/history~History#_undoPairs
-		 */
-		this._undoPairs = new Map();
+	/**
+	 * Holds all undone operations.
+	 */
+	private _undoneOperations: Set<Operation> = new Set();
 
-		/**
-		 * Holds all undone operations.
-		 *
-		 * @private
-		 * @type {Set.<module:engine/model/operation/operation~Operation>}
-		 */
-		this._undoneOperations = new Set();
+	/**
+	 * A map that allows retrieving the operations fast based on the given base version.
+	 */
+	private _baseVersionToOperationIndex: Map<number, number> = new Map();
 
-		/**
-		 * A map that allows retrieving the operations fast based on the given base version.
-		 *
-		 * @private
-		 * @type Map.<Number,Number>
-		 */
-		this._baseVersionToOperationIndex = new Map();
+	/**
+	 * The history version.
+	 */
+	private _version: number = 0;
 
-		/**
-		 * The history version.
-		 *
-		 * @private
-		 * @type {Number}
-		 */
-		this._version = 0;
-
-		/**
-		 * The gap pairs kept in the <from,to> format.
-		 *
-		 * Anytime the `history.version` is set to a version larger than `history.version + 1`,
-		 * a new <lastHistoryVersion, newHistoryVersion> entry is added to the map.
-		 *
-		 * @private
-		 * @type Map.<number,number>
-		 */
-		this._gaps = new Map();
-	}
+	/**
+	 * The gap pairs kept in the <from,to> format.
+	 *
+	 * Anytime the `history.version` is set to a version larger than `history.version + 1`,
+	 * a new <lastHistoryVersion, newHistoryVersion> entry is added to the map.
+	 */
+	private _gaps: Map<number, number> = new Map();
 
 	/**
 	 * The version of the last operation in the history.
@@ -90,8 +59,6 @@ export default class History {
 	 * Setting the version manually should be done only in rare circumstances when a gap is planned
 	 * between history versions. When doing so, a gap will be created and the history will accept adding
 	 * an operation with base version equal to the new history version.
-	 *
-	 * @type {Number}
 	 */
 	public get version(): number {
 		return this._version;
@@ -109,9 +76,6 @@ export default class History {
 
 	/**
 	 * The last history operation.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/operation/operation~Operation|undefined}
 	 */
 	public get lastOperation(): Operation | undefined {
 		return this._operations[ this._operations.length - 1 ];
@@ -121,8 +85,6 @@ export default class History {
 	 * Adds an operation to the history and increments the history version.
 	 *
 	 * The operation's base version should be equal to the history version. Otherwise an error is thrown.
-	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to add.
 	 */
 	public addOperation( operation: Operation ): void {
 		if ( operation.baseVersion !== this.version ) {
@@ -130,7 +92,7 @@ export default class History {
 			 * Only operations with matching versions can be added to the history.
 			 *
 			 * @error model-document-history-addoperation-incorrect-version
-			 * @param {Object} errorData The operation and the current document history version.
+			 * @param errorData The operation and the current document history version.
 			 */
 			throw new CKEditorError( 'model-document-history-addoperation-incorrect-version', this, {
 				operation,
@@ -149,11 +111,11 @@ export default class History {
 	 *
 	 * Note that there may be gaps in operations base versions.
 	 *
-	 * @param {Number} [fromBaseVersion] Base version from which operations should be returned (inclusive).
-	 * @param {Number} [toBaseVersion] Base version up to which operations should be returned (exclusive).
-     * @returns {Array.<module:engine/model/operation/operation~Operation>} History operations for the given range, in chronological order.
+	 * @param fromBaseVersion Base version from which operations should be returned (inclusive).
+	 * @param toBaseVersion Base version up to which operations should be returned (exclusive).
+     * @returns History operations for the given range, in chronological order.
 	 */
-	public getOperations( fromBaseVersion: number, toBaseVersion: number = this.version ): Array<Operation> {
+	public getOperations( fromBaseVersion?: number, toBaseVersion: number = this.version ): Array<Operation> {
 		// When there is no operation in the history, return an empty array.
 		// After that we can be sure that `firstOperation`, `lastOperation` are not nullish.
 		if ( !this._operations.length ) {
@@ -214,9 +176,8 @@ export default class History {
 	/**
 	 * Returns operation from the history that bases on given `baseVersion`.
 	 *
-	 * @param {Number} baseVersion Base version of the operation to get.
-	 * @returns {module:engine/model/operation/operation~Operation|undefined} Operation with given base version or `undefined` if
-	 * there is no such operation in history.
+	 * @param baseVersion Base version of the operation to get.
+	 * @returns Operation with given base version or `undefined` if there is no such operation in history.
 	 */
 	public getOperation( baseVersion: number ): Operation | undefined {
 		const operationIndex = this._baseVersionToOperationIndex.get( baseVersion );
@@ -232,8 +193,8 @@ export default class History {
 	 * Marks in history that one operation is an operation that is undoing the other operation. By marking operation this way,
 	 * history is keeping more context information about operations, which helps in operational transformation.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} undoneOperation Operation which is undone by `undoingOperation`.
-	 * @param {module:engine/model/operation/operation~Operation} undoingOperation Operation which undoes `undoneOperation`.
+	 * @param undoneOperation Operation which is undone by `undoingOperation`.
+	 * @param undoingOperation Operation which undoes `undoneOperation`.
 	 */
 	public setOperationAsUndone( undoneOperation: Operation, undoingOperation: Operation ): void {
 		this._undoPairs.set( undoingOperation, undoneOperation );
@@ -243,8 +204,8 @@ export default class History {
 	/**
 	 * Checks whether given `operation` is undoing any other operation.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to check.
-	 * @returns {Boolean} `true` if given `operation` is undoing any other operation, `false` otherwise.
+	 * @param operation Operation to check.
+	 * @returns `true` if given `operation` is undoing any other operation, `false` otherwise.
 	 */
 	public isUndoingOperation( operation: Operation ): boolean {
 		return this._undoPairs.has( operation );
@@ -253,8 +214,8 @@ export default class History {
 	/**
 	 * Checks whether given `operation` has been undone by any other operation.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to check.
-	 * @returns {Boolean} `true` if given `operation` has been undone any other operation, `false` otherwise.
+	 * @param operation Operation to check.
+	 * @returns `true` if given `operation` has been undone any other operation, `false` otherwise.
 	 */
 	public isUndoneOperation( operation: Operation ): boolean {
 		return this._undoneOperations.has( operation );
@@ -263,9 +224,8 @@ export default class History {
 	/**
 	 * For given `undoingOperation`, returns the operation which has been undone by it.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} undoingOperation
-	 * @returns {module:engine/model/operation/operation~Operation|undefined} Operation that has been undone by given
-	 * `undoingOperation` or `undefined` if given `undoingOperation` is not undoing any other operation.
+	 * @returns Operation that has been undone by given `undoingOperation` or `undefined`
+	 * if given `undoingOperation` is not undoing any other operation.
 	 */
 	public getUndoneOperation( undoingOperation: Operation ): Operation | undefined {
 		return this._undoPairs.get( undoingOperation );

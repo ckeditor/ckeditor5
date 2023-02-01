@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -536,7 +536,7 @@ describe( 'UpcastWriter', () => {
 	} );
 
 	describe( 'setCustomProperty', () => {
-		it( 'should add or update custom property', () => {
+		it( 'should add or update custom property on element', () => {
 			const el = new Element( 'span' );
 
 			writer.setCustomProperty( 'prop1', 'foo', el );
@@ -553,10 +553,29 @@ describe( 'UpcastWriter', () => {
 			expect( el.getCustomProperty( 'prop2' ) ).to.equal( objectProperty );
 			expect( Array.from( el.getCustomProperties() ).length ).to.equal( 2 );
 		} );
+
+		it( 'should add or update custom property on document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			writer.setCustomProperty( 'prop1', 'foo', fragment );
+			writer.setCustomProperty( 'prop2', 'bar', fragment );
+
+			expect( fragment.getCustomProperty( 'prop1' ) ).to.equal( 'foo' );
+			expect( fragment.getCustomProperty( 'prop2' ) ).to.equal( 'bar' );
+			expect( Array.from( fragment.getCustomProperties() ).length ).to.equal( 2 );
+
+			const objectProperty = { foo: 'bar' };
+
+			writer.setCustomProperty( 'prop2', objectProperty, fragment );
+
+			expect( fragment.getCustomProperty( 'prop1' ) ).to.equal( 'foo' );
+			expect( fragment.getCustomProperty( 'prop2' ) ).to.equal( objectProperty );
+			expect( Array.from( fragment.getCustomProperties() ).length ).to.equal( 2 );
+		} );
 	} );
 
 	describe( 'removeCustomProperty', () => {
-		it( 'should remove existing custom property', () => {
+		it( 'should remove existing custom property from element', () => {
 			const el = new Element( 'p' );
 
 			writer.setCustomProperty( 'prop1', 'foo', el );
@@ -568,6 +587,20 @@ describe( 'UpcastWriter', () => {
 
 			expect( el.getCustomProperty( 'prop1' ) ).to.undefined;
 			expect( Array.from( el.getCustomProperties() ).length ).to.equal( 0 );
+		} );
+
+		it( 'should remove existing custom property from document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			writer.setCustomProperty( 'prop1', 'foo', fragment );
+
+			expect( fragment.getCustomProperty( 'prop1' ) ).to.equal( 'foo' );
+			expect( Array.from( fragment.getCustomProperties() ).length ).to.equal( 1 );
+
+			writer.removeCustomProperty( 'prop1', fragment );
+
+			expect( fragment.getCustomProperty( 'prop1' ) ).to.undefined;
+			expect( Array.from( fragment.getCustomProperties() ).length ).to.equal( 0 );
 		} );
 
 		it( 'should have no effect if custom property does not exists', () => {

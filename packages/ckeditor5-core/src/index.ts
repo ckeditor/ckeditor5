@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,8 +17,12 @@ export { default as Context } from './context';
 export { default as ContextPlugin } from './contextplugin';
 
 export { default as Editor, type EditorReadyEvent } from './editor/editor';
-export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editor/editorui';
-export type { EditorConfig, ToolbarConfig, ToolbarConfigItem } from './editor/editorconfig';
+export type {
+	EditorConfig,
+	LanguageConfig,
+	ToolbarConfig,
+	ToolbarConfigItem
+} from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';
 export { default as DataApiMixin } from './editor/utils/dataapimixin';

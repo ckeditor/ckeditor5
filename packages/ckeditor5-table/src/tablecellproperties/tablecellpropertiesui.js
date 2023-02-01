@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -113,7 +113,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		 *
 		 * @member {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
 		 */
-		this.view = this._createPropertiesView();
+		this.view = null;
 
 		/**
 		 * The batch used to undo all changes made by the form (which are live, as the user types)
@@ -123,6 +123,15 @@ export default class TableCellPropertiesUI extends Plugin {
 		 * @member {module:engine/model/batch~Batch}
 		 */
 		this._undoStepBatch = null;
+
+		/**
+		 * Flag used to indicate whether view is ready to execute update commands
+		 * (it finished loading initial data).
+		 *
+		 * @private
+		 * @member {Boolean}
+		 */
+		this._isReady = false;
 
 		editor.ui.componentFactory.add( 'tableCellProperties', locale => {
 			const view = new ButtonView( locale );
@@ -154,7 +163,9 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Destroy created UI components as they are not automatically destroyed.
 		// See https://github.com/ckeditor/ckeditor5/issues/1341.
-		this.view.destroy();
+		if ( this.view ) {
+			this.view.destroy();
+		}
 	}
 
 	/**
@@ -166,12 +177,12 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
 		const config = editor.config.get( 'table.tableCellProperties' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
@@ -199,15 +210,6 @@ export default class TableCellPropertiesUI extends Plugin {
 		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideView();
 			cancel();
-		} );
-
-		// Reposition the balloon or hide the form if a table cell is no longer selected.
-		this.listenTo( editor.ui, 'update', () => {
-			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
-				this._hideView();
-			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor, 'cell' );
-			}
 		} );
 
 		// Close on click outside of balloon panel element.
@@ -319,6 +321,8 @@ export default class TableCellPropertiesUI extends Plugin {
 
 				this.view.set( property, value );
 			} );
+
+		this._isReady = true;
 	}
 
 	/**
@@ -332,6 +336,14 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	_showView() {
 		const editor = this.editor;
+
+		if ( !this.view ) {
+			this.view = this._createPropertiesView();
+		}
+
+		this.listenTo( editor.ui, 'update', () => {
+			this._updateView();
+		} );
 
 		// Update the view with the model values.
 		this._fillViewFormFromCommandValues();
@@ -354,13 +366,11 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @protected
 	 */
 	_hideView() {
-		if ( !this._isViewInBalloon ) {
-			return;
-		}
-
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
+
+		this._isReady = false;
 
 		// Blur any input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
@@ -374,13 +384,29 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
+	 * Repositions the {@link #_balloon} or hides the {@link #view} if a table cell is no longer selected.
+	 *
+	 * @protected
+	 */
+	_updateView() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+
+		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+			this._hideView();
+		} else if ( this._isViewVisible ) {
+			repositionContextualBalloon( editor, 'cell' );
+		}
+	}
+
+	/**
 	 * Returns `true` when the {@link #view} is visible in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}
 	 */
 	get _isViewVisible() {
-		return this._balloon.visibleView === this.view;
+		return !!this.view && this._balloon.visibleView === this.view;
 	}
 
 	/**
@@ -390,7 +416,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	get _isViewInBalloon() {
-		return this._balloon.hasView( this.view );
+		return !!this.view && this._balloon.hasView( this.view );
 	}
 
 	/**
@@ -399,14 +425,12 @@ export default class TableCellPropertiesUI extends Plugin {
 	 *
 	 * @private
 	 * @param {String} commandName
-	 * @param {String} defaultValue The default value of the command.
 	 * @returns {Function}
 	 */
-	_getPropertyChangeCallback( commandName, defaultValue ) {
-		return ( evt, propertyName, newValue, oldValue ) => {
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+	_getPropertyChangeCallback( commandName ) {
+		return ( evt, propertyName, newValue ) => {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
 				return;
 			}
 
@@ -428,21 +452,18 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @param {module:ui/view~View} options.viewField
 	 * @param {Function} options.validator
 	 * @param {String} options.errorText
-	 * @param {String} options.defaultValue
 	 * @returns {Function}
 	 */
 	_getValidatedPropertyChangeCallback( options ) {
-		const { commandName, viewField, validator, errorText, defaultValue } = options;
+		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;
 		}, ERROR_TEXT_TIMEOUT );
 
-		return ( evt, propertyName, newValue, oldValue ) => {
+		return ( evt, propertyName, newValue ) => {
 			setErrorTextDebounced.cancel();
-
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
 				return;
 			}
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -170,7 +170,7 @@ export default class DowncastWriter {
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 
@@ -457,7 +457,7 @@ export default class DowncastWriter {
 	 * @param {String} value The attribute value.
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public setAttribute( key: string, value: string, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: Element ): void {
 		element._setAttribute( key, value );
 	}
 
@@ -556,7 +556,7 @@ export default class DowncastWriter {
 	 * @param {*} value
 	 * @param {module:engine/view/element~Element} element
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -567,7 +567,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/element~Element} element
 	 * @returns {Boolean} Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element ): boolean {
+	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
