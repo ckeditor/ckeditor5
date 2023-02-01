@@ -54,7 +54,7 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The editor should not crash on `getData()` call if the `PlainTableOutput` plugin is used with the `TableColumnResize` feature. Closes [#13164](https://github.com/ckeditor/ckeditor5/issues/13164). ([commit](https://github.com/ckeditor/ckeditor5/commit/97377f5749d4a2f137139eee47233c491e6712b4))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Fixed markers that were not properly set on list items and on elements in table cells, resulting in losing comments and suggestions after re-loading the document. Closes [#13285](https://github.com/ckeditor/ckeditor5/issues/13285). ([commit](https://github.com/ckeditor/ckeditor5/commit/1fa7ffcc5042b3a9d40dcfd03220fb707616a9ad))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Indent and outdent suggestions made on block images in document lists are now working correctly when accepted.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestions are now correctly highlighted after typing inside own the deletion suggestion.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestions are now correctly highlighted after typing inside the deletion suggestion.
 
 ### Other changes
 
