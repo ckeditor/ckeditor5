@@ -140,6 +140,17 @@ describe( 'TableWidthsCommand', () => {
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
 	} );
 
+	it( 'should work when columnWidths is a string of comma-separated values', () => {
+		const data = [ [ '11', '12' ], [ '21', '22' ] ];
+		const attributesBefore = { columnWidths: '40%,60%', tableWidth: '40%' };
+		setModelData( model, modelTable( data, attributesBefore ) );
+
+		command.execute( { columnWidths: '30%,70%' } );
+
+		const expectedModel = modelTable( data, { columnWidths: '30%,70%' } );
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+	} );
+
 	it( 'should add attributes when they are provided, but were not present before', () => {
 		const data = [ [ '11', '12' ], [ '21', '22' ] ];
 		const attributesBefore = {};

@@ -322,39 +322,3 @@ export function getDomCellOuterWidth( domCell ) {
 			parseFloat( styles.borderWidth );
 	}
 }
-
-/**
- * Returns a 'tableColumnGroup' element from the 'table'.
- *
- * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
- * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
- */
-export function getTableColumnGroup( element ) {
-	if ( element.is( 'element', 'tableColumnGroup' ) ) {
-		return element;
-	}
-
-	return Array
-		.from( element.getChildren() )
-		.find( element => element.is( 'element', 'tableColumnGroup' ) );
-}
-
-/**
- * Returns an array of 'tableColumn' elements.
- *
- * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
- * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
- */
-export function getTableColumns( element ) {
-	return Array.from( getTableColumnGroup( element ).getChildren() );
-}
-
-/**
- * Returns an array of table column widths.
- *
- * @param {module:engine/model/element~Element} cell A 'table' or 'tableColumnGroup' element.
- * @returns {Array<String>} An array of table column widths.
- */
-export function getColumnWidths( element ) {
-	return getTableColumns( element ).map( column => column.getAttribute( 'columnWidth' ) );
-}

@@ -30,10 +30,7 @@ import {
 	getTableWidthInPixels,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
-	getDomCellOuterWidth,
-	getTableColumnGroup,
-	getTableColumns,
-	getColumnWidths
+	getDomCellOuterWidth
 } from '../../src/tablecolumnresize/utils';
 
 /* globals window, document */
@@ -719,110 +716,6 @@ describe( 'TableColumnResize utils', () => {
 			getComputedStyleStub.restore();
 
 			expect( result ).to.not.equal( 0 );
-		} );
-	} );
-
-	describe( 'getTableColumnGroup()', () => {
-		let model, editor, editorElement;
-
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Table, TableColumnResize, Paragraph ]
-			} );
-
-			model = editor.model;
-		} );
-
-		afterEach( async () => {
-			if ( editorElement ) {
-				editorElement.remove();
-			}
-
-			if ( editor ) {
-				await editor.destroy();
-			}
-		} );
-
-		it( 'should return \'tableColumnGroup\' when it exists', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( getTableColumnGroup( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
-		} );
-
-		it( 'should not return anything if \'tableColumnGroup\' doesn\'t exists', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
-
-			expect( getTableColumnGroup( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
-		} );
-
-		it( 'should return the same \'tableColumnGroup\' element if it was passed as an argument', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
-
-			expect( getTableColumnGroup( tableColumnGroup ) ).to.equal( tableColumnGroup );
-		} );
-	} );
-
-	describe( 'getTableColumns()', () => {
-		let model, editor, editorElement;
-
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Table, TableColumnResize, Paragraph ]
-			} );
-
-			model = editor.model;
-		} );
-
-		afterEach( async () => {
-			if ( editorElement ) {
-				editorElement.remove();
-			}
-
-			if ( editor ) {
-				await editor.destroy();
-			}
-		} );
-
-		it( 'should return \'tableColumn\' array when there are columns', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( getTableColumns( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
-		} );
-	} );
-
-	describe( 'getColumnWidths()', () => {
-		let model, editor, editorElement;
-
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Table, TableColumnResize, Paragraph ]
-			} );
-
-			model = editor.model;
-		} );
-
-		afterEach( async () => {
-			if ( editorElement ) {
-				editorElement.remove();
-			}
-
-			if ( editor ) {
-				await editor.destroy();
-			}
-		} );
-
-		it( 'should return \'tableColumnGroup\' count when there are columns', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( getColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ '50%', '50%' ] );
 		} );
 	} );
 } );

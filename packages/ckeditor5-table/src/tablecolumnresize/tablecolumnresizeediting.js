@@ -34,10 +34,7 @@ import {
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
-	getDomCellOuterWidth,
-	getColumnWidths,
-	getTableColumns,
-	getTableColumnGroup
+	getDomCellOuterWidth
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -205,9 +202,9 @@ export default class TableColumnResizeEditing extends Plugin {
 			let changed = false;
 
 			for ( const table of getChangedResizedTables( model ) ) {
-				const tableColumnGroup = getTableColumnGroup( table );
-				const columns = getTableColumns( tableColumnGroup );
-				const columnWidths = getColumnWidths( tableColumnGroup );
+				const tableColumnGroup = this._tableUtilsPlugin.getColumnGroupElement( table );
+				const columns = this._tableUtilsPlugin.getTableColumnElements( tableColumnGroup );
+				const columnWidths = this._tableUtilsPlugin.getTableColumnsWidths( tableColumnGroup );
 
 				// Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				let normalizedWidths = normalizeColumnWidths( columnWidths );
@@ -599,10 +596,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		const tableColumnGroup = getTableColumnGroup( modelTable );
+		const tableColumnGroup = this._tableUtilsPlugin.getColumnGroupElement( modelTable );
 
 		const columnWidthsAttributeOld = tableColumnGroup ?
-			getColumnWidths( tableColumnGroup ) :
+			this._tableUtilsPlugin.getTableColumnsWidths( tableColumnGroup ) :
 			null;
 
 		const columnWidthsAttributeNew = Array

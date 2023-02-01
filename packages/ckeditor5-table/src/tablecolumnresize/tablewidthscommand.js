@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getTableColumnGroup, normalizeColumnWidths } from './utils';
+import { normalizeColumnWidths } from './utils';
 
 /**
  * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
@@ -27,17 +27,24 @@ export default class TableColumnWidthsCommand extends Command {
 	 * Updated the `tableWidth` attribute of the table and the `columnWidth` attribute of the columns of that table.
 	 *
 	 * @param {Object} options
-	 * @param {Array.<string>} [options.columnWidths] New value of the `columnWidths` attribute.
+	 * @param {Array.<String>|String} [options.columnWidths] New value of the `columnWidths` attribute.
 	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
 	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
 	execute( options = {} ) {
-		const { model } = this.editor;
-		const {
+		const { model, plugins } = this.editor;
+		let {
 			table = model.document.selection.getSelectedElement(),
 			columnWidths,
 			tableWidth
 		} = options;
+
+		if ( columnWidths ) {
+			// For backwards compatibility, columnWidths might be an array or a string of comma-separated values
+			columnWidths = Array.isArray( columnWidths ) ?
+				columnWidths :
+				columnWidths.split( ',' );
+		}
 
 		model.change( writer => {
 			if ( tableWidth ) {
@@ -46,7 +53,7 @@ export default class TableColumnWidthsCommand extends Command {
 				writer.removeAttribute( 'tableWidth', table );
 			}
 
-			const tableColumnGroup = getTableColumnGroup( table );
+			const tableColumnGroup = plugins.get( 'TableUtils' ).getColumnGroupElement( table );
 
 			if ( !columnWidths && !tableColumnGroup ) {
 				return;
