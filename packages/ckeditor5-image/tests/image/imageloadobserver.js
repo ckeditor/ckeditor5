@@ -67,7 +67,7 @@ describe( 'ImageLoadObserver', () => {
 		view.document.on( 'layoutChanged', layoutChangedSpy );
 		view.document.on( 'imageLoaded', imageLoadedSpy );
 
-		observer.isEnabled = false;
+		observer._isEnabled = false;
 
 		observer._fireEvents( {} );
 

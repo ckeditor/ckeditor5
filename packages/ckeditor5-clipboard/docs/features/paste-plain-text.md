@@ -54,10 +54,10 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Clipboard, Bold, ... ]
+		plugins: [ Clipboard, Bold, /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.

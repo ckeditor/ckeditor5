@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^36.0.0",
     "@ckeditor/ckeditor5-clipboard": "^36.0.0",
     "@ckeditor/ckeditor5-core": "^36.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^33.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^36.0.0",
     "@ckeditor/ckeditor5-engine": "^36.0.0",
     "@ckeditor/ckeditor5-enter": "^36.0.0",

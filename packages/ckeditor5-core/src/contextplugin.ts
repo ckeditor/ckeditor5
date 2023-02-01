@@ -18,7 +18,7 @@ import {
 import type Editor from './editor/editor';
 import type { EditorConfig } from './editor/editorconfig';
 import type Context from './context';
-import type { PluginInterface } from './plugin';
+import type { PluginDependencies, PluginInterface } from './plugin';
 import type PluginCollection from './plugincollection';
 
 /**
@@ -80,3 +80,5 @@ export interface ContextInterface {
 	t: LocaleTranslate;
 	editors?: Collection<Editor>;
 }
+
+export type ContextPluginDependencies = PluginDependencies<Context | Editor>;

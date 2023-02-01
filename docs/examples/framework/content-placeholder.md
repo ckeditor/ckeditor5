@@ -8,7 +8,7 @@ modified_at: 2022-12-19
 
 # Content placeholder
 
-The editor below has a feature that lets you add predefined placeholders, such as a date or a surname, to the document. The placeholders are inserted as inline widgets.
+The editor presented below offers a custom plugin that lets you add predefined placeholders, such as a date or a surname, to the document. The placeholders are inserted as inline widgets.
 
 {@snippet framework/tutorials/inline-widget}
 
