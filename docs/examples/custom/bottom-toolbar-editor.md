@@ -3,7 +3,7 @@ category: examples-builds-custom
 order: 70
 classes: main__content--no-toc
 toc: false
-menu-title: Bottom toolbar with options grouped
+menu-title: Bottom toolbar with button grouping
 modified_at: 2021-12-09
 ---
 
@@ -11,11 +11,9 @@ modified_at: 2021-12-09
 
 The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} was used with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/guides/document-editor decoupled UI in CKEditor 5} to find out the details of this process.
 
-Additionally, thanks to the flexibility offered by the {@link framework/guides/architecture/ui-library CKEditor 5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience.
+Additionally, thanks to the flexibility offered by the {@link framework/guides/architecture/ui-library CKEditor 5 UI framework}, the main toolbar has been uncluttered by moving buttons related to text formatting into the custom "Formatting options" dropdown. All remaining dropdown and (button) tooltips have been tuned to open upward for the best user experience. Similar effect can also be achieved by using the {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option}.
 
 The presented combination of the UI and editor's features works best for integrations where text creation comes first and formatting is applied occasionally, for example in email applications, (forum) post editors, chats or instant messaging. You can probably recognize this UI setup from some popular applications such as Gmail, Slack or Zendesk.
-
-There is also a {@link features/toolbar#grouping-toolbar-items-in-drop-downs-nested-toolbars built-in toolbar grouping option} employed for the list-oriented features.
 
 {@snippet examples/bottom-toolbar-editor}
 
@@ -201,20 +199,14 @@ DecoupledEditor
 			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
-			'horizontalLine',
-			'|',
-			{
-				label: 'Lists',
-				icon: false,
-				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
-			},
-			'|',
-			'undo',
-			'redo'
+			'horizontalLine'
 		],
 
 		// Configuration of the formatting dropdown.
 		formattingOptions: [
+			'undo',
+			'redo',
+			'|',
 			'fontFamily',
 			'fontSize',
 			'fontColor',
@@ -226,6 +218,12 @@ DecoupledEditor
 			'strikethrough',
 			'|',
 			'alignment',
+			'|',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
 			'|',
 			'removeFormat'
 		],
