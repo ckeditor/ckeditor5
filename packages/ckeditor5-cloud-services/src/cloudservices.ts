@@ -81,10 +81,10 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	public async init(): Promise<void> {
 		const config = this.context.config;
 
-		const options: any = config.get( 'cloudServices' ) || {};
-
-		for ( const optionName in options ) {
-			( this as any )[ optionName ] = options[ optionName ];
+		const options = config.get( 'cloudServices' ) || {};
+		
+		for ( const [ key, value ] of Object.entries( options ) as Array<[key: keyof CloudServicesConfig, value: any]> ) {
+			( this as CloudServicesConfig )[ key ] = value;
 		}
 
 		if ( !this.tokenUrl ) {
