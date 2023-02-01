@@ -14,8 +14,15 @@ type DomDataTransfer = globalThis.DataTransfer;
  */
 export default class DataTransfer {
 	private _native: DomDataTransfer;
+	private _files: Array<File> | null;
 
-	constructor( nativeDataTransfer: DomDataTransfer ) {
+	constructor( nativeDataTransfer: DomDataTransfer, options: { cacheFiles?: boolean } = {} ) {
+		// We should store references to the File instances in case someone would like to process this files
+		// outside the event handler. Files are stored only for `drop` and `paste` events because they are not usable
+		// in other events and are generating a huge delay on Firefox while dragging.
+		// See https://github.com/ckeditor/ckeditor5/issues/13366.
+		this._files = options.cacheFiles ? getFiles( nativeDataTransfer ) : null;
+
 		/**
 		 * The native DataTransfer object.
 		 */
@@ -26,7 +33,11 @@ export default class DataTransfer {
 	 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
 	 */
 	public get files(): Array<File> {
-		return getFiles( this._native );
+		if ( !this._files ) {
+			this._files = getFiles( this._native );
+		}
+
+		return this._files;
 	}
 
 	/**
