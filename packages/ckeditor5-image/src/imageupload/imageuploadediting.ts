@@ -224,8 +224,8 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
-		this.on( 'uploadComplete', ( evt, { imageElement, data } ) => {
-			const urls = data.urls ? data.urls : data;
+		this.on<ImageUploadCompleteEvent>( 'uploadComplete', ( evt, { imageElement, data } ) => {
+			const urls = data.urls ? data.urls as Record<string, unknown> : data;
 
 			this.editor.model.change( writer => {
 				writer.setAttribute( 'src', urls.default, imageElement );
