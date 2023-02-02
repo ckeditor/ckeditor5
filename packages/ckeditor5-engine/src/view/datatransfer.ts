@@ -23,6 +23,10 @@ export default class DataTransfer {
 	 */
 	private _native: DomDataTransfer;
 
+	/**
+	 * @param nativeDataTransfer The native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
+	 * @param options.cacheFiles Whether `files` list should be initialized in the constructor.
+	 */
 	constructor( nativeDataTransfer: DomDataTransfer, options: { cacheFiles?: boolean } = {} ) {
 		// We should store references to the File instances in case someone would like to process this files
 		// outside the event handler. Files are stored only for `drop` and `paste` events because they are not usable
