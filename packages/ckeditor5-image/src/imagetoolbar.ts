@@ -9,10 +9,11 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
+
 import ImageUtils from './imageutils';
+import type { ImageStyleDropdownDefinition } from './imageconfig';
+
 import { isObject } from 'lodash-es';
-import type { ImageStyleDropdownDefinition } from './imagestyle/imagestyleui';
-import { ImageConfig } from './image';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
@@ -68,46 +69,5 @@ function normalizeDeclarativeConfig( config: Array<string | ImageStyleDropdownDe
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageToolbar.pluginName ]: ImageToolbar;
-	}
-}
-
-declare module './image' {
-	interface ImageConfig {
-
-		/**
-		 * Items to be placed in the image toolbar.
-		 * This option is used by the {@link module:image/imagetoolbar~ImageToolbar} feature.
-		 *
-		 * Assuming that you use the following features:
-		 *
-		 * * {@link module:image/imagestyle~ImageStyle} (with a default configuration),
-		 * * {@link module:image/imagetextalternative~ImageTextAlternative},
-		 * * {@link module:image/imagecaption~ImageCaption},
-		 *
-		 * the following toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
-		 * * `'imageTextAlternative'`,
-		 * * `'toggleImageCaption'`,
-		 * * {@link module:image/image~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
-		 * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
-		 *
-		 * so you can configure the toolbar like this:
-		 *
-		 * ```ts
-		 * const imageConfig = {
-		 * 	toolbar: [
-		 * 		'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
-		 * 		'toggleImageCaption', 'imageTextAlternative'
-		 * 	]
-		 * };
-		 * ```
-		 *
-		 * Besides that, the `ImageStyle` plugin allows to define a
-		 * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition custom drop-down} while configuring the toolbar.
-		 *
-		 * The same items can also be used in the {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
-		 *
-		 * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
-		 */
-		toolbar?: Array<string | ImageStyleDropdownDefinition>;
 	}
 }

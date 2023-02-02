@@ -11,6 +11,7 @@ import type { Locale } from 'ckeditor5/src/utils';
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { FileDialogButtonView } from 'ckeditor5/src/upload';
 import { createImageTypeRegExp } from './utils';
+import '../imageconfig';
 
 /**
  * The image upload button plugin.

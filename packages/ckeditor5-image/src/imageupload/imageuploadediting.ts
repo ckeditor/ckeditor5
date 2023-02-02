@@ -20,6 +20,7 @@ import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
+import '../imageconfig';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command

@@ -13,6 +13,8 @@ import { WidgetResize } from 'ckeditor5/src/widget';
 
 import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver';
 
+import '../imageconfig';
+
 const RESIZABLE_IMAGES_CSS_SELECTOR =
 	'figure.image.ck-widget > img,' +
 	'figure.image.ck-widget > picture > img,' +

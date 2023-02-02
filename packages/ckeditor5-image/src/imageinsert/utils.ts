@@ -11,6 +11,8 @@ import type { Locale } from 'ckeditor5/src/utils';
 import type { Editor } from 'ckeditor5/src/core';
 import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } from 'ckeditor5/src/ui';
 
+import '../imageconfig';
+
 /**
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.

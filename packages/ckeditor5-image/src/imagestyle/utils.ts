@@ -9,8 +9,7 @@
 
 import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
-import type { ImageStyleConfig, ImageStyleOptionDefinition } from '../imagestyle';
-import type { ImageStyleDropdownDefinition } from './imagestyleui';
+import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
 
 const {
 	objectFullWidth,

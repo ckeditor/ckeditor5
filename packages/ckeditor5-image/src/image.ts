@@ -42,37 +42,9 @@ export default class Image extends Plugin {
 	}
 }
 
-/**
- * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
- *
- * ```ts
- * ClassicEditor
- * 	.create( editorElement, {
- * 			image: ... // Image feature options.
- * 	} )
- * 	.then( ... )
- * 	.catch( ... );
- * ```
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- */
-export interface ImageConfig {
-}
-
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Image.pluginName ]: Image;
 	}
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
-		 *
-		 * Read more in {@link module:image/image~ImageConfig}.
-		 */
-		image?: ImageConfig;
-	}
-
 }
 

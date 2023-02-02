@@ -10,6 +10,8 @@
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 
+import '../imageconfig';
+
 /**
  * Insert image command.
  *

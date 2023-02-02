@@ -9,7 +9,7 @@
 
 import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
-import type { ImageStyleOptionDefinition } from '../imagestyle';
+import type { ImageStyleOptionDefinition } from '../imageconfig';
 
 /**
  * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#options image style option}

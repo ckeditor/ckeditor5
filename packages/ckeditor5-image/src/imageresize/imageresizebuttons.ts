@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, icons, type Editor, type PluginDependencies, CommandExecuteEvent } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -20,6 +20,7 @@ import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils';
 
 import ImageResizeEditing from './imageresizeediting';
 import type ResizeImageCommand from './resizeimagecommand';
+import type { ImageResizeOption } from '../imageconfig';
 
 const RESIZE_ICONS = {
 	small: icons.objectSizeSmall,
@@ -262,38 +263,3 @@ function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown 
 		return objectCommandValue !== null && objectCommandValue.width === value;
 	};
 }
-
-/**
- * The image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
- */
-export interface ImageResizeOption {
-
-	/**
-	 * The name of the UI component that changes the image size.
-	 * * If you configure the feature using individual resize buttons, you can refer to this name in the
-	 * {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
-	 * * If you configure the feature using the resize dropdown, this name will be used for a list item in the dropdown.
-	 */
-	name: string;
-
-	/**
-	 *
-	 * The value of the resize option without the unit
-	 * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
-	 */
-	value: string | null;
-
-	/**
-	 * An icon used by an individual resize button (see the `name` property to learn more).
-	 * Available icons are: `'small'`, `'medium'`, `'large'`, `'original'`.
-	 */
-	icon?: string;
-
-	/**
-	 * An option label displayed in the dropdown or, if the feature is configured using
-	 * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.
-	 * If not specified, the label is generated automatically based on the `value` option and the
-	 * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`}.
-	 */
-	label?: string;
- }
