@@ -19,9 +19,9 @@ import '../../theme/imagestyle.css';
 /**
  * The image style UI plugin.
  *
- * It registers buttons corresponding to the {@link module:image/image~ImageConfig#styles} configuration.
+ * It registers buttons corresponding to the {@link module:image/imageconfig~ImageConfig#styles} configuration.
  * It also registers the {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} and the
- * custom drop-downs defined by the developer in the {@link module:image/image~ImageConfig#toolbar} configuration.
+ * custom drop-downs defined by the developer in the {@link module:image/imageconfig~ImageConfig#toolbar} configuration.
  */
 export default class ImageStyleUI extends Plugin {
 	/**

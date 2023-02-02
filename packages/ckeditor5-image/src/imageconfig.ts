@@ -39,7 +39,7 @@ export interface ImageConfig {
 	 * * value: An actual image width applied when a user clicks the mentioned button
 	 * ({@link module:image/imageresize/resizeimagecommand~ResizeImageCommand} gets executed).
 	 * The value property is combined with the
-	 * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default).
+	 * {@link module:image/imageconfig~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default).
 	 * For instance: `value: '50'` and `resizeUnit: '%'` will render as `'50%'` in the UI.
 	 *
 	 * **Resetting the image size**
@@ -75,7 +75,7 @@ export interface ImageConfig {
 	 *
 	 * With resize options defined, you can decide whether you want to display them as a dropdown or as standalone buttons.
 	 * For the dropdown, you need to pass only the `resizeImage` token to the
-	 {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}. The dropdown contains all defined options by default:
+	 {@link module:image/imageconfig~ImageConfig#toolbar `config.image.toolbar`}. The dropdown contains all defined options by default:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -103,10 +103,10 @@ export interface ImageConfig {
 	 *
 	 * **Resizing images using individual buttons**
 	 *
-	 * If you want to have separate buttons for {@link module:image/imageresize/imageresizebuttons~ImageResizeOption each option},
-	 * pass their names to the {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
+	 * If you want to have separate buttons for {@link module:image/imageconfig~ImageResizeOption each option},
+	 * pass their names to the {@link module:image/imageconfig~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
 	 * that this time **you must define the additional
-	 * {@link module:image/imageresize/imageresizebuttons~ImageResizeOption `icon` property}**:
+	 * {@link module:image/imageconfig~ImageResizeOption `icon` property}**:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -231,7 +231,7 @@ export interface ImageConfig {
 
 	/**
 	 * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the
-	 * {@link module:image/imagestyle~ImageStyleConfig#options image style options} to work properly.
+	 * {@link module:image/imageconfig~ImageStyleConfig#options image style options} to work properly.
 	 * The default configuration is provided (listed below) and can be customized while creating the editor instance.
 	 *
 	 * # **Command**
@@ -248,7 +248,7 @@ export interface ImageConfig {
 	 *
 	 * All of the image style options provided in the configuration are registered
 	 * in the {@link module:ui/componentfactory~ComponentFactory UI components factory} with the "imageStyle:" prefixes and can be used
-	 * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}. The buttons available by default depending
+	 * in the {@link module:image/imageconfig~ImageConfig#toolbar image toolbar configuration}. The buttons available by default depending
 	 * on the loaded plugins are listed in the next section.
 	 *
 	 * Read more about styling images in the {@glink features/images/images-styles Image styles guide}.
@@ -353,7 +353,7 @@ export interface ImageConfig {
 	 * * If none of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options}
 	 * works for the integration, it is possible to define independent custom styles, too.
 	 *
-	 * See the documentation about the image style {@link module:image/imagestyle~ImageStyleOptionDefinition options}
+	 * See the documentation about the image style {@link module:image/imageconfig~ImageStyleOptionDefinition options}
 	 * to define the custom image style configuration properly.
 	 *
 	 * ```ts
@@ -405,7 +405,7 @@ export interface ImageConfig {
 	 * the following toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
 	 * * `'imageTextAlternative'`,
 	 * * `'toggleImageCaption'`,
-	 * * {@link module:image/image~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
+	 * * {@link module:image/imageconfig~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
 	 * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
 	 *
 	 * so you can configure the toolbar like this:
@@ -420,7 +420,7 @@ export interface ImageConfig {
 	 * ```
 	 *
 	 * Besides that, the `ImageStyle` plugin allows to define a
-	 * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition custom drop-down} while configuring the toolbar.
+	 * {@link module:image/imageconfig~ImageStyleDropdownDefinition custom drop-down} while configuring the toolbar.
 	 *
 	 * The same items can also be used in the {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
 	 *
@@ -497,14 +497,14 @@ export interface ImageInsertConfig {
 }
 
 /**
- * The image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
+ * The image resize option used in the {@link module:image/imageconfig~ImageConfig#resizeOptions image resize configuration}.
  */
 export interface ImageResizeOption {
 
 	/**
 	 * The name of the UI component that changes the image size.
 	 * * If you configure the feature using individual resize buttons, you can refer to this name in the
-	 * {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
+	 * {@link module:image/imageconfig~ImageConfig#toolbar image toolbar configuration}.
 	 * * If you configure the feature using the resize dropdown, this name will be used for a list item in the dropdown.
 	 */
 	name: string;
@@ -512,7 +512,7 @@ export interface ImageResizeOption {
 	/**
 	 *
 	 * The value of the resize option without the unit
-	 * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
+	 * ({@link module:image/imageconfig~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
 	 */
 	value: string | null;
 
@@ -526,7 +526,7 @@ export interface ImageResizeOption {
 	 * An option label displayed in the dropdown or, if the feature is configured using
 	 * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.
 	 * If not specified, the label is generated automatically based on the `value` option and the
-	 * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`}.
+	 * {@link module:image/imageconfig~ImageConfig#resizeUnit `config.image.resizeUnit`}.
 	 */
 	label?: string;
 }
@@ -534,7 +534,7 @@ export interface ImageResizeOption {
 /**
  * # **The image style custom drop-down definition descriptor**
  *
- * This definition can be implemented in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}
+ * This definition can be implemented in the {@link module:image/imageconfig~ImageConfig#toolbar image toolbar configuration}
  * to define a completely custom drop-down in the image toolbar.
  *
  * ```ts
@@ -580,8 +580,8 @@ export interface ImageStyleDropdownDefinition {
 
 	/**
 	 * The list of the names of the buttons that will be placed in the drop-down's toolbar.
-	 * Each of the buttons has to be one of the {@link module:image/image~ImageConfig#styles default image style buttons}
-	 * or to be defined as the {@link module:image/imagestyle~ImageStyleOptionDefinition image styling option}.
+	 * Each of the buttons has to be one of the {@link module:image/imageconfig~ImageConfig#styles default image style buttons}
+	 * or to be defined as the {@link module:image/imageconfig~ImageStyleOptionDefinition image styling option}.
 	 */
 	items: Array<string>;
 
@@ -597,7 +597,7 @@ export interface ImageStyleDropdownDefinition {
  * while creating the editor instance.
  *
  * A detailed information about the default configuration and customization can be found in
- * {@link module:image/image~ImageConfig#styles `ImageConfig#styles`}.
+ * {@link module:image/imageconfig~ImageConfig#styles `ImageConfig#styles`}.
  */
 export interface ImageStyleConfig {
 
@@ -610,7 +610,7 @@ export interface ImageStyleConfig {
 /**
  * The image styling option definition descriptor.
  *
- * This definition should be implemented in the `Image` plugin {@link module:image/image~ImageConfig#styles configuration} for:
+ * This definition should be implemented in the `Image` plugin {@link module:image/imageconfig~ImageConfig#styles configuration} for:
  *
  * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} by providing the proper name
  * of the default style and the properties that should be overridden,
@@ -750,7 +750,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
 		 *
-		 * Read more in {@link module:image/image~ImageConfig}.
+		 * Read more in {@link module:image/imageconfig~ImageConfig}.
 		 */
 		image?: ImageConfig;
 	}

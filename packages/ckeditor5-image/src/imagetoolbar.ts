@@ -22,7 +22,7 @@ import { isObject } from 'lodash-es';
  *
  * Instances of toolbar components (e.g. buttons) are created using the editor's
  * {@link module:ui/componentfactory~ComponentFactory component factory}
- * based on the {@link module:image/image~ImageConfig#toolbar `image.toolbar` configuration option}.
+ * based on the {@link module:image/imageconfig~ImageConfig#toolbar `image.toolbar` configuration option}.
  *
  * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  */

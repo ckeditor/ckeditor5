@@ -21,7 +21,7 @@ import ImageStyleUI from './imagestyle/imagestyleui';
  * * {@link module:image/imagestyle/imagestyleui~ImageStyleUI}
  *
  * It provides a default configuration, which can be extended or overwritten.
- * Read more about the {@link module:image/image~ImageConfig#styles image styles configuration}.
+ * Read more about the {@link module:image/imageconfig~ImageConfig#styles image styles configuration}.
  */
 export default class ImageStyle extends Plugin {
 	/**

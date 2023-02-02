@@ -61,7 +61,7 @@ export default class InsertImageCommand extends Command {
 			if ( configImageInsertType === 'block' ) {
 				/**
 				 * The {@link module:image/imageblock~ImageBlock} plugin must be enabled to allow inserting block images. See
-				 * {@link module:image/imageinsert~ImageInsertConfig#type} to learn more.
+				 * {@link module:image/imageconfig~ImageInsertConfig#type} to learn more.
 				 *
 				 * @error image-block-plugin-required
 				 */
@@ -73,7 +73,7 @@ export default class InsertImageCommand extends Command {
 			if ( configImageInsertType === 'inline' ) {
 				/**
 				 * The {@link module:image/imageinline~ImageInline} plugin must be enabled to allow inserting inline images. See
-				 * {@link module:image/imageinsert~ImageInsertConfig#type} to learn more.
+				 * {@link module:image/imageconfig~ImageInsertConfig#type} to learn more.
 				 *
 				 * @error image-inline-plugin-required
 				 */

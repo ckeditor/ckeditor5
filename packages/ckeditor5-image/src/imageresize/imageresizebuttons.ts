@@ -98,14 +98,14 @@ export default class ImageResizeButtons extends Plugin {
 
 			if ( !RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ] ) {
 				/**
-				 * When configuring {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
+				 * When configuring {@link module:image/imageconfig~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
 				 * buttons, a valid `icon` token must be set for each option.
 				 *
 				 * See all valid options described in the
-				 * {@link module:image/imageresize/imageresizebuttons~ImageResizeOption plugin configuration}.
+				 * {@link module:image/imageconfig~ImageResizeOption plugin configuration}.
 				 *
 				 * @error imageresizebuttons-missing-icon
-				 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option Invalid image resize option.
+				 * @param option Invalid image resize option.
 				*/
 				throw new CKEditorError(
 					'imageresizebuttons-missing-icon',

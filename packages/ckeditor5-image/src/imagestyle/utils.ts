@@ -19,7 +19,7 @@ const {
 } = icons;
 
 /**
- * Default image style options provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * Default image style options provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
  * configuration.
  *
  * There are available 5 styles focused on formatting:
@@ -127,10 +127,10 @@ const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 };
 
 /**
- * Default image style icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * Default image style icons provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
  * configuration.
  *
- * See {@link module:image/imagestyle~ImageStyleOptionDefinition#icon} to learn more.
+ * See {@link module:image/imageconfig~ImageStyleOptionDefinition#icon} to learn more.
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
@@ -145,8 +145,8 @@ const DEFAULT_ICONS: Record<string, string> = {
 };
 
 /**
- * Default drop-downs provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#toolbar}
- * configuration. The drop-downs are containers for the {@link module:image/imagestyle~ImageStyleConfig#options image style options}.
+ * Default drop-downs provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#toolbar}
+ * configuration. The drop-downs are containers for the {@link module:image/imageconfig~ImageStyleConfig#options image style options}.
  *
  * If both of the `ImageEditing` plugins are loaded, there are 2 predefined drop-downs available:
  *
@@ -176,7 +176,7 @@ const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
  * @param config.isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
  * @param config.configuredStyles
- * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
+ * The image styles configuration provided in the image styles {@link module:image/imageconfig~ImageConfig#styles configuration}
  * as a default or custom value.
  * @returns
  * * Each of options contains a complete icon markup.
@@ -244,8 +244,8 @@ function getDefaultDropdownDefinitions( pluginCollection: PluginCollection<Edito
 }
 
 /**
- * Normalizes an image style option or group provided in the {@link module:image/image~ImageConfig#styles}
- * and returns it in a {@link module:image/imagestyle~ImageStyleOptionDefinition}/
+ * Normalizes an image style option or group provided in the {@link module:image/imageconfig~ImageConfig#styles}
+ * and returns it in a {@link module:image/imageconfig~ImageStyleOptionDefinition}/
  */
 function normalizeDefinition( definition: string | Partial<ImageStyleOptionDefinition> & { name: string } ): ImageStyleOptionDefinition {
 	if ( typeof definition === 'string' ) {
@@ -299,11 +299,11 @@ function isValidOption(
 		// Check if the option is supported by any of the loaded plugins.
 		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
 			/**
-			 * In order to work correctly, each image style {@link module:image/imagestyle~ImageStyleOptionDefinition option}
+			 * In order to work correctly, each image style {@link module:image/imageconfig~ImageStyleOptionDefinition option}
 			 * requires specific model elements (also: types of images) to be supported by the editor.
 			 *
 			 * Model element names to which the image style option can be applied are defined in the
-			 * {@link module:image/imagestyle~ImageStyleOptionDefinition#modelElements} property of the style option
+			 * {@link module:image/imageconfig~ImageStyleOptionDefinition#modelElements} property of the style option
 			 * definition.
 			 *
 			 * Explore the warning in the console to find out precisely which option is not supported and which editor plugins
@@ -350,8 +350,8 @@ function warnInvalidStyle( info: object ): void {
 	 *
 	 * Please make sure the definition implements properly one of the following:
 	 *
-	 * * {@link module:image/imagestyle~ImageStyleOptionDefinition image style option definition},
-	 * * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition image style dropdown definition}
+	 * * {@link module:image/imageconfig~ImageStyleOptionDefinition image style option definition},
+	 * * {@link module:image/imageconfig~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
 	 * @param {String} [dropdown] The name of the invalid drop-down
