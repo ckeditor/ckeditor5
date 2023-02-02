@@ -642,8 +642,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
-				// When the selection has non-collapsed node ranges, change the attributes of nodes.
-				// Nodes that can't have the "abbreviation" attribute are exceptions.
+				// When the selection has non-collapsed node ranges, change the attribute on nodes inside those ranges
+				// omitting nodes where the "abbreviation" attribute is disallowed.
 				// ...
 			}
 		} );
@@ -704,8 +704,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
-				// When the selection has non-collapsed node ranges, change the attributes of nodes.
-				// Nodes that can't have the "abbreviation" attribute are exceptions.
+				// When the selection has non-collapsed node ranges, change the attribute on nodes inside those ranges
+				// omitting nodes where the "abbreviation" attribute is disallowed.
 				// ...
 			}
 		} );

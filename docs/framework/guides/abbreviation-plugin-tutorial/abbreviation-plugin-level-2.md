@@ -69,11 +69,11 @@ import {
 
 export default class FormView extends View {
 	constructor( locale ) {
-		// Previously set template.
 
 		this.abbrInputView = this._createInput( 'Add abbreviation' );
 		this.titleInputView = this._createInput( 'Add title' );
 		
+		// Previously set template.
 		// ...
 	}
 
