@@ -7,6 +7,7 @@
  * @module html-embed/htmlembedcommand
  */
 
+import type { DocumentSelection, Element, Model, Schema, Selection } from 'ckeditor5/src/engine';
 import { Command } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 
@@ -33,7 +34,7 @@ export default class HtmlEmbedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
@@ -50,9 +51,9 @@ export default class HtmlEmbedCommand extends Command {
 	 * * updates the content of the HTML embed if one was selected.
 	 *
 	 * @fires execute
-	 * @param {String} [value] When passed, the value (content) will be set on a new embed or a selected one.
+	 * @param value When passed, the value (content) will be set on a new embed or a selected one.
 	 */
-	execute( value ) {
+	public override execute( value?: string ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
@@ -68,44 +69,38 @@ export default class HtmlEmbedCommand extends Command {
 				model.insertObject( htmlEmbedElement, null, null, { setSelection: 'on' } );
 			}
 
-			writer.setAttribute( 'value', value, htmlEmbedElement );
+			writer.setAttribute( 'value', value, htmlEmbedElement! );
 		} );
 	}
 }
 
-// Checks if an HTML embed is allowed by the schema in the optimal insertion parent.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/model~Model} model
-// @returns {Boolean}
-function isHtmlEmbedAllowedInParent( selection, schema, model ) {
+/**
+ * Checks if an HTML embed is allowed by the schema in the optimal insertion parent.
+ */
+function isHtmlEmbedAllowedInParent( selection: DocumentSelection, schema: Schema, model: Model ): boolean {
 	const parent = getInsertHtmlEmbedParent( selection, model );
 
 	return schema.checkChild( parent, 'rawHtml' );
 }
 
-// Returns a node that will be used to insert a html embed with `model.insertContent` to check if a html embed element can be placed there.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/model~Model} model
-// @returns {module:engine/model/element~Element}
-function getInsertHtmlEmbedParent( selection, model ) {
+/**
+ * Returns a node that will be used to insert a html embed with `model.insertContent` to check if a html embed element can be placed there.
+ */
+function getInsertHtmlEmbedParent( selection: Selection | DocumentSelection, model: Model ): Element {
 	const insertionRange = findOptimalInsertionRange( selection, model );
-	const parent = insertionRange.start.parent;
+	const parent = insertionRange.start.parent as Element;
 
-	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
-		return parent.parent;
+	if ( parent.isEmpty && !parent.is( 'rootElement' ) ) {
+		return parent.parent as Element;
 	}
 
 	return parent;
 }
 
-// Returns the selected HTML embed element in the model, if any.
-//
-// @param {module:engine/model/selection~Selection} selection
-// @returns {module:engine/model/element~Element|null}
-function getSelectedRawHtmlModelWidget( selection ) {
+/**
+ * Returns the selected HTML embed element in the model, if any.
+ */
+function getSelectedRawHtmlModelWidget( selection: DocumentSelection ): Element | null {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'element', 'rawHtml' ) ) {

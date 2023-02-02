@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import htmlEmbedIcon from '../theme/icons/html.svg';
+import type { ContainerRawHtmlApiProperty } from './htmlembedediting';
 
 /**
  * The HTML embed UI plugin.
@@ -21,20 +22,20 @@ export default class HtmlEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HtmlEmbedUI' {
 		return 'HtmlEmbedUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command = editor.commands.get( 'htmlEmbed' );
+			const command = editor.commands.get( 'htmlEmbed' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -50,12 +51,19 @@ export default class HtmlEmbedUI extends Plugin {
 				editor.execute( 'htmlEmbed' );
 				editor.editing.view.focus();
 
-				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();
-
-				widgetWrapper.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+				editor.editing.view.document.selection
+					.getSelectedElement()!
+					.getCustomProperty<ContainerRawHtmlApiProperty>( 'rawHtmlApi' )
+					.makeEditable();
 			} );
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PLuginsMap {
+		[ HtmlEmbedUI.pluginName ]: HtmlEmbedUI;
 	}
 }
