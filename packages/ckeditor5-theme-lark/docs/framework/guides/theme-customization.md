@@ -29,7 +29,8 @@ The entire process of building and managing the styles boils down to three steps
 	import '../theme/styles.css';
 
 	class AnyEditorClass {
-		...
+		// Example editor class definition.
+		// ...
 	}
 	```
 
@@ -196,7 +197,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import 'custom.css';
 
 ClassicEditor
-	.create( ... )
+	.create( /* ... */ )
 	.then( editor => {
 		console.log( editor );
 	} )

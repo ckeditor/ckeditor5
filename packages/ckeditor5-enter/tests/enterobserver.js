@@ -49,7 +49,7 @@ describe( 'EnterObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled', () => {
-		view.getObserver( EnterObserver ).isEnabled = false;
+		view.getObserver( EnterObserver )._isEnabled = false;
 
 		fireBeforeInputDomEvent( domRoot, {
 			inputType: 'insertParagraph'

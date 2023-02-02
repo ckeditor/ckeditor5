@@ -74,6 +74,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+// More imports.
 // ...
 
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
@@ -82,16 +83,17 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
 			Markdown,
-
 			Essentials,
 			Bold,
 			Italic,
+			// More plugins.
 			// ...
 		],
+		// More of editor's config.
 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 
