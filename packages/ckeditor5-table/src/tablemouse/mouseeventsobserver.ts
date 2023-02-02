@@ -23,14 +23,9 @@ import { DomEventObserver, type DomEventData, type View } from 'ckeditor5/src/en
  * The observer is registered by the {@link module:table/tableselection~TableSelection} plugin.
  */
 export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mouseleave'> {
-	/**
-	 * @inheritDoc
-	 */
-	constructor( view: View ) {
-		super( view );
-
-		this.domEventType = [ 'mousemove', 'mouseleave' ];
-	}
+	public readonly domEventType = [
+		'mousemove', 'mouseleave'
+	] as const;
 
 	/**
 	 * @inheritDoc
