@@ -506,6 +506,24 @@ describe( 'Model', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should be decorated and pass all parameters in the event data', () => {
+			schema.extend( '$text', { allowIn: '$root' } ); // To surpress warnings.
+
+			const spy = sinon.spy();
+			const obj1 = { foo: 'bar' };
+			const obj2 = { baz: 7 };
+			const obj3 = { abc: true };
+
+			model.on( 'insertContent', spy );
+
+			model.insertContent( new ModelText( 'a' ), model.document.selection, obj1, obj2, obj3 );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 2 ] ).to.equal( obj1 );
+			expect( spy.firstCall.args[ 1 ][ 3 ] ).to.equal( obj2 );
+			expect( spy.firstCall.args[ 1 ][ 4 ] ).to.equal( obj3 );
+		} );
+
 		it( 'should insert content (item)', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
@@ -747,6 +765,33 @@ describe( 'Model', () => {
 			expect( args[ 0 ] ).to.equal( element );
 			expect( args[ 1 ] ).to.equal( model.document.selection );
 			expect( args[ 2 ] ).to.equal( options );
+		} );
+
+		it( 'should be decorated and pass all parameters in the event data', () => {
+			const spy = sinon.spy();
+			const element = new ModelElement( 'blockWidget' );
+			const options = {
+				findOptimalPosition: 'after',
+				setSelection: 'on'
+			};
+			const obj1 = { foo: 'bar' };
+			const obj2 = { baz: 7 };
+			const obj3 = { abc: true };
+
+			model.on( 'insertObject', spy );
+
+			model.insertObject( element, model.document.selection, null, options, obj1, obj2, obj3 );
+
+			const args = spy.firstCall.args[ 1 ];
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( args[ 0 ] ).to.equal( element );
+			expect( args[ 1 ] ).to.equal( model.document.selection );
+			expect( args[ 2 ] ).to.equal( options );
+			expect( args[ 3 ] ).to.equal( options );
+			expect( args[ 4 ] ).to.equal( obj1 );
+			expect( args[ 5 ] ).to.equal( obj2 );
+			expect( args[ 6 ] ).to.equal( obj3 );
 		} );
 
 		it( 'should insert inline object at the document selection position', () => {
