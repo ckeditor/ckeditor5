@@ -231,7 +231,7 @@ export function sumArray( array: Array<number | string> ): number {
  */
 export function normalizeColumnWidths( columnWidths: Array<number | string> ): Array<number> {
 	const completeColumnWidths = calculateMissingColumnWidths( columnWidths );
-	const totalWidth = sumArray( columnWidths );
+	const totalWidth = sumArray( completeColumnWidths );
 
 	if ( totalWidth === 100 ) {
 		return completeColumnWidths;

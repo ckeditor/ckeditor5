@@ -28,7 +28,7 @@ import type TableUtils from '../tableutils';
  * @param defaultValue The default attribute value. If a value is lower or equal, it will be unset.
  */
 export function updateNumericAttribute( key: string, value: unknown, item: Item, writer: Writer, defaultValue: unknown = 1 ): void {
-	if ( value && defaultValue && value > defaultValue ) {
+	if ( value !== undefined && value !== null && defaultValue !== undefined && defaultValue !== null && value > defaultValue ) {
 		writer.setAttribute( key, value, item );
 	} else {
 		writer.removeAttribute( key, item );

@@ -344,10 +344,6 @@ function addListOption(
 	commands: Array<Command>,
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
-	if ( option.type === 'separator' ) {
-		return;
-	}
-
 	const model = option.model = new Model( option.model );
 	const { commandName, bindIsOn } = option.model;
 

@@ -212,25 +212,25 @@ type Style = Record<Side, string>;
 
 /**
  * Reduces the full top, right, bottom, left object to a single string if all sides are equal.
+ * Returns original style otherwise.
  */
 function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
 	if ( !style ) {
 		return;
 	}
-
 	const sides: Array<Side> = [ 'top', 'right', 'bottom', 'left' ];
 	const allSidesDefined = sides.every( side => style[ side ] );
 
 	if ( !allSidesDefined ) {
-		return;
+		return style;
 	}
 
 	const topSideStyle = style.top;
 	const allSidesEqual = sides.every( side => style[ side ] === topSideStyle );
 
-	if ( allSidesEqual ) {
-		return topSideStyle;
+	if ( !allSidesEqual ) {
+		return style;
 	}
 
-	return style;
+	return topSideStyle;
 }

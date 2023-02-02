@@ -547,6 +547,7 @@ function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
  */
 export type ListDropdownItemDefinition = {
 	type: 'separator';
+	model?: Model;
 } | {
 	type: 'button' | 'switchbutton';
 	model: Model;

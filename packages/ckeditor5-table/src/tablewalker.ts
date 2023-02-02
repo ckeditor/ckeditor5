@@ -6,10 +6,7 @@
 /**
  * @module table/tablewalker
  */
-
 import type { Element, Position } from 'ckeditor5/src/engine';
-
-// @if CK_DEBUG // const { CKEditorError } = require( 'ckeditor5/src/utils' );
 
 interface CellData {
 	cell: Element;
@@ -243,7 +240,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 *
 	 * @returns The next table walker's value.
 	 */
-	public next(): IteratorResult<TableSlot> {
+	public next(): IteratorResult<TableSlot, TableSlot | undefined> {
 		const row = this._table.getChild( this._rowIndex );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
@@ -489,6 +486,11 @@ class TableSlot {
 		this._table = tableWalker._table;
 	}
 
+	// @if CK_DEBUG // get isSpanned() { throwMissingGetterError( 'isSpanned' ); }
+	// @if CK_DEBUG // get colspan() { throwMissingGetterError( 'colspan' ); }
+	// @if CK_DEBUG // get rowspan() { throwMissingGetterError( 'rowspan' ); }
+	// @if CK_DEBUG // get cellIndex() { throwMissingGetterError( 'cellIndex' ); }
+
 	/**
 	 * Whether the cell is anchored in the current slot.
 	 */
@@ -525,14 +527,11 @@ class TableSlot {
 
 		return model.createPositionAt( this._table.getChild( this.row ) as Element, this._cellIndex );
 	}
-
-	// @if CK_DEBUG // get isSpanned() { throwMissingGetterError( 'isSpanned' ); }
-	// @if CK_DEBUG // get colspan() { throwMissingGetterError( 'colspan' ); }
-	// @if CK_DEBUG // get rowspan() { throwMissingGetterError( 'rowspan' ); }
-	// @if CK_DEBUG // get cellIndex() { throwMissingGetterError( 'cellIndex' ); }
 }
 
 export type { TableSlot };
+
+// @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
 
 /**
  * This `TableSlot`'s getter (property) was removed in CKEditor 5 v20.0.0.
@@ -542,7 +541,6 @@ export type { TableSlot };
  * @error tableslot-getter-removed
  * @param getterName
  */
-
 // @if CK_DEBUG // function throwMissingGetterError( getterName ) {
 // @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed', this, {
 // @if CK_DEBUG //			getterName

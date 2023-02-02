@@ -4016,7 +4016,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getChild( 0 );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard._getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for a text node provided', async () => {
@@ -4024,7 +4024,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getNodeByPath( [ 0, 0 ] );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard._getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (table + paragraph)', () => {
@@ -4035,7 +4035,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard._getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (paragraph + table)', () => {
@@ -4046,7 +4046,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard._getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
@@ -4056,7 +4056,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard._getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4069,7 +4069,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard._getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4084,7 +4084,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard._getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4096,7 +4096,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard._getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4108,7 +4108,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = modelRoot.getChild( 0 );
-			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard._getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;

@@ -8,8 +8,7 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { MapperModelToViewPositionEvent, ViewElement } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { ViewElement } from 'ckeditor5/src/engine';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
@@ -152,11 +151,6 @@ export default class TableEditing extends Plugin {
 			view: 'rowspan'
 		} );
 
-		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
-		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
-		// because only during this conversion a paragraph can be bound to its parent.
-		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapTableCellModelPositionToView() );
-
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
 		editor.config.define( 'table.defaultHeadings.columns', 0 );
@@ -195,40 +189,6 @@ export default class TableEditing extends Plugin {
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
-}
-
-/**
- * Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
- * (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
- * elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
- * the first character of the paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
- *
- * <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
- *
- * <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
- */
-function mapTableCellModelPositionToView(): GetCallback<MapperModelToViewPositionEvent> {
-	return ( evt, data ) => {
-		const modelParent = data.modelPosition.parent;
-		const modelNodeBefore = data.modelPosition.nodeBefore;
-
-		if ( !modelParent.is( 'element', 'tableCell' ) ) {
-			return;
-		}
-
-		if ( !modelNodeBefore || !modelNodeBefore.is( 'element', 'paragraph' ) ) {
-			return;
-		}
-
-		const viewNodeBefore = data.mapper.toViewElement( modelNodeBefore );
-		const viewParent = data.mapper.toViewElement( modelParent )!;
-
-		if ( viewNodeBefore === viewParent ) {
-			// Since the paragraph has already been bound to its parent, update the current position in the model with paragraph's
-			// max offset, so it points to the place which should normally (in all other cases) be the end position of this paragraph.
-			data.viewPosition = data.mapper.findPositionIn( viewParent, modelNodeBefore.maxOffset );
-		}
-	};
 }
 
 /**

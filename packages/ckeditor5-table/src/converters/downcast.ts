@@ -87,19 +87,22 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
+		let result: ViewElement | null = null;
+
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
 				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 				const cellElementName = isHeading ? 'th' : 'td';
 
-				return options.asWidget ?
+				result = options.asWidget ?
 					toWidgetEditable( writer.createEditableElement( cellElementName ), writer ) :
 					writer.createContainerElement( cellElementName );
+				break;
 			}
 		}
 
-		return null;
+		return result;
 	};
 }
 
@@ -116,7 +119,7 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
  * @returns Element creator.
  */
 export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
-	return ( modelElement, { writer, consumable, mapper } ) => {
+	return ( modelElement, { writer } ) => {
 		if ( !modelElement.parent!.is( 'element', 'tableCell' ) ) {
 			return null;
 		}
@@ -128,11 +131,12 @@ export function convertParagraphInTableCell( options: { asWidget?: boolean } = {
 		if ( options.asWidget ) {
 			return writer.createContainerElement( 'span', { class: 'ck-table-bogus-paragraph' } );
 		} else {
-			// Additional requirement for data pipeline to have backward compatible data tables.
-			consumable.consume( modelElement, 'insert' );
-			mapper.bindElements( modelElement, mapper.toViewElement( modelElement.parent )! );
+			// Using `<p>` in case there are some markers on it and transparentRendering will render it anyway.
+			const viewElement = writer.createContainerElement( 'p' );
 
-			return null;
+			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+
+			return viewElement;
 		}
 	};
 }

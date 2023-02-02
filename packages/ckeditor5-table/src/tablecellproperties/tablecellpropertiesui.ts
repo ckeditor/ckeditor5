@@ -79,6 +79,12 @@ export default class TableCellPropertiesUI extends Plugin {
 	private _undoStepBatch?: Batch;
 
 	/**
+	 * Flag used to indicate whether view is ready to execute update commands
+	 * (it finished loading initial data).
+	 */
+	private _isReady?: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get requires(): PluginDependencies {
@@ -123,6 +129,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this.view = null;
+		this._isReady = false;
 
 		editor.ui.componentFactory.add( 'tableCellProperties', locale => {
 			const view = new ButtonView( locale );
@@ -219,64 +226,58 @@ export default class TableCellPropertiesUI extends Plugin {
 		// visible in the editing as soon as the user types or changes fields' values.
 		view.on<ObservableChangeEvent<string>>(
 			'change:borderStyle',
-			this._getPropertyChangeCallback( 'tableCellBorderStyle', this._defaultTableCellProperties.borderStyle )
+			this._getPropertyChangeCallback( 'tableCellBorderStyle' )
 		);
 
 		view.on<ObservableChangeEvent<string>>( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderColorInput,
 			commandName: 'tableCellBorderColor',
 			errorText: colorErrorText,
-			validator: colorFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.borderColor
+			validator: colorFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:borderWidth', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderWidthInput,
 			commandName: 'tableCellBorderWidth',
 			errorText: lengthErrorText,
-			validator: lineWidthFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.borderWidth
+			validator: lineWidthFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:padding', this._getValidatedPropertyChangeCallback( {
 			viewField: view.paddingInput,
 			commandName: 'tableCellPadding',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.padding!
+			validator: lengthFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:width', this._getValidatedPropertyChangeCallback( {
 			viewField: view.widthInput,
 			commandName: 'tableCellWidth',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.width
+			validator: lengthFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:height', this._getValidatedPropertyChangeCallback( {
 			viewField: view.heightInput,
 			commandName: 'tableCellHeight',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.height
+			validator: lengthFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.backgroundInput,
 			commandName: 'tableCellBackgroundColor',
 			errorText: colorErrorText,
-			validator: colorFieldValidator,
-			defaultValue: this._defaultTableCellProperties!.backgroundColor
+			validator: colorFieldValidator
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>(
 			'change:horizontalAlignment',
-			this._getPropertyChangeCallback( 'tableCellHorizontalAlignment', this._defaultTableCellProperties!.horizontalAlignment! )
+			this._getPropertyChangeCallback( 'tableCellHorizontalAlignment' )
 		);
 		view.on<ObservableChangeEvent<string>>(
 			'change:verticalAlignment',
-			this._getPropertyChangeCallback( 'tableCellVerticalAlignment', this._defaultTableCellProperties!.verticalAlignment! )
+			this._getPropertyChangeCallback( 'tableCellVerticalAlignment' )
 		);
 
 		return view;
@@ -311,6 +312,8 @@ export default class TableCellPropertiesUI extends Plugin {
 
 				this.view!.set( property, value );
 			} );
+
+		this._isReady = true;
 	}
 
 	/**
@@ -353,6 +356,8 @@ export default class TableCellPropertiesUI extends Plugin {
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
+
+		this._isReady = false;
 
 		// Blur any input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
@@ -400,13 +405,10 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @param defaultValue The default value of the command.
 	 */
 	private _getPropertyChangeCallback(
-		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment',
-		defaultValue: string
+		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment'
 	): GetCallback<ObservableChangeEvent<string>> {
-		return ( evt, propertyName, newValue, oldValue ) => {
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+		return ( evt, propertyName, newValue ) => {
+			if ( !this._isReady ) {
 				return;
 			}
 
@@ -428,20 +430,17 @@ export default class TableCellPropertiesUI extends Plugin {
 			viewField: View & { errorText?: string | null };
 			validator: ( arg0: string ) => boolean;
 			errorText: string;
-			defaultValue: string;
 		}
 	): GetCallback<ObservableChangeEvent<string>> {
-		const { commandName, viewField, validator, errorText, defaultValue } = options;
+		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;
 		}, ERROR_TEXT_TIMEOUT );
 
-		return ( evt, propertyName, newValue, oldValue ) => {
+		return ( evt, propertyName, newValue ) => {
 			setErrorTextDebounced.cancel();
-
-			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
-			// It is an initial call (when opening the table properties view).
-			if ( !oldValue && defaultValue === newValue ) {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
 				return;
 			}
 
