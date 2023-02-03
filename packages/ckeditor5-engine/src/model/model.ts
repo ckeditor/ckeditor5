@@ -160,8 +160,8 @@ export default class Model extends ObservableMixin() {
 		} );
 
 		// The base implementation for "decorated" method with remapped arguments.
-		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ object, selection, options ] ) => {
-			evt.return = insertObject( this, object, selection, options );
+		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ element, selection, options ] ) => {
+			evt.return = insertObject( this, element, selection, options );
 		} );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
@@ -548,7 +548,7 @@ export default class Model extends ObservableMixin() {
 	}
 
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable: Node,
 		placeOrOffset: PlaceOrOffset,
 		options?: {
@@ -558,7 +558,7 @@ export default class Model extends ObservableMixin() {
 		...rest: Array<unknown>
 	): ModelRange;
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: Exclude<Selectable, Node>,
 		placeOrOffset?: null,
 		options?: {
@@ -632,7 +632,7 @@ export default class Model extends ObservableMixin() {
 	 * model.insertObject( tableElement, range );
 	 * ```
 	 *
-	 * @param object An object to be inserted into the model document.
+	 * @param element An object to be inserted into the model document.
 	 * @param selectable A selectable where the content should be inserted. If not specified, the current
 	 * {@link module:engine/model/document~Document#selection document selection} will be used instead.
 	 * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
@@ -652,7 +652,7 @@ export default class Model extends ObservableMixin() {
 	 * at the insertion position.
 	 */
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: Selectable,
 		placeOrOffset?: PlaceOrOffset | null,
 		options?: {
@@ -665,7 +665,7 @@ export default class Model extends ObservableMixin() {
 
 		// Note that options are fired as 2 arguments for backward compatibility with the decorated method.
 		// Passing all call arguments so it acts like decorated method.
-		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ object, selection, options, options, ...rest ] )!;
+		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ element, selection, options, options, ...rest ] )!;
 	}
 
 	/**
@@ -1215,7 +1215,7 @@ export type ModelInsertContentEvent = {
 export type ModelInsertObjectEvent = {
 	name: 'insertObject';
 	args: [ [
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: ModelSelection | DocumentSelection | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
