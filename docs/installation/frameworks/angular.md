@@ -16,7 +16,7 @@ order: 20
 
 CKEditor 5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
