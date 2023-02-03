@@ -409,6 +409,15 @@ export class MyComponent {
 </div>
 ```
 
+### `disableTwoWayDataBinding`
+
+Allows disabling the two-way data binding mechanism. The default value is `false`.
+
+Reason for introduction of this option is performance issues in very large documents. By default while using the `ngModel` directive, each
+time `change:data` event is fired, `editor.getData()` function is called. This would cause massive slow down while typing in very large
+documents. This option allows the integrator to disable this default behavior, and only call `editor.getData()` on demand, which prevents
+the slow downs. For more context, see the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
+
 ## Supported `@Output` properties
 
 The following `@Output` properties are supported by the CKEditor 5 rich text editor component for Angular:
