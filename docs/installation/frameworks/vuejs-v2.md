@@ -238,13 +238,57 @@ Finally, import the build in your application:
 
 Integrating the rich text editor from source allows you to use the full power of {@link framework/index CKEditor 5 Framework}.
 
+### Vite
+
+This guide assumes that you use `create-vue` as your boilerplate. To get started with Vite and Vue, run the command below.
+
+```bash
+npm init vue@latest ckeditor5-vue-example
+```
+
+This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding Typescript. Choose your preferred options.
+
+#### Installing necessary packages
+
+You need two packages to use CKEditor from source with Vue and Vite: the official Vue component and the Vite plugin.
+
+<info-box>
+	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
+</info-box>
+
+Install necessary packages alongside the default theme using the following command.
+
+```bash
+npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2 @ckeditor/ckeditor5-theme-lark
+```
+
+#### Configuring `vite.config.js`
+
+Configuring CKEditor with Vue and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+
+```js
+// vite.config.js
+
+import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
+
+export default defineConfig( {
+	plugins: [
+		ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+	]
+} );
+```
+
+Now, your setup with Vite and Vue is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+
+### Webpack
+
 This guide assumes that you are using [Vue CLI 3+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source Integrating the editor from the source} guide.
+	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
 
-### Configuring `vue.config.js`
+#### Configuring `vue.config.js`
 
 To build CKEditor with your application, certain changes must be made to the default project configuration.
 
