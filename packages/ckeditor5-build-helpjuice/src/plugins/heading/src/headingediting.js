@@ -68,12 +68,13 @@ export default class HeadingEditing extends Plugin {
 				// Schema.
 				editor.model.schema.register( option.model, {
 					inheritAllFrom: '$block',
-					allowAttributes: ['id', 'data-toc']
+					allowAttributes: ['id', 'data-toc', 'data-ai-suggestion']
 				} );
 
 				editor.conversion.elementToElement( option );
 				editor.conversion.attributeToAttribute( { model: 'id', view: 'id' } );
 				editor.conversion.attributeToAttribute( { model: 'data-toc', view: 'data-toc' } );
+				editor.conversion.attributeToAttribute( { model: 'data-ai-suggestion', view: 'data-ai-suggestion' } );
 
 				modelElements.push( option.model );
 			}
