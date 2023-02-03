@@ -11,9 +11,12 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ClipboardObserver', () => {
-	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy, stopPropagationSpy;
+	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy, stopPropagationSpy, mockedDomDataTransferFilesSpy;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View();
@@ -68,6 +71,7 @@ describe( 'ClipboardObserver', () => {
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 
 			expect( preventDefaultSpy.calledOnce ).to.be.true;
+			expect( mockedDomDataTransferFilesSpy.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -97,6 +101,7 @@ describe( 'ClipboardObserver', () => {
 			expect( data.dropRange ).to.be.null;
 
 			expect( preventDefaultSpy.calledOnce ).to.be.true;
+			expect( mockedDomDataTransferFilesSpy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should be fired with the right event data – dropRange (when no info about it in the drop event)', () => {
@@ -309,21 +314,55 @@ describe( 'ClipboardObserver', () => {
 			expect( data.domEvent.type ).to.equal( 'dragover' );
 			expect( data.dataTransfer.files ).to.deep.equal( dataTransfer.files );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/13366
+		it( 'should not access native DataTransfer files if not needed', () => {
+			const dataTransfer = mockDomDataTransfer();
+			const targetElement = mockDomTargetElement( {} );
+
+			doc.on( 'dragover', eventSpy );
+
+			observer.onDomEvent( {
+				type: 'dragover',
+				target: targetElement,
+				dataTransfer,
+				preventDefault: preventDefaultSpy
+			} );
+
+			expect( eventSpy.calledOnce ).to.be.true;
+
+			const data = eventSpy.args[ 0 ][ 1 ];
+
+			expect( data.domTarget ).to.equal( targetElement );
+
+			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
+
+			expect( data.dropRange ).to.be.null;
+
+			expect( preventDefaultSpy.calledOnce ).to.be.true;
+			expect( mockedDomDataTransferFilesSpy.notCalled ).to.be.true;
+		} );
 	} );
+
+	// Returns a super simple mock of HTMLElement (we use only ownerDocument from it).
+	function mockDomTargetElement( documentMock ) {
+		return {
+			ownerDocument: documentMock
+		};
+	}
+
+	function mockDomDataTransfer() {
+		mockedDomDataTransferFilesSpy = sinon.spy();
+
+		return {
+			get files() {
+				mockedDomDataTransferFilesSpy();
+				return [];
+			},
+			getData( type ) {
+				return 'foo:' + type;
+			}
+		};
+	}
 } );
-
-// Returns a super simple mock of HTMLElement (we use only ownerDocument from it).
-function mockDomTargetElement( documentMock ) {
-	return {
-		ownerDocument: documentMock
-	};
-}
-
-function mockDomDataTransfer() {
-	return {
-		files: [],
-		getData( type ) {
-			return 'foo:' + type;
-		}
-	};
-}
