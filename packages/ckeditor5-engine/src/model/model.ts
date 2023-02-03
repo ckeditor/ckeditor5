@@ -384,11 +384,13 @@ export default class Model extends ObservableMixin() {
 	public insertContent(
 		content: Item | ModelDocumentFragment,
 		selectable: Node,
-		placeOrOffset: PlaceOrOffset
+		placeOrOffset: PlaceOrOffset,
+		...rest: Array<unknown>
 	): ModelRange;
 	public insertContent(
 		content: Item | ModelDocumentFragment,
-		selectable?: Exclude<Selectable, Node>
+		selectable?: Exclude<Selectable, Node>,
+		...rest: Array<unknown>
 	): ModelRange;
 
 	/**
@@ -536,11 +538,13 @@ export default class Model extends ObservableMixin() {
 	public insertContent(
 		content: Item | ModelDocumentFragment,
 		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset
+		placeOrOffset?: PlaceOrOffset,
+		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
 
-		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection ] )!;
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection, placeOrOffset, ...rest ] )!;
 	}
 
 	public insertObject(
@@ -550,7 +554,8 @@ export default class Model extends ObservableMixin() {
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange;
 	public insertObject(
 		object: ModelElement,
@@ -559,7 +564,8 @@ export default class Model extends ObservableMixin() {
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange;
 
 	/**
@@ -652,12 +658,14 @@ export default class Model extends ObservableMixin() {
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
 
 		// Note that options are fired as 2 arguments for backward compatibility with the decorated method.
-		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ object, selection, options, options ] )!;
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ object, selection, options, options, ...rest ] )!;
 	}
 
 	/**
@@ -1186,7 +1194,8 @@ export type ModelInsertContentEvent = {
 	name: 'insertContent';
 	args: [ [
 		content: Item | ModelDocumentFragment,
-		selectable?: ModelSelection | DocumentSelection
+		selectable?: ModelSelection | DocumentSelection,
+		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
 };
@@ -1212,7 +1221,7 @@ export type ModelInsertObjectEvent = {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
 		},
-		_?: unknown
+		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
 };
