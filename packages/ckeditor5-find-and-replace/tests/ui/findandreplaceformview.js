@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -213,6 +213,12 @@ describe( 'FindAndReplaceFormView', () => {
 				} );
 
 				describe( 'options dropdown', () => {
+					beforeEach( () => {
+						// Trigger lazy init.
+						view._optionsDropdown.isOpen = true;
+						view._optionsDropdown.isOpen = false;
+					} );
+
 					it( 'should be a dropdown', () => {
 						expect( view._optionsDropdown ).to.be.instanceOf( DropdownView );
 						expect( view._optionsDropdown.class ).to.equal( 'ck-options-dropdown' );
@@ -764,9 +770,13 @@ describe( 'FindAndReplaceFormView', () => {
 				toolbar: [ 'findAndReplace' ]
 			} );
 
-			view = editor.plugins.get( 'FindAndReplaceUI' ).formView;
 			dropdown = editor.ui.view.toolbar.items
 				.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
+
+			// Trigger lazy init.
+			dropdown.isOpen = true;
+
+			view = editor.plugins.get( 'FindAndReplaceUI' ).formView;
 
 			findInput = view._findInputView;
 			matchCounterElement = findInput.element.firstChild.childNodes[ 2 ];
@@ -777,7 +787,12 @@ describe( 'FindAndReplaceFormView', () => {
 			replaceButton = view._replaceButtonView;
 			replaceAllButton = view._replaceAllButtonView;
 
+			// Trigger lazy init.
+			view._optionsDropdown.isOpen = true;
+			view._optionsDropdown.isOpen = false;
+
 			const optionsListView = view._optionsDropdown.panelView.children.get( 0 );
+
 			matchCaseSwitch = optionsListView.items.get( 0 ).children.get( 0 );
 			wholeWordsOnlySwitch = optionsListView.items.get( 1 ).children.get( 0 );
 		} );

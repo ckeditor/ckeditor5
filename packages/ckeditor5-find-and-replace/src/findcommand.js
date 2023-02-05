@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,6 @@
 */
 
 import { Command } from 'ckeditor5/src/core';
-import { updateFindResultFromRange, findByTextCallback } from './utils';
 
 /**
  * The find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
@@ -53,12 +52,13 @@ export default class FindCommand extends Command {
 	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
 		const { editor } = this;
 		const { model } = editor;
+		const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
 		let findCallback;
 
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
-			findCallback = findByTextCallback( callbackOrText, { matchCase, wholeWords } );
+			findCallback = findAndReplaceUtils.findByTextCallback( callbackOrText, { matchCase, wholeWords } );
 
 			this._state.searchText = callbackOrText;
 		} else {
@@ -67,7 +67,7 @@ export default class FindCommand extends Command {
 
 		// Initial search is done on all nodes in all roots inside the content.
 		const results = model.document.getRootNames()
-			.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+			.reduce( ( ( currentResults, rootName ) => findAndReplaceUtils.updateFindResultFromRange(
 				model.createRangeIn( model.document.getRoot( rootName ) ),
 				model,
 				findCallback,

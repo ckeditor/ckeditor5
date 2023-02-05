@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -73,7 +73,7 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
+			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
 
 			return dropdownView;
 		} );

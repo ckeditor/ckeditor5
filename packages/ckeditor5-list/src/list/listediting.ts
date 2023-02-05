@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,6 +45,8 @@ import {
 	modelToViewPosition,
 	viewToModelPosition
 } from './converters';
+
+import '../../theme/list.css';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.

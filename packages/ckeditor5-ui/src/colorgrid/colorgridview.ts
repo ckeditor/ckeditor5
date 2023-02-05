@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,16 +37,16 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	public readonly focusTracker: FocusTracker;
 	public readonly keystrokes: KeystrokeHandler;
 
-	declare public selectedColor: string | undefined;
+	declare public selectedColor: string | undefined | null;
 
 	/**
 	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} options Component configuration
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} [options.colorDefinitions] Array with definitions
+	 * @param locale The localization services instance.
+	 * @param options Component configuration
+	 * @param options.colorDefinitions Array with definitions
 	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
-	 * @param {Number} [options.columns=5] A number of columns to display the tiles.
+	 * @param options.columns A number of columns to display the tiles.
 	 */
 	constructor(
 		locale?: Locale,

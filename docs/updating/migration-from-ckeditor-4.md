@@ -10,7 +10,7 @@ modified_at: 2022-11-09
 # Migration from CKEditor 4
 
 <info-box hint>
-This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the {@link installation/index Getting started} section to make youself familiar with the concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
+This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the {@link installation/index Getting started} section to make youself familiar with the concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins with your needs.
 
 Before starting, decide what kind of installation to use for your new editor. Refer to the {@link installation/index Getting started with CKEditor 5} overview guide for more information on available installation methods.
 </info-box>
@@ -23,7 +23,7 @@ There is no "drop in" solution for migrating. In this guide we hope to summarize
 
 The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to {@link installation/getting-started/quick-start Installation} for more details.
 
-The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/basic-api Basic API} for an introduction.
+The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor Lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} for an introduction.
 
 ## Features
 

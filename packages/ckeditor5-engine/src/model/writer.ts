@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -815,12 +815,8 @@ export default class Writer {
 		return this.model.createRangeOn( element );
 	}
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public createSelection(): Selection;
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
-	public createSelection( selectable: Selectable, options: { backward?: boolean } ): Selection;
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
@@ -1307,10 +1303,8 @@ export default class Writer {
 		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
 	}
 
-	// The two overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public setSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): void;
-	public setSelection( selectable: Selectable, options: { backward?: boolean } ): void;
+	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given

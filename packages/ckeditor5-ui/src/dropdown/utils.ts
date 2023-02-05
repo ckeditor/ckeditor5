@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,10 +17,18 @@ import ListSeparatorView from '../list/listseparatorview';
 import ButtonView from '../button/buttonview';
 import SplitButtonView from './button/splitbuttonview';
 import SwitchButtonView from '../button/switchbuttonview';
+import ViewCollection from '../viewcollection';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import { global, priorities, logWarning, type Collection, type Locale } from '@ckeditor/ckeditor5-utils';
+import {
+	global,
+	priorities,
+	logWarning,
+	CKEditorError,
+	type Collection,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
@@ -120,30 +128,33 @@ export function createDropdown(
 /**
  * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
  *
- *		const buttons = [];
+ *		const buttonsCreator = () => {
+ *			const buttons = [];
  *
- *		// Either create a new ButtonView instance or create existing.
- *		buttons.push( new ButtonView() );
- *		buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
+ *			// Either create a new ButtonView instance or create existing.
+ *			buttons.push( new ButtonView() );
+ *			buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
+ *		};
  *
  *		const dropdown = createDropdown( locale );
  *
- *		addToolbarToDropdown( dropdown, buttons );
- *
- *		dropdown.toolbarView.isVertical = true;
+ *		addToolbarToDropdown( dropdown, buttonsCreator, { isVertical: true } );
  *
  *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
+ *		// Buttons inside the dropdown will be created on first dropdown panel open.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
  * **Note:** To improve the accessibility, you can tell the dropdown to focus the first active button of the toolbar when the dropdown
  * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}. See the documentation of `options` to learn more.
  *
+ * **Note:** Toolbar view will be created on first open of the dropdown.
+ *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
- * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
+ * @param {Iterable.<module:ui/button/buttonview~ButtonView>|Function} buttonsOrCallback
  * @param {Object} [options]
  * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
  * active {@link module:ui/toolbar/toolbarview~ToolbarView#items item} of the toolbar upon
@@ -151,29 +162,89 @@ export function createDropdown(
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
  * {@link module:ui/dropdown/dropdownview~DropdownView}).
+ * @param {String} [options.ariaLabel] Label used by assistive technologies to describe toolbar element.
+ * @param {String} [options.maxWidth] The maximum width of the toolbar element.
+ * Details: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
+ * @param {String} [options.class] An additional CSS class added to the toolbar element.
+ * @param {Boolean} [options.isCompact] When set true, makes the toolbar look compact with toolbar element.
+ * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
-	buttons: Array<ButtonView>,
-	options: { enableActiveItemFocusOnDropdownOpen?: boolean } = {}
+	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
+	options: {
+		enableActiveItemFocusOnDropdownOpen?: boolean;
+		ariaLabel?: string;
+		maxWidth?: string;
+		class?: string;
+		isCompact?: boolean;
+		isVertical?: boolean;
+	} = {}
 ): void {
-	const locale = dropdownView.locale;
-	const t = locale.t;
-	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
-
-	toolbarView.set( 'ariaLabel', t( 'Dropdown toolbar' ) );
-
 	dropdownView.extendTemplate( {
 		attributes: {
 			class: [ 'ck-toolbar-dropdown' ]
 		}
 	} );
 
-	buttons.map( view => toolbarView.items.add( view ) );
+	if ( dropdownView.isOpen ) {
+		addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options );
+	} else {
+		dropdownView.once(
+			'change:isOpen',
+			() => addToolbarToOpenDropdown( dropdownView, buttonsOrCallback, options ),
+			{ priority: 'highest' }
+		);
+	}
 
 	if ( options.enableActiveItemFocusOnDropdownOpen ) {
 		// Accessibility: Focus the first active button in the toolbar when the dropdown gets open.
-		focusChildOnDropdownOpen( dropdownView, () => toolbarView.items.find( ( item: any ) => item.isOn ) );
+		focusChildOnDropdownOpen( dropdownView, () => dropdownView.toolbarView!.items.find( ( item: any ) => item.isOn ) );
+	}
+}
+
+/**
+ * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
+ */
+function addToolbarToOpenDropdown(
+	dropdownView: DropdownView,
+	buttonsOrCallback: Array<View> | ViewCollection | ( () => Array<View> | ViewCollection ),
+	options: {
+		ariaLabel?: string;
+		maxWidth?: string;
+		class?: string;
+		isCompact?: boolean;
+		isVertical?: boolean;
+	}
+): void {
+	const locale = dropdownView.locale;
+	const t = locale.t;
+
+	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
+	const buttons = typeof buttonsOrCallback == 'function' ? buttonsOrCallback() : buttonsOrCallback;
+
+	toolbarView.ariaLabel = options.ariaLabel || t( 'Dropdown toolbar' );
+
+	if ( options.maxWidth ) {
+		toolbarView.maxWidth = options.maxWidth;
+	}
+
+	if ( options.class ) {
+		toolbarView.class = options.class;
+	}
+
+	if ( options.isCompact ) {
+		toolbarView.isCompact = options.isCompact;
+	}
+
+	if ( options.isVertical ) {
+		toolbarView.isVertical = true;
+	}
+
+	if ( buttons instanceof ViewCollection ) {
+		toolbarView.items.bindTo( buttons ).using( item => item );
+	} else {
+		toolbarView.items.addMany( buttons );
 	}
 
 	dropdownView.panelView.children.add( toolbarView );
@@ -219,18 +290,59 @@ export function addToolbarToDropdown(
  * to focus the first active item (a host to a {@link module:ui/button/buttonview~ButtonView} with
  * {@link module:ui/button/buttonview~ButtonView#isOn} set `true`) or the very first item when none are active.
  *
+ * **Note:** List view will be created on first open of the dropdown.
+ *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
- * A collection of the list item definitions to populate the list.
+ * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>|Function} itemsOrCallback A collection of the list item
+ * definitions or a callback returning a list item definitions to populate the list.
+ * @param {Object} [options]
+ * @param {String} [options.ariaLabel] Label used by assistive technologies to describe list element.
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
-	items: Collection<ListDropdownItemDefinition>
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
+	options: {
+		ariaLabel?: string;
+	} = {}
+): void {
+	if ( dropdownView.isOpen ) {
+		addListToOpenDropdown( dropdownView, itemsOrCallback, options );
+	} else {
+		dropdownView.once(
+			'change:isOpen',
+			() => addListToOpenDropdown( dropdownView, itemsOrCallback, options ),
+			{ priority: 'highest' }
+		);
+	}
+
+	// Accessibility: Focus the first active button in the list when the dropdown gets open.
+	focusChildOnDropdownOpen( dropdownView, () => dropdownView.listView!.items.find( item => {
+		if ( item instanceof ListItemView ) {
+			return ( item.children.first as any ).isOn;
+		}
+
+		return false;
+	} ) );
+}
+
+/**
+ * Adds an instance of {@link module:ui/list/listview~ListView} to a dropdown.
+ */
+function addListToOpenDropdown(
+	dropdownView: DropdownView,
+	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
+	options: {
+		ariaLabel?: string;
+	}
 ): void {
 	const locale = dropdownView.locale;
+
 	const listView = dropdownView.listView = new ListView( locale );
+	const items = typeof itemsOrCallback == 'function' ? itemsOrCallback() : itemsOrCallback;
+
+	listView.ariaLabel = options.ariaLabel;
 
 	listView.items.bindTo( items ).using( def => {
 		if ( def.type === 'separator' ) {
@@ -260,15 +372,6 @@ export function addListToDropdown(
 	dropdownView.panelView.children.add( listView );
 
 	listView.items.delegate( 'execute' ).to( dropdownView );
-
-	// Accessibility: Focus the first active button in the list when the dropdown gets open.
-	focusChildOnDropdownOpen( dropdownView, () => listView.items.find( item => {
-		if ( item instanceof ListItemView ) {
-			return ( item.children.first as any ).isOn;
-		}
-
-		return false;
-	} ) );
 }
 
 /**
@@ -403,10 +506,12 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 			return;
 		}
 
+		const element = dropdownView.panelView.element;
+
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( dropdownView.panelView.element!.contains( global.document.activeElement ) ) {
+		if ( element && element.contains( global.document.activeElement ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );

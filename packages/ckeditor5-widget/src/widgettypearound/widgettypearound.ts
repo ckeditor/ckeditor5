@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -50,9 +50,9 @@ import type {
 	Schema,
 	SelectionChangeRangeEvent,
 	ViewDocumentArrowKeyEvent,
-	ViewDocumentCompositionEvent,
-	ViewDocumentKeyEvent,
-	ViewDocumentMouseEvent,
+	ViewDocumentCompositionStartEvent,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentMouseDownEvent,
 	ViewElement,
 	ModelDeleteContentEvent,
 	ModelInsertContentEvent,
@@ -589,7 +589,7 @@ export default class WidgetTypeAround extends Plugin {
 		// There is a widget at the collapse position so collapse the selection to the fake caret on it.
 		if ( isTypeAroundWidget( selectedViewNode, selectedModelNode as any, schema ) ) {
 			model.change( writer => {
-				writer.setSelection( selectedModelNode, 'on' );
+				writer.setSelection( selectedModelNode!, 'on' );
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
 			} );
 
@@ -610,7 +610,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		this._listenToIfEnabled<ViewDocumentMouseEvent>( editingView.document, 'mousedown', ( evt, domEventData ) => {
+		this._listenToIfEnabled<ViewDocumentMouseDownEvent>( editingView.document, 'mousedown', ( evt, domEventData ) => {
 			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
 
 			if ( !button ) {
@@ -715,14 +715,14 @@ export default class WidgetTypeAround extends Plugin {
 			// On Android with English keyboard, the composition starts just by putting caret
 			// at the word end or by selecting a table column. This is not a real composition started.
 			// Trigger delete content on first composition key pressed.
-			this._listenToIfEnabled<ViewDocumentKeyEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			this._listenToIfEnabled<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
 				if ( data.keyCode == 229 ) {
 					this._insertParagraphAccordingToFakeCaretPosition();
 				}
 			} );
 		} else {
 			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
-			this._listenToIfEnabled<ViewDocumentCompositionEvent>( viewDocument, 'compositionstart', () => {
+			this._listenToIfEnabled<ViewDocumentCompositionStartEvent>( viewDocument, 'compositionstart', () => {
 				this._insertParagraphAccordingToFakeCaretPosition();
 			}, { priority: 'high' } );
 		}
@@ -767,7 +767,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			if ( shouldDeleteEntireWidget ) {
 				editor.execute( 'delete', {
-					selection: model.createSelection( selectedModelWidget, 'on' )
+					selection: model.createSelection( selectedModelWidget!, 'on' )
 				} );
 			} else {
 				const range = schema.getNearestSelectionRange(
@@ -871,7 +871,7 @@ export default class WidgetTypeAround extends Plugin {
 		const documentSelection = model.document.selection;
 
 		this._listenToIfEnabled<ModelInsertObjectEvent>( editor.model, 'insertObject', ( evt, args ) => {
-			const [ , selectable, , options = {} ] = args;
+			const [ , selectable, options = {} ] = args;
 
 			if ( selectable && !( selectable as any ).is( 'documentSelection' ) ) {
 				return;

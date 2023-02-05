@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,7 +26,7 @@ import {
 	type DomEventData,
 	type Element,
 	type ViewContainerElement,
-	type ViewDocumentMouseEvent,
+	type ViewDocumentMouseDownEvent,
 	type ViewSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -108,7 +108,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer = new ( DomEmitterMixin() )();
 
-		this.listenTo<ViewDocumentMouseEvent>(
+		this.listenTo<ViewDocumentMouseDownEvent>(
 			editing.view.document,
 			'mousedown',
 			this._mouseDownListener.bind( this ),

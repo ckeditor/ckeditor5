@@ -38,7 +38,10 @@ The General HTML Support feature is configured via the `config.htmlSupport` prop
 
 ## Related features
 
-There is a closely related {@link features/source-editing source editing feature} which allows access and edition of the HTML source code of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+There are other HTML editing related CKEditor 5 features you may want to check:
+
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Level of support
 
@@ -72,10 +75,10 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ GeneralHtmlSupport, ... ],
+		plugins: [ GeneralHtmlSupport, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -320,11 +323,15 @@ dataFilter.allowElement( 'object-block' );
 
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes e.g.: the `<ul>` and `<ol>` elements of the list feature (see: [#9917](https://github.com/ckeditor/ckeditor5/issues/9917)).
 
-We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/). You can also track other [GHS-related issues](https://github.com/ckeditor/ckeditor5/issues/9856) on GitHub.
+<info-box info>
+	While the GHS feature is stable, some problems with complex documents may occur if it is used together with {@link features/real-time-collaboration real-time collaboration}.
+</info-box>
+
+We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/). You can also track other [GHS-related issues](https://github.com/ckeditor/ckeditor5/issues/9856) on GitHub <!-- To be removed at some point, as the main issue is closed already -->.
 
 ## HTML comments
 
-By default, all HTML comments are filtered out during the editor initialization. The HTML Comments feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/advanced/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
+By default, all HTML comments are filtered out during the editor initialization. The HTML Comments feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/getting-started/getting-and-setting-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
 
 <info-box>
 	The HTML comment feature is **experimental and not yet production-ready**.
@@ -353,10 +360,10 @@ import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlComment, ... ],
+		plugins: [ HtmlComment, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

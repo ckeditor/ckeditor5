@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -197,15 +197,17 @@ function getDropdownViewCreator( {
 
 		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
-		const listPropertiesView = createListPropertiesView( {
-			editor,
-			dropdownView,
-			parentCommandName,
-			styleGridAriaLabel,
-			styleDefinitions
-		} );
+		dropdownView.once( 'change:isOpen', () => {
+			const listPropertiesView = createListPropertiesView( {
+				editor,
+				dropdownView,
+				parentCommandName,
+				styleGridAriaLabel,
+				styleDefinitions
+			} );
 
-		dropdownView.panelView.children.add( listPropertiesView );
+			dropdownView.panelView.children.add( listPropertiesView );
+		} );
 
 		// Focus the editable after executing the command.
 		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).

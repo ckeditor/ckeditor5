@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -95,13 +95,13 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	constructor(
 		...args: [] |
 		[
-			selectable: Selectable,
-			placeOrOffset?: PlaceOrOffset,
+			selectable: Node,
+			placeOrOffset: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] |
 		[
-			selectable: Selectable,
-			options: { backward?: boolean }
+			selectable?: Exclude<Selectable, Node>,
+			options?: { backward?: boolean }
 		]
 	) {
 		super();
@@ -349,12 +349,12 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 */
 	public setTo(
 		...args: [
-			selectable: Selectable,
-			placeOrOffset?: PlaceOrOffset,
+			selectable: Node,
+			placeOrOffset: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] | [
-			selectable: Selectable,
-			options: { backward?: boolean }
+			selectable?: Exclude<Selectable, Node>,
+			options?: { backward?: boolean }
 		]
 	): void {
 		let [ selectable, placeOrOffset, options ] = args;

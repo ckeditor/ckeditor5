@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -280,30 +280,6 @@ function calculateMissingColumnWidths( columnWidths ) {
 	return columnWidths
 		.map( columnWidth => columnWidth === 'auto' ? widthForUninitializedColumn : columnWidth )
 		.map( columnWidth => toPrecision( columnWidth ) );
-}
-
-/**
- * Inserts column resizer element into a view cell if it is missing.
- *
- * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
- * @param {module:engine/view/element~Element} viewCell View cell where resizer should be put.
- */
-export function ensureColumnResizerElement( viewWriter, viewCell ) {
-	let viewTableColumnResizerElement = [ ...viewCell.getChildren() ]
-		.find( viewElement => viewElement.hasClass( 'ck-table-column-resizer' ) );
-
-	if ( viewTableColumnResizerElement ) {
-		return;
-	}
-
-	viewTableColumnResizerElement = viewWriter.createUIElement( 'div', {
-		class: 'ck-table-column-resizer'
-	} );
-
-	viewWriter.insert(
-		viewWriter.createPositionAt( viewCell, 'end' ),
-		viewTableColumnResizerElement
-	);
 }
 
 /**

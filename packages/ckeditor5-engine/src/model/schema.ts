@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,7 +33,7 @@ import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
  *
  * * The {@glink framework/guides/architecture/editing-engine#schema schema section} of the
  * {@glink framework/guides/architecture/editing-engine Introduction to the Editing engine architecture} guide.
- * * The {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+ * * The {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
  */
 export default class Schema extends ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
@@ -219,7 +219,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isBlock( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -244,7 +244,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isLimit( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -273,7 +273,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isObject( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -300,7 +300,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isInline( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -323,7 +323,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isSelectable( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -350,7 +350,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide} for more details.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public isContent( item: string | Item | DocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
@@ -1182,7 +1182,7 @@ export type SchemaCheckAttributeEvent = {
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
- * {@glink framework/guides/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep-dive guide}.
+ * {@glink framework/guides/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep-dive} guide.
  *
  * # Generic items
  *
@@ -1227,7 +1227,7 @@ export type SchemaCheckAttributeEvent = {
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
- * Read more about generic types in the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+ * Read more about generic types in the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
  *
  * # Example definitions
  *
@@ -1368,7 +1368,7 @@ export interface SchemaItemDefinition {
 	 *
 	 * Read more about the block elements in the
 	 * {@glink framework/guides/deep-dive/schema#block-elements Block elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
 	 */
 	isBlock?: boolean;
 
@@ -1388,7 +1388,7 @@ export interface SchemaItemDefinition {
 	 *
 	 * Read more about the limit elements in the
 	 * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
 	 */
 	isLimit?: boolean;
 
@@ -1413,7 +1413,7 @@ export interface SchemaItemDefinition {
 	 *
 	 * Read more about selectable elements in the
 	 * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
 	 */
 	isSelectable?: boolean;
 
@@ -1426,7 +1426,7 @@ export interface SchemaItemDefinition {
 	 *
 	 * Read more about content elements in the
 	 * {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of
-	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive guide}.
+	 * the {@glink framework/guides/deep-dive/schema Schema deep-dive} guide.
 	 */
 	isContent?: boolean;
 }

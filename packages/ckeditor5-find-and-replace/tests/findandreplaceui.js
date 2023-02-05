@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,12 +31,17 @@ describe( 'FindAndReplaceUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'findAndReplace' );
-				form = dropdown.panelView.children.get( 0 );
 				findCommand = editor.commands.get( 'find' );
 				plugin = editor.plugins.get( 'FindAndReplaceUI' );
 
 				dropdown.render();
 				global.document.body.appendChild( dropdown.element );
+
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
+
+				form = dropdown.panelView.children.get( 0 );
 			} );
 	} );
 

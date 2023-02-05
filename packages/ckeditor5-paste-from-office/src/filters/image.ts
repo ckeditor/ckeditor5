@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,8 @@ import {
 	Matcher,
 	UpcastWriter,
 	type ViewDocumentFragment,
-	type ViewElement
+	type ViewElement,
+	type ViewNode
 } from 'ckeditor5/src/engine';
 
 /**
@@ -32,6 +33,7 @@ export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFra
 	const shapesIds = findAllShapesIds( documentFragment, upcastWriter );
 
 	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
+	insertMissingImgs( shapesIds, documentFragment, upcastWriter );
 	removeAllShapeElements( documentFragment, upcastWriter );
 
 	const images = findAllImageElementsWithLocalSource( documentFragment, upcastWriter );
@@ -148,6 +150,69 @@ function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer:
 
 	for ( const shape of shapes ) {
 		writer.remove( shape );
+	}
+}
+
+/**
+ * Inserts `img` tags if there is none after a shape.
+ */
+function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocumentFragment, writer: UpcastWriter ) {
+	const range = writer.createRangeIn( documentFragment );
+
+	const shapes: Array<ViewElement> = [];
+
+	for ( const value of range ) {
+		if ( value.type == 'elementStart' && value.item.is( 'element', 'v:shape' ) ) {
+			const id = value.item.getAttribute( 'id' )!;
+
+			if ( shapeIds.includes( id ) ) {
+				continue;
+			}
+
+			if ( !containsMatchingImg( value.item.parent!.getChildren(), id ) ) {
+				shapes.push( value.item );
+			}
+		}
+	}
+
+	for ( const shape of shapes ) {
+		const attrs: Record<string, unknown> = {
+			src: findSrc( shape )
+		};
+
+		if ( shape.hasAttribute( 'alt' ) ) {
+			attrs.alt = shape.getAttribute( 'alt' );
+		}
+
+		const img = writer.createElement( 'img', attrs );
+
+		writer.insertChild( shape.index! + 1, img, shape.parent! );
+	}
+
+	function containsMatchingImg( nodes: Iterable<ViewNode>, id: string ): boolean {
+		for ( const node of nodes ) {
+			/* istanbul ignore else */
+			if ( node.is( 'element' ) ) {
+				if ( node.name == 'img' && node.getAttribute( 'v:shapes' ) == id ) {
+					return true;
+				}
+
+				if ( containsMatchingImg( node.getChildren(), id ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	function findSrc( shape: ViewElement ) {
+		for ( const child of shape.getChildren() ) {
+			/* istanbul ignore else */
+			if ( child.is( 'element' ) && child.getAttribute( 'src' ) ) {
+				return child.getAttribute( 'src' );
+			}
+		}
 	}
 }
 

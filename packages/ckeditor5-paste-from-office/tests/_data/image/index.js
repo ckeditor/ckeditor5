@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -85,6 +85,17 @@ import reflectionRtfChrome from './reflection/input.chrome.word2016.rtf';
 import adjacentGroupsRtfChrome from './adjacent-groups/input.chrome.word2016.rtf';
 import onlineOfflineRtfChrome from './online-offline/input.chrome.word2016.rtf';
 import shapesOnlineOfflineRtfChrome from './shapes-online-offline/input.chrome.word2016.rtf';
+import noImgTagRtfChrome from './no-img-tag/input.chrome.word2016.rtf';
+import noImgTagRtfAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.rtf';
+
+import noImgTagChrome from './no-img-tag/input.chrome.word2016.html';
+import noImgTagAltTextChrome from './no-img-tag-alt-text/input.chrome.word2016.html';
+
+import noImgTagNormalizedChrome from './no-img-tag/normalized.chrome.word2016.html';
+import noImgTagNormalizedAltTextChrome from './no-img-tag-alt-text/normalized.chrome.word2016.html';
+
+import noImgTagModelChrome from './no-img-tag/model.chrome.word2016.html';
+import noImgTagModelAltTextChrome from './no-img-tag-alt-text/model.chrome.word2016.html';
 
 // Firefox
 import offlineRtfFirefox from './offline/input.firefox.word2016.rtf';
@@ -143,9 +154,21 @@ import shapesOnlineOfflineModelSafari from './shapes-online-offline/model.safari
 
 export const browserFixtures = {
 	chrome: {
-		input: Object.assign( {}, genericFixtures.input ),
-		normalized: Object.assign( {}, genericFixtures.normalized ),
-		model: Object.assign( {}, genericFixtures.model ),
+		input: {
+			...genericFixtures.input,
+			noImgTag: noImgTagChrome,
+			noImgTagAltText: noImgTagAltTextChrome
+		},
+		normalized: {
+			...genericFixtures.normalized,
+			noImgTag: noImgTagNormalizedChrome,
+			noImgTagAltText: noImgTagNormalizedAltTextChrome
+		},
+		model: {
+			...genericFixtures.model,
+			noImgTag: noImgTagModelChrome,
+			noImgTagAltText: noImgTagModelAltTextChrome
+		},
 		inputRtf: {
 			offline: offlineRtfChrome,
 			linked: linkedRtfChrome,
@@ -155,9 +178,10 @@ export const browserFixtures = {
 			reflection: reflectionRtfChrome,
 			adjacentGroups: adjacentGroupsRtfChrome,
 			onlineOffline: onlineOfflineRtfChrome,
-			shapesOnlineOffline: shapesOnlineOfflineRtfChrome
+			shapesOnlineOffline: shapesOnlineOfflineRtfChrome,
+			noImgTag: noImgTagRtfChrome,
+			noImgTagAltText: noImgTagRtfAltTextChrome
 		}
-
 	},
 
 	firefox: {

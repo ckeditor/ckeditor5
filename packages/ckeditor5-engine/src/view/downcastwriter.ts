@@ -1,15 +1,19 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
- * @module module:engine/view/downcastwriter
+ * @module engine/view/downcastwriter
  */
 
-import Position from './position';
+import Position, { type PositionOffset } from './position';
 import Range from './range';
-import Selection from './selection';
+import Selection, {
+	type PlaceOrOffset,
+	type Selectable,
+	type SelectionOptions
+} from './selection';
 import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
@@ -47,39 +51,31 @@ type DomElement = globalThis.HTMLElement;
  * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  */
 export default class DowncastWriter {
+	/**
+	 * The view document instance in which this writer operates.
+	 */
 	public readonly document: Document;
-	private readonly _cloneGroups: Map<string | number, Set<AttributeElement>>;
-	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => Element ) | null;
 
 	/**
-	 * @param {module:engine/view/document~Document} document The view document instance.
+	 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~AttributeElement}s.
+	 */
+	private readonly _cloneGroups = new Map<string | number, Set<AttributeElement>>();
+
+	/**
+	 * The slot factory used by the `elementToStructure` downcast helper.
+	 */
+	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => Element ) | null = null;
+
+	/**
+	 * @param document The view document instance.
 	 */
 	constructor( document: Document ) {
-		/**
-		 * The view document instance in which this writer operates.
-		 *
-		 * @readonly
-		 * @type {module:engine/view/document~Document}
-		 */
 		this.document = document;
-
-		/**
-		 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~AttributeElement#id id}.
-		 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~AttributeElement}s.
-		 *
-		 * @private
-		 * @type {Map.<String,Set>}
-		 */
-		this._cloneGroups = new Map();
-
-		/**
-		 * The slot factory used by the `elementToStructure` downcast helper.
-		 *
-		 * @private
-		 * @type {Function|null}
-		 */
-		this._slotFactory = null;
 	}
+
+	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
+	public setSelection( selectable: Exclude<Selectable, Node>, options?: SelectionOptions ): void;
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
@@ -87,63 +83,64 @@ export default class DowncastWriter {
 	 *
 	 * Usage:
 	 *
-	 *		// Sets selection to the given range.
-	 *		const range = writer.createRange( start, end );
-	 *		writer.setSelection( range );
+	 * ```ts
+	 * // Sets selection to the given range.
+	 * const range = writer.createRange( start, end );
+	 * writer.setSelection( range );
 	 *
-	 *		// Sets backward selection to the given range.
-	 *		const range = writer.createRange( start, end );
-	 *		writer.setSelection( range );
+	 * // Sets backward selection to the given range.
+	 * const range = writer.createRange( start, end );
+	 * writer.setSelection( range );
 	 *
-	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
-	 *		writer.setSelection( range );
+	 * // Sets selection to given ranges.
+	 * const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
+	 * writer.setSelection( range );
 	 *
-	 *		// Sets selection to the other selection.
-	 *		const otherSelection = writer.createSelection();
-	 *		writer.setSelection( otherSelection );
+	 * // Sets selection to the other selection.
+	 * const otherSelection = writer.createSelection();
+	 * writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets collapsed selection at the given position.
-	 *		const position = writer.createPositionFromPath( root, path );
-	 *		writer.setSelection( position );
+	 * // Sets collapsed selection at the given position.
+	 * const position = writer.createPositionFromPath( root, path );
+	 * writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createContainerElement( 'p' );
-	 *		writer.setSelection( paragraph, offset );
+	 * // Sets collapsed selection at the position of given item and offset.
+	 * const paragraph = writer.createContainerElement( 'p' );
+	 * writer.setSelection( paragraph, offset );
+	 * ```
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
  	 * that element and ends after the last child of that element.
 	 *
-	 * 		writer.setSelection( paragraph, 'in' );
+	 * ```ts
+	 * writer.setSelection( paragraph, 'in' );
+	 * ```
 	 *
 	 * Creates a range on the {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
 	 *
-	 *		writer.setSelection( paragraph, 'on' );
+	 * ```ts
+	 * writer.setSelection( paragraph, 'on' );
 	 *
-	 * 		// Removes all ranges.
-	 *		writer.setSelection( null );
+	 * // Removes all ranges.
+	 * writer.setSelection( null );
+	 * ```
 	 *
 	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
-	 *		// Sets selection as backward.
-	 *		writer.setSelection( range, { backward: true } );
+	 * ```ts
+	 * // Sets selection as backward.
+	 * writer.setSelection( range, { backward: true } );
 	 *
-	 *		// Sets selection as fake.
-	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
-	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * 		// represented in other way, for example by applying proper CSS class.
-	 *		writer.setSelection( range, { fake: true } );
+	 * // Sets selection as fake.
+	 * // Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * // This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * // represented in other way, for example by applying proper CSS class.
+	 * writer.setSelection( range, { fake: true } );
 	 *
-	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
-	 * 		// (and be  properly handled by screen readers).
-	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
-	 *
-	 * @param {module:engine/view/selection~Selectable} selectable
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
-	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {String} [options.label] Label for the fake selection.
+	 * // Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * // (and be  properly handled by screen readers).
+	 * writer.setSelection( range, { fake: true, label: 'foo' } );
+	 * ```
 	 */
 	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
 		this.document.selection._setTo( ...args );
@@ -155,32 +152,31 @@ export default class DowncastWriter {
 	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public setSelectionFocus( ...args: Parameters<Selection[ 'setFocus' ]> ): void {
-		this.document.selection._setFocus( ...args );
+	public setSelectionFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+		this.document.selection._setFocus( itemOrPosition, offset );
 	}
 
 	/**
 	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
 	 *
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into the created document fragment.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
+	 * @param children A list of nodes to be inserted into the created document fragment.
+	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children: Node | Iterable<Node> ): DocumentFragment {
+	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
 		return new DocumentFragment( this.document, children );
 	}
 
 	/**
 	 * Creates a new {@link module:engine/view/text~Text text node}.
 	 *
-	 *		writer.createText( 'foo' );
+	 * ```ts
+	 * writer.createText( 'foo' );
+	 * ```
 	 *
-	 * @param {String} data The text's data.
-	 * @returns {module:engine/view/text~Text} The created text node.
+	 * @param data The text's data.
+	 * @returns The created text node.
 	 */
 	public createText( data: string ): Text {
 		return new Text( this.document, data );
@@ -189,23 +185,25 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
-	 *		writer.createAttributeElement( 'strong' );
-	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' } );
+	 * ```ts
+	 * writer.createAttributeElement( 'strong' );
+	 * writer.createAttributeElement( 'a', { href: 'foo.bar' } );
 	 *
-	 *		// Make `<a>` element contain other attributes element so the `<a>` element is not broken.
-	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
+	 * // Make `<a>` element contain other attributes element so the `<a>` element is not broken.
+	 * writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
 	 *
-	 *		// Set `id` of a marker element so it is not joined or merged with "normal" elements.
-	 *		writer.createAttributeElement( 'span', { class: 'my-marker' }, { id: 'marker:my' } );
+	 * // Set `id` of a marker element so it is not joined or merged with "normal" elements.
+	 * writer.createAttributeElement( 'span', { class: 'my-marker' }, { id: 'marker:my' } );
+	 * ```
 	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Element's attributes.
-	 * @param {Object} [options] Element's options.
-	 * @param {Number} [options.priority] Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
-	 * @param {Number|String} [options.id] Element's {@link module:engine/view/attributeelement~AttributeElement#id id}.
-	 * @param {Array.<String>} [options.renderUnsafeAttributes] A list of attribute names that should be rendered in the editing
+	 * @param name Name of the element.
+	 * @param attributes Element's attributes.
+	 * @param options Element's options.
+	 * @param options.priority Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
+	 * @param options.id Element's {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
-	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
+	 * @returns Created element.
 	 */
 	public createAttributeElement(
 		name: string,
@@ -219,15 +217,15 @@ export default class DowncastWriter {
 		const attributeElement = new AttributeElement( this.document, name, attributes );
 
 		if ( typeof options.priority === 'number' ) {
-			( attributeElement as any )._priority = options.priority;
+			attributeElement._priority = options.priority;
 		}
 
 		if ( options.id ) {
-			( attributeElement as any )._id = options.id;
+			attributeElement._id = options.id;
 		}
 
 		if ( options.renderUnsafeAttributes ) {
-			( attributeElement as any )._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
+			attributeElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
 		return attributeElement;
@@ -236,47 +234,68 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/containerelement~ContainerElement}.
 	 *
-	 *		writer.createContainerElement( 'p' );
+	 * ```ts
+	 * writer.createContainerElement( 'p' );
 	 *
-	 *		// Create element with custom attributes.
-	 *		writer.createContainerElement( 'div', { id: 'foo-bar', 'data-baz': '123' } );
+	 * // Create element with custom attributes.
+	 * writer.createContainerElement( 'div', { id: 'foo-bar', 'data-baz': '123' } );
 	 *
-	 *		// Create element with custom styles.
-	 *		writer.createContainerElement( 'p', { style: 'font-weight: bold; padding-bottom: 10px' } );
+	 * // Create element with custom styles.
+	 * writer.createContainerElement( 'p', { style: 'font-weight: bold; padding-bottom: 10px' } );
 	 *
-	 *		// Create element with custom classes.
-	 *		writer.createContainerElement( 'p', { class: 'foo bar baz' } );
+	 * // Create element with custom classes.
+	 * writer.createContainerElement( 'p', { class: 'foo bar baz' } );
 	 *
-	 *		// Create element with children.
-	 *		writer.createContainerElement( 'figure', { class: 'image' }, [
-	 *			writer.createEmptyElement( 'img' ),
-	 *			writer.createContainerElement( 'figcaption' )
-	 *		] );
+	 * // Create element with specific options.
+	 * writer.createContainerElement( 'span', { class: 'placeholder' }, { renderUnsafeAttributes: [ 'foo' ] } );
+	 * ```
 	 *
-	 *		// Create element with specific options.
-	 *		writer.createContainerElement( 'span', { class: 'placeholder' }, { renderUnsafeAttributes: [ 'foo' ] } );
-	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>|Object} [childrenOrOptions]
-	 * A node or a list of nodes to be inserted into the created element. If no children were specified, element's `options`
-	 * can be passed in this argument.
-	 * @param {Object} [options] Element's options.
-	 * @param {Array.<String>} [options.renderUnsafeAttributes] A list of attribute names that should be rendered in the editing
+	 * @param name Name of the element.
+	 * @param attributes Elements attributes.
+	 * @param options Element's options.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
-	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
+	 * @returns Created element.
 	 */
 	public createContainerElement(
 		name: string,
 		attributes?: ElementAttributes,
 		options?: { renderUnsafeAttributes?: Array<string> }
 	): ContainerElement;
+
+	/**
+	 * Creates a new {@link module:engine/view/containerelement~ContainerElement} with children.
+	 *
+	 * ```ts
+	 * // Create element with children.
+	 * writer.createContainerElement( 'figure', { class: 'image' }, [
+	 * 	writer.createEmptyElement( 'img' ),
+	 * 	writer.createContainerElement( 'figcaption' )
+	 * ] );
+	 *
+	 * // Create element with specific options.
+	 * writer.createContainerElement( 'figure', { class: 'image' }, [
+	 * 	writer.createEmptyElement( 'img' ),
+	 * 	writer.createContainerElement( 'figcaption' )
+	 * ], { renderUnsafeAttributes: [ 'foo' ] } );
+	 * ```
+	 *
+	 * @param name Name of the element.
+	 * @param attributes Elements attributes.
+	 * @param children A node or a list of nodes to be inserted into the created element.
+	 * If no children were specified, element's `options` can be passed in this argument.
+	 * @param options Element's options.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
+	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
+	 * @returns Created element.
+	 */
 	public createContainerElement(
 		name: string,
 		attributes: ElementAttributes,
 		children: Node | Iterable<Node>,
 		options?: { renderUnsafeAttributes?: Array<string> }
 	): ContainerElement;
+
 	public createContainerElement(
 		name: string,
 		attributes?: ElementAttributes,
@@ -294,7 +313,7 @@ export default class DowncastWriter {
 		const containerElement = new ContainerElement( this.document, name, attributes, children as Node | Iterable<Node> );
 
 		if ( options.renderUnsafeAttributes ) {
-			( containerElement as any )._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
+			containerElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
 		return containerElement;
@@ -303,22 +322,24 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/editableelement~EditableElement}.
 	 *
-	 *		writer.createEditableElement( 'div' );
-	 *		writer.createEditableElement( 'div', { id: 'foo-1234' } );
+	 * ```ts
+	 * writer.createEditableElement( 'div' );
+	 * writer.createEditableElement( 'div', { id: 'foo-1234' } );
+	 * ```
 	 *
 	 * Note: The editable element is to be used in the editing pipeline. Usually, together with
 	 * {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`}.
 	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @param {Object} [options] Element's options.
-	 * @param {Array.<String>} [options.renderUnsafeAttributes] A list of attribute names that should be rendered in the editing
+	 * @param name Name of the element.
+	 * @param attributes Elements attributes.
+	 * @param options Element's options.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
-	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
+	 * @returns Created element.
 	 */
 	public createEditableElement(
 		name: string,
-		attributes: ElementAttributes,
+		attributes?: ElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
@@ -326,7 +347,7 @@ export default class DowncastWriter {
 		const editableElement = new EditableElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
-			( editableElement as any )._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
+			editableElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
 		return editableElement;
@@ -335,15 +356,17 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
-	 *		writer.createEmptyElement( 'img' );
-	 *		writer.createEmptyElement( 'img', { id: 'foo-1234' } );
+	 * ```ts
+	 * writer.createEmptyElement( 'img' );
+	 * writer.createEmptyElement( 'img', { id: 'foo-1234' } );
+	 * ```
 	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @param {Object} [options] Element's options.
-	 * @param {Array.<String>} [options.renderUnsafeAttributes] A list of attribute names that should be rendered in the editing
+	 * @param name Name of the element.
+	 * @param attributes Elements attributes.
+	 * @param options Element's options.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
-	 * @returns {module:engine/view/emptyelement~EmptyElement} Created element.
+	 * @returns Created element.
 	 */
 	public createEmptyElement(
 		name: string,
@@ -355,7 +378,7 @@ export default class DowncastWriter {
 		const emptyElement = new EmptyElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
-			( emptyElement as any )._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
+			emptyElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
 		return emptyElement;
@@ -364,32 +387,36 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/uielement~UIElement}.
 	 *
-	 *		writer.createUIElement( 'span' );
-	 *		writer.createUIElement( 'span', { id: 'foo-1234' } );
+	 * ```ts
+	 * writer.createUIElement( 'span' );
+	 * writer.createUIElement( 'span', { id: 'foo-1234' } );
+	 * ```
 	 *
 	 * A custom render function can be provided as the third parameter:
 	 *
-	 *		writer.createUIElement( 'span', null, function( domDocument ) {
-	 *			const domElement = this.toDomElement( domDocument );
-	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 * ```ts
+	 * writer.createUIElement( 'span', null, function( domDocument ) {
+	 * 	const domElement = this.toDomElement( domDocument );
+	 * 	domElement.innerHTML = '<b>this is ui element</b>';
 	 *
-	 *			return domElement;
-	 *		} );
+	 * 	return domElement;
+	 * } );
+	 * ```
 	 *
 	 * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
 	 * they are ignored by the editor selection system.
 	 *
 	 * You should not use UI elements as data containers. Check out {@link #createRawElement} instead.
 	 *
-	 * @param {String} name The name of the element.
-	 * @param {Object} [attributes] Element attributes.
-	 * @param {Function} [renderFunction] A custom render function.
-	 * @returns {module:engine/view/uielement~UIElement} The created element.
+	 * @param name The name of the element.
+	 * @param attributes Element attributes.
+	 * @param renderFunction A custom render function.
+	 * @returns The created element.
 	 */
 	public createUIElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter?: DomConverter ) => DomElement
+		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: DomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
 
@@ -403,9 +430,11 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
 	 *
-	 *		writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
-	 *			domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
-	 *		} );
+	 * ```ts
+	 * writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
+	 * 	domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
+	 * } );
+	 * ```
 	 *
 	 * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
 	 * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
@@ -419,18 +448,18 @@ export default class DowncastWriter {
 	 * You should not use raw elements to render the UI in the editor content. Check out {@link #createUIElement `#createUIElement()`}
 	 * instead.
 	 *
-	 * @param {String} name The name of the element.
-	 * @param {Object} [attributes] Element attributes.
-	 * @param {Function} [renderFunction] A custom render function.
-	 * @param {Object} [options] Element's options.
-	 * @param {Array.<String>} [options.renderUnsafeAttributes] A list of attribute names that should be rendered in the editing
+	 * @param name The name of the element.
+	 * @param attributes Element attributes.
+	 * @param renderFunction A custom render function.
+	 * @param options Element's options.
+	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
-	 * @returns {module:engine/view/rawelement~RawElement} The created element.
+	 * @returns The created element.
 	 */
 	public createRawElement(
 		name: string,
 		attributes: ElementAttributes,
-		renderFunction: ( domElement: DomElement, domConverter?: DomConverter ) => void,
+		renderFunction: ( domElement: DomElement, domConverter: DomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
@@ -442,7 +471,7 @@ export default class DowncastWriter {
 		}
 
 		if ( options.renderUnsafeAttributes ) {
-			( rawElement as any )._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
+			rawElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
 
 		return rawElement;
@@ -451,11 +480,12 @@ export default class DowncastWriter {
 	/**
 	 * Adds or overwrites the element's attribute with a specified key and value.
 	 *
-	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 * ```ts
+	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 * ```
 	 *
-	 * @param {String} key The attribute key.
-	 * @param {String} value The attribute value.
-	 * @param {module:engine/view/element~Element} element
+	 * @param key The attribute key.
+	 * @param value The attribute value.
 	 */
 	public setAttribute( key: string, value: unknown, element: Element ): void {
 		element._setAttribute( key, value );
@@ -464,10 +494,11 @@ export default class DowncastWriter {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 *		writer.removeAttribute( 'href', linkElement );
+	 * ```ts
+	 * writer.removeAttribute( 'href', linkElement );
+	 * ```
 	 *
-	 * @param {String} key Attribute key.
-	 * @param {module:engine/view/element~Element} element
+	 * @param key Attribute key.
 	 */
 	public removeAttribute( key: string, element: Element ): void {
 		element._removeAttribute( key );
@@ -476,11 +507,10 @@ export default class DowncastWriter {
 	/**
 	 * Adds specified class to the element.
 	 *
-	 *		writer.addClass( 'foo', linkElement );
-	 *		writer.addClass( [ 'foo', 'bar' ], linkElement );
-	 *
-	 * @param {Array.<String>|String} className
-	 * @param {module:engine/view/element~Element} element
+	 * ```ts
+	 * writer.addClass( 'foo', linkElement );
+	 * writer.addClass( [ 'foo', 'bar' ], linkElement );
+	 * ```
 	 */
 	public addClass( className: string | Array<string>, element: Element ): void {
 		element._addClass( className );
@@ -489,11 +519,10 @@ export default class DowncastWriter {
 	/**
 	 * Removes specified class from the element.
 	 *
-	 *		writer.removeClass( 'foo', linkElement );
-	 *		writer.removeClass( [ 'foo', 'bar' ], linkElement );
-	 *
-	 * @param {Array.<String>|String} className
-	 * @param {module:engine/view/element~Element} element
+	 * ```ts
+	 * writer.removeClass( 'foo', linkElement );
+	 * writer.removeClass( [ 'foo', 'bar' ], linkElement );
+	 * ```
 	 */
 	public removeClass( className: string | Array<string>, element: Element ): void {
 		element._removeClass( className );
@@ -502,22 +531,39 @@ export default class DowncastWriter {
 	/**
 	 * Adds style to the element.
 	 *
-	 *		writer.setStyle( 'color', 'red', element );
-	 *		writer.setStyle( {
-	 *			color: 'red',
-	 *			position: 'fixed'
-	 *		}, element );
+	 * ```ts
+	 * writer.setStyle( 'color', 'red', element );
+	 * ```
 	 *
 	 * **Note**: The passed style can be normalized if
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @param {String|Object} property Property name or object with key - value pairs.
-	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @param {module:engine/view/element~Element} element Element to set styles on.
+	 * @param property Property name.
+	 * @param value Value to set.
+	 * @param element Element to set styles on.
 	 */
 	public setStyle( property: string, value: string, element: Element ): void;
+
+	/**
+	 * Adds many styles to the element.
+	 *
+	 * ```ts
+	 * writer.setStyle( {
+	 * 	color: 'red',
+	 * 	position: 'fixed'
+	 * }, element );
+	 * ```
+	 *
+	 * **Note**: The passed style can be normalized if
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
+	 *
+	 * @param property Object with key - value pairs.
+	 * @param element Element to set styles on.
+	 */
 	public setStyle( property: Record<string, string>, element: Element ): void;
+
 	public setStyle(
 		property: string | Record<string, string>,
 		value: string | Element,
@@ -534,15 +580,14 @@ export default class DowncastWriter {
 	/**
 	 * Removes specified style from the element.
 	 *
-	 *		writer.removeStyle( 'color', element ); // Removes 'color' style.
-	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 * ```ts
+	 * writer.removeStyle( 'color', element ); // Removes 'color' style.
+	 * writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 * ```
 	 *
 	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
-	 *
-	 * @param {Array.<String>|String} property
-	 * @param {module:engine/view/element~Element} element
 	 */
 	public removeStyle( property: string | Array<string>, element: Element ): void {
 		element._removeStyle( property );
@@ -551,10 +596,6 @@ export default class DowncastWriter {
 	/**
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
-	 *
-	 * @param {String|Symbol} key
-	 * @param {*} value
-	 * @param {module:engine/view/element~Element} element
 	 */
 	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
 		element._setCustomProperty( key, value );
@@ -563,9 +604,7 @@ export default class DowncastWriter {
 	/**
 	 * Removes a custom property stored under the given key.
 	 *
-	 * @param {String|Symbol} key
-	 * @param {module:engine/view/element~Element} element
-	 * @returns {Boolean} Returns true if property was removed.
+	 * @returns Returns true if property was removed.
 	 */
 	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
@@ -577,10 +616,12 @@ export default class DowncastWriter {
 	 *
 	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute elements:
 	 *
-	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
-	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
-	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
-	 *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
+	 * ```html
+	 * <p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
+	 * <p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
+	 * <p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+	 * <p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
+	 * ```
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 	 *
@@ -603,10 +644,8 @@ export default class DowncastWriter {
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
-	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange The position where
-	 * to break attribute elements.
-	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} The new position or range, after breaking the
-	 * attribute elements.
+	 * @param positionOrRange The position where to break attribute elements.
+	 * @returns The new position or range, after breaking the attribute elements.
 	 */
 	public breakAttributes( positionOrRange: Position | Range ): Position | Range {
 		if ( positionOrRange instanceof Position ) {
@@ -621,10 +660,12 @@ export default class DowncastWriter {
 	 * The position has to be directly inside the container element and cannot be in the root. It does not break the conrainer view element
 	 * if the position is at the beginning or at the end of its parent element.
 	 *
-	 *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
-	 *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
-	 *		<p>^foobar</p> -> ^<p>foobar</p>
-	 *		<p>foobar^</p> -> <p>foobar</p>^
+	 * ```html
+	 * <p>foo^bar</p> -> <p>foo</p><p>bar</p>
+	 * <div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
+	 * <p>^foobar</p> -> ^<p>foobar</p>
+	 * <p>foobar^</p> -> <p>foobar</p>^
+	 * ```
 	 *
 	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
@@ -635,8 +676,8 @@ export default class DowncastWriter {
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
-	 * @param {module:engine/view/position~Position} position The position where to break the element.
-	 * @returns {module:engine/view/position~Position} The position between broken elements. If an element has not been broken,
+	 * @param position The position where to break the element.
+	 * @returns The position between broken elements. If an element has not been broken,
 	 * the returned position is placed either before or after it.
 	 */
 	public breakContainer( position: Position ): Position {
@@ -682,14 +723,18 @@ export default class DowncastWriter {
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute element:
 	 *
-	 *		<p>foo[]bar</p> -> <p>foo{}bar</p>
-	 *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
-	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
+	 * ```html
+	 * <p>foo[]bar</p> -> <p>foo{}bar</p>
+	 * <p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 * <p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
+	 * ```
 	 *
 	 * It will also take care about empty attributes when merging:
 	 *
-	 *		<p><b>[]</b></p> -> <p>[]</p>
-	 *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 * ```html
+	 * <p><b>[]</b></p> -> <p>[]</p>
+	 * <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 * ```
 	 *
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -699,8 +744,8 @@ export default class DowncastWriter {
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeContainers
-	 * @param {module:engine/view/position~Position} position Merge position.
-	 * @returns {module:engine/view/position~Position} Position after merge.
+	 * @param position Merge position.
+	 * @returns Position after merge.
 	 */
 	public mergeAttributes( position: Position ): Position {
 		const positionOffset = position.offset;
@@ -755,8 +800,10 @@ export default class DowncastWriter {
 	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
 	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
 	 *
-	 *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
-	 *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+	 * ```html
+	 * <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
+	 * <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+	 * ```
 	 *
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -766,8 +813,8 @@ export default class DowncastWriter {
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeAttributes
-	 * @param {module:engine/view/position~Position} position Merge position.
-	 * @returns {module:engine/view/position~Position} Position after merge.
+	 * @param position Merge position.
+	 * @returns Position after merge.
 	 */
 	public mergeContainers( position: Position ): Position {
 		const prev = position.nodeBefore;
@@ -803,15 +850,9 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/rawelement~RawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
 	 *
-	 * @param {module:engine/view/position~Position} position Insertion position.
-	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
-	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
-	 * module:engine/view/rawelement~RawElement|module:engine/view/uielement~UIElement|
-	 * Iterable.<module:engine/view/text~Text|
-	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
-	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/rawelement~RawElement|
-	 * module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
-	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
+	 * @param position Insertion position.
+	 * @param nodes Node or nodes to insert.
+	 * @returns Range around inserted nodes.
 	 */
 	public insert( position: Position, nodes: Node | Iterable<Node> ): Range {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
@@ -868,10 +909,10 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {module:engine/view/range~Range|module:engine/view/item~Item} rangeOrItem Range to remove from container
+	 * @param rangeOrItem Range to remove from container
 	 * or an {@link module:engine/view/item~Item item} to remove. If range is provided, after removing, it will be updated
 	 * to a collapsed range showing the new position.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
+	 * @returns Document fragment containing removed nodes.
 	 */
 	public remove( rangeOrItem: Range | Item ): DocumentFragment {
 		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
@@ -898,8 +939,8 @@ export default class DowncastWriter {
 
 		// Merge after removing.
 		const mergePosition = this.mergeAttributes( breakStart );
-		range.start = mergePosition;
-		range.end = mergePosition.clone();
+		( range as any ).start = mergePosition;
+		( range as any ).end = mergePosition.clone();
 
 		// Return removed nodes.
 		return new DocumentFragment( this.document, removed );
@@ -912,8 +953,8 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {module:engine/view/range~Range} range Range to clear.
-	 * @param {module:engine/view/element~Element} element Element to remove.
+	 * @param range Range to clear.
+	 * @param element Element to remove.
 	 */
 	public clear( range: Range, element: Element ): void {
 		validateRangeContainer( range, this.document );
@@ -951,11 +992,11 @@ export default class DowncastWriter {
 			if ( rangeToRemove ) {
 				// We need to check if element range stick out of the given range and truncate if it is.
 				if ( rangeToRemove.end.isAfter( range.end ) ) {
-					rangeToRemove.end = range.end;
+					( rangeToRemove as any ).end = range.end;
 				}
 
 				if ( rangeToRemove.start.isBefore( range.start ) ) {
-					rangeToRemove.start = range.start;
+					( rangeToRemove as any ).start = range.start;
 				}
 
 				// At the end we remove range with found element.
@@ -971,9 +1012,9 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {module:engine/view/range~Range} sourceRange Range containing nodes to move.
-	 * @param {module:engine/view/position~Position} targetPosition Position to insert.
-	 * @returns {module:engine/view/range~Range} Range in target container. Inserted nodes are placed between
+	 * @param sourceRange Range containing nodes to move.
+	 * @param targetPosition Position to insert.
+	 * @returns Range in target container. Inserted nodes are placed between
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
 	 */
 	public move( sourceRange: Range, targetPosition: Position ): Range {
@@ -1014,9 +1055,9 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
 	 * is collapsed and different than view selection.
 	 *
-	 * @param {module:engine/view/range~Range} range Range to wrap.
-	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
-	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
+	 * @param range Range to wrap.
+	 * @param attribute Attribute element to use as wrapper.
+	 * @returns range Range after wrapping, spanning over wrapping attribute element.
 	 */
 	public wrap( range: Range, attribute: AttributeElement ): Range {
 		if ( !( attribute instanceof AttributeElement ) ) {
@@ -1057,9 +1098,6 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
 	 * same parent container.
-	 *
-	 * @param {module:engine/view/range~Range} range
-	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
 	 */
 	public unwrap( range: Range, attribute: AttributeElement ): Range {
 		if ( !( attribute instanceof AttributeElement ) ) {
@@ -1111,9 +1149,9 @@ export default class DowncastWriter {
 	 *
 	 * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
 	 *
-	 * @param {String} newName New name for element.
-	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
-	 * @returns {module:engine/view/containerelement~ContainerElement} Element created due to rename.
+	 * @param newName New name for element.
+	 * @param viewElement Element to be renamed.
+	 * @returns Element created due to rename.
 	 */
 	public rename( newName: string, viewElement: ContainerElement ): ContainerElement {
 		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
@@ -1137,7 +1175,7 @@ export default class DowncastWriter {
 	 *
 	 * Keep in mind that group names are equal to the `id` property of the attribute element.
 	 *
-	 * @param {String} groupName Name of the group to clear.
+	 * @param groupName Name of the group to clear.
 	 */
 	public clearClonedElementsGroup( groupName: string ): void {
 		this._cloneGroups.delete( groupName );
@@ -1156,20 +1194,16 @@ export default class DowncastWriter {
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
-	 * @returns {module:engine/view/position~Position}
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: number | 'before' | 'after' | 'end' ): Position {
+	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
 	/**
 	 * Creates a new position after given view item.
 	 *
-	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
-	 * @returns {module:engine/view/position~Position}
+	 * @param item View item after which the position should be located.
 	 */
 	public createPositionAfter( item: Item ): Position {
 		return Position._createAfter( item );
@@ -1178,8 +1212,7 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new position before given view item.
 	 *
-	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
-	 * @returns {module:engine/view/position~Position}
+	 * @param item View item before which the position should be located.
 	 */
 	public createPositionBefore( item: Item ): Position {
 		return Position._createBefore( item );
@@ -1190,19 +1223,15 @@ export default class DowncastWriter {
 	 *
 	 * **Note:** This factory method creates its own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
-	 * @param {module:engine/view/position~Position} start Start position.
-	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
-	 * @returns {module:engine/view/range~Range}
+	 * @param start Start position.
+	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( ...args: ConstructorParameters<typeof Range> ): Range {
-		return new Range( ...args );
+	public createRange( start: Position, end?: Position | null ): Range {
+		return new Range( start, end );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
-	 *
-	 * @param {module:engine/view/item~Item} item
-	 * @returns {module:engine/view/range~Range}
 	 */
 	public createRangeOn( item: Item ): Range {
 		return Range._createOn( item );
@@ -1212,54 +1241,60 @@ export default class DowncastWriter {
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
-	 * @returns {module:engine/view/range~Range}
+	 * @param element Element which is a parent for the range.
 	 */
 	public createRangeIn( element: Element | DocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, option?: SelectionOptions ): Selection;
+
 	/**
 	 * Creates new {@link module:engine/view/selection~Selection} instance.
 	 *
-	 * 		// Creates empty selection without ranges.
-	 *		const selection = writer.createSelection();
+	 * ```ts
+	 * // Creates empty selection without ranges.
+	 * const selection = writer.createSelection();
 	 *
-	 *		// Creates selection at the given range.
-	 *		const range = writer.createRange( start, end );
-	 *		const selection = writer.createSelection( range );
+	 * // Creates selection at the given range.
+	 * const range = writer.createRange( start, end );
+	 * const selection = writer.createSelection( range );
 	 *
-	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
-	 *		const selection = writer.createSelection( ranges );
+	 * // Creates selection at the given ranges
+	 * const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 * const selection = writer.createSelection( ranges );
 	 *
-	 *		// Creates selection from the other selection.
-	 *		const otherSelection = writer.createSelection();
-	 *		const selection = writer.createSelection( otherSelection );
+	 * // Creates selection from the other selection.
+	 * const otherSelection = writer.createSelection();
+	 * const selection = writer.createSelection( otherSelection );
 	 *
-	 *		// Creates selection from the document selection.
-	 *		const selection = writer.createSelection( editor.editing.view.document.selection );
+	 * // Creates selection from the document selection.
+	 * const selection = writer.createSelection( editor.editing.view.document.selection );
 	 *
-	 * 		// Creates selection at the given position.
-	 *		const position = writer.createPositionFromPath( root, path );
-	 *		const selection = writer.createSelection( position );
+	 * // Creates selection at the given position.
+	 * const position = writer.createPositionFromPath( root, path );
+	 * const selection = writer.createSelection( position );
 	 *
-	 *		// Creates collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createContainerElement( 'p' );
-	 *		const selection = writer.createSelection( paragraph, offset );
+	 * // Creates collapsed selection at the position of given item and offset.
+	 * const paragraph = writer.createContainerElement( 'p' );
+	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
-	 *		// first child of that element and ends after the last child of that element.
-	 *		const selection = writer.createSelection( paragraph, 'in' );
+	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
-	 *		// just after the item.
-	 *		const selection = writer.createSelection( paragraph, 'on' );
+	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = writer.createSelection( paragraph, 'on' );
+	 * ```
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
-	 *		// Creates backward selection.
-	 *		const selection = writer.createSelection( range, { backward: true } );
+	 * ```ts
+	 * // Creates backward selection.
+	 * const selection = writer.createSelection( range, { backward: true } );
+	 * ```
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -1268,16 +1303,10 @@ export default class DowncastWriter {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
 	 * (and be  properly handled by screen readers).
 	 *
-	 *		// Creates fake selection with label.
-	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
-	 *
-	 * @param {module:engine/view/selection~Selectable} [selectable=null]
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
-	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {String} [options.label] Label for the fake selection.
-	 * @returns {module:engine/view/selection~Selection}
+	 * ```ts
+	 * // Creates fake selection with label.
+	 * const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
+	 * ```
 	 */
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );
@@ -1287,28 +1316,32 @@ export default class DowncastWriter {
 	 * Creates placeholders for child elements of the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
 	 * `elementToStructure()`} conversion helper.
 	 *
-	 *		const viewSlot = conversionApi.writer.createSlot();
-	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 * ```ts
+	 * const viewSlot = conversionApi.writer.createSlot();
+	 * const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
 	 *
-	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 * conversionApi.writer.insert( viewPosition, viewSlot );
+	 * ```
 	 *
 	 * It could be filtered down to a specific subset of children (only `<foo>` model elements in this case):
 	 *
-	 *		const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
-	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 * ```ts
+	 * const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
+	 * const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
 	 *
-	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 * conversionApi.writer.insert( viewPosition, viewSlot );
+	 * ```
 	 *
 	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node can not be downcasted into
 	 * multiple slots.
 	 *
 	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
 	 *
-	 * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} [modeOrFilter='children'] The filter for child nodes.
-	 * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
+	 * @param modeOrFilter The filter for child nodes.
+	 * @returns The slot element to be placed in to the view structure while processing
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
 	 */
-	public createSlot( modeOrFilter: 'children' | SlotFilter ): Element {
+	public createSlot( modeOrFilter: 'children' | SlotFilter = 'children' ): Element {
 		if ( !this._slotFactory ) {
 			/**
 			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.
@@ -1324,8 +1357,8 @@ export default class DowncastWriter {
 	/**
 	 * Registers a slot factory.
 	 *
-	 * @protected
-	 * @param {Function} slotFactory The slot factory.
+	 * @internal
+	 * @param slotFactory The slot factory.
 	 */
 	public _registerSlotFactory( slotFactory: ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => Element ): void {
 		this._slotFactory = slotFactory;
@@ -1334,7 +1367,7 @@ export default class DowncastWriter {
 	/**
 	 * Clears the registered slot factory.
 	 *
-	 * @protected
+	 * @internal
 	 */
 	public _clearSlotFactory(): void {
 		this._slotFactory = null;
@@ -1344,17 +1377,10 @@ export default class DowncastWriter {
 	 * Inserts a node or nodes at the specified position. Takes care of breaking attributes before insertion
 	 * and merging them afterwards if requested by the breakAttributes param.
 	 *
-	 * @private
-	 * @param {module:engine/view/position~Position} position Insertion position.
-	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
-	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
-	 * module:engine/view/rawelement~RawElement|module:engine/view/uielement~UIElement|
-	 * Iterable.<module:engine/view/text~Text|
-	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
-	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/rawelement~RawElement|
-	 * module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
-	 * @param {Boolean} breakAttributes Whether attributes should be broken.
-	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
+	 * @param position Insertion position.
+	 * @param nodes Node or nodes to insert.
+	 * @param breakAttributes Whether attributes should be broken.
+	 * @returns Range around inserted nodes.
 	 */
 	private _insertNodes( position: Position, nodes: Iterable<Node>, breakAttributes: boolean ): Range {
 		let parentElement;
@@ -1409,12 +1435,6 @@ export default class DowncastWriter {
 	/**
 	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
-	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} parent
-	 * @param {Number} startOffset
-	 * @param {Number} endOffset
-	 * @param {module:engine/view/element~Element} wrapElement
 	 */
 	private _wrapChildren( parent: Element, startOffset: number, endOffset: number, wrapElement: AttributeElement ) {
 		let i = startOffset;
@@ -1493,12 +1513,6 @@ export default class DowncastWriter {
 	/**
 	 * Unwraps children from provided `unwrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be unwrapped.
-	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} parent
-	 * @param {Number} startOffset
-	 * @param {Number} endOffset
-	 * @param {module:engine/view/element~Element} unwrapElement
 	 */
 	private _unwrapChildren( parent: Element, startOffset: number, endOffset: number, unwrapElement: AttributeElement ) {
 		let i = startOffset;
@@ -1605,10 +1619,7 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
 	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
-	 * @private
-	 * @param {module:engine/view/range~Range} range
-	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
-	 * @returns {module:engine/view/range~Range} New range after wrapping, spanning over wrapping attribute element.
+	 * @returns New range after wrapping, spanning over wrapping attribute element.
 	 */
 	private _wrapRange( range: Range, attribute: AttributeElement ): Range {
 		// Break attributes at range start and end.
@@ -1637,10 +1648,7 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
 	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
-	 * @private
-	 * @param {module:engine/view/position~Position} position
-	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
-	 * @returns {module:engine/view/position~Position} New position after wrapping.
+	 * @returns New position after wrapping.
 	 */
 	private _wrapPosition( position: Position, attribute: AttributeElement ): Position {
 		// Return same position when trying to wrap with attribute similar to position parent.
@@ -1684,14 +1692,13 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * 	Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by
-	 * 	merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
-	 * 	element to element being wrapped.
+	 * Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by
+	 * merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
+	 * element to element being wrapped.
 	 *
-	 * 	@private
-	 * 	@param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
-	 * 	@param {module:engine/view/attributeelement~AttributeElement} toWrap AttributeElement to wrap using wrapper element.
-	 * 	@returns {Boolean} Returns `true` if elements are merged.
+	 * @param wrapper Wrapper AttributeElement.
+	 * @param toWrap AttributeElement to wrap using wrapper element.
+	 * @returns Returns `true` if elements are merged.
 	 */
 	private _wrapAttributeElement( wrapper: AttributeElement, toWrap: AttributeElement ): boolean {
 		if ( !canBeJoined( wrapper, toWrap ) ) {
@@ -1756,10 +1763,9 @@ export default class DowncastWriter {
 	 * corresponding attributes, classes and styles. All attributes, classes and styles from wrapper should be present
 	 * inside element being unwrapped.
 	 *
-	 * @private
-	 * @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
-	 * @param {module:engine/view/attributeelement~AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
-	 * @returns {Boolean} Returns `true` if elements are unwrapped.
+	 * @param wrapper Wrapper AttributeElement.
+	 * @param toUnwrap AttributeElement to unwrap using wrapper element.
+	 * @returns Returns `true` if elements are unwrapped.
 	 **/
 	private _unwrapAttributeElement( wrapper: AttributeElement, toUnwrap: AttributeElement ): boolean {
 		if ( !canBeJoined( wrapper, toUnwrap ) ) {
@@ -1819,11 +1825,10 @@ export default class DowncastWriter {
 	/**
 	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
 	 *
-	 * @private
-	 * @param {module:engine/view/range~Range} range Range which `start` and `end` positions will be used to break attributes.
-	 * @param {Boolean} [forceSplitText=false] If set to `true`, will break text nodes even if they are directly in container element.
+	 * @param range Range which `start` and `end` positions will be used to break attributes.
+	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
-	 * @returns {module:engine/view/range~Range} New range with located at break positions.
+	 * @returns New range with located at break positions.
 	 */
 	private _breakAttributesRange( range: Range, forceSplitText: boolean = false ) {
 		const rangeStart = range.start;
@@ -1857,11 +1862,10 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
 	 * is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
 	 *
-	 * @private
-	 * @param {module:engine/view/position~Position} position Position where to break attributes.
-	 * @param {Boolean} [forceSplitText=false] If set to `true`, will break text nodes even if they are directly in container element.
+	 * @param position Position where to break attributes.
+	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
-	 * @returns {module:engine/view/position~Position} New position after breaking the attributes.
+	 * @returns New position after breaking the attributes.
 	 */
 	private _breakAttributes( position: Position, forceSplitText: boolean = false ): Position {
 		const positionOffset = position.offset;
@@ -1980,8 +1984,7 @@ export default class DowncastWriter {
 	 *
 	 * Does nothing if added element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
 	 *
-	 * @private
-	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to save.
+	 * @param element Attribute element to save.
 	 */
 	private _addToClonedElementsGroup( element: Node ): void {
 		// Add only if the element is in document tree.
@@ -2023,8 +2026,7 @@ export default class DowncastWriter {
 	 *
 	 * Does nothing if the element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
 	 *
-	 * @private
-	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to remove.
+	 * @param element Attribute element to remove.
 	 */
 	private _removeFromClonedElementsGroup( element: Node ) {
 		// Traverse the element's children recursively to find other attribute elements that also got removed.
@@ -2065,13 +2067,14 @@ function _hasNonUiChildren( parent: Element ): boolean {
  * @error view-writer-wrap-invalid-attribute
  */
 
-// Returns first parent container of specified {@link module:engine/view/position~Position Position}.
-// Position's parent node is checked as first, then next parents are checked.
-// Note that {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
-//
-// @param {module:engine/view/position~Position} position Position used as a start point to locate parent container.
-// @returns {module:engine/view/containerelement~ContainerElement|module:engine/view/documentfragment~DocumentFragment|undefined}
-// Parent container element or `undefined` if container is not found.
+/**
+ * Returns first parent container of specified {@link module:engine/view/position~Position Position}.
+ * Position's parent node is checked as first, then next parents are checked.
+ * Note that {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+ *
+ * @param position Position used as a start point to locate parent container.
+ * @returns Parent container element or `undefined` if container is not found.
+ */
 function getParentContainer( position: Position ): ContainerElement | DocumentFragment | undefined {
 	let parent = position.parent;
 
@@ -2086,14 +2089,12 @@ function getParentContainer( position: Position ): ContainerElement | DocumentFr
 	return ( parent as ContainerElement | DocumentFragment );
 }
 
-// Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
-// can be wrapped outside second element. It is done by comparing elements'
-// {@link module:engine/view/attributeelement~AttributeElement#priority priorities}, if both have same priority
-// {@link module:engine/view/element~Element#getIdentity identities} are compared.
-//
-// @param {module:engine/view/attributeelement~AttributeElement} a
-// @param {module:engine/view/attributeelement~AttributeElement} b
-// @returns {Boolean}
+/**
+ * Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
+ * can be wrapped outside second element. It is done by comparing elements'
+ * {@link module:engine/view/attributeelement~AttributeElement#priority priorities}, if both have same priority
+ * {@link module:engine/view/element~Element#getIdentity identities} are compared.
+ */
 function shouldABeOutsideB( a: AttributeElement, b: AttributeElement ): boolean {
 	if ( a.priority < b.priority ) {
 		return true;
@@ -2105,15 +2106,18 @@ function shouldABeOutsideB( a: AttributeElement, b: AttributeElement ): boolean 
 	return a.getIdentity() < b.getIdentity();
 }
 
-// Returns new position that is moved to near text node. Returns same position if there is no text node before of after
-// specified position.
-//
-//		<p>foo[]</p>  ->  <p>foo{}</p>
-//		<p>[]foo</p>  ->  <p>{}foo</p>
-//
-// @param {module:engine/view/position~Position} position
-// @returns {module:engine/view/position~Position} Position located inside text node or same position if there is no text nodes
-// before or after position location.
+/**
+ * Returns new position that is moved to near text node. Returns same position if there is no text node before of after
+ * specified position.
+ *
+ * ```html
+ * <p>foo[]</p>  ->  <p>foo{}</p>
+ * <p>[]foo</p>  ->  <p>{}foo</p>
+ * ```
+ *
+ * @returns Position located inside text node or same position if there is no text nodes
+ * before or after position location.
+ */
 function movePositionToTextNode( position: Position ): Position {
 	const nodeBefore = position.nodeBefore;
 
@@ -2130,14 +2134,18 @@ function movePositionToTextNode( position: Position ): Position {
 	return position;
 }
 
-// Breaks text node into two text nodes when possible.
-//
-//		<p>foo{}bar</p> -> <p>foo[]bar</p>
-//		<p>{}foobar</p> -> <p>[]foobar</p>
-//		<p>foobar{}</p> -> <p>foobar[]</p>
-//
-// @param {module:engine/view/position~Position} position Position that need to be placed inside text node.
-// @returns {module:engine/view/position~Position} New position after breaking text node.
+/**
+ * Breaks text node into two text nodes when possible.
+ *
+ * ```html
+ * <p>foo{}bar</p> -> <p>foo[]bar</p>
+ * <p>{}foobar</p> -> <p>[]foobar</p>
+ * <p>foobar{}</p> -> <p>foobar[]</p>
+ * ```
+ *
+ * @param position Position that need to be placed inside text node.
+ * @returns New position after breaking text node.
+ */
 function breakTextNode( position: Position ): Position {
 	if ( position.offset == ( position.parent as Text ).data.length ) {
 		return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
@@ -2163,12 +2171,13 @@ function breakTextNode( position: Position ): Position {
 	return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
 }
 
-// Merges two text nodes into first node. Removes second node and returns merge position.
-//
-// @param {module:engine/view/text~Text} t1 First text node to merge. Data from second text node will be moved at the end of
-// this text node.
-// @param {module:engine/view/text~Text} t2 Second text node to merge. This node will be removed after merging.
-// @returns {module:engine/view/position~Position} Position after merging text nodes.
+/**
+ * Merges two text nodes into first node. Removes second node and returns merge position.
+ *
+ * @param t1 First text node to merge. Data from second text node will be moved at the end of this text node.
+ * @param t2 Second text node to merge. This node will be removed after merging.
+ * @returns Position after merging text nodes.
+ */
 function mergeTextNodes( t1: Text, t2: Text ): Position {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
@@ -2180,13 +2189,12 @@ function mergeTextNodes( t1: Text, t2: Text ): Position {
 
 const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, RawElement, UIElement ];
 
-// Checks if provided nodes are valid to insert.
-//
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
-// contains instances that are not supported ones (see error description for valid ones.
-//
-// @param Iterable.<module:engine/view/text~Text|module:engine/view/element~Element> nodes
-// @param {Object} errorContext
+/**
+ * Checks if provided nodes are valid to insert.
+ *
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
+ * contains instances that are not supported ones (see error description for valid ones.
+ */
 function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ): void {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
@@ -2214,20 +2222,20 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 	}
 }
 
-// Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
-//
-// @param {module:engine/view/node~Node} node
-// @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
+/**
+ * Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
+ *
+ * @returns Returns `true` if node is instance of ContainerElement or DocumentFragment.
+ */
 function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
 	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );
 }
 
-// Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
-// inside same {@link module:engine/view/containerelement~ContainerElement container element}.
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
-//
-// @param {module:engine/view/range~Range} range
-// @param {Object} errorContext
+/**
+ * Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
+ * inside same {@link module:engine/view/containerelement~ContainerElement container element}.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
+ */
 function validateRangeContainer( range: Range, errorContext: Document ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
@@ -2253,13 +2261,10 @@ function validateRangeContainer( range: Range, errorContext: Document ) {
 	}
 }
 
-// Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
-// they do not have ids specified.
-//
-// @private
-// @param {module:engine/view/element~Element} a
-// @param {module:engine/view/element~Element} b
-// @returns {Boolean}
+/**
+ * Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
+ * they do not have ids specified.
+ */
 function canBeJoined( a: AttributeElement, b: AttributeElement ) {
 	return a.id === null && b.id === null;
 }

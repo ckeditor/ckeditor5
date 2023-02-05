@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,8 +12,6 @@ import type TextProxy from './textproxy';
 
 /**
  * Item is a {@link module:engine/view/node~Node Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
- *
- * @typedef {module:engine/view/node~Node|module:engine/view/textproxy~TextProxy} module:engine/view/item~Item
  */
 type Item = Node | TextProxy;
 

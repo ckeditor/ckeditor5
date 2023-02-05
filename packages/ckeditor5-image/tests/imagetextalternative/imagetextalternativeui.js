@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,7 +35,6 @@ describe( 'ImageTextAlternativeUI', () => {
 				newEditor.editing.view.attachDomRoot( editorElement );
 				plugin = editor.plugins.get( ImageTextAlternativeUI );
 				command = editor.commands.get( 'imageTextAlternative' );
-				form = plugin._form;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				button = editor.ui.componentFactory.create( 'imageTextAlternative' );
 			} );
@@ -65,6 +64,9 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should show balloon panel on execute', () => {
+			plugin._createForm();
+			form = plugin._form;
+
 			expect( balloon.visibleView ).to.be.null;
 
 			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
@@ -78,7 +80,27 @@ describe( 'ImageTextAlternativeUI', () => {
 			expect( balloon.visibleView ).to.equal( form );
 		} );
 
+		it( 'should create and show balloon panel on execute', () => {
+			expect( balloon.visibleView ).to.be.null;
+			expect( plugin._form ).to.be.undefined;
+
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
+
+			button.fire( 'execute' );
+			form = plugin._form;
+
+			expect( balloon.visibleView ).to.equal( form );
+
+			// Make sure successive execute does not throw, e.g. attempting
+			// to display the form twice.
+			button.fire( 'execute' );
+			expect( balloon.visibleView ).to.equal( form );
+		} );
+
 		it( 'should set alt attribute value to textarea and select it', () => {
+			plugin._createForm();
+			form = plugin._form;
+
 			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
 			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
@@ -89,6 +111,9 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should set empty text to textarea and select it when there is no alt attribute', () => {
+			plugin._createForm();
+			form = plugin._form;
+
 			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
 			setData( model, '[<imageBlock src=""></imageBlock>]' );
@@ -99,6 +124,9 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations (and then enable them again)', () => {
+			plugin._createForm();
+			form = plugin._form;
+
 			const addSpy = sinon.spy( balloon, 'add' );
 			const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
 			const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
@@ -121,6 +149,15 @@ describe( 'ImageTextAlternativeUI', () => {
 	} );
 
 	describe( 'balloon panel form', () => {
+		beforeEach( () => {
+			plugin._createForm();
+			form = plugin._form;
+		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( form.disableCssTransitions ).to.be.a( 'function' );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-image/issues/114
 		it( 'should make sure the input always stays in sync with the value of the command', () => {
 			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );

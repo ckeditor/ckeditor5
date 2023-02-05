@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,7 +35,7 @@ import type ModelTextProxy from '../model/textproxy';
 import type { DocumentChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
-import type { ViewDocumentSelectionEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -124,7 +124,7 @@ export default class EditingController extends ObservableMixin() {
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo<ViewDocumentSelectionEvent>( this.view.document, 'selectionChange',
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
 		);
 

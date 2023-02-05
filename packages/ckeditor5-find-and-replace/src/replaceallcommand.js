@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,6 @@
  * @module find-and-replace/replaceallcommand
  */
 
-import { updateFindResultFromRange, findByTextCallback } from './utils';
 import { Collection } from 'ckeditor5/src/utils';
 import ReplaceCommand from './replacecommand';
 
@@ -39,13 +38,14 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 	execute( newText, textToReplace ) {
 		const { editor } = this;
 		const { model } = editor;
+		const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
 		const results = textToReplace instanceof Collection ?
 			textToReplace : model.document.getRootNames()
-				.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+				.reduce( ( ( currentResults, rootName ) => findAndReplaceUtils.updateFindResultFromRange(
 					model.createRangeIn( model.document.getRoot( rootName ) ),
 					model,
-					findByTextCallback( textToReplace, this._state ),
+					findAndReplaceUtils.findByTextCallback( textToReplace, this._state ),
 					currentResults
 				) ), null );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
+import { ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
@@ -454,5 +454,11 @@ describe( 'CKFinderCommand', () => {
 
 			mockFinderEvent( 'files:choose', data );
 		}
+	} );
+
+	describe( '_affectsData', () => {
+		it( 'does not affect data', () => {
+			expect( command._affectsData ).to.be.false;
+		} );
 	} );
 } );

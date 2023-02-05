@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -117,5 +117,5 @@ export type EnterCommandAfterExecuteEvent = {
 
 function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
-	writer.setSelection( splitPos.parent.nextSibling, 0 );
+	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

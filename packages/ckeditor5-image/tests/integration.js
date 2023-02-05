@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -54,6 +54,8 @@ describe( 'ImageToolbar integration', () => {
 		} );
 
 		it( 'should prevent the BalloonToolbar from being displayed when an image is selected', () => {
+			newEditor.ui.focusTracker.isFocused = true;
+
 			// When image is selected along with text.
 			setModelData( newEditor.model,
 				'<paragraph>fo[o</paragraph><imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );

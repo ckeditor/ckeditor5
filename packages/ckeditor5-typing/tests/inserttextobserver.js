@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -51,7 +51,7 @@ describe( 'InsertTextObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled (beforeinput)', () => {
-		view.getObserver( InsertTextObserver ).isEnabled = false;
+		view.getObserver( InsertTextObserver )._isEnabled = false;
 
 		fireBeforeInputDomEvent( domRoot, {
 			inputType: 'insertParagraph'
@@ -61,7 +61,7 @@ describe( 'InsertTextObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled (composition)', () => {
-		view.getObserver( InsertTextObserver ).isEnabled = false;
+		view.getObserver( InsertTextObserver )._isEnabled = false;
 
 		fireCompositionEndDomEvent( domRoot, {
 			data: 'foo'

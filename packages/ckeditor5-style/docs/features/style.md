@@ -225,6 +225,7 @@ The stylesheet:
 Check out also these CKEditor 5 features to gain better control over your content style and format:
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
@@ -243,21 +244,23 @@ import Style from '@ckeditor/ckeditor5-style/src/style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
 			definitions: [
+				// Styles definitions. 
 				// ...
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -271,11 +274,12 @@ Configuring the styles feature takes two steps. First you need to define the sty
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
@@ -293,8 +297,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 
@@ -321,6 +325,10 @@ Then, corresponding CSS styles need to be defined for the document:
 ```
 
 Note that the editor will automatically distinguish text and block styles and group them in the dropdown.
+
+## Known issues
+
+At present, the styles feature may clash with other features that bring in similar content (e.g. headings). Problems with overlapping styles applied to the same element may also occur.
 
 ## Common API
 
