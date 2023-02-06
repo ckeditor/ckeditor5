@@ -614,7 +614,7 @@ You can quickly run it in the context of an existing editor in the following way
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// The editor config goes here.
+		// The editor's configuration.
 		// ...
 	} )
 	.then( editor => {
