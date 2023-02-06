@@ -16,7 +16,8 @@ import type {
 	DowncastWriter,
 	ViewDocumentSelection,
 	ViewElement,
-	DocumentSelection
+	DocumentSelection,
+	Node
 } from 'ckeditor5/src/engine';
 import { isWidget, toWidget } from 'ckeditor5/src/widget';
 import type MediaRegistry from './mediaregistry';
@@ -80,7 +81,7 @@ export function createMediaFigureElement(
 ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'media' }, [
 		registry.getMediaViewElement( writer, url, options ),
-		writer.createSlot( 'children' )
+		writer.createSlot()
 	] );
 }
 
@@ -107,7 +108,7 @@ export function getSelectedMediaModelWidget( selection: Selection | DocumentSele
  * @param findOptimalPosition If true it will try to find optimal position to insert media without breaking content
  * in which a selection is.
  */
-export function insertMedia( model: Model, url: string, selectable: Selectable, findOptimalPosition: boolean ): void {
+export function insertMedia( model: Model, url: string, selectable: Exclude<Selectable, Node>, findOptimalPosition: boolean ): void {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
