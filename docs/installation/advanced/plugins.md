@@ -43,4 +43,4 @@ A good understanding of the {@link framework/index CKEditor 5 Framework} is also
 
 A great way to enhance your builds with additional features is by using plugins created by the community. Such plugins are generally available as npm packages, so a quick [search on the "ckeditor5" keyword in npm](https://www.npmjs.com/search?q=ckeditor5) should work as a starting point.
 
-Once you have plugins to be included, {@link installation/getting-started/installing-plugins learn how to install them}.
+Once you have plugins to be included, {@link installation/plugins/installing-plugins learn how to install them}.

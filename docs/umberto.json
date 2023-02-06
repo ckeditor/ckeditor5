@@ -70,7 +70,8 @@
 		"api/module_list_todolistui-TodoListUI.html": "api/module_list_todolist_todolistui-TodoListUI.html",
 		"api/module_list_utils.html": "api/module_list_list_utils.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
-		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
+		"builds/guides/development/installing-plugins.html": "installation/plugins/installing-plugins.html",
+		"installation/getting-started/installing-plugins.html": "installation/plugins/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
 		"builds/guides/integration/advanced-setup.html": "installation/getting-started/quick-start-other.html",
 		"installation/advanced/advanced-setup.html": "installation/getting-started/quick-start-other.html",
@@ -167,8 +168,8 @@
 		"installation/advanced/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
 		"builds/guides/integration/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
-		"builds/guides/integration/features-html-output-overview.html": "installation/features-html-output-overview.html",
-		"installation/advanced/features-html-output-overview.html": "installation/features-html-output-overview.html",
+		"builds/guides/integration/features-html-output-overview.html": "installation/plugins/features-html-output-overview.html",
+		"installation/advanced/features-html-output-overview.html": "installation/plugins/features-html-output-overview.html",
 		"builds/guides/integration/frameworks/overview.html": "installation/frameworks/overview.html",
 		"builds/guides/integration/frameworks/angular.html": "installation/frameworks/angular.html",
 		"builds/guides/integration/frameworks/react.html": "installation/frameworks/react.html",
@@ -277,6 +278,12 @@
 					"id": "getting-started",
 					"slug": "getting-started",
 					"order": 20
+				},
+				{
+					"name": "Plugins",
+					"id": "plugins",
+					"slug": "plugins",
+					"order": 25
 				},
 				{
 					"name": "Frameworks",

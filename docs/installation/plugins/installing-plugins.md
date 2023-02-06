@@ -1,8 +1,8 @@
 
 ---
 menu-title: Installing plugins
-category: getting-started
-order: 50
+category: plugins
+order: 20
 ---
 
 # Installing plugins
