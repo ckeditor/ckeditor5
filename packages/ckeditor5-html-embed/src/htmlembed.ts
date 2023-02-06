@@ -19,8 +19,6 @@ import HtmlEmbedUI from './htmlembedui';
  * It allows inserting HTML snippets directly into the editor.
  *
  * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HtmlEmbed extends Plugin {
 	/**
@@ -66,7 +64,7 @@ export interface HtmlEmbedConfig {
 	 * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
 	 * the {@glink features/html-embed HTML embed} feature guide.
 	 */
-	showPreviews: boolean;
+	showPreviews?: boolean;
 
 	/**
 	 * Callback used to sanitize the HTML provided by the user when generating previews of it in the editor.
@@ -104,7 +102,7 @@ export interface HtmlEmbedConfig {
 	 * **Note:** The function is used only when the feature
 	 * {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews is configured to render previews}.
 	 */
-	sanitizeHtml: ( html: string ) => HtmlEmbedSanitizeOutput;
+	sanitizeHtml?: ( html: string ) => HtmlEmbedSanitizeOutput;
 }
 
 /**

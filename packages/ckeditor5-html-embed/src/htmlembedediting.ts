@@ -10,7 +10,7 @@
 import { Plugin, icons, type Editor } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { toWidget } from 'ckeditor5/src/widget';
-import { logWarning, createElement, type GetCallback, type BaseEvent } from 'ckeditor5/src/utils';
+import { logWarning, createElement } from 'ckeditor5/src/utils';
 
 import type { HtmlEmbedConfig } from './htmlembed';
 import HtmlEmbedCommand from './htmlembedcommand';
@@ -19,8 +19,6 @@ import '../theme/htmlembed.css';
 
 /**
  * The HTML embed editing feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HtmlEmbedEditing extends Plugin {
 	/**
@@ -316,7 +314,7 @@ export default class HtmlEmbedEditing extends Plugin {
 		}
 
 		function createPreviewContainer( { editor, domDocument, state, props }: CreatePreviewContainerParams ): HTMLDivElement {
-			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			const sanitizedOutput = props.sanitizeHtml!( state.getRawHtmlValue() );
 			const placeholderText = state.getRawHtmlValue().length > 0 ?
 				t( 'No preview available' ) :
 				t( 'Empty snippet content' );
@@ -351,7 +349,7 @@ export default class HtmlEmbedEditing extends Plugin {
 /**
  * Returns a UI button view that can be used in conversion.
  */
-function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onClick: GetCallback<BaseEvent> ): ButtonView {
+function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onClick: () => void ): ButtonView {
 	const { t } = editor.locale;
 	const buttonView = new ButtonView( editor.locale );
 	const command = editor.commands.get( 'htmlEmbed' )!;

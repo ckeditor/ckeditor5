@@ -18,17 +18,21 @@ import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
  *
  * To insert an empty HTML embed element at the current selection, execute the command:
  *
- *		editor.execute( 'htmlEmbed' );
+ * ```ts
+ * editor.execute( 'htmlEmbed' );
+ * ```
  *
  * You can specify the initial content of a new HTML embed in the argument:
  *
- *		editor.execute( 'htmlEmbed', '<b>Initial content.</b>' );
+ * ```ts
+ * editor.execute( 'htmlEmbed', '<b>Initial content.</b>' );
+ * ```
  *
  * To update the content of the HTML embed, select it in the model and pass the content in the argument:
  *
- *		editor.execute( 'htmlEmbed', '<b>New content of an existing embed.</b>' );
- *
- * @extends module:core/command~Command
+ * ```ts
+ * editor.execute( 'htmlEmbed', '<b>New content of an existing embed.</b>' );
+ * ```
  */
 export default class HtmlEmbedCommand extends Command {
 	/**

@@ -9,14 +9,12 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
+import type { ContainerRawHtmlApiProperty } from './htmlembedediting';
 
 import htmlEmbedIcon from '../theme/icons/html.svg';
-import type { ContainerRawHtmlApiProperty } from './htmlembedediting';
 
 /**
  * The HTML embed UI plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HtmlEmbedUI extends Plugin {
 	/**
