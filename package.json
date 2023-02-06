@@ -127,6 +127,7 @@
     "react-dom": "^16.13.1",
     "rimraf": "^3.0.2",
     "style-loader": "^2.0.0",
+    "sharp": "^0.31.3",
     "stylelint": "^13.5.0",
     "stylelint-config-ckeditor5": "^4.0.0",
     "svgo": "^2.2.2",
@@ -182,6 +183,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "release:clean": "node ./scripts/release/clean.js",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
+    "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker"
   },
   "lint-staged": {
