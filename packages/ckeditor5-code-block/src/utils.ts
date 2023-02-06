@@ -12,6 +12,7 @@ import type { CodeBlockLanguageDefinition } from './codeblock';
 import { first } from 'ckeditor5/src/utils';
 import type {
 	DocumentSelection,
+	ViewDocumentSelection,
 	Element,
 	Model,
 	Position,
@@ -255,4 +256,44 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 	}
 
 	return schema.checkChild( element.parent as Element, 'codeBlock' );
+}
+
+/**
+ * Returns a codeblock model element if one is selected or is among the selection's ancestors.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getClosestSelectedCodeblockElement( selection: DocumentSelection ): Element | null {
+	return selection.getFirstPosition()!.findAncestor( 'codeBlock' );
+}
+
+/**
+ * Check if viewElement is codeblock view.
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
+export function isCodeblockView( viewElement: ViewElement ): boolean {
+	return viewElement.getCustomProperty && !!viewElement.getCustomProperty( 'codeblock' );
+}
+
+/**
+ * Returns an code block view element if one is selected or is among the selection's ancestors.
+ * @param {module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function getClosestSelectedCodeblockView( selection: any ): any {
+	const selectionPosition = selection.getFirstPosition();
+	const viewElement = selection.getSelectedElement();
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is && parent.is( 'element' ) && isCodeblockView( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
 }

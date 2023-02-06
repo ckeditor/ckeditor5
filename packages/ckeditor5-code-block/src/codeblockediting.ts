@@ -167,9 +167,38 @@ export default class CodeBlockEditing extends Plugin {
 			modelToDataViewSoftBreakInsertion( model ),
 			{ priority: 'high' }
 		);
+
 		editor.data.upcastDispatcher.on<UpcastElementEvent>(
 			'element:code',
 			dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs )
+		);
+		editor.data.upcastDispatcher.on<UpcastElementEvent>(
+			'element:figcaption',
+			( evt, data, conversionApi ) => {
+				const viewCaptionElement = data.viewItem;
+				const viewCodeElement = viewCaptionElement.parent;
+				const {
+					consumable, writer, safeInsert, convertChildren, updateConversionResult
+				} = conversionApi;
+
+				if ( !viewCodeElement || !viewCodeElement.is( 'element', 'code' ) ) {
+					return;
+				}
+
+				if ( !consumable.test( viewCaptionElement, { name: true } ) ) {
+					return;
+				}
+
+				const captionModelElement = writer.createElement( 'caption' );
+
+				convertChildren( viewCaptionElement, captionModelElement );
+
+				safeInsert( captionModelElement, data.modelCursor );
+
+				consumable.consume( viewCaptionElement, { name: true } );
+
+				updateConversionResult( captionModelElement, data );
+			}
 		);
 		editor.data.upcastDispatcher.on<UpcastTextEvent>( 'text', dataViewToModelTextNewlinesInsertion() );
 		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
@@ -397,10 +426,13 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const view = editor.editing.view;
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const nodeBefore = lastSelectionPosition.nodeBefore;
+	const nodeAfter = lastSelectionPosition.nodeAfter;
+	const isAtBeforeCaption = nodeAfter && ( isCaptionNode( nodeAfter ) || isCaptionNode( nodeAfter.nextSibling ) );
+	const isAtEnd = lastSelectionPosition.isAtEnd || isAtBeforeCaption;
 
 	let emptyLineRangeToRemoveOnEnter: Range;
 
-	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
+	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
 	}
 
@@ -476,6 +508,11 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 		// Remove the last <softBreak>s and all white space characters that followed them.
 		writer.remove( emptyLineRangeToRemoveOnEnter );
 
+		if ( isAtBeforeCaption ) {
+			const selection = modelDoc.selection;
+			writer.setSelection( selection.getFirstPosition()!.parent! as Element, 'end' );
+		}
+
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
@@ -498,6 +535,10 @@ function isEmptyishTextNode( node: Node | null ) {
 
 function isSoftBreakNode( node: Node | null ) {
 	return node && node.is( 'element', 'softBreak' );
+}
+
+function isCaptionNode( node: Node | null ) {
+	return node && node.is( 'element', 'caption' );
 }
 
 declare module '@ckeditor/ckeditor5-core' {

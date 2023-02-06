@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-color-codeblock-caption-background: hsl(0, 0%, 97%);
+	--ck-color-codeblock-caption-text: hsl(0, 0%, 20%);
+	--ck-color-codeblock-caption-highligted-background: hsl(52deg 100% 50%);
+}
+
+/* Content styles */
+.ck-content code > figcaption {
+	color: var(--ck-color-codeblock-caption-text);
+	background-color: var(--ck-color-codeblock-caption-background);
+	padding: .5em;
+	margin: .3em;
+	font-size: .85em;
+	outline-offset: -1px;
+	border-radius: 2px;
+	text-align: center;
+}
+
+/* Editing styles */
+code > figcaption.codeblock__caption_highlighted {
+	animation: ck-codeblock-caption-highlight .6s ease-out;
+}
+
+@keyframes ck-codeblock-caption-highlight {
+	0% {
+		background-color: var(--ck-color-codeblock-caption-highligted-background);
+	}
+
+	100% {
+		background-color: var(--ck-color-codeblock-caption-background);
+	}
+}

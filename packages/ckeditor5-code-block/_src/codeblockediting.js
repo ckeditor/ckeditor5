@@ -148,10 +148,45 @@ export default class CodeBlockEditing extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
+		editor.data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => { // eslint-disable-line no-unused-vars
+			// caption is available only inside codeBlock
+			// dummy functions
+		} );
 
 		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
-		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
+		editor.data.upcastDispatcher.on( 'element:figcaption', ( evt, data, conversionApi ) => {
+			const viewCaptionElement = data.viewItem;
+			const viewCodeElement = viewCaptionElement.parent;
+			const {
+				consumable, writer, safeInsert, convertChildren, updateConversionResult
+			} = conversionApi;
 
+			if ( !viewCodeElement || !viewCodeElement.is( 'element', 'code' ) ) {
+				return;
+			}
+
+			// In case of nested caption we don't want to convert to another caption.
+			if ( data.modelCursor.findAncestor( 'caption' ) ) {
+				return;
+			}
+
+			if ( !consumable.test( viewCaptionElement, { name: true } ) ) {
+				return;
+			}
+
+			const captionModelElement = writer.createElement( 'caption' );
+
+			convertChildren( viewCaptionElement, captionModelElement );
+
+			if ( !safeInsert( captionModelElement, data.modelCursor ) ) {
+				return;
+			}
+
+			consumable.consume( viewCaptionElement, { name: true } );
+
+			updateConversionResult( captionModelElement, data );
+		} );
+		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelOrphanNodeConsumer(), { priority: 'high' } );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
@@ -367,10 +402,13 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	const view = editor.editing.view;
 	const lastSelectionPosition = modelDoc.selection.getLastPosition();
 	const nodeBefore = lastSelectionPosition.nodeBefore;
+	const nodeAfter = lastSelectionPosition.nodeAfter;
+	const isAtBeforeCaption = nodeAfter && ( isCaptionNode( nodeAfter ) || isCaptionNode( nodeAfter.nextSibling ) );
+	const isAtEnd = lastSelectionPosition.isAtEnd || isAtBeforeCaption;
 
 	let emptyLineRangeToRemoveOnEnter;
 
-	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
+	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
 	}
 
@@ -445,6 +483,12 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 		// Remove the last <softBreak>s and all white space characters that followed them.
 		writer.remove( emptyLineRangeToRemoveOnEnter );
 
+		// When cursor is preceed caption, move cursor to end position
+		if ( isAtBeforeCaption ) {
+			const selection = modelDoc.selection;
+			writer.setSelection( selection.getFirstPosition().parent, 'end' );
+		}
+
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
@@ -467,4 +511,8 @@ function isEmptyishTextNode( node ) {
 
 function isSoftBreakNode( node ) {
 	return node && node.is( 'element', 'softBreak' );
+}
+
+function isCaptionNode( node ) {
+	return node && node.is( 'element', 'caption' );
 }

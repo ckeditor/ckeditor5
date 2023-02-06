@@ -9,6 +9,7 @@ import CodeBlockEditing from '../src/codeblockediting';
 import CodeBlockCommand from '../src/codeblockcommand';
 import IndentCodeBlockCommand from '../src/indentcodeblockcommand';
 import OutdentCodeBlockCommand from '../src/outdentcodeblockcommand';
+import CodeBlockCaption from '../src/codeblockcaption';
 
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
@@ -1786,5 +1787,98 @@ describe( 'CodeBlockEditing', () => {
 				);
 			} );
 		} );
+	} );
+} );
+
+describe( 'CodeBlockEditing with Codeblock Caption', () => {
+	let editor, element, model, view, viewDoc;
+
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				language: 'en',
+				plugins: [
+					CodeBlockEditing, AlignmentEditing, BoldEditing,
+					Enter, Paragraph, Undo, ClipboardPipeline, DragDrop, CodeBlockCaption
+				]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				view = editor.editing.view;
+				viewDoc = view.document;
+			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy().then( () => element.remove() );
+	} );
+
+	function getEvent( data = {} ) {
+		return new DomEventData( viewDoc, {
+			preventDefault: sinon.spy()
+		}, data );
+	}
+
+	it( 'should leave the block with caption when pressed three times at the end just before caption', () => {
+		const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+		setModelData( model, '<codeBlock language="css">foo[]<caption>bar</caption></codeBlock>' );
+
+		viewDoc.fire( 'enter', getEvent() );
+
+		expect( getModelData( model ) ).to.equal(
+			'<codeBlock language="css">foo<softBreak></softBreak>[]<caption>bar</caption></codeBlock>' );
+
+		viewDoc.fire( 'enter', getEvent() );
+
+		expect( getModelData( model ) ).to.equal(
+			'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]<caption>bar</caption></codeBlock>' );
+
+		viewDoc.fire( 'enter', getEvent() );
+
+		expect( getModelData( model ) ).to.equal(
+			'<codeBlock language="css">foo<caption>bar</caption></codeBlock>' +
+			'<paragraph>[]</paragraph>'
+		);
+
+		sinon.assert.calledOnce( spy );
+
+		editor.execute( 'undo' );
+		expect( getModelData( model ) ).to.equal(
+			'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]<caption>bar</caption></codeBlock>' );
+
+		editor.execute( 'undo' );
+		expect( getModelData( model ) ).to.equal(
+			'<codeBlock language="css">foo<softBreak></softBreak>[]' +
+			'<caption>bar</caption></codeBlock>'
+		);
+
+		editor.execute( 'undo' );
+		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]<caption>bar</caption></codeBlock>' );
+	} );
+
+	it( 'should be overridable (figcaption)', () => {
+		editor.data.upcastDispatcher.on( 'element:figcaption', ( evt, data, api ) => {
+			if ( !data.viewItem.parent.is( 'element', 'code' ) ) {
+				return;
+			}
+
+			const modelItem = api.writer.createElement( 'caption' );
+
+			api.writer.appendText( 'Hello World!', modelItem );
+			api.writer.insert( modelItem, data.modelCursor );
+			api.consumable.consume( data.viewItem, { name: true } );
+
+			data.modelCursor = api.writer.createPositionAfter( modelItem );
+			data.modelRange = api.writer.createRangeOn( modelItem );
+		}, { priority: 'high' } );
+
+		editor.setData( '<pre><code>Foo<figcaption>bar</figcaption></code></pre>' );
+
+		expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Foo<caption>Hello World!</caption></codeBlock>' );
 	} );
 } );
