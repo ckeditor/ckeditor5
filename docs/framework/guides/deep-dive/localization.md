@@ -86,7 +86,7 @@ This example shows how to create a localizable user interface of a plugin. Here 
 
 ```js
 // Custom plugin configuration, including necessary imports.
-// (The code below belongs within a custom plugin class extending the Plugin class.)
+// The code below should be put into a custom plugin class extending the Plugin class.
 // ...
 
 editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
@@ -195,7 +195,8 @@ Check an example below that demonstrates a part of the `window.CKEDITOR_TRANSLAT
 		// Note that you only need to pass this function when you add translations for a new language.
 		getPluralForm: n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2
 	}
-	// Other languages...
+	// Other languages.
+	// ...
 }
 ```
 
