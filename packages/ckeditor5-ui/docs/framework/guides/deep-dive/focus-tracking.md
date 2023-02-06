@@ -382,7 +382,7 @@ export default class MyListView extends View {
 	render() {
 		super.render();
 
-		// Set the focus tracker.
+		// Setting the focus tracker.
 		// ...
 
 		// Start listening for the keystrokes coming from #element, which will allow
