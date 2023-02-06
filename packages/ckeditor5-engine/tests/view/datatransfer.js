@@ -48,6 +48,7 @@ describe( 'DataTransfer', () => {
 			const dt = new DataTransfer( nativeDataTransfer );
 
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
 
 			expect( spy.get.calledOnce ).to.be.true;
 		} );
@@ -67,10 +68,104 @@ describe( 'DataTransfer', () => {
 			const dt = new DataTransfer( nativeDataTransfer );
 
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
+		} );
+
+		it( 'should cache files if cacheFiles option is set', () => {
+			const nativeDataTransfer = {
+				get files() {
+					return {
+						0: 'file1',
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer, { cacheFiles: true } );
+
+			expect( spy.get.calledOnce ).to.be.true;
+			expect( dt._files ).to.deep.equal( [ 'file1' ] );
+
+			// Access getter.
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not cache files if cacheFiles option is not set', () => {
+			const nativeDataTransfer = {
+				get files() {
+					return {
+						0: 'file1',
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer );
+
+			expect( spy.get.calledOnce ).to.be.false;
+			expect( dt._files ).to.be.null;
+
+			// Access getter.
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
+		} );
+
+		it( 'should cache files (from items) if cacheFiles option is set', () => {
+			const nativeDataTransfer = {
+				get items() {
+					return {
+						0: { kind: 'file', getAsFile: () => 'file1' },
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer, { cacheFiles: true } );
+
+			expect( spy.get.calledOnce ).to.be.true;
+			expect( dt._files ).to.deep.equal( [ 'file1' ] );
+
+			// Access getter.
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
+
+			expect( spy.get.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not cache files (from items) if cacheFiles option is not set', () => {
+			const nativeDataTransfer = {
+				get items() {
+					return {
+						0: { kind: 'file', getAsFile: () => 'file1' },
+						length: 1
+					};
+				}
+			};
+
+			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
+
+			const dt = new DataTransfer( nativeDataTransfer );
+
+			expect( spy.get.calledOnce ).to.be.false;
+			expect( dt._files ).to.be.null;
+
+			// Access getter.
+			expect( dt.files ).to.deep.equal( [ 'file1' ] );
 
 			expect( spy.get.calledOnce ).to.be.true;
 		} );
 	} );
+
 	describe( 'getData()', () => {
 		it( 'should return data from the native data transfer', () => {
 			const dt = new DataTransfer( {

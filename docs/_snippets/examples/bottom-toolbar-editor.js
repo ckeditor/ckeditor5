@@ -181,14 +181,20 @@ DecoupledEditor
 			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
-			'horizontalLine'
+			'horizontalLine',
+			'|',
+			{
+				label: 'Lists',
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
+			},
+			'|',
+			'undo',
+			'redo'
 		],
 
 		// Configuration of the formatting dropdown.
 		formattingOptions: [
-			'undo',
-			'redo',
-			'|',
 			'fontFamily',
 			'fontSize',
 			'fontColor',
@@ -200,12 +206,6 @@ DecoupledEditor
 			'strikethrough',
 			'|',
 			'alignment',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
 			'|',
 			'removeFormat'
 		],

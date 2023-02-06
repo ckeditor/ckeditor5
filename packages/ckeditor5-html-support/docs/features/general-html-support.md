@@ -38,7 +38,10 @@ The General HTML Support feature is configured via the `config.htmlSupport` prop
 
 ## Related features
 
-There is a closely related {@link features/source-editing source editing feature} which allows access and edition of the HTML source code of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+There are other HTML editing related CKEditor 5 features you may want to check:
+
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Level of support
 
@@ -72,10 +75,10 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ GeneralHtmlSupport, ... ],
+		plugins: [ GeneralHtmlSupport, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -357,10 +360,10 @@ import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlComment, ... ],
+		plugins: [ HtmlComment, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>

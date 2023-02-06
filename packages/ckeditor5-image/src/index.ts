@@ -27,7 +27,7 @@ export { default as ImageTextAlternativeEditing } from './imagetextalternative/i
 export { default as ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui';
 export { default as ImageToolbar } from './imagetoolbar';
 export { default as ImageUpload } from './imageupload';
-export { default as ImageUploadEditing } from './imageupload/imageuploadediting';
+export { default as ImageUploadEditing, ImageUploadCompleteEvent } from './imageupload/imageuploadediting';
 export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
 export { default as ImageUploadUI } from './imageupload/imageuploadui';
 export { default as PictureEditing } from './pictureediting';

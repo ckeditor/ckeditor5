@@ -14,7 +14,7 @@ export { CommandsMap } from './commandcollection';
 export { PluginsMap, type default as PluginCollection } from './plugincollection';
 
 export { default as Context } from './context';
-export { default as ContextPlugin } from './contextplugin';
+export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin';
 
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor';
 export type {

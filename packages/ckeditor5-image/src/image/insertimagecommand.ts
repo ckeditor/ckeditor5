@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, toArray } from 'ckeditor5/src/utils';
+import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 
 /**
  * Insert image command.
@@ -95,7 +95,7 @@ export default class InsertImageCommand extends Command {
 	 * @param options.source The image source or an array of image sources to insert.
 	 * See the documentation of the command to learn more about accepted formats.
 	 */
-	public override execute( options: { source: string | Array<string | Record<string, unknown>> } ): void {
+	public override execute( options: { source: ArrayOrItem<string | Record<string, unknown>> } ): void {
 		const sourceDefinitions = toArray<string | Record<string, unknown>>( options.source );
 		const selection = this.editor.model.document.selection;
 		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
