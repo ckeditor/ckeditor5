@@ -215,6 +215,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
 		toolbar: [ 'bold', 'italic', 'pastePlainText' ],
+		// Rest of classic editor configuration.
 		// ...
 	} )
 	.catch( error => {
