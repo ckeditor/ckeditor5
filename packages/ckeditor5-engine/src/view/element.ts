@@ -460,8 +460,8 @@ export default class Element extends Node {
 	/**
 	 * Returns the custom property value for the given key.
 	 */
-	public getCustomProperty<T = unknown>( key: string | symbol ): T {
-		return this._customProperties.get( key ) as T;
+	public getCustomProperty( key: string | symbol ): unknown {
+		return this._customProperties.get( key );
 	}
 
 	/**

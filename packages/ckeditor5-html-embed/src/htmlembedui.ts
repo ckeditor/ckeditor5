@@ -51,10 +51,11 @@ export default class HtmlEmbedUI extends Plugin {
 				editor.execute( 'htmlEmbed' );
 				editor.editing.view.focus();
 
-				editor.editing.view.document.selection
+				const rawHtmlApi = editor.editing.view.document.selection
 					.getSelectedElement()!
-					.getCustomProperty<ContainerRawHtmlApiProperty>( 'rawHtmlApi' )
-					.makeEditable();
+					.getCustomProperty( 'rawHtmlApi' ) as ContainerRawHtmlApiProperty;
+
+				rawHtmlApi.makeEditable();
 			} );
 
 			return view;
