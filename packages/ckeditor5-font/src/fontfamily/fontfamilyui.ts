@@ -14,7 +14,7 @@ import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefiniti
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';
 
-import type { FontFamilyOption } from '../fontfamily';
+import type { FontFamilyOption } from '../fontconfig';
 import type FontFamilyCommand from './fontfamilycommand';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';

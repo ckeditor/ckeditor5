@@ -10,7 +10,7 @@
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
-import type { HeadingOption } from './heading';
+import type { HeadingOption } from './headingconfig';
 
 import HeadingCommand from './headingcommand';
 

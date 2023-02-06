@@ -15,7 +15,7 @@ import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
-import type { CodeBlockLanguageDefinition } from './codeblock';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig';
 
 /**
  * The code block UI plugin.

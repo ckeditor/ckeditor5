@@ -13,6 +13,8 @@ import {
 	isModelSelectionInCodeBlock
 } from './utils';
 
+import './codeblockconfig';
+
 /**
  * The code block indentation increase command plugin.
  */

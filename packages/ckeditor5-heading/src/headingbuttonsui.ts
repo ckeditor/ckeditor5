@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getLocalizedOptions } from './utils';
-import type { HeadingOption } from './heading';
+import type { HeadingOption } from './headingconfig';
 
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';

@@ -11,7 +11,7 @@ import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import { isSupported, normalizeAlignmentOptions } from './utils';
-import type { SupportedOption } from './alignmentediting';
+import type { SupportedOption } from './alignmentconfig';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],

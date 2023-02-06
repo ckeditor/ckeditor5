@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { CodeBlockLanguageDefinition } from './codeblock';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig';
 import { first } from 'ckeditor5/src/utils';
 import type {
 	DocumentSelection,

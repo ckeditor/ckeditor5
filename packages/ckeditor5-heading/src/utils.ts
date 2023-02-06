@@ -9,7 +9,7 @@
 
 import type { Editor } from 'ckeditor5/src/core';
 
-import type { HeadingOption } from './heading';
+import type { HeadingOption } from './headingconfig';
 
 /**
  * Returns heading options as defined in `config.heading.options` but processed to consider

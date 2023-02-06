@@ -19,7 +19,7 @@ import {
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import type { HighlightOption } from './highlight';
+import type { HighlightOption } from './highlightconfig';
 
 import './../theme/highlight.css';
 

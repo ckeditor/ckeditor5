@@ -49,7 +49,7 @@ import type {
 	MentionFeedItem,
 	ItemRenderer,
 	MentionFeedObjectItem
-} from './mention';
+} from './mentionconfig';
 
 const VERTICAL_SPACING = 3;
 

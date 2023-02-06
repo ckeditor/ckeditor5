@@ -9,12 +9,10 @@
 
 import ColorTableView from './ui/colortableview';
 
-import type { FontFamilyOption } from './fontfamily';
-import type { FontSizeOption } from './fontsize';
+import type { FontFamilyOption, FontSizeOption } from './fontconfig';
 import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type {
-	DowncastWriter,
 	ViewAttributeElement,
 	ViewElement,
 	MatcherPattern,

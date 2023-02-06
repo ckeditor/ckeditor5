@@ -20,7 +20,7 @@ import { normalizeOptions } from './utils';
 import { FONT_SIZE } from '../utils';
 
 import '../../theme/fontsize.css';
-import type { FontSizeOption } from '../fontsize';
+import type { FontSizeOption } from '../fontconfig';
 import type FontSizeCommand from './fontsizecommand';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';

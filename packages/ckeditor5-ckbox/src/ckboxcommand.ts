@@ -21,7 +21,7 @@ import type {
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
 	CKBoxRawAssetDefinition
-} from './ckbox';
+} from './ckboxconfig';
 
 import { getEnvironmentId, getImageUrls } from './utils';
 

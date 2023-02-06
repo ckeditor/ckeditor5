@@ -25,7 +25,7 @@ import {
 } from 'ckeditor5/src/engine';
 import { CKEditorError, logError } from 'ckeditor5/src/utils';
 
-import type { CKBoxAssetDefinition } from './ckbox';
+import type { CKBoxAssetDefinition } from './ckboxconfig';
 
 import CKBoxCommand from './ckboxcommand';
 import CKBoxUploadAdapter from './ckboxuploadadapter';

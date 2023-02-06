@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { FontFamilyOption } from '../fontfamily';
+import type { FontFamilyOption } from '../fontconfig';
 
 /**
  * @module font/fontfamily/utils
