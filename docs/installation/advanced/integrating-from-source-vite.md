@@ -1,11 +1,12 @@
 ---
 category: alternative-setups
 order: 15
+modified_at: 2023-02-06
 ---
 # Integrating from source using Vite
 
 <info-box>
-	Before you move on, remember that CKEditor 5 integration with Vite is still in the experimental phase. Most features available with Webpack are available with Vite, but not all. Vite does not produce translation files, so you're limited to one language - English. Similarly, it does not build DLL-compatible files. You can't create a DLL plugin like our package generator. Also, Vite process styles with other application styles. It causes an issue with Export to Word/PDF where styles are not automatically collected.
+	Before you move on, remember that CKEditor 5 integration with Vite is still in the experimental phase. Most features available with Webpack are available with Vite, but not all. Vite does not produce translation files, so you are limited to one language &ndash; English. Similarly, it does not build DLL-compatible files. You cannot create a DLL plugin like our package generator. Also, Vite process styles with other application styles. It causes an issue with Export to Word/PDF where styles are not automatically collected.
 </info-box>
 
 This scenario allows you to fully control the building process of CKEditor 5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how Vite will be configured.
@@ -67,7 +68,7 @@ When your editor has all the necessary plugins, you can move on to integration w
 npm install --save @ckeditor/ckeditor5-vite-plugin
 ```
 
-The plugin is installed but won't work yet, so you need to add it to the Vite configuration. First, add the `vite.config.js` file at the root of your project (or use an existing one). Then, modify the file by adding the following lines of code.
+The plugin is installed but will not work yet, so you need to add it to the Vite configuration. First, add the `vite.config.js` file at the root of your project (or use an existing one). Then, modify the file by adding the following lines of code.
 
 ```js
 // vite.config.js
