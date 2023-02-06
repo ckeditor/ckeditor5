@@ -56,7 +56,7 @@ class Button extends View {
 		// this.isEnabled is observable and true.
 		this.set( 'isEnabled', true );
 
-		// More observable properties.
+		// More observable's properties.
 		// ...
 	}
 }
