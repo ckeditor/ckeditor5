@@ -1,7 +1,7 @@
 ---
-menu-title: Plugin list
-category: installation
-order: 25
+menu-title: Features' HTML output
+category: advanced
+order: 60
 modified_at: 2021-12-03
 ---
 
