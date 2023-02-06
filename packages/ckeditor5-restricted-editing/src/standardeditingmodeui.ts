@@ -23,12 +23,19 @@ export default class StandardEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public static get pluginName(): 'StandardEditingModeUI' {
+		return 'StandardEditingModeUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'restrictedEditingException', locale => {
-			const command = editor.commands.get( 'restrictedEditingException' );
+			const command = editor.commands.get( 'restrictedEditingException' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -49,5 +56,11 @@ export default class StandardEditingModeUI extends Plugin {
 
 			return view;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ StandardEditingModeUI.pluginName ]: StandardEditingModeUI;
 	}
 }

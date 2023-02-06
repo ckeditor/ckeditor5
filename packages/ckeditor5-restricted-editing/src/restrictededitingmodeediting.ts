@@ -7,9 +7,23 @@
  * @module restricted-editing/restrictededitingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type EditingKeystrokeCallback } from 'ckeditor5/src/core';
+import type {
+	DocumentSelection,
+	Marker,
+	ModelDeleteContentEvent,
+	ModelPostFixer,
+	Range,
+	SchemaAttributeCheckCallback,
+	SchemaChildCheckCallback
+} from 'ckeditor5/src/engine';
+import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils';
+import type { ClipboardContentInsertionEvent, ClipboardOutputEvent } from 'ckeditor5/src/clipboard';
 
-import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
+import {
+	default as RestrictedEditingNavigationCommand,
+	RestrictedEditingModeNavigationDirection
+} from './restrictededitingmodenavigationcommand';
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
@@ -17,6 +31,8 @@ import {
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters';
 import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
+import type { RestrictedEditingModeConfig } from './restrictededitingmode';
+import type { InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 
@@ -31,16 +47,29 @@ const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
  */
 export default class RestrictedEditingModeEditing extends Plugin {
 	/**
+	 * Command names that are enabled outside the non-restricted regions.
+	 */
+	private _alwaysEnabled: Set<string>;
+
+	/**
+	 * Commands allowed in non-restricted areas.
+	 *
+	 * Commands always enabled combine typing feature commands: `'input'`, `'insertText'`, `'delete'`, and `'deleteForward'` with
+	 * commands defined in the feature configuration.
+	 */
+	private _allowedInException: Set<string>;
+
+	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'RestrictedEditingModeEditing' {
 		return 'RestrictedEditingModeEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
 		editor.config.define( 'restrictedEditing', {
@@ -48,33 +77,17 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			allowedAttributes: [ 'bold', 'italic', 'linkHref' ]
 		} );
 
-		/**
-		 * Command names that are enabled outside the non-restricted regions.
-		 *
-		 * @type {Set.<String>}
-		 * @private
-		 */
 		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
-
-		/**
-		 * Commands allowed in non-restricted areas.
-		 *
-		 * Commands always enabled combine typing feature commands: `'input'`, `'insertText'`, `'delete'`, and `'deleteForward'` with
-		 * commands defined in the feature configuration.
-		 *
-		 * @type {Set<string>}
-		 * @private
-		 */
 		this._allowedInException = new Set( [ 'input', 'insertText', 'delete', 'deleteForward' ] );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
+		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' )!;
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
 
@@ -83,8 +96,16 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this._setupRestrictions();
 
 		// Commands & keystrokes that allow navigation in the content.
-		editor.commands.add( 'goToPreviousRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
-		editor.commands.add( 'goToNextRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
+		editor.commands.add(
+			'goToPreviousRestrictedEditingException',
+			new RestrictedEditingNavigationCommand( editor, RestrictedEditingModeNavigationDirection.BACKWARD )
+		);
+
+		editor.commands.add(
+			'goToNextRestrictedEditingException',
+			new RestrictedEditingNavigationCommand( editor, RestrictedEditingModeNavigationDirection.FORWARD )
+		);
+
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
@@ -103,10 +124,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 * To enable some commands in non-restricted areas of the content use
 	 * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands} configuration option.
 	 *
-	 * @param {String} commandName Name of the command to enable.
+	 * @param commandName Name of the command to enable.
 	 */
-	enableCommand( commandName ) {
-		const command = this.editor.commands.get( commandName );
+	public enableCommand( commandName: string ): void {
+		const command = this.editor.commands.get( commandName )!;
 
 		command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 
@@ -119,10 +140,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 * * ucpast & downcast converters,
 	 * * marker highlighting in the edting area,
 	 * * marker post-fixers.
-	 *
-	 * @private
 	 */
-	_setupConversion() {
+	private _setupConversion(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const doc = model.document;
@@ -192,17 +211,15 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 * * disabling input command outside exception marker
 	 * * restricting clipboard holder to text only
 	 * * restricting text attributes in content
-	 *
-	 * @private
 	 */
-	_setupRestrictions() {
+	private _setupRestrictions() {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
 		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
-		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
 		const inputCommand = editor.commands.get( 'input' );
 		const insertTextCommand = editor.commands.get( 'insertText' );
@@ -210,40 +227,48 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
-			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
+			this.listenTo<InsertTextCommandExecuteEvent>(
+				inputCommand,
+				'execute',
+				disallowInputExecForWrongRange( editor ),
+				{ priority: 'high' }
+			);
 		}
 
 		// The restricted editing might be configured without insert text support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( insertTextCommand ) {
-			this.listenTo( insertTextCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
+			this.listenTo<InsertTextCommandExecuteEvent>(
+				insertTextCommand,
+				'execute',
+				disallowInputExecForWrongRange( editor ),
+				{ priority: 'high' }
+			);
 		}
 
 		// Block clipboard outside exception marker on paste and drop.
-		this.listenTo( clipboard, 'contentInsertion', evt => {
-			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+		this.listenTo<ClipboardContentInsertionEvent>( clipboard, 'contentInsertion', evt => {
+			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
 				evt.stop();
 			}
 		} );
 
 		// Block clipboard outside exception marker on cut.
-		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
-			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+		this.listenTo<ClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
 
-		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
+		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
 		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
-		model.schema.addChildCheck( allowTextOnlyInClipboardHolder );
+		model.schema.addChildCheck( allowTextOnlyInClipboardHolder() );
 	}
 
 	/**
 	 * Sets up the command toggling which enables or disables commands based on the user selection.
-	 *
-	 * @private
 	 */
-	_setupCommandsToggling() {
+	private _setupCommandsToggling(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const doc = model.document;
@@ -256,10 +281,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 	/**
 	 * Checks if commands should be enabled or disabled based on the current selection.
-	 *
-	 * @private
 	 */
-	_checkCommands() {
+	private _checkCommands(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
@@ -269,22 +292,19 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			return;
 		}
 
-		const marker = getMarkerAtPosition( editor, selection.focus );
+		const marker = getMarkerAtPosition( editor, selection.focus! );
 
 		this._disableCommands();
 
 		if ( isSelectionInMarker( selection, marker ) ) {
-			this._enableCommands( marker );
+			this._enableCommands( marker! );
 		}
 	}
 
 	/**
 	 * Enables commands in non-restricted regions.
-	 *
-	 * @returns {module:engine/model/markercollection~Marker} marker
-	 * @private
 	 */
-	_enableCommands( marker ) {
+	private _enableCommands( marker: Marker ): void {
 		const editor = this.editor;
 
 		for ( const [ commandName, command ] of editor.commands ) {
@@ -308,10 +328,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 	/**
 	 * Disables commands outside non-restricted regions.
-	 *
-	 * @private
 	 */
-	_disableCommands() {
+	private _disableCommands(): void {
 		const editor = this.editor;
 
 		for ( const [ commandName, command ] of editor.commands ) {
@@ -324,10 +342,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 }
 
-// Helper method for executing enabled commands only.
-function getCommandExecuter( editor, commandName ) {
-	return ( data, cancel ) => {
-		const command = editor.commands.get( commandName );
+/**
+ * Helper method for executing enabled commands only.
+ */
+function getCommandExecuter( editor: Editor, commandName: string ): EditingKeystrokeCallback {
+	return ( _, cancel ) => {
+		const command = editor.commands.get( commandName )!;
 
 		if ( command.isEnabled ) {
 			editor.execute( commandName );
@@ -336,12 +356,14 @@ function getCommandExecuter( editor, commandName ) {
 	};
 }
 
-// Helper for handling Ctrl+A keydown behaviour.
-function getSelectAllHandler( editor ) {
-	return ( data, cancel ) => {
+/**
+ * Helper for handling Ctrl+A keydown behaviour.
+ */
+function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
+	return ( _, cancel ) => {
 		const model = editor.model;
 		const selection = editor.model.document.selection;
-		const marker = getMarkerAtPosition( editor, selection.focus );
+		const marker = getMarkerAtPosition( editor, selection.focus! );
 
 		if ( !marker ) {
 			return;
@@ -350,7 +372,7 @@ function getSelectAllHandler( editor ) {
 		// If selection range is inside a restricted editing exception, select text only within the exception.
 		//
 		// Note: Second Ctrl+A press is also blocked and it won't select the entire text in the editor.
-		const selectionRange = selection.getFirstRange();
+		const selectionRange = selection.getFirstRange()!;
 		const markerRange = marker.getRange();
 
 		if ( markerRange.containsRange( selectionRange, true ) || selection.isCollapsed ) {
@@ -363,30 +385,34 @@ function getSelectAllHandler( editor ) {
 	};
 }
 
-// Additional rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
-//
-// Does not allow to enable command when selection focus is:
-// - is on marker start - "delete" - to prevent removing content before marker
-// - is on marker end - "deleteForward" - to prevent removing content after marker
-function isDeleteCommandOnMarkerBoundaries( commandName, selection, markerRange ) {
-	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
+/**
+ * Additional rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
+ *
+ * Does not allow to enable command when selection focus is:
+ * - is on marker start - "delete" - to prevent removing content before marker
+ * - is on marker end - "deleteForward" - to prevent removing content after marker
+ */
+function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: DocumentSelection, markerRange: Range ) {
+	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus! ) ) {
 		return true;
 	}
 
 	// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
-	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
+	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus! ) ) {
 		return true;
 	}
 
 	return false;
 }
 
-// Ensures that model.deleteContent() does not delete outside exception markers ranges.
-//
-// The enforced restrictions are:
-// - only execute deleteContent() inside exception markers
-// - restrict passed selection to exception marker
-function restrictDeleteContent( editor ) {
+/**
+ * Ensures that model.deleteContent() does not delete outside exception markers ranges.
+ *
+ * The enforced restrictions are:
+ * - only execute deleteContent() inside exception markers
+ * - restrict passed selection to exception marker
+ */
+function restrictDeleteContent( editor: Editor ): GetCallback<BaseEvent> {
 	return ( evt, args ) => {
 		const [ selection ] = args;
 
@@ -421,10 +447,12 @@ function restrictDeleteContent( editor ) {
 	};
 }
 
-// Ensures that input command is executed with a range that is inside exception marker.
-//
-// This restriction is due to fact that using native spell check changes text outside exception marker.
-function disallowInputExecForWrongRange( editor ) {
+/**
+ * Ensures that input command is executed with a range that is inside exception marker.
+ *
+ * This restriction is due to fact that using native spell check changes text outside exception marker.
+ */
+function disallowInputExecForWrongRange( editor: Editor ): GetCallback<InsertTextCommandExecuteEvent> {
 	return ( evt, args ) => {
 		const [ options ] = args;
 		const { range } = options;
@@ -441,31 +469,35 @@ function disallowInputExecForWrongRange( editor ) {
 	};
 }
 
-function isRangeInsideSingleMarker( editor, range ) {
+function isRangeInsideSingleMarker( editor: Editor, range: Range ) {
 	const markerAtStart = getMarkerAtPosition( editor, range.start );
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 
 	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
 }
 
-// Checks if new marker range is flat. Non-flat ranges might appear during upcast conversion in nested structures, ie tables.
-//
-// Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
-// Markers created by developer in the data might break in many other ways.
-//
-// See #6003.
-function ensureNewMarkerIsFlatPostFixer( editor ) {
+/**
+ * Checks if new marker range is flat. Non-flat ranges might appear during upcast conversion in nested structures, ie tables.
+ *
+ * Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
+ * Markers created by developer in the data might break in many other ways.
+ *
+ * See #6003.
+ */
+function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 	return writer => {
 		let changeApplied = false;
 
 		const changedMarkers = editor.model.document.differ.getChangedMarkers();
 
-		for ( const { data: { newRange, oldRange }, name } of changedMarkers ) {
+		for ( const { data, name } of changedMarkers ) {
 			if ( !name.startsWith( 'restrictedEditingException' ) ) {
 				continue;
 			}
 
-			if ( !oldRange && !newRange.isFlat ) {
+			const newRange = data.newRange!;
+
+			if ( !data.oldRange && !newRange.isFlat ) {
 				const start = newRange.start;
 				const end = newRange.end;
 
@@ -486,7 +518,9 @@ function ensureNewMarkerIsFlatPostFixer( editor ) {
 	};
 }
 
-function onlyAllowAttributesFromList( allowedAttributes ) {
+function onlyAllowAttributesFromList(
+	allowedAttributes: RestrictedEditingModeConfig['allowedAttributes']
+): SchemaAttributeCheckCallback {
 	return ( context, attributeName ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return allowedAttributes.includes( attributeName );
@@ -494,8 +528,21 @@ function onlyAllowAttributesFromList( allowedAttributes ) {
 	};
 }
 
-function allowTextOnlyInClipboardHolder( context, childDefinition ) {
-	if ( context.startsWith( '$clipboardHolder' ) ) {
-		return childDefinition.name === '$text';
+function allowTextOnlyInClipboardHolder(): SchemaChildCheckCallback {
+	return ( context, childDefinition ) => {
+		if ( context.startsWith( '$clipboardHolder' ) ) {
+			return childDefinition.name === '$text';
+		}
+	};
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ RestrictedEditingModeEditing.pluginName ]: RestrictedEditingModeEditing;
+	}
+
+	interface CommandsMap {
+		goToPreviousRestrictedEditingException: RestrictedEditingNavigationCommand;
+		goToNextRestrictedEditingException: RestrictedEditingNavigationCommand;
 	}
 }

@@ -24,14 +24,14 @@ export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'StandardEditingModeEditing' {
 		return 'StandardEditingModeEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
@@ -61,5 +61,15 @@ export default class StandardEditingModeEditing extends Plugin {
 				writer.addClass( 'ck-restricted-editing_mode_standard', root );
 			}
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ StandardEditingModeEditing.pluginName ]: StandardEditingModeEditing;
+	}
+
+	interface CommandsMap {
+		restrictedEditingException: RestrictedEditingExceptionCommand;
 	}
 }

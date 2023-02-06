@@ -8,15 +8,23 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type { TreeWalkerValue } from 'ckeditor5/src/engine';
 
 /**
  * @extends module:core/command~Command
  */
 export default class RestrictedEditingExceptionCommand extends Command {
 	/**
+	 * A flag indicating whether the command is active
+	 *
+	 * @readonly
+	 */
+	declare public value: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
 
@@ -28,7 +36,7 @@ export default class RestrictedEditingExceptionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute( options = {} ) {
+	public override execute( options: RestrictedEditingExceptionCommandParams = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
@@ -41,10 +49,13 @@ export default class RestrictedEditingExceptionCommand extends Command {
 				if ( valueToSet ) {
 					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
 				} else {
-					const isSameException = value => value.item.getAttribute( 'restrictedEditingException' ) === this.value;
-					const exceptionStart = selection.focus.getLastMatchingPosition( isSameException, { direction: 'backward' } );
-					const exceptionEnd = selection.focus.getLastMatchingPosition( isSameException );
-					const focus = selection.focus;
+					const isSameException = ( value: TreeWalkerValue ) => {
+						return value.item.getAttribute( 'restrictedEditingException' ) === this.value;
+					};
+
+					const focus = selection.focus!;
+					const exceptionStart = focus.getLastMatchingPosition( isSameException, { direction: 'backward' } );
+					const exceptionEnd = focus.getLastMatchingPosition( isSameException );
 
 					writer.removeSelectionAttribute( 'restrictedEditingException' );
 
@@ -63,4 +74,8 @@ export default class RestrictedEditingExceptionCommand extends Command {
 			}
 		} );
 	}
+}
+
+export interface RestrictedEditingExceptionCommandParams {
+	forceValue?: unknown;
 }

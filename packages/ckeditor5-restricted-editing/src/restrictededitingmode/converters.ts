@@ -7,7 +7,17 @@
  * @module restricted-editing/restrictededitingmode/converters
  */
 
-import { Matcher } from 'ckeditor5/src/engine';
+import type { Editor } from 'ckeditor5/src/core';
+import {
+	Matcher,
+	type DowncastWriter,
+	type MatcherPattern,
+	type ModelPostFixer,
+	type Position,
+	type UpcastDispatcher,
+	type Writer,
+	type ViewElement
+} from 'ckeditor5/src/engine';
 
 import { getMarkerAtPosition } from './utils';
 
@@ -24,28 +34,28 @@ const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
  * * The class is added in the view post-fixer, after other changes in the model tree are converted to the view.
  *
  * This way, adding and removing the highlight does not interfere with conversion.
- *
- * @param {module:core/editor/editor~Editor} editor
  */
-export function setupExceptionHighlighting( editor ) {
+export function setupExceptionHighlighting( editor: Editor ): void {
 	const view = editor.editing.view;
 	const model = editor.model;
-	const highlightedMarkers = new Set();
+	const highlightedMarkers = new Set<ViewElement>();
 
 	// Adding the class.
-	view.document.registerPostFixer( writer => {
+	view.document.registerPostFixer( ( writer: DowncastWriter ): boolean => {
 		const modelSelection = model.document.selection;
 
-		const marker = getMarkerAtPosition( editor, modelSelection.anchor );
+		const marker = getMarkerAtPosition( editor, modelSelection.anchor! );
 
 		if ( !marker ) {
-			return;
+			return false;
 		}
 
-		for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
+		for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name )! ) {
 			writer.addClass( HIGHLIGHT_CLASS, viewElement );
 			highlightedMarkers.add( viewElement );
 		}
+
+		return false;
 	} );
 
 	// Removing the class.
@@ -69,11 +79,8 @@ export function setupExceptionHighlighting( editor ) {
 
 /**
  * A post-fixer that prevents removing a collapsed marker from the document.
- *
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Function}
  */
-export function resurrectCollapsedMarkerPostFixer( editor ) {
+export function resurrectCollapsedMarkerPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
 	return writer => {
 		let changeApplied = false;
@@ -81,7 +88,7 @@ export function resurrectCollapsedMarkerPostFixer( editor ) {
 		for ( const { name, data } of editor.model.document.differ.getChangedMarkers() ) {
 			if ( name.startsWith( 'restrictedEditingException' ) && data.newRange && data.newRange.root.rootName == '$graveyard' ) {
 				writer.updateMarker( name, {
-					range: writer.createRange( writer.createPositionAt( data.oldRange.start ) )
+					range: writer.createRange( writer.createPositionAt( data.oldRange!.start ) )
 				} );
 
 				changeApplied = true;
@@ -94,11 +101,8 @@ export function resurrectCollapsedMarkerPostFixer( editor ) {
 
 /**
  * A post-fixer that extends a marker when the user types on its boundaries.
- *
- * @param {module:core/editor/editor~Editor} editor
- * @returns {Function}
  */
-export function extendMarkerOnTypingPostFixer( editor ) {
+export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
 	return writer => {
 		let changeApplied = false;
@@ -117,15 +121,10 @@ export function extendMarkerOnTypingPostFixer( editor ) {
 /**
  * A view highlight-to-marker conversion helper.
  *
- * @param {Object} config Conversion configuration.
- * @param {module:engine/view/matcher~MatcherPattern} [config.view] A pattern matching all view elements which should be converted. If not
- * set, the converter will fire for every view element.
- * @param {String|module:engine/model/element~Element|Function} config.model The name of the model element, a model element
- * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
- * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+ * @param config Conversion configuration.
  */
-export function upcastHighlightToMarker( config ) {
-	return dispatcher => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
+export function upcastHighlightToMarker( config: { view: MatcherPattern; model: () => string } ) {
+	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
 		const { writer } = conversionApi;
 
 		const matcher = new Matcher( config.view );
@@ -144,7 +143,7 @@ export function upcastHighlightToMarker( config ) {
 		const { modelRange: convertedChildrenRange } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
 		conversionApi.consumable.consume( data.viewItem, match );
 
-		const markerName = config.model( data.viewItem );
+		const markerName = config.model();
 		const fakeMarkerStart = writer.createElement( '$marker', { 'data-name': markerName } );
 		const fakeMarkerEnd = writer.createElement( '$marker', { 'data-name': markerName } );
 
@@ -160,8 +159,10 @@ export function upcastHighlightToMarker( config ) {
 	} );
 }
 
-// Extend marker if change detected on marker's start position.
-function _tryExtendMarkerStart( editor, position, length, writer ) {
+/**
+ * Extend marker if change detected on marker's start position.
+ */
+function _tryExtendMarkerStart( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
 	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
@@ -175,8 +176,10 @@ function _tryExtendMarkerStart( editor, position, length, writer ) {
 	return false;
 }
 
-// Extend marker if change detected on marker's end position.
-function _tryExtendMarkedEnd( editor, position, length, writer ) {
+/**
+ * Extend marker if change detected on marker's end position.
+ */
+function _tryExtendMarkedEnd( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {

@@ -7,7 +7,7 @@
  * @module restricted-editing/standardeditingmode
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import StandardEditingModeEditing from './standardeditingmodeediting';
 import StandardEditingModeUI from './standardeditingmodeui';
@@ -28,11 +28,17 @@ export default class StandardEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'StandardEditingMode' {
 		return 'StandardEditingMode';
 	}
 
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ StandardEditingModeEditing, StandardEditingModeUI ];
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ StandardEditingMode.pluginName ]: StandardEditingMode;
 	}
 }

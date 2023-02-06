@@ -8,7 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import {
+	Model,
+	createDropdown,
+	addListToDropdown,
+	type ButtonExecuteEvent,
+	type ListDropdownItemDefinition
+} from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 
 import lockIcon from '../theme/icons/contentlock.svg';
@@ -25,20 +31,20 @@ export default class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'RestrictedEditingModeUI' {
 		return 'RestrictedEditingModeUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'restrictedEditing', locale => {
 			const dropdownView = createDropdown( locale );
-			const listItems = new Collection();
+			const listItems = new Collection<ListDropdownItemDefinition>();
 
 			listItems.add( this._getButtonDefinition(
 				'goToPreviousRestrictedEditingException',
@@ -61,8 +67,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 				isOn: false
 			} );
 
-			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( evt.source._commandName );
+			this.listenTo<ButtonExecuteEvent>( dropdownView, 'execute', evt => {
+				const { _commandName } = evt.source as any;
+				editor.execute( _commandName );
 				editor.editing.view.focus();
 			} );
 
@@ -72,18 +79,16 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 	/**
 	 * Returns a definition of the navigation button to be used in the dropdown.
-	 *
-	 * @private
-	 * @param {String} commandName The name of the command that the button represents.
-	 * @param {String} label The translated label of the button.
-	 * @param {String} keystroke The button keystroke.
-	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
+
+	 * @param commandName The name of the command that the button represents.
+	 * @param label The translated label of the button.
+	 * @param keystroke The button keystroke.
 	 */
-	_getButtonDefinition( commandName, label, keystroke ) {
+	private _getButtonDefinition( commandName: string, label: string, keystroke: string ): ListDropdownItemDefinition {
 		const editor = this.editor;
-		const command = editor.commands.get( commandName );
+		const command = editor.commands.get( commandName )!;
 		const definition = {
-			type: 'button',
+			type: 'button' as const,
 			model: new Model( {
 				label,
 				withText: true,
@@ -96,5 +101,11 @@ export default class RestrictedEditingModeUI extends Plugin {
 		definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		return definition;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ RestrictedEditingModeUI.pluginName ]: RestrictedEditingModeUI;
 	}
 }
