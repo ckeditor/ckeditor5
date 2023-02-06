@@ -32,7 +32,7 @@ CKEditor 5 is an ultra-modern JavaScript rich text editor with MVC architecture,
 
 ### CKEditor 5 Online builder
 
-The easies way to start using CKEditor 5 will all the functions and features you need, is preparing a customized build with the [Online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins and download the ready package that can be then used out of the box. Refer to the [Online builder Quick start](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder) guide to follow this installation path.
+The easies way to start using CKEditor 5 with all the functions and features you need, is preparing a customized build with the [Online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins and download the ready package that can be then used out of the box. Refer to the [Online builder Quick start](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder) guide to follow this installation path.
 
 ### CKEditor 5 predefined builds
 

@@ -45,12 +45,14 @@ export default class ClipboardObserver extends DomEventObserver<
 	'paste' | 'copy' | 'cut' | 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave',
 	ClipboardEventData
 > {
+	public readonly domEventType = [
+		'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave'
+	] as const;
+
 	constructor( view: View ) {
 		super( view );
 
 		const viewDocument = this.document;
-
-		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ];
 
 		this.listenTo<ViewDocumentPasteEvent>( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
 		this.listenTo<ViewDocumentDropEvent>( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
@@ -81,8 +83,11 @@ export default class ClipboardObserver extends DomEventObserver<
 	}
 
 	public onDomEvent( domEvent: ClipboardEvent | DragEvent ): void {
+		const nativeDataTransfer = 'clipboardData' in domEvent ? domEvent.clipboardData! : domEvent.dataTransfer!;
+		const cacheFiles = domEvent.type == 'drop' || domEvent.type == 'paste';
+
 		const evtData: ClipboardEventData = {
-			dataTransfer: new DataTransfer( 'clipboardData' in domEvent ? domEvent.clipboardData! : domEvent.dataTransfer! )
+			dataTransfer: new DataTransfer( nativeDataTransfer, { cacheFiles } )
 		};
 
 		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {
@@ -171,7 +176,7 @@ export interface ClipboardInputEventData {
 	dataTransfer: DataTransfer;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
 
@@ -181,9 +186,9 @@ export interface ClipboardInputEventData {
 	target: ViewElement;
 
 	/**
-	 * Ranges which are the target of the operation (usually – into which the content should be inserted).
+	 * The ranges which are the target of the operation (usually – into which the content should be inserted).
 	 * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
-	 * then it is the drop position (which can be different than the selection at the moment of drop).
+	 * then it is the drop position (which can be different than the selection at the moment of the drop).
 	 */
 	targetRanges: Array<ViewRange> | null;
 
@@ -325,7 +330,7 @@ export interface DraggingEventData {
 	dataTransfer: DataTransfer;
 
 	/**
-	 * Whether the event was triggered by a paste or drop operation.
+	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'dragover';
 

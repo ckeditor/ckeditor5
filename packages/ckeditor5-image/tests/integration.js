@@ -54,6 +54,8 @@ describe( 'ImageToolbar integration', () => {
 		} );
 
 		it( 'should prevent the BalloonToolbar from being displayed when an image is selected', () => {
+			newEditor.ui.focusTracker.isFocused = true;
+
 			// When image is selected along with text.
 			setModelData( newEditor.model,
 				'<paragraph>fo[o</paragraph><imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );

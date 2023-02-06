@@ -244,21 +244,23 @@ import Style from '@ckeditor/ckeditor5-style/src/style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
 			definitions: [
+				// Styles definitions. 
 				// ...
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
@@ -272,11 +274,12 @@ Configuring the styles feature takes two steps. First you need to define the sty
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
@@ -294,8 +297,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 

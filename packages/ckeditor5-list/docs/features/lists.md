@@ -124,11 +124,11 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ List, ... ],
-		toolbar: [ 'bulletedList', 'numberedList', ... ]
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 #### List properties

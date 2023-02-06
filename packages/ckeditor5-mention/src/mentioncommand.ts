@@ -19,7 +19,7 @@ import type { MentionAttribute } from './mention';
  *
  * The command is registered by {@link module:mention/mentionediting~MentionEditing} as `'mention'`.
  *
- * To insert a mention onto a range, execute the command and specify a mention object with a range to replace:
+ * To insert a mention into a range, execute the command and specify a mention object with a range to replace:
  *
  * ```ts
  * const focus = editor.model.document.selection.focus;

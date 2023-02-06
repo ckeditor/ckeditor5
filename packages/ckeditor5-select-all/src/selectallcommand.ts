@@ -59,7 +59,7 @@ export default class SelectAllCommand extends Command {
 		}
 
 		model.change( writer => {
-			writer.setSelection( scopeElement, 'in' );
+			writer.setSelection( scopeElement!, 'in' );
 		} );
 	}
 }

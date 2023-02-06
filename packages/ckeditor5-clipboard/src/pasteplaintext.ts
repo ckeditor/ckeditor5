@@ -9,7 +9,7 @@
 
 import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
 
-import type { DocumentFragment, Schema, ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine';
+import type { DocumentFragment, Schema, ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver from './clipboardobserver';
 import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline';
@@ -48,7 +48,7 @@ export default class PastePlainText extends Plugin {
 
 		view.addObserver( ClipboardObserver );
 
-		this.listenTo<ViewDocumentKeyEvent>( viewDocument, 'keydown', ( evt, data ) => {
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
 			shiftPressed = data.shiftKey;
 		} );
 
