@@ -7,9 +7,10 @@
  * @module table/tablecolumnresize/converters
  */
 
-import { normalizeColumnWidths } from './utils';
+import { normalizeColumnWidths, updateColumnElements } from './utils';
 
 /**
+ * TODO
  * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
  *
  * Only the inline width, provided as a percentage value, in the `<col>` element is taken into account. If there are not enough `<col>`
@@ -23,43 +24,23 @@ import { normalizeColumnWidths } from './utils';
  */
 export function upcastColgroupElement( tableUtilsPlugin ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		const viewColgroupElement = data.viewItem;
+		const modelTable = data.modelCursor.findAncestor( 'table' );
+		const tableColumnGroup = tableUtilsPlugin.getColumnGroupElement( modelTable );
 
-		if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
+		if ( !tableColumnGroup ) {
 			return;
 		}
 
-		conversionApi.consumable.consume( viewColgroupElement, { name: true } );
+		const columnElements = tableUtilsPlugin.getTableColumnElements( tableColumnGroup );
+		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
+		let columnWidths = tableUtilsPlugin.getTableColumnsWidths( tableColumnGroup );
 
-		const modelTable = data.modelCursor.findAncestor( 'table' );
-		const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
+		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
 
-		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
-			.map( columnIndex => {
-				const viewChild = viewColgroupElement.getChild( columnIndex );
-
-				if ( !viewChild || !viewChild.is( 'element', 'col' ) ) {
-					return 'auto';
-				}
-
-				const viewColWidth = viewChild.getStyle( 'width' );
-
-				if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
-					return 'auto';
-				}
-
-				return viewColWidth;
-			} );
-
-		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths );
+		if ( columnWidths.length != columnElements.length || columnWidths.includes( 'auto' ) ) {
+			updateColumnElements( columnElements, tableColumnGroup, normalizeColumnWidths( columnWidths ), conversionApi.writer );
 		}
-
-		const colGroupElement = conversionApi.writer.createElement( 'tableColumnGroup' );
-
-		columnWidths.forEach( columnWidth => conversionApi.writer.appendElement( 'tableColumn', { columnWidth }, colGroupElement ) );
-		conversionApi.writer.append( colGroupElement, modelTable );
-	} );
+	}, { priority: 'low' } );
 }
 
 /**

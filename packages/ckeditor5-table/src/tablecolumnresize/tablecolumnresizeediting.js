@@ -34,7 +34,7 @@ import {
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
-	getDomCellOuterWidth
+	getDomCellOuterWidth, updateColumnElements
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -216,21 +216,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					continue;
 				}
 
-				for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
-					const column = columns[ i ];
-					const columnWidth = normalizedWidths[ i ];
-
-					if ( !columnWidth ) {
-						// Number of `<tableColumn>` elements exceeds actual number of columns
-						writer.remove( column );
-					} else if ( !column ) {
-						// There is fewer `<tableColumn>` elements than actual columns
-						writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
-					} else {
-						// Update column width
-						writer.setAttribute( 'columnWidth', columnWidth, column );
-					}
-				}
+				updateColumnElements( columns, tableColumnGroup, normalizedWidths, writer );
 
 				changed = true;
 			}
@@ -356,12 +342,31 @@ export default class TableColumnResizeEditing extends Plugin {
 			} )
 		} );
 
-		// Table <colgroup> and <col> elements and styles
-		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
+		conversion.elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
+		conversion.elementToElement( { model: 'tableColumn', view: 'col' } );
 		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
-		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
-		conversion.for( 'downcast' ).elementToElement( { model: 'tableColumn', view: 'col' } );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				name: 'col',
+				styles: {
+					width: /.*/
+				}
+			},
+			model: {
+				key: 'columnWidth',
+				value: viewElement => {
+					const viewColWidth = viewElement.getStyle( 'width' );
+
+					if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
+						return 'auto';
+					}
+
+					return viewColWidth;
+				}
+			}
+		} );
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
 				name: 'tableColumn',

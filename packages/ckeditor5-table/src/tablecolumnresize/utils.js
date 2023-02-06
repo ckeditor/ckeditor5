@@ -322,3 +322,29 @@ export function getDomCellOuterWidth( domCell ) {
 			parseFloat( styles.borderWidth );
 	}
 }
+
+/**
+ * Updates column elements to match columns widths.
+ *
+ * @param columns
+ * @param tableColumnGroup
+ * @param normalizedWidths
+ * @param writer
+ */
+export function updateColumnElements( columns, tableColumnGroup, normalizedWidths, writer ) {
+	for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
+		const column = columns[ i ];
+		const columnWidth = normalizedWidths[ i ];
+
+		if ( !columnWidth ) {
+			// Number of `<tableColumn>` elements exceeds actual number of columns.
+			writer.remove( column );
+		} else if ( !column ) {
+			// There is fewer `<tableColumn>` elements than actual columns.
+			writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
+		} else {
+			// Update column width.
+			writer.setAttribute( 'columnWidth', columnWidth, column );
+		}
+	}
+}
