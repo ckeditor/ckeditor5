@@ -5,7 +5,10 @@ Changelog
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+This is a patch release that resolves two recent issues:
+
+* The broken release to npm of the `@ckeditor/ckeditor5-highlight` package. We mistakenly published TypeScript source next to JavaScript files and that breaks some setups, making it harder to integrate the v36.0.0 of CKEditor 5 in your systems. See [#13373](https://github.com/ckeditor/ckeditor5/issues/13373) for more details.
+* The performance regression in drag&drop of images on the newest version of Firefox (109.0.1). This is an issue caused by a change in Firefox itself and while Firefox’s team plans to revert it, we want to ship the workaround as soon as possible to you. See [#13366](https://github.com/ckeditor/ckeditor5/issues/13366) for more details.
 
 ### Bug fixes
 
