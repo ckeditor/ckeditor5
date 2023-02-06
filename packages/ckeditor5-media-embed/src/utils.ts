@@ -108,7 +108,7 @@ export function getSelectedMediaModelWidget( selection: Selection | DocumentSele
  * @param findOptimalPosition If true it will try to find optimal position to insert media without breaking content
  * in which a selection is.
  */
-export function insertMedia( model: Model, url: string, selectable: Exclude<Selectable, Node>, findOptimalPosition: boolean ): void {
+export function insertMedia( model: Model, url: string, selectable: Selectable, findOptimalPosition: boolean ): void {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
