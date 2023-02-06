@@ -14,6 +14,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 class AnyClass {
+	// Class's code.
 	// ...
 }
 
@@ -25,7 +26,7 @@ mix( AnyClass, EmitterMixin );
 Adding a callback to an event is simple. You can listen directly on the emitter object and use an anonymous function:
 
 ```js
-emitter.on( 'eventName', ( eventInfo, ...args ) => { ... } );
+emitter.on( 'eventName', ( eventInfo, ...args ) => { /* ... */ } );
 ```
 
 However, a function object is needed if you want to be able to remove the event listener:
@@ -37,7 +38,7 @@ emitter.off( 'eventName', handler );
 There is also another way to add an event listener &mdash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
-foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { ... } );
+foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { /* ... */ } );
 ```
 
 Now you can easily detach the `foo` from `bar` simply by {@link module:utils/emittermixin~Emitter#stopListening `stopListening()`}.
@@ -57,7 +58,7 @@ foo.stopListening();
 ```
 
 <info-box>
-	The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (the emitter is bound to itself).
+	The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, /* ... */ )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, /* ... */ )`} (the emitter is bound to itself).
 </info-box>
 
 ### Listener priorities
@@ -65,8 +66,8 @@ foo.stopListening();
 By default, all listeners are bound on the {@link module:utils/priorities~PriorityString `normal`} priority, but you can specify the priority when registering a listener:
 
 ```js
-this.on( 'eventName', () => { ... }, { priority: 'high' } );
-this.listenTo( emitter, 'eventName', () => { ... }, { priority: 'high' } );
+this.on( 'eventName', () => { /* ... */ }, { priority: 'high' } );
+this.listenTo( emitter, 'eventName', () => { /* ... */ }, { priority: 'high' } );
 ```
 
 There are 5 named priorities:
@@ -121,9 +122,9 @@ this.fire( 'foo:bar:baz', data );
 Then the listeners can be bound to a specific event or the whole namespace:
 
 ```js
-this.on( 'foo', () => { ... } );
-this.on( 'foo:bar', () => { ... } );
-this.on( 'foo:bar:baz', () => { ... } );
+this.on( 'foo', () => { /* ... */ } );
+this.on( 'foo:bar', () => { /* ... */ } );
+this.on( 'foo:bar:baz', () => { /* ... */ } );
 ```
 
 This way you can have more general events, listening to a broader event (`'foo'` in this case), or more detailed callbacks listening to specified events (`'foo:bar'` or `'foo:bar:baz'`).
@@ -137,7 +138,7 @@ This mechanism is used for instance in the conversion, where thanks to events na
 Once you mix the {@link module:utils/emittermixin~EmitterMixin} into your class, you can fire events the following way:
 
 ```js
-this.fire( 'eventName', argA, argB, ... );
+this.fire( 'eventName', argA, argB, /* ... */ );
 ```
 
 All passed arguments will be available in all listeners that are added to the event.
@@ -155,7 +156,7 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 const eventInfo = new EventInfo( this, 'eventName' );
 
 // ...and fire the event.
-this.fire( eventInfo, argA, argB, ... );
+this.fire( eventInfo, argA, argB, /* ... */ );
 
 // Here you can check if the event was stopped.
 if ( eventInfo.stop.called ) {
@@ -174,7 +175,7 @@ emitter.on( 'eventName', ( eventInfo, ...args ) => {
 	eventInfo.return = 123;
 } );
 
-const result = emitter.fire( 'eventName', argA, argB, ... );
+const result = emitter.fire( 'eventName', argA, argB, /* ... */ );
 
 console.log( result ); // -> 123
 ```
@@ -254,10 +255,12 @@ Listeners registered in the context of the view element names:
 
 ```js
 this.listenTo( view.document, 'enter', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: 'blockquote' } );
 
 this.listenTo( view.document, 'enter', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: 'li' } );
 ```
@@ -266,14 +269,17 @@ Listeners registered in the virtual contexts:
 
 ```js
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: '$text', priority: 'high' } );
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: '$root' } );
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: '$capture' } );
 ```
@@ -284,10 +290,12 @@ Listeners registered in the context of a custom callback function:
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: isWidget } );
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// Listener's code.
 	// ...
 }, { context: isWidget, priority: 'high' } );
 ```

@@ -116,6 +116,7 @@ You can do that using the {@link module:core/editor/editorconfig~EditorConfig#ex
 
 ```js
 function MyPlugin( editor ) {
+	// Plugin code.
 	// ...
 }
 ```
@@ -125,10 +126,12 @@ or
 ```js
 class MyPlugin {
 	constructor( editor ) {
+		// Constructor code.
 		// ...
 	}
 
 	init() {
+		// Initializations code.
 		// ...
 	}
 }
@@ -141,6 +144,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function MyUploadAdapterPlugin( editor ) {
 	editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
+		// Custom upload adapter.
 		// ...
 	};
 }
@@ -149,7 +153,7 @@ function MyUploadAdapterPlugin( editor ) {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		extraPlugins: [ MyUploadAdapterPlugin ],
-
+		// More of the editor's configuration.
 		// ...
 	} )
 	.catch( error => {
