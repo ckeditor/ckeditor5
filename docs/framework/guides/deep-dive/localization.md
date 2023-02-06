@@ -124,6 +124,8 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 
 ```js
 class FileRepository {
+	// More methods.
+	// ...
 	
 	updatePendingAction() {
 		const pendingActions = this.editor.plugins.get( PendingActions );
