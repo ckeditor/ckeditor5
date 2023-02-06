@@ -9,13 +9,12 @@
 
 /* global console */
 
-import { Plugin, PendingActions } from 'ckeditor5/src/core';
+import { type Editor, Plugin, PendingActions, type PluginDependencies } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
-
 import sourceEditingIcon from '../theme/icons/source-editing.svg';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
@@ -27,67 +26,70 @@ const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
  *
  * For a detailed overview, check the {@glink features/source-editing source editing feature documentation} and the
  * {@glink api/source-editing package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SourceEditing' {
 		return 'SourceEditing';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ PendingActions ];
 	}
 
 	/**
+	 * Flag indicating whether the document source mode is active.
+	 *
+	 * @observable
+	 * @member {Boolean}
+	 */
+	declare public isSourceEditingMode: boolean;
+
+	/**
+	 * The element replacer instance used to replace the editing roots with the wrapper elements containing the document source.
+	 *
+	 * @private
+	 * @member {module:utils/elementreplacer~ElementReplacer}
+	 */
+	private _elementReplacer: ElementReplacer;
+
+	/**
+	 * Maps all root names to wrapper elements containing the document source.
+	 *
+	 * @private
+	 * @member {Map.<String,HTMLElement>}
+	 */
+	private _replacedRoots: Map<string, HTMLElement>;
+
+	/**
+	 * Maps all root names to their document data.
+	 *
+	 * @private
+	 * @member {Map.<String,String>}
+	 */
+	private _dataFromRoots: Map<string, string>;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * Flag indicating whether the document source mode is active.
-		 *
-		 * @observable
-		 * @member {Boolean}
-		 */
 		this.set( 'isSourceEditingMode', false );
-
-		/**
-		 * The element replacer instance used to replace the editing roots with the wrapper elements containing the document source.
-		 *
-		 * @private
-		 * @member {module:utils/elementreplacer~ElementReplacer}
-		 */
 		this._elementReplacer = new ElementReplacer();
-
-		/**
-		 * Maps all root names to wrapper elements containing the document source.
-		 *
-		 * @private
-		 * @member {Map.<String,HTMLElement>}
-		 */
 		this._replacedRoots = new Map();
-
-		/**
-		 * Maps all root names to their document data.
-		 *
-		 * @private
-		 * @member {Map.<String,String>}
-		 */
 		this._dataFromRoots = new Map();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
@@ -166,7 +168,7 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 
 		const collaborationPluginNamesToWarn = [
@@ -210,7 +212,7 @@ export default class SourceEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_showSourceEditing() {
+	private _showSourceEditing(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const model = editor.model;
@@ -228,12 +230,12 @@ export default class SourceEditing extends Plugin {
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', {
 				rows: '1',
 				'aria-label': 'Source code editing area'
-			} );
+			} ) as HTMLTextAreaElement;
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
 				class: 'ck-source-editing-area',
 				'data-value': data
-			}, [ domSourceEditingElementTextarea ] );
+			}, [ domSourceEditingElementTextarea ] ) as HTMLDivElement;
 
 			domSourceEditingElementTextarea.value = data;
 
@@ -247,7 +249,7 @@ export default class SourceEditing extends Plugin {
 			} );
 
 			editingView.change( writer => {
-				const viewRoot = editingView.document.getRoot( rootName );
+				const viewRoot = editingView.document.getRoot( rootName )!;
 
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
@@ -267,10 +269,8 @@ export default class SourceEditing extends Plugin {
 
 	/**
 	 * Restores all hidden editing roots and sets the source data in them.
-	 *
-	 * @private
 	 */
-	_hideSourceEditing() {
+	private _hideSourceEditing(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -278,7 +278,7 @@ export default class SourceEditing extends Plugin {
 
 		editingView.change( writer => {
 			for ( const [ rootName ] of this._replacedRoots ) {
-				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName ) );
+				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName )! );
 			}
 		} );
 
@@ -292,16 +292,14 @@ export default class SourceEditing extends Plugin {
 
 	/**
 	 * Updates the source data in all hidden editing roots.
-	 *
-	 * @private
 	 */
-	_updateEditorData() {
+	private _updateEditorData(): void {
 		const editor = this.editor;
-		const data = {};
+		const data: Record<string, string> = {};
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
 			const oldData = this._dataFromRoots.get( rootName );
-			const newData = domSourceEditingElementWrapper.dataset.value;
+			const newData = domSourceEditingElementWrapper.dataset.value!;
 
 			// Do not set the data unless some changes have been made in the meantime.
 			// This prevents empty undo steps after switching to the normal editor.
@@ -317,13 +315,11 @@ export default class SourceEditing extends Plugin {
 
 	/**
 	 * Focuses the textarea containing document source from the first editing root.
-	 *
-	 * @private
 	 */
-	_focusSourceEditing() {
+	private _focusSourceEditing(): void {
 		const editor = this.editor;
 		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
-		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
+		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' )!;
 
 		// The FocusObserver was disabled by View.render() while the DOM root was getting hidden and the replacer
 		// revealed the textarea. So it couldn't notice that the DOM root got blurred in the process.
@@ -336,10 +332,8 @@ export default class SourceEditing extends Plugin {
 
 	/**
 	 * Disables all commands.
-	 *
-	 * @private
 	 */
-	_disableCommands() {
+	private _disableCommands(): void {
 		const editor = this.editor;
 
 		for ( const command of editor.commands.commands() ) {
@@ -349,10 +343,8 @@ export default class SourceEditing extends Plugin {
 
 	/**
 	 * Clears forced disable for all commands, that was previously set through {@link #_disableCommands}.
-	 *
-	 * @private
 	 */
-	_enableCommands() {
+	private _enableCommands(): void {
 		const editor = this.editor;
 
 		for ( const command of editor.commands.commands() ) {
@@ -363,41 +355,38 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * Adds or removes the `readonly` attribute from the textarea from all roots, if document source mode is active.
 	 *
-	 * @param {Boolean} isReadOnly Indicates whether all textarea elements should be read-only.
+	 * @param isReadOnly Indicates whether all textarea elements should be read-only.
 	 */
-	_handleReadOnlyMode( isReadOnly ) {
+	private _handleReadOnlyMode( isReadOnly: boolean ): void {
 		if ( !this.isSourceEditingMode ) {
 			return;
 		}
 
 		for ( const [ , domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			domSourceEditingElementWrapper.querySelector( 'textarea' ).readOnly = isReadOnly;
+			domSourceEditingElementWrapper.querySelector( 'textarea' )!.readOnly = isReadOnly;
 		}
 	}
 
 	/**
 	 * Checks, if the plugin is allowed to handle the source editing mode by itself. Currently, the source editing mode is supported only
 	 * for the {@link module:editor-classic/classiceditor~ClassicEditor classic editor}.
-	 *
-	 * @private
-	 * @returns {Boolean}
 	 */
-	_isAllowedToHandleSourceEditingMode() {
+	private _isAllowedToHandleSourceEditingMode(): boolean {
 		const editor = this.editor;
 		const editable = editor.ui.view.editable;
 
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
-		return editable && !editable._hasExternalElement;
+		return editable && !editable.hasExternalElement;
 	}
 }
 
-// Formats the content for a better readability.
-//
-// For a non-HTML source the unchanged input string is returned.
-//
-// @param {String} input Input string to check.
-// @returns {Boolean}
-function formatSource( input ) {
+/**
+ * Formats the content for a better readability.
+ *
+ * For a non-HTML source the unchanged input string is returned.
+ * @param input Input string to check.
+ */
+function formatSource( input: string ): string {
 	if ( !isHtml( input ) ) {
 		return input;
 	}
@@ -405,10 +394,16 @@ function formatSource( input ) {
 	return formatHtml( input );
 }
 
-// Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
-//
-// @param {String} input Input string to check.
-// @returns {Boolean}
-function isHtml( input ) {
+/**
+ * Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
+ * @param input Input string to check.
+ */
+function isHtml( input: string ): boolean {
 	return input.startsWith( '<' );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SourceEditing.pluginName ]: SourceEditing;
+	}
 }

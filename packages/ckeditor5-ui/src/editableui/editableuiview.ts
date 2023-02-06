@@ -130,6 +130,10 @@ export default class EditableUIView extends View {
 		super.destroy();
 	}
 
+	public get hasExternalElement(): boolean {
+		return this._hasExternalElement;
+	}
+
 	/**
 	 * Updates the `ck-focused` and `ck-blurred` CSS classes on the {@link #element} according to
 	 * the {@link #isFocused} property value using the {@link #_editingView editing view} API.

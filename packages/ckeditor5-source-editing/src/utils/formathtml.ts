@@ -16,10 +16,9 @@
  * WARNING: This function works only on a text that does not contain any indentations or new lines.
  * Calling this function on the already formatted text will damage the formatting.
  *
- * @param {String} input An HTML string to format.
- * @returns {String}
+ * @param input An HTML string to format.
  */
-export function formatHtml( input ) {
+export function formatHtml( input: string ): string {
 	// A list of block-like elements around which the new lines should be inserted, and within which
 	// the indentation of their children should be increased.
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
@@ -97,14 +96,14 @@ export function formatHtml( input ) {
 		.join( '\n' );
 }
 
-// Checks, if an argument is an opening tag of a non-void element to be formatted.
-//
-// @param {String} line String to check.
-// @param {Array} elementsToFormat Elements to be formatted.
-// @param {String} elementsToFormat.name Element name.
-// @param {Boolean} elementsToFormat.isVoid Flag indicating whether element is a void one.
-// @returns {Boolean}
-function isNonVoidOpeningTag( line, elementsToFormat ) {
+/**
+ * Checks, if an argument is an opening tag of a non-void element to be formatted.
+ * @param line String to check.
+ * @param elementsToFormat Elements to be formatted.
+ * 			elementsToFormat.name Element name.
+ * 			elementsToFormat.isVoid Flag indicating whether element is a void one.
+ */
+function isNonVoidOpeningTag( line: string, elementsToFormat: Array<{ name: string; isVoid: boolean }> ): boolean {
 	return elementsToFormat.some( element => {
 		if ( element.isVoid ) {
 			return false;
@@ -118,26 +117,28 @@ function isNonVoidOpeningTag( line, elementsToFormat ) {
 	} );
 }
 
-// Checks, if an argument is a closing tag.
-//
-// @param {String} line String to check.
-// @param {Array} elementsToFormat Elements to be formatted.
-// @param {String} elementsToFormat.name Element name.
-// @param {Boolean} elementsToFormat.isVoid Flag indicating whether element is a void one.
-// @returns {Boolean}
-function isClosingTag( line, elementsToFormat ) {
+/**
+ * Checks, if an argument is a closing tag.
+ *
+ * @param line String to check.
+ * @param elementsToFormat Elements to be formatted.
+ * 			elementsToFormat.name Element name.
+ * 			elementsToFormat.isVoid Flag indicating whether element is a void one.
+ */
+function isClosingTag( line: string, elementsToFormat: Array<{ name: string; isVoid: boolean }> ): boolean {
 	return elementsToFormat.some( element => {
 		return new RegExp( `</${ element.name }>` ).test( line );
 	} );
 }
 
-// Indents a line by a specified number of characters.
-//
-// @param {String} line Line to indent.
-// @param {Number} indentCount Number of characters to use for indentation.
-// @param {String} [indentChar] Indentation character(s). 4 spaces by default.
-// @returns {String}
-function indentLine( line, indentCount, indentChar = '    ' ) {
+/**
+ * Indents a line by a specified number of characters.
+ *
+ * @param line Line to indent.
+ * @param indentCount Number of characters to use for indentation.
+ * @param indentChar Indentation character(s). 4 spaces by default.
+ */
+function indentLine( line: string, indentCount: number, indentChar: string = '    ' ): string {
 	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
 	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
 }
