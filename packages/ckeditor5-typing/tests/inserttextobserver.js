@@ -51,7 +51,7 @@ describe( 'InsertTextObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled (beforeinput)', () => {
-		view.getObserver( InsertTextObserver ).isEnabled = false;
+		view.getObserver( InsertTextObserver )._isEnabled = false;
 
 		fireBeforeInputDomEvent( domRoot, {
 			inputType: 'insertParagraph'
@@ -61,7 +61,7 @@ describe( 'InsertTextObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled (composition)', () => {
-		view.getObserver( InsertTextObserver ).isEnabled = false;
+		view.getObserver( InsertTextObserver )._isEnabled = false;
 
 		fireCompositionEndDomEvent( domRoot, {
 			data: 'foo'

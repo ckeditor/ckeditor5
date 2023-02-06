@@ -47,14 +47,15 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, ... ],
-		toolbar: [ 'mediaEmbed', ... ]
+		plugins: [ MediaEmbed, /* ... */ ],
+		toolbar: [ 'mediaEmbed', /* ... */ ]
 		mediaEmbed: {
-			// configuration...
+			// Configuration
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -187,14 +188,14 @@ For instance, to leave only the previewable providers, configure this feature as
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, ... ],
-		toolbar: [ 'mediaEmbed', ... ]
+		plugins: [ MediaEmbed, /* ... */ ],
+		toolbar: [ 'mediaEmbed', /* ... */ ]
 		mediaEmbed: {
 			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 #### Overriding media providers
@@ -204,8 +205,8 @@ To override the default providers, use {@link module:media-embed/mediaembed~Medi
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MediaEmbed, ... ],,
-		toolbar: [ 'mediaEmbed', ... ]
+		plugins: [ MediaEmbed, /* ... */ ],,
+		toolbar: [ 'mediaEmbed', /* ... */ ]
 		mediaEmbed: {
 			providers: [
 				{
@@ -215,12 +216,13 @@ ClassicEditor
 					// To be defined only if the media are previewable:
 					html: match => '...'
 				},
-				...
+				// More providers. 
+				// ...
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js)

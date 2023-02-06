@@ -151,7 +151,8 @@ export function injectViewList(
 				mergeViewLists( viewWriter, targetPosition.nodeBefore!, targetPosition.nodeAfter! );
 				viewWriter.move( viewWriter.createRangeOn( viewList ), targetPosition );
 
-				walker.position = breakPosition;
+				// This is bad, but those lists will be removed soon anyway.
+				( walker as any )._position = breakPosition;
 			}
 		}
 	} else {

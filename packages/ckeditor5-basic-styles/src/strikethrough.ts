@@ -14,7 +14,7 @@ import StrikethroughUI from './strikethrough/strikethroughui';
 /**
  * The strikethrough feature.
  *
- * For a detailed overview check the {@glink features/basic-styles Basic styles feature documentation}
+ * For a detailed overview check the {@glink features/basic-styles Basic styles feature} guide
  * and the {@glink api/basic-styles package page}.
  *
  * This is a "glue" plugin which loads the {@link module:basic-styles/strikethrough/strikethroughediting~StrikethroughEditing} and

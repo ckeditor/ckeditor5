@@ -38,8 +38,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ RemoveFormatEditing.pluginName ]: RemoveFormatEditing;
 	}
-
-	interface CommandsMap {
-		removeFormat: RemoveFormatCommand;
-	}
 }

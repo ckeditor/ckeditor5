@@ -10,6 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
+import type RemoveFormatCommand from './removeformatcommand';
+
 import removeFormatIcon from '../theme/icons/remove-format.svg';
 
 const REMOVE_FORMAT = 'removeFormat';
@@ -34,7 +36,7 @@ export default class RemoveFormatUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( REMOVE_FORMAT, locale => {
-			const command = editor.commands.get( REMOVE_FORMAT )!;
+			const command: RemoveFormatCommand = editor.commands.get( REMOVE_FORMAT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
