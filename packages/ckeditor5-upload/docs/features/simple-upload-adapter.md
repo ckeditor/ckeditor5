@@ -14,7 +14,6 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 
 <info-box info>
 	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
@@ -40,7 +39,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
