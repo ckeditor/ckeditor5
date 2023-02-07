@@ -11,7 +11,7 @@ The style feature lets the user apply pre-configured styles to existing elements
 Under the hood, every style applies one or more HTML classes to such an element which, depending on your integration requirements, can be used to either control the visual styles of that element or apply additional semantics. <!-- The {@link features/remove-format remove formatting} feature can be used to clear those styles. -->
 
 <info-box info>
-	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}. Check out the {@link installation/plugins/installing-plugins Installing plugins} guide to learn more.
+	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
