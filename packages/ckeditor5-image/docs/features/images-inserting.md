@@ -9,6 +9,10 @@ order: 70
 
 Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL. It is one of the fastest and most efficient ways to include images in the content is adding images that are already online.
 
+<info-box>
+	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html).
+</info-box>
+
 ## Installation
 ### Inserting images via source URL
 

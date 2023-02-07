@@ -339,6 +339,10 @@ By default, all HTML comments are filtered out during the editor initialization.
 	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues-2) section below.
 </info-box>
 
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation-2) section to learn how to enable it in your editor.
+</info-box>
+
 ### Demo
 
 The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that the HTML comment is present in the document source. You can uncomment the paragraph below the picture and upon leaving the source editing mode, you will see this paragraph in the editable area.

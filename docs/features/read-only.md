@@ -19,6 +19,10 @@ The editor can be switched to or out of the read-only mode by many features, und
 	See also the {@link features/restricted-editing restricted editing feature} that lets you define which parts of a document can be editable for a group of users with limited editing rights, leaving the rest of the content non-editable to them. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
+<info-box info>
+	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}. Check out the {@link installation/plugins/installing-plugins Installing plugins} guide to learn more.
+</info-box>
+
 ## Demo
 
 Use the demo below to toggle between editing modes and test the feature. Some features, like exports or search, are still functional even in the read-only mode. While the search is available, the replace function, however, is disabled, as changing the content is blocked.
