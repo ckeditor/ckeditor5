@@ -35,6 +35,10 @@ This is how a simplified toolbar from the snippet above looks in the CKEditor 5 
 
 {@snippet features/toolbar-basic}
 
+<info-box info>
+	ALl demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Separating toolbar items
 
 You can use `'|'` to create a separator between groups of toolbar items. It works in both the basic and [extended](#extended-toolbar-configuration-format) configuration formats:

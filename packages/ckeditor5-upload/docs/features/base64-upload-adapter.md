@@ -24,6 +24,10 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 {@snippet features/base64-upload}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Installation
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:

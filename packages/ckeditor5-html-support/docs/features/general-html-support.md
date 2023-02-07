@@ -345,6 +345,10 @@ The CKEditor 5 instance below is configured to keep the HTML comments in the doc
 
 {@snippet features/html-comment}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ### Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:

@@ -16,6 +16,10 @@ Use the demo below to test the styles feature. Select a passage or a header and 
 
 {@snippet features/styles}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 <details>
 <summary>Configuration of the above demo</summary>
 
