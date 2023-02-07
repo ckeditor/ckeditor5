@@ -1,7 +1,7 @@
 ---
 menu-title: Plugin list
 category: plugins
-order: 10
+order: 20
 modified_at: 2021-12-03
 ---
 
