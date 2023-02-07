@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-find-and-replace",
-  "version": "36.0.0",
+  "version": "36.0.1",
   "description": "Find and replace feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
