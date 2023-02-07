@@ -40,6 +40,8 @@ import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/edi
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
+import '../../uiconfig';
+
 const toPx = toUnit( 'px' );
 
 /**

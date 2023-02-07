@@ -14,6 +14,8 @@ import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_FAMILY } from '../utils';
 
+import '../fontconfig';
+
 /**
  * The font family editing feature.
  *

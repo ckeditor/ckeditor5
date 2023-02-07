@@ -36,6 +36,8 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
+import '../../uiconfig';
+
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;
 

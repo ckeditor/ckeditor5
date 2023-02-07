@@ -24,6 +24,8 @@ import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
 import { getImageUrls } from './utils';
 
+import './ckboxconfig';
+
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
  * See the {@glink features/images/image-upload/ckbox CKBox file manager integration} guide to learn how to configure

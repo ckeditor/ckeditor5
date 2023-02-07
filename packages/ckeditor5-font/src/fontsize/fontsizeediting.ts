@@ -15,6 +15,8 @@ import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE, type FontConverterDefinition } from '../utils';
 
+import '../fontconfig';
+
 // Mapping of `<font size="..">` styling to CSS's `font-size` values.
 const styleFontSize = [
 	'x-small', // Size "0" equal to "1".

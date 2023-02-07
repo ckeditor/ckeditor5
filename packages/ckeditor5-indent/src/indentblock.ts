@@ -15,6 +15,8 @@ import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
+import './indentconfig';
+
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
 /**

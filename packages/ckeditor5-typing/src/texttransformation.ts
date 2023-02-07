@@ -18,6 +18,8 @@ import { escapeRegExp } from 'lodash-es';
 
 import type { Position } from '@ckeditor/ckeditor5-engine';
 
+import './typingconfig';
+
 // All named transformations.
 const TRANSFORMATIONS: Record<string, TextTransformationDescription> = {
 	// Common symbols:

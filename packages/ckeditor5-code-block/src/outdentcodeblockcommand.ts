@@ -16,6 +16,8 @@ import {
 	isModelSelectionInCodeBlock
 } from './utils';
 
+import './codeblockconfig';
+
 /**
  * The code block indentation decrease command plugin.
  */
