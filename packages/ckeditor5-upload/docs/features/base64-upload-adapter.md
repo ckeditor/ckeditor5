@@ -19,7 +19,7 @@ This kind of image upload does not require any server-side processing &mdash; im
 </info-box>
 
 <info-box info>
-	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation-2) section to learn how to enable it in your editor.
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
