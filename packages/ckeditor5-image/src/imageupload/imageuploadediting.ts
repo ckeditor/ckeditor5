@@ -75,7 +75,7 @@ export default class ImageUploadEditing extends Plugin {
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' )! );
+		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) as Array<string> ); // TODO temporary
 		const uploadImageCommand = new UploadImageCommand( editor );
 
 		// Register `uploadImage` command and add `imageUpload` command as an alias for backward compatibility.

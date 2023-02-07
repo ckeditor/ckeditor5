@@ -7,36 +7,53 @@
  * @module link/linkimageediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Matcher } from 'ckeditor5/src/engine';
+import {
+	Plugin,
+	type PluginDependencies,
+	type Editor
+} from 'ckeditor5/src/core';
+import {
+	Matcher,
+	type UpcastElementEvent,
+	type Node,
+	type Element,
+	type DowncastAttributeEvent,
+	type ViewElement,
+	type DowncastDispatcher,
+	type UpcastDispatcher
+} from 'ckeditor5/src/engine';
 import { toMap } from 'ckeditor5/src/utils';
 
 import LinkEditing from './linkediting';
+import type ManualDecorator from './utils/manualdecorator';
+
+import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
 
 /**
  * The link image engine feature.
  *
  * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<imageBlock>`} element
  * which allows linking images.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ 'ImageEditing', 'ImageUtils', LinkEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'LinkImageEditing' {
 		return 'LinkImageEditing';
 	}
 
-	init() {
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
@@ -55,12 +72,10 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * Processes {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators} definitions and
 	 * attaches proper converters that will work when linking an image.`
-	 *
-	 * @private
 	 */
-	_enableAutomaticDecorators() {
+	private _enableAutomaticDecorators(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' );
+		const command = editor.commands.get( 'link' )!;
 		const automaticDecorators = command.automaticDecorators;
 
 		if ( automaticDecorators.length ) {
@@ -71,12 +86,10 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * Processes transformed {@link module:link/utils~ManualDecorator} instances and attaches proper converters
 	 * that will work when linking an image.
-	 *
-	 * @private
 	 */
-	_enableManualDecorators() {
+	private _enableManualDecorators(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' );
+		const command = editor.commands.get( 'link' )!;
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -93,18 +106,18 @@ export default class LinkImageEditing extends Plugin {
 	}
 }
 
-// Returns a converter for linked block images that consumes the "href" attribute
-// if a link contains an image.
-//
-// @private
-// @param {module:core/editor/editor~Editor} editor The editor instance.
-// @returns {Function}
-function upcastLink( editor ) {
+/**
+ * Returns a converter for linked block images that consumes the "href" attribute
+ * if a link contains an image.
+ *
+ * @param editor The editor instance.
+ */
+function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
+	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
 
 	return dispatcher => {
-		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
 			const imageInLink = imageUtils.findViewImgElement( viewLink );
 
@@ -145,7 +158,7 @@ function upcastLink( editor ) {
 
 			// A full definition of the image feature.
 			// figure > a > img: parent of the view link element is an image element (figure).
-			let modelElement = data.modelCursor.parent;
+			let modelElement: Node | null = data.modelCursor.parent as Node;
 
 			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
 				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
@@ -157,7 +170,7 @@ function upcastLink( editor ) {
 				// Continue conversion where image conversion ends.
 				data.modelCursor = conversionResult.modelCursor;
 
-				modelElement = data.modelCursor.nodeBefore;
+				modelElement = data.modelCursor.nodeBefore as Node;
 			}
 
 			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {
@@ -170,27 +183,28 @@ function upcastLink( editor ) {
 	};
 }
 
-// Creates a converter that adds `<a>` to linked block image view elements.
-//
-// @private
-function downcastImageLink( editor ) {
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
+/**
+ * Creates a converter that adds `<a>` to linked block image view elements.
+ */
+function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher ) => void {
+	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
 
 	return dispatcher => {
-		dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
 			// The image will be already converted - so it will be present in the view.
-			const viewFigure = conversionApi.mapper.toViewElement( data.item );
+			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
 			const writer = conversionApi.writer;
 
 			// But we need to check whether the link element exists.
-			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
-			const viewImage = imageUtils.findViewImgElement( viewFigure );
+			const linkInImage = Array.from( viewFigure.getChildren() )
+				.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
+			const viewImage = imageUtils.findViewImgElement( viewFigure )!;
 			// <picture>...<img/></picture> or <img/>
-			const viewImgOrPicture = viewImage.parent.is( 'element', 'picture' ) ? viewImage.parent : viewImage;
+			const viewImgOrPicture = viewImage.parent!.is( 'element', 'picture' ) ? viewImage.parent : viewImage;
 
 			// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
 			if ( linkInImage ) {
@@ -215,15 +229,15 @@ function downcastImageLink( editor ) {
 	};
 }
 
-// Returns a converter that decorates the `<a>` element when the image is the link label.
-//
-// @private
-// @returns {Function}
-function downcastImageLinkManualDecorator( decorator ) {
+/**
+ * Returns a converter that decorates the `<a>` element when the image is the link label.
+ */
+function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
-			const viewFigure = conversionApi.mapper.toViewElement( data.item );
-			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
+			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
+			const linkInImage = Array.from( viewFigure.getChildren() )
+				.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
 
 			// The <a> element was removed by the time this converter is executed.
 			// It may happen when the base `linkHref` and decorator attributes are removed
@@ -247,16 +261,15 @@ function downcastImageLinkManualDecorator( decorator ) {
 	};
 }
 
-// Returns a converter that checks whether manual decorators should be applied to the link.
-//
-// @private
-// @returns {Function}
-function upcastImageLinkManualDecorator( editor, decorator ) {
+/**
+ * Returns a converter that checks whether manual decorators should be applied to the link.
+ */
+function upcastImageLinkManualDecorator( editor: Editor, decorator: ManualDecorator ): ( dispatcher: UpcastDispatcher ) => void {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
+	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
 
 	return dispatcher => {
-		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
 			const imageInLink = imageUtils.findViewImgElement( viewLink );
 
@@ -289,10 +302,16 @@ function upcastImageLinkManualDecorator( editor, decorator ) {
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
 			// See the body of the `upcastLink()` function.
-			const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
+			const modelElement = data.modelCursor.nodeBefore as Element || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ LinkImageEditing.pluginName ]: LinkImageEditing;
+	}
 }

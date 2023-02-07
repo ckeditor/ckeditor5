@@ -8,7 +8,7 @@
  */
 
 import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 import { ensureSafeUrl } from '../utils';
@@ -23,79 +23,66 @@ import unlinkIcon from '../../theme/icons/unlink.svg';
 /**
  * The link actions view class. This view displays the link preview, allows
  * unlinking or editing the link.
- *
- * @extends module:ui/view~View
  */
 export default class LinkActionsView extends View {
 	/**
+	 * Tracks information about DOM focus in the actions.
+	 */
+	public readonly focusTracker = new FocusTracker();
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes = new KeystrokeHandler();
+
+	/**
+	 * The href preview view.
+	 */
+	public previewButtonView: View;
+
+	/**
+	 * The unlink button view.
+	 */
+	public unlinkButtonView: ButtonView;
+
+	/**
+	 * The edit link button view.
+	 */
+	public editButtonView: ButtonView;
+
+	/**
+	 * The value of the "href" attribute of the link to use in the {@link #previewButtonView}.
+	 *
+	 * @observable
+	 */
+	declare public href: string | undefined;
+
+	/**
+	 * A collection of views that can be focused in the view.
+	 */
+	private readonly _focusables = new ViewCollection();
+
+	/**
+	 * Helps cycling over {@link #_focusables} in the view.
+	 */
+	private readonly _focusCycler: FocusCycler;
+
+	declare public t: LocaleTranslate;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const t = locale.t;
 
-		/**
-		 * Tracks information about DOM focus in the actions.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * The href preview view.
-		 *
-		 * @member {module:ui/view~View}
-		 */
 		this.previewButtonView = this._createPreviewButton();
-
-		/**
-		 * The unlink button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
-
-		/**
-		 * The edit link button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
 
-		/**
-		 * The value of the "href" attribute of the link to use in the {@link #previewButtonView}.
-		 *
-		 * @observable
-		 * @member {String}
-		 */
-		this.set( 'href' );
+		this.set( 'href', undefined );
 
-		/**
-		 * A collection of views that can be focused in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
-		this._focusables = new ViewCollection();
-
-		/**
-		 * Helps cycling over {@link #_focusables} in the view.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -134,7 +121,7 @@ export default class LinkActionsView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		const childViews = [
@@ -148,17 +135,17 @@ export default class LinkActionsView extends View {
 			this._focusables.add( v );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+			this.focusTracker.add( v.element! );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
@@ -168,20 +155,19 @@ export default class LinkActionsView extends View {
 	/**
 	 * Focuses the fist {@link #_focusables} in the actions.
 	 */
-	focus() {
+	public focus(): void {
 		this._focusCycler.focusFirst();
 	}
 
 	/**
 	 * Creates a button view.
 	 *
-	 * @private
-	 * @param {String} label The button label.
-	 * @param {String} icon The button icon.
-	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
+	 * @param label The button label.
+	 * @param icon The button icon.
+	 * @param eventName An event name that the `ButtonView#execute` event will be delegated to.
+	 * @returns The button view instance.
 	 */
-	_createButton( label, icon, eventName ) {
+	private _createButton( label: string, icon: string, eventName?: string ): ButtonView {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
@@ -198,10 +184,9 @@ export default class LinkActionsView extends View {
 	/**
 	 * Creates a link href preview button.
 	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
+	 * @returns The button view instance.
 	 */
-	_createPreviewButton() {
+	private _createPreviewButton(): ButtonView {
 		const button = new ButtonView( this.locale );
 		const bind = this.bindTemplate;
 		const t = this.t;
@@ -229,8 +214,8 @@ export default class LinkActionsView extends View {
 
 		button.bind( 'isEnabled' ).to( this, 'href', href => !!href );
 
-		button.template.tag = 'a';
-		button.template.eventListeners = {};
+		button.template!.tag = 'a';
+		button.template!.eventListeners = {};
 
 		return button;
 	}
@@ -239,11 +224,11 @@ export default class LinkActionsView extends View {
 /**
  * Fired when the {@link #editButtonView} is clicked.
  *
- * @event edit
+ * @eventName edit
  */
 
 /**
  * Fired when the {@link #unlinkButtonView} is clicked.
  *
- * @event unlink
+ * @eventName unlink
  */

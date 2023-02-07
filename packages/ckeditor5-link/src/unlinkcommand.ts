@@ -14,14 +14,12 @@ import { isLinkableElement } from './utils';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.
- *
- * @extends module:core/command~Command
  */
 export default class UnlinkCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -48,7 +46,7 @@ export default class UnlinkCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	public override execute(): void {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -58,7 +56,7 @@ export default class UnlinkCommand extends Command {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
 				[ findAttributeRange(
-					selection.getFirstPosition(),
+					selection.getFirstPosition()!,
 					'linkHref',
 					selection.getAttribute( 'linkHref' ),
 					model
@@ -76,5 +74,11 @@ export default class UnlinkCommand extends Command {
 				}
 			}
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		unlink: UnlinkCommand;
 	}
 }

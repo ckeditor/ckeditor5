@@ -10,14 +10,14 @@
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
 import { Collection, first, toMap } from 'ckeditor5/src/utils';
+import type { Range } from 'ckeditor5/src/engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableElement } from './utils';
+import type ManualDecorator from './utils/manualdecorator';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
- *
- * @extends module:core/command~Command
  */
 export default class LinkCommand extends Command {
 	/**
@@ -25,37 +25,27 @@ export default class LinkCommand extends Command {
 	 *
 	 * @observable
 	 * @readonly
-	 * @member {Object|undefined} #value
 	 */
+	declare public value: string | undefined;
 
-	constructor( editor ) {
-		super( editor );
+	/**
+	 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
+	 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
+	 *
+	 * You can consider it a model with states of manual decorators added to the currently selected link.
+	 */
+	public readonly manualDecorators = new Collection<ManualDecorator>();
 
-		/**
-		 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
-		 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
-		 *
-		 * You can consider it a model with states of manual decorators added to the currently selected link.
-		 *
-		 * @readonly
-		 * @type {module:utils/collection~Collection}
-		 */
-		this.manualDecorators = new Collection();
-
-		/**
-		 * An instance of the helper that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition}
-		 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
-		 *
-		 * @readonly
-		 * @type {module:link/utils~AutomaticDecorators}
-		 */
-		this.automaticDecorators = new AutomaticDecorators();
-	}
+	/**
+	 * An instance of the helper that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition}
+	 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
+	 */
+	public readonly automaticDecorators = new AutomaticDecorators();
 
 	/**
 	 * Synchronizes the state of {@link #manualDecorators} with the currently present elements in the model.
 	 */
-	restoreManualDecoratorStates() {
+	public restoreManualDecoratorStates(): void {
 		for ( const manualDecorator of this.manualDecorators ) {
 			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
 		}
@@ -64,7 +54,7 @@ export default class LinkCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
@@ -72,10 +62,10 @@ export default class LinkCommand extends Command {
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
-			this.value = selectedElement.getAttribute( 'linkHref' );
+			this.value = selectedElement.getAttribute( 'linkHref' ) as string | undefined;
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
-			this.value = selection.getAttribute( 'linkHref' );
+			this.value = selection.getAttribute( 'linkHref' ) as string | undefined;
 			this.isEnabled = model.schema.checkAttributeInSelection( selection, 'linkHref' );
 		}
 
@@ -112,30 +102,32 @@ export default class LinkCommand extends Command {
 	 *
 	 * Here is how to manage decorator attributes with the link command:
 	 *
-	 *		const linkCommand = editor.commands.get( 'link' );
+	 * ```ts
+	 * const linkCommand = editor.commands.get( 'link' );
 	 *
-	 *		// Adding a new decorator attribute.
-	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkIsExternal: true
-	 *		} );
+	 * // Adding a new decorator attribute.
+	 * linkCommand.execute( 'http://example.com', {
+	 * 	linkIsExternal: true
+	 * } );
 	 *
-	 *		// Removing a decorator attribute from the selection.
-	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkIsExternal: false
-	 *		} );
+	 * // Removing a decorator attribute from the selection.
+	 * linkCommand.execute( 'http://example.com', {
+	 * 	linkIsExternal: false
+	 * } );
 	 *
-	 *		// Adding multiple decorator attributes at the same time.
-	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkIsExternal: true,
-	 *			linkIsDownloadable: true,
-	 *		} );
+	 * // Adding multiple decorator attributes at the same time.
+	 * linkCommand.execute( 'http://example.com', {
+	 * 	linkIsExternal: true,
+	 * 	linkIsDownloadable: true,
+	 * } );
 	 *
-	 *		// Removing and adding decorator attributes at the same time.
-	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkIsExternal: false,
-	 *			linkFoo: true,
-	 *			linkIsDownloadable: false,
-	 *		} );
+	 * // Removing and adding decorator attributes at the same time.
+	 * linkCommand.execute( 'http://example.com', {
+	 * 	linkIsExternal: false,
+	 * 	linkFoo: true,
+	 * 	linkIsDownloadable: false,
+	 * } );
+	 * ```
 	 *
 	 * **Note**: If the decorator attribute name is not specified, its state remains untouched.
 	 *
@@ -143,15 +135,15 @@ export default class LinkCommand extends Command {
 	 * decorator attributes.
 	 *
 	 * @fires execute
-	 * @param {String} href Link destination.
-	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
+	 * @param href Link destination.
+	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	execute( href, manualDecoratorIds = {} ) {
+	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
-		const truthyManualDecorators = [];
-		const falsyManualDecorators = [];
+		const truthyManualDecorators: Array<string> = [];
+		const falsyManualDecorators: Array<string> = [];
 
 		for ( const name in manualDecoratorIds ) {
 			if ( manualDecoratorIds[ name ] ) {
@@ -164,7 +156,7 @@ export default class LinkCommand extends Command {
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
-				const position = selection.getFirstPosition();
+				const position = selection.getFirstPosition()!;
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
@@ -182,7 +174,7 @@ export default class LinkCommand extends Command {
 					} );
 
 					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
+					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
@@ -251,11 +243,10 @@ export default class LinkCommand extends Command {
 	/**
 	 * Provides information whether a decorator with a given name is present in the currently processed selection.
 	 *
-	 * @private
-	 * @param {String} decoratorName The name of the manual decorator used in the model
-	 * @returns {Boolean} The information whether a given decorator is currently present in the selection.
+	 * @param decoratorName The name of the manual decorator used in the model
+	 * @returns The information whether a given decorator is currently present in the selection.
 	 */
-	_getDecoratorStateFromModel( decoratorName ) {
+	private _getDecoratorStateFromModel( decoratorName: string ): boolean | undefined {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -263,21 +254,19 @@ export default class LinkCommand extends Command {
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
-			return selectedElement.getAttribute( decoratorName );
+			return selectedElement.getAttribute( decoratorName ) as boolean | undefined;
 		}
 
-		return selection.getAttribute( decoratorName );
+		return selection.getAttribute( decoratorName ) as boolean | undefined;
 	}
 
 	/**
 	 * Checks whether specified `range` is inside an element that accepts the `linkHref` attribute.
 	 *
-	 * @private
-	 * @param {module:engine/view/range~Range} range A range to check.
-	 * @param {Array.<module:engine/view/range~Range>} allowedRanges An array of ranges created on elements where the attribute is accepted.
-	 * @returns {Boolean}
+	 * @param range A range to check.
+	 * @param allowedRanges An array of ranges created on elements where the attribute is accepted.
 	 */
-	_isRangeToUpdate( range, allowedRanges ) {
+	private _isRangeToUpdate( range: Range, allowedRanges: Array<Range> ): boolean {
 		for ( const allowedRange of allowedRanges ) {
 			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
 			if ( allowedRange.containsRange( range ) ) {
@@ -286,5 +275,11 @@ export default class LinkCommand extends Command {
 		}
 
 		return true;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		link: LinkCommand;
 	}
 }

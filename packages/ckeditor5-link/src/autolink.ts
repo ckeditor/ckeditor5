@@ -7,8 +7,9 @@
  * @module link/autolink
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Delete, TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
+import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 
@@ -65,34 +66,32 @@ const URL_GROUP_IN_MATCH = 2;
 
 /**
  * The autolink plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ Delete ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'AutoLink' {
 		return 'AutoLink';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		selection.on( 'change:range', () => {
+		selection.on<DocumentSelectionChangeEvent>( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !selection.anchor.parent.is( 'element', 'codeBlock' );
+			this.isEnabled = !selection.anchor!.parent.is( 'element', 'codeBlock' );
 		} );
 
 		this._enableTypingHandling();
@@ -101,17 +100,15 @@ export default class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		this._enableEnterHandling();
 		this._enableShiftEnterHandling();
 	}
 
 	/**
 	 * Enables autolinking on typing.
-	 *
-	 * @private
 	 */
-	_enableTypingHandling() {
+	private _enableTypingHandling(): void {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
@@ -128,7 +125,7 @@ export default class AutoLink extends Plugin {
 			}
 		} );
 
-		watcher.on( 'matched:data', ( evt, data ) => {
+		watcher.on<TextWatcherMatchedDataEvent<{ url: string }>>( 'matched:data', ( evt, data ) => {
 			const { batch, range, url } = data;
 
 			if ( !batch.isTyping ) {
@@ -148,10 +145,8 @@ export default class AutoLink extends Plugin {
 
 	/**
 	 * Enables autolinking on the <kbd>Enter</kbd> key.
-	 *
-	 * @private
 	 */
-	_enableEnterHandling() {
+	private _enableEnterHandling(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const enterCommand = editor.commands.get( 'enter' );
@@ -161,13 +156,13 @@ export default class AutoLink extends Plugin {
 		}
 
 		enterCommand.on( 'execute', () => {
-			const position = model.document.selection.getFirstPosition();
+			const position = model.document.selection.getFirstPosition()!;
 
 			if ( !position.parent.previousSibling ) {
 				return;
 			}
 
-			const rangeToCheck = model.createRangeIn( position.parent.previousSibling );
+			const rangeToCheck = model.createRangeIn( position.parent.previousSibling as Element );
 
 			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
 		} );
@@ -175,10 +170,8 @@ export default class AutoLink extends Plugin {
 
 	/**
 	 * Enables autolinking on the <kbd>Shift</kbd>+<kbd>Enter</kbd> keyboard shortcut.
-	 *
-	 * @private
 	 */
-	_enableShiftEnterHandling() {
+	private _enableShiftEnterHandling(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -189,7 +182,7 @@ export default class AutoLink extends Plugin {
 		}
 
 		shiftEnterCommand.on( 'execute', () => {
-			const position = model.document.selection.getFirstPosition();
+			const position = model.document.selection.getFirstPosition()!;
 
 			const rangeToCheck = model.createRange(
 				model.createPositionAt( position.parent, 0 ),
@@ -202,11 +195,8 @@ export default class AutoLink extends Plugin {
 
 	/**
 	 * Checks if the passed range contains a linkable text.
-	 *
-	 * @param {module:engine/model/range~Range} rangeToCheck
-	 * @private
 	 */
-	_checkAndApplyAutoLinkOnRange( rangeToCheck ) {
+	private _checkAndApplyAutoLinkOnRange( rangeToCheck: Range ): void {
 		const model = this.editor.model;
 		const { text, range } = getLastTextLine( rangeToCheck, model );
 
@@ -225,11 +215,10 @@ export default class AutoLink extends Plugin {
 	/**
 	 * Applies a link on a given range if the link should be applied.
 	 *
-	 * @param {String} url The URL to link.
-	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
-	 * @private
+	 * @param url The URL to link.
+	 * @param range The text range to apply the link attribute to.
 	 */
-	_applyAutoLink( url, range ) {
+	private _applyAutoLink( url: string, range: Range ): void {
 		const model = this.editor.model;
 
 		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
@@ -245,11 +234,10 @@ export default class AutoLink extends Plugin {
 	/**
 	 * Enqueues autolink changes in the model.
 	 *
-	 * @param {String} url The URL to link.
-	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
-	 * @protected
+	 * @param url The URL to link.
+	 * @param range The text range to apply the link attribute to.
 	 */
-	_persistAutoLink( url, range ) {
+	private _persistAutoLink( url: string, range: Range ): void {
 		const model = this.editor.model;
 		const deletePlugin = this.editor.plugins.get( 'Delete' );
 
@@ -265,21 +253,27 @@ export default class AutoLink extends Plugin {
 }
 
 // Check if text should be evaluated by the plugin in order to reduce number of RegExp checks on whole text.
-function isSingleSpaceAtTheEnd( text ) {
+function isSingleSpaceAtTheEnd( text: string ): boolean {
 	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
 }
 
-function getUrlAtTextEnd( text ) {
+function getUrlAtTextEnd( text: string ): string | null {
 	const match = URL_REG_EXP.exec( text );
 
 	return match ? match[ URL_GROUP_IN_MATCH ] : null;
 }
 
-function isLinkAllowedOnRange( range, model ) {
+function isLinkAllowedOnRange( range: Range, model: Model ): boolean {
 	return model.schema.checkAttributeInSelection( model.createSelection( range ), 'linkHref' );
 }
 
-function linkIsAlreadySet( range ) {
+function linkIsAlreadySet( range: Range ): boolean {
 	const item = range.start.nodeAfter;
-	return item && item.hasAttribute( 'linkHref' );
+	return !!item && item.hasAttribute( 'linkHref' );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ AutoLink.pluginName ]: AutoLink;
+	}
 }

@@ -4,45 +4,39 @@
  */
 
 /**
- * @module link/utils
+ * @module link/utils/automaticdecorators
  */
 
-import { toMap } from 'ckeditor5/src/utils';
+import { toMap, type ArrayOrItem } from 'ckeditor5/src/utils';
+import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine';
+import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils';
 
 /**
  * Helper class that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition} and provides
  * the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatchers} for them.
  */
 export default class AutomaticDecorators {
-	constructor() {
-		/**
-		 * Stores the definition of {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}.
-		 * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
-		 *
-		 * @private
-		 * @type {Set}
-		 */
-		this._definitions = new Set();
-	}
+	/**
+	 * Stores the definition of {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}.
+	 * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
+	 */
+	private _definitions = new Set<NormalizedLinkDecoratorAutomaticDefinition>();
 
 	/**
 	 * Gives information about the number of decorators stored in the {@link module:link/utils~AutomaticDecorators} instance.
 	 *
-	 * @readonly
-	 * @protected
-	 * @type {Number}
+	 * @internal
 	 */
-	get length() {
+	public get length(): number {
 		return this._definitions.size;
 	}
 
 	/**
 	 * Adds automatic decorator objects or an array with them to be used during downcasting.
 	 *
-	 * @param {module:link/link~LinkDecoratorAutomaticDefinition|Array.<module:link/link~LinkDecoratorAutomaticDefinition>} item
-	 * A configuration object of automatic rules for decorating links. It might also be an array of such objects.
+	 * @param item A configuration object of automatic rules for decorating links. It might also be an array of such objects.
 	 */
-	add( item ) {
+	public add( item: ArrayOrItem<NormalizedLinkDecoratorAutomaticDefinition> ): void {
 		if ( Array.isArray( item ) ) {
 			item.forEach( item => this._definitions.add( item ) );
 		} else {
@@ -53,12 +47,11 @@ export default class AutomaticDecorators {
 	/**
 	 * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method.
 	 *
-	 * @returns {Function} A dispatcher function used as conversion helper
-	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
+	 * @returns A dispatcher function used as conversion helper in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
 	 */
-	getDispatcher() {
+	public getDispatcher(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
-			dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent>( 'attribute:linkHref', ( evt, data, conversionApi ) => {
 				// There is only test as this behavior decorates links and
 				// it is run before dispatcher which actually consumes this node.
 				// This allows on writing own dispatcher with highest priority,
@@ -89,9 +82,10 @@ export default class AutomaticDecorators {
 					}
 
 					viewWriter.setCustomProperty( 'link', true, viewElement );
-					if ( item.callback( data.attributeNewValue ) ) {
+
+					if ( item.callback( data.attributeNewValue as string | null ) ) {
 						if ( data.item.is( 'selection' ) ) {
-							viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+							viewWriter.wrap( viewSelection.getFirstRange()!, viewElement );
 						} else {
 							viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
 						}
@@ -107,19 +101,19 @@ export default class AutomaticDecorators {
 	 * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method
 	 * when linking images.
 	 *
-	 * @returns {Function} A dispatcher function used as conversion helper
-	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
+	 * @returns A dispatcher function used as conversion helper in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
 	 */
-	getDispatcherForLinkedImage() {
+	public getDispatcherForLinkedImage(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
-			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
-				const viewFigure = mapper.toViewElement( data.item );
-				const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
+				const viewFigure = mapper.toViewElement( data.item )!;
+				const linkInImage = Array.from( viewFigure.getChildren() )
+					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) )!;
 
 				for ( const item of this._definitions ) {
 					const attributes = toMap( item.attributes );
 
-					if ( item.callback( data.attributeNewValue ) ) {
+					if ( item.callback( data.attributeNewValue as string | null ) ) {
 						for ( const [ key, val ] of attributes ) {
 							// Left for backward compatibility. Since v30 decorator should
 							// accept `classes` and `styles` separately from `attributes`.

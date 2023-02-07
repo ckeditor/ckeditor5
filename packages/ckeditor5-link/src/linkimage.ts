@@ -7,7 +7,7 @@
  * @module link/linkimage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import LinkImageEditing from './linkimageediting';
 import LinkImageUI from './linkimageui';
 
@@ -18,21 +18,25 @@ import '../theme/linkimage.css';
  *
  * This is a "glue" plugin that loads the {@link module:link/linkimageediting~LinkImageEditing link image editing feature}
  * and {@link module:link/linkimageui~LinkImageUI link image UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class LinkImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ LinkImageEditing, LinkImageUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'LinkImage' {
 		return 'LinkImage';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ LinkImage.pluginName ]: LinkImage;
 	}
 }

@@ -39,7 +39,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
-	public isImage( modelElement?: Element | null ): boolean {
+	public isImage( modelElement?: Element | null ): modelElement is Element {
 		return this.isInlineImage( modelElement ) || this.isBlockImage( modelElement );
 	}
 

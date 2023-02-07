@@ -9,6 +9,22 @@
 
 /* global window */
 
+import type {
+	DowncastConversionApi,
+	Element,
+	Schema,
+	ViewAttributeElement,
+	ViewNode,
+	ViewDocumentFragment
+} from 'ckeditor5/src/engine';
+import type { LocaleTranslate } from 'ckeditor5/src/utils';
+
+import type {
+	LinkDecoratorAutomaticDefinition,
+	LinkDecoratorDefinition,
+	LinkDecoratorManualDefinition
+} from './linkconfig';
+
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
@@ -28,24 +44,18 @@ export const LINK_KEYSTROKE = 'Ctrl+K';
 
 /**
  * Returns `true` if a given view node is the link element.
- *
- * @param {module:engine/view/node~Node} node
- * @returns {Boolean}
  */
-export function isLinkElement( node ) {
+export function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean {
 	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
 }
 
 /**
  * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
- *
- * @param {String} href
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
- * @returns {module:engine/view/attributeelement~AttributeElement}
  */
-export function createLinkElement( href, { writer } ) {
+export function createLinkElement( href: string, { writer }: DowncastConversionApi ): ViewAttributeElement {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
 	const linkElement = writer.createAttributeElement( 'a', { href }, { priority: 5 } );
+
 	writer.setCustomProperty( 'link', true, linkElement );
 
 	return linkElement;
@@ -58,23 +68,21 @@ export function createLinkElement( href, { writer } ) {
  *
  * If a URL is considered unsafe, a simple `"#"` is returned.
  *
- * @protected
- * @param {*} url
- * @returns {String} Safe URL.
+ * @internal
  */
-export function ensureSafeUrl( url ) {
-	url = String( url );
+export function ensureSafeUrl( url: unknown ): string {
+	const urlString = String( url );
 
-	return isSafeUrl( url ) ? url : '#';
+	return isSafeUrl( urlString ) ? urlString : '#';
 }
 
-// Checks whether the given URL is safe for the user (does not contain any malicious code).
-//
-// @param {String} url URL to check.
-function isSafeUrl( url ) {
+/**
+ * Checks whether the given URL is safe for the user (does not contain any malicious code).
+ */
+function isSafeUrl( url: string ): boolean {
 	const normalizedUrl = url.replace( ATTRIBUTE_WHITESPACES, '' );
 
-	return normalizedUrl.match( SAFE_URL );
+	return !!normalizedUrl.match( SAFE_URL );
 }
 
 /**
@@ -85,21 +93,23 @@ function isSafeUrl( url ) {
  * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
  * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
  *
- * @param {module:utils/locale~Locale#t} t shorthand for {@link module:utils/locale~Locale#t Locale#t}
- * @param {Array.<module:link/link~LinkDecoratorDefinition>} The decorator reference
- * where the label values should be localized.
- * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
+ * @param t Shorthand for {@link module:utils/locale~Locale#t Locale#t}.
+ * @param decorators The decorator reference where the label values should be localized.
  */
-export function getLocalizedDecorators( t, decorators ) {
-	const localizedDecoratorsLabels = {
+export function getLocalizedDecorators(
+	t: LocaleTranslate,
+	decorators: Array<NormalizedLinkDecoratorDefinition>
+): Array<NormalizedLinkDecoratorDefinition> {
+	const localizedDecoratorsLabels: Record<string, string> = {
 		'Open in a new tab': t( 'Open in a new tab' ),
 		'Downloadable': t( 'Downloadable' )
 	};
 
 	decorators.forEach( decorator => {
-		if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
+		if ( 'label' in decorator && localizedDecoratorsLabels[ decorator.label ] ) {
 			decorator.label = localizedDecoratorsLabels[ decorator.label ];
 		}
+
 		return decorator;
 	} );
 
@@ -109,12 +119,9 @@ export function getLocalizedDecorators( t, decorators ) {
 /**
  * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each decorator and
  * is used as the attribute's name in the model.
- *
- * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
- * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
-export function normalizeDecorators( decorators ) {
-	const retArray = [];
+export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDefinition> ): Array<NormalizedLinkDecoratorDefinition> {
+	const retArray: Array<NormalizedLinkDecoratorDefinition> = [];
 
 	if ( decorators ) {
 		for ( const [ key, value ] of Object.entries( decorators ) ) {
@@ -123,6 +130,7 @@ export function normalizeDecorators( decorators ) {
 				value,
 				{ id: `link${ upperFirst( key ) }` }
 			);
+
 			retArray.push( decorator );
 		}
 	}
@@ -132,12 +140,8 @@ export function normalizeDecorators( decorators ) {
 
 /**
  * Returns `true` if the specified `element` can be linked (the element allows the `linkHref` attribute).
- *
- * @params {module:engine/model/element~Element|null} element
- * @params {module:engine/model/schema~Schema} schema
- * @returns {Boolean}
  */
-export function isLinkableElement( element, schema ) {
+export function isLinkableElement( element: Element | null, schema: Schema ): element is Element {
 	if ( !element ) {
 		return false;
 	}
@@ -147,11 +151,8 @@ export function isLinkableElement( element, schema ) {
 
 /**
  * Returns `true` if the specified `value` is an email.
- *
- * @params {String} value
- * @returns {Boolean}
  */
-export function isEmail( value ) {
+export function isEmail( value: string ): boolean {
 	return EMAIL_REG_EXP.test( value );
 }
 
@@ -161,13 +162,8 @@ export function isEmail( value ) {
  * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
  * configuration value provided,
  * * or the link is an email address.
- *
- *
- * @params {String} link
- * @params {String} defaultProtocol
- * @returns {String}
  */
-export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
+export function addLinkProtocolIfApplicable( link: string, defaultProtocol?: string ): string {
 	const protocol = isEmail( link ) ? 'mailto:' : defaultProtocol;
 	const isProtocolNeeded = !!protocol && !linkHasProtocol( link );
 
@@ -176,19 +172,18 @@ export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
 
 /**
  * Checks if protocol is already included in the link.
- *
- * @param {String} link
- * @returns {Boolean}
  */
-export function linkHasProtocol( link ) {
+export function linkHasProtocol( link: string ): boolean {
 	return PROTOCOL_REG_EXP.test( link );
 }
 
 /**
  * Opens the link in a new browser tab.
- *
- * @param {String} link
  */
-export function openLink( link ) {
+export function openLink( link: string ): void {
 	window.open( link, '_blank', 'noopener' );
 }
+
+export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };
+export type NormalizedLinkDecoratorManualDefinition = LinkDecoratorManualDefinition & { id: string };
+export type NormalizedLinkDecoratorDefinition = NormalizedLinkDecoratorAutomaticDefinition | NormalizedLinkDecoratorManualDefinition;

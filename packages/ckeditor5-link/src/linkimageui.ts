@@ -8,7 +8,14 @@
  */
 
 import { ButtonView } from 'ckeditor5/src/ui';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type {
+	DocumentSelection,
+	Selection,
+	ViewDocumentClickEvent
+} from 'ckeditor5/src/engine';
+
+import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
 
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
@@ -22,32 +29,30 @@ import linkIcon from '../theme/icons/link.svg';
  *
  * This plugin provides the `'linkImage'` button that can be displayed in the {@link module:image/imagetoolbar~ImageToolbar}.
  * It can be used to wrap images in links.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ LinkEditing, LinkUI, 'ImageBlockEditing' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'LinkImageUI' {
 		return 'LinkImageUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		this.listenTo( viewDocument, 'click', ( evt, data ) => {
+		this.listenTo<ViewDocumentClickEvent>( viewDocument, 'click', ( evt, data ) => {
 			if ( this._isSelectedLinkedImage( editor.model.document.selection ) ) {
 				// Prevent browser navigation when clicking a linked image.
 				data.preventDefault();
@@ -67,17 +72,15 @@ export default class LinkImageUI extends Plugin {
 	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
 	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
 	 * {@link module:link/linkui~LinkUI#formView} if it is not.
-	 *
-	 * @private
 	 */
-	_createToolbarLinkImageButton() {
+	private _createToolbarLinkImageButton(): void {
 		const editor = this.editor;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'linkImage', locale => {
 			const button = new ButtonView( locale );
 			const plugin = editor.plugins.get( 'LinkUI' );
-			const linkCommand = editor.commands.get( 'link' );
+			const linkCommand = editor.commands.get( 'link' )!;
 
 			button.set( {
 				isEnabled: true,
@@ -108,15 +111,17 @@ export default class LinkImageUI extends Plugin {
 	/**
 	 * Returns true if a linked image (either block or inline) is the only selected element
 	 * in the model document.
-	 *
-	 * @private
-	 * @param {module:engine/model/selection~Selection} selection
-	 * @returns {Boolean}
 	 */
-	_isSelectedLinkedImage( selection ) {
+	private _isSelectedLinkedImage( selection: DocumentSelection | Selection ): boolean {
 		const selectedModelElement = selection.getSelectedElement();
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' ) as ImageUtils;
 
 		return imageUtils.isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ LinkImageUI.pluginName ]: LinkImageUI;
 	}
 }
