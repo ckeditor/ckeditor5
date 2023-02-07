@@ -20,7 +20,7 @@ The editor can be switched to or out of the read-only mode by many features, und
 </info-box>
 
 <info-box info>
-	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is available in all {@link installation/getting-started/predefined-builds#available-builds predefined builds}.
 </info-box>
 
 ## Demo
