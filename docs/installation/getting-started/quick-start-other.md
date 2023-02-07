@@ -23,7 +23,7 @@ Available paths:
 
 Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes these predefined bundled versions are not enough and a need for more customized  builds arises. Some of the reasons for creating custom builds are:
 
-* Adding {@link installation/advanced/plugins plugin-driven features} which are not included in the existing builds.
+* Adding {@link installation/plugins/plugins plugin-driven features} which are not included in the existing builds.
 * Removing unnecessary features present in a build.
 * Designing a {@link installation/getting-started/configuration#toolbar-setup customized toolbar experience}.
 * Changing the {@link installation/getting-started/predefined-builds#available-builds editor type build}.

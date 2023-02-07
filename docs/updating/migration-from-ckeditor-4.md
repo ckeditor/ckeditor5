@@ -46,7 +46,7 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third-party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link installation/advanced/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
+Check the {@link installation/plugins/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
 When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the [compatibility table](#plugins-compatibility-table) to learn more.
 
@@ -566,7 +566,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/advanced/plugins plugins} and {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/plugins/plugins plugins} and {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource">protectedSource</a></td>
