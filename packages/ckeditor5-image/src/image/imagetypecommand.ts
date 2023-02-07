@@ -9,6 +9,7 @@
 
 import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
@@ -35,7 +36,7 @@ export default class ImageTypeCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		if ( this._modelElementName === 'imageBlock' ) {
@@ -56,7 +57,7 @@ export default class ImageTypeCommand extends Command {
 	public override execute(): { oldElement: Element; newElement: Element } | null {
 		const editor = this.editor;
 		const model = this.editor.model;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const oldElement = imageUtils.getClosestSelectedImageElement( model.document.selection )!;
 		const attributes = Object.fromEntries( oldElement.getAttributes() );
 

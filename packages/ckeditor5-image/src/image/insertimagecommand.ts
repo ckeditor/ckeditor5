@@ -9,6 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import type ImageUtils from '../imageutils';
 
 import '../imageconfig';
 
@@ -100,7 +101,7 @@ export default class InsertImageCommand extends Command {
 	public override execute( options: { source: ArrayOrItem<string | Record<string, unknown>> } ): void {
 		const sourceDefinitions = toArray<string | Record<string, unknown>>( options.source );
 		const selection = this.editor.model.document.selection;
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		// In case of multiple images, each image (starting from the 2nd) will be inserted at a position that
 		// follows the previous one. That will move the selection and, to stay on the safe side and make sure

@@ -18,6 +18,8 @@ import { escapeRegExp } from 'lodash-es';
 
 import type { Position } from '@ckeditor/ckeditor5-engine';
 
+import type Delete from './delete';
+
 import './typingconfig';
 
 // All named transformations.
@@ -133,7 +135,7 @@ export default class TextTransformation extends Plugin {
 	private _enableTransformationWatchers(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const deletePlugin = editor.plugins.get( 'Delete' );
+		const deletePlugin: Delete = editor.plugins.get( 'Delete' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' )! );
 
 		const testCallback = ( text: string ) => {

@@ -74,9 +74,10 @@ export default class ImageStyleUI extends Plugin {
 	public init(): void {
 		const plugins = this.editor.plugins;
 		const toolbarConfig = this.editor.config.get( 'image.toolbar' ) || [];
+		const imageStyleEditing: ImageStyleEditing = plugins.get( 'ImageStyleEditing' );
 
 		const definedStyles = translateStyles(
-			plugins.get( 'ImageStyleEditing' ).normalizedStyles!,
+			imageStyleEditing.normalizedStyles!,
 			this.localizedDefaultStylesTitles
 		);
 

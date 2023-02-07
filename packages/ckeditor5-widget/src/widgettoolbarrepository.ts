@@ -20,9 +20,9 @@ import {
 	BalloonPanelView,
 	ContextualBalloon,
 	ToolbarView,
+	type BalloonToolbar,
 	type BaloonToolbarShowEvent,
-	type EditorUIUpdateEvent,
-	type View
+	type EditorUIUpdateEvent
 } from '@ckeditor/ckeditor5-ui';
 
 import {
@@ -84,7 +84,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		// Disables the default balloon toolbar for all widgets.
 		if ( editor.plugins.has( 'BalloonToolbar' ) ) {
-			const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+			const balloonToolbar: BalloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
 			this.listenTo<BaloonToolbarShowEvent>( balloonToolbar, 'show', evt => {
 				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
@@ -328,7 +328,7 @@ export default class WidgetToolbarRepository extends Plugin {
 }
 
 function repositionContextualBalloon( editor: Editor, relatedElement: ViewElement ) {
-	const balloon = editor.plugins.get( 'ContextualBalloon' );
+	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
 	const position = getBalloonPositionData( editor, relatedElement );
 
 	balloon.updatePosition( position );

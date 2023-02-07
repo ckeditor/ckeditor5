@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image text alternative command. It is used to change the `alt` attribute of `<imageBlock>` and `<imageInline>` model elements.
@@ -26,7 +27,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection )!;
 
 		this.isEnabled = !!element;
@@ -47,7 +48,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 */
 	public override execute( options: { newValue: string } ): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const model = editor.model;
 		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 

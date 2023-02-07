@@ -35,7 +35,7 @@ export default class ImageCaptionUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {

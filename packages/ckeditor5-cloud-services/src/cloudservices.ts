@@ -94,7 +94,9 @@ export default class CloudServices extends ContextPlugin implements CloudService
 			return;
 		}
 
-		this.token = await this.context.plugins.get( 'CloudServicesCore' ).createToken( this.tokenUrl ).init();
+		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
+
+		this.token = await cloudServicesCore.createToken( this.tokenUrl ).init();
 
 		this._tokens.set( this.tokenUrl, this.token );
 	}

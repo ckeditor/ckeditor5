@@ -10,6 +10,7 @@
 import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import type { ImageStyleOptionDefinition } from '../imageconfig';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image style command. It is used to apply {@link module:image/imageconfig~ImageStyleConfig#options image style option}
@@ -62,7 +63,7 @@ export default class ImageStyleCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection )!;
 
 		this.isEnabled = !!element;
@@ -93,7 +94,7 @@ export default class ImageStyleCommand extends Command {
 	public override execute( options: { value?: string } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedStyle = options.value;

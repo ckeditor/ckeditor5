@@ -24,6 +24,7 @@ import type {
 } from './ckboxconfig';
 
 import { getEnvironmentId, getImageUrls } from './utils';
+import type CKBoxEditing from './ckboxediting';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -198,7 +199,7 @@ export default class CKBoxCommand extends Command {
 
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 			const linkCommand = editor.commands.get( 'link' )!;
-			const ckboxEditing = editor.plugins.get( 'CKBoxEditing' );
+			const ckboxEditing: CKBoxEditing = editor.plugins.get( 'CKBoxEditing' );
 			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 
 			const assetsToProcess = prepareAssets( {

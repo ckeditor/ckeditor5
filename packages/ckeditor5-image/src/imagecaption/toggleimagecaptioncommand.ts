@@ -11,6 +11,9 @@ import type { Element, Writer } from 'ckeditor5/src/engine';
 import { Command } from 'ckeditor5/src/core';
 
 import ImageBlockEditing from '../image/imageblockediting';
+import type ImageCaptionUtils from './imagecaptionutils';
+import type ImageUtils from '../imageutils';
+import type ImageCaptionEditing from './imagecaptionediting';
 
 /**
  * The toggle image caption command.
@@ -45,7 +48,8 @@ export default class ToggleImageCaptionCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Only block images can get captions.
 		if ( !editor.plugins.has( ImageBlockEditing ) ) {
@@ -69,7 +73,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Block images support captions by default but the command should also be enabled for inline
 		// images because toggling the caption when one is selected should convert it into a block image.
-		this.isEnabled = this.editor.plugins.get( 'ImageUtils' ).isImage( selectedElement );
+		this.isEnabled = imageUtils.isImage( selectedElement );
 
 		if ( !this.isEnabled ) {
 			this.value = false;
@@ -111,14 +115,15 @@ export default class ToggleImageCaptionCommand extends Command {
 	private _showImageCaption( writer: Writer, focusCaptionOnShow?: boolean ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const imageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
+		const imageCaptionEditing: ImageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		let selectedImage = selection.getSelectedElement()!;
 
 		const savedCaption = imageCaptionEditing._getSavedCaption( selectedImage );
 
 		// Convert imageInline -> image first.
-		if ( this.editor.plugins.get( 'ImageUtils' ).isInlineImage( selectedImage ) ) {
+		if ( imageUtils.isInlineImage( selectedImage ) ) {
 			this.editor.execute( 'imageTypeBlock' );
 
 			// Executing the command created a new model element. Let's pick it again.
@@ -144,8 +149,8 @@ export default class ToggleImageCaptionCommand extends Command {
 	private _hideImageCaption( writer: Writer ): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const imageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageCaptionEditing: ImageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		let selectedImage = selection.getSelectedElement()!;
 		let captionElement: Element;
 

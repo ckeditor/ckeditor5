@@ -89,8 +89,8 @@ export default class ImageCaptionEditing extends Plugin {
 	private _setupConversion(): void {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const t = editor.t;
 
 		// View -> model converter for the data pipeline.
@@ -144,8 +144,8 @@ export default class ImageCaptionEditing extends Plugin {
 	 */
 	private _setupImageTypeCommandsIntegration(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
@@ -246,8 +246,8 @@ export default class ImageCaptionEditing extends Plugin {
 	private _registerCaptionReconversion(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
 		model.document.on<DocumentChangeEvent>( 'change:data', () => {
 			const changes = model.document.differ.getChanges();

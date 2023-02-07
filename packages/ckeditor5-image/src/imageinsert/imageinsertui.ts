@@ -8,10 +8,12 @@
  */
 
 import { Plugin, icons, type Command } from 'ckeditor5/src/core';
-import ImageInsertPanelView from './ui/imageinsertpanelview';
-import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
-import { prepareIntegrations } from './utils';
 import type { Locale } from 'ckeditor5/src/utils';
+import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
+
+import ImageInsertPanelView from './ui/imageinsertpanelview';
+import { prepareIntegrations } from './utils';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image insert dropdown plugin.
@@ -107,7 +109,7 @@ export default class ImageInsertUI extends Plugin {
 		const t = editor.t;
 		const dropdownView = this.dropdownView!;
 		const panelView = dropdownView.panelView;
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
 
 		let imageInsertView: ImageInsertPanelView;

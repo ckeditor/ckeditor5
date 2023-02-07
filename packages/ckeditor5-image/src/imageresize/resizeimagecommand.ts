@@ -9,6 +9,8 @@
 
 import { Command } from 'ckeditor5/src/core';
 
+import type ImageUtils from '../imageutils';
+
 /**
  * The resize image command. Currently, it only supports the width attribute.
  */
@@ -26,7 +28,7 @@ export default class ResizeImageCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( editor.model.document.selection );
 
 		this.isEnabled = !!element;
@@ -59,7 +61,7 @@ export default class ResizeImageCommand extends Command {
 	public override execute( options: { width: string | null } ): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
 		this.value = {

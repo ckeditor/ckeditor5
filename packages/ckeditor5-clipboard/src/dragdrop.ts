@@ -24,7 +24,7 @@ import {
 	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
-import { Widget, isWidget } from '@ckeditor/ckeditor5-widget';
+import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
@@ -265,7 +265,9 @@ export default class DragDrop extends Plugin {
 
 				// Disable toolbars so they won't obscure the drop area.
 				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
+					const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+					widgetToolbarRepository.forceDisabled( 'dragDrop' );
 				}
 			}
 

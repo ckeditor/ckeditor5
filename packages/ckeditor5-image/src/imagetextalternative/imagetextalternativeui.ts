@@ -19,6 +19,7 @@ import {
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
 import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image text alternative UI plugin.
@@ -106,7 +107,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
