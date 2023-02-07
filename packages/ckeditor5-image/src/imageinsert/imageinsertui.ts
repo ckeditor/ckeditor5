@@ -14,6 +14,9 @@ import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldVi
 import ImageInsertPanelView from './ui/imageinsertpanelview';
 import { prepareIntegrations } from './utils';
 import type ImageUtils from '../imageutils';
+import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
+import type UploadImageCommand from '../imageupload/uploadimagecommand';
+import type InsertImageCommand from '../image/insertimagecommand';
 
 /**
  * The image insert dropdown plugin.
@@ -60,8 +63,8 @@ export default class ImageInsertUI extends Plugin {
 		const editor = this.editor;
 		const t = locale.t;
 
-		const uploadImageCommand = editor.commands.get( 'uploadImage' );
-		const insertImageCommand = editor.commands.get( 'insertImage' )!;
+		const uploadImageCommand: UploadImageCommand | undefined = editor.commands.get( 'uploadImage' );
+		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
 
 		this.dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
 
@@ -110,7 +113,7 @@ export default class ImageInsertUI extends Plugin {
 		const dropdownView = this.dropdownView!;
 		const panelView = dropdownView.panelView;
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
-		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
+		const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
 
 		let imageInsertView: ImageInsertPanelView;
 

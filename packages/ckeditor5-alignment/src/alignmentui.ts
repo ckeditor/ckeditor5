@@ -12,6 +12,7 @@ import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/
 
 import { isSupported, normalizeAlignmentOptions } from './utils';
 import type { SupportedOption } from './alignmentconfig';
+import type AlignmentCommand from './alignmentcommand';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -100,7 +101,7 @@ export default class AlignmentUI extends Plugin {
 
 			// The default icon depends on the direction of the content.
 			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? iconsMap.get( 'right' ) : iconsMap.get( 'left' );
-			const command = editor.commands.get( 'alignment' )!;
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 
 			// Change icon to reflect current selection's alignment.
 			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => iconsMap.get( value ) || defaultIcon );
@@ -127,7 +128,7 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
-			const command = editor.commands.get( 'alignment' )!;
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {

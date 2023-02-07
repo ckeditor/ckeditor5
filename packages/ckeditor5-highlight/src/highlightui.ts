@@ -20,6 +20,7 @@ import {
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
 import type { HighlightOption } from './highlightconfig';
+import type HighlightCommand from './highlightcommand';
 
 import './../theme/highlight.css';
 
@@ -95,7 +96,7 @@ export default class HighlightUI extends Plugin {
 	 */
 	private _addRemoveHighlightButton(): void {
 		const t = this.editor.t;
-		const command = this.editor.commands.get( 'highlight' )!;
+		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
 		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -106,7 +107,7 @@ export default class HighlightUI extends Plugin {
 	 * Creates a toolbar button from the provided highlight option.
 	 */
 	private _addHighlighterButton( option: HighlightOption ) {
-		const command = this.editor.commands.get( 'highlight' )!;
+		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
 		// TODO: change naming
 		this._addButton( 'highlight:' + option.model, option.title, getIconForType( option.type ), option.model, decorateHighlightButton );
@@ -171,7 +172,7 @@ export default class HighlightUI extends Plugin {
 		}, {} as Record<string, HighlightOption> );
 
 		componentFactory.add( 'highlight', locale => {
-			const command = editor.commands.get( 'highlight' )!;
+			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView as HighlightSplitButtonView;
 

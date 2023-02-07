@@ -353,7 +353,7 @@ function syncDataIdPostFixer( editor: Editor ) {
 		let changed = false;
 
 		const model = editor.model;
-		const ckboxCommand = editor.commands.get( 'ckbox' )!;
+		const ckboxCommand: CKBoxCommand = editor.commands.get( 'ckbox' )!;
 
 		// The ID from chosen assets are stored in the `CKBoxCommand#_chosenAssets`. If there is no command, it makes no sense to check
 		// for changes in the model.

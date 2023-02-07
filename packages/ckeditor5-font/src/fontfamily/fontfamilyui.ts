@@ -39,7 +39,7 @@ export default class FontFamilyUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_FAMILY )!;
+		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {

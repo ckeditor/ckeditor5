@@ -13,6 +13,7 @@ import { isObject, identity } from 'lodash-es';
 import ImageStyleEditing from './imagestyleediting';
 import utils from './utils';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
+import type ImageStyleCommand from './imagestylecommand';
 
 import '../../theme/imagestyle.css';
 
@@ -186,7 +187,7 @@ export default class ImageStyleUI extends Plugin {
 		const buttonName = buttonConfig.name;
 
 		this.editor.ui.componentFactory.add( getUIComponentName( buttonName ), locale => {
-			const command = this.editor.commands.get( 'imageStyle' )!;
+			const command: ImageStyleCommand = this.editor.commands.get( 'imageStyle' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

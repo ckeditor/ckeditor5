@@ -17,6 +17,8 @@ import {
 	type FONT_COLOR
 } from '../utils';
 import type ColorTableView from './colortableview';
+import type FontColorCommand from '../fontcolor/fontcolorcommand';
+import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
 
 import '../fontconfig';
 
@@ -94,7 +96,7 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = locale.t;
-		const command = editor.commands.get( this.commandName )!;
+		const command: FontColorCommand | FontBackgroundColorCommand = editor.commands.get( this.commandName )!;
 		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;

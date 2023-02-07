@@ -110,7 +110,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
-			const command = editor.commands.get( commandName )!;
+			const command: OutdentCodeBlockCommand | IndentCodeBlockCommand = editor.commands.get( commandName )!;
 
 			if ( !command.isEnabled ) {
 				return;

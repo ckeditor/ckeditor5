@@ -12,6 +12,7 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetResize } from 'ckeditor5/src/widget';
 
 import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver';
+import type ResizeImageCommand from './resizeimagecommand';
 
 import '../imageconfig';
 
@@ -52,7 +53,7 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const command = this.editor.commands.get( 'resizeImage' )!;
+		const command: ResizeImageCommand = this.editor.commands.get( 'resizeImage' )!;
 		this.bind( 'isEnabled' ).to( command );
 
 		this._setupResizerCreator();

@@ -19,6 +19,7 @@ import {
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
 import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview';
+import type ImageTextAlternativeCommand from './imagetextalternativecommand';
 import type ImageUtils from '../imageutils';
 
 /**
@@ -79,7 +80,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'imageTextAlternative', locale => {
-			const command = editor.commands.get( 'imageTextAlternative' )!;
+			const command: ImageTextAlternativeCommand = editor.commands.get( 'imageTextAlternative' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -165,7 +166,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		}
 
 		const editor = this.editor;
-		const command = editor.commands.get( 'imageTextAlternative' )!;
+		const command: ImageTextAlternativeCommand = editor.commands.get( 'imageTextAlternative' )!;
 		const labeledInput = this._form!.labeledInput;
 
 		this._form!.disableCssTransitions();

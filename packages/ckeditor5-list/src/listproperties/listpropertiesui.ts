@@ -23,6 +23,10 @@ import ListPropertiesView from './ui/listpropertiesview';
 
 import type ListStyleCommand from './liststylecommand';
 import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand';
+import type ListStartCommand from './liststartcommand';
+import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand';
+import type ListReversedCommand from './listreversedcommand';
+import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../../theme/icons/numberedlist.svg';
@@ -309,7 +313,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.styles ) {
-		const listStyleCommand = editor.commands.get( 'listStyle' )!;
+		const listStyleCommand: ListStyleCommand | DocumentListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
@@ -339,7 +343,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.startIndex ) {
-		const listStartCommand = editor.commands.get( 'listStart' )!;
+		const listStartCommand: ListStartCommand | DocumentListStartCommand = editor.commands.get( 'listStart' )!;
 
 		listPropertiesView.startIndexFieldView!.bind( 'isEnabled' ).to( listStartCommand );
 		listPropertiesView.startIndexFieldView!.fieldView.bind( 'value' ).to( listStartCommand as any );
@@ -347,7 +351,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.reversed ) {
-		const listReversedCommand = editor.commands.get( 'listReversed' )!;
+		const listReversedCommand: ListReversedCommand | DocumentListReversedCommand = editor.commands.get( 'listReversed' )!;
 
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isEnabled' ).to( listReversedCommand );
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isOn' ).to( listReversedCommand, 'value', value => !!value );

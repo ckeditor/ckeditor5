@@ -12,6 +12,7 @@ import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getLocalizedOptions } from './utils';
 import type { HeadingOption } from './headingconfig';
+import type HeadingCommand from './headingcommand';
 
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';
@@ -82,7 +83,7 @@ export default class HeadingButtonsUI extends Plugin {
 
 		editor.ui.componentFactory.add( option.model, locale => {
 			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'heading' )!;
+			const command: HeadingCommand = editor.commands.get( 'heading' )!;
 
 			view.label = option.title;
 			view.icon = option.icon || defaultIcons[ option.model ];

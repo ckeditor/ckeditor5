@@ -70,7 +70,7 @@ export default class ImageResizeButtons extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' )!;
-		const command = editor.commands.get( 'resizeImage' )!;
+		const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 
 		this.bind( 'isEnabled' ).to( command );
 
@@ -93,7 +93,7 @@ export default class ImageResizeButtons extends Plugin {
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
-			const command = editor.commands.get( 'resizeImage' )!;
+			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const labelText = this._getOptionLabelValue( option, true );
 
 			if ( !RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ] ) {
@@ -146,7 +146,7 @@ export default class ImageResizeButtons extends Plugin {
 		const originalSizeOption = options.find( option => !option.value )!;
 
 		const componentCreator = ( locale: Locale ) => {
-			const command = editor.commands.get( 'resizeImage' )!;
+			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const dropdownView = createDropdown( locale, DropdownButtonView );
 			const dropdownButton: typeof dropdownView.buttonView & { commandValue?: string | null } = dropdownView.buttonView;
 

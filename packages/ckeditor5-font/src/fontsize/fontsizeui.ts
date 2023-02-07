@@ -45,7 +45,7 @@ export default class FontSizeUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_SIZE )!;
+		const command: FontSizeCommand = editor.commands.get( FONT_SIZE )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {

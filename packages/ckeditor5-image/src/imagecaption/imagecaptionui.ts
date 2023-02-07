@@ -10,6 +10,7 @@
 import { Plugin, icons, type PluginDependencies } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import ImageCaptionUtils from './imagecaptionutils';
+import type ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -39,7 +40,7 @@ export default class ImageCaptionUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {
-			const command = editor.commands.get( 'toggleImageCaption' )!;
+			const command: ToggleImageCaptionCommand = editor.commands.get( 'toggleImageCaption' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
