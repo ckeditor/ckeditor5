@@ -20,7 +20,7 @@ See the demo of the editor in Spanish:
 {@snippet features/ui-language}
 
 <info-box info>
-	ALl demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
 <info-box>
