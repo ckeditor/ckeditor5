@@ -79,7 +79,7 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-// external source exclusion
+// External source exclusion.
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
