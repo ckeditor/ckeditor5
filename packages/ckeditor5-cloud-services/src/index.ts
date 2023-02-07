@@ -10,3 +10,5 @@
 export { default as CloudServices, type TokenUrl } from './cloudservices';
 export { default as CloudServicesCore } from './cloudservicescore';
 export type { default as Token, InitializedToken } from './token/token';
+export type { default as UploadGateway } from './uploadgateway/uploadgateway';
+export type { default as FileUploader } from './uploadgateway/fileuploader';

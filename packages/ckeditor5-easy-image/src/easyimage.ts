@@ -7,7 +7,7 @@
  * @module easy-image/easyimage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
 
 import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
@@ -35,21 +35,19 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
  * **Note**: After enabling the Easy Image plugin you need to configure the
  * [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/)
  * integration through {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class EasyImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ CloudServicesUploadAdapter, 'ImageUpload' ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		if ( !editor.plugins.has( 'ImageBlockEditing' ) && !editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -72,7 +70,13 @@ export default class EasyImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'EasyImage' {
 		return 'EasyImage';
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ EasyImage.pluginName ]: EasyImage;
 	}
 }

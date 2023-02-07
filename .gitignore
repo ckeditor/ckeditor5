@@ -38,6 +38,7 @@ packages/ckeditor5-clipboard/src/**/*.js
 packages/ckeditor5-cloud-services/src/**/*.js
 packages/ckeditor5-code-block/src/**/*.js
 packages/ckeditor5-core/src/**/*.js
+packages/ckeditor5-easy-image/src/**/*.js
 packages/ckeditor5-editor-balloon/src/**/*.js
 packages/ckeditor5-editor-classic/src/**/*.js
 packages/ckeditor5-editor-decoupled/src/**/*.js
