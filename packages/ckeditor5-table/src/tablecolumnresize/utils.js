@@ -21,10 +21,9 @@ import {
  * Most notably if an entire table is removed it will not be included in returned set.
  *
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
- * @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} resizePlugin TableColumnResize plugin.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedResizedTables( model, resizePlugin ) {
+export function getChangedResizedTables( model ) {
 	const affectedTables = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
@@ -72,7 +71,7 @@ export function getChangedResizedTables( model, resizePlugin ) {
 				continue;
 			}
 
-			if ( !resizePlugin.getColumnGroupElement( node ) ) {
+			if ( !getColumnGroupElement( node ) ) {
 				continue;
 			}
 
@@ -347,4 +346,43 @@ export function updateColumnElements( columns, tableColumnGroup, normalizedWidth
 			writer.setAttribute( 'columnWidth', columnWidth, column );
 		}
 	}
+}
+
+/**
+ * Returns a 'tableColumnGroup' element from the 'table'.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
+ */
+export function getColumnGroupElement( element ) {
+	if ( element.is( 'element', 'tableColumnGroup' ) ) {
+		return element;
+	}
+
+	return Array
+		.from( element.getChildren() )
+		.find( element => element.is( 'element', 'tableColumnGroup' ) );
+}
+
+/**
+ * Returns an array of 'tableColumn' elements.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
+ */
+export function getTableColumnElements( element ) {
+	return Array.from( getColumnGroupElement( element ).getChildren() );
+}
+
+/**
+ * Returns an array of table column widths.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<String>} An array of table column widths.
+ */
+export function getTableColumnsWidths( element ) {
+	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) );
 }

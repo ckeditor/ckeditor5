@@ -7,6 +7,7 @@ import { global } from 'ckeditor5/src/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';
+import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils';
 
 export const tableColumnResizeMouseSimulator = {
 	down( editor, domTarget, options = {} ) {
@@ -82,16 +83,8 @@ export function getViewColumnWidthsPx( domTable ) {
 	return widths;
 }
 
-export function getTableColumnWidths( table ) {
-	return Array
-		.from( table.getChildren() )
-		.filter( element => element.is( 'element', 'tableColumnGroup' ) )
-		.flatMap( element => Array.from( element.getChildren() ) )
-		.map( element => element.getAttribute( 'columnWidth' ) );
-}
-
 export function getModelColumnWidthsPc( modelTable ) {
-	return getTableColumnWidths( modelTable ).map( width => width.replace( '%', '' ) );
+	return getTableColumnsWidths( modelTable ).map( width => width.replace( '%', '' ) );
 }
 
 export function getViewColumnWidthsPc( viewTable ) {

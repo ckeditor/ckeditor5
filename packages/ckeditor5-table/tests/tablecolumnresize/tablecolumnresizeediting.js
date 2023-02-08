@@ -34,14 +34,16 @@ import {
 	getDomTableRects,
 	getDomTableCellRects,
 	tableColumnResizeMouseSimulator,
-	getDomResizer,
-	getTableColumnWidths
+	getDomResizer
 } from './_utils/utils';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS
 } from '../../src/tablecolumnresize/constants';
 import {
-	clamp, getDomCellOuterWidth
+	clamp,
+	getDomCellOuterWidth,
+	getTableColumnsWidths,
+	getColumnGroupElement
 } from '../../src/tablecolumnresize/utils';
 import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
@@ -84,7 +86,7 @@ describe( 'TableColumnResizeEditing', () => {
 			[ '10', '11', '12' ]
 		], { columnWidths: '25%,25%,50%' } ) );
 
-		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '25%', '25%', '50%' ] );
+		expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '25%', '25%', '50%' ] );
 	} );
 
 	it( 'should have defined col widths in view', () => {
@@ -769,7 +771,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.down( editor, view.getDomRoot() );
 
 			expect( resizePlugin._isResizingActive ).to.be.false;
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'if resizing is not allowed', () => {
@@ -783,7 +785,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 
 			expect( resizePlugin._isResizingActive ).to.be.false;
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'without dragging', () => {
@@ -834,7 +836,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 	} );
 
@@ -857,7 +859,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does nothing on mouseup if resizing was not started', () => {
@@ -873,7 +875,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does not change the widths if the movement vector was {0,0}', () => {
@@ -930,7 +932,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if columnWidths was set for the first time', () => {
@@ -951,7 +953,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [] );
+				expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
 			} );
 
 			it( 'if tableWidth was changed', () => {
@@ -972,7 +974,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if tableWidth was set for the first time', () => {
@@ -993,7 +995,7 @@ describe( 'TableColumnResizeEditing', () => {
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 		} );
 
@@ -2032,7 +2034,7 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
-	describe( 'getColumnWidths()', () => {
+	describe( 'getTableColumnsWidths()', () => {
 		it( 'should return tableColumnGroup count when there are columns', () => {
 			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
@@ -2103,9 +2105,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
+								expect( getTableColumnsWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the first position.
-								expect( parseFloat( getTableColumnWidths( item.item )[ 0 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnsWidths( item.item )[ 0 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -2123,9 +2125,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
+								expect( getTableColumnsWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the second position.
-								expect( parseFloat( getTableColumnWidths( item.item )[ 1 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnsWidths( item.item )[ 1 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -2143,9 +2145,9 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							if ( item.item.is( 'element', 'table' ) ) {
 								// Expect `columnWidths` to have 4 values.
-								expect( getTableColumnWidths( item.item ).length ).to.equal( 4 );
+								expect( getTableColumnsWidths( item.item ).length ).to.equal( 4 );
 								// Expect a new column (it is the narrowest one) to be inserted at the last position.
-								expect( parseFloat( getTableColumnWidths( item.item )[ 3 ] ) < 10 ).to.be.true;
+								expect( parseFloat( getTableColumnsWidths( item.item )[ 3 ] ) < 10 ).to.be.true;
 							}
 						}
 					} );
@@ -2163,7 +2165,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the next column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 								expect( columnWidths[ 1 ] ).to.equal( '55%' );
@@ -2184,7 +2186,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 								expect( columnWidths[ 1 ] ).to.equal( '55%' );
@@ -2205,7 +2207,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the previous column to take over the width of removed one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '20%' );
 								expect( columnWidths[ 1 ] ).to.equal( '80%' );
@@ -2233,7 +2235,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 2 );
 								expect( columnWidths[ 0 ] ).to.equal( '45%' );
 							}
@@ -2262,7 +2264,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 2 values and the first column to take over the width of merged one.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 1 );
 								expect( columnWidths[ 0 ] ).to.equal( '100%' );
 							}
@@ -2289,7 +2291,7 @@ describe( 'TableColumnResizeEditing', () => {
 						for ( const item of wholeContentRange ) {
 							// Expect `columnWidths` to have 3 unchanged values.
 							if ( item.item.is( 'element', 'table' ) ) {
-								const columnWidths = getTableColumnWidths( item.item );
+								const columnWidths = getTableColumnsWidths( item.item );
 								expect( columnWidths.length ).to.equal( 3 );
 								expect( columnWidths[ 0 ] ).to.equal( '20%' );
 								expect( columnWidths[ 1 ] ).to.equal( '25%' );

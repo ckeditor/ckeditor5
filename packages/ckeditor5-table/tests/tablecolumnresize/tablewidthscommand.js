@@ -20,7 +20,7 @@ describe( 'TableWidthsCommand', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		const editor = await ClassicTestEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Table, TableColumnResize, Paragraph ]
 		} );
 

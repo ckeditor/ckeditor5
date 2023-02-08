@@ -35,7 +35,10 @@ import {
 	normalizeColumnWidths,
 	toPrecision,
 	getDomCellOuterWidth,
-	updateColumnElements
+	updateColumnElements,
+	getColumnGroupElement,
+	getTableColumnElements,
+	getTableColumnsWidths
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -173,13 +176,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
 	 */
 	getColumnGroupElement( element ) {
-		if ( element.is( 'element', 'tableColumnGroup' ) ) {
-			return element;
-		}
-
-		return Array
-			.from( element.getChildren() )
-			.find( element => element.is( 'element', 'tableColumnGroup' ) );
+		return getColumnGroupElement( element );
 	}
 
 	/**
@@ -189,7 +186,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
 	 */
 	getTableColumnElements( element ) {
-		return Array.from( this.getColumnGroupElement( element ).getChildren() );
+		return getTableColumnElements( element );
 	}
 
 	/**
@@ -199,9 +196,7 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * @returns {Array<String>} An array of table column widths.
 	 */
 	getTableColumnsWidths( element ) {
-		return this
-			.getTableColumnElements( element )
-			.map( column => column.getAttribute( 'columnWidth' ) );
+		return getTableColumnsWidths( element );
 	}
 
 	/**
@@ -385,8 +380,8 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
 		conversion.elementToElement( { model: 'tableColumn', view: 'col' } );
-		conversion.for( 'downcast' ).add( downcastTableResizedClass( this ) );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin, this ) );
+		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {

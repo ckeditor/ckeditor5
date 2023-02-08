@@ -7,27 +7,32 @@
  * @module table/tablecolumnresize/converters
  */
 
-import { normalizeColumnWidths, updateColumnElements } from './utils';
+import {
+	normalizeColumnWidths,
+	updateColumnElements,
+	getColumnGroupElement,
+	getTableColumnElements,
+	getTableColumnsWidths
+} from './utils';
 
 /**
  * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
  * because the input data might have too few or too many <col> elements.
  *
  * @param {module:core/plugin~Plugin} tableUtilsPlugin
- * @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} resizePlugin
  * @returns {Function} Conversion helper.
  */
-export function upcastColgroupElement( tableUtilsPlugin, resizePlugin ) {
+export function upcastColgroupElement( tableUtilsPlugin ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
 		const modelTable = data.modelCursor.findAncestor( 'table' );
-		const tableColumnGroup = resizePlugin.getColumnGroupElement( modelTable );
+		const tableColumnGroup = getColumnGroupElement( modelTable );
 
 		if ( !tableColumnGroup ) {
 			return;
 		}
 
-		const columnElements = resizePlugin.getTableColumnElements( tableColumnGroup );
-		let columnWidths = resizePlugin.getTableColumnsWidths( tableColumnGroup );
+		const columnElements = getTableColumnElements( tableColumnGroup );
+		let columnWidths = getTableColumnsWidths( tableColumnGroup );
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
 
 		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
@@ -41,10 +46,9 @@ export function upcastColgroupElement( tableUtilsPlugin, resizePlugin ) {
 /**
  * Returns downcast helper for adding `ck-table-resized` class if there is a `<tableColumnGroup>` element inside the table.
  *
- * @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} resizePlugin
  * @returns {Function} Conversion helper.
  */
-export function downcastTableResizedClass( resizePlugin ) {
+export function downcastTableResizedClass() {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
 		const modelTable = data.item;
@@ -54,7 +58,7 @@ export function downcastTableResizedClass( resizePlugin ) {
 			viewElement :
 			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) );
 
-		const tableColumnGroup = resizePlugin.getColumnGroupElement( data.item );
+		const tableColumnGroup = getColumnGroupElement( data.item );
 
 		if ( tableColumnGroup ) {
 			viewWriter.addClass( 'ck-table-resized', viewTable );
