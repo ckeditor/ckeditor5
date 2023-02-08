@@ -462,7 +462,7 @@ CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so d
 
 ### Predefined builds
 
-When using one of the {@link installation/getting-started/predefined-builds#available-builds official editor builds}, you need to import the translations first.
+When using one of the {@link installation/getting-started/predefined-builds predefined builds}, you need to import the translations first.
 
 * When using a [direct script include](#direct-script-include):
 	```html
