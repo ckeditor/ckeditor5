@@ -31,7 +31,8 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ck
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
 		cloudServices: {
-			....
+			// A configuration of CKEditor Cloud Services.
+			// ...
 		}
 	} )
 	.then( editor => {

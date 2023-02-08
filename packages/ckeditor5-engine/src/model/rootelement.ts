@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,55 +13,43 @@ import type Document from './document';
 
 /**
  * Type of {@link module:engine/model/element~Element} that is a root of a model tree.
- * @extends module:engine/model/element~Element
  */
 export default class RootElement extends Element {
+	/**
+	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 */
 	public override readonly rootName: string;
 
+	/**
+	 * Document that is an owner of this root.
+	 */
 	private readonly _document: Document;
 
 	/**
 	 * Creates root element.
 	 *
-	 * @param {module:engine/model/document~Document} document Document that is an owner of this root.
-	 * @param {String} name Node name.
-	 * @param {String} [rootName='main'] Unique root name used to identify this root
-	 * element by {@link module:engine/model/document~Document}.
+	 * @param document Document that is an owner of this root.
+	 * @param name Node name.
+	 * @param rootName Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
 	 */
 	constructor( document: Document, name: string, rootName: string = 'main' ) {
 		super( name );
 
-		/**
-		 * Document that is an owner of this root.
-		 *
-		 * @private
-		 * @member {module:engine/model/document~Document}
-		 */
 		this._document = document;
-
-		/**
-		 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.rootName = rootName;
 	}
 
 	/**
 	 * {@link module:engine/model/document~Document Document} that owns this root element.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/document~Document|null}
 	 */
 	public override get document(): Document {
 		return this._document;
 	}
 
 	/**
-	 * Converts `RootElement` instance to `String` containing it's name.
+	 * Converts `RootElement` instance to `string` containing it's name.
 	 *
-	 * @returns {String} `RootElement` instance converted to `String`.
+	 * @returns `RootElement` instance converted to `string`.
 	 */
 	public override toJSON(): unknown {
 		return this.rootName;
@@ -76,30 +64,8 @@ export default class RootElement extends Element {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		rootElement.is( 'rootElement' ); // -> true
- *		rootElement.is( 'element' ); // -> true
- *		rootElement.is( 'node' ); // -> true
- *		rootElement.is( 'model:rootElement' ); // -> true
- *		rootElement.is( 'model:element' ); // -> true
- *		rootElement.is( 'model:node' ); // -> true
- *
- *		rootElement.is( 'view:element' ); // -> false
- *		rootElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is an element, you can also check its
- * {@link module:engine/model/element~Element#name name}:
- *
- *		rootElement.is( 'rootElement', '$root' ); // -> same as above
- *
- * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
- *
- * @param {String} type Type to check.
- * @param {String} [name] Element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 RootElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'model:rootElement' ||

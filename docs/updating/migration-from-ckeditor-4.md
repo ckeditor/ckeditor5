@@ -10,7 +10,7 @@ modified_at: 2022-11-09
 # Migration from CKEditor 4
 
 <info-box hint>
-This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the {@link installation/index Getting started} section to make youself familiar with the concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins to your needs.
+This is a guide for users who would like to switch from CKEditor 4 to CKEditor 5. It assumes you already have some basic knowledge about CKEditor 5, as this is necessary to follow this guide. If that is not the case, please roam around the {@link installation/index Getting started} section to make youself familiar with the concepts and ideas behing this new, modern installment of our WYSIWYG editor. For example, feel free to explore our {@link features/index features page} to compare the available plugins with your needs.
 
 Before starting, decide what kind of installation to use for your new editor. Refer to the {@link installation/index Getting started with CKEditor 5} overview guide for more information on available installation methods.
 </info-box>
@@ -46,7 +46,7 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third-party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link installation/advanced/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
+Check the {@link installation/plugins/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
 When it comes to official plugins compatibility between CKEditor 4 and CKEditor 5, please see the [compatibility table](#plugins-compatibility-table) to learn more.
 
@@ -384,7 +384,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins">extraPlugins</a></td>
-			<td>Learn how to {@link installation/getting-started/installing-plugins install plugins in CKEditor 5}.</td>
+			<td>Learn how to {@link installation/plugins/installing-plugins install plugins in CKEditor 5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName">fileTools_defaultFileName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders">fileTools_requestHeaders</a></td>
@@ -566,7 +566,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/advanced/plugins plugins} and {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/plugins/plugins plugins} and {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource">protectedSource</a></td>

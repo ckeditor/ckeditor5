@@ -30,7 +30,7 @@ msgstr "ئوتتۇرىغا توغرىلاش"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "تەكشىلەش"
+msgstr "ئوڭ سولدىن توغرىلا"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"

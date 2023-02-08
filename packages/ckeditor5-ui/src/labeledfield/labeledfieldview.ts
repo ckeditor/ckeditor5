@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -55,8 +55,8 @@ import '../../theme/components/labeledfield/labeledfieldview.css';
  *
  * @extends module:ui/view~View
  */
-export default class LabeledFieldView extends View {
-	public readonly fieldView: FocusableView;
+export default class LabeledFieldView<TFieldView extends FocusableView = FocusableView> extends View {
+	public readonly fieldView: TFieldView;
 	public readonly labelView: LabelView;
 	public readonly statusView: View;
 	public readonly fieldWrapperChildren: ViewCollection;
@@ -85,7 +85,7 @@ export default class LabeledFieldView extends View {
 	 */
 	constructor(
 		locale: Locale | undefined,
-		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => FocusableView
+		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView
 	) {
 		super( locale );
 

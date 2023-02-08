@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,24 +25,37 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * {@link ~MergeOperation#targetPosition}. All nodes from the merged element are moved to {@link ~MergeOperation#targetPosition}.
  *
  * The merged element is moved to the graveyard at {@link ~MergeOperation#graveyardPosition}.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class MergeOperation extends Operation {
+	/**
+	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link ~#targetPosition}.
+	 */
 	public sourcePosition: Position;
+
+	/**
+	 * Summary offset size of nodes which will be moved from the merged element to the new parent.
+	 */
 	public howMany: number;
+
+	/**
+	 * Position which the nodes from the merged elements will be moved to.
+	 */
 	public targetPosition: Position;
+
+	/**
+	 * Position in graveyard to which the merged element will be moved.
+	 */
 	public graveyardPosition: Position;
 
 	/**
 	 * Creates a merge operation.
 	 *
-	 * @param {module:engine/model/position~Position} sourcePosition Position inside the merged element. All nodes from that
+	 * @param sourcePosition Position inside the merged element. All nodes from that
 	 * element after that position will be moved to {@link ~#targetPosition}.
-	 * @param {Number} howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
-	 * @param {module:engine/model/position~Position} targetPosition Position which the nodes from the merged elements will be moved to.
-	 * @param {module:engine/model/position~Position} graveyardPosition Position in graveyard to which the merged element will be moved.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
+	 * @param targetPosition Position which the nodes from the merged elements will be moved to.
+	 * @param graveyardPosition Position in graveyard to which the merged element will be moved.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
@@ -54,37 +67,16 @@ export default class MergeOperation extends Operation {
 	) {
 		super( baseVersion );
 
-		/**
-		 * Position inside the merged element. All nodes from that element after that position will be moved to {@link ~#targetPosition}.
-		 *
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#sourcePosition
-		 */
 		this.sourcePosition = sourcePosition.clone();
 		// This is, and should always remain, the first position in its parent.
 		this.sourcePosition.stickiness = 'toPrevious';
 
-		/**
-		 * Summary offset size of nodes which will be moved from the merged element to the new parent.
-		 *
-		 * @member {Number} module:engine/model/operation/mergeoperation~MergeOperation#howMany
-		 */
 		this.howMany = howMany;
-
-		/**
-		 * Position which the nodes from the merged elements will be moved to.
-		 *
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#targetPosition
-		 */
 		this.targetPosition = targetPosition.clone();
+
 		// Except of a rare scenario in `MergeOperation` x `MergeOperation` transformation,
 		// this is, and should always remain, the last position in its parent.
 		this.targetPosition.stickiness = 'toNext';
-
-		/**
-		 * Position in graveyard to which the merged element will be moved.
-		 *
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#graveyardPosition
-		 */
 		this.graveyardPosition = graveyardPosition.clone();
 	}
 
@@ -97,9 +89,6 @@ export default class MergeOperation extends Operation {
 
 	/**
 	 * Position before the merged element (which will be deleted).
-	 *
-	 * @readonly
-	 * @type {module:engine/model/position~Position}
 	 */
 	public get deletionPosition(): Position {
 		return new Position( this.sourcePosition.root, this.sourcePosition.path.slice( 0, -1 ) );
@@ -108,9 +97,6 @@ export default class MergeOperation extends Operation {
 	/**
 	 * Artificial range that contains all the nodes from the merged element that will be moved to {@link ~MergeOperation#sourcePosition}.
 	 * The range starts at {@link ~MergeOperation#sourcePosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/range~Range}
 	 */
 	public get movedRange(): Range {
 		const end = this.sourcePosition.getShiftedBy( Number.POSITIVE_INFINITY );
@@ -120,8 +106,6 @@ export default class MergeOperation extends Operation {
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
-	 *
-	 * @returns {module:engine/model/operation/mergeoperation~MergeOperation} Clone of this operation.
 	 */
 	public clone(): MergeOperation {
 		return new MergeOperation( this.sourcePosition, this.howMany, this.targetPosition, this.graveyardPosition, this.baseVersion );
@@ -129,8 +113,6 @@ export default class MergeOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/splitoperation~SplitOperation}
 	 */
 	public getReversed(): Operation {
 		// Positions in this method are transformed by this merge operation because the split operation bases on
@@ -212,9 +194,8 @@ export default class MergeOperation extends Operation {
 	/**
 	 * Creates `MergeOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/mergeoperation~MergeOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): MergeOperation {
 		const sourcePosition = Position.fromJSON( json.sourcePosition, document );

@@ -7,7 +7,7 @@ menu-title: UI language
 
 # Setting the UI language
 
-The UI of the editor can be localized. Currently, 41 of available languages are fully translated. 38 languages were translated professionally. There are also numerous other languages covered by community translators. Full list of professional translations is available in the [latter part of this document](#list-of-available-professional-translations).
+The UI of the editor can be localized. Currently, 41 of the available languages are fully translated. 38 languages were translated professionally. There are also numerous other languages covered by community translators. A full list of professional translations is available in the [latter part of this document](#list-of-available-professional-translations).
 
 <info-box>
 	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
@@ -18,6 +18,10 @@ The UI of the editor can be localized. Currently, 41 of available languages are 
 See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
+
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 <info-box>
 	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
@@ -121,7 +125,10 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	```js
 	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 
-	// Define webpack plugins...
+	module.exports = {
+		// Define webpack plugins.
+		// ...
+		
 		plugins: [
 			new CKEditorTranslationsPlugin( {
 				// The main language that will be built into the main bundle.
@@ -135,9 +142,13 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations.
 			} ),
 
-			// Other webpack plugins...
+			// Other webpack plugins.
+			// ...
 		]
-	// ...
+
+		// Remaining webpack configuration.
+		// ...
+	}
 	```
 
 3. Run webpack. The CKEditor 5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option. They will contain translations for messages from the {@link module:utils/locale~Locale#t `t()` function} calls. The files will be created in the `translations` directory (or another one if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.

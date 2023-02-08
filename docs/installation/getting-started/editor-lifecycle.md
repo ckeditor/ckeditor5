@@ -8,7 +8,7 @@ order: 60
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/installing-plugins previous tutorial} you have explored available features and learned how to add them to your editor. This article shows the lifecycle methods used to interact with the editor.
+In the {@link installation/plugins/installing-plugins previous tutorial} you have explored available features and learned how to add them to your editor. This article shows the lifecycle methods used to interact with the editor.
 </info-box>
 
 

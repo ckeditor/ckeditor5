@@ -55,11 +55,11 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SourceEditing, ... ],
-		toolbar: [ 'sourceEditing', ... ]
+		plugins: [ SourceEditing, /* ... */ ],
+		toolbar: [ 'sourceEditing', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
@@ -70,15 +70,15 @@ import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SourceEditing, Markdown, ... ],
-		toolbar: [ 'sourceEditing', ... ]
+		plugins: [ SourceEditing, Markdown, /* ... */ ],
+		toolbar: [ 'sourceEditing', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

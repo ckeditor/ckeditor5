@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -95,6 +95,12 @@ describe( 'FontSizeUI', () => {
 		} );
 
 		it( 'should activate current option in dropdown', () => {
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const listView = dropdown.listView;
 
 			command.value = undefined;
@@ -146,6 +152,12 @@ describe( 'FontSizeUI', () => {
 				} );
 
 				it( 'adds css class to listView#items in the panel', () => {
+					// Make sure that list view is not created before first dropdown open.
+					expect( dropdown.listView ).to.be.undefined;
+
+					// Trigger list view creation (lazy init).
+					dropdown.isOpen = true;
+
 					const listView = dropdown.listView;
 
 					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
@@ -177,6 +189,12 @@ describe( 'FontSizeUI', () => {
 				} );
 
 				it( 'adds css class to listView#items in the panel', () => {
+					// Make sure that list view is not created before first dropdown open.
+					expect( dropdown.listView ).to.be.undefined;
+
+					// Trigger list view creation (lazy init).
+					dropdown.isOpen = true;
+
 					const listView = dropdown.listView;
 
 					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
@@ -189,6 +207,12 @@ describe( 'FontSizeUI', () => {
 				} );
 
 				it( 'adds font-size style to listView#items in the panel', () => {
+					// Make sure that list view is not created before first dropdown open.
+					expect( dropdown.listView ).to.be.undefined;
+
+					// Trigger list view creation (lazy init).
+					dropdown.isOpen = true;
+
 					const listView = dropdown.listView;
 
 					expect( listView.items.map( item => item.children.first.labelStyle ) ).to.deep.equal( [
@@ -228,6 +252,12 @@ describe( 'FontSizeUI', () => {
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
+				// Make sure that list view is not created before first dropdown open.
+				expect( dropdown.listView ).to.be.undefined;
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,25 +13,49 @@ import Range from '../range';
 import type Document from '../document';
 import type MarkerCollection from '../markercollection';
 
-/**
- * @extends module:engine/model/operation/operation~Operation
- */
 export default class MarkerOperation extends Operation {
+	/**
+	 * Marker name.
+	 *
+	 * @readonly
+	 */
 	public name: string;
+
+	/**
+	 * Marker range before the change.
+	 *
+	 * @readonly
+	 */
 	public oldRange: Range | null;
+
+	/**
+	 * Marker range after the change.
+	 *
+	 * @readonly
+	 */
 	public newRange: Range | null;
+
+	/**
+	 * Specifies whether the marker operation affects the data produced by the data pipeline
+	 * (is persisted in the editor's data).
+	 *
+	 * @readonly
+	 */
 	public affectsData: boolean;
 
+	/**
+	 * Marker collection on which change should be executed.
+	 */
 	private readonly _markers: MarkerCollection;
 
 	/**
-	 * @param {String} name Marker name.
-	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change.
-	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Marker collection on which change should be executed.
-	 * @param {Boolean} affectsData Specifies whether the marker operation affects the data produced by the data pipeline
+	 * @param name Marker name.
+	 * @param oldRange Marker range before the change.
+	 * @param newRange Marker range after the change.
+	 * @param markers Marker collection on which change should be executed.
+	 * @param affectsData Specifies whether the marker operation affects the data produced by the data pipeline
 	 * (is persisted in the editor's data).
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
@@ -44,45 +68,11 @@ export default class MarkerOperation extends Operation {
 	) {
 		super( baseVersion );
 
-		/**
-		 * Marker name.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.name = name;
-
-		/**
-		 * Marker range before the change.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/range~Range|null}
-		 */
 		this.oldRange = oldRange ? oldRange.clone() : null;
-
-		/**
-		 * Marker range after the change.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/range~Range}
-		 */
 		this.newRange = newRange ? newRange.clone() : null;
-
-		/**
-		 * Specifies whether the marker operation affects the data produced by the data pipeline
-		 * (is persisted in the editor's data).
-		 *
-		 * @readonly
-		 * @member {Boolean}
-		 */
 		this.affectsData = affectsData;
 
-		/**
-		 * Marker collection on which change should be executed.
-		 *
-		 * @private
-		 * @member {module:engine/model/markercollection~MarkerCollection}
-		 */
 		this._markers = markers;
 	}
 
@@ -95,8 +85,6 @@ export default class MarkerOperation extends Operation {
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
-	 *
-	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation} Clone of this operation.
 	 */
 	public clone(): MarkerOperation {
 		return new MarkerOperation( this.name, this.oldRange, this.newRange, this._markers, this.affectsData, this.baseVersion );
@@ -104,8 +92,6 @@ export default class MarkerOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation}
 	 */
 	public getReversed(): Operation {
 		return new MarkerOperation( this.name, this.newRange, this.oldRange, this._markers, this.affectsData, this.baseVersion! + 1 );
@@ -153,9 +139,8 @@ export default class MarkerOperation extends Operation {
 	/**
 	 * Creates `MarkerOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): MarkerOperation {
 		return new MarkerOperation(

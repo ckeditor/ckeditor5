@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,7 @@ import CKEditorError from './ckeditorerror';
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
- * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
+ * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
 export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 	/**
@@ -105,7 +105,7 @@ export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 	}
 
 	/**
-	 * Stores currently focused element and set {#isFocused} as `true`.
+	 * Stores currently focused element and set {@link #isFocused} as `true`.
 	 */
 	private _focus( element: Element ): void {
 		clearTimeout( this._nextEventLoopTimeout! );

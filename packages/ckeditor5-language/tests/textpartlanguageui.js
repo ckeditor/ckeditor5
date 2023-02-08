@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -52,6 +52,19 @@ describe( 'TextPartLanguageUI', () => {
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isOn ).to.be.false;
+			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
+			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
+			expect( dropdown.listView ).to.be.undefined;
+		} );
+
+		it( 'should lazy init language list dropdown', () => {
+			const dropdown = editor.ui.componentFactory.create( 'textPartLanguage' );
+
+			dropdown.isOpen = true;
+
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( dropdown.buttonView.isOn ).to.be.true;
 			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
 			expect( dropdown.listView.items.first.children.first.label ).to.equal( 'Remove language' );
@@ -125,6 +138,9 @@ describe( 'TextPartLanguageUI', () => {
 			} );
 
 			it( 'reflects the #value of the command', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
 				const listView = dropdown.listView;
 
 				setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );

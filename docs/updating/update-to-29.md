@@ -16,7 +16,7 @@ modified_at: 2021-07-25
 
 ## Update to CKEditor 5 v29.1.0
 
-For the entire list of changes introduced in version 29.1.0, see the [changelog for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2910-2021-08-02).
+For the entire list of changes introduced in version 29.1.0, see the [release notes for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v29.1.0.
 
@@ -97,7 +97,7 @@ ClassicEditor
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-For the entire list of changes introduced in version 29.0.0, see the [changelog for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2900-2021-07-05).
+For the entire list of changes introduced in version 29.0.0, see the [release notes for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.0.0).
 
 To get to know the new editor UI for the image features, visit the {@link features/images-overview image feature guide}, especially:
 * {@link features/images-styles#semantical-styles Images in the structured content}
@@ -316,7 +316,7 @@ The following helpers were removed from the public API:
 
 Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
@@ -340,7 +340,7 @@ Check out the comprehensive {@link features/images-installation installation gui
 
 Please note that the {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 

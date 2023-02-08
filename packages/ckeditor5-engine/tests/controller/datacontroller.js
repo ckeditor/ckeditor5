@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -139,6 +139,16 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const viewElement = parseView( '<p>foo</p>' );
+			const spy = sinon.spy();
+
+			data.on( 'toModel', spy );
+			data.toModel( viewElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ viewElement ] );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -620,6 +630,16 @@ describe( 'DataController', () => {
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const spy = sinon.spy();
+
+			data.on( 'toView', spy );
+			data.toView( modelElement );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ modelElement ] );
 		} );
 
 		it( 'should use #viewDocument as a parent for returned document fragments', () => {

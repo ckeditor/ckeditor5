@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -144,8 +144,8 @@ export default class View extends ObservableMixin() {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' )
-			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', '_isFocusChanging' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -209,8 +209,8 @@ export default class View extends ObservableMixin() {
 
 		// Add default observers.
 		this.addObserver( MutationObserver );
-		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
+		this.addObserver( SelectionObserver );
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
@@ -542,7 +542,7 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
-		this.document._isFocusChanging = false;
+		this.getObserver( FocusObserver )!.flush();
 		this.change( () => {} );
 	}
 

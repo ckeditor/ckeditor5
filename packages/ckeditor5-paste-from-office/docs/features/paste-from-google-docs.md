@@ -64,14 +64,14 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ PasteFromOffice, Bold, ... ]
+		plugins: [ PasteFromOffice, Bold, /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Support for other applications

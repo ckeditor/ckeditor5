@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicEditor from '../src/classiceditor';
 import ClassicEditorUI from '../src/classiceditorui';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicEditorUIView from '../src/classiceditoruiview';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';

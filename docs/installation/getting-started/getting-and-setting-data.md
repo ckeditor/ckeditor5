@@ -157,7 +157,7 @@ Enabling the `updateSourceElementOnDestroy` option in your configuration might h
 The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content).
 
 <info-box>
-	This plugin is unavailable in any of the builds by default so you need to {@link installation/getting-started/installing-plugins install it}.
+	This plugin is unavailable in any of the builds by default so you need to {@link installation/plugins/installing-plugins install it}.
 </info-box>
 
 Assuming that you implemented a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the autosave feature is as simple as:
@@ -283,7 +283,7 @@ To handle the former situation you can listen to the native [`window#beforeunloa
 The example below shows how all these mechanisms can be used together to enable or disable a "Save" button and block the user from leaving the page without saving the data.
 
 <info-box>
-	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to {@link installation/getting-started/installing-plugins install it}.
+	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to {@link installation/plugins/installing-plugins install it}.
 </info-box>
 
 ```js
@@ -400,5 +400,5 @@ How to understand this demo:
 
 Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
 
-If you would like to integrate your CKEditor 5 installation with the Angular, React and Vue.js JavaScript frameworks, {@link installation/frameworks/overview we have a dedicated guide for that}.
+If you would like to integrate your CKEditor 5 installation with the Angular, React and Vue.js JavaScript frameworks, {@link installation/frameworks/overview we have dedicated guides for that}.
 </info-box>

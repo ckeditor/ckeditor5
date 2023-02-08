@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,13 +24,14 @@ import {
 	StylesProcessor
 } from '@ckeditor/ckeditor5-engine';
 
+import type { EditorUI } from '@ckeditor/ckeditor5-ui';
+
 import Context from '../context';
 import PluginCollection from '../plugincollection';
 import CommandCollection, { type CommandsMap } from '../commandcollection';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin';
-import type EditorUI from './editorui';
 import type { EditorConfig } from './editorconfig';
 
 /**
@@ -66,7 +67,7 @@ export default abstract class Editor extends ObservableMixin() {
 	public readonly keystrokes: EditingKeystrokeHandler;
 	public readonly t: LocaleTranslate;
 
-	public readonly id!: string;
+	public declare readonly id: string;
 
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 

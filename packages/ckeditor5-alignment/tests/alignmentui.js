@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -242,6 +242,12 @@ describe( 'Alignment UI', () => {
 		} );
 
 		it( '#toolbarView has the basic properties', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const toolbarView = dropdown.toolbarView;
 
 			expect( toolbarView ).to.have.property( 'isVertical', true );
@@ -249,6 +255,12 @@ describe( 'Alignment UI', () => {
 		} );
 
 		it( 'should hold defined buttons', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
 
 			expect( items ).to.have.length( 4 );
@@ -259,7 +271,45 @@ describe( 'Alignment UI', () => {
 			expect( items.includes( 'Justify' ) ).to.be.true;
 		} );
 
+		it( 'should use icon related to current command value', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
+			expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
+
+			command.value = 'right';
+
+			expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
+		} );
+
+		it( 'should be disabled if command is not enabled', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
+			command.isEnabled = true;
+			expect( dropdown.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( dropdown.isEnabled ).to.be.false;
+		} );
+
 		it( 'should focus the first active button when dropdown is opened', () => {
+			dropdown.render();
+			document.body.appendChild( dropdown.element );
+
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+			dropdown.isOpen = false;
+
 			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
 			const buttonAlignRight = dropdown.toolbarView.items.get( 1 );
 			const spy = sinon.spy( buttonAlignRight, 'focus' );
@@ -268,9 +318,17 @@ describe( 'Alignment UI', () => {
 			buttonAlignRight.isOn = true;
 			dropdown.isOpen = true;
 			sinon.assert.calledOnce( spy );
+
+			dropdown.element.remove();
 		} );
 
 		it( 'should return focus to editable after executing a command', () => {
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdown.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdown.isOpen = true;
+
 			const buttonAlignLeft = dropdown.toolbarView.items.get( 0 );
 			const spy = sinon.spy( editor.editing.view, 'focus' );
 			dropdown.render();
@@ -302,6 +360,12 @@ describe( 'Alignment UI', () => {
 			} );
 
 			it( 'should hold only defined buttons', () => {
+				// Make sure that toolbar view is not created before first dropdown open.
+				expect( dropdown.toolbarView ).to.be.undefined;
+
+				// Trigger toolbar view creation (lazy init).
+				dropdown.isOpen = true;
+
 				const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
 
 				expect( items ).to.have.length( 2 );
@@ -311,6 +375,7 @@ describe( 'Alignment UI', () => {
 			} );
 
 			it( 'should have default icon set (LTR content)', () => {
+				command.value = undefined;
 				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
 			} );
 
@@ -328,6 +393,7 @@ describe( 'Alignment UI', () => {
 					} )
 					.then( newEditor => {
 						dropdown = newEditor.ui.componentFactory.create( 'alignment' );
+						editor.commands.get( 'alignment' ).value = undefined;
 
 						expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
 

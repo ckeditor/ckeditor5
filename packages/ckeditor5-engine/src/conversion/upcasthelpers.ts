@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -312,7 +312,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	public attributeToAttribute( config: {
 		view: string | {
 			key: string;
-			value?: string | RegExp | ( ( value: unknown ) => boolean );
+			value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
 			name?: string;
 		} | {
 			name?: string;
@@ -523,7 +523,16 @@ export function convertText() {
 				return;
 			}
 
+			// Wrap `$text` in paragraph and include any marker that is directly before `$text`. See #13053.
+			const nodeBefore = position.nodeBefore;
+
 			position = wrapInParagraph( position, writer );
+
+			if ( nodeBefore && nodeBefore.is( 'element', '$marker' ) ) {
+				// Move `$marker` to the paragraph.
+				writer.move( writer.createRangeOn( nodeBefore ), position );
+				position = writer.createPositionAfter( nodeBefore );
+			}
 		}
 
 		consumable.consume( data.viewItem );
@@ -656,7 +665,7 @@ function upcastElementToAttribute( config: {
 function upcastAttributeToAttribute( config: {
 	view: string | {
 		key?: string;
-		value?: string | RegExp | ( ( value: unknown ) => boolean );
+		value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
 		name?: string;
 		styles?: PropertyPatterns;
 		classes?: ClassPatterns;

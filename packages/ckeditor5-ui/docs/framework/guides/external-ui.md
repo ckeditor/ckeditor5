@@ -18,7 +18,7 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 ```js
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
@@ -321,12 +321,14 @@ class BootstrapEditorUI extends EditorUI {
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
 	_setupBootstrapToolbarButtons() {
-		...
+		// Implementation details are in the following snippets.
+		// ...
 	}
 
 	// This method activates the headings dropdown in the toolbar.
 	_setupBootstrapHeadingDropdown() {
-		...
+		// Implementation details are in the following snippets.
+		// ...
 	}
 }
 ```

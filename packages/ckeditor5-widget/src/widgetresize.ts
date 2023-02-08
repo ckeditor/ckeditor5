@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,8 +17,7 @@ import type WidgetToolbarRepository from './widgettoolbarrepository';
 
 import {
 	Plugin,
-	type Editor,
-	type EditorUIUpdateEvent
+	type Editor
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -30,6 +29,8 @@ import {
 	type ViewDocumentMouseEvent,
 	type ViewSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
+
+import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-ui';
 
 import {
 	DomEmitterMixin,

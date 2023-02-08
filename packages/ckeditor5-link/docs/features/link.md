@@ -61,8 +61,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
+				'link',
+				// More toolbar items. 
 				// ...
-				'link'
 			],
 		},
 		link: {
@@ -81,8 +82,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuration
@@ -102,13 +103,14 @@ A very common use case for (automatic) link decorators is adding `target="_blank
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			addTargetToExternalLinks: true
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Internally, this configuration corresponds to an [automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) with the following {@link module:link/link~LinkDecoratorAutomaticDefinition definition}:
@@ -116,7 +118,6 @@ Internally, this configuration corresponds to an [automatic decorator](#adding-a
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			decorators: {
 				addTargetToExternalLinks: {
@@ -129,9 +130,11 @@ ClassicEditor
 				}
 			}
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 If you want to leave the decision whether a link should open in a new tab to the users, do not use the `config.link.addTargetToExternalLinks` configuration but define a new [manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators) with the following definition instead:
@@ -139,7 +142,6 @@ If you want to leave the decision whether a link should open in a new tab to the
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			decorators: {
 				openInNewTab: {
@@ -152,9 +154,11 @@ ClassicEditor
 				}
 			}
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 #### Adding default link protocol to external links
@@ -168,13 +172,14 @@ See a basic configuration example:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			defaultProtocol: 'http://'
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -192,7 +197,6 @@ For instance, to create an automatic decorator that adds the `download="file.pdf
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			decorators: {
 				detectDownloadable: {
@@ -204,9 +208,11 @@ ClassicEditor
 				}
 			}
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -222,7 +228,6 @@ To configure a "Downloadable" switch button in the link editing balloon that add
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ...
 		link: {
 			decorators: {
 				toggleDownloadable: {
@@ -243,9 +248,11 @@ ClassicEditor
 				}
 			}
 		}
+		// More of editor's config.
+ 		// ...
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Autolink feature
@@ -280,15 +287,15 @@ import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, AutoLink, ... ],
-		toolbar: [ 'link', ... ],
+		plugins: [ Link, AutoLink, /* ... */ ],
+		toolbar: [ 'link', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

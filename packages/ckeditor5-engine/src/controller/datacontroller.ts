@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -178,6 +178,8 @@ export default class DataController extends EmitterMixin() {
 		ObservableMixin().prototype.decorate.call( this, 'init' as any );
 		ObservableMixin().prototype.decorate.call( this, 'set' as any );
 		ObservableMixin().prototype.decorate.call( this, 'get' as any );
+		ObservableMixin().prototype.decorate.call( this, 'toView' as any );
+		ObservableMixin().prototype.decorate.call( this, 'toModel' as any );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener offers the possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.
@@ -259,6 +261,7 @@ export default class DataController extends EmitterMixin() {
 	 * converters attached to {@link #downcastDispatcher} into a
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
+	 * @fires toView
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
 	 * @param {Object} [options={}] Additional configuration that will be available through the
@@ -456,6 +459,7 @@ export default class DataController extends EmitterMixin() {
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
+	 * @fires toModel
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * The element or document fragment whose content will be converted.
 	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
@@ -565,6 +569,24 @@ export default class DataController extends EmitterMixin() {
 	 *
 	 * @event get
 	 */
+
+	/**
+	 * Event fired after the {@link #toView toView() method} has been run.
+	 *
+	 * The `toView` event is fired by the decorated {@link #toView} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event toView
+	 */
+
+	/**
+	 * Event fired after the {@link #toModel toModel() method} has been run.
+	 *
+	 * The `toModel` event is fired by the decorated {@link #toModel} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event toModel
+	 */
 }
 
 // Helper function for downcast conversion.
@@ -658,4 +680,16 @@ export type DataControllerGetEvent = {
 	name: 'get';
 	args: [ Parameters<DataController[ 'get' ]> ];
 	return: ReturnType<DataController[ 'get' ]>;
+};
+
+export type DataControllerToModelEvent = {
+	name: 'toModel';
+	args: [ Parameters<DataController[ 'toModel' ]> ];
+	return: ReturnType<DataController[ 'toModel' ]>;
+};
+
+export type DataControllerToViewEvent = {
+	name: 'toView';
+	args: [ Parameters<DataController[ 'toView' ]> ];
+	return: ReturnType<DataController[ 'toView' ]>;
 };

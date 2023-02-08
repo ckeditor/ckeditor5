@@ -14,7 +14,7 @@ modified_at: 2022-04-15
 <info-box hint>
 **Quick recap**
 
-In previous tutorials of this section you could learn about installing, configuring and extending your editor. This guide assumes that you know a bit about CKEditor 5, so if you are completely new to CKEditor 5, check the previous articles!
+In the other tutorials from this section you could learn about installing, configuring and extending your CKEditor 5. This guide assumes that you know a bit about this editor, so if you are completely new to it, check the previous articles first!
 
 Before starting, be sure that migrating is your best choice.
 </info-box>

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,6 +35,8 @@ export default class ListView extends View implements DropdownPanelFocusable {
 	public readonly focusTracker: FocusTracker;
 	public readonly keystrokes: KeystrokeHandler;
 
+	declare public ariaLabel: string | undefined;
+
 	private readonly _focusCycler: FocusCycler;
 
 	/**
@@ -42,6 +44,8 @@ export default class ListView extends View implements DropdownPanelFocusable {
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
+
+		const bind = this.bindTemplate;
 
 		/**
 		 * Collection of the child list views.
@@ -87,6 +91,13 @@ export default class ListView extends View implements DropdownPanelFocusable {
 			}
 		} );
 
+		/**
+		 * Label used by assistive technologies to describe this list element.
+		 *
+		 * @member {String} #ariaLabel
+		 */
+		this.set( 'ariaLabel', undefined );
+
 		this.setTemplate( {
 			tag: 'ul',
 
@@ -95,7 +106,8 @@ export default class ListView extends View implements DropdownPanelFocusable {
 					'ck',
 					'ck-reset',
 					'ck-list'
-				]
+				],
+				'aria-label': bind.to( 'ariaLabel' )
 			},
 
 			children: this.items

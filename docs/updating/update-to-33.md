@@ -13,7 +13,7 @@ modified_at: 2022-02-01
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3300-2022-03-07).
+For the entire list of changes introduced in version 33.0.0, see the [release notes for CKEditor 5 v33.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v33.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
 
@@ -21,7 +21,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### New import paths in the `ckeditor5-list` package
 
-Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/getting-started/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should update the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should update the paths accordingly:
 
 ```js
 // ❌ Old import paths:

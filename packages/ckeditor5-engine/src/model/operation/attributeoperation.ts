@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,13 +20,34 @@ import { isEqual } from 'lodash-es';
  * Operation to change nodes' attribute.
  *
  * Using this class you can add, remove or change value of the attribute.
- *
- * @extends module:engine/model/operation/operation~Operation
  */
 export default class AttributeOperation extends Operation {
+	/**
+	 * Range on which operation should be applied.
+	 *
+	 * @readonly
+	 */
 	public range: Range;
+
+	/**
+	 * Key of an attribute to change or remove.
+	 *
+	 * @readonly
+	 */
 	public key: string;
+
+	/**
+	 * Old value of the attribute with given key or `null`, if attribute was not set before.
+	 *
+	 * @readonly
+	 */
 	public oldValue: unknown;
+
+	/**
+	 * New value of the attribute with given key or `null`, if operation should remove attribute.
+	 *
+	 * @readonly
+	 */
 	public newValue: unknown;
 
 	/**
@@ -41,46 +62,19 @@ export default class AttributeOperation extends Operation {
 	 * If both `newValue` and `oldValue` are set, then the operation will change the attribute value. Note that all nodes in
 	 * operation's ranges must already have an attribute with given key and `oldValue` as value
 	 *
-	 * @param {module:engine/model/range~Range} range Range on which the operation should be applied. Must be a flat range.
-	 * @param {String} key Key of an attribute to change or remove.
-	 * @param {*} oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
-	 * @param {*} newValue New value of the attribute with given key or `null`, if operation should remove attribute.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param range Range on which the operation should be applied. Must be a flat range.
+	 * @param key Key of an attribute to change or remove.
+	 * @param oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
+	 * @param newValue New value of the attribute with given key or `null`, if operation should remove attribute.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( range: Range, key: string, oldValue: unknown, newValue: unknown, baseVersion: number | null ) {
 		super( baseVersion );
 
-		/**
-		 * Range on which operation should be applied.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/range~Range}
-		 */
 		this.range = range.clone();
-
-		/**
-		 * Key of an attribute to change or remove.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
 		this.key = key;
-
-		/**
-		 * Old value of the attribute with given key or `null`, if attribute was not set before.
-		 *
-		 * @readonly
-		 * @member {*}
-		 */
 		this.oldValue = oldValue === undefined ? null : oldValue;
-
-		/**
-		 * New value of the attribute with given key or `null`, if operation should remove attribute.
-		 *
-		 * @readonly
-		 * @member {*}
-		 */
 		this.newValue = newValue === undefined ? null : newValue;
 	}
 
@@ -99,8 +93,6 @@ export default class AttributeOperation extends Operation {
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
-	 *
-	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation} Clone of this operation.
 	 */
 	public clone(): AttributeOperation {
 		return new AttributeOperation( this.range, this.key, this.oldValue, this.newValue, this.baseVersion );
@@ -108,8 +100,6 @@ export default class AttributeOperation extends Operation {
 
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
-	 *
-	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation}
 	 */
 	public getReversed(): Operation {
 		return new AttributeOperation( this.range, this.key, this.newValue, this.oldValue, this.baseVersion! + 1 );
@@ -146,9 +136,9 @@ export default class AttributeOperation extends Operation {
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
 				 * @error attribute-operation-wrong-old-value
-				 * @param {module:engine/model/item~Item} item
-				 * @param {String} key
-				 * @param {*} value
+				 * @param item
+				 * @param key
+				 * @param value
 				 */
 				throw new CKEditorError(
 					'attribute-operation-wrong-old-value',
@@ -162,8 +152,8 @@ export default class AttributeOperation extends Operation {
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error attribute-operation-attribute-exists
-				 * @param {module:engine/model/node~Node} node
-				 * @param {String} key
+				 * @param node
+				 * @param key
 				 */
 				throw new CKEditorError(
 					'attribute-operation-attribute-exists',
@@ -196,9 +186,8 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * Creates `AttributeOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation}
+	 * @param json Deserialized JSON object.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): AttributeOperation {
 		return new AttributeOperation( Range.fromJSON( json.range, document ), json.key, json.oldValue, json.newValue, json.baseVersion );

@@ -31,7 +31,7 @@ The {@link features/source-editing source editing} feature provides basic suppor
 
 ## The build I downloaded is missing some features. How do I add them?
 
-See the {@link installation/getting-started/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
+See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
 You can learn which editor features are available in the {@link features/index feature index}.
 

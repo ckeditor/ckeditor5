@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,7 +29,8 @@ import {
 	indexOf,
 	getAncestors,
 	isText,
-	isComment
+	isComment,
+	first
 } from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node';
@@ -558,7 +559,8 @@ export default class DomConverter {
 			}
 
 			const transparentRendering = childView.is( 'element' ) &&
-				( childView.getCustomProperty( 'dataPipeline:transparentRendering' ) as boolean | undefined );
+				!!childView.getCustomProperty( 'dataPipeline:transparentRendering' ) &&
+				!first( childView.getAttributes() );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
 				yield* this.viewChildrenToDom( childView, options );

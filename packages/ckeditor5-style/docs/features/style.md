@@ -10,11 +10,19 @@ The style feature lets the user apply pre-configured styles to existing elements
 
 Under the hood, every style applies one or more HTML classes to such an element which, depending on your integration requirements, can be used to either control the visual styles of that element or apply additional semantics. <!-- The {@link features/remove-format remove formatting} feature can be used to clear those styles. -->
 
+<info-box info>
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the demo below to test the styles feature. Select a passage or a header and try applying various styles to content.
 
 {@snippet features/styles}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 <details>
 <summary>Configuration of the above demo</summary>
@@ -244,25 +252,27 @@ import Style from '@ckeditor/ckeditor5-style/src/style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
 			definitions: [
+				// Styles definitions. 
 				// ...
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -272,11 +282,12 @@ Configuring the styles feature takes two steps. First you need to define the sty
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, ... ],
+		plugins: [ Style, /* ... */ ],
 		toolbar: {
 			items: [
+				'style',
+				// More toolbar items.
 				// ...
-				'style'
 			],
 		},
 		style: {
@@ -294,8 +305,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 
 ```
 

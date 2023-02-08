@@ -1,5 +1,11 @@
 {
 	"Special characters": "Name of the special characters plugins, visible in a dropdown and as a button tooltip.",
+	"All": "A category name is displayed in a special characters dropdown representing all available symbols.",
+	"Arrows": "A category name is displayed in a special characters dropdown representing arrow symbols.",
+	"Currency": "A category name is displayed in a special characters dropdown representing currency symbols.",
+	"Latin": "A category name is displayed in a special characters dropdown representing latin symbols.",
+	"Mathematical": "A category name is displayed in a special characters dropdown representing mathematical symbols.",
+	"Text": "A category name is displayed in a special characters dropdown representing text symbols.",
   	"leftwards simple arrow": "A label for the \"leftwards simple arrow\" symbol.",
   	"rightwards simple arrow": "A label for the \"rightwards simple arrow\" symbol.",
   	"upwards simple arrow": "A label for the \"upwards simple arrow\" symbol.",
