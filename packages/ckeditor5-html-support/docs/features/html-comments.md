@@ -10,10 +10,14 @@ modified_at: 2021-10-25
 
 By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/getting-started/getting-and-setting-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
 
-<info-box>
+<info-box warning>
 	The HTML comments feature is **experimental and not yet production-ready**.
 
 	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues) section below.
+</info-box>
+
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
