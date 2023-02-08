@@ -226,9 +226,17 @@ export default class LinkActionsView extends View {
  *
  * @eventName edit
  */
+export type EditEvent = {
+	name: 'edit';
+	args: [];
+};
 
 /**
  * Fired when the {@link #unlinkButtonView} is clicked.
  *
  * @eventName unlink
  */
+export type UnlinkEvent = {
+	name: 'unlink';
+	args: [];
+};

@@ -335,9 +335,17 @@ export default class LinkFormView extends View {
  *
  * @eventName submit
  */
+export type SubmitEvent = {
+	name: 'submit';
+	args: [];
+};
 
 /**
  * Fired when the form view is canceled, for example with a click on {@link #cancelButtonView}.
  *
  * @eventName cancel
  */
+export type CancelEvent = {
+	name: 'cancel';
+	args: [];
+};
