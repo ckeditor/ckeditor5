@@ -530,7 +530,6 @@ Install necessary packages alongside the default theme using the following comma
 npm install --save \ 
 	@ckeditor/vite-plugin-ckeditor5 \
 	@ckeditor/ckeditor5-react \
-	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \

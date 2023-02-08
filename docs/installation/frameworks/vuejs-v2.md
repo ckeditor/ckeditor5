@@ -240,39 +240,13 @@ Integrating the rich text editor from source allows you to use the full power of
 
 ### Vite
 
-This guide assumes that you use `create-vite` as your boilerplate. To get started with Vite and Vue 2, run the command below.
-
-```bash
-# npm 6.x
-npm init vite@latest ckeditor5-vue2-example --template vue
-
-# npm 7+, extra double-dash is needed:
-npm init vite@latest ckeditor5-vue2-example -- --template vue
-```
-
-This command will install and execute `create-vite`, the official project scaffolding tool for Vite.
-
-#### Installing necessary packages
-
-You need some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue component, the CKEditor Vite plugin, and a theme. Also, Vite assumes you'll use Vue 3, so you need to fix that.
-
-First, uninstall Vue 3 and `@vitejs/plugin-vue`.
-
-```bash
-npm uninstall vue @vitejs/plugin-vue
-```
-
-Then, install the Vue 2 package and the Vue 2 plugin for Vite.
-
-```bash
-npm install --save vue@2 @vitejs/plugin-vue2
-```
+You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component, the CKEditor Vite plugin, and a theme. Also, Vite uses Vue 3 by default, so keep that in mind if you want to start from scratch. This guide assumes you have Vue 2 with Vite already configured.
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
-Finally, it's time to install CKEditor packages. Install them using the following command.
+It's time to install CKEditor packages. Install them using the following command.
 
 ```bash
 npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
@@ -280,7 +254,7 @@ npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
 
 #### Configuring `vite.config.js`
 
-Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing config by importing `ckeditor5` and `@vitejs/plugin-vue2`. Add them to the list of plugins.
+Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing config by importing the `ckeditor5` package. Then add it to the list of plugins.
 
 ```js
 // vite.config.js
