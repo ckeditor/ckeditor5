@@ -13,7 +13,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 ## Installation
 
 <info-box info>
-	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is not available in any of {@link installation/getting-started/predefined-builds predefined builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 

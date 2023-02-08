@@ -8,7 +8,7 @@ The Markdown plugin allows switching the default CKEditor 5 output from HTML to 
 Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 <info-box info>
-	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is not available in any of {@link installation/getting-started/predefined-builds predefined builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 

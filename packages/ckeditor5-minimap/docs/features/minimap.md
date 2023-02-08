@@ -15,7 +15,7 @@ The content minimap feature renders a content minimap which, when placed next to
 </info-box>
 
 <info-box info>
-	This feature is not available in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is not available in any of {@link installation/getting-started/predefined-builds predefined builds}.  See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
