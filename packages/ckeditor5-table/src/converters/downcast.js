@@ -23,6 +23,7 @@ export function downcastTable( tableUtils, options ) {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
+		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
@@ -56,10 +57,9 @@ export function downcastTable( tableUtils, options ) {
 			);
 		}
 
-		// Create a figure element with a table and a slot with items that don't fit into the table.
-		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, [
-			tableElement,
-
+		// Create a slot with items that don't fit into the table.
+		writer.insert(
+			writer.createPositionAt( tableElement, 'after' ),
 			writer.createSlot( element => {
 				if ( element.is( 'element', 'tableRow' ) ) {
 					return false;
@@ -67,7 +67,7 @@ export function downcastTable( tableUtils, options ) {
 
 				return !options.additionalSlots.some( ( { filter } ) => filter( element ) );
 			} )
-		] );
+		);
 
 		return options.asWidget ? toTableWidget( figureElement, writer ) : figureElement;
 	};
