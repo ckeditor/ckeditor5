@@ -240,7 +240,7 @@ Integrating the rich text editor from source allows you to use the full power of
 
 ### Vite
 
-You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component, the CKEditor Vite plugin, and a theme. Also, Vite uses Vue 3 by default, so keep that in mind if you want to start from scratch. This guide assumes you have Vue 2 with Vite already configured.
+This guide assumes you have Vue 2 with Vite already configured. `create-vue` uses Vue 3 by default, so keep that in mind if you want to start from scratch. You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
