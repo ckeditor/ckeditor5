@@ -179,7 +179,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * Incorrect markers: `'$$'`, `'[@'`.
 				 *
-				 * See {@link module:mention/mention~MentionConfig}.
+				 * See {@link module:mention/mentionconfig~MentionConfig}.
 				 *
 				 * @error mentionconfig-incorrect-marker
 				 * @param marker Configured marker
@@ -859,7 +859,7 @@ type RequestFeedDiscardedEvent = {
 };
 
 /**
- * Fired whenever the requested {@link module:mention/mention~MentionFeed#feed} promise fails with error.
+ * Fired whenever the requested {@link module:mention/mentionconfig~MentionFeed#feed} promise fails with error.
  */
 type RequestFeedErrorEvent = {
 	name: 'requestFeed:error';

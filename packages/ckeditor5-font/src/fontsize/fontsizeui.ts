@@ -82,7 +82,7 @@ export default class FontSizeUI extends Plugin {
 
 	/**
 	 * Returns options as defined in `config.fontSize.options` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontsize~FontSizeOption}
+	 * editor localization, i.e. to display {@link module:font/fontconfig~FontSizeOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}

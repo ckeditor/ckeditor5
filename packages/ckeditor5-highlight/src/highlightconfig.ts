@@ -4,11 +4,11 @@
  */
 
 /**
- * @module highlight/highlight
+ * @module highlight/highlightconfig
  */
 
 /**
- * The highlight option descriptor. See {@link module:highlight/highlight~HighlightConfig} to learn more.
+ * The highlight option descriptor. See {@link module:highlight/highlightconfig~HighlightConfig} to learn more.
  *
  * ```ts
  * {
@@ -124,7 +124,7 @@ export interface HighlightConfig {
 	 * **Note**: The highlight feature provides a stylesheet with the CSS classes and corresponding colors defined
 	 * as CSS variables.
 	 *
-	 * ```ts
+	 * ```css
 	 * :root {
 	 * 	--ck-highlight-marker-yellow: #fdfd77;
 	 * 	--ck-highlight-marker-green: #63f963;
@@ -185,7 +185,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:highlight/highlight~Highlight} feature.
 		 *
-		 * Read more in {@link module:highlight/highlight~HighlightConfig}.
+		 * Read more in {@link module:highlight/highlightconfig~HighlightConfig}.
 		 */
 		highlight?: HighlightConfig;
 	}

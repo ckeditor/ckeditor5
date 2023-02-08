@@ -32,7 +32,7 @@ export default class AlignmentUI extends Plugin {
 	 * Returns the localized option titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:alignment/alignment~AlignmentConfig#options} are available:
+	 * {@link module:alignment/alignmentconfig~AlignmentConfig#options} are available:
 	 *
 	 * * `'left'`,
 	 * * `'right'`,

@@ -25,7 +25,7 @@ import type {
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:
  *
- * * To consider the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
+ * * To consider the editor localization, i.e. to display {@link module:code-block/codeblockconfig~CodeBlockLanguageDefinition}
  * in the correct language. There is no way to use {@link module:utils/locale~Locale#t} when the user
  * configuration is defined because the editor does not exist yet.
  * * To make sure each definition has a CSS class associated with it even if not specified

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module cloud-services/cloudservices
+ * @module cloud-services/cloudservicesconfig
  */
 
 /**
@@ -104,7 +104,7 @@ export interface CloudServicesConfig {
 	 * [CKEditor Ecosystem customer dashboard](https://dashboard.ckeditor.com) after subscribing to the Easy Image service.
 	 * To learn how to start using Easy Image, check the {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
 	 *
-	 * Note: Make sure to also set the {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
+	 * Note: Make sure to also set the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} configuration option.
 	 */
 	uploadUrl?: string;
 
@@ -133,7 +133,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloud-services/cloudservices~CloudServices} plugin.
 		 *
-		 * Read more in {@link module:cloud-services/cloudservices~CloudServicesConfig}.
+		 * Read more in {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig}.
 		 */
 		cloudServices?: CloudServicesConfig;
 	}

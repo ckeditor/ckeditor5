@@ -4,7 +4,7 @@
  */
 
 /**
- * @module mention/mention
+ * @module mention/mentionconfig
  */
 
 /**
@@ -23,7 +23,7 @@
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
-export type MentionConfig = {
+export interface MentionConfig {
 
 	/**
 	 * The list of mention feeds supported by the editor.
@@ -119,12 +119,12 @@ export type MentionConfig = {
 	 * @default 10
 	 */
 	dropdownLimit?: number;
-};
+}
 
 /**
- * The mention feed descriptor. Used in {@link module:mention/mention~MentionConfig `config.mention`}.
+ * The mention feed descriptor. Used in {@link module:mention/mentionconfig~MentionConfig `config.mention`}.
  *
- * See {@link module:mention/mention~MentionConfig} to learn more.
+ * See {@link module:mention/mentionconfig~MentionConfig} to learn more.
  *
  * ```ts
  * // Static configuration.
@@ -168,7 +168,7 @@ export type MentionConfig = {
  * }
  * ```
  */
-export type MentionFeed = {
+export interface MentionFeed {
 
 	/**
 	 * The character which triggers autocompletion for mention. It must be a single character.
@@ -190,19 +190,19 @@ export type MentionFeed = {
 	minimumCharacters?: number;
 
 	/**
-	 * A function that renders a {@link module:mention/mention~MentionFeedItem}
+	 * A function that renders a {@link module:mention/mentionconfig~MentionFeedItem}
 	 * to the autocomplete panel.
 	 */
 	itemRenderer?: ItemRenderer;
-};
+}
 
 /**
- * Function that renders an array of {@link module:mention/mention~MentionFeedItem} based on string input.
+ * Function that renders an array of {@link module:mention/mentionconfig~MentionFeedItem} based on string input.
  */
 export type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
 
 /**
- * Function that takes renders a {@link module:mention/mention~MentionFeedItem} as HTMLElement.
+ * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedItem} as HTMLElement.
  */
 export type ItemRenderer = ( item: MentionFeedItem ) => HTMLElement;
 
@@ -281,7 +281,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:mention/mention~Mention} feature.
 		 *
-		 * Read more in {@link module:mention/mention~MentionConfig}.
+		 * Read more in {@link module:mention/mentionconfig~MentionConfig}.
 		 */
 		mention?: MentionConfig;
 	}

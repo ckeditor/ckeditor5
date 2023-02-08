@@ -16,7 +16,7 @@ import type { HighlightOption } from './highlightconfig';
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
  * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
- * on the {@link module:highlight/highlight~HighlightConfig configuration}.
+ * on the {@link module:highlight/highlightconfig~HighlightConfig configuration}.
  */
 export default class HighlightEditing extends Plugin {
 	/**

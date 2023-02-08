@@ -17,12 +17,12 @@ import type { InitializedToken } from './token/token';
  * Plugin introducing the integration between CKEditor 5 and CKEditor Cloud Services .
  *
  * It initializes the token provider based on
- * the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}.
+ * the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudService`}.
  */
 export default class CloudServices extends ContextPlugin implements CloudServicesConfig {
 	/**
 	 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
-	 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
+	 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} for more details.
 	 */
 	public readonly tokenUrl?: TokenUrl;
 
@@ -51,7 +51,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 
 	/**
 	 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
-	 * Its value is `null` when {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
+	 * Its value is `null` when {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} is not provided.
 	 *
 	 * @readonly
 	 */
@@ -103,7 +103,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 
 	/**
 	 * Registers an additional authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
-	 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
+	 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} for more details.
 	 *
 	 * @param tokenUrl The authentication token URL for CKEditor Cloud Services or a callback to the token value promise.
 	 */

@@ -17,7 +17,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils';
 /**
  * The Simple upload adapter allows uploading images to an application running on your server using
  * the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a
- * minimal {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig editor configuration}.
+ * minimal {@link module:upload/uploadconfig~SimpleUploadConfig editor configuration}.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -66,7 +66,7 @@ export default class SimpleUploadAdapter extends Plugin {
 
 		if ( !options.uploadUrl ) {
 			/**
-			 * The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}
+			 * The {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}
 			 * configuration required by the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`}
 			 * is missing. Make sure the correct URL is specified for the image upload to work properly.
 			 *
@@ -99,7 +99,7 @@ class Adapter implements UploadAdapter {
 	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} options
+	 * @param {module:upload/uploadconfig~SimpleUploadConfig} options
 	 */
 	constructor( loader: FileLoader, options: SimpleUploadConfig ) {
 		/**
@@ -112,7 +112,7 @@ class Adapter implements UploadAdapter {
 		/**
 		 * The configuration of the adapter.
 		 *
-		 * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} #options
+		 * @member {module:upload/uploadconfig~SimpleUploadConfig} #options
 		 */
 		this.options = options;
 	}
@@ -146,7 +146,7 @@ class Adapter implements UploadAdapter {
 
 	/**
 	 * Initializes the `XMLHttpRequest` object using the URL specified as
-	 * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
+	 * {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
 	 * configuration.
 	 *
 	 * @private

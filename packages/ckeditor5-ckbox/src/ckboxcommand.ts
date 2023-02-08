@@ -66,7 +66,7 @@ export default class CKBoxCommand extends Command {
 	 * ID from the chosen asset.
 	 *
 	 * The assets are stored only if
-	 * the {@link module:ckbox/ckbox~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
+	 * the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
 	 *
 	 * @internal
 	 */

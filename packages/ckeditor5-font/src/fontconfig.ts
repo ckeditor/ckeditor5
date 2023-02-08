@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/fontbackgroundcolor
+ * @module font/fontconfig
  */
 
 import type { ColorOption } from 'ckeditor5/src/ui';
@@ -110,7 +110,7 @@ export interface FontColorConfig {
 	 * Determines the maximum number of available document colors.
 	 * Setting it to `0` will disable the document colors feature.
 	 *
-	 * By default it equals to the {@link module:font/fontcolor~FontColorConfig#columns} value.
+	 * By default it equals to the {@link module:font/fontconfig~FontColorConfig#columns} value.
 	 *
 	 * Examples:
 	 *
@@ -277,7 +277,7 @@ export interface FontSizeConfig {
 
 	/**
 	 * Available font size options. Expressed as predefined presets, numerical "pixel" values
-	 * or the {@link module:font/fontsize~FontSizeOption}.
+	 * or the {@link module:font/fontconfig~FontSizeOption}.
 	 *
 	 * The default value is:
 	 *
@@ -394,7 +394,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the font background color feature.
 		 * It is introduced by the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} feature.
 		 *
-		 * Read more in {@link module:font/fontcolor~FontColorConfig}.
+		 * Read more in {@link module:font/fontconfig~FontColorConfig}.
 		 */
 		fontBackgroundColor?: FontColorConfig;
 
@@ -402,7 +402,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the font color feature.
 		 * It is introduced by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
 		 *
-		 * Read more in {@link module:font/fontcolor~FontColorConfig}.
+		 * Read more in {@link module:font/fontconfig~FontColorConfig}.
 		 */
 		fontColor?: FontColorConfig;
 
@@ -410,7 +410,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the font family feature.
 		 * It is introduced by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
 		 *
-		 * Read more in {@link module:font/fontfamily~FontFamilyConfig}.
+		 * Read more in {@link module:font/fontconfig~FontFamilyConfig}.
 		 */
 		fontFamily?: FontFamilyConfig;
 
@@ -418,7 +418,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the font size feature.
 		 * It is introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
 		 *
-		 * Read more in {@link module:font/fontsize~FontSizeConfig}.
+		 * Read more in {@link module:font/fontconfig~FontSizeConfig}.
 		 */
 		fontSize?: FontSizeConfig;
 	}

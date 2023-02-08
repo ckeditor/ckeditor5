@@ -127,8 +127,8 @@ export default class CKBoxEditing extends Plugin {
 
 		if ( !tokenUrl ) {
 			/**
-			 * The {@link module:ckbox/ckbox~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} or the
-			 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}
+			 * The {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} or the
+			 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}
 			 * configuration is required for the CKBox plugin.
 			 *
 			 * ```ts

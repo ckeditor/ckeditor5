@@ -22,7 +22,7 @@ import '../fontconfig';
  * It introduces the {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand command} and
  * the `fontFamily` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="font-family: Arial">`),
- * depending on the {@link module:font/fontfamily~FontFamilyConfig configuration}.
+ * depending on the {@link module:font/fontconfig~FontFamilyConfig configuration}.
  */
 export default class FontFamilyEditing extends Plugin {
 	/**

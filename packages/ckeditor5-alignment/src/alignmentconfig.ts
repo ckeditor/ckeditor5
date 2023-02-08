@@ -4,7 +4,7 @@
  */
 
 /**
- * @module alignment/alignmentediting
+ * @module alignment/alignmentconfig
  */
 
 /**
@@ -82,7 +82,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
 		 *
-		 * Read more in {@link module:alignment/alignment~AlignmentConfig}.
+		 * Read more in {@link module:alignment/alignmentconfig~AlignmentConfig}.
 		 */
 		alignment?: AlignmentConfig;
 	}

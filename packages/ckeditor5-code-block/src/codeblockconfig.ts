@@ -4,7 +4,7 @@
  */
 
 /**
- * @module code-block/codeblock
+ * @module code-block/codeblockconfig
  */
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -13,7 +13,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:code-block/codeblock~CodeBlock} feature.
 		 *
-		 * Read more in {@link module:code-block/codeblock~CodeBlockConfig}.
+		 * Read more in {@link module:code-block/codeblockconfig~CodeBlockConfig}.
 		 */
 		codeBlock?: CodeBlockConfig;
 	}
@@ -136,7 +136,7 @@ export interface CodeBlockConfig {
 }
 
 /**
- * The code block language descriptor. See {@link module:code-block/codeblock~CodeBlockConfig#languages} to learn more.
+ * The code block language descriptor. See {@link module:code-block/codeblockconfig~CodeBlockConfig#languages} to learn more.
  *
  * ```ts
  * {

@@ -37,7 +37,7 @@ const defaultIcons: Record<string, string> = {
  * This feature is not enabled by default by the {@link module:heading/heading~Heading} plugin and needs to be
  * installed manually to the editor configuration.
  *
- * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/heading~HeadingOption}.
+ * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/headingconfig~HeadingOption}.
  *
  * ```ts
  * ClassicEditor
@@ -60,7 +60,7 @@ const defaultIcons: Record<string, string> = {
  * NOTE: The `'paragraph'` button is defined in by the {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin
  * which needs to be loaded manually as well.
  *
- * It is possible to use custom icons by providing `icon` config option in {@link module:heading/heading~HeadingOption}.
+ * It is possible to use custom icons by providing `icon` config option in {@link module:heading/headingconfig~HeadingOption}.
  * For the default configuration standard icons are used.
  */
 export default class HeadingButtonsUI extends Plugin {

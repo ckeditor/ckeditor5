@@ -4,7 +4,7 @@
  */
 
 /**
- * @module language/textpartlanguage
+ * @module language/textpartlanguageconfig
  */
 
 import type { LanguageDirection } from 'ckeditor5/src/utils';

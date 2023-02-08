@@ -39,7 +39,7 @@ import './../theme/highlight.css';
  * * `'highlight:redPen'`
  * * `'highlight:greenPen'`
  *
- * See the {@link module:highlight/highlight~HighlightConfig#options configuration} to learn more
+ * See the {@link module:highlight/highlightconfig~HighlightConfig#options configuration} to learn more
  * about the defaults.
  */
 export default class HighlightUI extends Plugin {
@@ -47,7 +47,7 @@ export default class HighlightUI extends Plugin {
 	 * Returns the localized option titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with default
-	 * {@link module:highlight/highlight~HighlightConfig#options} are available:
+	 * {@link module:highlight/highlightconfig~HighlightConfig#options} are available:
 	 *
 	 * * `'Yellow marker'`,
 	 * * `'Green marker'`,

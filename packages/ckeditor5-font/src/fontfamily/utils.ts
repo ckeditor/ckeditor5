@@ -10,8 +10,8 @@ import type { FontFamilyOption } from '../fontconfig';
  */
 
 /**
- * Normalizes the {@link module:font/fontfamily~FontFamilyConfig#options configuration options}
- * to the {@link module:font/fontfamily~FontFamilyOption} format.
+ * Normalizes the {@link module:font/fontconfig~FontFamilyConfig#options configuration options}
+ * to the {@link module:font/fontconfig~FontFamilyOption} format.
  *
  * @param configuredOptions An array of options taken from the configuration.
  */

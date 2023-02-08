@@ -4,14 +4,14 @@
  */
 
 /**
- * @module indent/indentblock
+ * @module indent/indentconfig
  */
 
 /**
  * The configuration of the block indentation feature.
  *
- * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set, the block indentation feature will use
- * {@link module:indent/indentblock~IndentBlockConfig#offset} and {@link module:indent/indentblock~IndentBlockConfig#unit} to
+ * If no {@link module:indent/indentconfig~IndentBlockConfig#classes} are set, the block indentation feature will use
+ * {@link module:indent/indentconfig~IndentBlockConfig#offset} and {@link module:indent/indentconfig~IndentBlockConfig#unit} to
  * create indentation steps.
  *
  * ```ts
@@ -26,7 +26,7 @@
  * 	.catch( ... );
  * ```
  *
- * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
+ * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentconfig~IndentBlockConfig#classes} as
  * indentation steps:
  *
  * ```ts
@@ -53,14 +53,14 @@
 export interface IndentBlockConfig {
 
 	/**
-	 * The size of indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} for each indentation step.
+	 * The size of indentation {@link module:indent/indentconfig~IndentBlockConfig#unit units} for each indentation step.
 	 *
 	 * @default 40
 	 */
 	offset?: number;
 
 	/**
-	 * The unit used for indentation {@link module:indent/indentblock~IndentBlockConfig#offset}.
+	 * The unit used for indentation {@link module:indent/indentconfig~IndentBlockConfig#offset}.
 	 *
 	 * @default 'px'
 	 */
@@ -68,8 +68,8 @@ export interface IndentBlockConfig {
 
 	/**
 	 * An optional list of classes to use for indenting the editor content. If not set or set to an empty array, no classes will be used.
-	 * The {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
-	 * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
+	 * The {@link module:indent/indentconfig~IndentBlockConfig#unit `indentBlock.unit`} and
+	 * {@link module:indent/indentconfig~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
 	 *
 	 * @default undefined
 	 */
@@ -82,7 +82,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:indent/indentblock~IndentBlock block indentation feature}.
 		 *
-		 * Read more in {@link module:indent/indentblock~IndentBlockConfig}.
+		 * Read more in {@link module:indent/indentconfig~IndentBlockConfig}.
 		 */
 		indentBlock?: IndentBlockConfig;
 	}

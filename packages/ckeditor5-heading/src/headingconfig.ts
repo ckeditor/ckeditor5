@@ -4,7 +4,7 @@
  */
 
 /**
- * @module heading/heading
+ * @module heading/headingconfig
  */
 
 import type { ViewElementDefinition } from 'ckeditor5/src/engine';
@@ -131,7 +131,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the heading feature. Introduced by the {@link module:heading/headingediting~HeadingEditing} feature.
 		 *
-		 * Read more in {@link module:heading/heading~HeadingConfig}.
+		 * Read more in {@link module:heading/headingconfig~HeadingConfig}.
 		 */
 		heading?: HeadingConfig;
 	}

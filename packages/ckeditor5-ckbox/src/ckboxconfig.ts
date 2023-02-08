@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckbox/ckbox
+ * @module ckbox/ckboxconfig
  */
 
 import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
@@ -13,7 +13,7 @@ import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
  * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
  *
  * The minimal configuration for the CKBox feature requires providing the
- * {@link module:ckbox/ckbox~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`}:
+ * {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`}:
  *
  * ```ts
  * ClassicEditor
@@ -54,7 +54,7 @@ export interface CKBoxConfig {
 	/**
 	 * The authentication token URL for CKBox feature.
 	 *
-	 * Defaults to {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}
+	 * Defaults to {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}
 	 */
 	tokenUrl?: TokenUrl;
 
@@ -81,6 +81,7 @@ export interface CKBoxConfig {
 	 * 		'fdf2a647-b67f-4a6c-b692-5ba1dc1ed87b': [ 'gif' ]
 	 * 	}
 	 * };
+	 * ```
 	 *
 	 * @default null
 	 */
@@ -121,7 +122,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
 		 *
-		 * Read more in {@link module:ckbox/ckbox~CKBoxConfig}.
+		 * Read more in {@link module:ckbox/ckboxconfig~CKBoxConfig}.
 		 */
 		ckbox?: CKBoxConfig;
 	}

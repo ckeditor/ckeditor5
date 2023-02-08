@@ -4,7 +4,7 @@
  */
 
 /**
- * @module minimap/minimap
+ * @module minimap/minimapconfig
  */
 
 /**
@@ -96,7 +96,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the minimap feature. Introduced by the {@link module:minimap/minimap~Minimap} feature.
 		 *
-		 * Read more in {@link module:minimap/minimap~MinimapConfig}.
+		 * Read more in {@link module:minimap/minimapconfig~MinimapConfig}.
 		 */
 		minimap?: MinimapConfig;
 	}
