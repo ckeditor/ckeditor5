@@ -24,8 +24,6 @@ export default class AutomaticDecorators {
 
 	/**
 	 * Gives information about the number of decorators stored in the {@link module:link/utils~AutomaticDecorators} instance.
-	 *
-	 * @internal
 	 */
 	public get length(): number {
 		return this._definitions.size;
