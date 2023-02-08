@@ -573,12 +573,3 @@ function getElementPlainText( model, element ) {
 		.map( ( { item: { data } } ) => data )
 		.join( '' );
 }
-
-export function getTableColumnWidths( table ) {
-	return Array
-		.from( table.getChildren() )
-		.filter( element => element.is( 'element', 'tableColumnGroup' ) )
-		.map( element => Array.from( element.getChildren() ) )
-		.flat()
-		.map( element => element.getAttribute( 'columnWidth' ) );
-}

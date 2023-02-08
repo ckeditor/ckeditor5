@@ -9,8 +9,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
-import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
 import Table from '../../src/table';
 import { modelTable } from '../_utils/utils';
@@ -22,13 +20,12 @@ describe( 'TableWidthsCommand', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
-			command = new TableWidthsCommand( editor );
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Table, TableColumnResize, Paragraph ]
 		} );
+
+		model = editor.model;
+		command = editor.commands.get( 'resizeTableWidth' );
 	} );
 
 	afterEach( async () => {
@@ -47,7 +44,7 @@ describe( 'TableWidthsCommand', () => {
 			[ '21', '22' ]
 		] ) );
 
-		command.execute( { columnWidths: [ '40%', '%60' ], tableWidth: '40%' } );
+		command.execute( { columnWidths: [ '40%', '60%' ], tableWidth: '40%' } );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<table tableWidth="40%">' +
