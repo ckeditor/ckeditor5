@@ -1057,44 +1057,6 @@ export default class TableUtils extends Plugin {
 
 		return firstCellIsInHeading === lastCellIsInHeading;
 	}
-
-	/**
-	 * Returns a 'tableColumnGroup' element from the 'table'.
-	 *
-	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
-	 * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
-	 */
-	getColumnGroupElement( element ) {
-		if ( element.is( 'element', 'tableColumnGroup' ) ) {
-			return element;
-		}
-
-		return Array
-			.from( element.getChildren() )
-			.find( element => element.is( 'element', 'tableColumnGroup' ) );
-	}
-
-	/**
-	 * Returns an array of 'tableColumn' elements.
-	 *
-	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
-	 * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
-	 */
-	getTableColumnElements( element ) {
-		return Array.from( this.getColumnGroupElement( element ).getChildren() );
-	}
-
-	/**
-	 * Returns an array of table column widths.
-	 *
-	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
-	 * @returns {Array<String>} An array of table column widths.
-	 */
-	getTableColumnsWidths( element ) {
-		return this
-			.getTableColumnElements( element )
-			.map( column => column.getAttribute( 'columnWidth' ) );
-	}
 }
 
 // Creates empty rows at the given index in an existing table.

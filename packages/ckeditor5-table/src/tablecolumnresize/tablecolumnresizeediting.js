@@ -34,7 +34,8 @@ import {
 	getTableWidthInPixels,
 	normalizeColumnWidths,
 	toPrecision,
-	getDomCellOuterWidth, updateColumnElements
+	getDomCellOuterWidth,
+	updateColumnElements
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
@@ -135,6 +136,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		} );
 
 		const tableWidthsCommand = new TableWidthsCommand( editor );
+
+		// For backwards compatibility we have two commands that perform exactly the same operation.
 		editor.commands.add( 'resizeTableWidth', tableWidthsCommand );
 		editor.commands.add( 'resizeColumnWidths', tableWidthsCommand );
 
@@ -161,6 +164,44 @@ export default class TableColumnResizeEditing extends Plugin {
 	destroy() {
 		this._domEmitter.stopListening();
 		super.destroy();
+	}
+
+	/**
+	 * Returns a 'tableColumnGroup' element from the 'table'.
+	 *
+	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+	 * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
+	 */
+	getColumnGroupElement( element ) {
+		if ( element.is( 'element', 'tableColumnGroup' ) ) {
+			return element;
+		}
+
+		return Array
+			.from( element.getChildren() )
+			.find( element => element.is( 'element', 'tableColumnGroup' ) );
+	}
+
+	/**
+	 * Returns an array of 'tableColumn' elements.
+	 *
+	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+	 * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
+	 */
+	getTableColumnElements( element ) {
+		return Array.from( this.getColumnGroupElement( element ).getChildren() );
+	}
+
+	/**
+	 * Returns an array of table column widths.
+	 *
+	 * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+	 * @returns {Array<String>} An array of table column widths.
+	 */
+	getTableColumnsWidths( element ) {
+		return this
+			.getTableColumnElements( element )
+			.map( column => column.getAttribute( 'columnWidth' ) );
 	}
 
 	/**
@@ -201,10 +242,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		model.document.registerPostFixer( writer => {
 			let changed = false;
 
-			for ( const table of getChangedResizedTables( model ) ) {
-				const tableColumnGroup = this._tableUtilsPlugin.getColumnGroupElement( table );
-				const columns = this._tableUtilsPlugin.getTableColumnElements( tableColumnGroup );
-				const columnWidths = this._tableUtilsPlugin.getTableColumnsWidths( tableColumnGroup );
+			for ( const table of getChangedResizedTables( model, this ) ) {
+				const tableColumnGroup = this.getColumnGroupElement( table );
+				const columns = this.getTableColumnElements( tableColumnGroup );
+				const columnWidths = this.getTableColumnsWidths( tableColumnGroup );
 
 				// Adjust the `columnWidths` attribute to guarantee that the sum of the widths from all columns is 100%.
 				let normalizedWidths = normalizeColumnWidths( columnWidths );
@@ -344,8 +385,8 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
 		conversion.elementToElement( { model: 'tableColumn', view: 'col' } );
-		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
+		conversion.for( 'downcast' ).add( downcastTableResizedClass( this ) );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin, this ) );
 
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
@@ -601,10 +642,10 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		const tableColumnGroup = this._tableUtilsPlugin.getColumnGroupElement( modelTable );
+		const tableColumnGroup = this.getColumnGroupElement( modelTable );
 
 		const columnWidthsAttributeOld = tableColumnGroup ?
-			this._tableUtilsPlugin.getTableColumnsWidths( tableColumnGroup ) :
+			this.getTableColumnsWidths( tableColumnGroup ) :
 			null;
 
 		const columnWidthsAttributeNew = Array

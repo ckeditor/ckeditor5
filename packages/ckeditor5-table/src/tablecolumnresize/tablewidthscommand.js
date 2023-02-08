@@ -4,16 +4,17 @@
  */
 
 /**
- * @module table/tablecolumnresize/tablecolumnwidthscommand
+ * @module table/tablecolumnresize/tablewidthscommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import { normalizeColumnWidths } from './utils';
 
 /**
- * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
+ * Command used by the {@link module:table/tablecolumnresize~TableColumnResize Table column resize feature} that
+ * updates the width of the whole table as well as its individual columns.
  */
-export default class TableColumnWidthsCommand extends Command {
+export default class TableWidthsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -40,7 +41,7 @@ export default class TableColumnWidthsCommand extends Command {
 		} = options;
 
 		if ( columnWidths ) {
-			// For backwards compatibility, columnWidths might be an array or a string of comma-separated values
+			// For backwards compatibility, columnWidths might be an array or a string of comma-separated values.
 			columnWidths = Array.isArray( columnWidths ) ?
 				columnWidths :
 				columnWidths.split( ',' );
@@ -53,7 +54,9 @@ export default class TableColumnWidthsCommand extends Command {
 				writer.removeAttribute( 'tableWidth', table );
 			}
 
-			const tableColumnGroup = plugins.get( 'TableUtils' ).getColumnGroupElement( table );
+			const tableColumnGroup = plugins
+				.get( 'TableColumnResizeEditing' )
+				.getColumnGroupElement( table );
 
 			if ( !columnWidths && !tableColumnGroup ) {
 				return;

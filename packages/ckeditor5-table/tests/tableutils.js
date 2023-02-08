@@ -23,24 +23,23 @@ describe( 'TableUtils', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return ModelTestEditor.create( {
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
 			plugins: [ Paragraph, TableEditing, TableUtils, TableColumnResize ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
-			root = model.document.getRoot( 'main' );
-			tableUtils = editor.plugins.get( TableUtils );
+		} );
 
-			model.schema.register( 'foo', {
-				allowIn: 'table',
-				allowContentOf: '$block',
-				isLimit: true
-			} );
-			editor.conversion.elementToElement( {
-				view: 'foo',
-				model: 'foo'
-			} );
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		tableUtils = editor.plugins.get( 'TableUtils' );
+
+		model.schema.register( 'foo', {
+			allowIn: 'table',
+			allowContentOf: '$block',
+			isLimit: true
+		} );
+		editor.conversion.elementToElement( {
+			view: 'foo',
+			model: 'foo'
 		} );
 	} );
 
@@ -2023,44 +2022,6 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
-		} );
-	} );
-
-	describe( 'getTableColumnGroup()', () => {
-		it( 'should return tableColumnGroup when it exists', () => {
-			setData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( tableUtils.getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
-		} );
-
-		it( 'should not return anything if tableColumnGroup does not exists', () => {
-			setData( model, modelTable( [ [ '01', '02' ] ] ) );
-
-			expect( tableUtils.getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
-		} );
-
-		it( 'should return the same tableColumnGroup element if it was passed as an argument', () => {
-			setData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
-
-			expect( tableUtils.getColumnGroupElement( tableColumnGroup ) ).to.equal( tableColumnGroup );
-		} );
-	} );
-
-	describe( 'getTableColumns()', () => {
-		it( 'should return tableColumn array when there are columns', () => {
-			setData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( tableUtils.getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
-		} );
-	} );
-
-	describe( 'getColumnWidths()', () => {
-		it( 'should return tableColumnGroup count when there are columns', () => {
-			setData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
-
-			expect( tableUtils.getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ '50%', '50%' ] );
 		} );
 	} );
 } );

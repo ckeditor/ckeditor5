@@ -22,7 +22,7 @@ import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { getTableColumnWidths, modelTable } from '../_utils/utils';
+import { modelTable } from '../_utils/utils';
 import {
 	getDomTable,
 	getModelTable,
@@ -34,7 +34,8 @@ import {
 	getDomTableRects,
 	getDomTableCellRects,
 	tableColumnResizeMouseSimulator,
-	getDomResizer
+	getDomResizer,
+	getTableColumnWidths
 } from './_utils/utils';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS
@@ -42,12 +43,13 @@ import {
 import {
 	clamp, getDomCellOuterWidth
 } from '../../src/tablecolumnresize/utils';
+import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 
 describe( 'TableColumnResizeEditing', () => {
-	let model, editor, view, editorElement, contentDirection;
+	let model, editor, view, editorElement, contentDirection, resizePlugin;
 	const PERCENTAGE_PRECISION = 0.001;
 	const PIXEL_PRECISION = 1;
 
@@ -59,6 +61,7 @@ describe( 'TableColumnResizeEditing', () => {
 		model = editor.model;
 		view = editor.editing.view;
 		contentDirection = editor.locale.contentLanguageDirection;
+		resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 	} );
 
 	afterEach( async () => {
@@ -81,7 +84,7 @@ describe( 'TableColumnResizeEditing', () => {
 			[ '10', '11', '12' ]
 		], { columnWidths: '25%,25%,50%' } ) );
 
-		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.be.eql( [ '25%', '25%', '50%' ] );
+		expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '25%', '25%', '50%' ] );
 	} );
 
 	it( 'should have defined col widths in view', () => {
@@ -99,6 +102,14 @@ describe( 'TableColumnResizeEditing', () => {
 		}
 
 		expect( viewColWidths ).to.be.deep.equal( [ '25%', '25%', '50%' ] );
+	} );
+
+	it( 'adds `resizeTableWidth` command', () => {
+		expect( editor.commands.get( 'resizeTableWidth' ) ).to.be.instanceOf( TableWidthsCommand );
+	} );
+
+	it( 'adds `resizeColumnWidths` command', () => {
+		expect( editor.commands.get( 'resizeColumnWidths' ) ).to.be.instanceOf( TableWidthsCommand );
 	} );
 
 	describe( 'conversion', () => {
@@ -232,6 +243,48 @@ describe( 'TableColumnResizeEditing', () => {
 									<col style="width:33.33%;">
 									<col style="width:33.34%;">
 									<col style="width:33.33%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.33%"></tableColumn>' +
+								'<tableColumn columnWidth="33.34%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle <col> with pixel width', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:33.33%;">
+									<col style="width:33.33%;">
+									<col style="width:450px">
 								</colgroup>
 								<tbody>
 									<tr>
@@ -459,9 +512,8 @@ describe( 'TableColumnResizeEditing', () => {
 				], { columnWidths: '50%,50%', tableWidth: '100%' } ) );
 
 				model.change( writer => {
-					const tableColumnGroup = Array
-						.from( model.document.getRoot().getChild( 0 ).getChildren() )
-						.find( element => element.is( 'element', 'tableColumnGroup' ) );
+					const tableColumnGroup = resizePlugin.getColumnGroupElement( model.document.getRoot().getChild( 0 ) );
+
 					writer.remove( tableColumnGroup );
 				} );
 
@@ -563,25 +615,25 @@ describe( 'TableColumnResizeEditing', () => {
 			it( 'if editor is in the read-only mode', () => {
 				editor.enableReadOnlyMode( 'test' );
 
-				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if the TableColumnResize plugin is disabled', () => {
 				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
 
-				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if resizeTableWidth command is disabled', () => {
 				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
 
-				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if resizeColumnWidths command is disabled', () => {
 				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
 
-				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 		} );
 
@@ -591,57 +643,52 @@ describe( 'TableColumnResizeEditing', () => {
 				editor.commands.get( 'resizeTableWidth' ).isEnabled = true;
 				editor.commands.get( 'resizeColumnWidths' ).isEnabled = true;
 
-				expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed ).to.equal( true );
+				expect( resizePlugin._isResizingAllowed ).to.equal( true );
 			} );
 		} );
 
 		describe( 'should change value to "false"', () => {
 			it( 'if editor was switched to the read-only mode at runtime', () => {
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
-
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.enableReadOnlyMode( 'test' );
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if the TableResizeEditing plugin was disabled at runtime', () => {
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if resizeTableWidth command was disabled at runtime', () => {
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 
 			it( 'if resizeColumnWidths command was disabled at runtime', () => {
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( false );
+				expect( resizePlugin._isResizingAllowed ).to.equal( false );
 			} );
 		} );
 
@@ -650,67 +697,63 @@ describe( 'TableColumnResizeEditing', () => {
 				editor.enableReadOnlyMode( 'test' );
 
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.disableReadOnlyMode( 'test' );
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+				expect( resizePlugin._isResizingAllowed ).to.equal( true );
 			} );
 
 			it( 'if the TableResizeEditing plugin was enabled at runtime', () => {
 				editor.plugins.get( 'TableColumnResize' ).isEnabled = false;
 
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.plugins.get( 'TableColumnResize' ).isEnabled = true;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+				expect( resizePlugin._isResizingAllowed ).to.equal( true );
 			} );
 
 			it( 'if resizeTableWidth command was enabled at runtime', () => {
 				editor.commands.get( 'resizeTableWidth' ).isEnabled = false;
 
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.commands.get( 'resizeTableWidth' ).isEnabled = true;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+				expect( resizePlugin._isResizingAllowed ).to.equal( true );
 			} );
 
 			it( 'if resizeColumnWidths command was enabled at runtime', () => {
 				editor.commands.get( 'resizeColumnWidths' ).isEnabled = false;
 
 				const spy = sinon.spy();
-				const TableColumnResizeEditingPlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 
-				editor.listenTo( TableColumnResizeEditingPlugin, 'change:_isResizingAllowed', spy );
+				editor.listenTo( resizePlugin, 'change:_isResizingAllowed', spy );
 
 				editor.commands.get( 'resizeColumnWidths' ).isEnabled = true;
 
 				expect( spy.calledOnce, 'Property value should have changed once' ).to.be.true;
-				expect( TableColumnResizeEditingPlugin._isResizingAllowed ).to.equal( true );
+				expect( resizePlugin._isResizingAllowed ).to.equal( true );
 			} );
 		} );
 
 		it( 'editable should not have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "true"', () => {
-			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = true;
+			resizePlugin._isResizingAllowed = true;
 
 			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).to.equal( false );
 		} );
 
 		it( 'editable should have the "ck-column-resize_disabled" class if "_isResizingAllowed" is set to "false"', () => {
-			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+			resizePlugin._isResizingAllowed = false;
 
 			expect( editor.editing.view.document.getRoot().hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
 		} );
@@ -725,8 +768,8 @@ describe( 'TableColumnResizeEditing', () => {
 
 			tableColumnResizeMouseSimulator.down( editor, view.getDomRoot() );
 
-			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'if resizing is not allowed', () => {
@@ -735,12 +778,12 @@ describe( 'TableColumnResizeEditing', () => {
 				[ '10', '11', '12' ]
 			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
-			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+			resizePlugin._isResizingAllowed = false;
 
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 
-			expect( editor.plugins.get( 'TableColumnResizeEditing' )._isResizingActive ).to.be.false;
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'without dragging', () => {
@@ -791,7 +834,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 	} );
 
@@ -807,14 +850,14 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
-			editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+			resizePlugin._isResizingAllowed = false;
 
 			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does nothing on mouseup if resizing was not started', () => {
@@ -830,7 +873,7 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+			expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'does not change the widths if the movement vector was {0,0}', () => {
@@ -880,14 +923,14 @@ describe( 'TableColumnResizeEditing', () => {
 				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
-				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+				resizePlugin._isResizingAllowed = false;
 
 				tableColumnResizeMouseSimulator.up( editor );
 
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if columnWidths was set for the first time', () => {
@@ -901,14 +944,14 @@ describe( 'TableColumnResizeEditing', () => {
 				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
-				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+				resizePlugin._isResizingAllowed = false;
 
 				tableColumnResizeMouseSimulator.up( editor );
 
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [] );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [] );
 			} );
 
 			it( 'if tableWidth was changed', () => {
@@ -922,14 +965,14 @@ describe( 'TableColumnResizeEditing', () => {
 				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
 				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: 10, y: 0 } );
 
-				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+				resizePlugin._isResizingAllowed = false;
 
 				tableColumnResizeMouseSimulator.up( editor );
 
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 
 			it( 'if tableWidth was set for the first time', () => {
@@ -943,14 +986,14 @@ describe( 'TableColumnResizeEditing', () => {
 				tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 2, 0 ) );
 				tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 2, 0 ), { x: 10, y: 0 } );
 
-				editor.plugins.get( 'TableColumnResizeEditing' )._isResizingAllowed = false;
+				resizePlugin._isResizingAllowed = false;
 
 				tableColumnResizeMouseSimulator.up( editor );
 
 				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 
 				expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
-				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.eql( [ '20%', '25%', '55%' ] );
+				expect( getTableColumnWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 			} );
 		} );
 
@@ -1508,8 +1551,8 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="45.45%"></tableColumn>' +
-												'<tableColumn columnWidth="54.55%"></tableColumn>' +
+												'<tableColumn columnWidth="45\\.45%"></tableColumn>' +
+												'<tableColumn columnWidth="54\\.55%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
@@ -1959,6 +2002,44 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 	} );
 
+	describe( 'getTableColumnGroup()', () => {
+		it( 'should return tableColumnGroup when it exists', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( resizePlugin.getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
+		} );
+
+		it( 'should not return anything if tableColumnGroup does not exists', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
+
+			expect( resizePlugin.getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
+		} );
+
+		it( 'should return the same tableColumnGroup element if it was passed as an argument', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( resizePlugin.getColumnGroupElement( tableColumnGroup ) ).to.equal( tableColumnGroup );
+		} );
+	} );
+
+	describe( 'getTableColumns()', () => {
+		it( 'should return tableColumn array when there are columns', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( resizePlugin.getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
+		} );
+	} );
+
+	describe( 'getColumnWidths()', () => {
+		it( 'should return tableColumnGroup count when there are columns', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( resizePlugin.getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '50%', '50%' ] );
+		} );
+	} );
+
 	describe( 'in integration with', () => {
 		describe( 'undo', () => {
 			it( 'should resize correctly after undoing column insertion and resize', () => {
@@ -2308,9 +2389,9 @@ describe( 'TableColumnResizeEditing', () => {
 									'</tableCell>' +
 								'</tableRow>' +
 								'<tableColumnGroup>' +
-									'<tableColumn columnWidth="29.1%"></tableColumn>' +
-									'<tableColumn columnWidth="29.1%"></tableColumn>' +
-									'<tableColumn columnWidth="41.8%"></tableColumn>' +
+									'<tableColumn columnWidth="29\\.1%"></tableColumn>' +
+									'<tableColumn columnWidth="29\\.1%"></tableColumn>' +
+									'<tableColumn columnWidth="41\\.8%"></tableColumn>' +
 								'</tableColumnGroup>' +
 							'</table>'
 						)
@@ -2750,11 +2831,7 @@ describe( 'TableColumnResizeEditing', () => {
 	}
 
 	function assertModelWidthsSum( columnWidths ) {
-		const widthsSum = columnWidths.reduce( ( sum, element ) => {
-			sum += Number( element );
-
-			return sum;
-		}, 0 );
+		const widthsSum = columnWidths.reduce( ( sum, width ) => sum + parseFloat( width ), 0 );
 
 		expect( ( Math.abs( 100 - widthsSum ) ) < PERCENTAGE_PRECISION, 'Models widths dont sum up well' ).to.be.true;
 	}

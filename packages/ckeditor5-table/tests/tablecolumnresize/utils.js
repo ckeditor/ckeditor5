@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
@@ -36,18 +35,34 @@ import {
 /* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
+	let editorElement, editor, model, root, tableUtils, resizePlugin;
+
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Table, TableColumnResize, Paragraph ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot();
+		tableUtils = editor.plugins.get( 'TableUtils' );
+		resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+	} );
+
+	afterEach( async () => {
+		editorElement.remove();
+		await editor.destroy();
+	} );
+
 	describe( 'getChangedResizedTables()', () => {
-		let root, model;
-
 		beforeEach( () => {
-			model = new Model();
-			root = model.document.createRoot();
-
-			root._appendChild( [
-				createTable( 2, 3 ),
-				createTable( 2, 3 ),
-				createTable( 2, 3 )
-			] );
+			model.change( writer => {
+				writer.insert( createTable( 2, 3 ), root );
+				writer.insert( createTable( 2, 3 ), root );
+				writer.insert( createTable( 2, 3 ), root );
+			} );
 		} );
 
 		it( 'should do nothing if there is no table affected while inserting', () => {
@@ -58,7 +73,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 0, 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -78,7 +93,7 @@ describe( 'TableColumnResize utils', () => {
 
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -100,7 +115,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -123,7 +138,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 1, 3 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -140,7 +155,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -157,7 +172,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0, 2 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -180,7 +195,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -203,7 +218,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -220,7 +235,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -237,7 +252,7 @@ describe( 'TableColumnResize utils', () => {
 					1
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -252,7 +267,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -267,7 +282,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -282,7 +297,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'attrName', null, 'attrVal' );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 1 );
 				expect( affectedTables.has( firstTable ) ).to.be.true;
@@ -322,7 +337,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 3 );
 				expect( affectedTables.has( firstTable ), 'first table is affected' ).to.be.true;
@@ -335,7 +350,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				remove( model, new Position( root, [ 0 ] ), 1 );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -352,7 +367,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -378,7 +393,7 @@ describe( 'TableColumnResize utils', () => {
 					new Position( root, [ 2, 1, 2, 0 ] )
 				);
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -405,7 +420,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( () => {
 				attribute( model, range, 'linkHref', 'www', null );
 
-				const affectedTables = getChangedResizedTables( model );
+				const affectedTables = getChangedResizedTables( model, resizePlugin );
 
 				expect( affectedTables.size ).to.equal( 0 );
 			} );
@@ -413,28 +428,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnMinWidthAsPercentage()', () => {
-		let model, editor, editorElement;
-
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Table, TableColumnResize, Paragraph ]
-			} );
-
-			model = editor.model;
-		} );
-
-		afterEach( async () => {
-			if ( editorElement ) {
-				editorElement.remove();
-			}
-
-			if ( editor ) {
-				await editor.destroy();
-			}
-		} );
-
 		it( 'should return the correct value', () => {
 			setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
 
@@ -443,23 +436,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnIndex()', () => {
-		let editor, tableUtils;
-
-		beforeEach( () => {
-			return ClassicEditor
-				.create( '', {
-					plugins: [ Table, TableColumnResize, Paragraph ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					tableUtils = editor.plugins.get( 'TableUtils' );
-				} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
 		it( 'should properly calculate column edge indexes', () => {
 			setModelData( editor.model, modelTable( [
 				[ '00', '01', '02' ],
@@ -584,7 +560,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should handle column widths of different formats', () => {
-			expect( normalizeColumnWidths( [ 'auto', 25, 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
 		} );
 
 		it( 'should extend uninitialized columns equally if the free space per column is wider than the minimum column width', () => {
@@ -669,22 +645,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getTableWidthInPixels()', () => {
-		let editor;
-
-		beforeEach( () => {
-			return ClassicEditor
-				.create( '', {
-					plugins: [ Table, TableColumnResize ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
 		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
 		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
 		it( 'returns a correct value on Safari', () => {

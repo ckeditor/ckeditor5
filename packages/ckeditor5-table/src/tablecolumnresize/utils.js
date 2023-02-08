@@ -21,9 +21,10 @@ import {
  * Most notably if an entire table is removed it will not be included in returned set.
  *
  * @param {module:engine/model/model~Model} model The model to collect the affected elements from.
+ * @param {module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing} resizePlugin TableColumnResize plugin.
  * @returns {Set.<module:engine/model/element~Element>} A set of table model elements.
  */
-export function getChangedResizedTables( model ) {
+export function getChangedResizedTables( model, resizePlugin ) {
 	const affectedTables = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
@@ -71,7 +72,7 @@ export function getChangedResizedTables( model ) {
 				continue;
 			}
 
-			if ( !Array.from( node.getChildren() ).find( element => element.is( 'element', 'tableColumnGroup' ) ) ) {
+			if ( !resizePlugin.getColumnGroupElement( node ) ) {
 				continue;
 			}
 
@@ -230,18 +231,17 @@ export function sumArray( array ) {
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {Array.<Number|String>} columnWidths An array of column widths.
+ * @param {Array.<String>} columnWidths An array of column widths.
  * @returns {Array.<String>} An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths ) {
 	columnWidths = columnWidths.map( width => {
-		// Possible values are 'auto', number or string ending with '%'
-		if ( width === 'auto' || !isNaN( width ) ) {
-			// Leave 'auto' and number widths unchanged
+		// Possible values are 'auto' or string ending with '%'
+		if ( width === 'auto' ) {
 			return width;
 		}
 
-		return Number( width.replace( '%', '' ) );
+		return parseFloat( width.replace( '%', '' ) );
 	} );
 
 	columnWidths = calculateMissingColumnWidths( columnWidths );
