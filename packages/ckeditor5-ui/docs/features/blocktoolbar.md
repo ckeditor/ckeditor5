@@ -16,6 +16,10 @@ The block toolbar comes in handy when the main editor toolbar cannot be accessed
 
 {@snippet features/blocktoolbar}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Configuration
 
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.

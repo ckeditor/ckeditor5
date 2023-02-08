@@ -13,7 +13,7 @@ The mention feature brings support for smart autocompletion based on user input.
 You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
 <info-box info>
-	The Mentions feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -45,7 +45,7 @@ The code snippet below was used to configure the demo above. It defines the list
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// This feature is not available in any of the builds.
+		// This feature is available in the superbuild only.
 		// See the "Installation" section.
 		plugins: [ Mention, /* ... */ ],
 
@@ -89,7 +89,7 @@ The callback receives the query text which should be used to filter item suggest
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// This feature is not available in any of the builds.
+		// This feature is available in the superbuild only.
 		// See the "Installation" section.
 		plugins: [ Mention, /* ... */ ],
 
