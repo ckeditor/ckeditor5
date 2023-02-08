@@ -81,6 +81,8 @@ watchdog.setCreator( ( elementOrData, editorConfig ) => {
 
 // Do something before the editor is destroyed. Return a promise.
 watchdog.setDestructor( editor => {
+	// Do something before the editor is destroyed.
+	// ...
 	return editor
 		.destroy()
 		.then( () => {
@@ -245,6 +247,7 @@ watchdog.setCreator( async config => {
 	const context = await Context.create( config );
 
 	// Do something when the context is initialized.
+	// ...
 
 	return context;
 } );
@@ -253,6 +256,7 @@ watchdog.setCreator( async config => {
 watchdog.setDestructor( async context => {
 
 	// Do something before destroy.
+	// ...
 
 	await context.destroy();
 } );
