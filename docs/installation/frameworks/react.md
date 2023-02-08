@@ -526,8 +526,16 @@ Besides the CKEditor base and plugins, you need to install additional packages t
 
 Install necessary packages alongside the default theme using the following command.
 
-```bash
-npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-react @ckeditor/ckeditor5-theme-lark
+```
+npm install --save \ 
+	@ckeditor/vite-plugin-ckeditor5 \
+	@ckeditor/ckeditor5-react \
+	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-theme-lark \
+	@ckeditor/ckeditor5-editor-classic \
+	@ckeditor/ckeditor5-essentials \
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-basic-styles
 ```
 
 #### Configuring `vite.config.js`
@@ -537,14 +545,27 @@ Configuring CKEditor with React and Vite is simple. Modify the existing config b
 ```js
 // vite.config.js
 
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
-	plugins: [
-		ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
-	]
-} );
+  plugins: [
+    react(),
+    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+  ],
+} )
 ```
+
+The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+
+```js
+// vite.config.js
+
+import { createRequire } from 'node:module';
+const require = createRequire( import.meta.url );
+```
+
 ### Using the editor from source
 
 Once your configuration is updated, you can use CKEditor 5 directly from source. Test it by editing `src/App.js`:

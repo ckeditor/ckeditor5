@@ -255,10 +255,10 @@ You need two packages to use CKEditor from source with Vue and Vite: the officia
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
-Install necessary packages alongside the default theme using the following command.
+Install necessary packages using the following command.
 
 ```bash
-npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue @ckeditor/ckeditor5-theme-lark
+npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue
 ```
 
 #### Configuring `vite.config.js`
@@ -268,13 +268,30 @@ Configuring CKEditor with Vue and Vite is simple. Modify the existing config by 
 ```js
 // vite.config.js
 
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
-	plugins: [
-		ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
-	]
-} );
+  plugins: [ 
+    vue(),
+    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath( new URL( './src', import.meta.url ) )
+    }
+  }
+} )
+```
+
+The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+
+```js
+// vite.config.js
+
+import { createRequire } from 'node:module';
+const require = createRequire( import.meta.url );
 ```
 
 Now, your setup with Vite and Vue is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
@@ -386,7 +403,7 @@ module.exports = {
 
 ### Using the editor from source
 
-Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-vue`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
+Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
 
 ```bash
 npm install --save \

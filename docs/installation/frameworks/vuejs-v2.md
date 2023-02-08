@@ -240,45 +240,73 @@ Integrating the rich text editor from source allows you to use the full power of
 
 ### Vite
 
-This guide assumes that you use `create-vue` as your boilerplate. To get started with Vite and Vue, run the command below.
+This guide assumes that you use `create-vite` as your boilerplate. To get started with Vite and Vue 2, run the command below.
 
 ```bash
-npm init vue@latest ckeditor5-vue-example
+# npm 6.x
+npm init vite@latest ckeditor5-vue2-example --template vue
+
+# npm 7+, extra double-dash is needed:
+npm init vite@latest ckeditor5-vue2-example -- --template vue
 ```
 
-This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding Typescript. Choose your preferred options.
+This command will install and execute `create-vite`, the official project scaffolding tool for Vite.
 
 #### Installing necessary packages
 
-You need two packages to use CKEditor from source with Vue and Vite: the official Vue component and the Vite plugin.
+You need some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue component, the CKEditor Vite plugin, and a theme. Also, Vite assumes you'll use Vue 3, so you need to fix that.
+
+First, uninstall Vue 3 and `@vitejs/plugin-vue`.
+
+```bash
+npm uninstall vue @vitejs/plugin-vue
+```
+
+Then, install the Vue 2 package and the Vue 2 plugin for Vite.
+
+```bash
+npm install --save vue@2 @vitejs/plugin-vue2
+```
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
-Install necessary packages alongside the default theme using the following command.
+Finally, it's time to install CKEditor packages. Install them using the following command.
 
 ```bash
-npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2 @ckeditor/ckeditor5-theme-lark
+npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
 ```
 
 #### Configuring `vite.config.js`
 
-Configuring CKEditor with Vue and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing config by importing `ckeditor5` and `@vitejs/plugin-vue2`. Add them to the list of plugins.
 
 ```js
 // vite.config.js
 
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue2'
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
-	plugins: [
-		ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
-	]
-} );
+  plugins: [
+    vue(),
+    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+  ],
+} )
 ```
 
-Now, your setup with Vite and Vue is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+
+```js
+// vite.config.js
+
+import { createRequire } from 'node:module';
+const require = createRequire( import.meta.url );
+```
+
+Now, your setup with Vite and Vue 2 is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
 
 ### Webpack
 
