@@ -81,8 +81,11 @@ export default class ClipboardObserver extends DomEventObserver<
 	}
 
 	public onDomEvent( domEvent: ClipboardEvent | DragEvent ): void {
+		const nativeDataTransfer = 'clipboardData' in domEvent ? domEvent.clipboardData! : domEvent.dataTransfer!;
+		const cacheFiles = domEvent.type == 'drop' || domEvent.type == 'paste';
+
 		const evtData: ClipboardEventData = {
-			dataTransfer: new DataTransfer( 'clipboardData' in domEvent ? domEvent.clipboardData! : domEvent.dataTransfer! )
+			dataTransfer: new DataTransfer( nativeDataTransfer, { cacheFiles } )
 		};
 
 		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {

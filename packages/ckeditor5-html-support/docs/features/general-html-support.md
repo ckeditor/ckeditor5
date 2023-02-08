@@ -83,7 +83,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -329,7 +329,3 @@ It is possible to add support for arbitrary styles, classes and other attributes
 </info-box>
 
 We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/). You can also track other [GHS-related issues](https://github.com/ckeditor/ckeditor5/issues/9856) on GitHub <!-- To be removed at some point, as the main issue is closed already -->.
-
-## Contribute
-
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support).
