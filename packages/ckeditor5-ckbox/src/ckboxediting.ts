@@ -339,10 +339,6 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CKBoxEditing.pluginName ]: CKBoxEditing;
 	}
-
-	interface CommandsMap {
-		ckbox: CKBoxCommand;
-	}
 }
 
 /**

@@ -154,8 +154,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
 	}
-
-	interface CommandsMap {
-		imageStyle: ImageStyleCommand;
-	}
 }

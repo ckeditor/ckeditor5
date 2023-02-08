@@ -504,10 +504,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CodeBlockEditing.pluginName ]: CodeBlockEditing;
 	}
-
-	interface CommandsMap {
-		indentCodeBlock: IndentCodeBlockCommand;
-		outdentCodeBlock: OutdentCodeBlockCommand;
-		codeBlock: CodeBlockCommand;
-	}
 }

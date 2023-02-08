@@ -158,3 +158,9 @@ function insertImages( editor: Editor, urls: Array<string> ): void {
 
 	editor.execute( 'insertImage', { source: urls } );
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		ckfinder: CKFinderCommand;
+	}
+}

@@ -197,8 +197,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontSizeEditing.pluginName ]: FontSizeEditing;
 	}
-
-	interface CommandsMap {
-		[ FONT_SIZE ]: FontSizeCommand;
-	}
 }

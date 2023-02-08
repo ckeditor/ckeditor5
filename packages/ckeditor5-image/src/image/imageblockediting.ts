@@ -181,8 +181,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageBlockEditing.pluginName ]: ImageBlockEditing;
 	}
-
-	interface CommandsMap {
-		imageTypeBlock: ImageTypeCommand;
-	}
 }

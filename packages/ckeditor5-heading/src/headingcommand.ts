@@ -92,3 +92,9 @@ export default class HeadingCommand extends Command {
 function checkCanBecomeHeading( block: Element, heading: string, schema: Schema ) {
 	return schema.checkChild( block.parent as Element, heading ) && !schema.isObject( block );
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		heading: HeadingCommand;
+	}
+}

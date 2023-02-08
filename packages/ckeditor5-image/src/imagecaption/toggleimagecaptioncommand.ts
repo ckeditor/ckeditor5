@@ -168,3 +168,9 @@ export default class ToggleImageCaptionCommand extends Command {
 		writer.remove( captionElement );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		toggleImageCaption: ToggleImageCaptionCommand;
+	}
+}

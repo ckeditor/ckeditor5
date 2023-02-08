@@ -109,3 +109,9 @@ function setAlignmentOnSelection( blocks: Array<Element>, writer: Writer, alignm
 		writer.setAttribute( ALIGNMENT, alignment, block );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		alignment: AlignmentCommand;
+	}
+}

@@ -131,3 +131,9 @@ export default class ImageStyleCommand extends Command {
 		return !supportedTypes.includes( imageElement.name );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		imageStyle: ImageStyleCommand;
+	}
+}

@@ -125,8 +125,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ HeadingEditing.pluginName ]: HeadingEditing;
 	}
-
-	interface CommandsMap {
-		heading: HeadingCommand;
-	}
 }

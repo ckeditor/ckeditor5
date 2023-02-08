@@ -146,10 +146,6 @@ export default class BlockQuoteEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		blockQuote: BlockQuoteCommand;
-	}
-
 	interface PluginsMap {
 		[ BlockQuoteEditing.pluginName ]: BlockQuoteEditing;
 	}

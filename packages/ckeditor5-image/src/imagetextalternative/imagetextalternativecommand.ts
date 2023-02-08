@@ -57,3 +57,9 @@ export default class ImageTextAlternativeCommand extends Command {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		imageTextAlternative: ImageTextAlternativeCommand;
+	}
+}

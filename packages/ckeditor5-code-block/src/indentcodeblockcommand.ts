@@ -97,3 +97,9 @@ export default class IndentCodeBlockCommand extends Command {
 		return isModelSelectionInCodeBlock( this.editor.model.document.selection );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		indentCodeBlock: IndentCodeBlockCommand;
+	}
+}

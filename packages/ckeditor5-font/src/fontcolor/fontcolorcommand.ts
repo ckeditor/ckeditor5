@@ -29,3 +29,9 @@ export default class FontColorCommand extends FontCommand {
 		super( editor, FONT_COLOR );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		[ FONT_COLOR ]: FontColorCommand;
+	}
+}

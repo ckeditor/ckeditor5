@@ -181,10 +181,6 @@ function buildClassDefinition( options: Array<AlignmentFormat> ) {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		alignment: AlignmentCommand;
-	}
-
 	interface PluginsMap {
 		[ AlignmentEditing.pluginName ]: AlignmentEditing;
 	}

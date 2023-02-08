@@ -139,9 +139,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageResizeEditing.pluginName ]: ImageResizeEditing;
 	}
-
-	interface CommandsMap {
-		resizeImage: ResizeImageCommand;
-		imageResize: ResizeImageCommand;
-	}
 }

@@ -423,3 +423,9 @@ type CKBoxEvent<Name extends '' | 'choose' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckbox' : `ckbox:${ Name }`;
 	args: Name extends 'choose' ? [ assets: Array<CKBoxRawAssetDefinition> ] : [];
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		ckbox: CKBoxCommand;
+	}
+}

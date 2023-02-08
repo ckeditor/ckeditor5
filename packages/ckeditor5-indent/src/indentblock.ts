@@ -171,19 +171,8 @@ export default class IndentBlock extends Plugin {
 	}
 }
 
-/**
- * The configuration of the {@link module:indent/indentblock~IndentBlock block indentation feature}.
- *
- * Read more in {@link module:indent/indentblock~IndentBlockConfig}.
- */
-
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ IndentBlock.pluginName ]: IndentBlock;
-	}
-
-	interface CommandsMap {
-		indentBlock: IndentBlockCommand;
-		outdentBlock: IndentBlockCommand;
 	}
 }

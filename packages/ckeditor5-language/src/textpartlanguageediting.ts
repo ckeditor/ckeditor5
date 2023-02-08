@@ -110,8 +110,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
 	}
-
-	interface CommandsMap {
-		textPartLanguage: TextPartLanguageCommand;
-	}
 }

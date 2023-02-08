@@ -189,3 +189,9 @@ function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 
 	return nodeAtPosition as Text;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		outdentCodeBlock: OutdentCodeBlockCommand;
+	}
+}

@@ -138,8 +138,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontFamilyEditing.pluginName ]: FontFamilyEditing;
 	}
-
-	interface CommandsMap {
-		[ FONT_FAMILY ]: FontFamilyCommand;
-	}
 }

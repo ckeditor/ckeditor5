@@ -129,10 +129,6 @@ type HighlightConverterDefinition = {
 };
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		highlight: HighlightCommand;
-	}
-
 	interface PluginsMap {
 		[ HighlightEditing.pluginName ]: HighlightEditing;
 	}

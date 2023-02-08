@@ -35,10 +35,3 @@ export default class IndentEditing extends Plugin {
 		editor.commands.add( 'outdent', new MultiCommand( editor ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		indent: MultiCommand;
-		outdent: MultiCommand;
-	}
-}
