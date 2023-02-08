@@ -26,6 +26,7 @@ import { toMap } from 'ckeditor5/src/utils';
 
 import LinkEditing from './linkediting';
 import type ManualDecorator from './utils/manualdecorator';
+import type LinkCommand from './linkcommand';
 
 import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
 
@@ -75,7 +76,7 @@ export default class LinkImageEditing extends Plugin {
 	 */
 	private _enableAutomaticDecorators(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' )!;
+		const command: LinkCommand = editor.commands.get( 'link' )!;
 		const automaticDecorators = command.automaticDecorators;
 
 		if ( automaticDecorators.length ) {
@@ -89,7 +90,7 @@ export default class LinkImageEditing extends Plugin {
 	 */
 	private _enableManualDecorators(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' )!;
+		const command: LinkCommand = editor.commands.get( 'link' )!;
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -114,7 +115,7 @@ export default class LinkImageEditing extends Plugin {
  */
 function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
-	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
 		dispatcher.on<UpcastElementEvent>( 'element:a', ( evt, data, conversionApi ) => {
@@ -187,7 +188,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
  * Creates a converter that adds `<a>` to linked block image view elements.
  */
 function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher ) => void {
-	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
 		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
@@ -266,7 +267,7 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
  */
 function upcastImageLinkManualDecorator( editor: Editor, decorator: ManualDecorator ): ( dispatcher: UpcastDispatcher ) => void {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
-	const imageUtils = editor.plugins.get( 'ImageUtils' ) as ImageUtils;
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
 		dispatcher.on<UpcastElementEvent>( 'element:a', ( evt, data, conversionApi ) => {

@@ -10,6 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
 
+import type LinkCommand from './linkcommand';
 import { isLinkableElement } from './utils';
 
 /**
@@ -50,7 +51,7 @@ export default class UnlinkCommand extends Command {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const linkCommand = editor.commands.get( 'link' );
+		const linkCommand: LinkCommand | undefined = editor.commands.get( 'link' );
 
 		model.change( writer => {
 			// Get ranges to unlink.

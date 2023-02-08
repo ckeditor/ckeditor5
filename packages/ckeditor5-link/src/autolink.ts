@@ -10,6 +10,7 @@
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
+import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 
@@ -149,7 +150,7 @@ export default class AutoLink extends Plugin {
 	private _enableEnterHandling(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const enterCommand = editor.commands.get( 'enter' );
+		const enterCommand: EnterCommand | undefined = editor.commands.get( 'enter' );
 
 		if ( !enterCommand ) {
 			return;
@@ -175,7 +176,7 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+		const shiftEnterCommand: ShiftEnterCommand | undefined = editor.commands.get( 'shiftEnter' );
 
 		if ( !shiftEnterCommand ) {
 			return;

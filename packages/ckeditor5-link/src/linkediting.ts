@@ -170,14 +170,12 @@ export default class LinkEditing extends Plugin {
 	 *
 	 * **Note**: This method also activates the automatic external link decorator if enabled with
 	 * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.
-	 *
-	 * @param automaticDecoratorDefinitions
 	 */
 	private _enableAutomaticDecorators( automaticDecoratorDefinitions: Array<NormalizedLinkDecoratorAutomaticDefinition> ): void {
 		const editor = this.editor;
 		// Store automatic decorators in the command instance as we do the same with manual decorators.
 		// Thanks to that, `LinkImageEditing` plugin can re-use the same definitions.
-		const command = editor.commands.get( 'link' )!;
+		const command: LinkCommand = editor.commands.get( 'link' )!;
 		const automaticDecorators = command.automaticDecorators;
 
 		// Adds a default decorator for external links.
@@ -215,7 +213,7 @@ export default class LinkEditing extends Plugin {
 		}
 
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' )!;
+		const command: LinkCommand = editor.commands.get( 'link' )!;
 		const manualDecorators = command.manualDecorators;
 
 		manualDecoratorDefinitions.forEach( decoratorDefinition => {
@@ -304,7 +302,8 @@ export default class LinkEditing extends Plugin {
 
 		// Open link on Alt+Enter.
 		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
-			const url = editor.commands.get( 'link' )!.value;
+			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+			const url = linkCommand!.value;
 			const shouldOpen = !!url && data.keyCode === keyCodes.enter && data.altKey;
 
 			if ( !shouldOpen ) {

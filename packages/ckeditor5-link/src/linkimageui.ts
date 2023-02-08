@@ -19,6 +19,7 @@ import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
 
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
+import type LinkCommand from './linkcommand';
 
 import { LINK_KEYSTROKE } from './utils';
 
@@ -80,7 +81,7 @@ export default class LinkImageUI extends Plugin {
 		editor.ui.componentFactory.add( 'linkImage', locale => {
 			const button = new ButtonView( locale );
 			const plugin = editor.plugins.get( 'LinkUI' );
-			const linkCommand = editor.commands.get( 'link' )!;
+			const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 			button.set( {
 				isEnabled: true,
@@ -114,7 +115,7 @@ export default class LinkImageUI extends Plugin {
 	 */
 	private _isSelectedLinkedImage( selection: DocumentSelection | Selection ): boolean {
 		const selectedModelElement = selection.getSelectedElement();
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' ) as ImageUtils;
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		return imageUtils.isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
 	}

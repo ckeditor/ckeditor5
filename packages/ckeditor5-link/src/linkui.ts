@@ -27,6 +27,8 @@ import { isWidget } from 'ckeditor5/src/widget';
 
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
+import type LinkCommand from './linkcommand';
+import type UnlinkCommand from './unlinkcommand';
 import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -134,8 +136,8 @@ export default class LinkUI extends Plugin {
 	private _createActionsView(): LinkActionsView {
 		const editor = this.editor;
 		const actionsView = new LinkActionsView( editor.locale );
-		const linkCommand = editor.commands.get( 'link' )!;
-		const unlinkCommand = editor.commands.get( 'unlink' )!;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+		const unlinkCommand: UnlinkCommand = editor.commands.get( 'unlink' )!;
 
 		actionsView.bind( 'href' ).to( linkCommand, 'value' );
 		actionsView.editButtonView.bind( 'isEnabled' ).to( linkCommand );
@@ -172,7 +174,7 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createFormView(): LinkFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' )!;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand );
@@ -211,7 +213,7 @@ export default class LinkUI extends Plugin {
 	 */
 	private _createToolbarLinkButton(): void {
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' )!;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'link', locale => {
@@ -333,7 +335,7 @@ export default class LinkUI extends Plugin {
 		}
 
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' )!;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		this.formView!.disableCssTransitions();
 
@@ -366,7 +368,7 @@ export default class LinkUI extends Plugin {
 	 * switch buttons responsible for manual decorator handling is restored.
 	 */
 	private _closeFormView(): void {
-		const linkCommand = this.editor.commands.get( 'link' )!;
+		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
 		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
 		// when the user cancels the editing form.
