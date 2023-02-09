@@ -13,8 +13,6 @@ import { Widget } from 'ckeditor5/src/widget';
 import HtmlEmbedEditing from './htmlembedediting';
 import HtmlEmbedUI from './htmlembedui';
 
-import './htmlembedconfig';
-
 /**
  * The HTML embed feature.
  *
