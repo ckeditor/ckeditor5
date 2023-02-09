@@ -4,8 +4,6 @@
  */
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '../../src/table';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -66,7 +64,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( writer => {
 				writer.insert(
 					new Element( 'paragraph' ),
-					root.getChild( 2 ).getChild( 0 ).getChild( 0 )
+					root.getNodeByPath( [ 2, 0, 0 ] )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -81,7 +79,7 @@ describe( 'TableColumnResize utils', () => {
 			model.change( writer => {
 				paragraph = writer.createElement( 'paragraph' );
 
-				writer.insert( paragraph, root.getChild( 2 ).getChild( 0 ).getChild( 0 ) );
+				writer.insert( paragraph, root.getNodeByPath( [ 2, 0, 0 ] ) );
 			} );
 
 			model.change( writer => {
@@ -158,12 +156,8 @@ describe( 'TableColumnResize utils', () => {
 				const firstTable = root.getChild( 0 );
 
 				writer.insert(
-					new Element( 'tableRow', {}, [
-						new Element( 'tableCell' ),
-						new Element( 'tableCell' ),
-						new Element( 'tableCell' )
-					] ),
-					root.getChild( 0 ),
+					new Element( 'tableRow', {}, createTableCells( 3 ) ),
+					firstTable,
 					2
 				);
 
@@ -178,8 +172,8 @@ describe( 'TableColumnResize utils', () => {
 			const firstTable = root.getChild( 0 );
 
 			model.change( writer => {
-				writer.remove( root.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
-				writer.remove( root.getChild( 0 ).getChild( 1 ).getChild( 0 ) );
+				writer.remove( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				writer.remove( root.getNodeByPath( [ 0, 1, 0 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -192,8 +186,8 @@ describe( 'TableColumnResize utils', () => {
 			const firstTable = root.getChild( 0 );
 
 			model.change( writer => {
-				writer.remove( root.getChild( 0 ).getChild( 0 ).getChild( 2 ) );
-				writer.remove( root.getChild( 0 ).getChild( 1 ).getChild( 2 ) );
+				writer.remove( root.getNodeByPath( [ 0, 0, 2 ] ) );
+				writer.remove( root.getNodeByPath( [ 0, 1, 2 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -206,7 +200,7 @@ describe( 'TableColumnResize utils', () => {
 			const firstTable = root.getChild( 0 );
 
 			model.change( writer => {
-				writer.remove( root.getChild( 0 ).getChild( 0 ) );
+				writer.remove( root.getNodeByPath( [ 0, 0, 0 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -219,7 +213,7 @@ describe( 'TableColumnResize utils', () => {
 			const firstTable = root.getChild( 0 );
 
 			model.change( writer => {
-				writer.remove( root.getChild( 0 ).getChild( 1 ) );
+				writer.remove( root.getNodeByPath( [ 0, 1 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -231,9 +225,12 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - attribute change on multiple cells', () => {
 			const firstTable = root.getChild( 0 );
 
-			const range = new Range( new Position( root, [ 0, 0, 0 ] ), new Position( root, [ 0, 0, 3 ] ) );
-
 			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 0 ),
+					writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 3 )
+				);
+
 				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
@@ -244,11 +241,14 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - attribute change on multiple rows', () => {
-			const firstTable = root.getChild( 0 );
-
-			const range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 2 ] ) );
-
 			model.change( writer => {
+				const firstTable = root.getChild( 0 );
+
+				const range = writer.createRange(
+					writer.createPositionAt( firstTable, 0 ),
+					writer.createPositionAt( firstTable, 2 )
+				);
+
 				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
@@ -261,9 +261,12 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - attribute change on a table', () => {
 			const firstTable = root.getChild( 0 );
 
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-
 			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionAt( root, 0 ),
+					writer.createPositionAt( root, 1 )
+				);
+
 				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
@@ -285,7 +288,10 @@ describe( 'TableColumnResize utils', () => {
 					firstTable.getChild( 0 )
 				);
 
-				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+				const range = writer.createRange(
+					writer.createPositionAt( root, 1 ),
+					writer.createPositionAt( root, 3 )
+				);
 
 				writer.setAttribute( 'attrName', 'attrVal', range );
 				writer.insert(
@@ -335,18 +341,18 @@ describe( 'TableColumnResize utils', () => {
 				writer.insertText(
 					'foo',
 					{ bold: true },
-					root.getChild( 0 ).getChild( 0 ).getChild( 0 )
+					root.getNodeByPath( [ 0, 0, 0, 0 ] )
 				);
 
 				writer.insertText(
 					'foo',
 					{ italic: true },
-					root.getChild( 1 ).getChild( 1 ).getChild( 1 )
+					root.getNodeByPath( [ 1, 1, 1, 0 ] )
 				);
 
 				writer.insertText(
 					'foo',
-					root.getChild( 2 ).getChild( 1 ).getChild( 2 )
+					root.getNodeByPath( [ 2, 1, 2, 0 ] )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -361,18 +367,21 @@ describe( 'TableColumnResize utils', () => {
 			// To test the getChangedResizedTables(), when the attribute is being removed we need
 			// to first insert the text inside one of the table cells.
 			model.change( writer => {
-				const position = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const paragraph = root.getNodeByPath( [ 0, 0, 0, 0 ] );
 
-				writer.insertText( 'foo', position );
+				writer.insertText( 'foo', paragraph, 0 );
 
-				range = writer.createRangeIn( position );
+				range = writer.createRange(
+					writer.createPositionAt( paragraph, 1 ),
+					writer.createPositionAt( paragraph, 3 )
+				);
 
 				writer.setAttribute( 'linkHref', 'www', range );
 			} );
 
 			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
 			model.change( writer => {
-				writer.setAttribute( 'linkHref', null, range );
+				writer.removeAttribute( 'linkHref', range );
 
 				const affectedTables = getChangedResizedTables( model );
 
