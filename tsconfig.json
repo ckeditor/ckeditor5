@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "lib": [
-      "DOM", "DOM.Iterable"
+      "DOM", 
+      "DOM.Iterable"
     ],
     "noImplicitAny": true,
     "noImplicitOverride": true,
