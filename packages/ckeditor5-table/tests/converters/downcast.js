@@ -187,6 +187,191 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			it( 'should push table items without dedicated slot outside the table', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<foo></foo>
+							<tbody>
+								<tr>
+									<td>01</td>
+									<td>02</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>01</td>' +
+									'<td>02</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<foo>&nbsp;</foo>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with custom slot', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
+					filter: element => element.is( 'element', 'foo' ),
+					positionOffset: 0
+				} );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<foo></foo>
+							<tbody>
+								<tr>
+									<td>01</td>
+									<td>02</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<foo>&nbsp;</foo>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>01</td>' +
+									'<td>02</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with custom slot at the `end` position', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
+					filter: element => element.is( 'element', 'foo' ),
+					positionOffset: 'end'
+				} );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<foo></foo>
+							<tbody>
+								<tr>
+									<td>01</td>
+									<td>02</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>01</td>' +
+									'<td>02</td>' +
+								'</tr>' +
+							'</tbody>' +
+							'<foo>&nbsp;</foo>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with custom slot at the `after` position', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
+					filter: element => element.is( 'element', 'foo' ),
+					positionOffset: 'after'
+				} );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<foo></foo>
+							<tbody>
+								<tr>
+									<td>01</td>
+									<td>02</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>01</td>' +
+									'<td>02</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<foo>&nbsp;</foo>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with custom slot at the `before` position', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
+					filter: element => element.is( 'element', 'foo' ),
+					positionOffset: 'before'
+				} );
+
+				editor.setData(
+					`<figure class="table">
+						<table>
+							<foo></foo>
+							<tbody>
+								<tr>
+									<td>01</td>
+									<td>02</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<foo>&nbsp;</foo>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>01</td>' +
+									'<td>02</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
 			it( 'should create table with block content', () => {
 				setModelData( model, modelTable( [
 					[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
