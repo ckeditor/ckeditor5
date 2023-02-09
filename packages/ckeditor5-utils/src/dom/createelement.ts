@@ -21,7 +21,7 @@ type HTMLElementAttributes = { readonly [ key: string ]: string };
 type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
 
 /**
- * Children elements of the
+ * Element or elements that will be added to the created element as children. Strings will be automatically turned into Text nodes.
  */
 type ChildrenElements = Node | string | Iterable<Node | string>;
 
