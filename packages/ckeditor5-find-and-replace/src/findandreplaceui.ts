@@ -7,46 +7,50 @@
  * @module find-and-replace/findandreplaceui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown } from 'ckeditor5/src/ui';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { createDropdown, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
+import type FindAndReplaceEditing from './findandreplaceediting';
+import type FindCommand from './findcommand';
+import type FindNextCommand from './findnextcommand';
+import type FindPreviousCommand from './findpreviouscommand';
+import type ReplaceCommand from './replacecommand';
+import type ReplaceAllCommand from './replaceallcommand';
 
 /**
  * The default find and replace UI.
  *
  * It registers the `'findAndReplace'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}.
  * that uses the {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FindAndReplaceUI' {
 		return 'FindAndReplaceUI';
 	}
 
 	/**
+	 * A reference to the find and replace form view.
+	 */
+	public formView: FindAndReplaceFormView & ViewWithCssTransitionDisabler | null;
+
+	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A reference to the find and replace form view.
-		 *
-		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} #formView
-		 */
 		this.formView = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// Register the toolbar dropdown component.
@@ -54,10 +58,11 @@ export default class FindAndReplaceUI extends Plugin {
 			const dropdown = createDropdown( locale );
 
 			// Dropdown should be disabled when in source editing mode. See #10001.
-			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
+			const findCommand: FindCommand = editor.commands.get( 'find' )!;
+			dropdown.bind( 'isEnabled' ).to( findCommand );
 
 			dropdown.once( 'change:isOpen', () => {
-				this.formView = new FindAndReplaceFormView( editor.locale );
+				this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
 
 				dropdown.panelView.children.add( this.formView );
 
@@ -74,12 +79,12 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
 				if ( isOpen ) {
-					this.formView.disableCssTransitions();
+					this.formView!.disableCssTransitions();
 
-					this.formView.reset();
-					this.formView._findInputView.fieldView.select();
+					this.formView!.reset();
+					this.formView!._findInputView.fieldView.select();
 
-					this.formView.enableCssTransitions();
+					this.formView!.enableCssTransitions();
 				} else {
 					this.fire( 'searchReseted' );
 				}
@@ -93,11 +98,8 @@ export default class FindAndReplaceUI extends Plugin {
 
 	/**
 	 * Sets up the find and replace button.
-	 *
-	 * @private
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
 	 */
-	_setupDropdownButton( dropdown ) {
+	private _setupDropdownButton( dropdown: DropdownView ) {
 		const editor = this.editor;
 		const t = editor.locale.t;
 
@@ -119,15 +121,14 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * Sets up the form view for the find and replace.
 	 *
-	 * @private
-	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView A related form view.
+	 * @param formView A related form view.
 	 */
-	_setupFormView( formView ) {
+	private _setupFormView( formView: FindAndReplaceFormView ) {
 		const editor = this.editor;
 		const commands = editor.commands;
-		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
-		const editingState = findAndReplaceEditing.state;
-		const sortMapping = { before: -1, same: 0, after: 1 };
+		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
+		const editingState = findAndReplaceEditing.state!;
+		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
 
 		// Let the form know which result is being highlighted.
 		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
@@ -136,7 +137,7 @@ export default class FindAndReplaceUI extends Plugin {
 			}
 
 			return Array.from( editingState.results )
-				.sort( ( a, b ) => sortMapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ] )
+				.sort( ( a, b ) => sortMapping[ a.marker!.getStart().compareWith( b.marker!.getStart() ) ] )
 				.indexOf( highlightedResult ) + 1;
 		} );
 
@@ -148,11 +149,15 @@ export default class FindAndReplaceUI extends Plugin {
 		// Command states are used to enable/disable individual form controls.
 		// To keep things simple, instead of binding 4 individual observables, there's only one that combines every
 		// commands' isEnabled state. Yes, it will change more often but this simplifies the structure of the form.
+		const findNextCommand: FindNextCommand = commands.get( 'findNext' )!;
+		const findPreviousCommand: FindPreviousCommand = commands.get( 'findPrevious' )!;
+		const replaceCommand: ReplaceCommand = commands.get( 'replace' )!;
+		const replaceAllCommand: ReplaceAllCommand = commands.get( 'replaceAll' )!;
 		formView.bind( '_areCommandsEnabled' ).to(
-			commands.get( 'findNext' ), 'isEnabled',
-			commands.get( 'findPrevious' ), 'isEnabled',
-			commands.get( 'replace' ), 'isEnabled',
-			commands.get( 'replaceAll' ), 'isEnabled',
+			findNextCommand, 'isEnabled',
+			findPreviousCommand, 'isEnabled',
+			replaceCommand, 'isEnabled',
+			replaceAllCommand, 'isEnabled',
 			( findNext, findPrevious, replace, replaceAll ) => ( { findNext, findPrevious, replace, replaceAll } )
 		);
 
@@ -170,37 +175,19 @@ export default class FindAndReplaceUI extends Plugin {
 }
 
 /**
- * Fired when the find next button is triggered.
- *
- * @event findNext
- * @param {String} searchText Search text.
- */
-
-/**
- * Fired when the find previous button is triggered.
- *
- * @event findPrevious
- * @param {String} searchText Search text.
- */
-
-/**
- * Fired when the replace button is triggered.
- *
- * @event replace
- * @param {String} replaceText Replacement text.
- */
-
-/**
- * Fired when the replaceAll button is triggered.
- *
- * @event replaceAll
- * @param {String} replaceText Replacement text.
- */
-
-/**
  * Fired when the UI was reset and the search results marked in the editing root should be invalidated,
  * for instance, because the user changed the searched phrase (or options) but didn't hit
  * the "Find" button yet.
  *
- * @event searchReseted
+ * @eventName searchReseted
  */
+export type SearchResetedEvent = {
+	name: 'searchReseted';
+	args: [];
+};
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FindAndReplaceUI.pluginName ]: FindAndReplaceUI;
+	}
+}

@@ -7,7 +7,12 @@
  * @module find-and-replace/findandreplaceediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine';
+import type { Collection, GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
@@ -15,9 +20,7 @@ import FindNextCommand from './findnextcommand';
 import FindPreviousCommand from './findpreviouscommand';
 import FindAndReplaceState from './findandreplacestate';
 import FindAndReplaceUtils from './findandreplaceutils';
-
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import type { ResultType } from './findandreplace';
 
 import { debounce } from 'lodash-es';
 
@@ -25,24 +28,30 @@ import '../theme/findandreplace.css';
 
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
-// Reacts to document changes in order to update search list.
-function onDocumentChange( results, editor, searchCallback ) {
-	const changedNodes = new Set();
-	const removedMarkers = new Set();
+/**
+ * Reacts to document changes in order to update search list.
+ */
+function onDocumentChange(
+	results: Collection<ResultType>,
+	editor: Editor,
+	searchCallback: ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> )
+) {
+	const changedNodes = new Set<Node>();
+	const removedMarkers = new Set<string>();
 	const model = editor.model;
 
-	const changes = model.document.differ.getChanges();
+	const changes = model.document.differ.getChanges() as Array<Exclude<DiffItem, DiffItemAttribute>>;
 
 	// Get nodes in which changes happened to re-run a search callback on them.
 	changes.forEach( change => {
-		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter ) ) {
-			changedNodes.add( change.position.parent );
+		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter! ) ) {
+			changedNodes.add( change.position.parent as Element );
 
 			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
 				removedMarkers.add( markerAtChange.name );
 			} );
 		} else if ( change.type === 'insert' ) {
-			changedNodes.add( change.position.nodeAfter );
+			changedNodes.add( change.position.nodeAfter! );
 		}
 	} );
 
@@ -55,7 +64,7 @@ function onDocumentChange( results, editor, searchCallback ) {
 
 	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
 	changedNodes.forEach( node => {
-		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
+		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node as Element ) ) ];
 
 		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 	} );
@@ -74,48 +83,50 @@ function onDocumentChange( results, editor, searchCallback ) {
 
 	// Run search callback again on updated nodes.
 	changedNodes.forEach( nodeToCheck => {
-		const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
+		const findAndReplaceUtils: FindAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 		findAndReplaceUtils.updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
 	} );
 }
 
 /**
  * Implements the editing part for find and replace plugin. For example conversion, commands etc.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FindAndReplaceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ FindAndReplaceUtils ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FindAndReplaceEditing' {
 		return 'FindAndReplaceEditing';
 	}
 
 	/**
+	 * The collection of currently highlighted search results.
+	 *
+	 * @private
+	 * @member {module:utils/collection~Collection} #_activeResults
+	 */
+	private _activeResults?: Collection<ResultType> | null;
+
+	/**
+	 * An object storing the find and replace state within a given editor instance.
+	 *
+	 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #state
+	 */
+	public state?: FindAndReplaceState;
+
+	/**
 	 * @inheritDoc
 	 */
-	init() {
-		/**
-		 * The collection of currently highlighted search results.
-		 *
-		 * @private
-		 * @member {module:utils/collection~Collection} #_activeResults
-		 */
+	public init(): void {
 		this._activeResults = null;
 
-		/**
-		 * An object storing the find and replace state within a given editor instance.
-		 *
-		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #state
-		 */
 		this.state = new FindAndReplaceState( this.editor.model );
 
 		this._defineConverters();
@@ -145,16 +156,8 @@ export default class FindAndReplaceEditing extends Plugin {
 			} );
 		} );
 
-		const debouncedScrollListener = debounce( scrollToHighlightedResult.bind( this ), 32 );
-		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
-		this.listenTo( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
-
-		// It's possible that the editor will get destroyed before debounced call kicks in.
-		// This would result with accessing a view three that is no longer in DOM.
-		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
-
 		/* istanbul ignore next */
-		function scrollToHighlightedResult( eventInfo, name, newValue ) {
+		const scrollToHighlightedResult: GetCallback<ObservableChangeEvent> = ( eventInfo, name, newValue ) => {
 			if ( newValue ) {
 				const domConverter = this.editor.editing.view.domConverter;
 				const viewRange = this.editor.editing.mapper.toViewRange( newValue.marker.getRange() );
@@ -164,16 +167,23 @@ export default class FindAndReplaceEditing extends Plugin {
 					viewportOffset: 40
 				} );
 			}
-		}
+		};
+
+		const debouncedScrollListener = debounce( scrollToHighlightedResult.bind( this ), 32 );
+		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
+		this.listenTo<ObservableChangeEvent>( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
+
+		// It's possible that the editor will get destroyed before debounced call kicks in.
+		// This would result with accessing a view three that is no longer in DOM.
+		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
 	}
 
 	/**
 	 * Initiate a search.
-	 *
-	 * @param {Function|String} callbackOrText
-	 * @returns {module:utils/collection~Collection}
 	 */
-	find( callbackOrText ) {
+	public find(
+		callbackOrText: string | ( ( { item, text }: { item: Item; text: string } ) => Array<ResultType> )
+	): Collection<ResultType> {
 		const { editor } = this;
 		const { model } = editor;
 
@@ -182,7 +192,7 @@ export default class FindAndReplaceEditing extends Plugin {
 		this._activeResults = results;
 
 		// @todo: handle this listener, another copy is in findcommand.js file.
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( this._activeResults, editor, findCallback ) );
+		this.listenTo( model.document, 'change:data', () => onDocumentChange( this._activeResults!, editor, findCallback ) );
 
 		return this._activeResults;
 	}
@@ -190,37 +200,33 @@ export default class FindAndReplaceEditing extends Plugin {
 	/**
 	 * Stops active results from updating, and clears out the results.
 	 */
-	stop() {
+	public stop(): void {
 		if ( !this._activeResults ) {
 			return;
 		}
 
 		this.stopListening( this.editor.model.document );
 
-		this.state.clear( this.editor.model );
+		this.state!.clear( this.editor.model );
 
 		this._activeResults = null;
 	}
 
 	/**
 	 * Sets up the commands.
-	 *
-	 * @private
 	 */
-	_defineCommands() {
-		this.editor.commands.add( 'find', new FindCommand( this.editor, this.state ) );
-		this.editor.commands.add( 'findNext', new FindNextCommand( this.editor, this.state ) );
-		this.editor.commands.add( 'findPrevious', new FindPreviousCommand( this.editor, this.state ) );
-		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor, this.state ) );
-		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor, this.state ) );
+	private _defineCommands(): void {
+		this.editor.commands.add( 'find', new FindCommand( this.editor, this.state! ) );
+		this.editor.commands.add( 'findNext', new FindNextCommand( this.editor, this.state! ) );
+		this.editor.commands.add( 'findPrevious', new FindPreviousCommand( this.editor, this.state! ) );
+		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor, this.state! ) );
+		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor, this.state! ) );
 	}
 
 	/**
 	 * Sets up the marker downcast converters for search results highlighting.
-	 *
-	 * @private
 	 */
-	_defineConverters() {
+	private _defineConverters(): void {
 		const { editor } = this;
 
 		// Setup the marker highlighting conversion.
@@ -259,5 +265,11 @@ export default class FindAndReplaceEditing extends Plugin {
 				};
 			}
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FindAndReplaceEditing.pluginName ]: FindAndReplaceEditing;
 	}
 }

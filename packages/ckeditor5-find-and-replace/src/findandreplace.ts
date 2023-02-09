@@ -7,9 +7,19 @@
  * @module find-and-replace/findandreplace
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FindAndReplaceUI from './findandreplaceui';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui';
 import FindAndReplaceEditing from './findandreplaceediting';
+import type { Marker } from 'ckeditor5/src/engine';
+import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview';
+
+export type ResultType = {
+	id?: string;
+	label?: string;
+	start?: number;
+	end?: number;
+	marker?: Marker;
+};
 
 /**
  * The find and replace plugin.
@@ -20,33 +30,31 @@ import FindAndReplaceEditing from './findandreplaceediting';
  *
  * * The {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing find and replace editing feature},
  * * The {@link module:find-and-replace/findandreplaceui~FindAndReplaceUI find and replace UI feature}
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ FindAndReplaceEditing, FindAndReplaceUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FindAndReplace' {
 		return 'FindAndReplace';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const ui = this.editor.plugins.get( 'FindAndReplaceUI' );
 		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
-		const state = findAndReplaceEditing.state;
+		const state = findAndReplaceEditing.state!;
 
-		ui.on( 'findNext', ( event, data ) => {
+		ui.on<FindNextEvent>( 'findNext', ( event, data ) => {
 			// Data is contained only for the "find" button.
 			if ( data ) {
 				state.searchText = data.searchText;
@@ -57,7 +65,7 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		ui.on( 'findPrevious', ( event, data ) => {
+		ui.on<FindPreviousEvent>( 'findPrevious', ( event, data ) => {
 			if ( data && state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
 			} else {
@@ -66,7 +74,7 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		ui.on( 'replace', ( event, data ) => {
+		ui.on<ReplaceEvent>( 'replace', ( event, data ) => {
 			if ( state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
 			}
@@ -78,7 +86,7 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		ui.on( 'replaceAll', ( event, data ) => {
+		ui.on<ReplaceAllEvent>( 'replaceAll', ( event, data ) => {
 			// The state hadn't been yet built for this search text.
 			if ( state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
@@ -89,9 +97,16 @@ export default class FindAndReplace extends Plugin {
 
 		// Reset the state when the user invalidated last search results, for instance,
 		// by starting typing another search query or changing options.
-		ui.on( 'searchReseted', () => {
+		ui.on<SearchResetedEvent>( 'searchReseted', () => {
 			state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FindAndReplace.pluginName ]: FindAndReplace;
+	}
+}
+

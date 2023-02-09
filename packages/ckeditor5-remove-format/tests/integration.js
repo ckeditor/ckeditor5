@@ -8,9 +8,7 @@
 import RemoveFormat from '../src/removeformat';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import { Image, ImageResize, ImageCaption } from '@ckeditor/ckeditor5-image';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
