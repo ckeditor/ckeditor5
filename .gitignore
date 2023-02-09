@@ -65,6 +65,7 @@ packages/ckeditor5-ui/src/**/*.js
 packages/ckeditor5-undo/src/**/*.js
 packages/ckeditor5-upload/src/**/*.js
 packages/ckeditor5-utils/src/**/*.js
+packages/ckeditor5-watchdog/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
 packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
