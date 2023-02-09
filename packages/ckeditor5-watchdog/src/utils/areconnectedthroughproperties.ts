@@ -13,12 +13,8 @@ import getSubNodes from './getsubnodes';
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
- *
- * @param {Object|Array} target1
- * @param {Object|Array} target2
- * @returns {Boolean}
  */
-export default function areConnectedThroughProperties( target1, target2, excludedNodes = new Set() ) {
+export default function areConnectedThroughProperties( target1: unknown, target2: unknown, excludedNodes = new Set() ): boolean {
 	if ( target1 === target2 && isObject( target1 ) ) {
 		return true;
 	}
@@ -39,9 +35,9 @@ export default function areConnectedThroughProperties( target1, target2, exclude
 
 /* istanbul ignore next */
 // eslint-disable-next-line
-function checkConnectionBetweenProps( target1, target2, excludedNodes ) {
-	const { subNodes: subNodes1, prevNodeMap: prevNodeMap1 } = getSubNodes( target1, excludedNodes.subNodes );
-	const { subNodes: subNodes2, prevNodeMap: prevNodeMap2 } = getSubNodes( target2, excludedNodes.subNodes );
+function checkConnectionBetweenProps( target1: unknown, target2: unknown, excludedNodes: any ) {
+	const { subNodes: subNodes1, prevNodeMap: prevNodeMap1 } = getSubNodes( target1, excludedNodes.subNodes ) as any;
+	const { subNodes: subNodes2, prevNodeMap: prevNodeMap2 } = getSubNodes( target2, excludedNodes.subNodes ) as any;
 
 	for ( const sharedNode of subNodes1 ) {
 		if ( subNodes2.has( sharedNode ) ) {
@@ -76,6 +72,6 @@ function checkConnectionBetweenProps( target1, target2, excludedNodes ) {
 	return false;
 }
 
-function isObject( structure ) {
+function isObject( structure: unknown ): boolean {
 	return typeof structure === 'object' && structure !== null;
 }
