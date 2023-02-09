@@ -336,7 +336,7 @@ export function findOptimalInsertionRange( selection, model ) {
  *		// View:
  *		<span class="placeholder">name</span>
  *
- * In such case, view positions inside `<span>` cannot be correct mapped to the model (because the model element is empty).
+ * In such case, view positions inside `<span>` cannot be correctly mapped to the model (because the model element is empty).
  * To handle mapping positions inside `<span class="placeholder">` to the model use this util as follows:
  *
  *		editor.editing.mapper.on(

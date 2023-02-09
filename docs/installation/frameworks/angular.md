@@ -85,7 +85,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular @ckeditor/ckeditor5-watchdog
 ```
 
-Install one of the {@link installation/getting-started/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link installation/getting-started/predefined-builds predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 

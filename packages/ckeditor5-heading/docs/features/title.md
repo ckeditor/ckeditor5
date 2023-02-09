@@ -9,11 +9,19 @@ The title feature enables support for adding the title field to your document. I
 
 This feature can be used to implement a rich-text editor with a clear division of content into the title and body sections, similar to solutions available in Medium, Grammarly, Slack post editor or some content management systems.
 
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
+
 ## Demo
 
 Use the editor to create a document with clearly separated title and body sections. You can check the content of the title and body elements in the console below.
 
 {@snippet features/title}
+
+<info-box info>
+	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -67,7 +75,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## HTML structure
