@@ -12,7 +12,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import RestrictedEditingModeEditing from './restrictededitingmodeediting';
 import RestrictedEditingModeUI from './restrictededitingmodeui';
 
-import './restrictededitingconfig';
 import '../theme/restrictedediting.css';
 
 /**
