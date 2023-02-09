@@ -85,7 +85,10 @@ t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'ACTION_N_EMOJIS' }, [ q
 This example shows how to create a localizable user interface of a plugin. Here is how you can create a button that will insert a smiling face emoji. The button will have a localizable tooltip.
 
 ```js
+// Custom plugin configuration, including necessary imports.
+// The code below should be put into a custom plugin class extending the Plugin class.
 // ...
+
 editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 	const buttonView = new ButtonView( locale );
 
@@ -106,6 +109,8 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 		editor.editing.view.focus();
 	} );
 } );
+
+// The rest of the custom plugin configuration.
 // ...
 ```
 
@@ -119,12 +124,12 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 
 ```js
 class FileRepository {
+	// More methods.
 	// ...
+	
 	updatePendingAction() {
-		// ...
 		const pendingActions = this.editor.plugins.get( PendingActions );
-
-		// ...
+		
 		const t = this.editor.t;
 		const getMessage = value => t( 'Upload in progress (%0%).', value ); // Upload in progress (12%).
 
@@ -190,7 +195,8 @@ Check an example below that demonstrates a part of the `window.CKEDITOR_TRANSLAT
 		// Note that you only need to pass this function when you add translations for a new language.
 		getPluralForm: n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2
 	}
-	// Other languages...
+	// Other languages.
+	// ...
 }
 ```
 
