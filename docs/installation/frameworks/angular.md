@@ -82,7 +82,7 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
-npm install --save @ckeditor/ckeditor5-angular @ckeditor/ckeditor5-watchdog
+npm install --save @ckeditor/ckeditor5-angular
 ```
 
 Install one of the {@link installation/getting-started/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
@@ -413,10 +413,9 @@ export class MyComponent {
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
 
-Reason for introduction of this option is performance issues in very large documents. By default while using the `ngModel` directive, each
-time `change:data` event is fired, `editor.getData()` function is called. This would cause massive slow down while typing in very large
-documents. This option allows the integrator to disable this default behavior, and only call `editor.getData()` on demand, which prevents
-the slow downs. For more context, see the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
+The reason for introducing this option is performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize data between the editor instance and the connected property, which results in calling the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} function. This causes a massive slowdown while typing in large documents.
+
+This option allows the integrator to disable this default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in [the relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
 
 ## Supported `@Output` properties
 
