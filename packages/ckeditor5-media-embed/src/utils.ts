@@ -16,8 +16,7 @@ import type {
 	DowncastWriter,
 	ViewDocumentSelection,
 	ViewElement,
-	DocumentSelection,
-	Node
+	DocumentSelection
 } from 'ckeditor5/src/engine';
 import { isWidget, toWidget } from 'ckeditor5/src/widget';
 import type MediaRegistry from './mediaregistry';

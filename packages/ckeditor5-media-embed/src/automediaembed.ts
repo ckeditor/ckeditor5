@@ -9,13 +9,14 @@
 
 import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
-import { Clipboard } from 'ckeditor5/src/clipboard';
+import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { Delete } from 'ckeditor5/src/typing';
-import { Undo } from 'ckeditor5/src/undo';
+import { Undo, type UndoCommand } from 'ckeditor5/src/undo';
 import { global } from 'ckeditor5/src/utils';
 
 import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';
+import type MediaEmbedCommand from './mediaembedcommand';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
@@ -70,7 +71,8 @@ export default class AutoMediaEmbed extends Plugin {
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into media.
-		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', () => {
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		this.listenTo( clipboardPipeline, 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange()!;
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
@@ -87,7 +89,8 @@ export default class AutoMediaEmbed extends Plugin {
 			}, { priority: 'high' } );
 		} );
 
-		editor.commands.get( 'undo' )!.on( 'execute', () => {
+		const undoCommand: UndoCommand = editor.commands.get( 'undo' )!;
+		undoCommand.on( 'execute', () => {
 			if ( this._timeoutId ) {
 				global.window.clearTimeout( this._timeoutId );
 				this._positionToInsert!.detach();
@@ -136,7 +139,7 @@ export default class AutoMediaEmbed extends Plugin {
 			return;
 		}
 
-		const mediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
+		const mediaEmbedCommand: MediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
 
 		// Do not anything if media element cannot be inserted at the current position (#47).
 		if ( !mediaEmbedCommand.isEnabled ) {
@@ -170,7 +173,7 @@ export default class AutoMediaEmbed extends Plugin {
 				this._positionToInsert = null;
 			} );
 
-			editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
+			editor.plugins.get( Delete ).requestUndoOnBackspace();
 		}, 100 );
 	}
 }
