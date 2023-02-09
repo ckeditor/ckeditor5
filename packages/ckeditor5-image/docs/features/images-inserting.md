@@ -9,8 +9,22 @@ order: 70
 
 Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL. It is one of the fastest and most efficient ways to include images in the content is adding images that are already online.
 
-## Installation
-### Inserting images via source URL
+<info-box>
+	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html).
+</info-box>
+
+## Inserting images via source URL
+### Demo
+
+To upload the image, click on the image icon. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
+
+{@snippet features/image-insert-via-url}
+
+<info-box info>
+	The demos in this guide only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+### Installation
 
 Using the URL of an image, the user may easily paste it into the editor. In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
 
@@ -24,15 +38,19 @@ ClassicEditor
 	} )
 ```
 
-This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar. To upload the image, click on the image icon. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
+This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar. 
 
-{@snippet features/image-insert-via-url}
+## Inserting images via pasting URL into editor
 
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
-</info-box>
+### Demo
 
-### Inserting images via pasting URL into editor
+You can paste the image URL directly into the editor content, and it will be automatically embedded.
+
+<input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg">
+
+{@snippet features/image-insert-via-pasting-url-into-editor}
+
+### Installation
 
 The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions are: `jpg`, `jpeg`, `png`, `gif`, `ico`. Use the following code to enable the plugin in your editor. There is no toolbar configuration for this feature.
 
@@ -50,12 +68,6 @@ ClassicEditor
 </info-box>
 
 If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
-
-You can paste the image URL directly into the editor content, and it will be automatically embedded.
-
-<input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg">
-
-{@snippet features/image-insert-via-pasting-url-into-editor}
 
 ## Common API
 

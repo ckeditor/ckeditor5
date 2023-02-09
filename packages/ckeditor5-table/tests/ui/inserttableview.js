@@ -112,18 +112,17 @@ describe( 'InsertTableView', () => {
 
 				boxView.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
 
-				// Disabled temporarily because of failing CI.
-				// expect( boxView.isOn ).to.be.true;
-				//
-				// expect( view.rows ).to.equal( 1 );
-				// expect( view.columns ).to.equal( 1 );
-				//
-				// const boxViewB = view.items.get( 22 );
-				//
-				// boxViewB.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
-				//
-				// expect( view.rows ).to.equal( 3 );
-				// expect( view.columns ).to.equal( 3 );
+				expect( boxView.isOn ).to.be.true;
+
+				expect( view.rows ).to.equal( 1 );
+				expect( view.columns ).to.equal( 1 );
+
+				const boxViewB = view.items.get( 22 );
+
+				boxViewB.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
+
+				expect( view.rows ).to.equal( 3 );
+				expect( view.columns ).to.equal( 3 );
 			} );
 		} );
 
