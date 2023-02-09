@@ -131,6 +131,41 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
+	describe( 'contextual balloon in rtl', () => {
+		let getBalloonPanelPositionDataSpy;
+
+		beforeEach( () => {
+			return createClassicTestEditor( { ...staticConfig } )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+					editor.locale.uiLanguageDirection = 'rtl';
+					getBalloonPanelPositionDataSpy = sinon.spy( mentionUI, '_getBalloonPanelPositionData' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce );
+		} );
+
+		afterEach( () => {
+			editor.locale.uiLanguageDirection = 'ltr';
+		} );
+
+		it( 'should set proper position list in rtl', () => {
+			const extractedSpiedResult = getBalloonPanelPositionDataSpy.returnValues[ 0 ].positions.map( callback => {
+				return callback( {}, {} ).name;
+			} );
+
+			expect( extractedSpiedResult ).to.have.ordered.members( [
+				'caret_sw',
+				'caret_se',
+				'caret_nw',
+				'caret_ne'
+			] );
+		} );
+	} );
+
 	describe( 'position', () => {
 		let pinSpy;
 

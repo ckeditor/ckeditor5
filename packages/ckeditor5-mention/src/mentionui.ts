@@ -546,6 +546,7 @@ export default class MentionUI extends Plugin {
 		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
+		const uiLanguageDirection = editor.locale.uiLanguageDirection;
 
 		return {
 			target: () => {
@@ -573,7 +574,7 @@ export default class MentionUI extends Plugin {
 
 				return null;
 			},
-			positions: getBalloonPanelPositions( preferredPosition )
+			positions: getBalloonPanelPositions( preferredPosition, uiLanguageDirection )
 		};
 	}
 }
@@ -581,7 +582,10 @@ export default class MentionUI extends Plugin {
 /**
  * Returns the balloon positions data callbacks.
  */
-function getBalloonPanelPositions( preferredPosition: MentionsView['position'] ): PositionOptions['positions'] {
+function getBalloonPanelPositions(
+	preferredPosition: MentionsView['position'],
+	uiLanguageDirection: string
+): PositionOptions['positions'] {
 	const positions: Record<string, PositionOptions['positions'][0]> = {
 		// Positions the panel to the southeast of the caret rectangle.
 		'caret_se': ( targetRect: Rect ) => {
@@ -638,13 +642,18 @@ function getBalloonPanelPositions( preferredPosition: MentionsView['position'] )
 			positions[ preferredPosition! ]
 		];
 	}
-
-	// By default return all position callbacks.
-	return [
+	console.log( uiLanguageDirection );
+	// By default return all position callbacks which order depends on ui language direction.
+	return uiLanguageDirection !== 'rtl' ? [
 		positions.caret_se,
 		positions.caret_sw,
 		positions.caret_ne,
 		positions.caret_nw
+	] : [
+		positions.caret_sw,
+		positions.caret_se,
+		positions.caret_nw,
+		positions.caret_ne
 	];
 }
 
