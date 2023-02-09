@@ -9,7 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import type { ContainerRawHtmlApiProperty } from './htmlembedediting';
+import type { RawHtmlApi } from './htmlembedediting';
+import type HtmlEmbedCommand from './htmlembedcommand';
 
 import htmlEmbedIcon from '../theme/icons/html.svg';
 
@@ -33,7 +34,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command = editor.commands.get( 'htmlEmbed' )!;
+			const command: HtmlEmbedCommand = editor.commands.get( 'htmlEmbed' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -51,7 +52,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 				const rawHtmlApi = editor.editing.view.document.selection
 					.getSelectedElement()!
-					.getCustomProperty( 'rawHtmlApi' ) as ContainerRawHtmlApiProperty;
+					.getCustomProperty( 'rawHtmlApi' ) as RawHtmlApi;
 
 				rawHtmlApi.makeEditable();
 			} );

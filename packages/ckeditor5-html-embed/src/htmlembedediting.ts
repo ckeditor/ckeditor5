@@ -12,7 +12,7 @@ import { ButtonView } from 'ckeditor5/src/ui';
 import { toWidget } from 'ckeditor5/src/widget';
 import { logWarning, createElement } from 'ckeditor5/src/utils';
 
-import type { HtmlEmbedConfig } from './htmlembed';
+import type { HtmlEmbedConfig } from './htmlembedconfig';
 import HtmlEmbedCommand from './htmlembedcommand';
 
 import '../theme/htmlembed.css';
@@ -86,7 +86,7 @@ export default class HtmlEmbedEditing extends Plugin {
 		const t = editor.t;
 		const view = editor.editing.view;
 		const widgetButtonViewReferences = this._widgetButtonViewReferences;
-		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' )!;
+		const htmlEmbedConfig: HtmlEmbedConfig = editor.config.get( 'htmlEmbed' )!;
 
 		// Destroy UI buttons created for widgets that have been removed from the view document (e.g. in the previous conversion).
 		// This prevents unexpected memory leaks from UI views.
@@ -162,7 +162,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				// API exposed on each raw HTML embed widget so other features can control a particular widget.
-				const rawHtmlApi: ContainerRawHtmlApiProperty = {
+				const rawHtmlApi: RawHtmlApi = {
 					makeEditable() {
 						state = Object.assign( {}, state, {
 							isEditable: true
@@ -238,7 +238,17 @@ export default class HtmlEmbedEditing extends Plugin {
 			}
 		} );
 
-		function renderContent( { editor, domElement, state, props }: RenderParams ) {
+		function renderContent( {
+			editor,
+			domElement,
+			state,
+			props
+		}: {
+			editor: Editor;
+			domElement: HTMLElement;
+			state: State;
+			props: Props;
+		} ) {
 			// Remove all children;
 			domElement.textContent = '';
 
@@ -280,7 +290,19 @@ export default class HtmlEmbedEditing extends Plugin {
 			domElement.prepend( createDomButtonsWrapper( { editor, domDocument, state, props: buttonsWrapperProps } ) );
 		}
 
-		function createDomButtonsWrapper( { editor, domDocument, state, props }: CreateButtonParams ): HTMLDivElement {
+		function createDomButtonsWrapper( {
+			editor,
+			domDocument,
+			state,
+			props
+		}: {
+			editor: Editor;
+			domDocument: Document;
+			state: State;
+			props: Pick<Props, 'onEditClick' | 'onCancelClick'> & {
+				onSaveClick(): void;
+			};
+		} ): HTMLDivElement {
 			const domButtonsWrapper = createElement( domDocument, 'div', {
 				class: 'raw-html-embed__buttons-wrapper'
 			} );
@@ -301,7 +323,18 @@ export default class HtmlEmbedEditing extends Plugin {
 			return domButtonsWrapper;
 		}
 
-		function createDomTextarea( { domDocument, state, props }: CreateTextareaParams ): HTMLTextAreaElement {
+		function createDomTextarea( {
+			domDocument,
+			state,
+			props
+		}: {
+				domDocument: Document;
+				state: State;
+				props: {
+					isDisabled: boolean;
+					placeholder: string;
+				};
+			} ): HTMLTextAreaElement {
 			const domTextarea = createElement( domDocument, 'textarea', {
 				placeholder: props.placeholder,
 				class: 'ck ck-reset ck-input ck-input-text raw-html-embed__source'
@@ -313,7 +346,19 @@ export default class HtmlEmbedEditing extends Plugin {
 			return domTextarea;
 		}
 
-		function createPreviewContainer( { editor, domDocument, state, props }: CreatePreviewContainerParams ): HTMLDivElement {
+		function createPreviewContainer( {
+			editor,
+			domDocument,
+			state,
+			props
+		}: {
+			editor: Editor;
+			domDocument: Document;
+			state: State;
+			props: {
+				sanitizeHtml: HtmlEmbedConfig['sanitizeHtml'];
+			};
+		} ): HTMLDivElement {
 			const sanitizedOutput = props.sanitizeHtml!( state.getRawHtmlValue() );
 			const placeholderText = state.getRawHtmlValue().length > 0 ?
 				t( 'No preview available' ) :
@@ -352,7 +397,7 @@ export default class HtmlEmbedEditing extends Plugin {
 function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onClick: () => void ): ButtonView {
 	const { t } = editor.locale;
 	const buttonView = new ButtonView( editor.locale );
-	const command = editor.commands.get( 'htmlEmbed' )!;
+	const command: HtmlEmbedCommand = editor.commands.get( 'htmlEmbed' )!;
 
 	buttonView.set( {
 		class: `raw-html-embed__${ type }-button`,
@@ -403,43 +448,7 @@ interface Props {
 	onCancelClick(): void;
 }
 
-interface RenderParams {
-	editor: Editor;
-	domElement: HTMLElement;
-	state: State;
-	props: Props;
-}
-
-interface CreateButtonParams {
-	editor: Editor;
-	domDocument: Document;
-	state: State;
-	props: {
-		onEditClick: Props['onEditClick'];
-		onSaveClick(): void;
-		onCancelClick: Props['onCancelClick'];
-	};
-}
-
-interface CreateTextareaParams {
-	domDocument: Document;
-	state: State;
-	props: {
-		isDisabled: boolean;
-		placeholder: string;
-	};
-}
-
-interface CreatePreviewContainerParams {
-	editor: Editor;
-	domDocument: Document;
-	state: State;
-	props: {
-		sanitizeHtml: HtmlEmbedConfig['sanitizeHtml'];
-	};
-}
-
-export interface ContainerRawHtmlApiProperty {
+export interface RawHtmlApi {
 	makeEditable(): void;
 	save( newValue: string ): void;
 	cancel(): void;
@@ -448,9 +457,5 @@ export interface ContainerRawHtmlApiProperty {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PLuginsMap {
 		[HtmlEmbedEditing.pluginName]: HtmlEmbedEditing;
-	}
-
-	interface CommandsMap {
-		htmlEmbed: HtmlEmbedCommand;
 	}
 }
