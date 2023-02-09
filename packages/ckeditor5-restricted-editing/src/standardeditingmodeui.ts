@@ -11,13 +11,12 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import unlockIcon from '../theme/icons/contentunlock.svg';
+import type RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
 
 /**
  * The standard editing mode UI feature.
  *
  * It introduces the `'restrictedEditingException'` button that marks text as unrestricted for editing.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class StandardEditingModeUI extends Plugin {
 	/**
@@ -35,7 +34,7 @@ export default class StandardEditingModeUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'restrictedEditingException', locale => {
-			const command = editor.commands.get( 'restrictedEditingException' )!;
+			const command: RestrictedEditingExceptionCommand = editor.commands.get( 'restrictedEditingException' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

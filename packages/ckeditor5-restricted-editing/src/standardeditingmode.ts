@@ -21,8 +21,6 @@ import '../theme/restrictedediting.css';
  *
  * * The {@link module:restricted-editing/standardeditingmodeediting~StandardEditingModeEditing standard mode editing feature}.
  * * The {@link module:restricted-editing/standardeditingmodeui~StandardEditingModeUI standard mode UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class StandardEditingMode extends Plugin {
 	/**

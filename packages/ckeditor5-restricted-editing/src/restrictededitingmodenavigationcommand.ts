@@ -12,8 +12,6 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The command that allows navigation across the exceptions in the edited document.
- *
- * @extends module:core/command~Command
  */
 export default class RestrictedEditingModeNavigationCommand extends Command {
 	/**
@@ -126,4 +124,12 @@ function getNearestExceptionRange( model: Model, direction: RestrictedEditingMod
 export enum RestrictedEditingModeNavigationDirection {
 	FORWARD = 'forward',
 	BACKWARD = 'backward'
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		goToPreviousRestrictedEditingException: RestrictedEditingModeNavigationCommand;
+		goToNextRestrictedEditingException: RestrictedEditingModeNavigationCommand;
+	}
 }

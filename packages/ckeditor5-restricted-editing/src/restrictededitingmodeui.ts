@@ -7,7 +7,10 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import {
+	Plugin,
+	type Command
+} from 'ckeditor5/src/core';
 import {
 	Model,
 	createDropdown,
@@ -24,8 +27,6 @@ import lockIcon from '../theme/icons/contentlock.svg';
  *
  * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate between exceptions across
  * the document.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class RestrictedEditingModeUI extends Plugin {
 	/**
@@ -86,7 +87,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 	 */
 	private _getButtonDefinition( commandName: string, label: string, keystroke: string ): ListDropdownItemDefinition {
 		const editor = this.editor;
-		const command = editor.commands.get( commandName )!;
+		const command: Command = editor.commands.get( commandName )!;
 		const definition = {
 			type: 'button' as const,
 			model: new Model( {

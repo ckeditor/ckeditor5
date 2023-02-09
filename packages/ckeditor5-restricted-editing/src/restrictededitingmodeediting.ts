@@ -7,7 +7,12 @@
  * @module restricted-editing/restrictededitingmodeediting
  */
 
-import { Plugin, type Editor, type EditingKeystrokeCallback } from 'ckeditor5/src/core';
+import {
+	Plugin,
+	type Command,
+	type Editor,
+	type EditingKeystrokeCallback
+} from 'ckeditor5/src/core';
 import type {
 	DocumentSelection,
 	Marker,
@@ -18,10 +23,15 @@ import type {
 	SchemaChildCheckCallback
 } from 'ckeditor5/src/engine';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils';
-import type { ClipboardContentInsertionEvent, ClipboardOutputEvent } from 'ckeditor5/src/clipboard';
+import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
+import type {
+	ClipboardContentInsertionEvent,
+	ClipboardOutputEvent,
+	ClipboardPipeline
+} from 'ckeditor5/src/clipboard';
 
 import {
-	default as RestrictedEditingNavigationCommand,
+	default as RestrictedEditingModeNavigationCommand,
 	RestrictedEditingModeNavigationDirection
 } from './restrictededitingmodenavigationcommand';
 import {
@@ -31,8 +41,7 @@ import {
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters';
 import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
-import type { RestrictedEditingModeConfig } from './restrictededitingmode';
-import type { InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
+import type { RestrictedEditingConfig } from './restrictededitingconfig';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 
@@ -42,8 +51,6 @@ const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
  * * It introduces the exception marker group that renders to `<span>` elements with the `restricted-editing-exception` CSS class.
  * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
  * * It also enables highlighting exception markers that are selected.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class RestrictedEditingModeEditing extends Plugin {
 	/**
@@ -87,7 +94,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' )!;
+		const allowedCommands: RestrictedEditingConfig['allowedCommands'] = editor.config.get( 'restrictedEditing.allowedCommands' )!;
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
 
@@ -98,12 +105,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// Commands & keystrokes that allow navigation in the content.
 		editor.commands.add(
 			'goToPreviousRestrictedEditingException',
-			new RestrictedEditingNavigationCommand( editor, RestrictedEditingModeNavigationDirection.BACKWARD )
+			new RestrictedEditingModeNavigationCommand( editor, RestrictedEditingModeNavigationDirection.BACKWARD )
 		);
 
 		editor.commands.add(
 			'goToNextRestrictedEditingException',
-			new RestrictedEditingNavigationCommand( editor, RestrictedEditingModeNavigationDirection.FORWARD )
+			new RestrictedEditingModeNavigationCommand( editor, RestrictedEditingModeNavigationDirection.FORWARD )
 		);
 
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
@@ -122,12 +129,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 * of selection location).
 	 *
 	 * To enable some commands in non-restricted areas of the content use
-	 * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands} configuration option.
+	 * {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig#allowedCommands} configuration option.
 	 *
 	 * @param commandName Name of the command to enable.
 	 */
 	public enableCommand( commandName: string ): void {
-		const command = this.editor.commands.get( commandName )!;
+		const command: Command = this.editor.commands.get( commandName )!;
 
 		command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 
@@ -217,12 +224,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
-		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+		const clipboard: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
-		const inputCommand = editor.commands.get( 'input' );
-		const insertTextCommand = editor.commands.get( 'insertText' );
+		const inputCommand: InsertTextCommand | undefined = editor.commands.get( 'input' );
+		const insertTextCommand: InsertTextCommand | undefined = editor.commands.get( 'insertText' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
@@ -260,7 +267,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
+		const allowedAttributes: RestrictedEditingConfig['allowedAttributes'] = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
 		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
 		model.schema.addChildCheck( allowTextOnlyInClipboardHolder() );
 	}
@@ -342,12 +349,18 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 }
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ RestrictedEditingModeEditing.pluginName ]: RestrictedEditingModeEditing;
+	}
+}
+
 /**
  * Helper method for executing enabled commands only.
  */
 function getCommandExecuter( editor: Editor, commandName: string ): EditingKeystrokeCallback {
 	return ( _, cancel ) => {
-		const command = editor.commands.get( commandName )!;
+		const command: Command = editor.commands.get( commandName )!;
 
 		if ( command.isEnabled ) {
 			editor.execute( commandName );
@@ -518,9 +531,7 @@ function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 	};
 }
 
-function onlyAllowAttributesFromList(
-	allowedAttributes: RestrictedEditingModeConfig['allowedAttributes']
-): SchemaAttributeCheckCallback {
+function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): SchemaAttributeCheckCallback {
 	return ( context, attributeName ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return allowedAttributes.includes( attributeName );
@@ -534,15 +545,4 @@ function allowTextOnlyInClipboardHolder(): SchemaChildCheckCallback {
 			return childDefinition.name === '$text';
 		}
 	};
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RestrictedEditingModeEditing.pluginName ]: RestrictedEditingModeEditing;
-	}
-
-	interface CommandsMap {
-		goToPreviousRestrictedEditingException: RestrictedEditingNavigationCommand;
-		goToNextRestrictedEditingException: RestrictedEditingNavigationCommand;
-	}
 }

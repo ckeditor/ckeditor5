@@ -17,8 +17,6 @@ import RestrictedEditingExceptionCommand from './restrictededitingexceptioncomma
  * * It introduces the `restrictedEditingException` text attribute that is rendered as
  * a `<span>` element with the `restricted-editing-exception` CSS class.
  * * It registers the `'restrictedEditingException'` command.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class StandardEditingModeEditing extends Plugin {
 	/**
@@ -67,9 +65,5 @@ export default class StandardEditingModeEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ StandardEditingModeEditing.pluginName ]: StandardEditingModeEditing;
-	}
-
-	interface CommandsMap {
-		restrictedEditingException: RestrictedEditingExceptionCommand;
 	}
 }

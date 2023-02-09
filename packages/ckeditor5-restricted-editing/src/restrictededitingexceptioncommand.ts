@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import type { TreeWalkerValue } from 'ckeditor5/src/engine';
 
 /**
- * @extends module:core/command~Command
+ * The command that toggles exceptions from the restricted editing on text.
  */
 export default class RestrictedEditingExceptionCommand extends Command {
 	/**
@@ -78,4 +78,10 @@ export default class RestrictedEditingExceptionCommand extends Command {
 
 export interface RestrictedEditingExceptionCommandParams {
 	forceValue?: unknown;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		restrictedEditingException: RestrictedEditingExceptionCommand;
+	}
 }
