@@ -534,8 +534,6 @@ export type ContextWatchdogItemRestartEventData = {
 class ActionQueues {
 	public _onEmptyCallbacks: Array<() => void> = [];
 	public _queues = new Map<symbol | string | number, Promise<unknown>>();
-	// public _actions = new WeakMap();
-	// public _lastActionId = 0;
 	public _activeActions = 0;
 
 	/**
