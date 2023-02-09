@@ -17,6 +17,7 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 export { default as Conversion } from './conversion/conversion';
 export type {
 	default as DowncastDispatcher,
+	DowncastAddMarkerEvent,
 	DowncastAttributeEvent,
 	DowncastConversionApi,
 	DowncastInsertEvent,
@@ -156,6 +157,7 @@ export type {
 	ViewDocumentMouseOutEvent
 } from './view/observer/mouseobserver';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
+export type { ViewRenderEvent } from './view/view';
 
 // View / Styles.
 export { StylesProcessor } from './view/stylesmap';
