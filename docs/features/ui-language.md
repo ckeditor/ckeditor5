@@ -19,6 +19,10 @@ See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 <info-box>
 	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
 </info-box>
