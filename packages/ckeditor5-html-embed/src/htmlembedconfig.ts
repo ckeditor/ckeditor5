@@ -30,7 +30,7 @@ export interface HtmlEmbedConfig {
 	 * version of the HTML provided by the user.
 	 *
 	 * The function responsible for sanitizing the HTML needs to be specified in
-	 * {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
+	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
 	 *
 	 * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
 	 * the {@glink features/html-embed HTML embed} feature guide.
@@ -46,7 +46,7 @@ export interface HtmlEmbedConfig {
 	 * the {@glink features/html-embed HTML embed} feature guide.
 	 *
 	 * The function receives the input HTML (as a string), and should return an object
-	 * that matches the {@link module:html-embed/htmlembed~HtmlEmbedSanitizeOutput} interface.
+	 * that matches the {@link module:html-embed/htmlembedconfig~HtmlEmbedSanitizeOutput} interface.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -71,13 +71,13 @@ export interface HtmlEmbedConfig {
 	 * ```
 	 *
 	 * **Note:** The function is used only when the feature
-	 * {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews is configured to render previews}.
+	 * {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews is configured to render previews}.
 	 */
 	sanitizeHtml?: ( html: string ) => HtmlEmbedSanitizeOutput;
 }
 
 /**
- * An object returned by the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml} function.
+ * An object returned by the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml} function.
  */
 export interface HtmlEmbedSanitizeOutput {
 
