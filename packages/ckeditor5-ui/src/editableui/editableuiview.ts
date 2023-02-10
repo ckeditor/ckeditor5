@@ -130,6 +130,10 @@ export default class EditableUIView extends View {
 		super.destroy();
 	}
 
+	/**
+	 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
+	 * the view will not render its {@link #template}.
+	 */
 	public get hasExternalElement(): boolean {
 		return this._hasExternalElement;
 	}

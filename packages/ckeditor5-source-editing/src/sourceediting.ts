@@ -46,31 +46,21 @@ export default class SourceEditing extends Plugin {
 	 * Flag indicating whether the document source mode is active.
 	 *
 	 * @observable
-	 * @member {Boolean}
 	 */
 	declare public isSourceEditingMode: boolean;
 
 	/**
 	 * The element replacer instance used to replace the editing roots with the wrapper elements containing the document source.
-	 *
-	 * @private
-	 * @member {module:utils/elementreplacer~ElementReplacer}
 	 */
 	private _elementReplacer: ElementReplacer;
 
 	/**
 	 * Maps all root names to wrapper elements containing the document source.
-	 *
-	 * @private
-	 * @member {Map.<String,HTMLElement>}
 	 */
 	private _replacedRoots: Map<string, HTMLElement>;
 
 	/**
 	 * Maps all root names to their document data.
-	 *
-	 * @private
-	 * @member {Map.<String,String>}
 	 */
 	private _dataFromRoots: Map<string, string>;
 
@@ -209,8 +199,6 @@ export default class SourceEditing extends Plugin {
 	 * of its children (the textarea and the `::after` pseudo-element) are positioned within a CSS grid to occupy the same grid cell. The
 	 * content in the pseudo-element `::after` is set in CSS and it stretches the grid to the appropriate size based on the textarea value.
 	 * Since both children occupy the same grid cell, both have always the same height.
-	 *
-	 * @private
 	 */
 	private _showSourceEditing(): void {
 		const editor = this.editor;

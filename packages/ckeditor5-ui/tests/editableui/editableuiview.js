@@ -209,4 +209,10 @@ describe( 'EditableUIView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'hasExternalElement getter', () => {
+		it( 'should return same value as field', () => {
+			expect( view._hasExternalElement ).to.be.equal( view.hasExternalElement );
+		} );
+	} );
 } );
