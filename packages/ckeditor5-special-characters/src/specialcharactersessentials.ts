@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersessentials
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import SpecialCharactersCurrency from './specialcharacterscurrency';
 import SpecialCharactersMathematical from './specialcharactersmathematical';
@@ -18,20 +18,27 @@ import SpecialCharactersText from './specialcharacterstext';
 /**
  * A plugin combining a basic set of characters for the special characters plugin.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersEssentials ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersEssentials ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get pluginName(): 'SpecialCharactersEssentials' {
+		return 'SpecialCharactersEssentials';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires(): PluginDependencies {
 		return [
 			SpecialCharactersCurrency,
 			SpecialCharactersText,
@@ -39,5 +46,11 @@ export default class SpecialCharactersEssentials extends Plugin {
 			SpecialCharactersArrows,
 			SpecialCharactersLatin
 		];
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersEssentials.pluginName]: SpecialCharactersEssentials;
 	}
 }

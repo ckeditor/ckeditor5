@@ -8,35 +8,37 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin that provides special characters for the "Arrows" category.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersArrows ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersArrows ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersArrows extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SpecialCharactersArrows' {
 		return 'SpecialCharactersArrows';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+		const plugin: SpecialCharacters = editor.plugins.get( 'SpecialCharacters' );
 
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+		plugin.addItems( 'Arrows', [
 			{ title: t( 'leftwards simple arrow' ), character: '←' },
 			{ title: t( 'rightwards simple arrow' ), character: '→' },
 			{ title: t( 'upwards simple arrow' ), character: '↑' },
@@ -60,5 +62,11 @@ export default class SpecialCharactersArrows extends Plugin {
 			{ title: t( 'soon with rightwards arrow above' ), character: '🔜' },
 			{ title: t( 'top with upwards arrow above' ), character: '🔝' }
 		], { label: t( 'Arrows' ) } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersArrows.pluginName]: SpecialCharactersArrows;
 	}
 }

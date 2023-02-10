@@ -8,35 +8,37 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin that provides special characters for the "Currency" category.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersCurrency ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersCurrency ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersCurrency extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SpecialCharactersCurrency' {
 		return 'SpecialCharactersCurrency';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+		const plugin: SpecialCharacters = editor.plugins.get( 'SpecialCharacters' );
 
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Currency', [
+		plugin.addItems( 'Currency', [
 			{ character: '$', title: t( 'Dollar sign' ) },
 			{ character: '€', title: t( 'Euro sign' ) },
 			{ character: '¥', title: t( 'Yen sign' ) },
@@ -74,5 +76,11 @@ export default class SpecialCharactersCurrency extends Plugin {
 			{ character: '₼', title: t( 'Manat sign' ) },
 			{ character: '₽', title: t( 'Ruble sign' ) }
 		], { label: t( 'Currency' ) } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersCurrency.pluginName]: SpecialCharactersCurrency;
 	}
 }

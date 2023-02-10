@@ -8,35 +8,37 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin that provides special characters for the "Mathematical" category.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersMathematical ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersMathematical ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersMathematical extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SpecialCharactersMathematical' {
 		return 'SpecialCharactersMathematical';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+		const plugin: SpecialCharacters = editor.plugins.get( 'SpecialCharacters' );
 
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
+		plugin.addItems( 'Mathematical', [
 			{ character: '<', title: t( 'Less-than sign' ) },
 			{ character: '>', title: t( 'Greater-than sign' ) },
 			{ character: '≤', title: t( 'Less-than or equal to' ) },
@@ -82,5 +84,11 @@ export default class SpecialCharactersMathematical extends Plugin {
 			{ character: '½', title: t( 'Vulgar fraction one half' ) },
 			{ character: '¾', title: t( 'Vulgar fraction three quarters' ) }
 		], { label: t( 'Mathematical' ) } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersMathematical.pluginName]: SpecialCharactersMathematical;
 	}
 }

@@ -8,35 +8,37 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin that provides special characters for the "Text" category.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersText ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersText ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SpecialCharactersText' {
 		return 'SpecialCharactersText';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+		const plugin: SpecialCharacters = editor.plugins.get( 'SpecialCharacters' );
 
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Text', [
+		plugin.addItems( 'Text', [
 			{ character: '‹', title: t( 'Single left-pointing angle quotation mark' ) },
 			{ character: '›', title: t( 'Single right-pointing angle quotation mark' ) },
 			{ character: '«', title: t( 'Left-pointing double angle quotation mark' ) },
@@ -65,5 +67,11 @@ export default class SpecialCharactersText extends Plugin {
 			{ character: '¶', title: t( 'Paragraph sign' ) },
 			{ character: '⁋', title: t( 'Reversed paragraph sign' ) }
 		], { label: t( 'Text' ) } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersText.pluginName]: SpecialCharactersText;
 	}
 }

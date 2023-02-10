@@ -7,34 +7,50 @@
  * @module special-characters/ui/charactergridview
  */
 
-import { View, ButtonView, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
-
-import { KeystrokeHandler, FocusTracker, global } from 'ckeditor5/src/utils';
+import {
+	View,
+	ButtonView,
+	addKeyboardHandlingForGrid,
+	type ViewCollection
+} from 'ckeditor5/src/ui';
+import {
+	KeystrokeHandler,
+	FocusTracker,
+	global,
+	type Locale
+} from 'ckeditor5/src/utils';
 
 import '../../theme/charactergrid.css';
 
 /**
  * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
- *
- * @extends module:ui/view~View
  */
-export default class CharacterGridView extends View {
+export default class CharacterGridView extends View<HTMLDivElement> {
+	/**
+	 * A collection of the child tile views. Each tile represents a particular character.
+	 */
+	public readonly tiles: ViewCollection<ButtonView>;
+
+	/**
+	 * Tracks information about the DOM focus in the grid.
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
 	/**
 	 * Creates an instance of a character grid containing tiles representing special characters.
 	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param locale The localization services instance.
 	 */
-	constructor( locale ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
-		/**
-		 * A collection of the child tile views. Each tile represents a particular character.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
-		this.tiles = this.createCollection();
+		this.tiles = this.createCollection() as ViewCollection<ButtonView>;
 
 		this.setTemplate( {
 			tag: 'div',
@@ -58,20 +74,7 @@ export default class CharacterGridView extends View {
 			}
 		} );
 
-		/**
-		 * Tracks information about the DOM focus in the grid.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
 
 		addKeyboardHandlingForGrid( {
@@ -79,7 +82,7 @@ export default class CharacterGridView extends View {
 			focusTracker: this.focusTracker,
 			gridItems: this.tiles,
 			numberOfColumns: () => global.window
-				.getComputedStyle( this.element.firstChild ) // Responsive .ck-character-grid__tiles
+				.getComputedStyle( this.element!.firstChild as Element ) // Responsive .ck-character-grid__tiles
 				.getPropertyValue( 'grid-template-columns' )
 				.split( ' ' )
 				.length,
@@ -118,11 +121,10 @@ export default class CharacterGridView extends View {
 	/**
 	 * Creates a new tile for the grid.
 	 *
-	 * @param {String} character A human-readable character displayed as the label (e.g. "ε").
-	 * @param {String} name The name of the character (e.g. "greek small letter epsilon").
-	 * @returns {module:ui/button/buttonview~ButtonView}
+	 * @param character A human-readable character displayed as the label (e.g. "ε").
+	 * @param name The name of the character (e.g. "greek small letter epsilon").
 	 */
-	createTile( character, name ) {
+	public createTile( character: string, name: string ): ButtonView {
 		const tile = new ButtonView( this.locale );
 
 		tile.set( {
@@ -139,6 +141,8 @@ export default class CharacterGridView extends View {
 			},
 			on: {
 				mouseover: tile.bindTemplate.to( 'mouseover' ),
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
 				focus: tile.bindTemplate.to( 'focus' )
 			}
 		} );
@@ -161,11 +165,11 @@ export default class CharacterGridView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		for ( const item of this.tiles ) {
-			this.focusTracker.add( item.element );
+			this.focusTracker.add( item.element! );
 		}
 
 		this.tiles.on( 'change', ( eventInfo, { added, removed } ) => {
@@ -181,13 +185,13 @@ export default class CharacterGridView extends View {
 			}
 		} );
 
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.keystrokes.destroy();
@@ -196,7 +200,7 @@ export default class CharacterGridView extends View {
 	/**
 	 * Focuses the first focusable in {@link #tiles}.
 	 */
-	focus() {
-		this.tiles.get( 0 ).focus();
+	public focus(): void {
+		this.tiles.first!.focus();
 	}
 }

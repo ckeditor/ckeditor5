@@ -8,35 +8,37 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin that provides special characters for the "Latin" category.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., SpecialCharacters, SpecialCharactersLatin ],
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., SpecialCharacters, SpecialCharactersLatin ],
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class SpecialCharactersLatin extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'SpecialCharactersLatin' {
 		return 'SpecialCharactersLatin';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+		const plugin: SpecialCharacters = editor.plugins.get( 'SpecialCharacters' );
 
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Latin', [
+		plugin.addItems( 'Latin', [
 			{ character: 'Ā', title: t( 'Latin capital letter a with macron' ) },
 			{ character: 'ā', title: t( 'Latin small letter a with macron' ) },
 			{ character: 'Ă', title: t( 'Latin capital letter a with breve' ) },
@@ -166,5 +168,11 @@ export default class SpecialCharactersLatin extends Plugin {
 			{ character: 'ž', title: t( 'Latin small letter z with caron' ) },
 			{ character: 'ſ', title: t( 'Latin small letter long s' ) }
 		], { label: t( 'Latin' ) } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[SpecialCharactersLatin.pluginName]: SpecialCharactersLatin;
 	}
 }

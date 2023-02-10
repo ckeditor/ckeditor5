@@ -54,7 +54,7 @@ import type View from './view';
  * @extends module:utils/collection~Collection
  * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ViewCollection extends Collection<View> {
+export default class ViewCollection<T extends View = View> extends Collection<T> {
 	public id?: string;
 
 	private _parentElement: DocumentFragment | HTMLElement | null;
@@ -62,9 +62,9 @@ export default class ViewCollection extends Collection<View> {
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 * @param initialItems The initial items of the collection.
 	 */
-	constructor( initialItems: Iterable<View> = [] ) {
+	constructor( initialItems: Iterable<T> = [] ) {
 		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
