@@ -148,11 +148,6 @@ export default class Input extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		input: InsertTextCommand;
-		insertText: InsertTextCommand;
-	}
-
 	interface PluginsMap {
 		[ Input.pluginName ]: Input;
 	}

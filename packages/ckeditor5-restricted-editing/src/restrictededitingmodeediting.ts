@@ -30,10 +30,7 @@ import type {
 	ClipboardPipeline
 } from 'ckeditor5/src/clipboard';
 
-import {
-	default as RestrictedEditingModeNavigationCommand,
-	RestrictedEditingModeNavigationDirection
-} from './restrictededitingmodenavigationcommand';
+import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand';
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
@@ -105,12 +102,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// Commands & keystrokes that allow navigation in the content.
 		editor.commands.add(
 			'goToPreviousRestrictedEditingException',
-			new RestrictedEditingModeNavigationCommand( editor, RestrictedEditingModeNavigationDirection.BACKWARD )
+			new RestrictedEditingModeNavigationCommand( editor, 'backward' )
 		);
 
 		editor.commands.add(
 			'goToNextRestrictedEditingException',
-			new RestrictedEditingModeNavigationCommand( editor, RestrictedEditingModeNavigationDirection.FORWARD )
+			new RestrictedEditingModeNavigationCommand( editor, 'forward' )
 		);
 
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );

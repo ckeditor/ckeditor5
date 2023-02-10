@@ -41,7 +41,7 @@ export function isPositionInRangeBoundaries( range: Range, position: Position ):
 /**
  * Checks if the selection is fully contained in the marker. Positions on marker boundaries are considered "in".
  *
- * ```ts
+ * ```xml
  * <marker>[]foo</marker> -> true
  * <marker>f[oo]</marker> -> true
  * <marker>f[oo</marker> ba]r -> false
