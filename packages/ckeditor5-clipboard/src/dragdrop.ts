@@ -611,7 +611,9 @@ export default class DragDrop extends Plugin {
 		this._clearDraggableAttributes();
 
 		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
+			const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
 		}
 
 		this._draggingUid = '';

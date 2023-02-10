@@ -87,7 +87,9 @@ export default class InsertImageCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		this.isEnabled = this.editor.plugins.get( 'ImageUtils' ).isImageAllowed();
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+
+		this.isEnabled = imageUtils.isImageAllowed();
 	}
 
 	/**

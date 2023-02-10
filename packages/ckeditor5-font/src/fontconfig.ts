@@ -317,14 +317,14 @@ export interface FontSizeConfig {
 	 * const fontSizeConfig = {
 	 * 	options: [
 	 * 		{
-	 * 				 	title: 'Small',
-	 * 				 	model: '8px'
-	 * 				},
-	 * 				'default',
-	 * 				{
-	 * 				 	title: 'Big',
-	 * 				 	model: '14px'
-	 * 				}
+	 * 			title: 'Small',
+	 * 			model: '8px'
+	 * 		},
+	 * 		'default',
+	 * 		{
+	 * 		 	title: 'Big',
+	 * 		 	model: '14px'
+	 * 		}
 	 * 	]
 	 * };
 	 * ```
