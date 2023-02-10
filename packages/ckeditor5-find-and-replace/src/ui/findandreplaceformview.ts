@@ -429,7 +429,9 @@ export default class FindAndReplaceFormView extends View {
 		// When hitting "Find" in an empty input, an error should be displayed.
 		// Also, if the form was "dirty", it should remain so.
 		if ( !this._textToFind ) {
-			this._findInputView.errorText = this.t!( 'Text to find must not be empty.' );
+			const t = this.t!;
+
+			this._findInputView.errorText = t( 'Text to find must not be empty.' );
 
 			return;
 		}
