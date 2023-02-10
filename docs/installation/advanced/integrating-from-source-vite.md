@@ -31,9 +31,9 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla
  
  ## Installing necessary dependencies
 
-After initializing the project, you can start installing packages. Fundamentally, you need three things: an editor base, editor plugins, and a Vite plugin for CKEditor. This example will use Classic Editor. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There is a list of packages in the [classic build's](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json) `package.json` file. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
+After initializing the project, you can start installing packages. Fundamentally, you need a list of three things: an editor base, editor plugins, and a Vite plugin for CKEditor. This example will use Classic Editor. In terms of plugins, you can use whatever you want. Among the list of plugins should be a theme, like `@ckeditor/ckeditor5-theme-lark`. If you need inspiration, you can base your integration on one of the existing builds. There is a list of packages in the [classic build's](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json) `package.json` file. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 
-You can install packages using npm like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repo and typing `npm install`. The `dependencies` section of your `package.json` should look similar to this:
+You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repo and typing `npm install`. The `dependencies` section of your `package.json` should look similar to this:
 
 ```js
 "dependencies": {
@@ -65,7 +65,7 @@ You can install packages using npm like `npm install @ckeditor/ckeditor5-editor-
 When your editor has all the necessary plugins, you can move on to integration with Vite. There is also an official plugin for this purpose. It handles loading the SVG icons and styles from the packages and the theme package. You can install it via the below command.
 
 ```js
-npm install --save @ckeditor/ckeditor5-vite-plugin
+npm install --save @ckeditor/vite-plugin-ckeditor5
 ```
 
 The plugin is installed but will not work yet, so you need to add it to the Vite configuration. First, add the `vite.config.js` file at the root of your project (or use an existing one). Then, modify the file by adding the following lines of code.
@@ -96,7 +96,7 @@ Now your setup is complete, and you can start using the editor.
 
 ## Running the editor – method 1
 
-You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
+You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository. You can use the same path to paste it into your project.
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -175,7 +175,7 @@ import ClassicEditor from './ckeditor';
 
 ClassicEditor
 	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-	.create( document.querySelector( '#editor' ) )
+	.create( document.querySelector( '#app' ) )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
 	} )
@@ -208,7 +208,7 @@ import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor'), {
+	.create( document.querySelector( '#app'), {
 		// The plugins are now passed directly to .create().
 		plugins: [
 			EssentialsPlugin,
