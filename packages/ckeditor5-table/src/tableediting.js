@@ -290,5 +290,5 @@ function upcastCellSpan( type ) {
  *
  * @property {Function} filter Filter for elements that should be placed inside given slot.
  *
- * @property {number|'before'|'after'|'end'} positionOffset Position of the slot within the table.
+ * @property {Number|'before'|'after'|'end'} positionOffset Position of the slot within the table.
  */
