@@ -15,6 +15,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 class AnyClass {
+	// Any class definition.
 	// ...
 }
 
@@ -55,6 +56,7 @@ class Button extends View {
 		// this.isEnabled is observable and true.
 		this.set( 'isEnabled', true );
 
+		// More observable's properties.
 		// ...
 	}
 }
@@ -104,6 +106,7 @@ class Button extends View {
 	constructor() {
 		super();
 
+		// Previously defined properties.
 		// ...
 
 		// This template will have the following symbolic representation in DOM:
@@ -183,7 +186,7 @@ Note that `command.isEnabled` **must** be defined using the `set()` method for t
 
 #### Renaming properties
 
-Now let's dive into the `bind( ... ).to( ... )` syntax for a minute. As a matter of fact, the last example corresponds to the following code:
+Now let's dive into the `bind( /* ... */ ).to( /* ... */ )` syntax for a minute. As a matter of fact, the last example corresponds to the following code:
 
 ```js
 const button = new Button();
@@ -192,7 +195,7 @@ const command = editor.commands.get( 'bold' );
 button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 ```
 
-You probably noticed the `to( ... )` interface which helps specify the name of the property (or just "rename" the property in the binding).
+You probably noticed the `to( /* ... */ )` interface which helps specify the name of the property (or just "rename" the property in the binding).
 
 Both `Button` and `Command` class share the same `isEnabled` property, which allowed us to shorten the code. But if we decided to bind the `Button#isOn` to the `Command#value`, the code would be as follows:
 
@@ -206,7 +209,7 @@ The property has been "renamed" in the binding and from now on, whenever `comman
 
 Another use case is processing the bound property value, for instance, when a button should be disabled only if certain conditions are met. Passing a callback as the third parameter allows implementing a custom logic.
 
-In the example below, the `isEnabled` property will be set to `true` only when `command.value` equals `'heading1`.
+In the example below, the `isEnabled` property will be set to `true` only when `command.value` equals `'heading1'`.
 
 ```js
 const command = editor.commands.get( 'heading' );
@@ -287,6 +290,7 @@ const command = editor.commands.get( 'bold' );
 
 button.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
+// More bindings.
 // ...
 
 // From now on, button#isEnabled is no longer bound to the command.
@@ -301,6 +305,7 @@ const command = editor.commands.get( 'bold' );
 
 button.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
+// More bindings.
 // ...
 
 // Both #isEnabled and #isOn properties are independent back again.
@@ -319,6 +324,7 @@ Decorating is possible using the {@link module:utils/observablemixin~ObservableM
 ```js
 class Button extends View {
 	constructor() {
+		// Setting the template and bindings.
 		// ...
 
 		this.decorate( 'focus' );

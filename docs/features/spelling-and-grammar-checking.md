@@ -165,7 +165,7 @@ Therefore, the best option is to use the other config solution. This one will on
 With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from source with WProofreader included.
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 At this step, it is required to provide a proper configuration. WProofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your server](#wproofreader-on-premise) (on-premise or in a private cloud).
