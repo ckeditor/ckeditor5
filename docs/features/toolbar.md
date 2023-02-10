@@ -281,3 +281,7 @@ Refer to the {@link framework/guides/creating-simple-plugin-timestamp Creating a
 ## Block toolbar
 
 The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).

@@ -75,17 +75,19 @@ watchdog.setCreator( ( elementOrData, editorConfig ) => {
 		.create( elementOrData, editorConfig )
 		.then( editor => {
 			// Do something with the new editor instance.
+			// ...
 		} );
 } );
 
 // Do something before the editor is destroyed. Return a promise.
 watchdog.setDestructor( editor => {
+	// Do something before the editor is destroyed.
 	// ...
-
 	return editor
 		.destroy()
 		.then( () => {
 			// Do something after the editor is destroyed.
+			// ...
 		} );
 } );
 
@@ -169,8 +171,10 @@ const watchdog = new ContextWatchdog( Context, {
 // Initialize the watchdog with the context configuration:
 await watchdog.create( {
 	plugins: [
-	    // ...
+	    // A list of plugins for the context.
+		// ...
 	],
+	// More configuration options for the plugin.
 	// ...
 } );
 
@@ -243,6 +247,7 @@ watchdog.setCreator( async config => {
 	const context = await Context.create( config );
 
 	// Do something when the context is initialized.
+	// ...
 
 	return context;
 } );
@@ -251,6 +256,7 @@ watchdog.setCreator( async config => {
 watchdog.setDestructor( async context => {
 
 	// Do something before destroy.
+	// ...
 
 	await context.destroy();
 } );
@@ -277,7 +283,8 @@ await watchdog.add( [
     	creator: createEditor,
     	destructor: destroyEditor,
     },
-    // ...
+    // More configuration items.
+	// ...
 ] );
 
 // Remove and destroy a given item (or items).
