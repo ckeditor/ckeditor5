@@ -9,9 +9,10 @@
 
 import type { Item } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Collection } from 'ckeditor5/src/utils';
+
 import type FindAndReplaceState from './findandreplacestate';
 import type { ResultType } from './findandreplace';
-import type { Collection } from 'ckeditor5/src/utils';
 import type FindAndReplaceUtils from './findandreplaceutils';
 
 /**
@@ -45,9 +46,9 @@ export default class FindCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param callbackOrText
-	 * @param options Options object with properties
-	 * 	options.matchCase If set to `true`, the letter case will be matched.
-	 * 	options.wholeWords If set to `true`, only whole words that match `callbackOrText` will be matched.
+	 * @param options Options object.
+	 * @param options.matchCase If set to `true`, the letter case will be matched.
+	 * @param options.wholeWords If set to `true`, only whole words that match `callbackOrText` will be matched.
 	 *
 	 * @fires execute
 	 */

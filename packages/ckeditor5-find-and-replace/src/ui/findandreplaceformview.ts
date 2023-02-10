@@ -87,7 +87,7 @@ export default class FindAndReplaceFormView extends View {
 	 * }
 	 * ```
 	 *
-	 * @protected
+	 * @internal
 	 * @observable
 	 */
 	declare public readonly _areCommandsEnabled: Record<string, boolean>;
@@ -96,7 +96,7 @@ export default class FindAndReplaceFormView extends View {
 	 * The content of the counter label displaying the index of the current highlighted match
 	 * on top of the find input, for instance "3 of 50".
 	 *
-	 * @protected
+	 * @internal
 	 * @readonly
 	 * @observable
 	 */
@@ -106,7 +106,7 @@ export default class FindAndReplaceFormView extends View {
 	 * The flag reflecting the state of the "Match case" switch button in the search options
 	 * dropdown.
 	 *
-	 * @protected
+	 * @internal
 	 * @readonly
 	 * @observable
 	 */
@@ -116,7 +116,7 @@ export default class FindAndReplaceFormView extends View {
 	 * The flag reflecting the state of the "Whole words only" switch button in the search options
 	 * dropdown.
 	 *
-	 * @protected
+	 * @internal
 	 * @readonly
 	 * @observable
 	 */
@@ -130,7 +130,7 @@ export default class FindAndReplaceFormView extends View {
 	 * It is used to control the enabled state of the replace UI (input and buttons); replacing text is only possible
 	 * if this flag is `true`.
 	 *
-	 * @protected
+	 * @internal
 	 * @observable
 	 */
 	declare public readonly _searchResultsFound: boolean;
@@ -207,6 +207,8 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	private readonly _focusCycler: FocusCycler;
 
+	public declare locale: Locale;
+
 	/**
 	 * Creates a view of find and replace form.
 	 *
@@ -215,7 +217,7 @@ export default class FindAndReplaceFormView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		// const t = locale.t;
+		const t = locale.t;
 
 		this.set( 'matchCount', 0 );
 
@@ -239,18 +241,18 @@ export default class FindAndReplaceFormView extends View {
 			}
 		);
 
-		this._findInputView = this._createInputField( this.t!( 'Find in text…' ) );
+		this._findInputView = this._createInputField( t( 'Find in text…' ) );
 
-		this._replaceInputView = this._createInputField( this.t!( 'Replace with…' ) );
+		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
 
 		this._findButtonView = this._createButton( {
-			label: this.t!( 'Find' ),
+			label: t( 'Find' ),
 			class: 'ck-button-find ck-button-action',
 			withText: true
 		} );
 
 		this._findPrevButtonView = this._createButton( {
-			label: this.t!( 'Previous result' ),
+			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
 			icon: previousArrow,
 			keystroke: 'Shift+F3',
@@ -258,7 +260,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		this._findNextButtonView = this._createButton( {
-			label: this.t!( 'Next result' ),
+			label: t( 'Next result' ),
 			class: 'ck-button-next',
 			icon: previousArrow,
 			keystroke: 'F3',
@@ -268,13 +270,13 @@ export default class FindAndReplaceFormView extends View {
 		this._optionsDropdown = this._createOptionsDropdown();
 
 		this._replaceButtonView = this._createButton( {
-			label: this.t!( 'Replace' ),
+			label: t( 'Replace' ),
 			class: 'ck-button-replace',
 			withText: true
 		} );
 
 		this._replaceAllButtonView = this._createButton( {
-			label: this.t!( 'Replace all' ),
+			label: t( 'Replace all' ),
 			class: 'ck-button-replaceall',
 			withText: true
 		} );
@@ -314,7 +316,7 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				new FormHeaderView( locale, {
-					label: this.t!( 'Find and replace' )
+					label: t( 'Find and replace' )
 				} ),
 				this._findFieldsetView,
 				this._replaceFieldsetView
@@ -446,11 +448,13 @@ export default class FindAndReplaceFormView extends View {
 	 * Configures an injects the find results counter displaying a "N of M" label of the {@link #_findInputView}.
 	 */
 	private _injectFindResultsCounter() {
+		const locale = this.locale;
+		const t = locale.t;
 		const bind = this.bindTemplate;
 		const resultsCounterView = new View( this.locale );
 
 		this.bind( '_resultsCounterText' ).to( this, 'highlightOffset', this, 'matchCount',
-			( highlightOffset, matchCount ) => this.t!( '%0 of %1', [ highlightOffset, matchCount ] )
+			( highlightOffset, matchCount ) => t( '%0 of %1', [ highlightOffset, matchCount ] )
 		);
 
 		resultsCounterView.setTemplate( {
@@ -482,7 +486,7 @@ export default class FindAndReplaceFormView extends View {
 			}
 
 			const counterWidth = new Rect( resultsCounterView.element! ).width;
-			const paddingPropertyName = this.locale!.uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
+			const paddingPropertyName = locale.uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
 
 			if ( !counterWidth ) {
 				inputElement.style[ paddingPropertyName ] = '';
@@ -508,6 +512,8 @@ export default class FindAndReplaceFormView extends View {
 	 * Configures and returns the `<fieldset>` aggregating all replace controls.
 	 */
 	private _createReplaceFieldset(): View {
+		const locale = this.locale;
+		const t = locale.t;
 		const fieldsetView = new View( this.locale );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
@@ -533,7 +539,7 @@ export default class FindAndReplaceFormView extends View {
 					return '';
 				}
 
-				return this.t!( 'Tip: Find some text first in order to replace it.' );
+				return t( 'Tip: Find some text first in order to replace it.' );
 			} );
 
 		this._replaceButtonView.on( 'execute', () => {
@@ -573,20 +579,22 @@ export default class FindAndReplaceFormView extends View {
 	 * the search criteria down. The dropdown has a list with switch buttons for each option.
 	 */
 	private _createOptionsDropdown(): DropdownView {
+		const locale = this.locale;
+		const t = locale.t;
 		const dropdownView = createDropdown( this.locale );
 
 		dropdownView.class = 'ck-options-dropdown';
 
 		dropdownView.buttonView.set( {
 			withText: false,
-			label: this.t!( 'Show options' ),
+			label: t( 'Show options' ),
 			icon: icons.cog,
 			tooltip: true
 		} );
 
 		const matchCaseModel = new Model( {
 			withText: true,
-			label: this.t!( 'Match case' ),
+			label: t( 'Match case' ),
 
 			// A dummy read-only prop to make it easy to tell which switch was toggled.
 			_isMatchCaseSwitch: true
@@ -594,7 +602,7 @@ export default class FindAndReplaceFormView extends View {
 
 		const wholeWordsOnlyModel = new Model( {
 			withText: true,
-			label: this.t!( 'Whole words only' )
+			label: t( 'Whole words only' )
 		} );
 
 		// Let the switches be controlled by form's observable properties.
@@ -730,7 +738,6 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * Creates a button view.
 	 *
-	 * @private
 	 * @param options The properties of the `ButtonView`.
 	 * @returns The button view instance.
 	 */

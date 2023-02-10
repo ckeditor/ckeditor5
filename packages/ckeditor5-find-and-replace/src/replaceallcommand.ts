@@ -10,7 +10,7 @@
 import { Collection } from 'ckeditor5/src/utils';
 import type { ResultType } from './findandreplace';
 import type FindAndReplaceUtils from './findandreplaceutils';
-import { ReplaceCommandBase } from './replacecommand';
+import { ReplaceCommandBase } from './replacecommandbase';
 
 /**
  * The replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.

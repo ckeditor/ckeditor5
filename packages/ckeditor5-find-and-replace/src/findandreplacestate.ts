@@ -18,9 +18,7 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	/**
 	 * A collection of find matches.
 	 *
-	 * @protected
 	 * @observable
-	 * @member {module:utils/collection~Collection} #results
 	 */
 	declare public results: Collection<ResultType>;
 
@@ -29,7 +27,6 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Object|null} #highlightedResult
 	 */
 	declare public highlightedResult: ResultType | null;
 
@@ -38,7 +35,6 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {String} #searchText
 	 */
 	declare public searchText: string;
 
@@ -47,7 +43,6 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {String} #replaceText
 	 */
 	declare public replaceText: string;
 
@@ -56,7 +51,6 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Boolean} #matchCase
 	 */
 	declare public matchCase: boolean;
 
@@ -65,7 +59,6 @@ export default class FindAndReplaceState extends ObservableMixin() {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Boolean} #matchWholeWords
 	 */
 	declare public matchWholeWords: boolean;
 
@@ -82,7 +75,7 @@ export default class FindAndReplaceState extends ObservableMixin() {
 		this.set( 'matchCase', false );
 		this.set( 'matchWholeWords', false );
 
-		this.results.on<CollectionChangeEvent>( 'change', ( eventInfo, { removed, index } ) => {
+		this.results.on<CollectionChangeEvent<ResultType>>( 'change', ( eventInfo, { removed, index } ) => {
 			if ( Array.from( removed ).length ) {
 				let highlightedResultRemoved = false;
 
@@ -92,8 +85,8 @@ export default class FindAndReplaceState extends ObservableMixin() {
 							highlightedResultRemoved = true;
 						}
 
-						if ( model.markers.has( removedResult.marker.name ) ) {
-							writer.removeMarker( removedResult.marker );
+						if ( model.markers.has( removedResult.marker!.name ) ) {
+							writer.removeMarker( removedResult.marker! );
 						}
 					}
 				} );
