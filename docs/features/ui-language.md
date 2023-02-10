@@ -19,6 +19,10 @@ See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 <info-box>
 	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
 </info-box>
@@ -347,3 +351,7 @@ ClassicEditor
 There are other CKEditor 5 features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations).
