@@ -8,8 +8,8 @@
 */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { FileRepository, type FileLoader } from 'ckeditor5/src/upload';
-import type { UploadGateway, FileUploader, CloudServices, CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services';
+import { FileRepository, type FileLoader, type UploadAdapter } from 'ckeditor5/src/upload';
+import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } from '@ckeditor/ckeditor5-cloud-services';
 
 /**
  * A plugin that enables upload to [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
@@ -20,6 +20,8 @@ import type { UploadGateway, FileUploader, CloudServices, CloudServicesCore } fr
  * {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
  */
 export default class CloudServicesUploadAdapter extends Plugin {
+	private _uploadGateway!: UploadGateway;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -34,15 +36,13 @@ export default class CloudServicesUploadAdapter extends Plugin {
 		return [ 'CloudServices', FileRepository ];
 	}
 
-	private _uploadGateway?: UploadGateway;
-
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
 		const editor = this.editor;
 
-		const cloudServices = editor.plugins.get( 'CloudServices' ) as CloudServices;
+		const cloudServices: CloudServices = editor.plugins.get( 'CloudServices' );
 
 		const token = cloudServices.token;
 		const uploadUrl = cloudServices.uploadUrl;
@@ -51,18 +51,16 @@ export default class CloudServicesUploadAdapter extends Plugin {
 			return;
 		}
 
-		this._uploadGateway = ( editor.plugins.get( 'CloudServicesCore' ) as CloudServicesCore ).createUploadGateway( token, uploadUrl! );
+		const cloudServicesCore: CloudServicesCore = editor.plugins.get( 'CloudServicesCore' );
+		this._uploadGateway = cloudServicesCore.createUploadGateway( token, uploadUrl! );
 
 		editor.plugins.get( FileRepository ).createUploadAdapter = loader => {
-			return new Adapter( this._uploadGateway!, loader );
+			return new Adapter( this._uploadGateway, loader );
 		};
 	}
 }
 
-/**
- * @private
- */
-class Adapter {
+class Adapter implements UploadAdapter {
 	private uploadGateway: UploadGateway;
 	private loader: FileLoader;
 	private fileUploader?: FileUploader;

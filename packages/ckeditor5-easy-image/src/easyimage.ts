@@ -40,6 +40,13 @@ export default class EasyImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static get pluginName(): 'EasyImage' {
+		return 'EasyImage';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires(): PluginDependencies {
 		return [ CloudServicesUploadAdapter, 'ImageUpload' ];
 	}
@@ -65,13 +72,6 @@ export default class EasyImage extends Plugin {
 			 */
 			logWarning( 'easy-image-image-feature-missing', editor );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get pluginName(): 'EasyImage' {
-		return 'EasyImage';
 	}
 }
 
