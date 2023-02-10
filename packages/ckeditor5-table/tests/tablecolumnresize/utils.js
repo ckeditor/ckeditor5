@@ -3,20 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '../../src/table';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { modelTable } from '../_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
-import MoveOperation from '@ckeditor/ckeditor5-engine/src/model/operation/moveoperation';
-import AttributeOperation from '@ckeditor/ckeditor5-engine/src/model/operation/attributeoperation';
 
 import TableColumnResize from '../../src/tablecolumnresize';
 import {
@@ -30,32 +22,49 @@ import {
 	getTableWidthInPixels,
 	getColumnMinWidthAsPercentage,
 	getElementWidthInPixels,
-	getDomCellOuterWidth
+	getDomCellOuterWidth,
+	getColumnGroupElement,
+	getTableColumnElements,
+	getTableColumnsWidths
 } from '../../src/tablecolumnresize/utils';
 
 /* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
+	let editorElement, editor, model, root, tableUtils;
+
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Table, TableColumnResize, Paragraph ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot();
+		tableUtils = editor.plugins.get( 'TableUtils' );
+	} );
+
+	afterEach( async () => {
+		editorElement.remove();
+		await editor.destroy();
+	} );
+
 	describe( 'getChangedResizedTables()', () => {
-		let root, model;
-
 		beforeEach( () => {
-			model = new Model();
-			root = model.document.createRoot();
-
-			root._appendChild( [
-				createTable( 2, 3 ),
-				createTable( 2, 3 ),
-				createTable( 2, 3 )
-			] );
+			model.change( writer => {
+				writer.insert( createTable( 2, 3 ), root );
+				writer.insert( createTable( 2, 3 ), root );
+				writer.insert( createTable( 2, 3 ), root );
+			} );
 		} );
 
 		it( 'should do nothing if there is no table affected while inserting', () => {
-			model.change( () => {
-				insert(
-					model,
+			model.change( writer => {
+				writer.insert(
 					new Element( 'paragraph' ),
-					new Position( root, [ 2, 0, 0 ] )
+					root.getNodeByPath( [ 2, 0, 0 ] )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -65,18 +74,16 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should do nothing if there is no table affected while changing attribute', () => {
-			model.change( () => {
-				insert(
-					model,
-					new Element( 'paragraph' ),
-					new Position( root, [ 2, 0, 0 ] )
-				);
+			let paragraph;
+
+			model.change( writer => {
+				paragraph = writer.createElement( 'paragraph' );
+
+				writer.insert( paragraph, root.getNodeByPath( [ 2, 0, 0 ] ) );
 			} );
 
-			model.change( () => {
-				const range = new Range( new Position( root, [ 2, 0, 0 ] ), new Position( root, [ 2, 0, 1 ] ) );
-
-				attribute( model, range, 'attrName', null, 'attrVal' );
+			model.change( writer => {
+				writer.setAttribute( 'attrName', 'attrVal', paragraph );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -85,19 +92,17 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - cells insertion in first column', () => {
-			const firstTable = root.getChild( 0 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 0, 0, 0 ] )
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					firstTable.getChild( 0 )
 				);
 
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 0, 1, 0 ] )
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					firstTable.getChild( 1 )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -108,19 +113,19 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - cells insertion in last column', () => {
-			const firstTable = root.getChild( 0 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 0, 0, 3 ] )
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					firstTable.getChild( 0 ),
+					'end'
 				);
 
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 0, 1, 3 ] )
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					firstTable.getChild( 1 ),
+					'end'
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -131,13 +136,12 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - cells insertion in first row', () => {
-			const firstTable = root.getChild( 0 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				insert(
-					model,
+				writer.insert(
 					new Element( 'tableRow', {}, createTableCells( 3 ) ),
-					new Position( root, [ 0, 0 ] )
+					firstTable
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -148,13 +152,13 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - cells insertion in last row', () => {
-			const firstTable = root.getChild( 0 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				insert(
-					model,
+				writer.insert(
 					new Element( 'tableRow', {}, createTableCells( 3 ) ),
-					new Position( root, [ 0, 2 ] )
+					firstTable,
+					2
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -167,18 +171,9 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - cells deletion in first column', () => {
 			const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				remove(
-					model,
-					new Position( root, [ 0, 0, 0 ] ),
-					1
-				);
-
-				remove(
-					model,
-					new Position( root, [ 0, 1, 0 ] ),
-					1
-				);
+			model.change( writer => {
+				writer.remove( root.getNodeByPath( [ 0, 0, 0 ] ) );
+				writer.remove( root.getNodeByPath( [ 0, 1, 0 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -190,18 +185,9 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - cells deletion in last column', () => {
 			const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				remove(
-					model,
-					new Position( root, [ 0, 0, 2 ] ),
-					1
-				);
-
-				remove(
-					model,
-					new Position( root, [ 0, 1, 2 ] ),
-					1
-				);
+			model.change( writer => {
+				writer.remove( root.getNodeByPath( [ 0, 0, 2 ] ) );
+				writer.remove( root.getNodeByPath( [ 0, 1, 2 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -213,12 +199,8 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - cells deletion in first row', () => {
 			const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				remove(
-					model,
-					new Position( root, [ 0, 0 ] ),
-					1
-				);
+			model.change( writer => {
+				writer.remove( root.getNodeByPath( [ 0, 0, 0 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -230,12 +212,8 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - cells deletion in last row', () => {
 			const firstTable = root.getChild( 0 );
 
-			model.change( () => {
-				remove(
-					model,
-					new Position( root, [ 0, 1 ] ),
-					1
-				);
+			model.change( writer => {
+				writer.remove( root.getNodeByPath( [ 0, 1 ] ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -247,10 +225,13 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - attribute change on multiple cells', () => {
 			const firstTable = root.getChild( 0 );
 
-			const range = new Range( new Position( root, [ 0, 0, 0 ] ), new Position( root, [ 0, 0, 3 ] ) );
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 0 ),
+					writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 3 )
+				);
 
-			model.change( () => {
-				attribute( model, range, 'attrName', null, 'attrVal' );
+				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -260,12 +241,15 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find affected table - attribute change on multiple rows', () => {
-			const firstTable = root.getChild( 0 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
 
-			const range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 2 ] ) );
+				const range = writer.createRange(
+					writer.createPositionAt( firstTable, 0 ),
+					writer.createPositionAt( firstTable, 2 )
+				);
 
-			model.change( () => {
-				attribute( model, range, 'attrName', null, 'attrVal' );
+				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -277,10 +261,13 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should find affected table - attribute change on a table', () => {
 			const firstTable = root.getChild( 0 );
 
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionAt( root, 0 ),
+					writer.createPositionAt( root, 1 )
+				);
 
-			model.change( () => {
-				attribute( model, range, 'attrName', null, 'attrVal' );
+				writer.setAttribute( 'attrName', 'attrVal', range );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -290,36 +277,31 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should find all affected tables - mixed operations', () => {
-			const firstTable = root.getChild( 0 );
-			const secondTable = root.getChild( 1 );
-			const thirdTable = root.getChild( 2 );
+			model.change( writer => {
+				const firstTable = root.getChild( 0 );
+				const secondTable = root.getChild( 1 );
+				const thirdTable = root.getChild( 2 );
 
-			model.change( () => {
-				remove(
-					model,
-					new Position( root, [ 0, 0 ] ),
-					1
+				writer.remove( firstTable.getChild( 0 ) );
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					firstTable.getChild( 0 )
 				);
 
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 0, 0, 0 ] )
+				const range = writer.createRange(
+					writer.createPositionAt( root, 1 ),
+					writer.createPositionAt( root, 3 )
 				);
 
-				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
-				attribute( model, range, 'attrName', null, 'attrVal' );
-
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 2, 0, 0 ] )
+				writer.setAttribute( 'attrName', 'attrVal', range );
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					root.getChild( 2 ).getChild( 0 )
 				);
 
-				insert(
-					model,
-					new Element( 'tableCell' ),
-					new Position( root, [ 2, 1, 0 ] )
+				writer.insert(
+					writer.createElement( 'tableCell' ),
+					root.getChild( 2 ).getChild( 1 )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -332,8 +314,8 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should not find affected table - table removal', () => {
-			model.change( () => {
-				remove( model, new Position( root, [ 0 ] ), 1 );
+			model.change( writer => {
+				writer.remove( root.getChild( 0 ) );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -342,15 +324,11 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should not find affected table - table replacement', () => {
-			model.change( () => {
-				remove( model, new Position( root, [ 0 ] ), 1 );
+			model.change( writer => {
+				writer.remove( root.getChild( 0 ) );
 
 				// Table plugin inserts a paragraph when a table is removed - #12201.
-				insert(
-					model,
-					new Element( 'paragraph' ),
-					new Position( root, [ 0 ] )
-				);
+				writer.insert( writer.createElement( 'paragraph' ), root );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -359,23 +337,22 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should not find any affected table if operation is not related to a table, row or cell element', () => {
-			model.change( () => {
-				insert(
-					model,
-					new Text( 'foo', { bold: true } ),
-					new Position( root, [ 0, 0, 0, 0 ] )
+			model.change( writer => {
+				writer.insertText(
+					'foo',
+					{ bold: true },
+					root.getNodeByPath( [ 0, 0, 0, 0 ] )
 				);
 
-				insert(
-					model,
-					new Text( 'foo', { italic: true } ),
-					new Position( root, [ 1, 1, 1, 0 ] )
+				writer.insertText(
+					'foo',
+					{ italic: true },
+					root.getNodeByPath( [ 1, 1, 1, 0 ] )
 				);
 
-				insert(
-					model,
-					new Text( 'foo' ),
-					new Position( root, [ 2, 1, 2, 0 ] )
+				writer.insertText(
+					'foo',
+					root.getNodeByPath( [ 2, 1, 2, 0 ] )
 				);
 
 				const affectedTables = getChangedResizedTables( model );
@@ -389,21 +366,22 @@ describe( 'TableColumnResize utils', () => {
 
 			// To test the getChangedResizedTables(), when the attribute is being removed we need
 			// to first insert the text inside one of the table cells.
-			model.change( () => {
-				insert(
-					model,
-					new Text( 'foo' ),
-					new Position( root, [ 0, 0, 0, 0 ] )
+			model.change( writer => {
+				const paragraph = root.getNodeByPath( [ 0, 0, 0, 0 ] );
+
+				writer.insertText( 'foo', paragraph, 0 );
+
+				range = writer.createRange(
+					writer.createPositionAt( paragraph, 1 ),
+					writer.createPositionAt( paragraph, 3 )
 				);
 
-				range = new Range( new Position( root, [ 0, 0, 0, 1 ] ), new Position( root, [ 0, 0, 0, 3 ] ) );
-
-				attribute( model, range, 'linkHref', null, 'www' );
+				writer.setAttribute( 'linkHref', 'www', range );
 			} );
 
 			// And in a different model.change() remove the attribute, because otherwise the changes would be empty.
-			model.change( () => {
-				attribute( model, range, 'linkHref', 'www', null );
+			model.change( writer => {
+				writer.removeAttribute( 'linkHref', range );
 
 				const affectedTables = getChangedResizedTables( model );
 
@@ -413,28 +391,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnMinWidthAsPercentage()', () => {
-		let model, editor, editorElement;
-
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-			editor = await ClassicEditor.create( editorElement, {
-				plugins: [ Table, TableColumnResize, Paragraph ]
-			} );
-
-			model = editor.model;
-		} );
-
-		afterEach( async () => {
-			if ( editorElement ) {
-				editorElement.remove();
-			}
-
-			if ( editor ) {
-				await editor.destroy();
-			}
-		} );
-
 		it( 'should return the correct value', () => {
 			setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
 
@@ -443,23 +399,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getColumnIndex()', () => {
-		let editor, tableUtils;
-
-		beforeEach( () => {
-			return ClassicEditor
-				.create( '', {
-					plugins: [ Table, TableColumnResize, Paragraph ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					tableUtils = editor.plugins.get( 'TableUtils' );
-				} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
 		it( 'should properly calculate column edge indexes', () => {
 			setModelData( editor.model, modelTable( [
 				[ '00', '01', '02' ],
@@ -575,33 +514,39 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'normalizeColumnWidths()', () => {
 		it( 'should not change the widths of the columns if they sum up to 100%', () => {
-			expect( normalizeColumnWidths( [ '25%', '25%', '25%', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '40%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
-			expect( normalizeColumnWidths( [ '10.32%', '20.12%', '30.87%', '38.69%' ] ) ).to.deep.equal( [ 10.32, 20.12, 30.87, 38.69 ] );
-			expect( normalizeColumnWidths( [ '100%' ] ) ).to.deep.equal( [ 100 ] );
+			[
+				[ '25%', '25%', '25%', '25%' ],
+				[ '10%', '20%', '30%', '40%' ],
+				[ '10.32%', '20.12%', '30.87%', '38.69%' ],
+				[ '100%' ]
+			].forEach( width => expect( normalizeColumnWidths( width ) ).to.deep.equal( width ) );
+		} );
+
+		it( 'should handle column widths of different formats', () => {
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
 		} );
 
 		it( 'should extend uninitialized columns equally if the free space per column is wider than the minimum column width', () => {
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ 20, 20, 20, 40 ] );
-			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ 5, 45, 45, 5 ] );
-			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ 100 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', 'auto' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '25%', 'auto', '25%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '40%' ] ) ).to.deep.equal( [ '20%', '20%', '20%', '40%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '45%', '45%', 'auto' ] ) ).to.deep.equal( [ '5%', '45%', '45%', '5%' ] );
+			expect( normalizeColumnWidths( [ 'auto' ] ) ).to.deep.equal( [ '100%' ] );
 		} );
 
 		it( 'should set the minimum column width for uninitialized columns if there is not enough free space per column', () => {
-			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).to.deep.equal( [ 4.76, 4.76, 4.76, 85.72 ] );
-			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).to.deep.equal( [ 4.55, 45.45, 4.55, 45.45 ] );
-			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).to.deep.equal( [ 3.23, 32.26, 32.26, 32.25 ] );
+			expect( normalizeColumnWidths( [ 'auto', 'auto', 'auto', '90%' ] ) ).to.deep.equal( [ '4.76%', '4.76%', '4.76%', '85.72%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', 'auto', '50%' ] ) ).to.deep.equal( [ '4.55%', '45.45%', '4.55%', '45.45%' ] );
+			expect( normalizeColumnWidths( [ 'auto', '50%', '50%', '50%' ] ) ).to.deep.equal( [ '3.23%', '32.26%', '32.26%', '32.25%' ] );
 		} );
 
 		it( 'should proportionally align all the column widths if their sum is not exactly 100%', () => {
-			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).to.deep.equal( [ 9.09, 18.18, 27.27, 45.46 ] );
-			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).to.deep.equal( [ 25, 25, 25, 25 ] );
-			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).to.deep.equal( [ 10, 20, 30, 40 ] );
+			expect( normalizeColumnWidths( [ '10%', '20%', '30%', '50%' ] ) ).to.deep.equal( [ '9.09%', '18.18%', '27.27%', '45.46%' ] );
+			expect( normalizeColumnWidths( [ '10%', '10%', '10%', '10%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ '100%', '100%', '100%', '100%' ] ) ).to.deep.equal( [ '25%', '25%', '25%', '25%' ] );
+			expect( normalizeColumnWidths( [ '1%', '2%', '3%', '4%' ] ) ).to.deep.equal( [ '10%', '20%', '30%', '40%' ] );
 			expect( normalizeColumnWidths( [ '12.33%', '17.4%', '21.49%', '33.52%', '26.6%', '10.43%' ] ) )
-				.to.deep.equal( [ 10.13, 14.29, 17.65, 27.53, 21.84, 8.56 ] );
+				.to.deep.equal( [ '10.13%', '14.29%', '17.65%', '27.53%', '21.84%', '8.56%' ] );
 		} );
 	} );
 
@@ -663,22 +608,6 @@ describe( 'TableColumnResize utils', () => {
 	} );
 
 	describe( 'getTableWidthInPixels()', () => {
-		let editor;
-
-		beforeEach( () => {
-			return ClassicEditor
-				.create( '', {
-					plugins: [ Table, TableColumnResize ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
 		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
 		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
 		it( 'returns a correct value on Safari', () => {
@@ -712,14 +641,60 @@ describe( 'TableColumnResize utils', () => {
 			expect( result ).to.not.equal( 0 );
 		} );
 	} );
+
+	describe( 'getTableColumnGroup()', () => {
+		it( 'should return tableColumnGroup when it exists', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
+		} );
+
+		it( 'should not return anything if tableColumnGroup does not exists', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
+
+			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
+		} );
+
+		it( 'should return the same tableColumnGroup element if it was passed as an argument', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( getColumnGroupElement( tableColumnGroup ) ).to.equal( tableColumnGroup );
+		} );
+	} );
+
+	describe( 'getTableColumns()', () => {
+		it( 'should return tableColumn array when there are columns', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
+		} );
+	} );
+
+	describe( 'getColumnWidths()', () => {
+		it( 'should return tableColumnGroup count when there are columns', () => {
+			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '50%', '50%' ] );
+		} );
+	} );
 } );
 
 function createTable( rows, cols ) {
-	// We need to set the `columnWidths` attribute because tables without it are ignored.
-	const colWidth = `${ 100 / cols }%`;
-	const columnWidths = new Array( cols ).fill( colWidth ).join( ',' );
+	return new Element( 'table', {}, [
+		...createTableRows( rows, cols ),
+		createColGroupRow( cols )
+	] );
+}
 
-	return new Element( 'table', { columnWidths }, createTableRows( rows, cols ) );
+function createColGroupRow( cols ) {
+	const colWidth = `${ 100 / cols }%`;
+	const columns = new Array( cols )
+		.fill( colWidth )
+		.map( columnWidth => new Element( 'tableColumn', { columnWidth } ) );
+
+	return new Element( 'tableColumnGroup', {}, columns );
 }
 
 function createTableRows( rows, cols ) {
@@ -728,26 +703,4 @@ function createTableRows( rows, cols ) {
 
 function createTableCells( cols ) {
 	return [ ...Array( cols ) ].map( () => new Element( 'tableCell' ) );
-}
-
-function insert( model, item, position ) {
-	const doc = model.document;
-	const operation = new InsertOperation( position, item, doc.version );
-
-	model.applyOperation( operation );
-}
-
-function remove( model, sourcePosition, howMany ) {
-	const doc = model.document;
-	const targetPosition = Position._createAt( doc.graveyard, doc.graveyard.maxOffset );
-	const operation = new MoveOperation( sourcePosition, howMany, targetPosition, doc.version );
-
-	model.applyOperation( operation );
-}
-
-function attribute( model, range, key, oldValue, newValue ) {
-	const doc = model.document;
-	const operation = new AttributeOperation( range, key, oldValue, newValue, doc.version );
-
-	model.applyOperation( operation );
 }

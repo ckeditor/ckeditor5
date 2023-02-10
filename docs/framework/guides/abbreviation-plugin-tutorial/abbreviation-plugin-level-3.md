@@ -46,15 +46,18 @@ import { icons } from '@ckeditor/ckeditor5-core';
 
 export default class FormView extends View {
 	constructor( locale ) {
+		// View class constructor invoke.
 		// ...
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
+		// Code prepared in the previous part.
 		// ...
 	}
 
     render() {
+		// View.render() invocation and adding a submit handler.
 		// ...
 
 		this.childViews._items.forEach( view => {
@@ -73,6 +76,7 @@ export default class FormView extends View {
 		this.keystrokes.destroy();
 	}
 
+	// Previously declared helper methods.
 	// ...
 }
 ```
@@ -100,6 +104,7 @@ import { icons } from '@ckeditor/ckeditor5-core';
 export default class FormView extends View {
 	constructor( locale ) {
 
+		// Previous code from the constructor.
 		// ...
 
 		this._focusCycler = new FocusCycler( {
@@ -116,10 +121,12 @@ export default class FormView extends View {
 		} );
 
 		this.setTemplate( {
+			// Setting the form template.
 			// ...
 		} );
 	}
 
+	// Previously declared methods.
 	// ...
 }
 ```
@@ -128,12 +135,16 @@ Now we can add the <kbd>Esc</kbd> button handler in our `_createFromView()` func
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationUI extends Plugin {
+	// Previously declared methods.
 	// ...
 
 	_createFormView() {
+		// Form view initialization.
 		// ...
 
 		// Close the panel on esc key press when the form has focus.
@@ -145,6 +156,7 @@ export default class AbbreviationUI extends Plugin {
 		return formView;
 	}
 
+	// Previously declared helper methods.
 	// ...
 }
 ```
@@ -185,10 +197,14 @@ We will also disable the input field when the selection is not collapsed, becaus
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
+
 import getRangeText from './utils.js';
 
 export default class AbbreviationUI extends Plugin {
+	// Previously declared methods.
 	// ...
 
 	_showUI() {
@@ -209,6 +225,7 @@ export default class AbbreviationUI extends Plugin {
 		this.formView.focus();
 	}
 
+	// Previously declared helper methods.
 	// ...
 }
 ```
@@ -217,9 +234,12 @@ Since we are disabling the first input field in some cases, let's update the `fo
 
 ```js
 // abbreviation/abbreviationview.js
+
+// Previously imported packages.
 // ...
 
 export default class FormView extends View {
+	// Previously declared constructor and other methods.
 	// ...
 
 	focus() {
@@ -232,6 +252,8 @@ export default class FormView extends View {
 			this.titleInputView.focus();
 		}
 	}
+
+	// Previously declared helper methods.
 	// ...
 }
 ```
@@ -293,6 +315,7 @@ export default class AbbreviationEditing extends Plugin {
 		);
 	}
 
+	// Previously declared methods.
 	// ...
 }
 ```
@@ -300,9 +323,12 @@ We can now replace the action called on `submit` with our new command, passing i
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationUI extends Plugin {
+	// Previously declared methods.
 	// ...
 
 	_createFormView() {
@@ -320,9 +346,11 @@ export default class AbbreviationUI extends Plugin {
 			this._hideUI();
 		} );
 
+		// Handle clicking outside the balloon and on the "Cancel" button.
 		// ...
 	}
 
+	// Previously declared helper methods.
 	// ...
 }
 ```
@@ -355,6 +383,7 @@ export default class AbbreviationCommand extends Command {
 	}
 
 	execute( { title, abbr } ) {
+		// The code runs after command execution.
 		// ...
 	}
 }
@@ -399,10 +428,12 @@ export default class AbbreviationCommand extends Command {
 			}
 		}
 
+		// The code that enables the command.
 		// ...
 	}
 
 	execute( { title, abbr } ) {
+		// The code runs after command execution.
 		// ...
 	}
 }
@@ -414,6 +445,8 @@ When the user selects a bit of text with the abbreviation attribute, along with 
 
 ```js
 // abbreviation/abbreviationcommand.js
+
+// Previously imported packages.
 //...
 
 export default class AbbreviationCommand extends Command {
@@ -423,6 +456,8 @@ export default class AbbreviationCommand extends Command {
 		const firstRange = selection.getFirstRange();
 
 		if ( firstRange.isCollapsed ) {
+			// When the selection is collapsed, the command has a value
+			// if the caret is in an abbreviation.
 			// ...
 		}
 		// When the selection is not collapsed, the command has a value if the selection
@@ -451,10 +486,12 @@ export default class AbbreviationCommand extends Command {
 			}
 		}
 
+		// The code that enables the command.
 		// ...
 	}
 
 	execute( { title, abbr } ) {
+		// The code runs after command execution.
 		// ...
 	}
 }
@@ -470,9 +507,12 @@ In the `AbbreviationUI` add a simple `if` statement to fill the form using eithe
 
 ```js
 // abbreviation/abbreviationui.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationUI extends Plugin {
+	// Previously declared methods.
 	// ...
 
 	_showUI() {
@@ -506,6 +546,7 @@ export default class AbbreviationUI extends Plugin {
 		this.formView.focus();
 	}
 
+	// Previously declared helper methods.
 	// ...
 }
 
@@ -521,10 +562,13 @@ If the selection is collapsed, we will keep our `insertContent()` model method f
 
 ```js
 // abbreviation/abbreviationcommand.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
+		// The code runs after the command refresh.
 		// ...
 	}
 
@@ -566,10 +610,13 @@ We will create a position at the end of the inserted abbreviation, and set a sel
 
 ```js
 // abbreviation/abbreviationcommand.js
+
+// Previously imported packages.
 // ...
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
+		// The code runs after the command refresh.
 		// ...
 	}
 
@@ -595,6 +642,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
+				// When the selection has non-collapsed node ranges, change the attribute on nodes inside those ranges
+				// omitting nodes where the "abbreviation" attribute is disallowed.
 				// ...
 			}
 		} );
@@ -608,11 +657,14 @@ The user might place the abbreviation inside a text, which already has some othe
 
 ```js
 // abbreviation/abbreviationcommand.js
+
+// More imports.
 // ...
 import { toMap } from '@ckeditor/ckeditor5-utils';					// ADDED
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
+		// The code runs after the command refresh.
 		// ...
 	}
 
@@ -623,6 +675,8 @@ export default class AbbreviationCommand extends Command {
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( this.value ) {
+					// When a collapsed selection is inside text
+					// with the "abbreviation" attribute, update texts.
 					// ...
 				}
 				// If the collapsed selection is not in an existing abbreviation,
@@ -650,6 +704,8 @@ export default class AbbreviationCommand extends Command {
 
 				writer.removeSelectionAttribute( 'abbreviation' );
 			} else {
+				// When the selection has non-collapsed node ranges, change the attribute on nodes inside those ranges
+				// omitting nodes where the "abbreviation" attribute is disallowed.
 				// ...
 			}
 		} );

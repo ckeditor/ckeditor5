@@ -172,5 +172,5 @@ Some of the options may require loading plugins which are not available in the b
 <info-box hint>
 **What's next?**
 
-You have learned how to configure your own CKEditor 5 instance. Awesome! In the next tutorial, you will learn more about extending your editor with plugins. Ready for a ride? {@link installation/getting-started/installing-plugins Jump in}!
+You have learned how to configure your own CKEditor 5 instance. Awesome! In the next tutorial, you will learn more about extending your editor with plugins. Ready for a ride? {@link installation/plugins/installing-plugins Jump in}!
 </info-box>

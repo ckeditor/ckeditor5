@@ -160,8 +160,8 @@ export default class Model extends ObservableMixin() {
 		} );
 
 		// The base implementation for "decorated" method with remapped arguments.
-		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ object, selection, options ] ) => {
-			evt.return = insertObject( this, object, selection, options );
+		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ element, selection, options ] ) => {
+			evt.return = insertObject( this, element, selection, options );
 		} );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
@@ -384,11 +384,13 @@ export default class Model extends ObservableMixin() {
 	public insertContent(
 		content: Item | ModelDocumentFragment,
 		selectable: Node,
-		placeOrOffset: PlaceOrOffset
+		placeOrOffset: PlaceOrOffset,
+		...rest: Array<unknown>
 	): ModelRange;
 	public insertContent(
 		content: Item | ModelDocumentFragment,
-		selectable?: Exclude<Selectable, Node>
+		selectable?: Exclude<Selectable, Node>,
+		...rest: Array<unknown>
 	): ModelRange;
 
 	/**
@@ -536,30 +538,34 @@ export default class Model extends ObservableMixin() {
 	public insertContent(
 		content: Item | ModelDocumentFragment,
 		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset
+		placeOrOffset?: PlaceOrOffset,
+		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
 
-		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection ] )!;
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection, placeOrOffset, ...rest ] )!;
 	}
 
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable: Node,
 		placeOrOffset: PlaceOrOffset,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange;
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: Exclude<Selectable, Node>,
 		placeOrOffset?: null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange;
 
 	/**
@@ -626,7 +632,7 @@ export default class Model extends ObservableMixin() {
 	 * model.insertObject( tableElement, range );
 	 * ```
 	 *
-	 * @param object An object to be inserted into the model document.
+	 * @param element An object to be inserted into the model document.
 	 * @param selectable A selectable where the content should be inserted. If not specified, the current
 	 * {@link module:engine/model/document~Document#selection document selection} will be used instead.
 	 * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
@@ -646,18 +652,20 @@ export default class Model extends ObservableMixin() {
 	 * at the insertion position.
 	 */
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: Selectable,
 		placeOrOffset?: PlaceOrOffset | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
 
 		// Note that options are fired as 2 arguments for backward compatibility with the decorated method.
-		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ object, selection, options, options ] )!;
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ element, selection, options, options, ...rest ] )!;
 	}
 
 	/**
@@ -1186,7 +1194,8 @@ export type ModelInsertContentEvent = {
 	name: 'insertContent';
 	args: [ [
 		content: Item | ModelDocumentFragment,
-		selectable?: ModelSelection | DocumentSelection
+		selectable?: ModelSelection | DocumentSelection,
+		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
 };
@@ -1206,13 +1215,13 @@ export type ModelInsertContentEvent = {
 export type ModelInsertObjectEvent = {
 	name: 'insertObject';
 	args: [ [
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: ModelSelection | DocumentSelection | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
 		},
-		_?: unknown
+		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
 };

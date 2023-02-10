@@ -7,65 +7,49 @@
  * @module table/tablecolumnresize/converters
  */
 
-import { normalizeColumnWidths } from './utils';
+import {
+	normalizeColumnWidths,
+	updateColumnElements,
+	getColumnGroupElement,
+	getTableColumnElements,
+	getTableColumnsWidths
+} from './utils';
 
 /**
- * Returns a helper for converting a view `<colgroup>` and `<col>` elements to the model table `columnWidths` attribute.
+ * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
+ * because the input data might have too few or too many <col> elements.
  *
- * Only the inline width, provided as a percentage value, in the `<col>` element is taken into account. If there are not enough `<col>`
- * elements matching this condition, the special value `auto` is returned. It indicates that the width of a column will be automatically
- * calculated in the
- * {@link module:table/tablecolumnresize/tablecolumnresizeediting~TableColumnResizeEditing#_registerPostFixer post-fixer}, depending
- * on the available table space.
- *
- * @param {module:core/plugin~Plugin} tableUtilsPlugin The {@link module:table/tableutils~TableUtils} plugin instance.
+ * @param {module:core/plugin~Plugin} tableUtilsPlugin
  * @returns {Function} Conversion helper.
  */
 export function upcastColgroupElement( tableUtilsPlugin ) {
 	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		const viewColgroupElement = data.viewItem;
+		const modelTable = data.modelCursor.findAncestor( 'table' );
+		const tableColumnGroup = getColumnGroupElement( modelTable );
 
-		if ( !conversionApi.consumable.test( viewColgroupElement, { name: true } ) ) {
+		if ( !tableColumnGroup ) {
 			return;
 		}
 
-		conversionApi.consumable.consume( viewColgroupElement, { name: true } );
+		const columnElements = getTableColumnElements( tableColumnGroup );
+		let columnWidths = getTableColumnsWidths( tableColumnGroup );
+		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
 
-		const modelTable = data.modelCursor.findAncestor( 'table' );
-		const numberOfColumns = tableUtilsPlugin.getColumns( modelTable );
+		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
 
-		let columnWidths = [ ...Array( numberOfColumns ).keys() ]
-			.map( columnIndex => {
-				const viewChild = viewColgroupElement.getChild( columnIndex );
-
-				if ( !viewChild || !viewChild.is( 'element', 'col' ) ) {
-					return 'auto';
-				}
-
-				const viewColWidth = viewChild.getStyle( 'width' );
-
-				if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
-					return 'auto';
-				}
-
-				return viewColWidth;
-			} );
-
-		if ( columnWidths.includes( 'auto' ) ) {
-			columnWidths = normalizeColumnWidths( columnWidths ).map( width => width + '%' );
+		if ( columnWidths.length != columnElements.length || columnWidths.includes( 'auto' ) ) {
+			updateColumnElements( columnElements, tableColumnGroup, normalizeColumnWidths( columnWidths ), conversionApi.writer );
 		}
-
-		conversionApi.writer.setAttribute( 'columnWidths', columnWidths.join( ',' ), modelTable );
-	} );
+	}, { priority: 'low' } );
 }
 
 /**
- * Returns a helper for converting a model table `columnWidths` attribute to view `<colgroup>` and `<col>` elements.
+ * Returns downcast helper for adding `ck-table-resized` class if there is a `<tableColumnGroup>` element inside the table.
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastTableColumnWidthsAttribute() {
-	return dispatcher => dispatcher.on( 'attribute:columnWidths:table', ( evt, data, conversionApi ) => {
+export function downcastTableResizedClass() {
+	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
 		const modelTable = data.item;
 		const viewElement = conversionApi.mapper.toViewElement( modelTable );
@@ -74,56 +58,12 @@ export function downcastTableColumnWidthsAttribute() {
 			viewElement :
 			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) );
 
-		if ( data.attributeNewValue ) {
-			// If new value is the same as the old, the operation is not applied (see the `writer.setAttributeOnItem()`).
-			// OTOH the model element has the attribute already applied, so we can't compare the values.
-			// Hence we need to just recreate the <colgroup> element every time.
-			insertColgroupElement( viewWriter, viewTable, data.attributeNewValue );
+		const tableColumnGroup = getColumnGroupElement( data.item );
+
+		if ( tableColumnGroup ) {
 			viewWriter.addClass( 'ck-table-resized', viewTable );
 		} else {
-			removeColgroupElement( viewWriter, viewTable );
 			viewWriter.removeClass( 'ck-table-resized', viewTable );
 		}
-	} );
-}
-
-// Inserts the `<colgroup>` with `<col>` elements as the first child in the view table. Each `<col>` element represents a single column
-// and it has the inline width style set, taken from the appropriate slot from the `columnWidths` table attribute.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewTable View table.
-// @param {String} columnWidthsAttribute Column widths attribute from model table.
-function insertColgroupElement( viewWriter, viewTable, columnWidthsAttribute ) {
-	const columnWidths = columnWidthsAttribute.split( ',' );
-
-	let viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
-
-	if ( !viewColgroupElement ) {
-		viewColgroupElement = viewWriter.createContainerElement( 'colgroup' );
-	} else {
-		for ( const viewChild of [ ...viewColgroupElement.getChildren() ] ) {
-			viewWriter.remove( viewChild );
-		}
-	}
-
-	for ( const columnIndex of Array( columnWidths.length ).keys() ) {
-		const viewColElement = viewWriter.createEmptyElement( 'col' );
-
-		viewWriter.setStyle( 'width', columnWidths[ columnIndex ], viewColElement );
-		viewWriter.insert( viewWriter.createPositionAt( viewColgroupElement, 'end' ), viewColElement );
-	}
-
-	viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' ), viewColgroupElement );
-}
-
-// Removes the `<colgroup>` with `<col>` elements from the view table.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter View writer instance.
-// @param {module:engine/view/element~Element} viewTable View table.
-function removeColgroupElement( viewWriter, viewTable ) {
-	const viewColgroupElement = [ ...viewTable.getChildren() ].find( viewElement => viewElement.is( 'element', 'colgroup' ) );
-
-	viewWriter.remove( viewColgroupElement );
+	}, { priority: 'low' } );
 }
