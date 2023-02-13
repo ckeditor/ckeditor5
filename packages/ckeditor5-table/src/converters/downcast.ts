@@ -12,23 +12,24 @@ import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction
 
 import TableWalker from './../tablewalker';
 import type TableUtils from '../tableutils';
+import type { AdditionalSlot } from '../tableediting';
 
 /**
  * Model table element to view table element conversion helper.
- *
- * @param tableUtils The `TableUtils` plugin instance.
- * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
- * @returns Element creator.
  */
-export function downcastTable( tableUtils: TableUtils, options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const tableSections = [];
+		const tableElement = writer.createContainerElement( 'table', null, [] );
+		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
-			tableSections.push(
-				writer.createContainerElement( 'thead', null,
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'thead',
+					null,
 					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! < headingRows )
 				)
 			);
@@ -36,20 +37,35 @@ export function downcastTable( tableUtils: TableUtils, options: { asWidget?: boo
 
 		// Table body slot.
 		if ( headingRows < tableUtils.getRows( table ) ) {
-			tableSections.push(
-				writer.createContainerElement( 'tbody', null,
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'tbody',
+					null,
 					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= headingRows )
 				)
 			);
 		}
 
-		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, [
-			// Table with proper sections (thead, tbody).
-			writer.createContainerElement( 'table', null, tableSections ),
+		// Dynamic slots.
+		for ( const { positionOffset, filter } of options.additionalSlots ) {
+			writer.insert(
+				writer.createPositionAt( tableElement, positionOffset ),
+				writer.createSlot( filter )
+			);
+		}
 
-			// Slot for the rest (for example caption).
-			writer.createSlot( element => !element.is( 'element', 'tableRow' ) )
-		] );
+		// Create a slot with items that don't fit into the table.
+		writer.insert(
+			writer.createPositionAt( tableElement, 'after' ),
+			writer.createSlot( element => {
+				if ( element.is( 'element', 'tableRow' ) ) {
+					return false;
+				}
+
+				return !options.additionalSlots.some( ( { filter } ) => filter( element ) );
+			} )
+		);
 
 		return options.asWidget ? toTableWidget( figureElement, writer ) : figureElement;
 	};
@@ -178,4 +194,17 @@ function hasAnyAttribute( element: Node ): boolean {
 	const iteratorItem = element.getAttributeKeys().next();
 
 	return !iteratorItem.done;
+}
+
+export interface DowncastTableOptions {
+
+	/**
+	 * If set to `true`, the downcast conversion will produce a widget.
+	 */
+	asWidget?: boolean;
+
+	/**
+	 * Array of additional slot handlers.
+	 */
+	additionalSlots: Array<AdditionalSlot>;
 }

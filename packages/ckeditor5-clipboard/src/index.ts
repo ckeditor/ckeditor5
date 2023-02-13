@@ -10,6 +10,7 @@
 export { default as Clipboard } from './clipboard';
 export {
 	default as ClipboardPipeline,
+	type ClipboardContentInsertionEvent,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ClipboardOutputEvent

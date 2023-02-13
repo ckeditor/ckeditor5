@@ -7,8 +7,8 @@
  * @module table/tableediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import type { ModelPositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
@@ -40,6 +40,11 @@ import '../theme/tableediting.css';
  */
 export default class TableEditing extends Plugin {
 	/**
+	 * Handlers for creating additional slots in the table.
+	 */
+	private _additionalSlots: Array<AdditionalSlot>;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName(): 'TableEditing' {
@@ -51,6 +56,15 @@ export default class TableEditing extends Plugin {
 	 */
 	public static get requires(): PluginDependencies {
 		return [ TableUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this._additionalSlots = [];
 	}
 
 	/**
@@ -92,14 +106,19 @@ export default class TableEditing extends Plugin {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: downcastTable( tableUtils, { asWidget: true } )
+			view: downcastTable( tableUtils, {
+				asWidget: true,
+				additionalSlots: this._additionalSlots
+			} )
 		} );
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: downcastTable( tableUtils )
+			view: downcastTable( tableUtils, {
+				additionalSlots: this._additionalSlots
+			} )
 		} );
 
 		// Table row conversion.
@@ -189,6 +208,13 @@ export default class TableEditing extends Plugin {
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
+
+	/**
+	 * Registers downcast handler for the additional table slot.
+	 */
+	public registerAdditionalSlot( slotHandler: AdditionalSlot ): void {
+		this._additionalSlots.push( slotHandler );
+	}
 }
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -213,4 +239,65 @@ function upcastCellSpan( type: string ) {
 
 		return span;
 	};
+}
+
+/**
+ * By default, only the `tableRow` elements from the `table` model are downcast inside the `<table>` and
+ * all other elements are pushed outside the table. This handler allows creating additional slots inside
+ * the table for other elements.
+ *
+ * Take this model as an example:
+ *
+ * ```xml
+ * <table>
+ *   <tableRow>...</tableRow>
+ *   <tableRow>...</tableRow>
+ *   <tableColumnGroup>...</tableColumnGroup>
+ * </table>
+ * ```
+ *
+ * By default, downcasting result will be:
+ *
+ * ```xml
+ * <table>
+ *   <tbody>
+ *     <tr>...</tr>
+ *     <tr>...</tr>
+ *   </tbody>
+ * </table>
+ * <colgroup>...</colgroup>
+ * ```
+ *
+ * To allow the `tableColumnGroup` element at the end of the table, use the following configuration:
+ *
+ * ```ts
+ * const additionalSlot = {
+ *   filter: element => element.is( 'element', 'tableColumnGroup' ),
+ *   positionOffset: 'end'
+ * }
+ * ```
+ *
+ * Now, the downcast result will be:
+ *
+ * ```xml
+ * <table>
+ *   <tbody>
+ *     <tr>...</tr>
+ *     <tr>...</tr>
+ *   </tbody>
+ *   <colgroup>...</colgroup>
+ * </table>
+ * ```
+ */
+export interface AdditionalSlot {
+
+	/**
+	 * Filter for elements that should be placed inside given slot.
+	 */
+	filter: SlotFilter;
+
+	/**
+	 * Position of the slot within the table.
+	 */
+	positionOffset: ModelPositionOffset;
 }

@@ -59,6 +59,7 @@ function getConfig( type ) {
 			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
 			'!packages/ckeditor5-build-*/src/**/*.js',
 			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/_src/**/*.@(js|jsdoc)',
 			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
 			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.js'
 		]

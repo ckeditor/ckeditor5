@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model, ViewElement, ViewNode } from 'ckeditor5/src/engine';
+import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine';
 import { global } from 'ckeditor5/src/utils';
 import type TableUtils from '../tableutils';
 import {
@@ -70,9 +70,15 @@ export function getChangedResizedTables( model: Model ): Set<Element> {
 
 		// We iterate over the whole table looking for the nested tables that are also affected.
 		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
-			if ( node.is( 'element', 'table' ) && node.hasAttribute( 'columnWidths' ) ) {
-				affectedTables.add( node );
+			if ( !node.is( 'element', 'table' ) ) {
+				continue;
 			}
+
+			if ( !getColumnGroupElement( node ) ) {
+				continue;
+			}
+
+			affectedTables.add( node );
 		}
 	}
 
@@ -229,30 +235,40 @@ export function sumArray( array: Array<number | string> ): number {
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
-export function normalizeColumnWidths( columnWidths: Array<number | string> ): Array<number> {
-	const completeColumnWidths = calculateMissingColumnWidths( columnWidths );
-	const totalWidth = sumArray( completeColumnWidths );
+export function normalizeColumnWidths( columnWidths: Array<string> ): Array<string> {
+	const widths: Array<number | 'auto'> = columnWidths.map( width => {
+		// Possible values are 'auto' or string ending with '%'
+		if ( width === 'auto' ) {
+			return width;
+		}
 
-	if ( totalWidth === 100 ) {
-		return completeColumnWidths;
+		return parseFloat( width.replace( '%', '' ) );
+	} );
+
+	let normalizedWidths: Array<number> = calculateMissingColumnWidths( widths );
+	const totalWidth = sumArray( normalizedWidths );
+
+	if ( totalWidth !== 100 ) {
+		normalizedWidths = normalizedWidths
+			// Adjust all the columns proportionally.
+			.map( width => toPrecision( width * 100 / totalWidth ) )
+			// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%.
+			// Therefore, the width of the last column is explicitly adjusted (narrowed or expanded), since all the columns
+			// have been proportionally changed already.
+			.map( ( columnWidth, columnIndex, width ) => {
+				const isLastColumn = columnIndex === width.length - 1;
+
+				if ( !isLastColumn ) {
+					return columnWidth;
+				}
+
+				const totalWidth = sumArray( width );
+
+				return toPrecision( columnWidth + 100 - totalWidth );
+			} );
 	}
 
-	return completeColumnWidths
-		// Adjust all the columns proportionally.
-		.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
-		// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%. Therefore, the width
-		// of the last column is explicitly adjusted (narrowed or expanded), since all the columns have been proportionally changed already.
-		.map( ( columnWidth, columnIndex, columnWidths ) => {
-			const isLastColumn = columnIndex === columnWidths.length - 1;
-
-			if ( !isLastColumn ) {
-				return columnWidth;
-			}
-
-			const totalWidth = sumArray( columnWidths );
-
-			return toPrecision( columnWidth + 100 - totalWidth );
-		} );
+	return normalizedWidths.map( width => width + '%' );
 }
 
 /**
@@ -307,4 +323,76 @@ export function getDomCellOuterWidth( domCell: HTMLElement ): number {
 			parseFloat( styles.paddingRight ) +
 			parseFloat( styles.borderWidth );
 	}
+}
+
+/**
+ * Updates column elements to match columns widths.
+ *
+ * @param columns
+ * @param tableColumnGroup
+ * @param normalizedWidths
+ * @param writer
+ */
+export function updateColumnElements(
+	columns: Array<Element>,
+	tableColumnGroup: Element,
+	normalizedWidths: Array<string>,
+	writer: Writer
+): void {
+	for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
+		const column = columns[ i ];
+		const columnWidth = normalizedWidths[ i ];
+
+		if ( !columnWidth ) {
+			// Number of `<tableColumn>` elements exceeds actual number of columns.
+			writer.remove( column );
+		} else if ( !column ) {
+			// There is fewer `<tableColumn>` elements than actual columns.
+			writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
+		} else {
+			// Update column width.
+			writer.setAttribute( 'columnWidth', columnWidth, column );
+		}
+	}
+}
+
+/**
+ * Returns a 'tableColumnGroup' element from the 'table'.
+ *
+ * @internal
+ * @param element A 'table' or 'tableColumnGroup' element.
+ * @returns A 'tableColumnGroup' element.
+ */
+export function getColumnGroupElement( element: Element ): Element {
+	if ( element.is( 'element', 'tableColumnGroup' ) ) {
+		return element;
+	}
+
+	const children = element.getChildren()!;
+
+	return Array
+		.from( children )
+		.find( element => element.is( 'element', 'tableColumnGroup' ) )! as Element;
+}
+
+/**
+ * Returns an array of 'tableColumn' elements.
+ *
+ * @internal
+ * @param element A 'table' or 'tableColumnGroup' element.
+ * @returns An array of 'tableColumn' elements.
+ */
+export function getTableColumnElements( element: Element ): Array<Element> {
+	return Array.from( getColumnGroupElement( element ).getChildren() as IterableIterator<Element> );
+}
+
+/**
+ * Returns an array of table column widths.
+ *
+ * @internal
+ * @param element A 'table' or 'tableColumnGroup' element.
+ * @returns An array of table column widths.
+ */
+export function getTableColumnsWidths( element: Element ): Array<string> {
+	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) as string );
 }

@@ -63,7 +63,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 */
 	public override set(
 		keystroke: string | Array<string | number>,
-		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
+		callback: EditingKeystrokeCallback,
 		options: { readonly priority?: PriorityString } = {}
 	): void {
 		if ( typeof callback == 'string' ) {
@@ -78,3 +78,8 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 		super.set( keystroke, callback, options );
 	}
 }
+
+/**
+ * Command name or a callback to be executed when a given keystroke is pressed.
+ */
+export type EditingKeystrokeCallback = string | ( ( ev: KeyboardEvent, cancel: () => void ) => void );
