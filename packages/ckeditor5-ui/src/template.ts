@@ -1800,8 +1800,8 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 declare const AttributeBindingSymbol: unique symbol;
 declare const ListenerBindingSymbol: unique symbol;
 
-export interface AttributeBinding { _opaque: typeof AttributeBindingSymbol }
-export interface ListenerBinding { _opaque: typeof ListenerBindingSymbol }
+export interface AttributeBinding { _opaque1: typeof AttributeBindingSymbol }
+export interface ListenerBinding { _opaque2: typeof ListenerBindingSymbol }
 
 /**
  * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`
@@ -1811,9 +1811,14 @@ export interface ListenerBinding { _opaque: typeof ListenerBindingSymbol }
  */
 export interface BindChain<TObservable> {
 	to<TAttribute extends keyof TObservable & string>(
+		attribute: TAttribute
+	): AttributeBinding & ListenerBinding;
+
+	to<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute,
-		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( TemplateSimpleValue )
+		callback: ( value: TObservable[ TAttribute ], node: Node ) => ( TemplateSimpleValue )
 	): AttributeBinding;
+
 	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;
 
 	if<TAttribute extends keyof TObservable & string>(

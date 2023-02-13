@@ -141,8 +141,6 @@ export default class CharacterGridView extends View<HTMLDivElement> {
 			},
 			on: {
 				mouseover: tile.bindTemplate.to( 'mouseover' ),
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				focus: tile.bindTemplate.to( 'focus' )
 			}
 		} );
