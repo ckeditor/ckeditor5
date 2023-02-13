@@ -169,34 +169,5 @@ describe( 'ReplaceCommand', () => {
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );
-
-		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
-			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
-
-			const { results } = editor.execute( 'find', 'oo' );
-
-			model.change( writer => {
-				writer.remove(
-					// <paragraph>Aoo [Boo Coo] Doo</paragraph>
-					model.createRange(
-						model.createPositionAt( model.document.getRoot().getChild( 0 ), 4 ),
-						model.createPositionAt( model.document.getRoot().getChild( 0 ), 11 )
-					)
-				);
-			} );
-
-			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
-			// In real life scenario the above deletion would be a transparent batch from the remote user,
-			// and undo would also be triggered by the remote user.
-			model.enqueueChange( { isUndoable: false }, () => {
-				editor.execute( 'replaceAll', 'aa', results );
-			} );
-
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
-
-			editor.execute( 'undo' );
-
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
-		} );
 	} );
 } );

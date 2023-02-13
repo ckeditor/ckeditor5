@@ -10,11 +10,12 @@
 export { default as Plugin, type PluginDependencies } from './plugin';
 export { default as Command, type CommandExecuteEvent } from './command';
 export { default as MultiCommand } from './multicommand';
-export { CommandsMap } from './commandcollection';
-export { PluginsMap, type default as PluginCollection } from './plugincollection';
+export type { CommandsMap } from './commandcollection';
+export type { PluginsMap, default as PluginCollection } from './plugincollection';
 
-export { default as Context } from './context';
+export { default as Context, type ContextConfig } from './context';
 export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin';
+export { type EditingKeystrokeCallback } from './editingkeystrokehandler';
 
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor';
 export type {
