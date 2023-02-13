@@ -10,6 +10,8 @@
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
 
+import '../listcommands';
+
 /**
  * The list style command. It changes the `listStyle` attribute of the selected list items.
  *

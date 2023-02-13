@@ -20,6 +20,7 @@ import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
+import '../imageconfig';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -74,7 +75,8 @@ export default class ImageUploadEditing extends Plugin {
 		const doc = editor.model.document;
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' )! );
 		const uploadImageCommand = new UploadImageCommand( editor );
 
@@ -135,7 +137,7 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
+		this.listenTo( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.map( value => value.item as ViewElement )
 				.filter( viewElement =>
@@ -269,7 +271,7 @@ export default class ImageUploadEditing extends Plugin {
 		const t = editor.locale.t;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageUploadElements = this._uploadImageElements;
 
 		model.enqueueChange( { isUndoable: false }, writer => {
@@ -411,7 +413,7 @@ export function isHtmlIncluded( dataTransfer: DataTransfer ): boolean {
 }
 
 function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return Array.from( editor.model.createRangeOn( item ) )
 		.filter( value => imageUtils.isImage( value.item as Element ) )
@@ -421,11 +423,6 @@ function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageUploadEditing.pluginName ]: ImageUploadEditing;
-	}
-
-	interface CommandsMap {
-		uploadImage: UploadImageCommand;
-		imageUpload: UploadImageCommand;
 	}
 }
 

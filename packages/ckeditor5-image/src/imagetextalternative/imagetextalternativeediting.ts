@@ -43,8 +43,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;
 	}
-
-	interface CommandsMap {
-		imageTextAlternative: ImageTextAlternativeCommand;
-	}
 }

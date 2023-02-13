@@ -7,6 +7,7 @@
  * @module cloud-services
  */
 
-export { default as CloudServices, type TokenUrl } from './cloudservices';
+export { default as CloudServices } from './cloudservices';
 export { default as CloudServicesCore } from './cloudservicescore';
+export { TokenUrl } from './cloudservicesconfig';
 export type { default as Token, InitializedToken } from './token/token';

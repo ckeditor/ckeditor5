@@ -4,8 +4,8 @@
  */
 
 import type { DowncastAttributeEvent, Element, UpcastElementEvent } from 'ckeditor5/src/engine';
-import { first, type BaseEvent, type GetCallback } from 'ckeditor5/src/utils';
-import type { ImageStyleOptionDefinition } from '../imagestyle';
+import { first, type GetCallback } from 'ckeditor5/src/utils';
+import type { ImageStyleOptionDefinition } from '../imageconfig';
 
 /**
  * @module image/imagestyle/converters

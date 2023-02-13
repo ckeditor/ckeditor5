@@ -24,6 +24,7 @@ import type {
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
+import './imageconfig';
 
 /**
  * A set of helpers related to images.
