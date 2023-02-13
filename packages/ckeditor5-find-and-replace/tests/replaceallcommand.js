@@ -4,10 +4,11 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 import { uid, Collection } from 'ckeditor5/src/utils';
 
@@ -17,7 +18,7 @@ describe( 'ReplaceAllCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -123,6 +124,35 @@ describe( 'ReplaceAllCommand', () => {
 			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar bar</p>' );
 
 			await multiRootEditor.destroy();
+		} );
+
+		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
+			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
+
+			const { results } = editor.execute( 'find', 'oo' );
+
+			model.change( writer => {
+				writer.remove(
+					// <paragraph>Aoo [Boo Coo] Doo</paragraph>
+					model.createRange(
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 4 ),
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 11 )
+					)
+				);
+			} );
+
+			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
+			// In real life scenario the above deletion would be a transparent batch from the remote user,
+			// and undo would also be triggered by the remote user.
+			model.enqueueChange( { isUndoable: false }, () => {
+				editor.execute( 'replaceAll', 'aa', results );
+			} );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+
+			editor.execute( 'undo' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 	} );
 } );

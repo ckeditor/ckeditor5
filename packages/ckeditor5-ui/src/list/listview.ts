@@ -30,7 +30,7 @@ import '../../theme/components/list/list.css';
  * @extends module:ui/view~View
  * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
-export default class ListView extends View implements DropdownPanelFocusable {
+export default class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
 	public readonly items: ViewCollection;
 	public readonly focusTracker: FocusTracker;
 	public readonly keystrokes: KeystrokeHandler;

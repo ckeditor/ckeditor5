@@ -67,9 +67,15 @@ export function getChangedResizedTables( model ) {
 
 		// We iterate over the whole table looking for the nested tables that are also affected.
 		for ( const node of model.createRangeOn( tableNode ).getItems() ) {
-			if ( node.is( 'element' ) && node.name === 'table' && node.hasAttribute( 'columnWidths' ) ) {
-				affectedTables.add( node );
+			if ( !node.is( 'element', 'table' ) ) {
+				continue;
 			}
+
+			if ( !getColumnGroupElement( node ) ) {
+				continue;
+			}
+
+			affectedTables.add( node );
 		}
 	}
 
@@ -224,33 +230,43 @@ export function sumArray( array ) {
  *
  * Currently, only widths provided as percentage values are supported.
  *
- * @param {Array.<Number>} columnWidths An array of column widths.
- * @returns {Array.<Number>} An array of column widths guaranteed to sum up to 100%.
+ * @param {Array.<String>} columnWidths An array of column widths.
+ * @returns {Array.<String>} An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths ) {
+	columnWidths = columnWidths.map( width => {
+		// Possible values are 'auto' or string ending with '%'
+		if ( width === 'auto' ) {
+			return width;
+		}
+
+		return parseFloat( width.replace( '%', '' ) );
+	} );
+
 	columnWidths = calculateMissingColumnWidths( columnWidths );
 	const totalWidth = sumArray( columnWidths );
 
-	if ( totalWidth === 100 ) {
-		return columnWidths;
+	if ( totalWidth !== 100 ) {
+		columnWidths = columnWidths
+			// Adjust all the columns proportionally.
+			.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
+			// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%.
+			// Therefore, the width of the last column is explicitly adjusted (narrowed or expanded), since all the columns
+			// have been proportionally changed already.
+			.map( ( columnWidth, columnIndex, columnWidths ) => {
+				const isLastColumn = columnIndex === columnWidths.length - 1;
+
+				if ( !isLastColumn ) {
+					return columnWidth;
+				}
+
+				const totalWidth = sumArray( columnWidths );
+
+				return toPrecision( columnWidth + 100 - totalWidth );
+			} );
 	}
 
-	return columnWidths
-		// Adjust all the columns proportionally.
-		.map( columnWidth => toPrecision( columnWidth * 100 / totalWidth ) )
-		// Due to rounding of numbers it may happen that the sum of the widths of all columns will not be exactly 100%. Therefore, the width
-		// of the last column is explicitly adjusted (narrowed or expanded), since all the columns have been proportionally changed already.
-		.map( ( columnWidth, columnIndex, columnWidths ) => {
-			const isLastColumn = columnIndex === columnWidths.length - 1;
-
-			if ( !isLastColumn ) {
-				return columnWidth;
-			}
-
-			const totalWidth = sumArray( columnWidths );
-
-			return toPrecision( columnWidth + 100 - totalWidth );
-		} );
+	return columnWidths.map( width => width + '%' );
 }
 
 // Initializes the column widths by parsing the attribute value and calculating the uninitialized column widths. The special value 'auto'
@@ -304,4 +320,69 @@ export function getDomCellOuterWidth( domCell ) {
 			parseFloat( styles.paddingRight ) +
 			parseFloat( styles.borderWidth );
 	}
+}
+
+/**
+ * Updates column elements to match columns widths.
+ *
+ * @param columns
+ * @param tableColumnGroup
+ * @param normalizedWidths
+ * @param writer
+ */
+export function updateColumnElements( columns, tableColumnGroup, normalizedWidths, writer ) {
+	for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
+		const column = columns[ i ];
+		const columnWidth = normalizedWidths[ i ];
+
+		if ( !columnWidth ) {
+			// Number of `<tableColumn>` elements exceeds actual number of columns.
+			writer.remove( column );
+		} else if ( !column ) {
+			// There is fewer `<tableColumn>` elements than actual columns.
+			writer.appendElement( 'tableColumn', { columnWidth }, tableColumnGroup );
+		} else {
+			// Update column width.
+			writer.setAttribute( 'columnWidth', columnWidth, column );
+		}
+	}
+}
+
+/**
+ * Returns a 'tableColumnGroup' element from the 'table'.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {module:engine/model/element~Element|undefined} A 'tableColumnGroup' element.
+ */
+export function getColumnGroupElement( element ) {
+	if ( element.is( 'element', 'tableColumnGroup' ) ) {
+		return element;
+	}
+
+	return Array
+		.from( element.getChildren() )
+		.find( element => element.is( 'element', 'tableColumnGroup' ) );
+}
+
+/**
+ * Returns an array of 'tableColumn' elements.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<module:engine/model/element~Element>} An array of 'tableColumn' elements.
+ */
+export function getTableColumnElements( element ) {
+	return Array.from( getColumnGroupElement( element ).getChildren() );
+}
+
+/**
+ * Returns an array of table column widths.
+ *
+ * @internal
+ * @param {module:engine/model/element~Element} element A 'table' or 'tableColumnGroup' element.
+ * @returns {Array<String>} An array of table column widths.
+ */
+export function getTableColumnsWidths( element ) {
+	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) );
 }

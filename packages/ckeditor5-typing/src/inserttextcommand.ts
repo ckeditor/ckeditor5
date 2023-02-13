@@ -77,12 +77,7 @@ export default class InsertTextCommand extends Command {
 	 * should be placed after the insertion. If not specified, the selection will be placed right after
 	 * the inserted text.
 	 */
-	public override execute( options: {
-		text?: string;
-		selection?: Selection | DocumentSelection;
-		range?: Range;
-		resultRange?: Range;
-	} = {} ): void {
+	public override execute( options: InsertTextCommandOptions = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const text = options.text || '';
@@ -117,5 +112,26 @@ export default class InsertTextCommand extends Command {
 
 			this._buffer.input( textInsertions );
 		} );
+	}
+}
+
+export interface InsertTextCommandOptions {
+	text?: string;
+	selection?: Selection | DocumentSelection;
+	range?: Range;
+	resultRange?: Range;
+}
+
+export interface InsertTextCommandExecuteEvent {
+	name: 'execute';
+	args: [
+		data: [ options: InsertTextCommandOptions ]
+	];
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		input: InsertTextCommand;
+		insertText: InsertTextCommand;
 	}
 }

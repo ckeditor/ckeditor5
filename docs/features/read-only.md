@@ -52,6 +52,7 @@ Some use cases might require hiding the editor toolbar when entering the read-on
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// The editor's configuration.
 		// ...
 	} )
 	.then( editor => {
@@ -82,3 +83,7 @@ There are more features that help control user permissions in the WYSIWYG editor
 
 * {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
 * {@link features/comments-only-mode Comments-only mode} &ndash; Users can add comments to any part of the content instead of editing it directly.
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core).
