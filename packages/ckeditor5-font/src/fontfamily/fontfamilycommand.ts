@@ -29,3 +29,9 @@ export default class FontFamilyCommand extends FontCommand {
 		super( editor, FONT_FAMILY );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		[ FONT_FAMILY ]: FontFamilyCommand;
+	}
+}

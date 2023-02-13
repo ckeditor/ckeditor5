@@ -15,6 +15,7 @@ export type { PluginsMap, default as PluginCollection } from './plugincollection
 
 export { default as Context, type ContextConfig } from './context';
 export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin';
+export { type EditingKeystrokeCallback } from './editingkeystrokehandler';
 
 export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor';
 export type {

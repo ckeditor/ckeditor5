@@ -42,7 +42,7 @@ import type { default as Button, ButtonExecuteEvent } from './button';
  * @extends module:ui/view~View
  * @implements module:ui/button/button~Button
  */
-export default class ButtonView extends View implements Button {
+export default class ButtonView extends View<HTMLButtonElement> implements Button {
 	public readonly children: ViewCollection;
 	public readonly labelView: View;
 	public readonly iconView: IconView;

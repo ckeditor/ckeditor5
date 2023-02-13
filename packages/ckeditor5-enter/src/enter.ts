@@ -57,10 +57,6 @@ export default class Enter extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'enter': EnterCommand;
-	}
-
 	interface PluginsMap {
 		[ Enter.pluginName ]: Enter;
 	}

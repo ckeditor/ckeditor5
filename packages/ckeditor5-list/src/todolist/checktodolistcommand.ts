@@ -12,6 +12,8 @@ import type { Element } from 'ckeditor5/src/engine';
 
 const attributeKey = 'todoListChecked';
 
+import '../listcommands';
+
 /**
  * The check to-do command.
  *

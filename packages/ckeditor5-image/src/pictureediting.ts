@@ -12,7 +12,7 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ImageEditing from './image/imageediting';
 import ImageUtils from './imageutils';
 import { downcastSourcesAttribute, upcastPicture } from './image/converters';
-import type { ImageUploadCompleteEvent } from './imageupload/imageuploadediting';
+import type { default as ImageUploadEditing, ImageUploadCompleteEvent } from './imageupload/imageuploadediting';
 
 /**
  * This plugin enables the [`<picture>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture) element support in the editor.
@@ -111,7 +111,7 @@ export default class PictureEditing extends Plugin {
 	private _setupConversion(): void {
 		const editor = this.editor;
 		const conversion = editor.conversion;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'upcast' ).add( upcastPicture( imageUtils ) );
 		conversion.for( 'downcast' ).add( downcastSourcesAttribute( imageUtils ) );
@@ -129,8 +129,10 @@ export default class PictureEditing extends Plugin {
 			return;
 		}
 
+		const imageUploadEditing: ImageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+
 		this.listenTo<ImageUploadCompleteEvent>(
-			editor.plugins.get( 'ImageUploadEditing' ),
+			imageUploadEditing,
 			'uploadComplete',
 			( evt, { imageElement, data } ) => {
 				const sources = data.sources;

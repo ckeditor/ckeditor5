@@ -8,6 +8,8 @@ import { Command } from 'ckeditor5/src/core';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 import type { Position } from 'ckeditor5/src/engine';
 
+import type ImageUtils from '../imageutils';
+
 /**
  * @module image/imageupload/uploadimagecommand
  */
@@ -49,7 +51,7 @@ export default class UploadImageCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const selectedElement = editor.model.document.selection.getSelectedElement()!;
 
 		// TODO: This needs refactoring.
@@ -66,7 +68,7 @@ export default class UploadImageCommand extends Command {
 	public override execute( options: { file: ArrayOrItem<File> } ): void {
 		const files = toArray( options.file );
 		const selection = this.editor.model.document.selection;
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		// In case of multiple files, each file (starting from the 2nd) will be inserted at a position that
 		// follows the previous one. That will move the selection and, to stay on the safe side and make sure
@@ -100,7 +102,7 @@ export default class UploadImageCommand extends Command {
 		const editor = this.editor;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const loader = fileRepository.createLoader( file );
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
 		if ( !loader ) {
@@ -108,5 +110,11 @@ export default class UploadImageCommand extends Command {
 		}
 
 		imageUtils.insertImage( { ...attributes, uploadId: loader.id }, position );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		uploadImage: UploadImageCommand;
 	}
 }

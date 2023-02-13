@@ -20,7 +20,7 @@ import { normalizeOptions } from './utils';
 import { FONT_SIZE } from '../utils';
 
 import '../../theme/fontsize.css';
-import type { FontSizeOption } from '../fontsize';
+import type { FontSizeOption } from '../fontconfig';
 import type FontSizeCommand from './fontsizecommand';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
@@ -45,7 +45,7 @@ export default class FontSizeUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_SIZE )!;
+		const command: FontSizeCommand = editor.commands.get( FONT_SIZE )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
@@ -82,7 +82,7 @@ export default class FontSizeUI extends Plugin {
 
 	/**
 	 * Returns options as defined in `config.fontSize.options` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontsize~FontSizeOption}
+	 * editor localization, i.e. to display {@link module:font/fontconfig~FontSizeOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}

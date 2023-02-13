@@ -61,8 +61,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CKFinderEditing.pluginName ]: CKFinderEditing;
 	}
-
-	interface CommandsMap {
-		ckfinder: CKFinderCommand;
-	}
 }
