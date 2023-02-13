@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type TableUtils from '../tableutils';
 
 import {
 	isHeadingColumnCell,
@@ -44,7 +45,7 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	public override refresh(): void {
 		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
@@ -69,7 +70,7 @@ export default class SetHeaderColumnCommand extends Command {
 			return;
 		}
 
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
@@ -90,5 +91,12 @@ export default class SetHeaderColumnCommand extends Command {
 
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		setTableColumnHeader: SetHeaderColumnCommand;
 	}
 }

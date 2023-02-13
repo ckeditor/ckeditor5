@@ -375,6 +375,12 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[TableClipboard.pluginName]: TableClipboard;
+	}
+}
+
 /**
  * Prepares a table for pasting and returns adjusted selection dimensions.
  */
@@ -602,10 +608,4 @@ function isAffectedBySelection( index: number, span: number, limit: Record<strin
 	const overlapsSelectionFromOutside = index < first && endIndex >= first;
 
 	return isInsideSelection || overlapsSelectionFromOutside;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableClipboard.pluginName ]: TableClipboard;
-	}
 }

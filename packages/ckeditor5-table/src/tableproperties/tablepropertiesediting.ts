@@ -26,6 +26,8 @@ import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
 
+import '../tableconfig';
+
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 
@@ -119,16 +121,6 @@ export default class TablePropertiesEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ TablePropertiesEditing.pluginName ]: TablePropertiesEditing;
-	}
-
-	interface CommandsMap {
-		tableBorderColor: TableBorderColorCommand;
-		tableBorderStyle: TableBorderStyleCommand;
-		tableBorderWidth: TableBorderWidthCommand;
-		tableAlignment: TableAlignmentCommand;
-		tableWidth: TableWidthCommand;
-		tableHeight: TableHeightCommand;
-		tableBackgroundColor: TableBackgroundColorCommand;
 	}
 }
 

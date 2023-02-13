@@ -60,3 +60,10 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 		return newValue;
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		tableCellHeight: TableCellHeightCommand;
+	}
+}

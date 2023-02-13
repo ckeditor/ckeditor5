@@ -9,6 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import type { Element, Node } from 'ckeditor5/src/engine';
+import type TableUtils from '../tableutils';
 
 /**
  * The remove row command.
@@ -26,13 +27,13 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
 			const table = firstCell.findAncestor( 'table' )!;
-			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
+			const tableRowCount = tableUtils.getRows( table );
 			const lastRowIndex = tableRowCount - 1;
 
 			const selectedRowIndexes = tableUtils.getRowIndexes( selectedCells );
@@ -51,7 +52,7 @@ export default class RemoveRowCommand extends Command {
 	 */
 	public override execute(): void {
 		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const removedRowIndexes = tableUtils.getRowIndexes( referenceCells );
@@ -73,6 +74,13 @@ export default class RemoveRowCommand extends Command {
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		removeTableRow: RemoveRowCommand;
 	}
 }
 

@@ -33,7 +33,7 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 
@@ -53,7 +53,7 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override execute(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const [ firstCell, lastCell ] = getBoundaryCells( this.editor.model.document.selection, tableUtils );
 		const table = firstCell.parent!.parent as Element;
 
@@ -71,13 +71,20 @@ export default class RemoveColumnCommand extends Command {
 		this.editor.model.change( writer => {
 			const columnsToRemove = removedColumnIndexes.last - removedColumnIndexes.first + 1;
 
-			this.editor.plugins.get( 'TableUtils' ).removeColumns( table, {
+			tableUtils.removeColumns( table, {
 				at: removedColumnIndexes.first,
 				columns: columnsToRemove
 			} );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		removeTableColumn: RemoveColumnCommand;
 	}
 }
 

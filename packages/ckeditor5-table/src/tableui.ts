@@ -25,6 +25,8 @@ import tableIcon from './../theme/icons/table.svg';
 import tableColumnIcon from './../theme/icons/table-column.svg';
 import tableRowIcon from './../theme/icons/table-row.svg';
 import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
+import type InsertTableCommand from './commands/inserttablecommand';
+import type MergeCellsCommand from './commands/mergecellscommand';
 
 /**
  * The table UI plugin. It introduces:
@@ -54,7 +56,7 @@ export default class TableUI extends Plugin {
 		const isContentLtr = contentLanguageDirection === 'ltr';
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
-			const command = editor.commands.get( 'insertTable' )!;
+			const command: InsertTableCommand = editor.commands.get( 'insertTable' )!;
 			const dropdownView = createDropdown( locale );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
@@ -277,7 +279,7 @@ export default class TableUI extends Plugin {
 		const mergeCommandName = 'mergeTableCells';
 
 		// Main command.
-		const mergeCommand = editor.commands.get( mergeCommandName )!;
+		const mergeCommand: MergeCellsCommand = editor.commands.get( mergeCommandName )!;
 
 		// Subcommands in the dropdown.
 		const commands = this._fillDropdownWithListOptions( dropdownView, options );
@@ -331,6 +333,12 @@ export default class TableUI extends Plugin {
 	}
 }
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[TableUI.pluginName]: TableUI;
+	}
+}
+
 /**
  * Adds an option to a list view.
  *
@@ -366,10 +374,4 @@ function addListOption(
 	} );
 
 	itemDefinitions.add( option );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableUI.pluginName ]: TableUI;
-	}
 }

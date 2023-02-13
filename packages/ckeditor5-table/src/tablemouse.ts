@@ -208,12 +208,12 @@ export default class TableMouse extends Plugin {
 	}
 }
 
-function haveSameTableParent( cellA: Element, cellB: Element ) {
-	return cellA.parent!.parent == cellB.parent!.parent;
-}
-
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-			[ TableMouse.pluginName ]: TableMouse;
+		[TableMouse.pluginName]: TableMouse;
 	}
+}
+
+function haveSameTableParent( cellA: Element, cellB: Element ) {
+	return cellA.parent!.parent == cellB.parent!.parent;
 }

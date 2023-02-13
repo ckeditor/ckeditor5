@@ -9,6 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Range, Element } from 'ckeditor5/src/engine';
+import type TableUtils from '../tableutils';
 
 /**
  * The select row command.
@@ -36,7 +37,7 @@ export default class SelectRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length > 0;
@@ -47,7 +48,7 @@ export default class SelectRowCommand extends Command {
 	 */
 	public override execute(): void {
 		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const rowIndexes = tableUtils.getRowIndexes( referenceCells );
 
@@ -63,5 +64,12 @@ export default class SelectRowCommand extends Command {
 		model.change( writer => {
 			writer.setSelection( rangesToSelect );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		selectTableRow: SelectRowCommand;
 	}
 }

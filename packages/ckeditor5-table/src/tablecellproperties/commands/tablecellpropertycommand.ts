@@ -9,6 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Element, Batch } from 'ckeditor5/src/engine';
+import type TableUtils from '../../tableutils';
 
 /**
  * The table cell attribute command.
@@ -45,7 +46,7 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( editor.model.document.selection );
 
 		this.isEnabled = !!selectedTableCells.length;
@@ -64,7 +65,7 @@ export default class TableCellPropertyCommand extends Command {
 	public override execute( options: { value?: string | number; batch?: Batch } = {} ): void {
 		const { value, batch } = options;
 		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 

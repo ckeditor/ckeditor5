@@ -35,3 +35,10 @@ export default class TableBackgroundColorCommand extends TablePropertyCommand {
 		super( editor, 'tableBackgroundColor', defaultValue );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		tableBackgroundColor: TableBackgroundColorCommand;
+	}
+}

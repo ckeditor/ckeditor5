@@ -1050,6 +1050,12 @@ export default class TableUtils extends Plugin {
 	}
 }
 
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[TableUtils.pluginName]: TableUtils;
+	}
+}
+
 /**
  * Creates empty rows at the given index in an existing table.
  *
@@ -1251,10 +1257,4 @@ function getBiggestRectangleArea( rows: Set<number>, columns: Set<number> ): num
 	const firstColumn = Math.min( ...columnIndexes );
 
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableUtils.pluginName ]: TableUtils;
-	}
 }

@@ -105,7 +105,8 @@ export default class TableKeyboard extends Plugin {
 	 */
 	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
-		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableUtils: TableUtils = this.editor.plugins.get( TableUtils );
+		const tableSelection: TableSelection = this.editor.plugins.get( 'TableSelection' );
 
 		const selection = editor.model.document.selection;
 		const isForward = !domEventData.shiftKey;
@@ -113,7 +114,7 @@ export default class TableKeyboard extends Plugin {
 		let tableCell: Element | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 		if ( !tableCell ) {
-			tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+			tableCell = tableSelection.getFocusCell();
 		}
 
 		if ( !tableCell ) {
@@ -208,6 +209,7 @@ export default class TableKeyboard extends Plugin {
 	 */
 	private _handleArrowKeys( direction: ArrowKeyCodeDirection, expandSelection: boolean ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableSelection: TableSelection = this.editor.plugins.get( 'TableSelection' );
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
@@ -220,7 +222,7 @@ export default class TableKeyboard extends Plugin {
 			let focusCell;
 
 			if ( expandSelection ) {
-				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+				focusCell = tableSelection.getFocusCell();
 			} else {
 				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
 			}
@@ -358,7 +360,7 @@ export default class TableKeyboard extends Plugin {
 
 		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column )!.cell;
 		const isForward = [ 'right', 'down' ].includes( direction );
-		const tableSelection = this.editor.plugins.get( 'TableSelection' );
+		const tableSelection: TableSelection = this.editor.plugins.get( 'TableSelection' );
 
 		if ( expandSelection && tableSelection.isEnabled ) {
 			const anchorCell = tableSelection.getAnchorCell() || focusCell;

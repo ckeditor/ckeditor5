@@ -18,7 +18,6 @@ import TableKeyboard from './tablekeyboard';
 import TableMouse from './tablemouse';
 
 import '../theme/table.css';
-import type { ColorOption } from 'ckeditor5/src/ui';
 
 /**
  * The table plugin.

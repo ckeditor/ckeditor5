@@ -9,6 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import type { Writer } from 'ckeditor5/src/engine';
+import type TableCaptionEditing from './tablecaptionediting';
 
 import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
 
@@ -86,7 +87,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	private _showTableCaption( writer: Writer, focusCaptionOnShow: boolean ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
-		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
+		const tableCaptionEditing: TableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
 		const savedCaptionElement = tableCaptionEditing._getSavedCaption( tableElement );
 
 		// Try restoring the caption from the TableCaptionEditing plugin storage.
@@ -108,12 +109,19 @@ export default class ToggleTableCaptionCommand extends Command {
 	private _hideTableCaption( writer: Writer ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
-		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
+		const tableCaptionEditing: TableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
 		const captionElement = getCaptionFromTableModelElement( tableElement )!;
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
 		tableCaptionEditing._saveCaption( tableElement, captionElement );
 
 		model.deleteContent( writer.createSelection( captionElement, 'on' ) );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		toggleTableCaption: ToggleTableCaptionCommand;
 	}
 }

@@ -8,6 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
+import type TableUtils from '../tableutils';
 
 /**
  * The insert row command.
@@ -51,7 +52,7 @@ export default class InsertRowCommand extends Command {
 	 */
 	public override refresh(): void {
 		const selection = this.editor.model.document.selection;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
 		this.isEnabled = isAnyCellSelected;
@@ -67,7 +68,7 @@ export default class InsertRowCommand extends Command {
 	public override execute(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 		const insertAbove = this.order === 'above';
 
 		const affectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
@@ -77,5 +78,13 @@ export default class InsertRowCommand extends Command {
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		insertTableRowAbove: InsertRowCommand;
+		insertTableRowBelow: InsertRowCommand;
 	}
 }

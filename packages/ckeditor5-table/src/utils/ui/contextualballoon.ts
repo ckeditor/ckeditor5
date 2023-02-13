@@ -8,7 +8,7 @@
  */
 
 import { Rect, type PositionOptions } from 'ckeditor5/src/utils';
-import { BalloonPanelView } from 'ckeditor5/src/ui';
+import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui';
 
 import { getTableWidgetAncestor } from './widget';
 import type { Editor } from 'ckeditor5/src/core';
@@ -35,7 +35,7 @@ const BALLOON_POSITIONS = [
  * @param target Either "cell" or "table". Determines the target the balloon will be attached to.
  */
 export function repositionContextualBalloon( editor: Editor, target: string ): void {
-	const balloon = editor.plugins.get( 'ContextualBalloon' );
+	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
 
 	if ( getTableWidgetAncestor( editor.editing.view.document.selection ) ) {
 		let position;

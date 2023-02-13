@@ -8,6 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
+import type TableUtils from '../tableutils';
 
 /**
  * The split cell command.
@@ -43,7 +44,7 @@ export default class SplitCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length === 1;
@@ -53,7 +54,7 @@ export default class SplitCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override execute(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCell = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection )[ 0 ];
 		const isHorizontal = this.direction === 'horizontally';
 
@@ -62,5 +63,13 @@ export default class SplitCellCommand extends Command {
 		} else {
 			tableUtils.splitCellVertically( tableCell, 2 );
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		splitTableCellVertically: SplitCellCommand;
+		splitTableCellHorizontally: SplitCellCommand;
 	}
 }

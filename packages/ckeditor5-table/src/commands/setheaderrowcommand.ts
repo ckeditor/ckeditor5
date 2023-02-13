@@ -9,6 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
+import type TableUtils from '../tableutils';
 
 import { updateNumericAttribute } from '../utils/common';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure';
@@ -40,7 +41,7 @@ export default class SetHeaderRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
@@ -65,7 +66,7 @@ export default class SetHeaderRowCommand extends Command {
 			return;
 		}
 
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
@@ -98,5 +99,12 @@ export default class SetHeaderRowCommand extends Command {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		setTableRowHeader: SetHeaderRowCommand;
 	}
 }

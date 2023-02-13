@@ -14,6 +14,8 @@ import TableCellWidthCommand from './commands/tablecellwidthcommand';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
 import { enableProperty } from '../utils/common';
 
+import '../tableconfig';
+
 /**
  * The table cell width editing feature.
  *
@@ -58,9 +60,5 @@ export default class TableCellWidthEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
-	}
-
-	interface CommandsMap {
-		tableCellWidth: TableCellWidthCommand;
 	}
 }

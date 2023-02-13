@@ -68,3 +68,10 @@ export default class TableWidthResizeCommand extends TablePropertyCommand {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		resizeTableWidth: TableWidthResizeCommand;
+	}
+}

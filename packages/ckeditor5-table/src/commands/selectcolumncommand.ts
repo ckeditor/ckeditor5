@@ -9,6 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Range } from 'ckeditor5/src/engine';
+import type TableUtils from '../tableutils';
 
 import TableWalker from '../tablewalker';
 
@@ -38,7 +39,7 @@ export default class SelectColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length > 0;
@@ -48,7 +49,7 @@ export default class SelectColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override execute(): void {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
@@ -70,5 +71,12 @@ export default class SelectColumnCommand extends Command {
 		model.change( writer => {
 			writer.setSelection( rangesToSelect );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		selectTableColumn: SelectColumnCommand;
 	}
 }

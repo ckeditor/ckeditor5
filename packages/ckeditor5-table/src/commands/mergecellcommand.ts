@@ -89,7 +89,7 @@ export default class MergeCellCommand extends Command {
 	public override execute(): void {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		const cellToMerge = this.value!;
@@ -115,7 +115,7 @@ export default class MergeCellCommand extends Command {
 			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
 			writer.setSelection( writer.createRangeIn( cellToExpand ) );
 
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
+			const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 			const table = removedTableCellRow.findAncestor( 'table' )!;
 
 			// Remove empty rows and columns after merging.
@@ -129,7 +129,7 @@ export default class MergeCellCommand extends Command {
 	private _getMergeableCell(): Node | undefined {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
@@ -154,6 +154,16 @@ export default class MergeCellCommand extends Command {
 		if ( cellToMergeSpan === span ) {
 			return cellToMerge;
 		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		mergeTableCellRight: MergeCellCommand;
+		mergeTableCellLeft: MergeCellCommand;
+		mergeTableCellDown: MergeCellCommand;
+		mergeTableCellUp: MergeCellCommand;
 	}
 }
 

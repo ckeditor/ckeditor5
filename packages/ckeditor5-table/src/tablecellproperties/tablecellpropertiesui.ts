@@ -35,6 +35,9 @@ import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
 
+import '../tableconfig';
+import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
+
 const ERROR_TEXT_TIMEOUT = 500;
 
 // Map of view properties and related commands.
@@ -293,7 +296,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	private _fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
-		const borderStyleCommand = commands.get( 'tableCellBorderStyle' )!;
+		const borderStyleCommand: TableCellBorderStyleCommand = commands.get( 'tableCellBorderStyle' )!;
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
@@ -455,5 +458,11 @@ export default class TableCellPropertiesUI extends Plugin {
 				setErrorTextDebounced();
 			}
 		};
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[TableCellPropertiesUI.pluginName]: TableCellPropertiesUI;
 	}
 }

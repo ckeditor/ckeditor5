@@ -78,3 +78,10 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 		return newValue;
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		tableBorderWidth: TableBorderWidthCommand;
+	}
+}

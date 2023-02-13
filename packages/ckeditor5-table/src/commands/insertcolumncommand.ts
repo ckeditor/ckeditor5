@@ -8,6 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
+import type TableUtils from '../tableutils';
 
 /**
  * The insert column command.
@@ -51,7 +52,7 @@ export default class InsertColumnCommand extends Command {
 	 */
 	public override refresh(): void {
 		const selection = this.editor.model.document.selection;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
 		this.isEnabled = isAnyCellSelected;
@@ -68,7 +69,7 @@ export default class InsertColumnCommand extends Command {
 	public override execute(): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 		const insertBefore = this.order === 'left';
 
 		const affectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
@@ -78,5 +79,13 @@ export default class InsertColumnCommand extends Command {
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		insertTableColumnLeft: InsertColumnCommand;
+		insertTableColumnRight: InsertColumnCommand;
 	}
 }

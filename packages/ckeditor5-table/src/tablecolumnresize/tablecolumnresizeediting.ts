@@ -56,6 +56,7 @@ import {
 } from './utils';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS } from './constants';
+import type TableColumnResize from '../tablecolumnresize';
 
 type ResizingData = {
 	columnPosition: number;
@@ -161,7 +162,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this._registerResizerInserter();
 
 		const editor = this.editor;
-		const columnResizePlugin = editor.plugins.get( 'TableColumnResize' );
+		const columnResizePlugin: TableColumnResize = editor.plugins.get( 'TableColumnResize' );
 
 		const resizeTableWidthCommand = new TableWidthResizeCommand( editor );
 		const resizeColumnWidthsCommand = new TableColumnWidthsCommand( editor );
@@ -750,10 +751,5 @@ export default class TableColumnResizeEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
-	}
-
-	interface CommandsMap {
-		resizeTableWidth: TableWidthResizeCommand;
-		resizeColumnWidths: TableColumnWidthsCommand;
 	}
 }

@@ -35,3 +35,10 @@ export default class TableAlignmentCommand extends TablePropertyCommand {
 		super( editor, 'tableAlignment', defaultValue );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		tableAlignment: TableAlignmentCommand;
+	}
+}

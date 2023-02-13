@@ -297,8 +297,8 @@ export interface TableCellPropertiesConfig {
  * ```
  *
  * Usually used as a configuration parameter, for instance in
- * {@link module:table/table~TableConfig#tableProperties `config.table.tableProperties`}
- * or {@link module:table/table~TableConfig#tableCellProperties `config.table.tableCellProperties`}.
+ * {@link module:table/tableconfig~TableConfig#tableProperties `config.table.tableProperties`}
+ * or {@link module:table/tableconfig~TableConfig#tableCellProperties `config.table.tableCellProperties`}.
  */
 export type TableColorConfig = Array<ColorOption>;
 

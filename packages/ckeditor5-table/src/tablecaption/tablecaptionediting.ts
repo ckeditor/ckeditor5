@@ -152,8 +152,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 			[ TableCaptionEditing.pluginName ]: TableCaptionEditing;
 	}
-
-	interface CommandsMap {
-		toggleTableCaption: ToggleTableCaptionCommand;
-	}
 }

@@ -15,6 +15,9 @@ import type {
 	Selection,
 	Element
 } from 'ckeditor5/src/engine';
+import type TableUtils from '../tableutils';
+
+import '../tableconfig';
 
 /**
  * The insert table command.
@@ -61,7 +64,7 @@ export default class InsertTableCommand extends Command {
 		} = {}
 	): void {
 		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const config = this.editor.config.get( 'table' )!;
 
 		const defaultRows = config.defaultHeadings.rows;
@@ -82,6 +85,13 @@ export default class InsertTableCommand extends Command {
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+
+	interface CommandsMap {
+		insertTable: InsertTableCommand;
 	}
 }
 

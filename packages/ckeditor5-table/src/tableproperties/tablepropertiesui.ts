@@ -35,6 +35,9 @@ import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from
 import type { Batch } from 'ckeditor5/src/engine';
 import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils';
 
+import '../tableconfig';
+import type TableBorderStyleCommand from './commands/tableborderstylecommand';
+
 const ERROR_TEXT_TIMEOUT = 500;
 
 // Map of view properties and related commands.
@@ -271,7 +274,7 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	private _fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
-		const borderStyleCommand = commands.get( 'tableBorderStyle' );
+		const borderStyleCommand: TableBorderStyleCommand = commands.get( 'tableBorderStyle' )!;
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
@@ -282,7 +285,7 @@ export default class TablePropertiesUI extends Plugin {
 			} )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
-				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand!.value === 'none' ) {
+				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
 					return;
 				}
 
