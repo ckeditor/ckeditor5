@@ -64,7 +64,6 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * Returns a dropdown that allows selecting character groups.
 	 *
 	 * @param groupNames The names of the character groups and their displayed labels.
-	 * @param groupDefinitions Definitions used in the character group dropdown to represent character groups.
 	 */
 	private _createGroupDropdown( groupNames: GroupNames ): GroupDropdownView {
 		const locale = this.locale;
@@ -98,6 +97,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * Returns list item definitions to be used in the character group dropdown
 	 * representing specific character groups.
 	 *
+	 * @param dropdown Dropdown view element
 	 * @param groupNames The names of the character groups and their displayed labels.
 	 */
 	private _getCharacterGroupListItemDefinitions(
