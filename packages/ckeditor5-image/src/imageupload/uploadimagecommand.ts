@@ -116,6 +116,5 @@ export default class UploadImageCommand extends Command {
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		uploadImage: UploadImageCommand;
-		imageUpload: UploadImageCommand;
 	}
 }

@@ -80,6 +80,5 @@ export default class ResizeImageCommand extends Command {
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		resizeImage: ResizeImageCommand;
-		imageResize: ResizeImageCommand;
 	}
 }

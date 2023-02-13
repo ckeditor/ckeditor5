@@ -138,8 +138,5 @@ export default class InsertImageCommand extends Command {
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		insertImage: InsertImageCommand;
-
-		// `imageInsert` is an alias for backward compatibility.
-		imageInsert: InsertImageCommand;
 	}
 }
