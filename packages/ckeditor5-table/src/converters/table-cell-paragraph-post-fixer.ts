@@ -14,19 +14,23 @@ import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'cke
  *
  * A table cell must contain at least one block element as a child. An empty table cell will have an empty `paragraph` as a child.
  *
+ * ```xml
  * <table>
  *   <tableRow>
  *      <tableCell></tableCell>
  *   </tableRow>
  * </table>
+ * ```
  *
  * Will be fixed to:
  *
+ * ```xml
  * <table>
  *   <tableRow>
  *      <tableCell><paragraph></paragraph></tableCell>
  *   </tableRow>
  * </table>
+ * ```
  */
 export default function injectTableCellParagraphPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCellContentsPostFixer( writer, model ) );
