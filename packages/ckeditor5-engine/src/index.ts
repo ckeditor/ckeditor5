@@ -35,7 +35,8 @@ export type {
 	AttributeDescriptor,
 	ElementCreatorFunction,
 	HighlightDescriptor,
-	RemoveHighlightCallback
+	RemoveHighlightCallback,
+	SlotFilter
 } from './conversion/downcasthelpers';
 export type {
 	default as Mapper,
@@ -66,7 +67,7 @@ export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
 export { default as Element } from './model/element';
-export { default as Position } from './model/position';
+export { default as Position, type PositionOffset as ModelPositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
@@ -121,7 +122,7 @@ export type { default as ViewDocumentSelection } from './view/documentselection'
 export { default as AttributeElement } from './view/attributeelement';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
-export type { default as ViewPosition } from './view/position';
+export type { default as ViewPosition, PositionOffset as ViewPositionOffset } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent, Selectable as ViewSelectable } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';

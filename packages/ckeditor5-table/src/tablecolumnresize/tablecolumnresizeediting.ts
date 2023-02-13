@@ -25,7 +25,8 @@ import type {
 	DowncastInsertEvent,
 	DowncastWriter,
 	Element,
-	ViewElement
+	ViewElement,
+	ViewNode
 } from 'ckeditor5/src/engine';
 
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
@@ -321,7 +322,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					// Moves the widths of the removed columns to the preceding one.
 					// Other editors either reduce the width of the whole table or adjust the widths
 					// proportionally, so change of this behavior can be considered in the future.
-					const removedColumnWidths = columnWidths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
+					const removedColumnWidths = widths.splice( currentColumnIndex, Math.abs( currentColumnsDelta ) );
 
 					widths[ currentColumnIndex ] += sumArray( removedColumnWidths );
 				}
@@ -653,14 +654,15 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		const tableColumnGroup = this.getColumnGroupElement( modelTable );
+		const viewColumns: Array<ViewElement> = Array
+			.from( viewColgroup.getChildren() )
+			.filter( ( column: ViewNode ): column is ViewElement => column.is( 'view:element' ) );
 
 		const columnWidthsAttributeOld = tableColumnGroup ?
-			this.getTableColumnsWidths( tableColumnGroup ) :
+			this.getTableColumnsWidths( tableColumnGroup )! :
 			null;
 
-		const columnWidthsAttributeNew = Array
-			.from( viewColgroup.getChildren() )
-			.map( viewCol => viewCol.getStyle( 'width' ) );
+		const columnWidthsAttributeNew = viewColumns.map( column => column.getStyle( 'width' ) );
 
 		const isColumnWidthsAttributeChanged = !isEqual( columnWidthsAttributeOld, columnWidthsAttributeNew );
 
@@ -683,8 +685,8 @@ export default class TableColumnResizeEditing extends Plugin {
 					// If table had resized columns before, restore the previous column widths.
 					// Otherwise clean up the view from the temporary column resizing markup.
 					if ( columnWidthsAttributeOld ) {
-						for ( const viewCol of viewColgroup.getChildren() ) {
-							writer.setStyle( 'width', columnWidthsAttributeOld.shift(), viewCol );
+						for ( const viewCol of viewColumns ) {
+							writer.setStyle( 'width', columnWidthsAttributeOld.shift()!, viewCol );
 						}
 					} else {
 						writer.remove( viewColgroup );

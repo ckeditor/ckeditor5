@@ -7,6 +7,7 @@
  * @module table/tablecolumnresize/tablewidthscommand
  */
 
+import type { Element } from 'ckeditor5/src/engine';
 import { Command } from 'ckeditor5/src/core';
 import { normalizeColumnWidths } from './utils';
 
@@ -18,7 +19,7 @@ export default class TableWidthsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	refresh() {
+	public override refresh(): void {
 		// The command is always enabled as it doesn't care about the actual selection - table can be resized
 		// even if the selection is elsewhere.
 		this.isEnabled = true;
@@ -26,16 +27,11 @@ export default class TableWidthsCommand extends Command {
 
 	/**
 	 * Updated the `tableWidth` attribute of the table and the `columnWidth` attribute of the columns of that table.
-	 *
-	 * @param {Object} options
-	 * @param {Array.<String>|String} [options.columnWidths] New value of the `columnWidths` attribute.
-	 * @param {String} [options.tableWidth] The new table width. If skipped, the model attribute will be removed.
-	 * @param {module:engine/model/element~Element} [options.table] The table that is having the columns resized.
 	 */
-	execute( options = {} ) {
+	public override execute( options: TableWidthsCommandOptions = {} ): void {
 		const { model, plugins } = this.editor;
 		let {
-			table = model.document.selection.getSelectedElement(),
+			table = model.document.selection.getSelectedElement()!,
 			columnWidths,
 			tableWidth
 		} = options;
@@ -56,7 +52,7 @@ export default class TableWidthsCommand extends Command {
 
 			const tableColumnGroup = plugins
 				.get( 'TableColumnResizeEditing' )
-				.getColumnGroupElement( table );
+				.getColumnGroupElement( table )!;
 
 			if ( !columnWidths && !tableColumnGroup ) {
 				return;
@@ -66,7 +62,7 @@ export default class TableWidthsCommand extends Command {
 				return writer.remove( tableColumnGroup );
 			}
 
-			const widths = normalizeColumnWidths( columnWidths );
+			const widths = normalizeColumnWidths( columnWidths as Array<string> );
 
 			if ( !tableColumnGroup ) {
 				const colGroupElement = writer.createElement( 'tableColumnGroup' );
@@ -80,4 +76,23 @@ export default class TableWidthsCommand extends Command {
 			}
 		} );
 	}
+}
+
+export interface TableWidthsCommandOptions {
+
+	/**
+	 * New value of the `columnWidths` attribute. Must be array of strings or string with comma-separated values.
+	 * If skipped, the column widths information will be deleted.
+	 */
+	columnWidths?: Array<string> | string;
+
+	/**
+	 * The new table width. If skipped, the model attribute will be removed.
+	 */
+	tableWidth?: string;
+
+	/**
+	 * The table that is having the columns resized.
+	 */
+	table?: Element;
 }
