@@ -27,8 +27,6 @@ const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
  * The special characters feature.
  *
  * Introduces the `'specialCharacters'` dropdown.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharacters extends Plugin {
 	/**
@@ -239,8 +237,6 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * Initializes the dropdown, used for lazy loading.
 	 *
-	 * @param locale
-	 * @param dropdownView
 	 * @returns An object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale, dropdownView: DropdownView ): DropdownPanelContent {

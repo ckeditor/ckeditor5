@@ -25,42 +25,42 @@
  */
 export interface SpecialCharactersConfig {
 
-  /**
-   * The configuration of the special characters category order.
-   *
-   * Special characters categories are displayed in the UI in the order in which they were registered. Using the `order` property
-   * allows to override this behaviour and enforce specific order. Categories not listed in the `order` property will be displayed
-   * in the default order below categories listed in the configuration.
-   *
-   * ```ts
-   * ClassicEditor
-   *   .create( editorElement, {
-     *     plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
-     *     specialCharacters: {
-     *       order: [
-     *         'Text',
-     *         'Latin',
-     *         'Mathematical',
-   *         'Currency',
-   *         'Arrows'
-   *       ]
-   *     }
-   *   } )
-   *   .then( ... )
-   *   .catch( ... );
-   * ```
-   */
-  order: Array<string>;
+	/**
+	 * The configuration of the special characters category order.
+	 *
+	 * Special characters categories are displayed in the UI in the order in which they were registered. Using the `order` property
+	 * allows to override this behaviour and enforce specific order. Categories not listed in the `order` property will be displayed
+	 * in the default order below categories listed in the configuration.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 *   .create( editorElement, {
+	 *     plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
+	 *     specialCharacters: {
+	 *       order: [
+	 *         'Text',
+	 *         'Latin',
+	 *         'Mathematical',
+	 *         'Currency',
+	 *         'Arrows'
+	 *       ]
+	 *     }
+	 *   } )
+	 *   .then( ... )
+	 *   .catch( ... );
+	 * ```
+	 */
+	order: Array<string>;
 }
 
 declare module '@ckeditor/ckeditor5-core' {
 
-  /**
-   * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
-   *
-   * Read more in {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig}.
-   */
-  interface EditorConfig {
-    specialCharacters?: SpecialCharactersConfig;
-  }
+	/**
+	 * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
+	 *
+	 * Read more in {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig}.
+	 */
+	interface EditorConfig {
+		specialCharacters?: SpecialCharactersConfig;
+	}
 }
