@@ -9,6 +9,7 @@
 
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * {@link module:engine/view/document~Document#event:click Click} event observer.
@@ -43,7 +44,7 @@ export default class ClickObserver extends DomEventObserver<'click'> {
  * @eventName click
  * @param data Event data.
  */
-export type ViewDocumentClickEvent = {
+export type ViewDocumentClickEvent = BubblingEvent<{
 	name: 'click';
 	args: [ data: DomEventData<MouseEvent> ];
-};
+}>;
