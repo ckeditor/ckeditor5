@@ -12,7 +12,7 @@ import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 import { first, type GetCallback } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
-import type { MediaEmbedConfig } from './mediaembed';
+import type { MediaEmbedConfig } from './mediaembedconfig';
 import MediaEmbedCommand from './mediaembedcommand';
 import MediaRegistry from './mediaregistry';
 import { toMediaWidget, createMediaFigureElement } from './utils';
@@ -285,10 +285,5 @@ export default class MediaEmbedEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ MediaEmbedEditing.pluginName ]: MediaEmbedEditing;
-	}
-
-	interface CommandsMap {
-
-		mediaEmbed: MediaEmbedCommand;
 	}
 }

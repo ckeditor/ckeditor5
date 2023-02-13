@@ -33,15 +33,11 @@ import '../../theme/mediaform.css';
 export default class MediaFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
-	 *
-	 * @readonly
 	 */
 	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 *
-	 * @readonly
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
@@ -314,16 +310,3 @@ export default class MediaFormView extends View {
 		return button;
 	}
 }
-
-/**
- * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. click on {@link #saveButtonView}.
- *
- * @eventName submit
- */
-
-/**
- * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
- *
- * @eventName cancel
- */

@@ -12,7 +12,7 @@ import { IconView, Template } from 'ckeditor5/src/ui';
 import { type Locale, logWarning, toArray } from 'ckeditor5/src/utils';
 
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
-import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembed';
+import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembedconfig';
 import type { MediaOptions } from './utils';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
@@ -175,7 +175,6 @@ class Media {
 	 * Shorthand for {@link module:utils/locale~Locale#t}.
 	 *
 	 * @see module:utils/locale~Locale#t
-	 * @method
 	 */
 	private _locale: Locale;
 

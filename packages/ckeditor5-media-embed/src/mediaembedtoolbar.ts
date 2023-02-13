@@ -53,16 +53,3 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ MediaEmbedToolbar.pluginName ]: MediaEmbedToolbar;
 	}
 }
-
-declare module './mediaembed' {
-	interface MediaEmbedConfig {
-
-		/**
-		 * Items to be placed in the media embed toolbar.
-		 * This option requires adding {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} to the plugin list.
-		 *
-		 * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
-		 */
-		toolbar?: Array<ToolbarConfigItem>;
-	}
-}
