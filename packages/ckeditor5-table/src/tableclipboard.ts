@@ -135,7 +135,7 @@ export default class TableClipboard extends Plugin {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		// We might need to crop table before inserting so reference might change.
-		let pastedTable = this._getTableIfOnlyTableInContent( content, model )!;
+		let pastedTable = this.getTableIfOnlyTableInContent( content, model )!;
 
 		if ( !pastedTable ) {
 			return;
@@ -330,7 +330,7 @@ export default class TableClipboard extends Plugin {
 	 * @param content The content to insert.
 	 * @param model The editor model.
 	 */
-	protected _getTableIfOnlyTableInContent( content: DocumentFragment | Item, model: Model ): Element | null {
+	public getTableIfOnlyTableInContent( content: DocumentFragment | Item, model: Model ): Element | null {
 		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 			return null;
 		}
