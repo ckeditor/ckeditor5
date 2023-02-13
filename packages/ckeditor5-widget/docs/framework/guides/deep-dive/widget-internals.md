@@ -45,6 +45,7 @@ Use the {@link module:core/plugin~Plugin#forceDisabled `forceDisabled()`} method
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// The editor's configuration.
 		// ...
 	} )
 	.then( editor => {
