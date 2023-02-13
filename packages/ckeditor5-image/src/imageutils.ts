@@ -24,6 +24,7 @@ import type {
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
+import './imageconfig';
 
 /**
  * A set of helpers related to images.
@@ -39,7 +40,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
-	public isImage( modelElement?: Element | null ): boolean {
+	public isImage( modelElement?: Element | null ): modelElement is Element & { name: 'imageInline' | 'imageBlock' } {
 		return this.isInlineImage( modelElement ) || this.isBlockImage( modelElement );
 	}
 

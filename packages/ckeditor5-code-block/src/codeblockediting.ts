@@ -110,7 +110,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
-			const command = editor.commands.get( commandName )!;
+			const command: OutdentCodeBlockCommand | IndentCodeBlockCommand = editor.commands.get( commandName )!;
 
 			if ( !command.isEnabled ) {
 				return;
@@ -503,11 +503,5 @@ function isSoftBreakNode( node: Node | null ) {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CodeBlockEditing.pluginName ]: CodeBlockEditing;
-	}
-
-	interface CommandsMap {
-		indentCodeBlock: IndentCodeBlockCommand;
-		outdentCodeBlock: OutdentCodeBlockCommand;
-		codeBlock: CodeBlockCommand;
 	}
 }

@@ -133,11 +133,6 @@ export default class UndoEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		undo: UndoCommand;
-		redo: RedoCommand;
-	}
-
 	interface PluginsMap {
 		[ UndoEditing.pluginName ]: UndoEditing;
 	}

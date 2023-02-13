@@ -225,19 +225,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
-		const inputCommand: InsertTextCommand | undefined = editor.commands.get( 'input' );
 		const insertTextCommand: InsertTextCommand | undefined = editor.commands.get( 'insertText' );
-
-		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
-		// This check is bit synthetic since only tests are used this way.
-		if ( inputCommand ) {
-			this.listenTo<InsertTextCommandExecuteEvent>(
-				inputCommand,
-				'execute',
-				disallowInputExecForWrongRange( editor ),
-				{ priority: 'high' }
-			);
-		}
 
 		// The restricted editing might be configured without insert text support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.

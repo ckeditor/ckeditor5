@@ -25,6 +25,8 @@ import {
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
 
+import '../uiconfig';
+
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  *

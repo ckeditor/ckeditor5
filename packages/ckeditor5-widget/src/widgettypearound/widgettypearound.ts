@@ -69,6 +69,7 @@ import {
 } from './utils';
 
 import { isWidget } from '../utils';
+import type Widget from '../widget';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 
@@ -543,7 +544,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
-		const widgetPlugin = editor.plugins.get( 'Widget' );
+		const widgetPlugin: Widget = editor.plugins.get( 'Widget' );
 
 		// This is the widget the selection is about to be set on.
 		const modelElementNextToSelection = widgetPlugin._getObjectElementNextToSelection( isForward )!;

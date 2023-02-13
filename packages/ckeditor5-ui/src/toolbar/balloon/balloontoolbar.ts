@@ -40,6 +40,8 @@ import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/edi
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
+import '../../uiconfig';
+
 const toPx = toUnit( 'px' );
 
 /**
@@ -452,43 +454,6 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
 
 		return element && schema.isSelectable( element );
 	} );
-}
-
-/**
- * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
- * feature.
- *
- * ## Configuring toolbar items
- *
- *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
- *		};
- *
- * You can also use `'|'` to create a separator between groups of items:
- *
- *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
- *		};
- *
- * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * ## Configuring items grouping
- *
- * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
- *
- *		const config = {
- *			balloonToolbar: {
- *				items: [ 'bold', 'italic', 'undo', 'redo' ],
- *				shouldNotGroupWhenFull: true
- *			},
- *		};
- *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
- */
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-		balloonToolbar?: ToolbarConfig;
-	}
 }
 
 export type BaloonToolbarShowEvent = {
