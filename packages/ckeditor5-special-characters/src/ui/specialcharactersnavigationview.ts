@@ -25,14 +25,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	/**
 	 * A dropdown that allows selecting a group of special characters to be displayed.
 	 */
-	public groupDropdownView: DropdownView;
-
-	/**
-	 * Name of the currectly selected character group.
-	 *
-	 * @observable
-	 */
-	declare public value: string;
+	public groupDropdownView: GroupDropdownView;
 
 	/**
 	 * Creates an instance of the {@link module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}
@@ -45,11 +38,9 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		super( locale );
 
 		const t = locale.t;
-		const groupDefinitions = this._getCharacterGroupListItemDefinitions( groupNames );
 
-		this.set( 'value', groupDefinitions.first!.model.name as string );
 		this.set( 'class', 'ck-special-characters-navigation' );
-		this.groupDropdownView = this._createGroupDropdown( groupNames, groupDefinitions );
+		this.groupDropdownView = this._createGroupDropdown( groupNames );
 		this.groupDropdownView.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		this.label = t( 'Special characters' );
 		this.children.add( this.groupDropdownView );
@@ -59,7 +50,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * Returns the name of the character group currently selected in the {@link #groupDropdownView}.
 	 */
 	public get currentGroupName(): string {
-		return this.value;
+		return this.groupDropdownView.value;
 	}
 
 	/**
@@ -75,15 +66,15 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 * @param groupNames The names of the character groups and their displayed labels.
 	 * @param groupDefinitions Definitions used in the character group dropdown to represent character groups.
 	 */
-	private _createGroupDropdown(
-		groupNames: GroupNames,
-		groupDefinitions: Collection<ListDropdownButtonDefinition>
-	): DropdownView {
+	private _createGroupDropdown( groupNames: GroupNames ): GroupDropdownView {
 		const locale = this.locale;
 		const t = locale!.t;
-		const dropdown = createDropdown( locale );
+		const dropdown = createDropdown( locale ) as GroupDropdownView;
+		const groupDefinitions = this._getCharacterGroupListItemDefinitions( dropdown, groupNames );
 
-		dropdown.buttonView.bind( 'label' ).to( this, 'value', value => groupNames.get( value ) );
+		dropdown.set( 'value', groupDefinitions.first!.model.name as string );
+
+		dropdown.buttonView.bind( 'label' ).to( dropdown, 'value', value => groupNames.get( value ) );
 
 		dropdown.buttonView.set( {
 			isOn: false,
@@ -93,7 +84,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		} );
 
 		dropdown.on( 'execute', evt => {
-			this.value = ( evt.source as Model ).name as string;
+			dropdown.value = ( evt.source as Model ).name as string;
 		} );
 
 		dropdown.delegate( 'execute' ).to( this );
@@ -109,7 +100,10 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	 *
 	 * @param groupNames The names of the character groups and their displayed labels.
 	 */
-	private _getCharacterGroupListItemDefinitions( groupNames: GroupNames ): Collection<ListDropdownButtonDefinition> {
+	private _getCharacterGroupListItemDefinitions(
+		dropdown: GroupDropdownView,
+		groupNames: GroupNames
+	): Collection<ListDropdownButtonDefinition> {
 		const groupDefs = new Collection<ListDropdownButtonDefinition>();
 
 		for ( const [ name, label ] of groupNames ) {
@@ -119,7 +113,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 				withText: true
 			} );
 
-			model.bind( 'isOn' ).to( this, 'value', value => value === model.name );
+			model.bind( 'isOn' ).to( dropdown, 'value', value => value === model.name );
 
 			groupDefs.add( { type: 'button', model } );
 		}
@@ -132,3 +126,8 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
  * The names of the character groups and their displayed labels.
  */
 export type GroupNames = Map<string, string>;
+
+/**
+ * `DropdownView` with additional field for the name of the currectly selected character group.
+ */
+type GroupDropdownView = DropdownView & { value: string };

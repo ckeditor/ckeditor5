@@ -58,7 +58,7 @@ describe( 'SpecialCharactersNavigationView', () => {
 	} );
 
 	describe( 'currentGroupName()', () => {
-		it( 'returns the #value of navigation view', () => {
+		it( 'returns the #value of #groupDropdownView', () => {
 			view.groupDropdownView.isOpen = true;
 
 			expect( view.currentGroupName ).to.equal( 'groupA' );
@@ -145,14 +145,14 @@ describe( 'SpecialCharactersNavigationView', () => {
 					] );
 			} );
 
-			it( 'bind #isOn to the #value of the navigation view', () => {
+			it( 'bind #isOn to the #value of the dropdown', () => {
 				const firstButton = groupDropdownView.listView.items.first.children.last;
 				const lastButton = groupDropdownView.listView.items.last.children.last;
 
 				expect( firstButton.isOn ).to.be.true;
 				expect( lastButton.isOn ).to.be.false;
 
-				view.value = 'groupB';
+				groupDropdownView.value = 'groupB';
 				expect( firstButton.isOn ).to.be.false;
 				expect( lastButton.isOn ).to.be.true;
 			} );
