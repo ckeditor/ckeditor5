@@ -98,6 +98,7 @@ export function formatHtml( input: string ): string {
 
 /**
  * Checks, if an argument is an opening tag of a non-void element to be formatted.
+ *
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
  * 			elementsToFormat.name Element name.

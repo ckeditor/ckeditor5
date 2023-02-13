@@ -218,12 +218,12 @@ export default class SourceEditing extends Plugin {
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', {
 				rows: '1',
 				'aria-label': 'Source code editing area'
-			} ) as HTMLTextAreaElement;
+			} );
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
 				class: 'ck-source-editing-area',
 				'data-value': data
-			}, [ domSourceEditingElementTextarea ] ) as HTMLDivElement;
+			}, [ domSourceEditingElementTextarea ] );
 
 			domSourceEditingElementTextarea.value = data;
 
@@ -372,6 +372,7 @@ export default class SourceEditing extends Plugin {
  * Formats the content for a better readability.
  *
  * For a non-HTML source the unchanged input string is returned.
+ *
  * @param input Input string to check.
  */
 function formatSource( input: string ): string {
@@ -384,6 +385,7 @@ function formatSource( input: string ): string {
 
 /**
  * Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
+ *
  * @param input Input string to check.
  */
 function isHtml( input: string ): boolean {
