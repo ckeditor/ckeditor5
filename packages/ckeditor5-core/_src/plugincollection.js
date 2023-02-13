@@ -577,7 +577,7 @@ export default class PluginCollection {
 			 * They are already built into that editor build and now get added for the second time as dependencies
 			 * of the plugin you are installing.
 			 *
-			 * Read more about {@glink installation/getting-started/installing-plugins installing plugins}.
+			 * Read more about {@glink installation/plugins/installing-plugins installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param {String} pluginName The duplicated plugin name.

@@ -74,3 +74,9 @@ export default class SelectAllCommand extends Command {
 function isSelectAllScope( schema: Schema, element: Element ) {
 	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		selectAll: SelectAllCommand;
+	}
+}

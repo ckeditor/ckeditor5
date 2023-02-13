@@ -15,6 +15,8 @@ import {
 } from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
 
+import '../listcommands';
+
 /**
  * The list style command. It changes `listStyle` attribute of the selected list items,
  * letting the user choose styles for the list item markers.

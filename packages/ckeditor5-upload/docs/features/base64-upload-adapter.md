@@ -18,11 +18,19 @@ This can be troublesome for some features: {@link features/revision-history revi
 Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the editor below to see the adapter in action. Open the web browser console and click the button below to see the base64–encoded image in the editor output data.
 
 {@snippet features/base64-upload}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Installation
 
@@ -49,7 +57,7 @@ ClassicEditor
 Once enabled in the plugin list, the Base64 image upload adapter works out–of–the–box without any additional configuration.
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration

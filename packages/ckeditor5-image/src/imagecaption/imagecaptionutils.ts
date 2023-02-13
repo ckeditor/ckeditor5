@@ -47,7 +47,7 @@ export default class ImageCaptionUtils extends Plugin {
 	 * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
 	 */
 	public getCaptionFromModelSelection( selection: Selection | DocumentSelection ): Element | null {
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 		const captionElement = selection.getFirstPosition()!.findAncestor( 'caption' );
 
 		if ( !captionElement ) {
@@ -68,7 +68,7 @@ export default class ImageCaptionUtils extends Plugin {
 	 * cannot be matched.
 	 */
 	public matchImageCaptionViewElement( element: ViewElement ): Match | null {
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		// Convert only captions for images.
 		if ( element.name == 'figcaption' && imageUtils.isBlockImageView( element.parent as ViewElement ) ) {

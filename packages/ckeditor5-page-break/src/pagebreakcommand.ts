@@ -72,3 +72,9 @@ function getInsertPageBreakParent( selection: DocumentSelection, model: Model ):
 
 	return parent as Element;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		pageBreak: PageBreakCommand;
+	}
+}

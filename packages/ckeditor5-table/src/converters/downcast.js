@@ -16,17 +16,22 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * @param {module:table/tableutils~TableUtils} tableUtils The `TableUtils` plugin instance.
  * @param {Object} [options]
  * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
+ * @param {Array.<module:table/tablediting~AdditionalSlot>} [options.additionalSlots] Array of additional slot handlers.
  * @returns {Function} Element creator.
  */
-export function downcastTable( tableUtils, options = {} ) {
+export function downcastTable( tableUtils, options ) {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const tableSections = [];
+		const tableElement = writer.createContainerElement( 'table', null, [] );
+		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
-			tableSections.push(
-				writer.createContainerElement( 'thead', null,
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'thead',
+					null,
 					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
 				)
 			);
@@ -34,20 +39,35 @@ export function downcastTable( tableUtils, options = {} ) {
 
 		// Table body slot.
 		if ( headingRows < tableUtils.getRows( table ) ) {
-			tableSections.push(
-				writer.createContainerElement( 'tbody', null,
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'tbody',
+					null,
 					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
 				)
 			);
 		}
 
-		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, [
-			// Table with proper sections (thead, tbody).
-			writer.createContainerElement( 'table', null, tableSections ),
+		// Dynamic slots.
+		for ( const { positionOffset, filter } of options.additionalSlots ) {
+			writer.insert(
+				writer.createPositionAt( tableElement, positionOffset ),
+				writer.createSlot( filter )
+			);
+		}
 
-			// Slot for the rest (for example caption).
-			writer.createSlot( element => !element.is( 'element', 'tableRow' ) )
-		] );
+		// Create a slot with items that don't fit into the table.
+		writer.insert(
+			writer.createPositionAt( tableElement, 'after' ),
+			writer.createSlot( element => {
+				if ( element.is( 'element', 'tableRow' ) ) {
+					return false;
+				}
+
+				return !options.additionalSlots.some( ( { filter } ) => filter( element ) );
+			} )
+		);
 
 		return options.asWidget ? toTableWidget( figureElement, writer ) : figureElement;
 	};

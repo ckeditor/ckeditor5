@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import { Plugin, icons, type Editor, type PluginDependencies, CommandExecuteEvent } from 'ckeditor5/src/core';
+import { Plugin, icons, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -20,6 +20,7 @@ import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils';
 
 import ImageResizeEditing from './imageresizeediting';
 import type ResizeImageCommand from './resizeimagecommand';
+import type { ImageResizeOption } from '../imageconfig';
 
 const RESIZE_ICONS = {
 	small: icons.objectSizeSmall,
@@ -69,7 +70,7 @@ export default class ImageResizeButtons extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' )!;
-		const command = editor.commands.get( 'resizeImage' )!;
+		const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 
 		this.bind( 'isEnabled' ).to( command );
 
@@ -92,19 +93,19 @@ export default class ImageResizeButtons extends Plugin {
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
-			const command = editor.commands.get( 'resizeImage' )!;
+			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const labelText = this._getOptionLabelValue( option, true );
 
 			if ( !RESIZE_ICONS[ icon as keyof typeof RESIZE_ICONS ] ) {
 				/**
-				 * When configuring {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
+				 * When configuring {@link module:image/imageconfig~ImageConfig#resizeOptions `config.image.resizeOptions`} for standalone
 				 * buttons, a valid `icon` token must be set for each option.
 				 *
 				 * See all valid options described in the
-				 * {@link module:image/imageresize/imageresizebuttons~ImageResizeOption plugin configuration}.
+				 * {@link module:image/imageconfig~ImageResizeOption plugin configuration}.
 				 *
 				 * @error imageresizebuttons-missing-icon
-				 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option Invalid image resize option.
+				 * @param option Invalid image resize option.
 				*/
 				throw new CKEditorError(
 					'imageresizebuttons-missing-icon',
@@ -145,7 +146,7 @@ export default class ImageResizeButtons extends Plugin {
 		const originalSizeOption = options.find( option => !option.value )!;
 
 		const componentCreator = ( locale: Locale ) => {
-			const command = editor.commands.get( 'resizeImage' )!;
+			const command: ResizeImageCommand = editor.commands.get( 'resizeImage' )!;
 			const dropdownView = createDropdown( locale, DropdownButtonView );
 			const dropdownButton: typeof dropdownView.buttonView & { commandValue?: string | null } = dropdownView.buttonView;
 
@@ -262,38 +263,3 @@ function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown 
 		return objectCommandValue !== null && objectCommandValue.width === value;
 	};
 }
-
-/**
- * The image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
- */
-export interface ImageResizeOption {
-
-	/**
-	 * The name of the UI component that changes the image size.
-	 * * If you configure the feature using individual resize buttons, you can refer to this name in the
-	 * {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
-	 * * If you configure the feature using the resize dropdown, this name will be used for a list item in the dropdown.
-	 */
-	name: string;
-
-	/**
-	 *
-	 * The value of the resize option without the unit
-	 * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
-	 */
-	value: string | null;
-
-	/**
-	 * An icon used by an individual resize button (see the `name` property to learn more).
-	 * Available icons are: `'small'`, `'medium'`, `'large'`, `'original'`.
-	 */
-	icon?: string;
-
-	/**
-	 * An option label displayed in the dropdown or, if the feature is configured using
-	 * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.
-	 * If not specified, the label is generated automatically based on the `value` option and the
-	 * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`}.
-	 */
-	label?: string;
- }
