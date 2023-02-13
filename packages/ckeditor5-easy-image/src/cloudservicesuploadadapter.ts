@@ -20,7 +20,7 @@ import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } fr
  * {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
  */
 export default class CloudServicesUploadAdapter extends Plugin {
-	private _uploadGateway!: UploadGateway;
+	private _uploadGateway?: UploadGateway;
 
 	/**
 	 * @inheritDoc
@@ -55,7 +55,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 		this._uploadGateway = cloudServicesCore.createUploadGateway( token, uploadUrl! );
 
 		editor.plugins.get( FileRepository ).createUploadAdapter = loader => {
-			return new Adapter( this._uploadGateway, loader );
+			return new Adapter( this._uploadGateway!, loader );
 		};
 	}
 }
