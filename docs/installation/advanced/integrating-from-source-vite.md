@@ -96,7 +96,7 @@ Now your setup is complete, and you can start using the editor.
 
 ## Running the editor – method 1
 
-You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository. You can use the same path to paste it into your project.
+You can now import all the needed plugins and the creator directly into your code and use it there. If you scaffolded your project using a Vite template, paste the following code into `main.js`.
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
