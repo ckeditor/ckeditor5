@@ -11,9 +11,6 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils';
 
 import type {
-	DocumentSelection,
-	Model,
-	Schema,
 	Element,
 	Position,
 	Writer
@@ -118,4 +115,10 @@ export type EnterCommandAfterExecuteEvent = {
 function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		enter: EnterCommand;
+	}
 }

@@ -17,6 +17,7 @@ export { default as DataController, type DataControllerSetEvent } from './contro
 export { default as Conversion } from './conversion/conversion';
 export type {
 	default as DowncastDispatcher,
+	DowncastAddMarkerEvent,
 	DowncastAttributeEvent,
 	DowncastConversionApi,
 	DowncastInsertEvent,
@@ -138,7 +139,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher, type MatcherPattern, type Match } from './view/matcher';
+export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';
@@ -161,6 +162,9 @@ export type {
 	ViewDocumentMouseOutEvent
 } from './view/observer/mouseobserver';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
+export type { ViewDocumentClickEvent } from './view/observer/clickobserver';
+export type { ViewDocumentSelectionChangeEvent } from './view/observer/selectionobserver';
+export type { ViewRenderEvent } from './view/view';
 
 // View / Styles.
 export { StylesProcessor, BoxSides } from './view/stylesmap';

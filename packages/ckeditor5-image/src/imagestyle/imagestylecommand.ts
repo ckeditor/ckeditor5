@@ -9,10 +9,11 @@
 
 import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
-import type { ImageStyleOptionDefinition } from '../imagestyle';
+import type { ImageStyleOptionDefinition } from '../imageconfig';
+import type ImageUtils from '../imageutils';
 
 /**
- * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#options image style option}
+ * The image style command. It is used to apply {@link module:image/imageconfig~ImageStyleConfig#options image style option}
  * to a selected image.
  *
  * **Note**: Executing this command may change the image model element if the desired style requires an image of a different
@@ -33,7 +34,7 @@ export default class ImageStyleCommand extends Command {
 
 	/**
 	 * Creates an instance of the image style command. When executed, the command applies one of
-	 * {@link module:image/imagestyle~ImageStyleConfig#options style options} to the currently selected image.
+	 * {@link module:image/imageconfig~ImageStyleConfig#options style options} to the currently selected image.
 	 *
 	 * @param editor The editor instance.
 	 * @param styles The style options that this command supports.
@@ -62,7 +63,7 @@ export default class ImageStyleCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection )!;
 
 		this.isEnabled = !!element;
@@ -84,17 +85,16 @@ export default class ImageStyleCommand extends Command {
 	 * ```
 	 *
 	 * **Note**: Executing this command may change the image model element if the desired style requires an image
-	 * of a different type. Learn more about {@link module:image/imagestyle~ImageStyleOptionDefinition#modelElements model element}
+	 * of a different type. Learn more about {@link module:image/imageconfig~ImageStyleOptionDefinition#modelElements model element}
 	 * configuration for the style option.
 	 *
-	 * @param options
-	 * @param options.value The name of the style (as configured in {@link module:image/imagestyle~ImageStyleConfig#options}).
+	 * @param options.value The name of the style (as configured in {@link module:image/imageconfig~ImageStyleConfig#options}).
 	 * @fires execute
 	 */
 	public override execute( options: { value?: string } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedStyle = options.value;
@@ -122,12 +122,18 @@ export default class ImageStyleCommand extends Command {
 	/**
 	 * Returns `true` if requested style change would trigger the image type change.
 	 *
-	 * @param requestedStyle The name of the style (as configured in {@link module:image/imagestyle~ImageStyleConfig#options}).
+	 * @param requestedStyle The name of the style (as configured in {@link module:image/imageconfig~ImageStyleConfig#options}).
 	 * @param imageElement The image model element.
 	 */
 	public shouldConvertImageType( requestedStyle: string, imageElement: Element ): boolean {
 		const supportedTypes = this._styles.get( requestedStyle )!.modelElements;
 
 		return !supportedTypes.includes( imageElement.name );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		imageStyle: ImageStyleCommand;
 	}
 }

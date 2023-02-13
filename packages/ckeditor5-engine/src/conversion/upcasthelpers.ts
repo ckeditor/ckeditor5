@@ -184,7 +184,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		view: MatcherPattern;
 		model: string | {
 			key: string;
-			value: unknown;
+			value?: unknown;
 		};
 		converterPriority?: PriorityString;
 	} ): this {
@@ -630,7 +630,7 @@ function upcastElementToAttribute( config: {
 	view: MatcherPattern;
 	model: string | {
 		key: string;
-		value: unknown | AttributeCreatorFunction;
+		value?: unknown | AttributeCreatorFunction;
 	};
 	converterPriority?: PriorityString;
 } ) {

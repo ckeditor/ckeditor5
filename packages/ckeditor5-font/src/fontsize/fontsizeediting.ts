@@ -15,6 +15,8 @@ import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE, type FontConverterDefinition } from '../utils';
 
+import '../fontconfig';
+
 // Mapping of `<font size="..">` styling to CSS's `font-size` values.
 const styleFontSize = [
 	'x-small', // Size "0" equal to "1".
@@ -36,7 +38,7 @@ const styleFontSize = [
  * * a style attribute (`<span style="font-size:12px">...</span>`),
  * * or a class attribute (`<span class="text-small">...</span>`)
  *
- * depending on the {@link module:font/fontsize~FontSizeConfig configuration}.
+ * depending on the {@link module:font/fontconfig~FontSizeConfig configuration}.
  */
 export default class FontSizeEditing extends Plugin {
 	/**
@@ -113,10 +115,10 @@ export default class FontSizeEditing extends Plugin {
 
 		if ( presets.length ) {
 			/**
-			 * If {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} is `true`,
+			 * If {@link module:font/fontconfig~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} is `true`,
 			 * you need to use numerical values as font size options.
 			 *
-			 * See valid examples described in the {@link module:font/fontsize~FontSizeConfig#options plugin configuration}.
+			 * See valid examples described in the {@link module:font/fontconfig~FontSizeConfig#options plugin configuration}.
 			 *
 			 * @error font-size-invalid-use-of-named-presets
 			 * @param {Array.<String>} presets Invalid values.
@@ -194,9 +196,5 @@ export default class FontSizeEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontSizeEditing.pluginName ]: FontSizeEditing;
-	}
-
-	interface CommandsMap {
-		[ FONT_SIZE ]: FontSizeCommand;
 	}
 }

@@ -14,7 +14,7 @@ import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefiniti
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';
 
-import type { FontFamilyOption } from '../fontfamily';
+import type { FontFamilyOption } from '../fontconfig';
 import type FontFamilyCommand from './fontfamilycommand';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
@@ -39,7 +39,7 @@ export default class FontFamilyUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( FONT_FAMILY )!;
+		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
@@ -73,7 +73,7 @@ export default class FontFamilyUI extends Plugin {
 
 	/**
 	 * Returns options as defined in `config.fontFamily.options` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontfamily~FontFamilyOption}
+	 * editor localization, i.e. to display {@link module:font/fontconfig~FontFamilyOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
