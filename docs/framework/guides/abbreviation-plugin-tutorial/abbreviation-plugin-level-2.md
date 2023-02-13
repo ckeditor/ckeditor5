@@ -432,7 +432,15 @@ export default class AbbreviationUI extends Plugin {
 		// ...
 
 		editor.ui.componentFactory.add( 'abbreviation', () => {
-			this._showUI();
+			// Button initialization.
+			// ...
+
+			// Show the UI on button click.
+			this.listenTo( button, 'execute', () => {
+				this._showUI();
+			} );
+
+			return button;
 		} );
 	}
 
