@@ -131,41 +131,6 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
-	describe( 'contextual balloon in rtl', () => {
-		let getBalloonPanelPositionDataSpy;
-
-		beforeEach( () => {
-			return createClassicTestEditor( { ...staticConfig } )
-				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
-					editor.locale.uiLanguageDirection = 'rtl';
-					getBalloonPanelPositionDataSpy = sinon.spy( mentionUI, '_getBalloonPanelPositionData' );
-
-					model.change( writer => {
-						writer.insertText( '@', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( waitForDebounce );
-		} );
-
-		afterEach( () => {
-			editor.locale.uiLanguageDirection = 'ltr';
-		} );
-
-		it( 'should set proper position list in rtl', () => {
-			const extractedSpiedResult = getBalloonPanelPositionDataSpy.returnValues[ 0 ].positions.map( callback => {
-				return callback( {}, {} ).name;
-			} );
-
-			expect( extractedSpiedResult ).to.have.ordered.members( [
-				'caret_sw',
-				'caret_se',
-				'caret_nw',
-				'caret_ne'
-			] );
-		} );
-	} );
-
 	describe( 'position', () => {
 		let pinSpy;
 
@@ -333,6 +298,40 @@ describe( 'MentionUI', () => {
 					// Should not break;
 					expect( limiter() ).to.be.null;
 				} );
+		} );
+
+		describe( 'contextual balloon in rtl', () => {
+			let contextualBaloonSpy;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
+				return createClassicTestEditor( { ...staticConfig } )
+					.then( () => {
+						const contextualBalloon = editor.plugins.get( ContextualBalloon );
+						setData( model, '<paragraph>foo []</paragraph>' );
+						editor.locale.uiLanguageDirection = 'rtl';
+						contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce );
+			} );
+
+			it( 'should set proper position list in rtl', () => {
+				const extractedPositions = contextualBaloonSpy.getCall( 0 ).firstArg.position.positions.map( callback => {
+					return callback( {}, {} ).name;
+				} );
+
+				expect( extractedPositions ).to.have.ordered.members( [
+					'caret_sw',
+					'caret_se',
+					'caret_nw',
+					'caret_ne'
+				] );
+			} );
 		} );
 	} );
 
