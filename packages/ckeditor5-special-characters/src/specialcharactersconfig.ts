@@ -50,7 +50,7 @@ export interface SpecialCharactersConfig {
 	 *   .catch( ... );
 	 * ```
 	 */
-	order: Array<string>;
+	order?: Array<string>;
 }
 
 declare module '@ckeditor/ckeditor5-core' {

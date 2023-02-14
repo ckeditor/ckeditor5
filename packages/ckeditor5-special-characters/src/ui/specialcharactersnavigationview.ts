@@ -130,4 +130,4 @@ export type GroupNames = Map<string, string>;
 /**
  * `DropdownView` with additional field for the name of the currectly selected character group.
  */
-type GroupDropdownView = DropdownView & { value: string };
+export type GroupDropdownView = DropdownView & { value: string };
