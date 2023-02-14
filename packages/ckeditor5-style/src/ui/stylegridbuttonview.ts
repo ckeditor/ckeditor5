@@ -7,10 +7,10 @@
  * @module style/ui/stylegridbuttonview
  */
 
-import {
-	ButtonView,
-	View
-} from 'ckeditor5/src/ui';
+import type { Locale } from 'ckeditor5/src/utils';
+import { ButtonView, View } from 'ckeditor5/src/ui';
+
+import type { StyleDefinition } from '../styleconfig';
 
 // These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
 const NON_PREVIEWABLE_ELEMENT_NAMES = [
@@ -20,35 +20,28 @@ const NON_PREVIEWABLE_ELEMENT_NAMES = [
 
 /**
  * A class representing an individual button (style) in the grid. Renders a rich preview of the style.
- *
- * @protected
- * @extends {module:ui/button/buttonview~ButtonView}
  */
 export default class StyleGridButtonView extends ButtonView {
 	/**
+	 * Definition of the style the button will apply when executed.
+	 */
+	public readonly styleDefinition: StyleDefinition;
+
+	/**
+	 * The view rendering the preview of the style.
+	 */
+	protected readonly previewView: View;
+
+	/**
 	 * Creates an instance of the {@link module:style/ui/stylegridbuttonview~StyleGridButtonView} class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {module:style/style~StyleDefinition} styleDefinition Definition of the style.
+	 * @param locale The localization services instance.
+	 * @param styleDefinition Definition of the style.
 	 */
-	constructor( locale, styleDefinition ) {
+	constructor( locale: Locale, styleDefinition: StyleDefinition ) {
 		super( locale );
 
-		/**
-		 * Definition of the style the button will apply when executed.
-		 *
-		 * @readonly
-		 * @member {module:style/style~StyleDefinition} #styleDefinition
-		 */
 		this.styleDefinition = styleDefinition;
-
-		/**
-		 * The view rendering the preview of the style.
-		 *
-		 * @protected
-		 * @readonly
-		 * @member {module:ui/view~View} #previewView
-		 */
 		this.previewView = this._createPreview();
 
 		this.set( {
@@ -68,11 +61,8 @@ export default class StyleGridButtonView extends ButtonView {
 
 	/**
 	 * Creates the view representing the preview of the style.
-	 *
-	 * @private
-	 * @returns {module:ui/view~View}
 	 */
-	_createPreview() {
+	private _createPreview(): View {
 		const { element, classes } = this.styleDefinition;
 		const previewView = new View( this.locale );
 
@@ -110,11 +100,10 @@ export default class StyleGridButtonView extends ButtonView {
 	 * Decides whether an element should be created in the preview or a substitute `<div>` should
 	 * be used instead. This avoids previewing a standalone `<td>`, `<li>`, etc. without a parent.
 	 *
-	 * @private
-	 * @param {String} elementName
-	 * @returns {Boolean} `true` when the element can be rendered. `false` otherwise.
+	 * @param elementName Name of the element
+	 * @returns Boolean indicating whether the element can be rendered.
 	 */
-	_isPreviewable( elementName ) {
+	private _isPreviewable( elementName: string ): boolean {
 		return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
 	}
 }

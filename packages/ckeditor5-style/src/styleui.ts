@@ -12,38 +12,39 @@ import { createDropdown } from 'ckeditor5/src/ui';
 
 import StylePanelView from './ui/stylepanelview';
 import { normalizeConfig } from './utils';
+import type StyleCommand from './stylecommand';
 
 import '../theme/style.css';
+import './styleconfig';
 
 /**
  * The UI plugin of the style feature .
  *
  * It registers the `'style'` UI dropdown in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * that displays a grid of styles and allows changing styles of the content.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'StyleUI' {
 		return 'StyleUI';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
-		const dataSchema = editor.plugins.get( 'DataSchema' );
-		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
+		const dataSchema = editor.plugins.get( 'DataSchema' ); // TODO
+		const styleDefinitions = editor.config.get( 'style.definitions' );
+		const normalizedStyleDefinitions = normalizeConfig( dataSchema, styleDefinitions );
 
 		// Add the dropdown to the component factory.
 		editor.ui.componentFactory.add( 'style', locale => {
 			const t = locale.t;
 			const dropdown = createDropdown( locale );
-			const styleCommand = editor.commands.get( 'style' );
+			const styleCommand: StyleCommand = editor.commands.get( 'style' )!;
 
 			dropdown.once( 'change:isOpen', () => {
 				const panelView = new StylePanelView( locale, normalizedStyleDefinitions );
@@ -95,11 +96,17 @@ export default class StyleUI extends Plugin {
 			// Also focus the editable after executing the command.
 			// It overrides a default behaviour where the focus is moved to the dropdown button (#12125).
 			dropdown.on( 'execute', evt => {
-				editor.execute( 'style', { styleName: evt.source.styleDefinition.name } );
+				editor.execute( 'style', { styleName: ( evt.source as any ).styleDefinition.name } );
 				editor.editing.view.focus();
 			} );
 
 			return dropdown;
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[StyleUI.pluginName]: StyleUI;
 	}
 }
