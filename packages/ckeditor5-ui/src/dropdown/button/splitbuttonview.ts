@@ -44,7 +44,7 @@ import type DropdownButton from './dropdownbutton';
  * @implements module:ui/dropdown/button/dropdownbutton~DropdownButton
  * @extends module:ui/view~View
  */
-export default class SplitButtonView extends View implements DropdownButton {
+export default class SplitButtonView extends View<HTMLDivElement> implements DropdownButton {
 	public readonly children: ViewCollection;
 	public readonly actionView: ButtonView;
 	public readonly arrowView: ButtonView;
