@@ -179,6 +179,7 @@ class MyUploadAdapter {
 		this.loader = loader;
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -187,6 +188,7 @@ Implement the minimal `UploadAdapter` adapter interface as explained in ["The an
 
 ```js
 class MyUploadAdapter {
+	// The constructor method.
 	// ...
 
 	// Starts the upload process.
@@ -206,6 +208,7 @@ class MyUploadAdapter {
 		}
 	}
 
+	// More methods.
 	// ...
 }
 ```
@@ -222,6 +225,7 @@ Let's see what the `_initRequest()` method looks like in your custom upload adap
 
 ```js
 class MyUploadAdapter {
+	// More methods.
 	// ...
 
 	// Initializes the XMLHttpRequest object using the URL passed to the constructor.
@@ -244,6 +248,7 @@ A successful image upload will finish when the upload promise is resolved upon t
 
 ```js
 class MyUploadAdapter {
+	// More methods.
 	// ...
 
 	// Initializes XMLHttpRequest listeners.
@@ -299,6 +304,7 @@ Last but not least, the `_sendRequest()` method sends the `XMLHttpRequest`. In t
 
 ```js
 class MyUploadAdapter {
+	// More methods.
 	// ...
 
 	// Prepares the data and sends the request.
@@ -354,22 +360,28 @@ The {@link module:image/imageupload~ImageUpload image upload} plugin, which is c
 Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous section](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js
+// Rest of the MyUploadAdapter class definition.
 // ...
 
 xhr.addEventListener( 'load', () => {
 	const response = xhr.response;
 
+	// Response handling.
 	// ...
 
 	// response.urls = {
 	// 	default: 'http://example.com/images/image–default-size.png',
 	// 	'160': '...',
 	// 	'500': '...',
-	// 	// ...
+	// 	More response urls.
+	//  ...
 	// 	'1052': 'http://example.com/images/image–default-size.png'
 	// }
 	resolve( response.urls );
 } );
+
+// Rest of the MyUploadAdapter class definition.
+// ...
 ```
 
 ### Passing additional data to the response
@@ -398,6 +410,7 @@ You are going to extend the basic implementation presented in ["The anatomy of t
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class MyUploadAdapter {
+	// MyUploadAdapter class definition.
 	// ...
 }
 
@@ -416,6 +429,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		extraPlugins: [ MyCustomUploadAdapterPlugin ],
 
+		// More configuration options.
 		// ...
 	} )
 	.catch( error => {
@@ -525,8 +539,6 @@ class MyUploadAdapter {
 	}
 }
 
-// ...
-
 function MyCustomUploadAdapterPlugin( editor ) {
 	editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
 		// Configure the URL to the upload script in your back-end here!
@@ -534,12 +546,11 @@ function MyCustomUploadAdapterPlugin( editor ) {
 	};
 }
 
-// ...
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		extraPlugins: [ MyCustomUploadAdapterPlugin ],
 
+		// More configuration options.
 		// ...
 	} )
 	.catch( error => {
