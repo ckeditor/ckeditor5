@@ -193,7 +193,7 @@ export default class Position extends TypeCheckable {
 				 * where this position points.
 				 *
 				 * Read more about model positions and offsets in
-				 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
+				 * the {@glink framework/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
 				 *
 				 * @error model-position-path-incorrect
 				 * @param position The incorrect position.
