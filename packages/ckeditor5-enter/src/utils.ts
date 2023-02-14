@@ -15,8 +15,8 @@ import type { Schema } from '@ckeditor/ckeditor5-engine';
  * Filtering is realized based on `copyOnEnter` attribute property. Read more about attribute properties
  * {@link module:engine/model/schema~Schema#setAttributeProperties here}.
  *
- * @param schema
- * @param allAttributes attributes to filter.
+ * @param schema Model's schema.
+ * @param allAttributes Attributes to filter.
  */
 export function* getCopyOnEnterAttributes(
 	schema: Schema,
