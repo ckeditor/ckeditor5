@@ -24,7 +24,7 @@ See the demo of the editor in Spanish:
 </info-box>
 
 <info-box>
-	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
+	If you are interested in creating features that can be localized, check out the {@link framework/deep-dive/localization localization guide}.
 </info-box>
 
 ## Right–to–left (RTL) languages support

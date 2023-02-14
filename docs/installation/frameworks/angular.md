@@ -131,7 +131,7 @@ Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
 ### Using the Document editor build
 
-If you want to use the {@link framework/guides/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
+If you want to use the {@link framework/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
 ```ts
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';

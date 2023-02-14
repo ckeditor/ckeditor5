@@ -54,9 +54,9 @@ When it comes to official plugins compatibility between CKEditor 4 and CKEditor 
 
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
 
-If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately, {@link framework/guides/theme-customization custom theming} in CKEditor 5 is much more powerful and simpler than before.
+If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately, {@link framework/theme-customization custom theming} in CKEditor 5 is much more powerful and simpler than before.
 
-For more information, check how to {@link framework/guides/theme-customization customize the themes} in the CKEditor 5 Framework documentation.
+For more information, check how to {@link framework/theme-customization customize the themes} in the CKEditor 5 Framework documentation.
 
 ## Existing data
 
@@ -70,7 +70,7 @@ A relatively simple yet efficient strategy of adopting CKEditor 5 into existing 
 
 ### Why does the editor filter out my content (styles, classes, elements)? Where is `config.allowedContent = true`?
 
-Unlike [CKEditor 4](https://ckeditor.com/ckeditor-4/), CKEditor 5 implements a custom {@link framework/guides/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+Unlike [CKEditor 4](https://ckeditor.com/ckeditor-4/), CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
 
 Each kind of content must be handled by some feature. For instance the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
 
@@ -78,7 +78,7 @@ If you load some content that is not recognizable to any of the editor features,
 
 ### What happened to the `contents.css` file? How do I style the content of the editor?
 
-There is no such thing as the `contents.css` file anymore because in CKEditor 5 the features bring their own content styles. These are by default included in the JavaScript build and {@link framework/guides/theme-customization#styles-processing-and-bundling loaded by the style loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
+There is no such thing as the `contents.css` file anymore because in CKEditor 5 the features bring their own content styles. These are by default included in the JavaScript build and {@link framework/theme-customization#styles-processing-and-bundling loaded by the style loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
 
 You can find the full list of editor content styles in the {@link installation/advanced/content-styles content styles guide}. You can also {@link installation/advanced/integrating-from-source#option-extracting-css extract all CSS} brought by CKEditor 5 (both content and UI) into a separate file when creating a custom editor build.
 
@@ -126,8 +126,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><span id="allowedContent"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent">allowedContent</a></span></td>
 			<td>
 				<p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not covered by official CKEditor 5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
-				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
-				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/guides/deep-dive/conversion/intro conversion tutorials} to learn how to extend the conversion rules.</p>
+				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
+				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/deep-dive/conversion/intro conversion tutorials} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
 		<tr>
@@ -286,11 +286,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_styles">devtools_styles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_textCallback">devtools_textCallback</a></td>
-			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor 5. However, check out the new {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} which is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
+			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor 5. However, check out the new {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} which is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverColor">dialog_backgroundCoverColor</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverOpacity">dialog_backgroundCoverOpacity</a></td>
-			<td>The use of configuration options to style selected parts of the editor was dropped in favor of much more powerful {@link framework/guides/theme-customization theme customization}.</td>
+			<td>The use of configuration options to style selected parts of the editor was dropped in favor of much more powerful {@link framework/theme-customization theme customization}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_buttonsOrder">dialog_buttonsOrder</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_magnetDistance">dialog_magnetDistance</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_noConfirmCancel">dialog_noConfirmCancel</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_startupFocusTab">dialog_startupFocusTab</a></td>
@@ -496,7 +496,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-keystrokes">keystrokes</a></td>
 			<td>
-				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/ui-library#keystrokes-and-focus-management Keystrokes and focus management} section.</p>
+				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/architecture/ui-library#keystrokes-and-focus-management Keystrokes and focus management} section.</p>
 				<p>Making keystrokes overridable through <code>config.keystrokes</code> is handled in a <a href="https://github.com/ckeditor/ckeditor5-core/issues/8" target="_blank" rel="noopener">dedicated issue</a>. There is also an issue about <a href="https://github.com/ckeditor/ckeditor5-core/issues/20" target="_blank" rel="noopener">improving keystroke handling</a>.</p>
 			</td>
 		</tr>
@@ -698,7 +698,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uiColor">uiColor</a></td>
-			<td>CKEditor 5 comes with a concept of much more powerful themes, where almost every aspect of the UI can be styled easily. See the {@link framework/guides/theme-customization Theme customization guide} and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/guides/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
+			<td>CKEditor 5 comes with a concept of much more powerful themes, where almost every aspect of the UI can be styled easily. See the {@link framework/theme-customization Theme customization guide} and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-undoStackSize">undoStackSize</a></td>

@@ -19,7 +19,7 @@ The height of the editing area can be easily controlled with CSS.
 
 ## Why does the editor filter out my content (styles, classes, elements)?
 
-CKEditor 5 implements a custom {@link framework/guides/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
 
 Each kind of content must be handled by some feature. For instance the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
 
@@ -37,7 +37,7 @@ You can learn which editor features are available in the {@link features/index f
 
 ## How to insert some content into the editor?
 
-Because CKEditor 5 uses a custom {@link framework/guides/architecture/editing-engine data model}, whenever you want to insert anything, you should modify the model first, which is then converted back to the view where the users input their content (called "editable"). In CKEditor 5, HTML is just one of many possible output formats. You can learn more about the ways of changing the model in the {@link framework/guides/architecture/editing-engine#changing-the-model dedicated guide}.
+Because CKEditor 5 uses a custom {@link framework/architecture/editing-engine data model}, whenever you want to insert anything, you should modify the model first, which is then converted back to the view where the users input their content (called "editable"). In CKEditor 5, HTML is just one of many possible output formats. You can learn more about the ways of changing the model in the {@link framework/architecture/editing-engine#changing-the-model dedicated guide}.
 
 To insert a new link at the current position, use the following snippet:
 
@@ -133,7 +133,7 @@ editorInstance.setData( '<p>Hello world!<p>' );
 
 ## How to add an attribute to the editor editable in DOM?
 
-If you have a reference to the editor instance, simply use the {@link framework/guides/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
+If you have a reference to the editor instance, simply use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
 
 ```js
 editor.editing.view.change( writer => {

@@ -420,7 +420,7 @@ Now all you need to do is specify the list of rich text editor options (**includ
 
 ## Using the Document editor build
 
-If you use the {@link framework/guides/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
+If you use the {@link framework/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
 
 Since accessing the editor toolbar is not possible until after the editor instance is {@link module:core/editor/editor~Editor#event:ready ready}, put your toolbar insertion code in a method executed upon the [`ready`](#ready) event of the component, like in the following example:
 
