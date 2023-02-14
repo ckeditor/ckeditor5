@@ -46,7 +46,7 @@ function getCkeditor5Plugins() {
  */
 function getCkeditor5ModulePaths() {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.[tj]s', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
+		glob( 'node_modules/ckeditor5/packages/*/src/**/*.[tj]s', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
@@ -127,5 +127,5 @@ function normalizePath( modulePath ) {
  * @returns {String}
  */
 function getPluginName( modulePath ) {
-	return path.basename( modulePath ).split( '.' )[ 0 ];
+	return path.basename( modulePath ).replace( /\.[tj]s$/, '' );
 }

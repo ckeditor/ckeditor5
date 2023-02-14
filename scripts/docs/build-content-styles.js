@@ -306,7 +306,9 @@ function generateCKEditor5Source( ckeditor5Modules ) {
 	];
 
 	for ( const { modulePath, pluginName } of ckeditor5Modules ) {
-		sourceFileContent.push( `import ${ pluginName } from '${ normalizePath( modulePath ) }';` );
+		const importPath = normalizePath( modulePath ).replace( /\.[tj]s$/, '' );
+
+		sourceFileContent.push( `import ${ pluginName } from '${ importPath }';` );
 	}
 
 	sourceFileContent.push( '' );
