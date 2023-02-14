@@ -134,18 +134,18 @@ describe( 'MentionUI', () => {
 	describe( 'contextual balloon in rtl', () => {
 		let getBalloonPanelPositionDataSpy;
 
-		beforeEach( () => {
-			return createClassicTestEditor( { ...staticConfig } )
-				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
-					editor.locale.uiLanguageDirection = 'rtl';
-					getBalloonPanelPositionDataSpy = sinon.spy( mentionUI, '_getBalloonPanelPositionData' );
+		beforeEach( async () => {
+			await createClassicTestEditor( { ...staticConfig } );
 
-					model.change( writer => {
-						writer.insertText( '@', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( waitForDebounce );
+			setData( model, '<paragraph>foo []</paragraph>' );
+			editor.locale.uiLanguageDirection = 'rtl';
+			getBalloonPanelPositionDataSpy = sinon.spy( mentionUI, '_getBalloonPanelPositionData' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			await waitForDebounce();
 		} );
 
 		afterEach( () => {
