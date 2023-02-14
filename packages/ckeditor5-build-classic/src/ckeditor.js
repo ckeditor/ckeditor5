@@ -109,9 +109,15 @@ class AssetLink extends Plugin {
 class SpecialCharactersAdditional extends Plugin {
 	init() {
 		const editor = this.editor;
-		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+		const specialCharacters = editor.plugins.get( 'SpecialCharacters' );
+		specialCharacters.addItems( 'Arrows', [
 			{ title: 'arrow right', character: '►' },
 			{ title: 'arrow left', character: '◄' }
+		] );
+		specialCharacters.addItems( 'Mathematical', [
+			{ title: 'alpha', character: 'α' },
+			{ title: 'beta', character: 'β' },
+			{ title: 'gamma', character: 'γ' }
 		] );
 	}
 }
