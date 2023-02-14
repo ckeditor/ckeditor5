@@ -43,7 +43,7 @@ import {
  *			<figcaption>Caption of the image</figcaption>
  *		</figure>
  *
- *	**Note:** The value of the `sources` {@glink framework/guides/architecture/editing-engine#changing-the-model model attribute}
+ *	**Note:** The value of the `sources` {@glink framework/architecture/editing-engine#changing-the-model model attribute}
  * 	in both examples equals:
  *
  *		[

@@ -45,7 +45,7 @@ import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckedito
  *
  * Note that writer's methods do not check the {@link module:engine/model/schema~Schema}. It is possible
  * to create incorrect model structures by using the writer. Read more about in
- * {@glink framework/guides/deep-dive/schema#who-checks-the-schema "Who checks the schema?"}.
+ * {@glink framework/deep-dive/schema#who-checks-the-schema "Who checks the schema?"}.
  *
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange

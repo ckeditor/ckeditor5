@@ -15,7 +15,7 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
  *
- * We recommend reading the {@glink framework/guides/deep-dive/conversion/intro editor conversion} guide first to
+ * We recommend reading the {@glink framework/deep-dive/conversion/intro editor conversion} guide first to
  * understand the core concepts of the conversion mechanisms.
  *
  * An instance of the conversion manager is available in the
