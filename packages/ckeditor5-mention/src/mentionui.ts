@@ -643,7 +643,7 @@ function getBalloonPanelPositions(
 		];
 	}
 
-	// By default return all position callbacks which order depends on ui language direction.
+	// By default, return all position callbacks ordered depending on the UI language direction.
 	return uiLanguageDirection !== 'rtl' ? [
 		positions.caret_se,
 		positions.caret_sw,
