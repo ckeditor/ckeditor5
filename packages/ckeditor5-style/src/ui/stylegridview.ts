@@ -7,74 +7,66 @@
  * @module style/ui/stylegridview
  */
 
-import { View, addKeyboardHandlingForGrid } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+
 import StyleGridButtonView from './stylegridbuttonview';
+import type { StyleDefinition } from '../styleconfig';
 
 import '../../theme/stylegrid.css';
 
 /**
  * A class representing a grid of styles ({@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}).
  * Allows users to select a style.
- *
- * @protected
- * @extends module:ui/view~View
  */
-export default class StyleGridView extends View {
+export default class StyleGridView extends View<HTMLDivElement> {
+	/**
+	 * Tracks information about the DOM focus in the view.
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * A collection of style {@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}.
+	 */
+	public readonly children: ViewCollection<StyleGridButtonView>;
+
+	/**
+	 * Array of active style names. They must correspond to the names of styles from
+	 * definitions passed to the {@link #constructor}.
+	 *
+	 * @observable
+	 */
+	declare public readonly activeStyles: Array<string>;
+
+	/**
+	 * Array of enabled style names. They must correspond to the names of styles from
+	 * definitions passed to the {@link #constructor}.
+	 *
+	 * @observable
+	 */
+	declare public readonly enabledStyles: Array<string>;
+
 	/**
 	 * Creates an instance of the {@link module:style/ui/stylegridview~StyleGridView} class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions Definitions of the styles.
+	 * @param locale The localization services instance.
+	 * @param styleDefinitions Definitions of the styles.
 	 */
-	constructor( locale, styleDefinitions ) {
+	constructor( locale: Locale, styleDefinitions: Array<StyleDefinition> ) {
 		super( locale );
 
-		/**
-		 * Tracks information about the DOM focus in the view.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		/**
-		 * Array of active style names. They must correspond to the names of styles from
-		 * definitions passed to the {@link #constructor}.
-		 *
-		 * @observable
-		 * @readonly
-		 * @default []
-		 * @member {Array.<String>} #activeStyles
-		 */
 		this.set( 'activeStyles', [] );
-
-		/**
-		 * Array of enabled style names. They must correspond to the names of styles from
-		 * definitions passed to the {@link #constructor}.
-		 *
-		 * @observable
-		 * @readonly
-		 * @default []
-		 * @member {Array.<String>} #enabledStyles
-		 */
 		this.set( 'enabledStyles', [] );
 
-		/**
-		 * A collection of style {@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
-		this.children = this.createCollection();
+		this.children = this.createCollection<StyleGridButtonView>();
 		this.children.delegate( 'execute' ).to( this );
 
 		for ( const definition of styleDefinitions ) {
@@ -119,11 +111,11 @@ export default class StyleGridView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	render() {
+	public override render(): void {
 		super.render();
 
 		for ( const child of this.children ) {
-			this.focusTracker.add( child.element );
+			this.focusTracker.add( child.element! );
 		}
 
 		addKeyboardHandlingForGrid( {
@@ -135,20 +127,20 @@ export default class StyleGridView extends View {
 		} );
 
 		// Start listening for the keystrokes coming from the grid view.
-		this.keystrokes.listenTo( this.element );
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * Focuses the first style button in the grid.
 	 */
-	focus() {
-		this.children.first.focus();
+	public focus(): void {
+		this.children.first!.focus();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	destroy() {
+	public override destroy(): void {
 		super.destroy();
 
 		this.focusTracker.destroy();
