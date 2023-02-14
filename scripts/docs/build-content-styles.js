@@ -10,7 +10,7 @@ const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { writeFile, getCkeditor5Plugins, normalizePath, getPluginName } = require( './utils' );
+const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
@@ -290,7 +290,7 @@ function transformCssRules( rules ) {
  */
 function generateCKEditor5Source( ckeditor5Modules ) {
 	ckeditor5Modules = ckeditor5Modules.map( modulePath => {
-		const pluginName = capitalize( getPluginName( modulePath ) );
+		const pluginName = capitalize( path.basename( modulePath, '.js' ) );
 		return { modulePath, pluginName };
 	} );
 
