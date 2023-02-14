@@ -58,55 +58,72 @@ import type DataProcessor from '../dataprocessor/dataprocessor';
  * An instance of the data controller is always available in the {@link module:core/editor/editor~Editor#data `editor.data`}
  * property:
  *
- *		editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
- *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * ```ts
+ * editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
+ * ```
  */
 export default class DataController extends EmitterMixin() {
+	/**
+	 * Data model.
+	 */
 	public readonly model: Model;
+
+	/**
+	 * Mapper used for the conversion. It has no permanent bindings, because these are created while getting data and
+	 * ae cleared directly after the data are converted. However, the mapper is defined as a class property, because
+	 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
+	 */
 	public readonly mapper: Mapper;
+
+	/**
+	 * Downcast dispatcher used by the {@link #get get method}. Downcast converters should be attached to it.
+	 */
 	public readonly downcastDispatcher: DowncastDispatcher;
+
+	/**
+	 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
+	 */
 	public readonly upcastDispatcher: UpcastDispatcher;
+
+	/**
+	 * The view document used by the data controller.
+	 */
 	public readonly viewDocument: ViewDocument;
+
+	/**
+	 * Styles processor used during the conversion.
+	 */
 	public readonly stylesProcessor: StylesProcessor;
+
+	/**
+	 * Data processor used specifically for HTML conversion.
+	 */
 	public readonly htmlProcessor: HtmlDataProcessor;
+
+	/**
+	 * Data processor used during the conversion.
+	 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
+	 */
 	public processor: DataProcessor;
 
+	/**
+	 * The view downcast writer just for data conversion purposes, i.e. to modify
+	 * the {@link #viewDocument}.
+	 */
 	private readonly _viewWriter: ViewDowncastWriter;
 
 	/**
 	 * Creates a data controller instance.
 	 *
-	 * @param {module:engine/model/model~Model} model Data model.
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
+	 * @param model Data model.
+	 * @param stylesProcessor The styles processor instance.
 	 */
 	constructor( model: Model, stylesProcessor: StylesProcessor ) {
 		super();
 
-		/**
-		 * Data model.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model}
-		 */
 		this.model = model;
-
-		/**
-		 * Mapper used for the conversion. It has no permanent bindings, because these are created while getting data and
-		 * ae cleared directly after the data are converted. However, the mapper is defined as a class property, because
-		 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/mapper~Mapper}
-		 */
 		this.mapper = new Mapper();
 
-		/**
-		 * Downcast dispatcher used by the {@link #get get method}. Downcast converters should be attached to it.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
-		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
 			mapper: this.mapper,
 			schema: model.schema
@@ -114,56 +131,14 @@ export default class DataController extends EmitterMixin() {
 		this.downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.downcastDispatcher.on<DowncastInsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
-		/**
-		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/upcastdispatcher~UpcastDispatcher}
-		 */
 		this.upcastDispatcher = new UpcastDispatcher( {
 			schema: model.schema
 		} );
 
-		/**
-		 * The view document used by the data controller.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/document~Document}
-		 */
 		this.viewDocument = new ViewDocument( stylesProcessor );
-
-		/**
-		 * Styles processor used during the conversion.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
 		this.stylesProcessor = stylesProcessor;
-
-		/**
-		 * Data processor used specifically for HTML conversion.
-		 *
-		 * @readonly
-		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #htmlProcessor
-		 */
 		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
-
-		/**
-		 * Data processor used during the conversion.
-		 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
-		 *
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
-		 */
 		this.processor = this.htmlProcessor;
-
-		/**
-		 * The view downcast writer just for data conversion purposes, i.e. to modify
-		 * the {@link #viewDocument}.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:engine/view/downcastwriter~DowncastWriter}
-		 */
 		this._viewWriter = new ViewDowncastWriter( this.viewDocument );
 
 		// Define default converters for text and elements.
@@ -183,13 +158,13 @@ export default class DataController extends EmitterMixin() {
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener offers the possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.
-		this.on( 'init', () => {
-			this.fire( 'ready' );
+		this.on<DataControllerInitEvent>( 'init', () => {
+			this.fire<DataControllerReadyEvent>( 'ready' );
 		}, { priority: 'lowest' } );
 
 		// Fix empty roots after DataController is 'ready' (note that the init method could be decorated and stopped).
 		// We need to handle this event because initial data could be empty and the post-fixer would not get triggered.
-		this.on( 'ready', () => {
+		this.on<DataControllerReadyEvent>( 'ready', () => {
 			this.model.enqueueChange( { isUndoable: false }, autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
@@ -199,15 +174,15 @@ export default class DataController extends EmitterMixin() {
 	 * formatted by the {@link #processor data processor}.
 	 *
 	 * @fires get
-	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
+	 * @param options Additional configuration for the retrieved data. `DataController` provides two optional
 	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
-	 * @param {String} [options.rootName='main'] Root name.
-	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
+	 * @param options.rootName Root name. Default 'main'.
+	 * @param options.trim Whether returned data should be trimmed. This option is set to `empty` by default,
 	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
 	 * use `'none'`. In such cases the exact content will be returned (for example a `<p>&nbsp;</p>` for an empty editor).
-	 * @returns {String} Output data.
+	 * @returns Output data.
 	 */
-	public get( options: Record<string, unknown> = {} ): string {
+	public get( options: { rootName?: string; trim?: boolean } & Record<string, unknown> = {} ): string {
 		const { rootName = 'main', trim = 'empty' } = options as Record<string, string>;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
@@ -216,7 +191,9 @@ export default class DataController extends EmitterMixin() {
 			 * is called with a non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
-			 *		data.get( { rootName: 'root2' } );
+			 * ```ts
+			 * data.get( { rootName: 'root2' } );
+			 * ```
 			 *
 			 * will throw this error.
 			 *
@@ -239,10 +216,9 @@ export default class DataController extends EmitterMixin() {
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast converters
 	 * attached to the {@link #downcastDispatcher} and formatted by the {@link #processor data processor}.
 	 *
-	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
-	 * The element whose content will be stringified.
-	 * @param {Object} [options] Additional configuration passed to the conversion process.
-	 * @returns {String} Output data.
+	 * @param modelElementOrFragment The element whose content will be stringified.
+	 * @param options Additional configuration passed to the conversion process.
+	 * @returns Output data.
 	 */
 	public stringify(
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
@@ -262,11 +238,10 @@ export default class DataController extends EmitterMixin() {
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
 	 * @fires toView
-	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
-	 * Element or document fragment whose content will be converted.
-	 * @param {Object} [options={}] Additional configuration that will be available through the
+	 * @param modelElementOrFragment Element or document fragment whose content will be converted.
+	 * @param options Additional configuration that will be available through the
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
+	 * @returns Output view DocumentFragment.
 	 */
 	public toView(
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
@@ -308,16 +283,20 @@ export default class DataController extends EmitterMixin() {
 	 *
 	 * When data is passed as a string, it is initialized on the default `main` root:
 	 *
-	 *		dataController.init( '<p>Foo</p>' ); // Initializes data on the `main` root only, as no other is specified.
+	 * ```ts
+	 * dataController.init( '<p>Foo</p>' ); // Initializes data on the `main` root only, as no other is specified.
+	 * ```
 	 *
 	 * To initialize data on a different root or multiple roots at once, an object containing `rootName` - `data` pairs should be passed:
 	 *
-	 *		dataController.init( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Initializes data on both the `main` and `title` roots.
+	 * ```ts
+	 * dataController.init( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Initializes data on both the `main` and `title` roots.
+	 * ```
 	 *
 	 * @fires init
-	 * @param {String|Object.<String,String>} data Input data as a string or an object containing the `rootName` - `data`
+	 * @param data Input data as a string or an object containing the `rootName` - `data`
 	 * pairs to initialize data on multiple roots at once.
-	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
+	 * @returns Promise that is resolved after the data is set on the editor.
 	 */
 	public init( data: string | Record<string, string> ): Promise<void> {
 		if ( this.model.document.version ) {
@@ -345,7 +324,9 @@ export default class DataController extends EmitterMixin() {
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #init} like:
 			 *
-			 * 		data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 * ```ts
+			 * data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 * ```
 			 *
 			 * will throw this error.
 			 *
@@ -376,21 +357,27 @@ export default class DataController extends EmitterMixin() {
 	 *
 	 * When data is passed as a string it is set on the default `main` root:
 	 *
-	 *		dataController.set( '<p>Foo</p>' ); // Sets data on the `main` root, as no other is specified.
+	 * ```ts
+	 * dataController.set( '<p>Foo</p>' ); // Sets data on the `main` root, as no other is specified.
+	 * ```
 	 *
 	 * To set data on a different root or multiple roots at once, an object containing `rootName` - `data` pairs should be passed:
 	 *
-	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots as specified.
+	 * ```ts
+	 * dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots as specified.
+	 * ```
 	 *
 	 * To set the data with a preserved undo stack and add the change to the undo stack, set `{ isUndoable: true }` as a `batchType` option.
 	 *
-	 *		dataController.set( '<p>Foo</p>', { batchType: { isUndoable: true } } );
+	 * ```ts
+	 * dataController.set( '<p>Foo</p>', { batchType: { isUndoable: true } } );
+	 * ```
 	 *
 	 * @fires set
-	 * @param {String|Object.<String,String>} data Input data as a string or an object containing the `rootName` - `data`
+	 * @param data Input data as a string or an object containing the `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
-	 * @param {Object} [options={}] Options for setting data.
-	 * @param {Object} [options.batchType] The batch type that will be used to create a batch for the changes applied by this method.
+	 * @param options Options for setting data.
+	 * @param options.batchType The batch type that will be used to create a batch for the changes applied by this method.
 	 * By default, the batch will be set as {@link module:engine/model/batch~Batch#isUndoable not undoable} and the undo stack will be
 	 * cleared after the new data is applied (all undo steps will be removed). If the batch type `isUndoable` flag is be set to `true`,
 	 * the undo stack will be preserved instead and not cleared when new data is applied.
@@ -410,7 +397,9 @@ export default class DataController extends EmitterMixin() {
 			 * is called with non-existent root name. For example, if there is an editor instance with only the default `main` root,
 			 * calling {@link #set} like:
 			 *
-			 * 		data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 * ```ts
+			 * data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 * ```
 			 *
 			 * will throw this error.
 			 *
@@ -438,10 +427,10 @@ export default class DataController extends EmitterMixin() {
 	 * attached to the {@link #upcastDispatcher}.
 	 *
 	 * @see #set
-	 * @param {String} data Data to parse.
-	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
-	 * be converted to the model. See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
+	 * @param data Data to parse.
+	 * @param context Base context in which the view will be converted to the model.
+	 * See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
+	 * @returns Parsed data.
 	 */
 	public parse( data: string, context: SchemaContextDefinition = '$root' ): ModelDocumentFragment {
 		// data -> view
@@ -460,11 +449,10 @@ export default class DataController extends EmitterMixin() {
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @fires toModel
-	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
-	 * The element or document fragment whose content will be converted.
-	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
-	 * be converted to the model. See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
+	 * @param viewElementOrFragment The element or document fragment whose content will be converted.
+	 * @param context Base context in which the view will be converted to the model.
+	 * See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
+	 * @returns Output document fragment.
 	 */
 	public toModel(
 		viewElementOrFragment: ViewElement | ViewDocumentFragment,
@@ -484,8 +472,6 @@ export default class DataController extends EmitterMixin() {
 	 * * border: {@link module:engine/view/styles/border~addBorderRules}
 	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
 	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
-	 *
-	 * @param {Function} callback
 	 */
 	public addStyleProcessorRules( callback: ( stylesProcessor: StylesProcessor ) => void ): void {
 		callback( this.stylesProcessor );
@@ -499,8 +485,7 @@ export default class DataController extends EmitterMixin() {
 	 * The raw data can be later accessed by the {@link module:engine/view/element~Element#getCustomProperty view element custom property}
 	 * `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as a raw data.
+	 * @param pattern Pattern matching all view elements whose content should be treated as a raw data.
 	 */
 	public registerRawContentMatcher( pattern: MatcherPattern ): void {
 		// No need to register the pattern if both the `htmlProcessor` and `processor` are the same instances.
@@ -521,9 +506,8 @@ export default class DataController extends EmitterMixin() {
 	/**
 	 * Checks whether all provided root names are actually existing editor roots.
 	 *
-	 * @private
-	 * @param {Array.<String>} rootNames Root names to check.
-	 * @returns {Boolean} Whether all provided root names are existing editor roots.
+	 * @param rootNames Root names to check.
+	 * @returns Whether all provided root names are existing editor roots.
 	 */
 	private _checkIfRootsExists( rootNames: Array<string> ): boolean {
 		for ( const rootName of rootNames ) {
@@ -534,66 +518,97 @@ export default class DataController extends EmitterMixin() {
 
 		return true;
 	}
-
-	/**
-	 * Event fired once the data initialization has finished.
-	 *
-	 * @event ready
-	 */
-
-	/**
-	 * An event fired after the {@link #init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust or modify
-	 * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
-	 * should be fired manually.
-	 *
-	 * The `init` event is fired by the decorated {@link #init} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * @event init
-	 */
-
-	/**
-	 * An event fired after {@link #set set() method} has been run.
-	 *
-	 * The `set` event is fired by the decorated {@link #set} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * @event set
-	 */
-
-	/**
-	 * Event fired after the {@link #get get() method} has been run.
-	 *
-	 * The `get` event is fired by the decorated {@link #get} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * @event get
-	 */
-
-	/**
-	 * Event fired after the {@link #toView toView() method} has been run.
-	 *
-	 * The `toView` event is fired by the decorated {@link #toView} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * @event toView
-	 */
-
-	/**
-	 * Event fired after the {@link #toModel toModel() method} has been run.
-	 *
-	 * The `toModel` event is fired by the decorated {@link #toModel} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * @event toModel
-	 */
 }
 
-// Helper function for downcast conversion.
-//
-// Takes a document element (element that is added to a model document) and checks which markers are inside it. If the marker is collapsed
-// at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
-// intersecting with the element, the intersection is returned.
+/**
+ * Event fired once the data initialization has finished.
+ *
+ * @eventName ready
+ */
+export type DataControllerReadyEvent = {
+	name: 'ready';
+	args: [];
+};
+
+/**
+ * An event fired after the {@link #init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust or modify
+ * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
+ * should be fired manually.
+ *
+ * The `init` event is fired by the decorated {@link #init} method.
+ * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ *
+ * @eventName init
+ */
+export type DataControllerInitEvent = {
+	name: 'init';
+	args: [ Parameters<DataController[ 'init' ]> ];
+	return: ReturnType<DataController[ 'init' ]>;
+};
+
+/**
+ * An event fired after {@link #set set() method} has been run.
+ *
+ * The `set` event is fired by the decorated {@link #set} method.
+ * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ *
+ * @eventName set
+ */
+export type DataControllerSetEvent = {
+	name: 'set';
+	args: [ Parameters<DataController[ 'set' ]> ];
+	return: ReturnType<DataController[ 'set' ]>;
+};
+
+/**
+ * Event fired after the {@link #get get() method} has been run.
+ *
+ * The `get` event is fired by the decorated {@link #get} method.
+ * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ *
+ * @eventName get
+ */
+export type DataControllerGetEvent = {
+	name: 'get';
+	args: [ Parameters<DataController[ 'get' ]> ];
+	return: ReturnType<DataController[ 'get' ]>;
+};
+
+/**
+ * Event fired after the {@link #toView toView() method} has been run.
+ *
+ * The `toView` event is fired by the decorated {@link #toView} method.
+ * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ *
+ * @eventName toView
+ */
+export type DataControllerToViewEvent = {
+	name: 'toView';
+	args: [ Parameters<DataController[ 'toView' ]> ];
+	return: ReturnType<DataController[ 'toView' ]>;
+};
+
+/**
+ * Event fired after the {@link #toModel toModel() method} has been run.
+ *
+ * The `toModel` event is fired by the decorated {@link #toModel} method.
+ * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ *
+ * @eventName toModel
+ */
+export type DataControllerToModelEvent = {
+	name: 'toModel';
+	args: [ Parameters<DataController[ 'toModel' ]> ];
+	return: ReturnType<DataController[ 'toModel' ]>;
+};
+
+/**
+ * Helper function for downcast conversion.
+ *
+ * Takes a document element (element that is added to a model document) and checks which markers are inside it. If the marker is collapsed
+ * at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
+ * intersecting with the element, the intersection is returned.
+ */
 function _getMarkersRelativeToElement( element: ModelElement ): Map<string, ModelRange> {
 	const result: Array<[ string, ModelRange ]> = [];
 	const doc = element.root.document;
@@ -663,33 +678,3 @@ function _getMarkersRelativeToElement( element: ModelElement ): Map<string, Mode
 
 	return new Map( result );
 }
-
-export type DataControllerInitEvent = {
-	name: 'init';
-	args: [ Parameters<DataController[ 'init' ]> ];
-	return: ReturnType<DataController[ 'init' ]>;
-};
-
-export type DataControllerSetEvent = {
-	name: 'set';
-	args: [ Parameters<DataController[ 'set' ]> ];
-	return: ReturnType<DataController[ 'set' ]>;
-};
-
-export type DataControllerGetEvent = {
-	name: 'get';
-	args: [ Parameters<DataController[ 'get' ]> ];
-	return: ReturnType<DataController[ 'get' ]>;
-};
-
-export type DataControllerToModelEvent = {
-	name: 'toModel';
-	args: [ Parameters<DataController[ 'toModel' ]> ];
-	return: ReturnType<DataController[ 'toModel' ]>;
-};
-
-export type DataControllerToViewEvent = {
-	name: 'toView';
-	args: [ Parameters<DataController[ 'toView' ]> ];
-	return: ReturnType<DataController[ 'toView' ]>;
-};
