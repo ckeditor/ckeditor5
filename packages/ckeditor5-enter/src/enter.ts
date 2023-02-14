@@ -12,13 +12,11 @@ import EnterCommand from './entercommand';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
 
 /**
- * This plugin handles the <kbd>Enter</kbd> keystroke (hard line break) in the editor.
+ * This plugin handles the `<kbd>Enter</kbd>` keystroke (hard line break) in the editor.
  *
  * See also the {@link module:enter/shiftenter~ShiftEnter} plugin.
  *
  * For more information about this feature see the {@glink api/enter package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Enter extends Plugin {
 	/**
