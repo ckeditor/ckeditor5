@@ -62,7 +62,7 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 * @param initialItems The initial items of the collection.
 	 */
 	constructor( initialItems: Iterable<TView> = [] ) {
 		super( initialItems, {

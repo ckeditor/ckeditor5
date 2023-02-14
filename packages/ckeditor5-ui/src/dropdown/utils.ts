@@ -25,7 +25,6 @@ import {
 	global,
 	priorities,
 	logWarning,
-	CKEditorError,
 	type Collection,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
@@ -545,10 +544,13 @@ function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
  * @property {module:ui/model~Model} [model] Model of the item (when **not** `'separator'`).
  * Its properties fuel the newly created list item (or its children, depending on the `type`).
  */
-export type ListDropdownItemDefinition = {
+export type ListDropdownItemDefinition = ListDropdownSeparatorDefinition | ListDropdownButtonDefinition;
+
+export type ListDropdownSeparatorDefinition = {
 	type: 'separator';
-	model?: Model;
-} | {
+};
+
+export type ListDropdownButtonDefinition = {
 	type: 'button' | 'switchbutton';
 	model: Model;
 };
