@@ -46,7 +46,7 @@ function getCkeditor5Plugins() {
  */
 function getCkeditor5ModulePaths() {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.js', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
+		glob( 'packages/*/@(src|_src)/**/*.js', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
