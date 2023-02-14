@@ -11,7 +11,7 @@ const path = require( 'path' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
-module.exports = { getCkeditor5Plugins, writeFile, normalizePath, getPluginName };
+module.exports = { getCkeditor5Plugins, writeFile, normalizePath };
 
 /**
  * Returns array with plugin paths.
@@ -46,7 +46,7 @@ function getCkeditor5Plugins() {
  */
 function getCkeditor5ModulePaths() {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.[tj]s', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
+		glob( 'packages/*/@(src|_src)/**/*.js', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
@@ -65,7 +65,7 @@ function getCkeditor5ModulePaths() {
 function checkWhetherIsCKEditor5Plugin( modulePath ) {
 	return readFile( path.join( ROOT_DIRECTORY, modulePath ) )
 		.then( content => {
-			const pluginName = getPluginName( modulePath );
+			const pluginName = path.basename( modulePath, '.js' );
 
 			if ( content.match( new RegExp( `export default class ${ pluginName } extends Plugin`, 'i' ) ) ) {
 				return Promise.resolve( true );
@@ -119,13 +119,4 @@ function writeFile( filePath, data ) {
  */
 function normalizePath( modulePath ) {
 	return modulePath.split( path.sep ).join( path.posix.sep );
-}
-
-/**
- * Equivalent of `path.basename()` that can handle both `.ts` and `.js` extensions.
- *
- * @returns {String}
- */
-function getPluginName( modulePath ) {
-	return path.basename( modulePath ).split( '.' )[ 0 ];
 }
