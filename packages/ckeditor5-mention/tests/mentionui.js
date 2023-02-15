@@ -300,70 +300,68 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
-		describe( 'contextual balloon in rtl', () => {
-			let contextualBaloonSpy;
+		describe( 'relation with the UI language direction of the editor', () => {
+			describe( 'for RTL languages', () => {
+				let contextualBaloonSpy;
 
-			beforeEach( async () => {
-				await editor.destroy();
+				beforeEach( async () => {
+					await editor.destroy();
 
-				return createClassicTestEditor( { ...staticConfig } )
-					.then( () => {
-						const contextualBalloon = editor.plugins.get( ContextualBalloon );
-						setData( model, '<paragraph>foo []</paragraph>' );
-						editor.locale.uiLanguageDirection = 'rtl';
-						contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+					return createClassicTestEditor( { ...staticConfig } )
+						.then( () => {
+							const contextualBalloon = editor.plugins.get( ContextualBalloon );
+							setData( model, '<paragraph>foo []</paragraph>' );
+							editor.locale.uiLanguageDirection = 'rtl';
+							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
 
-						model.change( writer => {
-							writer.insertText( '@', doc.selection.getFirstPosition() );
-						} );
-					} )
-					.then( waitForDebounce );
-			} );
-
-			it( 'should set proper position list in rtl', () => {
-				const extractedPositions = contextualBaloonSpy.getCall( 0 ).firstArg.position.positions.map( callback => {
-					return callback( {}, {} ).name;
+							model.change( writer => {
+								writer.insertText( '@', doc.selection.getFirstPosition() );
+							} );
+						} )
+						.then( waitForDebounce );
 				} );
 
-				expect( extractedPositions ).to.have.ordered.members( [
-					'caret_sw',
-					'caret_se',
-					'caret_nw',
-					'caret_ne'
-				] );
-			} );
-		} );
+				it( 'should prefer the west position first (to the left of the caret)', () => {
+					const positionNames = contextualBaloonSpy.firstCall.firstArg.position.positions.map( ( { name } ) => name );
 
-		describe( 'contextual balloon in ltr', () => {
-			let contextualBaloonSpy;
-
-			beforeEach( async () => {
-				await editor.destroy();
-
-				return createClassicTestEditor( { ...staticConfig } )
-					.then( () => {
-						const contextualBalloon = editor.plugins.get( ContextualBalloon );
-						setData( model, '<paragraph>foo []</paragraph>' );
-						contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
-
-						model.change( writer => {
-							writer.insertText( '@', doc.selection.getFirstPosition() );
-						} );
-					} )
-					.then( waitForDebounce );
+					expect( positionNames ).to.have.ordered.members( [
+						'caret_sw',
+						'caret_se',
+						'caret_nw',
+						'caret_ne'
+					] );
+				} );
 			} );
 
-			it( 'should set proper position list in ltr', () => {
-				const extractedPositions = contextualBaloonSpy.getCall( 0 ).firstArg.position.positions.map( callback => {
-					return callback( {}, {} ).name;
+			describe( 'for ltr languages', () => {
+				let contextualBaloonSpy;
+
+				beforeEach( async () => {
+					await editor.destroy();
+
+					return createClassicTestEditor( { ...staticConfig } )
+						.then( () => {
+							const contextualBalloon = editor.plugins.get( ContextualBalloon );
+							setData( model, '<paragraph>foo []</paragraph>' );
+							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+
+							model.change( writer => {
+								writer.insertText( '@', doc.selection.getFirstPosition() );
+							} );
+						} )
+						.then( waitForDebounce );
 				} );
 
-				expect( extractedPositions ).to.have.ordered.members( [
-					'caret_se',
-					'caret_sw',
-					'caret_ne',
-					'caret_nw'
-				] );
+				it( 'should prefer the east position first (to the right of the caret)', () => {
+					const positionNames = contextualBaloonSpy.firstCall.firstArg.position.positions.map( ( { name } ) => name );
+
+					expect( positionNames ).to.have.ordered.members( [
+						'caret_se',
+						'caret_sw',
+						'caret_ne',
+						'caret_nw'
+					] );
+				} );
 			} );
 		} );
 	} );
