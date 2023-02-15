@@ -18,11 +18,13 @@ import {
 } from 'ckeditor5/src/upload';
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import type { ImageUploadCompleteEvent } from '@ckeditor/ckeditor5-image';
+import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
 import { getImageUrls } from './utils';
+
+import './ckboxconfig';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -72,7 +74,7 @@ export default class CKBoxUploadAdapter extends Plugin {
 		};
 
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
-		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const imageUploadEditing: ImageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
 
 		// Mark uploaded assets with the `ckboxImageId` attribute. Its value represents an ID in CKBox.
 		if ( shouldInsertDataId ) {

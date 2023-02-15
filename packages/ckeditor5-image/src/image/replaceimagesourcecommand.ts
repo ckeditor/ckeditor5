@@ -4,6 +4,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import type ImageUtils from '../imageutils';
 
 /**
  * @module image/image/replaceimagesourcecommand
@@ -26,7 +27,7 @@ export default class ReplaceImageSourceCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = this.editor.model.document.selection.getSelectedElement()!;
 
 		this.isEnabled = imageUtils.isImage( element );
@@ -47,5 +48,11 @@ export default class ReplaceImageSourceCommand extends Command {
 			writer.removeAttribute( 'srcset', image );
 			writer.removeAttribute( 'sizes', image );
 		} );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		replaceImageSource: ReplaceImageSourceCommand;
 	}
 }

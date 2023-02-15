@@ -81,7 +81,7 @@ export default class ImageBlockEditing extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const conversion = editor.conversion;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
 			.elementToStructure( {
@@ -132,10 +132,11 @@ export default class ImageBlockEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const editingView = editor.editing.view;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo<ClipboardInputTransformationEvent>(
-			editor.plugins.get( 'ClipboardPipeline' ),
+			clipboardPipeline,
 			'inputTransformation',
 			( evt, data ) => {
 				const docFragmentChildren = Array.from( data.content.getChildren() as IterableIterator<ViewElement> );
@@ -179,9 +180,5 @@ export default class ImageBlockEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageBlockEditing.pluginName ]: ImageBlockEditing;
-	}
-
-	interface CommandsMap {
-		imageTypeBlock: ImageTypeCommand;
 	}
 }

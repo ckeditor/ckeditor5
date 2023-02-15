@@ -10,7 +10,7 @@
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
 import { ObservableMixin, CKEditorError } from 'ckeditor5/src/utils';
-import type { TokenUrl } from '../cloudservices';
+import type { TokenUrl } from '../cloudservicesconfig';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
 const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;

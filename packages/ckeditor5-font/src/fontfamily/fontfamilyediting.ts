@@ -14,13 +14,15 @@ import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_FAMILY } from '../utils';
 
+import '../fontconfig';
+
 /**
  * The font family editing feature.
  *
  * It introduces the {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand command} and
  * the `fontFamily` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="font-family: Arial">`),
- * depending on the {@link module:font/fontfamily~FontFamilyConfig configuration}.
+ * depending on the {@link module:font/fontconfig~FontFamilyConfig configuration}.
  */
 export default class FontFamilyEditing extends Plugin {
 	/**
@@ -135,9 +137,5 @@ export default class FontFamilyEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontFamilyEditing.pluginName ]: FontFamilyEditing;
-	}
-
-	interface CommandsMap {
-		[ FONT_FAMILY ]: FontFamilyCommand;
 	}
 }

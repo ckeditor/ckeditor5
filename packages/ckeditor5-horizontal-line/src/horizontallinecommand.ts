@@ -77,3 +77,9 @@ function getInsertHorizontalLineParent( selection: Selection | DocumentSelection
 
 	return parent as Element;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		horizontalLine: HorizontalLineCommand;
+	}
+}

@@ -71,3 +71,9 @@ export default class InsertParagraphCommand extends Command {
 		} );
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertParagraph: InsertParagraphCommand;
+	}
+}

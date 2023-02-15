@@ -11,6 +11,9 @@ import { Plugin } from 'ckeditor5/src/core';
 import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
 import { stringifyLanguageAttribute } from './utils';
+import type TextPartLanguageCommand from './textpartlanguagecommand';
+
+import './textpartlanguageconfig';
 
 import '../theme/language.css';
 
@@ -43,7 +46,7 @@ export default class TextPartLanguageUI extends Plugin {
 			const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 			const titles: Record<string, string> = {};
 
-			const languageCommand = editor.commands.get( 'textPartLanguage' )!;
+			const languageCommand: TextPartLanguageCommand = editor.commands.get( 'textPartLanguage' )!;
 
 			// Item definition with false `languageCode` will behave as remove lang button.
 			itemDefinitions.add( {

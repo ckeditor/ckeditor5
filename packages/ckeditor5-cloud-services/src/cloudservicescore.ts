@@ -8,7 +8,7 @@
  */
 
 import { ContextPlugin } from 'ckeditor5/src/core';
-import type { TokenUrl } from './cloudservices';
+import type { TokenUrl } from './cloudservicesconfig';
 import Token, { type InitializedToken, type TokenOptions } from './token/token';
 import UploadGateway from './uploadgateway/uploadgateway';
 
