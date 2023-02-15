@@ -333,6 +333,39 @@ describe( 'MentionUI', () => {
 				] );
 			} );
 		} );
+
+		describe( 'contextual balloon in ltr', () => {
+			let contextualBaloonSpy;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
+				return createClassicTestEditor( { ...staticConfig } )
+					.then( () => {
+						const contextualBalloon = editor.plugins.get( ContextualBalloon );
+						setData( model, '<paragraph>foo []</paragraph>' );
+						contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce );
+			} );
+
+			it( 'should set proper position list in ltr', () => {
+				const extractedPositions = contextualBaloonSpy.getCall( 0 ).firstArg.position.positions.map( callback => {
+					return callback( {}, {} ).name;
+				} );
+
+				expect( extractedPositions ).to.have.ordered.members( [
+					'caret_se',
+					'caret_sw',
+					'caret_ne',
+					'caret_nw'
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'typing integration', () => {
