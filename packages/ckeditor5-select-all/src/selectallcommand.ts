@@ -23,8 +23,6 @@ import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
  * If the selection was anchored in a {@glink framework/guides/tutorials/implementing-a-block-widget nested editable}
  * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
  * will expand the selection to encompass more and more content up to the entire editable root of the editor.
- *
- * @extends module:core/command~Command
  */
 export default class SelectAllCommand extends Command {
 	/**
@@ -64,14 +62,14 @@ export default class SelectAllCommand extends Command {
 	}
 }
 
-// Checks whether the element is a valid select-all scope.
-// Returns true, if the element is a {@link module:engine/model/schema~Schema#isLimit limit},
-// and can contain any text or paragraph.
-//
-// @param {module:engine/model/schema~Schema} schema The schema to check against.
-// @param {module:engine/model/element~Element} element
-// @return {Boolean}
-function isSelectAllScope( schema: Schema, element: Element ) {
+/**
+ * Checks whether the element is a valid select-all scope. Returns true, if the element is a
+ * {@link module:engine/model/schema~Schema#isLimit limit}, and can contain any text or paragraph.
+ *
+ * @param schema Schema to check against.
+ * @param element Model element.
+ */
+function isSelectAllScope( schema: Schema, element: Element ): boolean {
 	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }
 

@@ -18,8 +18,6 @@ import SelectAllUI from './selectallui';
  * and the {@link module:select-all/selectallui~SelectAllUI select all UI feature}.
  *
  * Please refer to the documentation of individual features to learn more.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SelectAll extends Plugin {
 	/**
