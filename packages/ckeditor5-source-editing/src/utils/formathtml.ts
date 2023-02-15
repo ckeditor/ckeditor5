@@ -25,7 +25,7 @@ export function formatHtml( input: string ): string {
 	// a full list of HTML block-level elements.
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
-	const elementsToFormat = [
+	const elementsToFormat: Array<ElementToFormat> = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
 		{ name: 'aside', isVoid: false },
@@ -101,10 +101,8 @@ export function formatHtml( input: string ): string {
  *
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
- * 			elementsToFormat.name Element name.
- * 			elementsToFormat.isVoid Flag indicating whether element is a void one.
  */
-function isNonVoidOpeningTag( line: string, elementsToFormat: Array<{ name: string; isVoid: boolean }> ): boolean {
+function isNonVoidOpeningTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
 	return elementsToFormat.some( element => {
 		if ( element.isVoid ) {
 			return false;
@@ -123,10 +121,8 @@ function isNonVoidOpeningTag( line: string, elementsToFormat: Array<{ name: stri
  *
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
- * 			elementsToFormat.name Element name.
- * 			elementsToFormat.isVoid Flag indicating whether element is a void one.
  */
-function isClosingTag( line: string, elementsToFormat: Array<{ name: string; isVoid: boolean }> ): boolean {
+function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
 	return elementsToFormat.some( element => {
 		return new RegExp( `</${ element.name }>` ).test( line );
 	} );
@@ -142,4 +138,20 @@ function isClosingTag( line: string, elementsToFormat: Array<{ name: string; isV
 function indentLine( line: string, indentCount: number, indentChar: string = '    ' ): string {
 	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
 	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
+}
+
+/**
+ * Element to be formatted.
+ */
+interface ElementToFormat {
+
+	/**
+	 *  Element name.
+	 */
+	name: string;
+
+	/**
+	 *  Flag indicating whether element is a void one.
+	 */
+	isVoid: boolean;
 }
