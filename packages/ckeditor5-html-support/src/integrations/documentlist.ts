@@ -8,35 +8,36 @@
  */
 
 import { isEqual } from 'lodash-es';
-import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes } from '../conversionutils.js';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine';
+import type { GetCallback } from 'ckeditor5/src/utils';
+import type { DocumentListEditing, DocumentListEditingPostFixerEvent } from '@ckeditor/ckeditor5-list';
 
-import DataFilter from '../datafilter';
+import { type GHSViewAttribute, setViewAttributes } from '../conversionutils';
+import DataFilter, { type RegisterEvent } from '../datafilter';
 
 /**
  * Provides the General HTML Support integration with the {@link module:list/documentlist~DocumentList Document List} feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DocumentListElementSupport' {
 		return 'DocumentListElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		if ( !editor.plugins.has( 'DocumentListEditing' ) ) {
@@ -46,7 +47,7 @@ export default class DocumentListElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
-		const documentListEditing = editor.plugins.get( 'DocumentListEditing' );
+		const documentListEditing: DocumentListEditing = editor.plugins.get( 'DocumentListEditing' );
 
 		// Register downcast strategy.
 		// Note that this must be done before document list editing registers conversion in afterInit.
@@ -54,7 +55,7 @@ export default class DocumentListElementSupport extends Plugin {
 			scope: 'item',
 			attributeName: 'htmlLiAttributes',
 
-			setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+			setAttributeOnDowncast( writer, attributeValue: GHSViewAttribute, viewElement ) {
 				setViewAttributes( writer, attributeValue, viewElement );
 			}
 		} );
@@ -63,13 +64,13 @@ export default class DocumentListElementSupport extends Plugin {
 			scope: 'list',
 			attributeName: 'htmlListAttributes',
 
-			setAttributeOnDowncast( writer, viewAttributes, viewElement ) {
+			setAttributeOnDowncast( writer, viewAttributes: GHSViewAttribute, viewElement ) {
 				setViewAttributes( writer, viewAttributes, viewElement );
 			}
 		} );
 
-		dataFilter.on( 'register', ( evt, definition ) => {
-			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view ) ) {
+		dataFilter.on<RegisterEvent>( 'register', ( evt, definition ) => {
+			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view! ) ) {
 				return;
 			}
 
@@ -85,15 +86,21 @@ export default class DocumentListElementSupport extends Plugin {
 			schema.extend( '$container', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
 
 			conversion.for( 'upcast' ).add( dispatcher => {
-				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
-				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
-				dispatcher.on( 'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on<UpcastElementEvent>(
+					'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' }
+				);
+				dispatcher.on<UpcastElementEvent>(
+					'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' }
+				);
+				dispatcher.on<UpcastElementEvent>(
+					'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' }
+				);
 			} );
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
 		// Note: This is almost an exact copy from DocumentListPropertiesEditing.
-		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
 			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
 			for ( const { node, previous } of listNodes ) {
@@ -151,7 +158,7 @@ export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	public afterInit(): void {
 		const editor = this.editor;
 
 		if ( !editor.commands.get( 'indentList' ) ) {
@@ -159,7 +166,7 @@ export default class DocumentListElementSupport extends Plugin {
 		}
 
 		// Reset list attributes after indenting list items.
-		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
+		this.listenTo( editor.commands.get( 'indentList' )!, 'afterExecute', ( evt, changedBlocks ) => {
 			editor.model.change( writer => {
 				for ( const node of changedBlocks ) {
 					// Just reset the attribute.
@@ -172,15 +179,14 @@ export default class DocumentListElementSupport extends Plugin {
 	}
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link TODO}
-// feature model element.
-//
-// @private
-// @param {String} attributeName
-// @param {module:html-support/datafilter~DataFilter} dataFilter
-// @returns {Function} Returns a conversion callback.
-function viewToModelListAttributeConverter( attributeName, dataFilter ) {
-	return ( evt, data, conversionApi ) => {
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link TODO}
+ * feature model element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelListAttributeConverter( attributeName: string, dataFilter: DataFilter ) {
+	const callback: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 		const viewElement = data.viewItem;
 
 		if ( !data.modelRange ) {
@@ -189,7 +195,7 @@ function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 
 		const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
-		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+		for ( const item of data.modelRange!.getItems( { shallow: true } ) ) {
 			// Apply only to list item blocks.
 			if ( !item.hasAttribute( 'listItemId' ) ) {
 				continue;
@@ -204,4 +210,11 @@ function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 			conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
 		}
 	};
+	return callback;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DocumentListElementSupport.pluginName ]: DocumentListElementSupport;
+	}
 }

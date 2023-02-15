@@ -7,34 +7,33 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 import DataSchema from '../dataschema';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HeadingElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataSchema ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HeadingElementSupport' {
 		return 'HeadingElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		if ( !editor.plugins.has( 'HeadingEditing' ) ) {
@@ -42,7 +41,7 @@ export default class HeadingElementSupport extends Plugin {
 		}
 
 		const dataSchema = editor.plugins.get( DataSchema );
-		const options = editor.config.get( 'heading.options' );
+		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 		const headerModels = [];
 
 		// We are registering all elements supported by HeadingEditing
@@ -50,8 +49,9 @@ export default class HeadingElementSupport extends Plugin {
 		for ( const option of options ) {
 			if ( 'model' in option && 'view' in option ) {
 				dataSchema.registerBlockElement( {
-					view: option.view,
-					model: option.model
+					view: option.view as string,
+					model: option.model,
+					isBlock: true
 				} );
 
 				headerModels.push( option.model );
@@ -59,10 +59,16 @@ export default class HeadingElementSupport extends Plugin {
 		}
 
 		dataSchema.extendBlockElement( {
+			isBlock: true,
 			model: 'htmlHgroup',
 			modelSchema: {
 				allowChildren: headerModels
 			}
 		} );
+	}
+}
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HeadingElementSupport.pluginName ]: HeadingElementSupport;
 	}
 }

@@ -7,8 +7,8 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 
 import DataFilter from './datafilter';
 import CodeBlockElementSupport from './integrations/codeblock';
@@ -21,27 +21,31 @@ import TableElementSupport from './integrations/table';
 import StyleElementSupport from './integrations/style';
 import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
+import type { DataSchemaInlineElementDefinition } from './dataschema';
+import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
+import type { GHSViewAttribute } from './conversionutils';
+import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
+
+type LimitedSelectable = Exclude<Selectable, Iterable<Range> | null>;
 
 /**
  * The General HTML Support feature.
  *
  * This is a "glue" plugin which initializes the {@link module:html-support/datafilter~DataFilter data filter} configuration
  * and features integration with the General HTML Support.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'GeneralHtmlSupport' {
 		return 'GeneralHtmlSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [
 			DataFilter,
 			CodeBlockElementSupport,
@@ -60,27 +64,31 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		// Load the filtering configuration.
-		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
-		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
+		const config: GeneralHtmlSupportConfig = editor.config.get( 'htmlSupport' )!;
+		dataFilter.loadAllowedConfig( config.allow || [] );
+		dataFilter.loadDisallowedConfig( config.disallow || [] );
 	}
 
 	/**
 	 * Returns a GHS model attribute name related to a given view element name.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @returns {String}
+	 * @param viewElementName A view element name.
 	 */
-	getGhsAttributeNameForElement( viewElementName ) {
+	private getGhsAttributeNameForElement( viewElementName: string ): string {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if ( definitions && definitions.length && definitions[ 0 ].isInline && !definitions[ 0 ].isObject ) {
+		if (
+			definitions &&
+			definitions.length &&
+			( definitions[ 0 ] as DataSchemaInlineElementDefinition ).isInline &&
+			!definitions[ 0 ].isObject
+		) {
 			return definitions[ 0 ].model;
 		}
 
@@ -90,12 +98,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it includes the given class name.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {String|Array.<String>} className The css class to add.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param className The css class to add.
+	 * @param selectable The selection or element to update.
 	 */
-	addModelHtmlClass( viewElementName, className, selectable ) {
+	private addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -113,12 +120,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it does not include the given class name.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {String|Array.<String>} className The css class to remove.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param className The css class to remove.
+	 * @param selectable The selection or element to update.
 	 */
-	removeModelHtmlClass( viewElementName, className, selectable ) {
+	private removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -136,12 +142,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it includes the given attribute.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {Object} attributes The object with attributes to set.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param attributes The object with attributes to set.
+	 * @param selectable The selection or element to update.
 	 */
-	setModelHtmlAttributes( viewElementName, attributes, selectable ) {
+	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -159,12 +164,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it does not include the given attribute.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {String|Array.<String>} attributeName The attribute name (or names) to remove.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param attributeName The attribute name (or names) to remove.
+	 * @param selectable The selection or element to update.
 	 */
-	removeModelHtmlAttributes( viewElementName, attributeName, selectable ) {
+	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -182,12 +186,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it includes a given style.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {Object} styles The object with styles to set.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param styles The object with styles to set.
+	 * @param selectable The selection or element to update.
 	 */
-	setModelHtmlStyles( viewElementName, styles, selectable ) {
+	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -205,12 +208,11 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it does not include a given style.
 	 *
-	 * @protected
-	 * @param {String} viewElementName A view element name.
-	 * @param {String|Array.<String>} properties The style (or styles list) to remove.
-	 * @param {module:engine/model/selection~Selectable} selectable The selection or element to update.
+	 * @param viewElementName A view element name.
+	 * @param properties The style (or styles list) to remove.
+	 * @param selectable The selection or element to update.
 	 */
-	removeModelHtmlStyles( viewElementName, properties, selectable ) {
+	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: LimitedSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -226,8 +228,14 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 }
 
-// Returns an iterator over an items in the selectable that accept given GHS attribute.
-function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
+/**
+ * Returns an iterator over an items in the selectable that accept given GHS attribute.
+ */
+function* getItemsToUpdateGhsAttribute(
+	model: Model,
+	selectable: LimitedSelectable,
+	ghsAttributeName: string
+): IterableIterator<any> {
 	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
 		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
 			yield selectable;
@@ -239,8 +247,14 @@ function* getItemsToUpdateGhsAttribute( model, selectable, ghsAttributeName ) {
 	}
 }
 
-// Translates a given selectable to an iterable of ranges.
-function getValidRangesForSelectable( model, selectable, ghsAttributeName ) {
+/**
+ * Translates a given selectable to an iterable of ranges.
+ */
+function getValidRangesForSelectable(
+	model: Model,
+	selectable: LimitedSelectable,
+	ghsAttributeName: string
+): Iterable<Range> {
 	if ( selectable.is( 'node' ) || selectable.is( '$text' ) || selectable.is( '$textProxy' ) ) {
 		if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
 			return [ model.createRangeOn( selectable ) ];
@@ -252,15 +266,26 @@ function getValidRangesForSelectable( model, selectable, ghsAttributeName ) {
 	}
 }
 
-// Updates a GHS attribute on a specified item.
-// @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
-// @param {String} ghsAttributeName
-// @param {'classes'|'attributes'|'styles'} subject
-// @param {Function} callback That receives a map or set as an argument and should modify it (add or remove entries).
-function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback ) {
-	const oldValue = item.getAttribute( ghsAttributeName );
-	const newValue = {};
+interface CallbackMap {
+	classes: ( t: Set<string> ) => void;
+	attributes: ( t: Map<string, unknown> ) => void;
+	styles: ( t: Map<string, string> ) => void;
+
+}
+
+/**
+ * Updates a GHS attribute on a specified item.
+ * @param callback That receives a map or set as an argument and should modify it (add or remove entries).
+ */
+function modifyGhsAttribute<T extends 'classes' | 'attributes' | 'styles'>(
+	writer: Writer,
+	item: Item | DocumentSelection,
+	ghsAttributeName: string,
+	subject: T,
+	callback: CallbackMap[T]
+) {
+	const oldValue = item.getAttribute( ghsAttributeName ) as GHSViewAttribute;
+	const newValue: GHSViewAttribute = {};
 
 	for ( const kind of [ 'attributes', 'styles', 'classes' ] ) {
 		if ( kind != subject ) {
@@ -268,14 +293,19 @@ function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback )
 				newValue[ kind ] = oldValue[ kind ];
 			}
 		} else {
-			const values = kind == 'classes' ?
-				new Set( oldValue && oldValue[ kind ] || [] ) :
-				new Map( Object.entries( oldValue && oldValue[ kind ] || {} ) );
-
-			callback( values );
-
-			if ( values.size ) {
-				newValue[ kind ] = kind == 'classes' ? Array.from( values ) : Object.fromEntries( values );
+			if ( subject == 'classes' ) {
+				const values = new Set<string>( oldValue && oldValue[ kind ] || [] );
+				( callback as CallbackMap['classes'] )( values );
+				if ( values.size ) {
+					newValue[ kind ] = Array.from( values );
+				}
+			}
+			else {
+				const values = new Map<string, unknown>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
+				( callback as CallbackMap['attributes'] )( values );
+				if ( values.size ) {
+					newValue[ kind ] = Object.fromEntries( values );
+				}
 			}
 		}
 	}
@@ -295,67 +325,8 @@ function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback )
 	}
 }
 
-/**
- * The configuration of the General HTML Support feature.
- * Introduced by the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} feature.
- *
- * Read more in {@link module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig}.
- *
- * @member {module:htmlsupport/generalhtmlsupport~GeneralHtmlSupportConfig} module:core/editor/editorconfig~EditorConfig#htmlSupport
- */
-
-/**
- * The configuration of the General HTML Support feature.
- * The option is used by the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} feature.
- *
- *		ClassicEditor
- *			.create( {
- * 				htmlSupport: ... // General HTML Support feature config.
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface GeneralHtmlSupportConfig
- */
-
-/**
- * The configuration of allowed content rules used by General HTML Support.
- *
- * Setting this configuration option will enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 features.
- *
- * 		const htmlSupportConfig.allow = [
- * 			{
- * 				name: 'div',                      // Enable 'div' element support,
- * 				classes: [ 'special-container' ], // allow 'special-container' class,
- * 				styles: 'background',             // allow 'background' style,
- * 				attributes: true                  // allow any attribute (can be empty).
- * 			},
- * 			{
- * 				name: 'p',                                   // Extend existing Paragraph feature,
- * 				classes: 'highlighted'                       // with 'highlighted' class,
- * 				attributes: [
- * 					{ key: 'data-i18n-context, value: true } // and i18n attribute.
- * 				]
- * 			}
- * 		];
- *
- * @member {Array.<module:engine/view/matcher~MatcherPattern>} module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig#allow
- */
-
-/**
- * The configuration of disallowed content rules used by General HTML Support.
- *
- * Setting this configuration option will disable listed HTML features.
- *
- * 		const htmlSupportConfig.disallow = [
- * 			{
- * 				name: /[\s\S]+/    // For every HTML feature,
- * 				attributes: {
- * 					key: /^on.*$/ // disable 'on*' attributes, like 'onClick', 'onError' etc.
- * 				}
- * 			}
- * 		];
- * @member {Array.<module:engine/view/matcher~MatcherPattern>} module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig#disallow
- */
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ GeneralHtmlSupport.pluginName ]: GeneralHtmlSupport;
+	}
+}

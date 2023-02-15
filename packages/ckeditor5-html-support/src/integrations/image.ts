@@ -7,38 +7,40 @@
  * @module html-support/integrations/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type {
+	DowncastAttributeEvent,
+	DowncastDispatcher,
+	Element,
+	UpcastDispatcher,
+	ViewElement } from 'ckeditor5/src/engine';
 
-import DataFilter from '../datafilter';
-import {
-	setViewAttributes,
-	updateViewAttributes
-} from '../conversionutils.js';
+import DataFilter, { type RegisterEvent } from '../datafilter';
+import { type GHSViewAttribute, setViewAttributes, updateViewAttributes } from '../conversionutils';
+import { getDescendantElement } from './integrationutils';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ImageElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ImageElementSupport' {
 		return 'ImageElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		// At least one image plugin should be loaded for the integration to work properly.
@@ -50,11 +52,11 @@ export default class ImageElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register:figure', () => {
+		dataFilter.on<RegisterEvent>( 'register:figure', () => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
-		dataFilter.on( 'register:img', ( evt, definition ) => {
+		dataFilter.on<RegisterEvent>( 'register:img', ( evt, definition ) => {
 			if ( definition.model !== 'imageBlock' && definition.model !== 'imageInline' ) {
 				return;
 			}
@@ -89,14 +91,14 @@ export default class ImageElementSupport extends Plugin {
 	}
 }
 
-// View-to-model conversion helper preserving allowed attributes on the {@link module:image/image~Image Image}
-// feature model element.
-//
-// @private
-// @param {module:html-support/datafilter~DataFilter} dataFilter
-// @returns {Function} Returns a conversion callback.
-function viewToModelImageAttributeConverter( dataFilter ) {
-	return dispatcher => {
+/**
+ * View-to-model conversion helper preserving allowed attributes on the {@link module:image/image~Image Image}
+ * feature model element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
+	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
 			if ( !data.modelRange ) {
 				return;
@@ -111,7 +113,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 				preserveLinkAttributes( viewContainerElement );
 			}
 
-			function preserveElementAttributes( viewElement, attributeName ) {
+			function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
 				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
@@ -119,7 +121,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 				}
 			}
 
-			function preserveLinkAttributes( viewContainerElement ) {
+			function preserveLinkAttributes( viewContainerElement: ViewElement ) {
 				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
 					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
 				}
@@ -128,14 +130,14 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 	};
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
-// feature model element from figure view element.
-//
-// @private
-// @param {module:html-support/datafilter~DataFilter} dataFilter
-// @returns {Function} Returns a conversion callback.
-function viewToModelFigureAttributeConverter( dataFilter ) {
-	return dispatcher => {
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
+ * feature model element from figure view element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
+	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 			const viewFigureElement = data.viewItem;
 
@@ -152,79 +154,78 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 	};
 }
 
-// A model-to-view conversion helper applying attributes from the {@link module:image/image~Image Image}
-// feature.
-//
-// @private
-// @returns {Function} Returns a conversion callback.
+/**
+ * A model-to-view conversion helper applying attributes from the {@link module:image/image~Image Image}
+ * feature.
+ * @returns Returns a conversion callback.
+ */
 function modelToViewImageAttributeConverter() {
-	return dispatcher => {
+	return ( dispatcher: DowncastDispatcher ) => {
 		addInlineAttributeConversion( 'htmlAttributes' );
 
 		addBlockAttributeConversion( 'img', 'htmlAttributes' );
 		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
 		addBlockAttributeConversion( 'a', 'htmlLinkAttributes' );
 
-		function addInlineAttributeConversion( attributeName ) {
-			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
+		function addInlineAttributeConversion( attributeName: string ) {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
+				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
 
-				updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
+				updateViewAttributes(
+					conversionApi.writer,
+					attributeOldValue as GHSViewAttribute,
+					attributeNewValue as GHSViewAttribute,
+					viewElement );
 			}, { priority: 'low' } );
 		}
 
-		function addBlockAttributeConversion( elementName, attributeName ) {
-			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
+		function addBlockAttributeConversion( elementName: string, attributeName: string ) {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const containerElement = conversionApi.mapper.toViewElement( data.item );
+				const containerElement = conversionApi.mapper.toViewElement( data.item as Element )!;
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
 				if ( viewElement ) {
-					updateViewAttributes( conversionApi.writer, attributeOldValue, attributeNewValue, viewElement );
+					updateViewAttributes(
+						conversionApi.writer,
+						attributeOldValue as GHSViewAttribute,
+						attributeNewValue as GHSViewAttribute,
+						viewElement );
 					conversionApi.consumable.consume( data.item, evt.name );
 				}
 			}, { priority: 'low' } );
 
 			if ( elementName === 'a' ) {
 				// To have a link element in the view, we need to attach a converter to the `linkHref` attribute as well.
-				dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+				dispatcher.on<DowncastAttributeEvent>( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 					if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
 						return;
 					}
 
-					const containerElement = conversionApi.mapper.toViewElement( data.item );
-					const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'a' );
+					const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+					const viewElement = getDescendantElement( conversionApi.writer, containerElement!, 'a' )!;
 
-					setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
+					setViewAttributes(
+						conversionApi.writer,
+						data.item.getAttribute( 'htmlLinkAttributes' ) as GHSViewAttribute,
+						viewElement );
 				}, { priority: 'low' } );
 			}
 		}
 	};
 }
 
-// Returns the first view element descendant matching the given view name.
-// Includes view element itself.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {module:engine/view/element~Element} containerElement
-// @param {String} elementName
-// @returns {module:engine/view/element~Element|null}
-function getDescendantElement( writer, containerElement, elementName ) {
-	const range = writer.createRangeOn( containerElement );
-
-	for ( const { item } of range.getWalker() ) {
-		if ( item.is( 'element', elementName ) ) {
-			return item;
-		}
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ImageElementSupport.pluginName ]: ImageElementSupport;
 	}
 }

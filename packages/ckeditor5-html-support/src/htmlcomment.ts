@@ -7,6 +7,7 @@
  * @module html-support/htmlcomment
  */
 
+import type { Marker, Position, Range } from 'ckeditor5/src/engine';
 import { Plugin } from 'ckeditor5/src/core';
 import { uid } from 'ckeditor5/src/utils';
 
@@ -14,21 +15,19 @@ import { uid } from 'ckeditor5/src/utils';
  * The HTML comment feature. It preserves the HTML comments (`<!-- -->`) in the editor data.
  *
  * For a detailed overview, check the {@glink features/general-html-support#html-comments HTML comment feature documentation}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class HtmlComment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'HtmlComment' {
 		return 'HtmlComment';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		editor.data.processor.skipComments = false;
@@ -45,7 +44,7 @@ export default class HtmlComment extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToMarker( {
 			view: '$comment',
 			model: ( viewElement, { writer } ) => {
-				const root = this.editor.model.document.getRoot();
+				const root = this.editor.model.document.getRoot()!;
 				const commentContent = viewElement.getCustomProperty( '$rawContent' );
 				const markerName = `$comment:${ uid() }`;
 
@@ -59,7 +58,7 @@ export default class HtmlComment extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
 			model: '$comment',
 			view: ( modelElement, { writer } ) => {
-				const root = this.editor.model.document.getRoot();
+				const root = this.editor.model.document.getRoot()!;
 				const markerName = modelElement.markerName;
 				const commentContent = root.getAttribute( markerName );
 				const comment = writer.createUIElement( '$comment' );
@@ -72,7 +71,7 @@ export default class HtmlComment extends Plugin {
 
 		// Remove comments' markers and their corresponding $root attributes, which are no longer present.
 		editor.model.document.registerPostFixer( writer => {
-			const root = editor.model.document.getRoot();
+			const root = editor.model.document.getRoot()!;
 
 			const changedMarkers = editor.model.document.differ.getChangedMarkers();
 
@@ -133,15 +132,13 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * *Note*: If two comments are created at the same position, the second comment will be inserted before the first one.
 	 *
-	 * @param {module:engine/model/position~Position} position
-	 * @param {String} content
-	 * @returns {String} Comment ID. This ID can be later used to e.g. remove the comment from the content.
+	 * @returns Comment ID. This ID can be later used to e.g. remove the comment from the content.
 	 */
-	createHtmlComment( position, content ) {
+	public createHtmlComment( position: Position, content: string ): string {
 		const id = uid();
 		const editor = this.editor;
 		const model = editor.model;
-		const root = model.document.getRoot();
+		const root = model.document.getRoot()!;
 		const markerName = `$comment:${ id }`;
 
 		return model.change( writer => {
@@ -167,12 +164,12 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * Note that a comment can be removed also by removing the content around the comment.
 	 *
-	 * @param {String} commentID The ID of the comment to be removed.
-	 * @returns {Boolean} `true` when the comment with the given ID was removed, `false` otherwise.
+	 * @param commentID The ID of the comment to be removed.
+	 * @returns `true` when the comment with the given ID was removed, `false` otherwise.
 	 */
-	removeHtmlComment( commentID ) {
+	public removeHtmlComment( commentID: string ): boolean {
 		const editor = this.editor;
-		const root = editor.model.document.getRoot();
+		const root = editor.model.document.getRoot()!;
 
 		const marker = editor.model.markers.get( commentID );
 
@@ -193,20 +190,18 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * Returns `null` if the comment does not exist.
 	 *
-	 * @param {String} commentID
-	 * @returns {module:html-support/htmlcomment~HtmlCommentData}
 	 */
-	getHtmlCommentData( commentID ) {
+	public getHtmlCommentData( commentID: string ): HtmlCommentData | null {
 		const editor = this.editor;
 		const marker = editor.model.markers.get( commentID );
-		const root = editor.model.document.getRoot();
+		const root = editor.model.document.getRoot()!;
 
 		if ( !marker ) {
 			return null;
 		}
 
 		return {
-			content: root.getAttribute( commentID ),
+			content: root.getAttribute( commentID ) as string,
 			position: marker.getStart()
 		};
 	}
@@ -216,12 +211,10 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * By default it includes comments at the range boundaries.
 	 *
-	 * @param {module:engine/model/range~Range} range
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.skipBoundaries=false] When set to `true` the range boundaries will be skipped.
-	 * @returns {Array.<String>} HTML comment IDs
+	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.
+	 * @returns HTML comment IDs
 	 */
-	getHtmlCommentsInRange( range, { skipBoundaries = false } = {} ) {
+	public getHtmlCommentsInRange( range: Range, { skipBoundaries = false } = {} ): Array<string> {
 		const includeBoundaries = !skipBoundaries;
 
 		// Unfortunately, MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
@@ -229,7 +222,7 @@ export default class HtmlComment extends Plugin {
 			.filter( marker => isCommentMarkerInRange( marker, range ) )
 			.map( marker => marker.name );
 
-		function isCommentMarkerInRange( commentMarker, range ) {
+		function isCommentMarkerInRange( commentMarker: Marker, range: Range ) {
 			const position = commentMarker.getRange().start;
 
 			return (
@@ -244,9 +237,14 @@ export default class HtmlComment extends Plugin {
  * An interface for the HTML comments data.
  *
  * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
- *
- * @typedef {Object} module:html-support/htmlcomment~HtmlCommentData
- *
- * @property {module:engine/model/position~Position} position
- * @property {String} content
  */
+interface HtmlCommentData {
+	position: Position;
+	content: string;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ HtmlComment.pluginName ]: HtmlComment;
+	}
+}

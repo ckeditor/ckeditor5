@@ -7,14 +7,16 @@
  * @module html-support/integrations/dualcontent
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import type { ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { priorities } from 'ckeditor5/src/utils';
+
 import {
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter
 } from '../converters';
-
-import DataFilter from '../datafilter';
+import DataFilter, { type RegisterEvent } from '../datafilter';
+import type { DataSchemaBlockElementDefinition } from '../dataschema';
 
 /**
  * Provides the General HTML Support integration for elements which can behave like sectioning element (e.g. article) or
@@ -32,59 +34,59 @@ import DataFilter from '../datafilter';
  * {@link module:html-support/dataschema~DataSchemaDefinition#modelSchema} in editor schema.
  * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#paragraphLikeModel} model
  * name with model schema accepting only inline content (inheriting from `$block`).
- *
- * @extends module:core/plugin~Plugin
  */
 export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'DualContentModelElementSupport' {
 		return 'DualContentModelElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register', ( evt, definition ) => {
+		dataFilter.on<RegisterEvent>( 'register', ( evt, definition ) => {
+			const blockDefinition = definition as DataSchemaBlockElementDefinition;
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
 
-			if ( !definition.paragraphLikeModel ) {
+			if ( !blockDefinition.paragraphLikeModel ) {
 				return;
 			}
 
 			// Can only apply to newly registered features.
-			if ( schema.isRegistered( definition.model ) || schema.isRegistered( definition.paragraphLikeModel ) ) {
+			if ( schema.isRegistered( blockDefinition.model ) || schema.isRegistered( blockDefinition.paragraphLikeModel ) ) {
 				return;
 			}
 
-			const paragraphLikeModelDefinition = {
-				model: definition.paragraphLikeModel,
-				view: definition.view
+			const paragraphLikeModelDefinition: DataSchemaBlockElementDefinition = {
+				model: blockDefinition.paragraphLikeModel,
+				view: blockDefinition.view,
+				isBlock: true
 			};
 
-			schema.register( definition.model, definition.modelSchema );
+			schema.register( blockDefinition.model, blockDefinition.modelSchema );
 			schema.register( paragraphLikeModelDefinition.model, {
 				inheritAllFrom: '$block'
 			} );
 
 			conversion.for( 'upcast' ).elementToElement( {
-				view: definition.view,
+				view: blockDefinition.view!,
 				model: ( viewElement, { writer } ) => {
 					if ( this._hasBlockContent( viewElement ) ) {
-						return writer.createElement( definition.model );
+						return writer.createElement( blockDefinition.model );
 					}
 
 					return writer.createElement( paragraphLikeModelDefinition.model );
@@ -95,13 +97,13 @@ export default class DualContentModelElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
-				view: definition.view,
-				model: definition.model
+				view: blockDefinition.view!,
+				model: blockDefinition.model
 			} );
-			this._addAttributeConversion( definition );
+			this._addAttributeConversion( blockDefinition );
 
 			conversion.for( 'downcast' ).elementToElement( {
-				view: paragraphLikeModelDefinition.view,
+				view: paragraphLikeModelDefinition.view!,
 				model: paragraphLikeModelDefinition.model
 			} );
 			this._addAttributeConversion( paragraphLikeModelDefinition );
@@ -112,12 +114,8 @@ export default class DualContentModelElementSupport extends Plugin {
 
 	/**
 	 * Checks whether the given view element includes any other block element.
-	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} viewElement
-	 * @returns {Boolean}
 	 */
-	_hasBlockContent( viewElement ) {
+	private _hasBlockContent( viewElement: ViewElement ): boolean {
 		const view = this.editor.editing.view;
 		const blockElements = view.domConverter.blockElements;
 
@@ -135,11 +133,8 @@ export default class DualContentModelElementSupport extends Plugin {
 
 	/**
 	 * Adds attribute filtering conversion for the given data schema.
-	 *
-	 * @private
-	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
-	_addAttributeConversion( definition ) {
+	private _addAttributeConversion( definition: DataSchemaBlockElementDefinition ) {
 		const editor = this.editor;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
@@ -150,5 +145,10 @@ export default class DualContentModelElementSupport extends Plugin {
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
+	}
+}
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ DualContentModelElementSupport.pluginName ]: DualContentModelElementSupport;
 	}
 }

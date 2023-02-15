@@ -7,23 +7,38 @@
  * @module html-support/converters
  */
 
+import type { Editor } from 'ckeditor5/src/core';
+import type {
+	AttributeElement,
+	DowncastAttributeEvent,
+	DowncastConversionApi,
+	DowncastDispatcher,
+	DowncastWriter,
+	Element,
+	UpcastConversionApi,
+	UpcastDispatcher,
+	UpcastElementEvent,
+	ViewElement
+} from 'ckeditor5/src/engine';
 import { toWidget } from 'ckeditor5/src/widget';
 import {
 	setViewAttributes,
 	mergeViewElementAttributes,
-	updateViewAttributes
+	updateViewAttributes,
+	type GHSViewAttribute
 } from './conversionutils';
+import type DataFilter from './datafilter';
+import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema';
 
 /**
  * View-to-model conversion helper for object elements.
  *
  * Preserves object element content in `htmlContent` attribute.
  *
- * @param {module:html-support/dataschema~DataSchemaDefinition} definition
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
-export function viewToModelObjectConverter( { model: modelName } ) {
-	return ( viewElement, conversionApi ) => {
+export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefinition ) {
+	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): Element => {
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
 			htmlContent: viewElement.getCustomProperty( '$rawContent' )
@@ -34,17 +49,18 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 /**
  * Conversion helper converting an object element to an HTML object widget.
  *
- * @param {module:core/editor/editor~Editor} editor
- * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
-export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
+export function toObjectWidgetConverter(
+	editor: Editor,
+	{ view: viewName, isInline }: DataSchemaInlineElementDefinition
+): any {
 	const t = editor.t;
 
-	return ( modelElement, { writer } ) => {
+	return ( modelElement: Element, { writer }: DowncastConversionApi ) => {
 		const widgetLabel = t( 'HTML object' );
 
-		const viewElement = createObjectView( viewName, modelElement, writer );
+		const viewElement = createObjectView( viewName!, modelElement, writer );
 		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
 
 		writer.addClass( 'html-object-embed__content', viewElement );
@@ -63,34 +79,30 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 			viewElement
 		);
 
-		return toWidget( viewContainer, writer, { widgetLabel } );
+		return toWidget( viewContainer, writer, { label: widgetLabel } );
 	};
 }
 
 /**
 * Creates object view element from the given model element.
-*
-* @param {String} viewName
-* @param {module:engine/model/element~Element} modelElement
-* @param {module:engine/view/downcastwriter~DowncastWriter} writer
-* @returns {module:engine/view/element~Element}
 */
-export function createObjectView( viewName, modelElement, writer ) {
+export function createObjectView( viewName: string, modelElement: Element, writer: DowncastWriter ): ViewElement {
 	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
-		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) );
+		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) as string );
 	} );
 }
 
 /**
  * View-to-attribute conversion helper preserving inline element attributes on `$text`.
  *
- * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
- * @param {module:html-support/datafilter~DataFilter} dataFilter
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
-export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+export function viewToAttributeInlineConverter(
+	{ view: viewName, model: attributeKey }: DataSchemaInlineElementDefinition,
+	dataFilter: DataFilter
+) {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
 			// Do not apply the attribute if the element itself is already consumed and there are no view attributes to store.
@@ -112,7 +124,7 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 			}
 
 			// Set attribute on each item in range according to the schema.
-			for ( const node of data.modelRange.getItems() ) {
+			for ( const node of data.modelRange!.getItems() ) {
 				if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
 					// Node's children are converted recursively, so node can already include model attribute.
 					// We want to extend it, not replace.
@@ -129,17 +141,16 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 /**
  * Attribute-to-view conversion helper applying attributes to view element preserved on `$text`.
  *
- * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
-export function attributeToViewInlineConverter( { priority, view: viewName } ) {
-	return ( attributeValue, conversionApi ) => {
+export function attributeToViewInlineConverter( { priority, view: viewName }: DataSchemaInlineElementDefinition ) {
+	return ( attributeValue: any, conversionApi: DowncastConversionApi ): AttributeElement | undefined => {
 		if ( !attributeValue ) {
 			return;
 		}
 
 		const { writer } = conversionApi;
-		const viewElement = writer.createAttributeElement( viewName, null, { priority } );
+		const viewElement = writer.createAttributeElement( viewName!, null, { priority } );
 
 		setViewAttributes( writer, attributeValue, viewElement );
 
@@ -152,13 +163,11 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
  *
  * All matched attributes will be preserved on `htmlAttributes` attribute.
  *
- * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
- * @param {module:html-support/datafilter~DataFilter} dataFilter
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
-export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+export function viewToModelBlockAttributeConverter( { view: viewName }: DataSchemaBlockElementDefinition, dataFilter: DataFilter ) {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			// Converting an attribute of an element that has not been converted to anything does not make sense
 			// because there will be nowhere to set that attribute on. At this stage, the element should've already
 			// been converted. A collapsed range can show up in to-do lists (<input>) or complex widgets (e.g. table).
@@ -183,18 +192,18 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
  * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
  * @returns {Function} Returns a conversion callback.
 */
-export function modelToViewBlockAttributeConverter( { model: modelName } ) {
-	return dispatcher => {
-		dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
+export function modelToViewBlockAttributeConverter( { model: modelName }: DataSchemaBlockElementDefinition ) {
+	return ( dispatcher: DowncastDispatcher ): void => {
+		dispatcher.on<DowncastAttributeEvent>( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
 			const viewWriter = conversionApi.writer;
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
+			const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
 
-			updateViewAttributes( viewWriter, attributeOldValue, attributeNewValue, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue as GHSViewAttribute, attributeNewValue as GHSViewAttribute, viewElement );
 		} );
 	};
 }

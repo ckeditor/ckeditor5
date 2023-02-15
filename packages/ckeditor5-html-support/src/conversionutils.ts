@@ -7,17 +7,29 @@
  * @module html-support/conversionutils
  */
 
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 import { cloneDeep } from 'lodash-es';
+
+export interface GHSViewAttribute extends Record<string, any> {
+	attributes?: Record<string, unknown>;
+	classes?: Array<string>;
+	styles?: Record<string, string>;
+}
 
 /**
 * Helper function for the downcast converter. Updates attributes on the given view element.
 *
-* @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
-* @param {Object} oldViewAttributes The previous GHS attribute value.
-* @param {Object} newViewAttributes The current GHS attribute value.
-* @param {module:engine/view/element~Element} viewElement The view element to update.
+* @param writer The view writer.
+* @param oldViewAttributes The previous GHS attribute value.
+* @param newViewAttributes The current GHS attribute value.
+* @param viewElement The view element to update.
 */
-export function updateViewAttributes( writer, oldViewAttributes, newViewAttributes, viewElement ) {
+export function updateViewAttributes(
+	writer: DowncastWriter,
+	oldViewAttributes: GHSViewAttribute,
+	newViewAttributes: GHSViewAttribute,
+	viewElement: ViewElement
+): void {
 	if ( oldViewAttributes ) {
 		removeViewAttributes( writer, oldViewAttributes, viewElement );
 	}
@@ -30,11 +42,11 @@ export function updateViewAttributes( writer, oldViewAttributes, newViewAttribut
 /**
  * Helper function for the downcast converter. Sets attributes on the given view element.
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
- * @param {Object} viewAttributes The GHS attribute value.
- * @param {module:engine/view/element~Element} viewElement The view element to update.
+ * @param writer The view writer.
+ * @param viewAttributes The GHS attribute value.
+ * @param viewElement The view element to update.
  */
-export function setViewAttributes( writer, viewAttributes, viewElement ) {
+export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttribute, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -53,11 +65,11 @@ export function setViewAttributes( writer, viewAttributes, viewElement ) {
 /**
  * Helper function for the downcast converter. Removes attributes on the given view element.
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer.
- * @param {Object} viewAttributes The GHS attribute value.
- * @param {module:engine/view/element~Element} viewElement The view element to update.
+ * @param writer The view writer.
+ * @param viewAttributes The GHS attribute value.
+ * @param viewElement The view element to update.
  */
-export function removeViewAttributes( writer, viewAttributes, viewElement ) {
+export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttribute, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.removeAttribute( key, viewElement );
@@ -77,12 +89,8 @@ export function removeViewAttributes( writer, viewAttributes, viewElement ) {
 
 /**
 * Merges view element attribute objects.
-*
-* @param {Object} target
-* @param {Object} source
-* @returns {Object}
 */
-export function mergeViewElementAttributes( target, source ) {
+export function mergeViewElementAttributes( target: GHSViewAttribute, source: GHSViewAttribute ): GHSViewAttribute {
 	const result = cloneDeep( target );
 
 	for ( const key in source ) {

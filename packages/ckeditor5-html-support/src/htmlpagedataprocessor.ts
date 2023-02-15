@@ -7,19 +7,17 @@
  * @module html-support/htmlpagedataprocessor
  */
 
-import { HtmlDataProcessor, UpcastWriter } from 'ckeditor5/src/engine';
+import { HtmlDataProcessor, UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
  * The full page HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
- *
- * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 	/**
 	 * @inheritDoc
 	 */
-	toView( data ) {
+	public override toView( data: string ): ViewDocumentFragment {
 		// Ignore content that is not a full page source.
 		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {
 			return super.toView( data );
@@ -45,7 +43,10 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		const viewFragment = this.domConverter.domToView( domFragment, { skipComments: this.skipComments } );
+		const viewFragment = this.domConverter.domToView(
+			domFragment,
+			{ skipComments: this.skipComments }
+		) as ViewDocumentFragment;
 
 		const writer = new UpcastWriter( viewFragment.document );
 
@@ -66,10 +67,10 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 	/**
 	 * @inheritDoc
 	 */
-	toData( viewFragment ) {
+	public override toData( viewFragment: ViewDocumentFragment ): string {
 		let data = super.toData( viewFragment );
 
-		const page = viewFragment.getCustomProperty( '$fullPageDocument' );
+		const page = viewFragment.getCustomProperty( '$fullPageDocument' ) as string | undefined;
 		const docType = viewFragment.getCustomProperty( '$fullPageDocType' );
 		const xmlDeclaration = viewFragment.getCustomProperty( '$fullPageXmlDeclaration' );
 

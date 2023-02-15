@@ -8,26 +8,24 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter } from 'ckeditor5/src/engine';
+import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine';
 import HtmlPageDataProcessor from './htmlpagedataprocessor';
 
 /**
  * The full page editing feature. It preserves the whole HTML page in the editor data.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'FullPage' {
 		return 'FullPage';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 		const properties = [ '$fullPageDocument', '$fullPageDocType', '$fullPageXmlDeclaration' ];
 
@@ -38,8 +36,8 @@ export default class FullPage extends Plugin {
 		} );
 
 		// Apply custom properties from view document fragment to the model root attributes.
-		editor.data.on( 'toModel', ( evt, [ viewElementOrFragment ] ) => {
-			const root = editor.model.document.getRoot();
+		editor.data.on<DataControllerToModelEvent>( 'toModel', ( evt, [ viewElementOrFragment ] ) => {
+			const root = editor.model.document.getRoot()!;
 
 			editor.model.change( writer => {
 				for ( const name of properties ) {
@@ -53,13 +51,13 @@ export default class FullPage extends Plugin {
 		}, { priority: 'low' } );
 
 		// Apply root attributes to the view document fragment.
-		editor.data.on( 'toView', ( evt, [ modelElementOrFragment ] ) => {
+		editor.data.on<DataControllerToViewEvent>( 'toView', ( evt, [ modelElementOrFragment ] ) => {
 			if ( !modelElementOrFragment.is( 'rootElement' ) ) {
 				return;
 			}
 
 			const root = modelElementOrFragment;
-			const viewFragment = evt.return;
+			const viewFragment = evt.return!;
 
 			if ( !root.hasAttribute( '$fullPageDocument' ) ) {
 				return;
@@ -78,7 +76,7 @@ export default class FullPage extends Plugin {
 
 		// Clear root attributes related to full page editing on editor content reset.
 		editor.data.on( 'set', () => {
-			const root = editor.model.document.getRoot();
+			const root = editor.model.document.getRoot()!;
 
 			editor.model.change( writer => {
 				for ( const name of properties ) {
@@ -97,5 +95,11 @@ export default class FullPage extends Plugin {
 
 			args[ 0 ].trim = false;
 		}, { priority: 'high' } );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ FullPage.pluginName ]: FullPage;
 	}
 }

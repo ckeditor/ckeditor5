@@ -7,43 +7,41 @@
  * @module html-support/integrations/script
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import {
 	createObjectView,
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
-} from '../converters.js';
-
-import DataFilter from '../datafilter';
+} from '../converters';
+import DataFilter, { type RegisterEvent } from '../datafilter';
+import type { DataSchemaBlockElementDefinition } from '../dataschema';
 
 /**
  * Provides the General HTML Support for `script` elements.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'ScriptElementSupport' {
 		return 'ScriptElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register:script', ( evt, definition ) => {
+		dataFilter.on<RegisterEvent>( 'register:script', ( evt, definition ) => {
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
@@ -64,7 +62,10 @@ export default class ScriptElementSupport extends Plugin {
 				model: viewToModelObjectConverter( definition )
 			} );
 
-			conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );
+			conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter(
+				definition as DataSchemaBlockElementDefinition,
+				dataFilter
+			) );
 
 			conversion.for( 'downcast' ).elementToElement( {
 				model: 'htmlScript',
@@ -73,9 +74,14 @@ export default class ScriptElementSupport extends Plugin {
 				}
 			} );
 
-			conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
+			conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition as DataSchemaBlockElementDefinition ) );
 
 			evt.stop();
 		} );
+	}
+}
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ ScriptElementSupport.pluginName ]: ScriptElementSupport;
 	}
 }

@@ -7,34 +7,40 @@
  * @module html-support/integrations/table
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes } from '../conversionutils.js';
-import DataFilter from '../datafilter';
+import type {
+	DowncastAttributeEvent,
+	DowncastDispatcher,
+	Element,
+	UpcastDispatcher,
+	UpcastElementEvent,
+	ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { setViewAttributes, type GHSViewAttribute } from '../conversionutils';
+import DataFilter, { type RegisterEvent } from '../datafilter';
+import { getDescendantElement } from './integrationutils';
 
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'TableElementSupport' {
 		return 'TableElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const editor = this.editor;
 
 		if ( !editor.plugins.has( 'TableEditing' ) ) {
@@ -45,11 +51,11 @@ export default class TableElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register:figure', ( ) => {
+		dataFilter.on<RegisterEvent>( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
-		dataFilter.on( 'register:table', ( evt, definition ) => {
+		dataFilter.on<RegisterEvent>( 'register:table', ( evt, definition ) => {
 			if ( definition.model !== 'table' ) {
 				return;
 			}
@@ -71,15 +77,15 @@ export default class TableElementSupport extends Plugin {
 	}
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
-// feature model element.
-//
-// @private
-// @param {module:html-support/datafilter~DataFilter} dataFilter
-// @returns {Function} Returns a conversion callback.
-function viewToModelTableAttributeConverter( dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+ * feature model element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
+	return ( dispatcher: UpcastDispatcher ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTableElement = data.viewItem;
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
@@ -94,26 +100,26 @@ function viewToModelTableAttributeConverter( dataFilter ) {
 				}
 			}
 
-			function preserveElementAttributes( viewElement, attributeName ) {
+			function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
 				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+					conversionApi.writer.setAttribute( attributeName, viewAttributes as GHSViewAttribute, data.modelRange! );
 				}
 			}
 		}, { priority: 'low' } );
 	};
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
-// feature model element from figure view element.
-//
-// @private
-// @param {module:html-support/datafilter~DataFilter} dataFilter
-// @returns {Function} Returns a conversion callback.
-function viewToModelFigureAttributeConverter( dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link module:table/table~Table Table}
+ * feature model element from figure view element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
+	return ( dispatcher: UpcastDispatcher ) => {
+		dispatcher.on<UpcastElementEvent>( 'element:figure', ( evt, data, conversionApi ) => {
 			const viewFigureElement = data.viewItem;
 
 			if ( !data.modelRange || !viewFigureElement.hasClass( 'table' ) ) {
@@ -129,47 +135,36 @@ function viewToModelFigureAttributeConverter( dataFilter ) {
 	};
 }
 
-// Model-to-view conversion helper applying attributes from {@link module:table/table~Table Table}
-// feature.
-//
-// @private
-// @returns {Function} Returns a conversion callback.
+/**
+ * Model-to-view conversion helper applying attributes from {@link module:table/table~Table Table}
+ * feature.
+ *
+ * @returns Returns a conversion callback.
+ */
 function modelToViewTableAttributeConverter() {
-	return dispatcher => {
+	return ( dispatcher: DowncastDispatcher ) => {
 		addAttributeConversionDispatcherHandler( 'table', 'htmlAttributes' );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 		addAttributeConversionDispatcherHandler( 'thead', 'htmlTheadAttributes' );
 		addAttributeConversionDispatcherHandler( 'tbody', 'htmlTbodyAttributes' );
 
-		function addAttributeConversionDispatcherHandler( elementName, attributeName ) {
-			dispatcher.on( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {
+		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
 
-				const containerElement = conversionApi.mapper.toViewElement( data.item );
-				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
+				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+				setViewAttributes( conversionApi.writer, data.attributeNewValue as GHSViewAttribute, viewElement! );
 			} );
 		}
 	};
 }
 
-// Returns the first view element descendant matching the given view name.
-// Includes view element itself.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {module:engine/view/element~Element} containerElement
-// @param {String} elementName
-// @returns {module:engine/view/element~Element|null}
-function getDescendantElement( writer, containerElement, elementName ) {
-	const range = writer.createRangeOn( containerElement );
-
-	for ( const { item } of range.getWalker() ) {
-		if ( item.is( 'element', elementName ) ) {
-			return item;
-		}
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ TableElementSupport.pluginName ]: TableElementSupport;
 	}
 }

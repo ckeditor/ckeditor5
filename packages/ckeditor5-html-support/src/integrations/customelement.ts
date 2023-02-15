@@ -9,41 +9,39 @@
 
 /* globals document */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter } from 'ckeditor5/src/engine';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine';
 
 import DataSchema from '../dataschema';
-import DataFilter from '../datafilter';
-import { setViewAttributes } from '../conversionutils';
+import DataFilter, { type RegisterEvent } from '../datafilter';
+import { type GHSViewAttribute, setViewAttributes } from '../conversionutils';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
- *
- * @extends module:core/plugin~Plugin
  */
 export default class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
+	public static get requires(): PluginDependencies {
 		return [ DataFilter, DataSchema ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
+	public static get pluginName(): 'CustomElementSupport' {
 		return 'CustomElementSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );
 
-		dataFilter.on( 'register:$customElement', ( evt, definition ) => {
+		dataFilter.on<RegisterEvent>( 'register:$customElement', ( evt, definition ) => {
 			evt.stop();
 
 			const editor = this.editor;
@@ -64,17 +62,17 @@ export default class CustomElementSupport extends Plugin {
 				model: ( viewElement, conversionApi ) => {
 					// Do not try to convert $comment fake element.
 					if ( viewElement.name == '$comment' ) {
-						return;
+						return null;
 					}
 
 					if ( !isValidElementName( viewElement.name ) ) {
-						return;
+						return null;
 					}
 
 					// Allow for fallback only if this element is not defined in data schema to make sure
 					// that this will handle only custom elements not registered in the data schema.
 					if ( dataSchema.getDefinitionsForView( viewElement.name ).size ) {
-						return;
+						return null;
 					}
 
 					// Make sure that this element will not render in the editing view.
@@ -106,7 +104,7 @@ export default class CustomElementSupport extends Plugin {
 
 					// Consume the content of the element.
 					for ( const { item } of editor.editing.view.createRangeIn( viewElement ) ) {
-						conversionApi.consumable.consume( item, { name: true } );
+						conversionApi.consumable.consume( item as ViewNode | ViewDocumentFragment, { name: true } );
 					}
 
 					return modelElement;
@@ -122,11 +120,11 @@ export default class CustomElementSupport extends Plugin {
 					attributes: [ 'htmlElementName', 'htmlAttributes', 'htmlContent' ]
 				},
 				view: ( modelElement, { writer } ) => {
-					const viewName = modelElement.getAttribute( 'htmlElementName' );
+					const viewName = modelElement.getAttribute( 'htmlElementName' ) as string;
 					const viewElement = writer.createRawElement( viewName );
 
 					if ( modelElement.hasAttribute( 'htmlAttributes' ) ) {
-						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ), viewElement );
+						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttribute, viewElement );
 					}
 
 					return viewElement;
@@ -139,15 +137,15 @@ export default class CustomElementSupport extends Plugin {
 					attributes: [ 'htmlElementName', 'htmlAttributes', 'htmlContent' ]
 				},
 				view: ( modelElement, { writer } ) => {
-					const viewName = modelElement.getAttribute( 'htmlElementName' );
-					const htmlContent = modelElement.getAttribute( 'htmlContent' );
+					const viewName = modelElement.getAttribute( 'htmlElementName' ) as string;
+					const htmlContent = modelElement.getAttribute( 'htmlContent' ) as string;
 
 					const viewElement = writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 						domConverter.setContentOf( domElement, htmlContent );
 
 						// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
 						// See the upcast conversion for the "htmlContent" attribute to learn more.
-						const customElement = domElement.firstChild;
+						const customElement = domElement.firstChild!;
 
 						customElement.remove();
 
@@ -157,7 +155,7 @@ export default class CustomElementSupport extends Plugin {
 					} );
 
 					if ( modelElement.hasAttribute( 'htmlAttributes' ) ) {
-						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ), viewElement );
+						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttribute, viewElement );
 					}
 
 					return viewElement;
@@ -167,8 +165,10 @@ export default class CustomElementSupport extends Plugin {
 	}
 }
 
-// Returns true if name is valid for a DOM element name.
-function isValidElementName( name ) {
+/**
+ * Returns true if name is valid for a DOM element name.
+ */
+function isValidElementName( name: string ): boolean {
 	try {
 		document.createElement( name );
 	} catch ( error ) {
@@ -176,4 +176,10 @@ function isValidElementName( name ) {
 	}
 
 	return true;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ CustomElementSupport.pluginName ]: CustomElementSupport;
+	}
 }

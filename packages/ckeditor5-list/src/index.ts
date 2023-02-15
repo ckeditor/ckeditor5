@@ -8,7 +8,7 @@
  */
 
 export { default as DocumentList } from './documentlist';
-export { default as DocumentListEditing } from './documentlist/documentlistediting';
+export { default as DocumentListEditing, type DocumentListEditingPostFixerEvent } from './documentlist/documentlistediting';
 export { default as DocumentListProperties } from './documentlistproperties';
 export { default as DocumentListPropertiesEditing } from './documentlistproperties/documentlistpropertiesediting';
 export { default as DocumentListUtils } from './documentlist/documentlistutils';
