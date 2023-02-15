@@ -111,15 +111,13 @@ Read more about the security aspect in the next section.
 
 ### Security
 
-If the HTML embed feature is configured to [show content previews](#content-previews), the HTML that the user inserts into the HTML embed widget is then rendered back to the user. If the HTML was rendered as-is, any JavaScript code included in these HTML snippets would be executed by the browser in the context of your website.
+If the HTML embed feature is configured to [show content previews](#content-previews), the HTML that the user inserts into the HTML embed widget is then rendered back to the user. **If the HTML was rendered as-is, any JavaScript code included in these HTML snippets would be executed by the browser in the context of your website**.
 
 This, in turn, is a plain security risk. The HTML provided by the user might be mistakenly copied from a malicious website or end up in the user's clipboard (as it would usually be copied and pasted) by any other means.
 
 In some cases, advanced users can be instructed to never paste HTML code from untrusted sources. However, in most cases, it is highly recommended to properly secure the system by configuring the HTML embed feature to use an HTML sanitizer and, optionally, by setting strict CSP rules.
 
 <info-box>
-	The HTML embed feature [does not currently execute code in `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326). However, it will execute code in the `on*` and `src="javascript:..."` attributes.
-
 	The tricky part is that some HTML snippets require JavaScript to be executed to render any meaningful previews (for example, Facebook embeds). Some, in turn, do not make sense to be executed (analytics code).
 
 	Therefore, when configuring the sanitizer and CSP rules, you can take these situations into consideration and for instance, allow `<script>` tags pointing only to certain domains (e.g. a trusted external page that requires JavaScript).
