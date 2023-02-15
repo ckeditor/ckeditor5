@@ -12,7 +12,7 @@ import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**
- * This plugin handles the `<kbd>Shift</kbd>+<kbd>Enter</kbd>` keystroke (soft line break) in the editor.
+ * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
  *
  * See also the {@link module:enter/enter~Enter} plugin.
  *

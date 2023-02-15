@@ -66,7 +66,7 @@ export default class EnterObserver extends Observer {
 }
 
 /**
- * Fired when the user presses the `<kbd>Enter</kbd>` key.
+ * Fired when the user presses the <kbd>Enter</kbd> key.
  *
  * Note: This event is fired by the {@link module:enter/enterobserver~EnterObserver observer}
  * (usually registered by the {@link module:enter/enter~Enter Enter feature} and
@@ -82,7 +82,7 @@ export type ViewDocumentEnterEvent = BubblingEvent<{
 export interface EnterEventData extends DomEventData<InputEvent> {
 
 	/**
-	 * Whether it is a soft enter (`<kbd>Shift</kbd>+<kbd>Enter</kbd>`) or a hard enter (`<kbd>Enter</kbd>`)
+	 * Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>)
 	 */
 	isSoft: boolean;
 }

@@ -21,7 +21,7 @@ import type {
 
 /**
  * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature} to handle
- * the `<kbd>Shift</kbd>+<kbd>Enter</kbd>` keystroke.
+ * the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke.
  */
 export default class ShiftEnterCommand extends Command {
 	/**
@@ -50,6 +50,8 @@ export default class ShiftEnterCommand extends Command {
 
 /**
  * Fired after the the {@link module:enter/shiftentercommand~ShiftEnterCommand} is finished executing.
+ *
+ * @eventName afterExecute
  */
 export type ShiftEnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
