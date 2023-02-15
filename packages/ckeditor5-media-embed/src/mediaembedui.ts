@@ -40,7 +40,7 @@ export default class MediaEmbedUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const command = editor.commands.get( 'mediaEmbed' )!;
+		const command: MediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
 
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
