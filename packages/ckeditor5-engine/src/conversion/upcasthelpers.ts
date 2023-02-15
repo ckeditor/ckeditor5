@@ -318,10 +318,10 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	public attributeToAttribute( config: {
 		view: string | {
 			key: string;
-			value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
+			value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
 			name?: string;
 		} | {
-			name?: string;
+			name?: string | RegExp;
 			styles?: PropertyPatterns;
 			classes?: ClassPatterns;
 			attributes?: PropertyPatterns;
@@ -329,6 +329,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		model: string | {
 			key: string;
 			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+			name?: string;
 		};
 		converterPriority?: PriorityString;
 	} ): this {
@@ -683,8 +684,8 @@ function upcastElementToAttribute( config: {
 function upcastAttributeToAttribute( config: {
 	view: string | {
 		key?: string;
-		value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
-		name?: string;
+		value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
+		name?: string | RegExp;
 		styles?: PropertyPatterns;
 		classes?: ClassPatterns;
 		attributes?: PropertyPatterns;

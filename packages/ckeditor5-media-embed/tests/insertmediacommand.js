@@ -106,7 +106,7 @@ describe( 'MediaEmbedCommand', () => {
 	describe( 'value', () => {
 		it( 'should be null when no media is selected (paragraph)', () => {
 			setData( model, '<p>foo[]</p>' );
-			expect( command.value ).to.be.null;
+			expect( command.value ).to.be.undefined;
 		} );
 
 		it( 'should equal the url of the selected media', () => {

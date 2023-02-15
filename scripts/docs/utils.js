@@ -11,7 +11,7 @@ const path = require( 'path' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
-module.exports = { getCkeditor5Plugins, writeFile, normalizePath, getPluginName };
+module.exports = { getCkeditor5Plugins, writeFile, normalizePath };
 
 /**
  * Returns array with plugin paths.
@@ -44,9 +44,28 @@ function getCkeditor5Plugins() {
  *
  * @returns {Promise.<Array>}
  */
-function getCkeditor5ModulePaths() {
+async function getCkeditor5ModulePaths() {
+	const files = await globPromise( 'node_modules/@ckeditor/ckeditor5-!(dev-)/src/**/*.[jt]s', { cwd: ROOT_DIRECTORY } );
+	const ossPackages = ( await globPromise( 'packages/*/', { cwd: ROOT_DIRECTORY } ) )
+		.map( packagePath => {
+			const shortPackageName = packagePath.replace( /^packages/, '' );
+
+			return new RegExp( shortPackageName );
+		} );
+
+	return files.filter( modulePath => {
+		return ossPackages.some( pkg => modulePath.match( pkg ) );
+	} );
+}
+
+/**
+ * @param {String} pattern
+ * @param {Object} options
+ * @returns {Promise.<Array.<String>>}
+ */
+function globPromise( pattern, options ) {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.[tj]s', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
+		glob( pattern, options, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
@@ -65,7 +84,7 @@ function getCkeditor5ModulePaths() {
 function checkWhetherIsCKEditor5Plugin( modulePath ) {
 	return readFile( path.join( ROOT_DIRECTORY, modulePath ) )
 		.then( content => {
-			const pluginName = getPluginName( modulePath );
+			const pluginName = path.basename( modulePath.replace( /.[jt]s$/, '' ) );
 
 			if ( content.match( new RegExp( `export default class ${ pluginName } extends Plugin`, 'i' ) ) ) {
 				return Promise.resolve( true );
@@ -119,13 +138,4 @@ function writeFile( filePath, data ) {
  */
 function normalizePath( modulePath ) {
 	return modulePath.split( path.sep ).join( path.posix.sep );
-}
-
-/**
- * Equivalent of `path.basename()` that can handle both `.ts` and `.js` extensions.
- *
- * @returns {String}
- */
-function getPluginName( modulePath ) {
-	return path.basename( modulePath ).split( '.' )[ 0 ];
 }
