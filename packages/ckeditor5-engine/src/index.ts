@@ -36,7 +36,8 @@ export type {
 	AttributeDescriptor,
 	ElementCreatorFunction,
 	HighlightDescriptor,
-	RemoveHighlightCallback
+	RemoveHighlightCallback,
+	SlotFilter
 } from './conversion/downcasthelpers';
 export type {
 	default as Mapper,
@@ -67,14 +68,14 @@ export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
 export { default as Element } from './model/element';
-export { default as Position } from './model/position';
+export { default as Position, type PositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
 export type { default as Document, ModelPostFixer } from './model/document';
 export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
-export type { DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
+export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
 export type { default as Item } from './model/item';
 export type { default as Node } from './model/node';
 export type { default as RootElement } from './model/rootelement';
@@ -122,7 +123,7 @@ export type { default as ViewDocumentSelection } from './view/documentselection'
 export { default as AttributeElement } from './view/attributeelement';
 export type { default as ViewItem } from './view/item';
 export type { default as ViewNode } from './view/node';
-export type { default as ViewPosition } from './view/position';
+export type { default as ViewPosition, PositionOffset as ViewPositionOffset } from './view/position';
 export type { default as ViewRange } from './view/range';
 export type { default as ViewSelection, ViewSelectionChangeEvent, Selectable as ViewSelectable } from './view/selection';
 export type { default as ViewTypeCheckable } from './view/typecheckable';
@@ -166,7 +167,7 @@ export type { ViewDocumentSelectionChangeEvent } from './view/observer/selection
 export type { ViewRenderEvent } from './view/view';
 
 // View / Styles.
-export { StylesProcessor } from './view/stylesmap';
+export { StylesProcessor, BoxSides } from './view/stylesmap';
 export * from './view/styles/background';
 export * from './view/styles/border';
 export * from './view/styles/margin';
