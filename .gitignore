@@ -58,6 +58,7 @@ packages/ckeditor5-language/src/**/*.js
 packages/ckeditor5-link/src/**/*.js
 packages/ckeditor5-list/src/**/*.js
 packages/ckeditor5-markdown-gfm/src/**/*.js
+packages/ckeditor5-media-embed/src/**/*.js
 packages/ckeditor5-mention/src/**/*.js
 packages/ckeditor5-minimap/src/**/*.js
 packages/ckeditor5-page-break/src/**/*.js
@@ -67,6 +68,7 @@ packages/ckeditor5-remove-format/src/**/*.js
 packages/ckeditor5-restricted-editing/src/**/*.js
 packages/ckeditor5-select-all/src/**/*.js
 packages/ckeditor5-special-characters/src/**/*.js
+packages/ckeditor5-table/src/**/*.js
 packages/ckeditor5-typing/src/**/*.js
 packages/ckeditor5-ui/src/**/*.js
 packages/ckeditor5-undo/src/**/*.js
