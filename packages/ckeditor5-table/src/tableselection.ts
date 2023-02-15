@@ -354,7 +354,7 @@ export default class TableSelection extends Plugin {
 	 * The cells are returned in a reverse direction if the selection is backward.
 	 */
 	private _getCellsToSelect( anchorCell: Element, targetCell: Element ) {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( anchorCell );
 		const endLocation = tableUtils.getCellLocation( targetCell );
 

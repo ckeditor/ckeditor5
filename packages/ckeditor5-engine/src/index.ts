@@ -68,7 +68,7 @@ export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
 export { default as Element } from './model/element';
-export { default as Position, type PositionOffset as ModelPositionOffset } from './model/position';
+export { default as Position, type PositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';

@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ModelPositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine';
+import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast';
@@ -299,5 +299,5 @@ export interface AdditionalSlot {
 	/**
 	 * Position of the slot within the table.
 	 */
-	positionOffset: ModelPositionOffset;
+	positionOffset: PositionOffset;
 }

@@ -42,7 +42,7 @@ export interface TableConfig {
 	 *
 	 * Both rows and columns properties are optional defaulting to 0 (no heading).
 	 */
-	defaultHeadings: {
+	defaultHeadings?: {
 		rows?: number;
 		columns?: number;
 	};
@@ -71,7 +71,7 @@ export interface TableConfig {
 	 *
 	 * Read more about configuring the toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
-	contentToolbar: Array<ToolbarConfigItem>;
+	contentToolbar?: Array<ToolbarConfigItem>;
 
 	/**
 	 * Items to be placed in the table toolbar.

@@ -240,7 +240,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 *
 	 * @returns The next table walker's value.
 	 */
-	public next(): IteratorResult<TableSlot, TableSlot | undefined> {
+	public next(): IteratorResult<TableSlot, undefined> {
 		const row = this._table.getChild( this._rowIndex );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.

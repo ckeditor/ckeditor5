@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema, type Element } from 'ckeditor5/src/engine';
+import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema } from 'ckeditor5/src/engine';
 
 import TableEditing from '../tableediting';
 import {
@@ -261,7 +261,7 @@ function enableTableToFigureProperty(
 
 	upcastStyleToAttribute( conversion, {
 		viewElement: /^(table|figure)$/,
-		shouldUpcast: ( element: Element ) => !( element.name == 'table' && element.parent!.name == 'figure' ),
+		shouldUpcast: ( element: ViewElement ) => !( element.name == 'table' && element.parent!.name == 'figure' ),
 		...options
 	} );
 

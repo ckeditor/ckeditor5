@@ -163,8 +163,9 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		const editor = this.editor;
 		const columnResizePlugin: TableColumnResize = editor.plugins.get( 'TableColumnResize' );
+		const tableEditing: TableEditing = editor.plugins.get( 'TableEditing' );
 
-		editor.plugins.get( 'TableEditing' ).registerAdditionalSlot( {
+		tableEditing.registerAdditionalSlot( {
 			filter: element => element.is( 'element', 'tableColumnGroup' ),
 			positionOffset: 0
 		} );
@@ -534,8 +535,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				viewWriter.insert( viewWriter.createPositionAt( colgroup, 'end' ), viewColElement );
 			}
 
-			// TODO: start?
-			viewWriter.insert( viewWriter.createPositionAt( viewTable, 'start' as any ), colgroup );
+			viewWriter.insert( viewWriter.createPositionAt( viewTable, 0 ), colgroup );
 		}
 
 		/**

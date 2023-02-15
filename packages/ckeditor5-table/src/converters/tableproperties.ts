@@ -26,7 +26,7 @@ export function upcastStyleToAttribute(
 		viewElement: string | RegExp;
 		defaultValue: string;
 		reduceBoxSides?: boolean;
-		shouldUpcast?: Function;
+		shouldUpcast?: ( viewElement: ViewElement ) => boolean;
 	}
 ): void {
 	const {

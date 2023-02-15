@@ -352,10 +352,9 @@ function addListOption(
 	commands: Array<Command>,
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
-	const model = option.model = new Model( option.model );
-	const { commandName, bindIsOn } = option.model;
-
 	if ( option.type === 'button' || option.type === 'switchbutton' ) {
+		const model = option.model = new Model( option.model );
+		const { commandName, bindIsOn } = option.model;
 		const command = editor.commands.get( commandName as string )!;
 
 		commands.push( command );
@@ -367,11 +366,11 @@ function addListOption(
 		if ( bindIsOn ) {
 			model.bind( 'isOn' ).to( command, 'value' );
 		}
-	}
 
-	model.set( {
-		withText: true
-	} );
+		model.set( {
+			withText: true
+		} );
+	}
 
 	itemDefinitions.add( option );
 }

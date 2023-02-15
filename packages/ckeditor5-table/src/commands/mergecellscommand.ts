@@ -102,9 +102,9 @@ function mergeTableCells( cellBeingMerged: Element, targetCell: Element, writer:
  * Checks if the passed table cell contains an empty paragraph.
  */
 function isEmpty( tableCell: Element ): boolean {
-	const firstTableChild = tableCell.getChild( 0 ) as Element;
+	const firstTableChild = tableCell.getChild( 0 );
 
-	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
+	return tableCell.childCount == 1 && firstTableChild!.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
 }
 
 function getMergeDimensions( firstTableCell: Element, selectedTableCells: Array<Element>, tableUtils: TableUtils ) {

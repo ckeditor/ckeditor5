@@ -33,7 +33,7 @@ export type ColorInputViewOptions = {
  * The color input view class. It allows the user to type in a color (hex, rgb, etc.)
  * or choose it from the configurable color palette with a preview.
  *
- * @private
+ * @internal
  */
 export default class ColorInputView extends View {
 	/**
@@ -69,6 +69,9 @@ export default class ColorInputView extends View {
 	 */
 	declare public readonly isEmpty: boolean;
 
+	/**
+	 * @observable
+	 */
 	declare public hasError: boolean;
 
 	/**

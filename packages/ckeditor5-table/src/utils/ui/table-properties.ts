@@ -183,11 +183,11 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 
 		button.bind( 'isOn' ).to( view, propertyName, value => {
 			// `value` comes from `view[ propertyName ]`.
-			let valueToCompare = value;
+			let valueToCompare: unknown = value;
 
 			// If it's empty, and the `defaultValue` is specified, use it instead.
 			if ( value === '' && defaultValue ) {
-				valueToCompare = defaultValue as any;
+				valueToCompare = defaultValue;
 			}
 
 			return buttonValue === valueToCompare;

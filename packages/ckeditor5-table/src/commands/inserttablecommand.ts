@@ -63,12 +63,12 @@ export default class InsertTableCommand extends Command {
 			headingColumns?: number;
 		} = {}
 	): void {
-		const model = this.editor.model;
-		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
-		const config = this.editor.config.get( 'table' )!;
+		const editor = this.editor;
+		const model = editor.model;
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
-		const defaultRows = config.defaultHeadings.rows;
-		const defaultColumns = config.defaultHeadings.columns;
+		const defaultRows = editor.config.get( 'table.defaultHeadings.rows' );
+		const defaultColumns = editor.config.get( 'table.defaultHeadings.columns' );
 
 		if ( options.headingRows === undefined && defaultRows ) {
 			options.headingRows = defaultRows;
