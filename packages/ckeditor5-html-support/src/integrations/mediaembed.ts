@@ -8,7 +8,6 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-// import MediaEmbedConfig from '@ckeditor/ckeditor5-media-embed';
 
 import DataFilter, { type RegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
@@ -57,7 +56,6 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );
-		// TODO
 		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' ) as string;
 
 		// Overwrite GHS schema definition for a given elementName.

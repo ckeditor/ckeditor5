@@ -24,6 +24,7 @@ import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
 import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
 import type { GHSViewAttribute } from './conversionutils';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
 
 type LimitedSelectable = Exclude<Selectable, Iterable<Range> | null>;
@@ -69,9 +70,8 @@ export default class GeneralHtmlSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		// Load the filtering configuration.
-		const config: GeneralHtmlSupportConfig = editor.config.get( 'htmlSupport' )!;
-		dataFilter.loadAllowedConfig( config.allow || [] );
-		dataFilter.loadDisallowedConfig( config.disallow || [] );
+		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
+		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
 	}
 
 	/**

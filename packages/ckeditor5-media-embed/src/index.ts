@@ -8,6 +8,7 @@
  */
 
 export { default as MediaEmbed } from './mediaembed';
+export { MediaEmbedConfig } from './mediaembedconfig';
 export { default as MediaEmbedEditing } from './mediaembedediting';
 export { default as MediaEmbedUI } from './mediaembedui';
 export { default as AutoMediaEmbed } from './automediaembed';
