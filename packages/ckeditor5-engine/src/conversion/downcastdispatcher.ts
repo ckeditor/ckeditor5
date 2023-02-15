@@ -224,7 +224,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		range: Range,
 		markers: Map<string, Range>,
 		writer: DowncastWriter,
-		options: unknown = {}
+		options: DowncastConversionApi[ 'options' ] = {}
 	): void {
 		const conversionApi = this._createConversionApi( writer, undefined, options );
 
@@ -654,7 +654,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	private _createConversionApi(
 		writer: DowncastWriter,
 		refreshedItems: Set<Item> = new Set(),
-		options: unknown = {}
+		options: DowncastConversionApi[ 'options' ] = {}
 	): DowncastConversionApi {
 		const conversionApi: DowncastConversionApi = {
 			...this._conversionApi,
@@ -929,7 +929,7 @@ export interface DowncastConversionApi {
 	mapper: Mapper;
 	schema: Schema;
 	writer: DowncastWriter;
-	options: unknown;
+	options: Record<string, unknown>;
 
 	convertItem( item: Item ): void;
 	convertChildren( element: Element ): void;

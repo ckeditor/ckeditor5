@@ -118,13 +118,6 @@ export default class Paragraph extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		paragraph: ParagraphCommand;
-		insertParagraph: InsertParagraphCommand;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Paragraph.pluginName ]: Paragraph;
 	}

@@ -121,7 +121,7 @@ export default class CKFinderCommand extends Command {
 				const resizedUrl = evt.data.resizedUrl;
 
 				if ( !resizedUrl ) {
-					const notification = editor.plugins.get( 'Notification' );
+					const notification: Notification = editor.plugins.get( 'Notification' );
 					const t = editor.locale.t;
 
 					notification.showWarning( t( 'Could not obtain resized image URL.' ), {
@@ -157,4 +157,10 @@ function insertImages( editor: Editor, urls: Array<string> ): void {
 	}
 
 	editor.execute( 'insertImage', { source: urls } );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		ckfinder: CKFinderCommand;
+	}
 }

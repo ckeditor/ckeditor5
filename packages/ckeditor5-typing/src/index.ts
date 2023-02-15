@@ -23,5 +23,6 @@ export { default as InsertTextCommand, type InsertTextCommandExecuteEvent } from
 
 export type { TypingConfig } from './typingconfig';
 export type { ViewDocumentDeleteEvent } from './deleteobserver';
-export type { ViewDocumentInsertTextEvent } from './inserttextobserver';
+export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver';
 export type { TextWatcherMatchedEvent } from './textwatcher';
+export type { TextWatcherMatchedDataEvent } from './textwatcher';

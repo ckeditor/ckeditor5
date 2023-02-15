@@ -90,12 +90,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageEditing.pluginName ]: ImageEditing;
 	}
-
-	interface CommandsMap {
-		insertImage: InsertImageCommand;
-		replaceImageSource: ReplaceImageSourceCommand;
-
-		// `imageInsert` is an alias for backward compatibility.
-		imageInsert: InsertImageCommand;
-	}
 }

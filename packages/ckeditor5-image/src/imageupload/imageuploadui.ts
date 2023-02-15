@@ -11,6 +11,9 @@ import type { Locale } from 'ckeditor5/src/utils';
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { FileDialogButtonView } from 'ckeditor5/src/upload';
 import { createImageTypeRegExp } from './utils';
+import type UploadImageCommand from './uploadimagecommand';
+
+import '../imageconfig';
 
 /**
  * The image upload button plugin.
@@ -36,7 +39,7 @@ export default class ImageUploadUI extends Plugin {
 		const t = editor.t;
 		const componentCreator = ( locale: Locale ) => {
 			const view = new FileDialogButtonView( locale );
-			const command = editor.commands.get( 'uploadImage' )!;
+			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const imageTypes = editor.config.get( 'image.upload.types' )!;
 			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
 

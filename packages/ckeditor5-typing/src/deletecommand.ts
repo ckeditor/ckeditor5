@@ -277,3 +277,10 @@ export default class DeleteCommand extends Command {
 		return true;
 	}
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		deleteForward: DeleteCommand;
+		delete: DeleteCommand;
+	}
+}

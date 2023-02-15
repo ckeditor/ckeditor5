@@ -14,6 +14,8 @@ import {
 	isListItemBlock
 } from '../documentlist/utils/model';
 
+import '../listcommands';
+
 /**
  * The list reversed command. It changes the `listReversed` attribute of the selected list items,
  * letting the user to choose the order of an ordered list.
