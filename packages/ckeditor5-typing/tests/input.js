@@ -44,22 +44,24 @@ describe( 'Input', () => {
 		} );
 
 		describe( 'init()', () => {
-			it( 'should register the input command (deprecated)', async () => {
-				const editor = await ClassicTestEditor.create( domElement, {
-					plugins: [ Input ]
-				} );
-
-				expect( editor.commands.get( 'input' ) ).to.be.instanceOf( InsertTextCommand );
-
-				await editor.destroy();
-			} );
-
 			it( 'should register the insert text command', async () => {
 				const editor = await ClassicTestEditor.create( domElement, {
 					plugins: [ Input ]
 				} );
 
 				expect( editor.commands.get( 'insertText' ) ).to.be.instanceOf( InsertTextCommand );
+
+				await editor.destroy();
+			} );
+
+			it( 'should register the input command (deprecated) with the same command instance', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Input ]
+				} );
+
+				const insertTextCommand = editor.commands.get( 'insertText' );
+
+				expect( editor.commands.get( 'input' ) ).to.equal( insertTextCommand );
 
 				await editor.destroy();
 			} );

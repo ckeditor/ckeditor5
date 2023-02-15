@@ -21,9 +21,10 @@ import type {
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
 	CKBoxRawAssetDefinition
-} from './ckbox';
+} from './ckboxconfig';
 
 import { getEnvironmentId, getImageUrls } from './utils';
+import type CKBoxEditing from './ckboxediting';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -65,7 +66,7 @@ export default class CKBoxCommand extends Command {
 	 * ID from the chosen asset.
 	 *
 	 * The assets are stored only if
-	 * the {@link module:ckbox/ckbox~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
+	 * the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option is set to `false` (by default).
 	 *
 	 * @internal
 	 */
@@ -198,7 +199,7 @@ export default class CKBoxCommand extends Command {
 
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 			const linkCommand = editor.commands.get( 'link' )!;
-			const ckboxEditing = editor.plugins.get( 'CKBoxEditing' );
+			const ckboxEditing: CKBoxEditing = editor.plugins.get( 'CKBoxEditing' );
 			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 
 			const assetsToProcess = prepareAssets( {
@@ -422,3 +423,9 @@ type CKBoxEvent<Name extends '' | 'choose' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckbox' : `ckbox:${ Name }`;
 	args: Name extends 'choose' ? [ assets: Array<CKBoxRawAssetDefinition> ] : [];
 };
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		ckbox: CKBoxCommand;
+	}
+}

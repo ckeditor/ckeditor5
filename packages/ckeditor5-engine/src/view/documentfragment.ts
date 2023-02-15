@@ -97,6 +97,13 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) impl
 	}
 
 	/**
+	 * Artificial element name. Returns `undefined`. Added for compatibility reasons.
+	 */
+	public get name(): undefined {
+		return undefined;
+	}
+
+	/**
 	 * Returns the custom property value for the given key.
 	 */
 	public getCustomProperty( key: string | symbol ): unknown {

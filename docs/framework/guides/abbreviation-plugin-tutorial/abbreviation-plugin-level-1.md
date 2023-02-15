@@ -1,11 +1,11 @@
 ---
 category: abbreviation-plugin
-menu-title: Creating a toolbar button
+menu-title: Defining a model and a view
 order: 24
 modified_at: 2022-07-15
 ---
 
-# Creating a toolbar button
+# Defining a model and a view
 
 This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
 

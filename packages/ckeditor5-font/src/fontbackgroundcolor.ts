@@ -10,7 +10,6 @@
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import FontBackgroundColorEditing from './fontbackgroundcolor/fontbackgroundcolorediting';
 import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui';
-import type { FontColorConfig } from './fontcolor';
 
 /**
  * The font background color plugin.
@@ -41,17 +40,6 @@ export default class FontBackgroundColor extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontBackgroundColor.pluginName ]: FontBackgroundColor;
-	}
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the font background color feature.
-		 * It is introduced by the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} feature.
-		 *
-		 * Read more in {@link module:font/fontcolor~FontColorConfig}.
-		 */
-		fontBackgroundColor?: FontColorConfig;
 	}
 }
 

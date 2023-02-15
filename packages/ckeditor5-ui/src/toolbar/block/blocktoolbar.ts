@@ -36,6 +36,8 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
+import '../../uiconfig';
+
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;
 
@@ -526,40 +528,7 @@ export default class BlockToolbar extends Plugin {
 	}
 }
 
-/**
- * The block toolbar configuration. Used by the {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}
- * feature.
- *
- *		const config = {
- *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'bulletedList', 'numberedList' ]
- *		};
- *
- * You can also use `'|'` to create a separator between groups of items:
- *
- *		const config = {
- *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
- *		};
- *
- * ## Configuring items grouping
- *
- * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
- *
- *		const config = {
- *			blockToolbar: {
- *				items: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ],
- *				shouldNotGroupWhenFull: true
- *			},
- *		};
- *
- * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
- */
  declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-		blockToolbar?: ToolbarConfig;
-	}
-
 	interface PluginsMap {
 		[ BlockToolbar.pluginName ]: BlockToolbar;
 	}

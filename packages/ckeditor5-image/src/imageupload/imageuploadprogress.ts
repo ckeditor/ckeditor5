@@ -92,7 +92,7 @@ export default class ImageUploadProgress extends Plugin {
 			return;
 		}
 
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const fileRepository = editor.plugins.get( FileRepository );
 		const status = uploadId ? data.attributeNewValue : null;
 		const placeholder = this.placeholder;

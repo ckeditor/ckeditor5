@@ -1018,7 +1018,7 @@ export default class Model extends ObservableMixin() {
 	 *
 	 * @param type {@link module:engine/model/batch~Batch#constructor The type} of the batch.
 	 */
-	public createBatch( type: BatchType ): Batch {
+	public createBatch( type?: BatchType ): Batch {
 		return new Batch( type );
 	}
 

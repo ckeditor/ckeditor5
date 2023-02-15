@@ -11,6 +11,10 @@ import type { Locale } from 'ckeditor5/src/utils';
 import type { Editor } from 'ckeditor5/src/core';
 import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } from 'ckeditor5/src/ui';
 
+import type ImageInsertUI from './imageinsertui';
+
+import '../imageconfig';
+
 /**
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
@@ -21,7 +25,7 @@ import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } 
  */
 export function prepareIntegrations( editor: Editor ): Record<string, View> {
 	const panelItems = editor.config.get( 'image.insert.integrations' );
-	const imageInsertUIPlugin = editor.plugins.get( 'ImageInsertUI' );
+	const imageInsertUIPlugin: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
 
 	const PREDEFINED_INTEGRATIONS: Record<string, View> = {
 		'insertImageViaUrl': createLabeledInputView( editor.locale )

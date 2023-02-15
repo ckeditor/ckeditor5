@@ -19,6 +19,8 @@ import type {
 import type { Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
+import type ImageUtils from '../imageutils';
+
 /**
  * Creates a view element representing the inline image.
  *
@@ -61,7 +63,7 @@ export function createBlockImageViewElement( writer: DowncastWriter ): ViewConta
  * @param matchImageType The type of created image.
  */
 export function getImgViewElementMatcher( editor: Editor, matchImageType: 'imageBlock' | 'imageInline' ): MatcherPattern {
-	const imageUtils = editor.plugins.get( 'ImageUtils' );
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 	const areBothImagePluginsLoaded = editor.plugins.has( 'ImageInlineEditing' ) && editor.plugins.has( 'ImageBlockEditing' );
 
 	return element => {

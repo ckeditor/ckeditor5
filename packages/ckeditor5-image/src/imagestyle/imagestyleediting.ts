@@ -8,12 +8,13 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine';
+
 import ImageStyleCommand from './imagestylecommand';
 import ImageUtils from '../imageutils';
 import utils from './utils';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import type { ImageStyleOptionDefinition } from '../imagestyle';
-import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine';
+import type { ImageStyleOptionDefinition } from '../imageconfig';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -152,9 +153,5 @@ export default class ImageStyleEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
-	}
-
-	interface CommandsMap {
-		imageStyle: ImageStyleCommand;
 	}
 }
