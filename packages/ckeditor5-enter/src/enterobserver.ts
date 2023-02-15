@@ -82,7 +82,7 @@ export type ViewDocumentEnterEvent = BubblingEvent<{
 export interface EnterEventData extends DomEventData<InputEvent> {
 
 	/**
-	 * Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>)
+	 * Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>).
 	 */
 	isSoft: boolean;
 }
