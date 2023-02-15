@@ -411,7 +411,7 @@ export default class MentionUI extends Plugin {
 
 			this._requestFeedDebounced( markerDefinition!.marker, feedText );
 
-			// @if CK_DEBUG_MENTION // console.groupEnd( '[TextWatcher] matched' );
+			// @if CK_DEBUG_MENTION // console.groupEnd();
 		} );
 
 		watcher.on( 'unmatched', () => {

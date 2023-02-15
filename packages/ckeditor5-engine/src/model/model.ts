@@ -72,6 +72,9 @@ export default class Model extends ObservableMixin() {
 	 */
 	private _currentWriter: Writer | null;
 
+	// @if CK_DEBUG_ENGINE // private _operationLogs: Array<string>;
+	// @if CK_DEBUG_ENGINE // private _appliedOperations: Array<Operation>;
+
 	constructor() {
 		super();
 
@@ -167,6 +170,9 @@ export default class Model extends ObservableMixin() {
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
 		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
+
+		// @if CK_DEBUG_ENGINE // this._operationLogs = [];
+		// @if CK_DEBUG_ENGINE // this._appliedOperations = [];
 	}
 
 	/**
@@ -354,31 +360,22 @@ export default class Model extends ObservableMixin() {
 	public applyOperation( operation: Operation ): void {
 		// @if CK_DEBUG_ENGINE // console.log( 'Applying ' + operation );
 
-		// @if CK_DEBUG_ENGINE // if ( !this._operationLogs ) {
-		// @if CK_DEBUG_ENGINE //	this._operationLogs = [];
-		// @if CK_DEBUG_ENGINE // }
-
 		// @if CK_DEBUG_ENGINE // this._operationLogs.push( JSON.stringify( operation ) );
-
-		// @if CK_DEBUG_ENGINE //if ( !this._appliedOperations ) {
-		// @if CK_DEBUG_ENGINE //	this._appliedOperations = [];
-		// @if CK_DEBUG_ENGINE //}
-
-		// @if CK_DEBUG_ENGINE //this._appliedOperations.push( operation );
+		// @if CK_DEBUG_ENGINE // this._appliedOperations.push( operation );
 
 		operation._execute();
 	}
 
-	// @if CK_DEBUG_ENGINE // getAppliedOperation() {
-	// @if CK_DEBUG_ENGINE //	if ( !this._appliedOperations ) {
-	// @if CK_DEBUG_ENGINE //		return '';
-	// @if CK_DEBUG_ENGINE //	}
+	// @if CK_DEBUG_ENGINE // public getAppliedOperation(): string {
+	// @if CK_DEBUG_ENGINE // 	if ( !this._appliedOperations ) {
+	// @if CK_DEBUG_ENGINE // 		return '';
+	// @if CK_DEBUG_ENGINE // 	}
 
-	// @if CK_DEBUG_ENGINE //	return this._appliedOperations.map( JSON.stringify ).join( '-------' );
+	// @if CK_DEBUG_ENGINE // 	return this._appliedOperations.map( operation => JSON.stringify( operation ) ).join( '-------' );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // createReplayer( stringifiedOperations ) {
-	// @if CK_DEBUG_ENGINE //	return new OperationReplayer( this, '-------', stringifiedOperations );
+	// @if CK_DEBUG_ENGINE // public createReplayer( stringifiedOperations: string ): typeof OperationReplayer {
+	// @if CK_DEBUG_ENGINE // 	return new OperationReplayer( this, '-------', stringifiedOperations );
 	// @if CK_DEBUG_ENGINE // }
 
 	public insertContent(

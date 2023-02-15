@@ -33,7 +33,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		const document = this.document;
 
 		document.on<ViewDocumentCompositionStartEvent>( 'compositionstart', () => {
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
@@ -43,7 +43,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		}, { priority: 'low' } );
 
 		document.on<ViewDocumentCompositionEndEvent>( 'compositionend', () => {
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
@@ -57,7 +57,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 	 * @inheritDoc
 	 */
 	public onDomEvent( domEvent: CompositionEvent ): void {
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
 		// @if CK_DEBUG_TYPING // }
 
@@ -65,7 +65,7 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			data: domEvent.data
 		} );
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}

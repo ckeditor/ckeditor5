@@ -234,23 +234,23 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) impl
 		return this._customProperties.delete( key );
 	}
 
-	// @if CK_DEBUG_ENGINE // printTree() {
-	// @if CK_DEBUG_ENGINE //	let string = 'ViewDocumentFragment: [';
+	// @if CK_DEBUG_ENGINE // public printTree(): string {
+	// @if CK_DEBUG_ENGINE // 	let string = 'ViewDocumentFragment: [';
 
-	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
-	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( 1 ) + child.data;
-	// @if CK_DEBUG_ENGINE //		} else {
-	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( 1 );
-	// @if CK_DEBUG_ENGINE //		}
-	// @if CK_DEBUG_ENGINE //	}
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
+	// @if CK_DEBUG_ENGINE // 			string += '\n' + '\t'.repeat( 1 ) + child.data;
+	// @if CK_DEBUG_ENGINE // 		} else {
+	// @if CK_DEBUG_ENGINE // 			string += '\n' + child.printTree( 1 );
+	// @if CK_DEBUG_ENGINE // 		}
+	// @if CK_DEBUG_ENGINE // 	}
 
-	// @if CK_DEBUG_ENGINE //	string += '\n]';
+	// @if CK_DEBUG_ENGINE // 	string += '\n]';
 
-	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // 	return string;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // public logTree(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
 	// @if CK_DEBUG_ENGINE // }
 }
