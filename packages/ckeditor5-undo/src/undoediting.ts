@@ -21,12 +21,23 @@ import type {
  * The undo engine feature.
  *
  * It introduces the `'undo'` and `'redo'` commands to the editor.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class UndoEditing extends Plugin {
+	/**
+	 * The command that manages the undo {@link module:engine/model/batch~Batch batches} stack (history).
+	 * Created and registered during the {@link #init feature initialization}.
+	 */
 	private _undoCommand!: UndoCommand;
+
+	/**
+	 * The command that manages the redo {@link module:engine/model/batch~Batch batches} stack (history).
+	 * Created and registered during the {@link #init feature initialization}.
+	 */
 	private _redoCommand!: RedoCommand;
+
+	/**
+	 * Keeps track of which batches were registered in undo.
+	 */
 	private _batchRegistry: WeakSet<Batch>;
 
 	/**
@@ -42,28 +53,6 @@ export default class UndoEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * The command that manages the undo {@link module:engine/model/batch~Batch batches} stack (history).
-		 * Created and registered during the {@link #init feature initialization}.
-		 *
-		 * @private
-		 * @member {module:undo/undocommand~UndoCommand} #_undoCommand
-		 */
-
-		/**
-		 * The command that manages the redo {@link module:engine/model/batch~Batch batches} stack (history).
-		 * Created and registered during the {@link #init feature initialization}.
-		 *
-		 * @private
-		 * @member {module:undo/undocommand~UndoCommand} #_redoCommand
-		 */
-
-		/**
-		 * Keeps track of which batches were registered in undo.
-		 *
-		 * @private
-		 * @member {WeakSet.<module:engine/model/batch~Batch>}
-		 */
 		this._batchRegistry = new WeakSet();
 	}
 
@@ -95,8 +84,8 @@ export default class UndoEditing extends Plugin {
 
 			const batch = operation.batch!;
 
-			const isRedoBatch = this._redoCommand._createdBatches.has( batch );
-			const isUndoBatch = this._undoCommand._createdBatches.has( batch );
+			const isRedoBatch = this._redoCommand.createdBatches.has( batch );
+			const isUndoBatch = this._undoCommand.createdBatches.has( batch );
 			const wasProcessed = this._batchRegistry.has( batch );
 
 			// Skip the batch if it was already processed.
