@@ -38,22 +38,13 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * Keeps track of which batches were registered in undo.
 	 */
-	private _batchRegistry: WeakSet<Batch>;
+	private _batchRegistry = new WeakSet<Batch>();
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName(): 'UndoEditing' {
 		return 'UndoEditing';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._batchRegistry = new WeakSet();
 	}
 
 	/**
