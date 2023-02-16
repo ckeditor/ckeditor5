@@ -303,7 +303,8 @@ function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 		return { modulePath, pluginName };
 	} );
 
-	const classicEditorImportPath = path.join( cwd, 'node_modules', '@ckeditor', 'ckeditor5-editor-classic', 'src', 'classiceditor' );
+	const classicEditorImportPath = path.join( cwd, 'node_modules', '@ckeditor', 'ckeditor5-editor-classic', 'src', 'classiceditor' )
+		.replace( /\\/g, '/' );
 
 	const sourceFileContent = [
 		'/**',
