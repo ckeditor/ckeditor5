@@ -27,21 +27,18 @@ export default abstract class BaseCommand extends Command {
 	 * * {@link module:engine/model/batch~Batch batch} saved by the command,
 	 * * {@link module:engine/model/selection~Selection selection} state at the moment of saving the batch.
 	 */
-	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }>;
+	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }> = [];
 
 	/**
 	 * Stores all batches that were created by this command.
 	 */
-	protected _createdBatches: WeakSet<Batch>;
+	protected _createdBatches = new WeakSet<Batch>();
 
 	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
 		super( editor );
-
-		this._stack = [];
-		this._createdBatches = new WeakSet();
 
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
