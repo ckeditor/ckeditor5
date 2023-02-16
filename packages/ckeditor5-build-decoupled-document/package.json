@@ -21,6 +21,7 @@
     "framework"
   ],
   "main": "./build/ckeditor.js",
+  "types": "./build/ckeditor.d.ts",
   "files": [
     "build",
     "ckeditor5-metadata.json",
@@ -79,7 +80,7 @@
     "directory": "packages/ckeditor5-build-decoupled-document"
   },
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack --mode production && tsc -p ./tsconfig.release.json",
     "preversion": "npm run build"
   }
 }
