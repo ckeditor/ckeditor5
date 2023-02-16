@@ -312,7 +312,7 @@ function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 		' */',
 		'',
 		'// The editor creator to use.',
-		`import ClassicEditorBase from '${ classicEditorImportPath }';`,
+		`import ClassicEditorBase from '${ normalizePath( classicEditorImportPath ) }';`,
 		''
 	];
 
