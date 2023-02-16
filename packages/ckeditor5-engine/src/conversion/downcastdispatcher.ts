@@ -664,15 +664,19 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
  * its attributes or direct children changed.
  *
- * @param {Object} data
- * @param {Iterable.<module:engine/model/differ~DiffItem>} data.changes A buffered changes to get reduced.
  * @eventName reduceChanges
  */
 export type DowncastReduceChangesEvent = {
 	name: 'reduceChanges';
-	args: [ data: {
-		changes: Iterable<DiffItem | DiffItemReinsert>;
-	} ];
+	args: [ data: DowncastReduceChangesEventData ];
+};
+
+export type DowncastReduceChangesEventData = {
+
+	/**
+	 * A buffered changes to get reduced.
+	 */
+	changes: Iterable<DiffItem | DiffItemReinsert>;
 };
 
 type EventMap<TItem = Item> = {

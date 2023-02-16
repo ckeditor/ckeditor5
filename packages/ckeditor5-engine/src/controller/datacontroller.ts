@@ -182,8 +182,14 @@ export default class DataController extends EmitterMixin() {
 	 * use `'none'`. In such cases the exact content will be returned (for example a `<p>&nbsp;</p>` for an empty editor).
 	 * @returns Output data.
 	 */
-	public get( options: { rootName?: string; trim?: boolean } & Record<string, unknown> = {} ): string {
-		const { rootName = 'main', trim = 'empty' } = options as Record<string, string>;
+	public get(
+		options: {
+			rootName?: string;
+			trim?: 'empty' | 'none';
+			[ key: string ]: unknown;
+		} = {}
+	): string {
+		const { rootName = 'main', trim = 'empty' } = options;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**

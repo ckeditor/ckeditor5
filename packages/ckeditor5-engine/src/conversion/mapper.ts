@@ -288,9 +288,6 @@ export default class Mapper extends EmitterMixin() {
 		this._deferredBindingRemovals = new Map();
 	}
 
-	public toModelElement( viewElement: ViewElement ): ModelElement | undefined;
-	public toModelElement( viewDocumentFragment: ViewDocumentFragment ): ModelDocumentFragment | undefined;
-
 	/**
 	 * Gets the corresponding model element.
 	 *
@@ -299,12 +296,19 @@ export default class Mapper extends EmitterMixin() {
 	 * @param viewElement View element.
 	 * @returns Corresponding model element or `undefined` if not found.
 	 */
+	public toModelElement( viewElement: ViewElement ): ModelElement | undefined;
+
+	/**
+	 * Gets the corresponding model document fragment.
+	 *
+	 * @param viewDocumentFragment View document fragment.
+	 * @returns Corresponding model document fragment or `undefined` if not found.
+	 */
+	public toModelElement( viewDocumentFragment: ViewDocumentFragment ): ModelDocumentFragment | undefined;
+
 	public toModelElement( viewElement: ViewElement | ViewDocumentFragment ): ModelElement | ModelDocumentFragment | undefined {
 		return this._viewToModelMapping.get( viewElement );
 	}
-
-	public toViewElement( modelElement: ModelElement ): ViewElement | undefined;
-	public toViewElement( modelDocumentFragment: ModelDocumentFragment ): ViewDocumentFragment | undefined;
 
 	/**
 	 * Gets the corresponding view element.
@@ -312,6 +316,16 @@ export default class Mapper extends EmitterMixin() {
 	 * @param modelElement Model element.
 	 * @returns Corresponding view element or `undefined` if not found.
 	 */
+	public toViewElement( modelElement: ModelElement ): ViewElement | undefined;
+
+	/**
+	 * Gets the corresponding view document fragment.
+	 *
+	 * @param modelDocumentFragment Model document fragment.
+	 * @returns Corresponding view document fragment or `undefined` if not found.
+	 */
+	public toViewElement( modelDocumentFragment: ModelDocumentFragment ): ViewDocumentFragment | undefined;
+
 	public toViewElement( modelElement: ModelElement | ModelDocumentFragment ): ViewElement | ViewDocumentFragment | undefined {
 		return this._modelToViewMapping.get( modelElement );
 	}
@@ -717,19 +731,38 @@ export default class Mapper extends EmitterMixin() {
  * Also, the condition that checks if a special case scenario happened should be as simple as possible.
  *
  * @eventName modelToViewPosition
- * @param data Data pipeline object that can store and pass data between callbacks. The callback should add
- * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
- * @param data.mapper Mapper instance that fired the event.
  */
 export type MapperModelToViewPositionEvent = {
 	name: 'modelToViewPosition';
 	args: [ MapperModelToViewPositionEventData ];
 };
 
+/**
+ * Data pipeline object that can store and pass data between callbacks. The callback should add
+ * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
+ */
 export type MapperModelToViewPositionEventData = {
+
+	/**
+	 * Mapper instance that fired the event.
+	 */
 	mapper: Mapper;
+
+	/**
+	 * The model position.
+	 */
 	modelPosition: ModelPosition;
+
+	/**
+	 * The callback should add the `viewPosition` value to that object with calculated the
+	 * {@link module:engine/view/position~Position view position}.
+	 */
 	viewPosition?: ViewPosition;
+
+	/**
+	 * Should be set to `true` if the model position to map is pointing to a place
+	 * in model tree which no longer exists. For example, it could be an end of a removed model range.
+	 */
 	isPhantom?: boolean;
 };
 
@@ -763,17 +796,31 @@ export type MapperModelToViewPositionEventData = {
  * Also, the condition that checks if special case scenario happened should be as simple as possible.
  *
  * @eventName viewToModelPosition
- * @param data Data pipeline object that can store and pass data between callbacks. The callback should add
- * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
- * @param data.mapper Mapper instance that fired the event.
  */
 export type MapperViewToModelPositionEvent = {
 	name: 'viewToModelPosition';
 	args: [ MapperViewToModelPositionEventData ];
 };
 
+/**
+ * Data pipeline object that can store and pass data between callbacks. The callback should add
+ * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
+ */
 export type MapperViewToModelPositionEventData = {
+
+	/**
+	 * Mapper instance that fired the event.
+	 */
 	mapper: Mapper;
+
+	/**
+	 * The callback should add `modelPosition` value to that object with calculated
+	 * {@link module:engine/model/position~Position model position}.
+	 */
 	modelPosition?: ModelPosition;
+
+	/**
+	 * The view position.
+	 */
 	viewPosition: ViewPosition;
 };
