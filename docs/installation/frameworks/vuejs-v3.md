@@ -273,7 +273,7 @@ import vue from '@vitejs/plugin-vue'
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
-  plugins: [ 
+  plugins: [
     vue(),
     ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
   ],
@@ -403,7 +403,7 @@ module.exports = {
 
 ### Using the editor from source
 
-Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
+Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 ```bash
 npm install --save \
