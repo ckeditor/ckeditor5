@@ -26,7 +26,7 @@ export type {
 } from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';
-export { default as DataApiMixin } from './editor/utils/dataapimixin';
+export { default as DataApiMixin, type DataApi } from './editor/utils/dataapimixin';
 export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin';
 export { default as secureSourceElement } from './editor/utils/securesourceelement';
 
