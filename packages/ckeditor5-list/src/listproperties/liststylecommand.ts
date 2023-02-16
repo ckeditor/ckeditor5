@@ -23,7 +23,7 @@ export default class ListStyleCommand extends Command {
 	declare public isStyleTypeSupported: undefined;
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 * @readonly
 	 */
 	declare public value: string | null;

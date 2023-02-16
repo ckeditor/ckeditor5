@@ -21,40 +21,33 @@ import type { MatcherPattern } from '../view/matcher';
 /**
  * The HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
- *
- * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class HtmlDataProcessor implements DataProcessor {
+	/**
+	 * A DOM parser instance used to parse an HTML string to an HTML document.
+	 */
 	public domParser: DOMParser;
+
+	/**
+	 * A DOM converter used to convert DOM elements to view elements.
+	 */
 	public domConverter: DomConverter;
+
+	/**
+	 * A basic HTML writer instance used to convert DOM elements to an HTML string.
+	 */
 	public htmlWriter: HtmlWriter;
+
 	public skipComments: boolean = true;
 
 	/**
 	 * Creates a new instance of the HTML data processor class.
 	 *
-	 * @param {module:engine/view/document~Document} document The view document instance.
+	 * @param document The view document instance.
 	 */
 	constructor( document: ViewDocument ) {
-		/**
-		 * A DOM parser instance used to parse an HTML string to an HTML document.
-		 *
-		 * @member {DOMParser}
-		 */
 		this.domParser = new DOMParser();
-
-		/**
-		 * A DOM converter used to convert DOM elements to view elements.
-		 *
-		 * @member {module:engine/view/domconverter~DomConverter}
-		 */
 		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
-
-		/**
-		 * A basic HTML writer instance used to convert DOM elements to an HTML string.
-		 *
-		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
-		 */
 		this.htmlWriter = new BasicHtmlWriter();
 	}
 
@@ -62,8 +55,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 	 * Converts a provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
 	 * to data format &mdash; in this case to an HTML string.
 	 *
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
-	 * @returns {String} HTML string.
+	 * @returns HTML string.
 	 */
 	public toData( viewFragment: ViewDocumentFragment ): string {
 		// Convert view DocumentFragment to DOM DocumentFragment.
@@ -76,8 +68,8 @@ export default class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * Converts the provided HTML string to a view tree.
 	 *
-	 * @param {String} data An HTML string.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} A converted view element.
+	 * @param data An HTML string.
+	 * @returns A converted view element.
 	 */
 	public toView( data: string ): ViewDocumentFragment {
 		// Convert input HTML data to DOM DocumentFragment.
@@ -94,8 +86,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 	 * The raw data can be later accessed by a
 	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as raw data.
+	 * @param pattern Pattern matching all view elements whose content should be treated as raw data.
 	 */
 	public registerRawContentMatcher( pattern: MatcherPattern ): void {
 		this.domConverter.registerRawContentMatcher( pattern );
@@ -110,7 +101,7 @@ export default class HtmlDataProcessor implements DataProcessor {
 	 *
 	 * This mode may be required by some features and will be turned on by them automatically.
 	 *
-	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
+	 * @param type Whether to use the default or the marked `&nbsp;` block fillers.
 	 */
 	public useFillerType( type: 'default' | 'marked' ): void {
 		this.domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
@@ -119,9 +110,6 @@ export default class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * Converts an HTML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
-	 *
-	 * @param {String} data
-	 * @returns {DocumentFragment}
 	 */
 	protected _toDom( data: string ): DocumentFragment {
 		// Wrap data with a <body> tag so leading non-layout nodes (like <script>, <style>, HTML comment)
