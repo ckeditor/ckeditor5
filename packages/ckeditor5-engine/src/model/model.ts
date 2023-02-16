@@ -689,6 +689,7 @@ export default class Model extends ObservableMixin() {
 			doNotResetEntireContent?: boolean;
 			doNotAutoparagraph?: boolean;
 			direction?: 'forward' | 'backward';
+			[ i: string ]: unknown;
 		}
 	): void {
 		deleteContent( this, selection, options );
