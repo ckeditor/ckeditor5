@@ -73,8 +73,7 @@ export default class DualContentModelElementSupport extends Plugin {
 
 			const paragraphLikeModelDefinition: DataSchemaBlockElementDefinition = {
 				model: blockDefinition.paragraphLikeModel,
-				view: blockDefinition.view,
-				isBlock: true
+				view: blockDefinition.view
 			};
 
 			schema.register( blockDefinition.model, blockDefinition.modelSchema );

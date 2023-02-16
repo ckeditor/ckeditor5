@@ -69,11 +69,11 @@ export default class DataSchema extends Plugin {
 	 */
 	public init(): void {
 		for ( const definition of defaultConfig.block ) {
-			this.registerBlockElement( definition as DataSchemaBlockElementDefinition );
+			this.registerBlockElement( definition );
 		}
 
 		for ( const definition of defaultConfig.inline ) {
-			this.registerInlineElement( definition as DataSchemaInlineElementDefinition );
+			this.registerInlineElement( definition );
 		}
 	}
 
@@ -81,14 +81,14 @@ export default class DataSchema extends Plugin {
 	 * Add new data schema definition describing block element.
 	 */
 	public registerBlockElement( definition: DataSchemaBlockElementDefinition ): void {
-		this._definitions.set( definition.model, { ...definition, isBlock: true } as DataSchemaBlockElementDefinition );
+		this._definitions.set( definition.model, { ...definition, isBlock: true } );
 	}
 
 	/**
 	 * Add new data schema definition describing inline element.
 	 */
 	public registerInlineElement( definition: DataSchemaInlineElementDefinition ): void {
-		this._definitions.set( definition.model, { ...definition, isInline: true } as DataSchemaInlineElementDefinition );
+		this._definitions.set( definition.model, { ...definition, isInline: true } );
 	}
 
 	/**
@@ -100,7 +100,7 @@ export default class DataSchema extends Plugin {
 	 * @param definition Definition update.
 	 */
 	public extendBlockElement( definition: DataSchemaBlockElementDefinition ): void {
-		this._extendDefinition( { ...definition, isBlock: true } as DataSchemaBlockElementDefinition );
+		this._extendDefinition( { ...definition, isBlock: true } );
 	}
 
 	/**
@@ -112,7 +112,7 @@ export default class DataSchema extends Plugin {
 	 * @param definition Definition update.
 	 */
 	public extendInlineElement( definition: DataSchemaInlineElementDefinition ): void {
-		this._extendDefinition( { ...definition, isInline: true } as DataSchemaInlineElementDefinition );
+		this._extendDefinition( { ...definition, isInline: true } );
 	}
 
 	/**
@@ -228,18 +228,23 @@ export interface DataSchemaDefinition {
 	 * The model schema item definition describing registered model.
 	 */
 	modelSchema?: SchemaItemDefinition;
+
+	/**
+	 * Indicates that the definition describes block element.
+	 * Set by {@link module:html-support/dataschema~DataSchema#registerBlockElement} method.
+	 */
+	isBlock?: boolean;
+
+	/**
+	 * Indicates that the definition describes inline element.
+	 */
+	isInline?: boolean;
 }
 
 /**
  * A definition of {@link module:html-support/dataschema~DataSchema data schema} for block elements.
  */
 export interface DataSchemaBlockElementDefinition extends DataSchemaDefinition {
-
-	/**
-	 * Indicates that the definition describes block element.
-	 * Set by {@link module:html-support/dataschema~DataSchema#registerBlockElement} method.
-	 */
-	isBlock: boolean;
 
 	/**
 	 * Should be used when an element can behave both as a sectioning element (e.g. article) and
@@ -258,11 +263,6 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 *  Additional metadata describing the model attribute.
 	 */
 	attributeProperties?: AttributeProperties;
-
-	/**
-	 * Indicates that the definition describes inline element.
-	 */
-	isInline: boolean;
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by

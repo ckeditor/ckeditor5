@@ -10,7 +10,7 @@
 import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 import { cloneDeep } from 'lodash-es';
 
-export interface GHSViewAttribute extends Record<string, any> {
+export interface GHSViewAttributes {
 	attributes?: Record<string, unknown>;
 	classes?: Array<string>;
 	styles?: Record<string, string>;
@@ -26,8 +26,8 @@ export interface GHSViewAttribute extends Record<string, any> {
 */
 export function updateViewAttributes(
 	writer: DowncastWriter,
-	oldViewAttributes: GHSViewAttribute,
-	newViewAttributes: GHSViewAttribute,
+	oldViewAttributes: GHSViewAttributes,
+	newViewAttributes: GHSViewAttributes,
 	viewElement: ViewElement
 ): void {
 	if ( oldViewAttributes ) {
@@ -46,7 +46,7 @@ export function updateViewAttributes(
  * @param viewAttributes The GHS attribute value.
  * @param viewElement The view element to update.
  */
-export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttribute, viewElement: ViewElement ): void {
+export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -69,7 +69,7 @@ export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSVi
  * @param viewAttributes The GHS attribute value.
  * @param viewElement The view element to update.
  */
-export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttribute, viewElement: ViewElement ): void {
+export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.removeAttribute( key, viewElement );
@@ -90,13 +90,13 @@ export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GH
 /**
 * Merges view element attribute objects.
 */
-export function mergeViewElementAttributes( target: GHSViewAttribute, source: GHSViewAttribute ): GHSViewAttribute {
-	const result = cloneDeep( target );
-
-	for ( const key in source ) {
+export function mergeViewElementAttributes( target: GHSViewAttributes, source: GHSViewAttributes ): GHSViewAttributes {
+	const result = cloneDeep( target ) as Record<string, any>;
+	let key: keyof GHSViewAttributes = 'attributes';
+	for ( key in source ) {
 		// Merge classes.
-		if ( Array.isArray( source[ key ] ) ) {
-			result[ key ] = Array.from( new Set( [ ...( target[ key ] || [] ), ...source[ key ] ] ) );
+		if ( key == 'classes' ) {
+			result[ key ] = Array.from( new Set( [ ...( target[ key ] || [] ), ...source[ key ]! ] ) );
 		}
 
 		// Merge attributes or styles.

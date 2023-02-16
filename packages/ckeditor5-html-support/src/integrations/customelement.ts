@@ -14,7 +14,7 @@ import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor
 
 import DataSchema from '../dataschema';
 import DataFilter, { type RegisterEvent } from '../datafilter';
-import { type GHSViewAttribute, setViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
@@ -124,7 +124,7 @@ export default class CustomElementSupport extends Plugin {
 					const viewElement = writer.createRawElement( viewName );
 
 					if ( modelElement.hasAttribute( 'htmlAttributes' ) ) {
-						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttribute, viewElement );
+						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttributes, viewElement );
 					}
 
 					return viewElement;
@@ -155,7 +155,7 @@ export default class CustomElementSupport extends Plugin {
 					} );
 
 					if ( modelElement.hasAttribute( 'htmlAttributes' ) ) {
-						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttribute, viewElement );
+						setViewAttributes( writer, modelElement.getAttribute( 'htmlAttributes' ) as GHSViewAttributes, viewElement );
 					}
 
 					return viewElement;

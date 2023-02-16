@@ -23,7 +23,7 @@ import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
 import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import type { GHSViewAttribute } from './conversionutils';
+import type { GHSViewAttributes } from './conversionutils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
 
@@ -102,7 +102,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
 	 */
-	private addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -124,7 +124,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -235,7 +235,7 @@ function* getItemsToUpdateGhsAttribute(
 	model: Model,
 	selectable: LimitedSelectable,
 	ghsAttributeName: string
-): IterableIterator<any> {
+): IterableIterator<Item | DocumentSelection> {
 	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
 		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
 			yield selectable;
@@ -270,43 +270,44 @@ interface CallbackMap {
 	classes: ( t: Set<string> ) => void;
 	attributes: ( t: Map<string, unknown> ) => void;
 	styles: ( t: Map<string, string> ) => void;
-
 }
 
 /**
  * Updates a GHS attribute on a specified item.
  * @param callback That receives a map or set as an argument and should modify it (add or remove entries).
  */
-function modifyGhsAttribute<T extends 'classes' | 'attributes' | 'styles'>(
+function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
 	writer: Writer,
 	item: Item | DocumentSelection,
 	ghsAttributeName: string,
 	subject: T,
 	callback: CallbackMap[T]
 ) {
-	const oldValue = item.getAttribute( ghsAttributeName ) as GHSViewAttribute;
-	const newValue: GHSViewAttribute = {};
+	const oldValue = item.getAttribute( ghsAttributeName ) as Record<string, any>;
+	const newValue: Record<string, any> = {};
 
-	for ( const kind of [ 'attributes', 'styles', 'classes' ] ) {
+	for ( const kind of [ 'attributes', 'styles', 'classes' ] as Array<T> ) {
+		// Properties other than `subject` should be assigned from `oldValue`.
 		if ( kind != subject ) {
 			if ( oldValue && oldValue[ kind ] ) {
 				newValue[ kind ] = oldValue[ kind ];
 			}
-		} else {
-			if ( subject == 'classes' ) {
-				const values = new Set<string>( oldValue && oldValue[ kind ] || [] );
-				( callback as CallbackMap['classes'] )( values );
-				if ( values.size ) {
-					newValue[ kind ] = Array.from( values );
-				}
+			continue;
+		}
+		// `callback` should be applied on property [`subject`].
+		if ( subject == 'classes' ) {
+			const values = new Set<string>( oldValue && oldValue.classes || [] );
+			( callback as CallbackMap['classes'] )( values );
+			if ( values.size ) {
+				newValue[ kind ] = Array.from( values ) as GHSViewAttributes[T];
 			}
-			else {
-				const values = new Map<string, unknown>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
-				( callback as CallbackMap['attributes'] )( values );
-				if ( values.size ) {
-					newValue[ kind ] = Object.fromEntries( values );
-				}
-			}
+			continue;
+		}
+
+		const values = new Map<string, unknown>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
+		( callback as CallbackMap['attributes'] )( values );
+		if ( values.size ) {
+			newValue[ kind ] = Object.fromEntries( values ) as GHSViewAttributes[T];
 		}
 	}
 

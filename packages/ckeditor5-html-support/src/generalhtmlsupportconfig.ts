@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/generalhtmlsupport
+ * @module html-support/generalhtmlsupportconfig
  */
 
 import type { MatcherPattern } from 'ckeditor5/src/engine';
@@ -77,7 +77,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the General HTML Support feature.
 		 * Introduced by the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} feature.
 		 *
-		 * Read more in {@link module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig}.
+		 * Read more in {@link module:html-support/generalhtmlsupportconfig~GeneralHtmlSupportConfig}.
 		 */
 		htmlSupport?: GeneralHtmlSupportConfig;
 	}

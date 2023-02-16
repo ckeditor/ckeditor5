@@ -11,9 +11,14 @@ import { isEqual } from 'lodash-es';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 import type { GetCallback } from 'ckeditor5/src/utils';
-import type { DocumentListEditing, DocumentListEditingPostFixerEvent } from '@ckeditor/ckeditor5-list';
+import type {
+	DocumentListEditing,
+	DocumentListEditingPostFixerEvent,
+	IndentCommand,
+	DocumentListIndentCommand
+} from '@ckeditor/ckeditor5-list';
 
-import { type GHSViewAttribute, setViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
 import DataFilter, { type RegisterEvent } from '../datafilter';
 
 /**
@@ -55,7 +60,7 @@ export default class DocumentListElementSupport extends Plugin {
 			scope: 'item',
 			attributeName: 'htmlLiAttributes',
 
-			setAttributeOnDowncast( writer, attributeValue: GHSViewAttribute, viewElement ) {
+			setAttributeOnDowncast( writer, attributeValue: GHSViewAttributes, viewElement ) {
 				setViewAttributes( writer, attributeValue, viewElement );
 			}
 		} );
@@ -64,7 +69,7 @@ export default class DocumentListElementSupport extends Plugin {
 			scope: 'list',
 			attributeName: 'htmlListAttributes',
 
-			setAttributeOnDowncast( writer, viewAttributes: GHSViewAttribute, viewElement ) {
+			setAttributeOnDowncast( writer, viewAttributes: GHSViewAttributes, viewElement ) {
 				setViewAttributes( writer, viewAttributes, viewElement );
 			}
 		} );
@@ -166,7 +171,8 @@ export default class DocumentListElementSupport extends Plugin {
 		}
 
 		// Reset list attributes after indenting list items.
-		this.listenTo( editor.commands.get( 'indentList' )!, 'afterExecute', ( evt, changedBlocks ) => {
+		const indentList: IndentCommand | DocumentListIndentCommand = editor.commands.get( 'indentList' )!;
+		this.listenTo( indentList, 'afterExecute', ( evt, changedBlocks ) => {
 			editor.model.change( writer => {
 				for ( const node of changedBlocks ) {
 					// Just reset the attribute.

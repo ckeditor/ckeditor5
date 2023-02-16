@@ -50,8 +50,7 @@ export default class HeadingElementSupport extends Plugin {
 			if ( 'model' in option && 'view' in option ) {
 				dataSchema.registerBlockElement( {
 					view: option.view as string,
-					model: option.model,
-					isBlock: true
+					model: option.model
 				} );
 
 				headerModels.push( option.model );
@@ -59,7 +58,6 @@ export default class HeadingElementSupport extends Plugin {
 		}
 
 		dataSchema.extendBlockElement( {
-			isBlock: true,
 			model: 'htmlHgroup',
 			modelSchema: {
 				allowChildren: headerModels

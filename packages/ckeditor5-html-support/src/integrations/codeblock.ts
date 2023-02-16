@@ -17,7 +17,7 @@ import type {
 } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
-import { updateViewAttributes, type GHSViewAttribute } from '../conversionutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import DataFilter, { type RegisterEvent } from '../datafilter';
 
 /**
@@ -120,8 +120,8 @@ function modelToViewCodeBlockAttributeConverter() {
 
 			updateViewAttributes(
 				conversionApi.writer,
-				attributeOldValue as GHSViewAttribute,
-				attributeNewValue as GHSViewAttribute,
+				attributeOldValue as GHSViewAttributes,
+				attributeNewValue as GHSViewAttributes,
 				viewPreElement
 			);
 		} );
@@ -136,8 +136,8 @@ function modelToViewCodeBlockAttributeConverter() {
 
 			updateViewAttributes(
 				conversionApi.writer,
-				attributeOldValue as GHSViewAttribute,
-				attributeNewValue as GHSViewAttribute,
+				attributeOldValue as GHSViewAttributes,
+				attributeNewValue as GHSViewAttributes,
 				viewCodeElement!
 			);
 		} );

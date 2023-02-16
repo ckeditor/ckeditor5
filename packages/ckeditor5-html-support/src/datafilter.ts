@@ -37,7 +37,7 @@ import {
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
-import type { GHSViewAttribute } from './conversionutils';
+import type { GHSViewAttributes } from './conversionutils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
@@ -98,7 +98,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Allowed element definitions by {@link module:html-support/datafilter~DataFilter#allowElement} method.
 	*/
-	private readonly _allowedElements: Set<DataSchemaDefinition>;
+	private readonly _allowedElements: Set<DataSchemaDefinition & { coupledAttribute?: string }>;
 
 	/**
 	 * Disallowed element names by {@link module:html-support/datafilter~DataFilter#disallowElement} method.
@@ -292,7 +292,7 @@ export default class DataFilter extends Plugin {
 	 * - styles Set with matched style names.
 	 * - classes Set with matched class names.
 	 */
-	public processViewAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi ): ReturnType<typeof consumeAttributes> {
+	public processViewAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi ): GHSViewAttributes | null {
 		// Make sure that the disabled attributes are handled before the allowed attributes are called.
 		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
@@ -327,7 +327,7 @@ export default class DataFilter extends Plugin {
 	 * Registers default element handlers.
 	 */
 	private _registerElementHandlers() {
-		this.on( 'register', ( evt, definition ) => {
+		this.on<RegisterEvent>( 'register', ( evt, definition ) => {
 			const schema = this.editor.model.schema;
 
 			// Object element should be only registered for new features.
@@ -336,9 +336,9 @@ export default class DataFilter extends Plugin {
 			if ( definition.isObject && !schema.isRegistered( definition.model ) ) {
 				this._registerObjectElement( definition );
 			} else if ( definition.isBlock ) {
-				this._registerBlockElement( definition );
+				this._registerBlockElement( definition as DataSchemaBlockElementDefinition );
 			} else if ( definition.isInline ) {
-				this._registerInlineElement( definition );
+				this._registerInlineElement( definition as DataSchemaInlineElementDefinition );
 			} else {
 				/**
 				 * The definition cannot be handled by the data filter.
@@ -431,7 +431,7 @@ export default class DataFilter extends Plugin {
 
 		this._coupledAttributes = new Map<string, Array<string>>();
 
-		for ( const definition of this._allowedElements as Set<DataSchemaDefinition & { coupledAttribute?: string }> ) {
+		for ( const definition of this._allowedElements ) {
 			if ( definition.coupledAttribute && definition.model ) {
 				const attributeNames = this._coupledAttributes.get( definition.coupledAttribute );
 
@@ -619,7 +619,7 @@ export interface RegisterEvent {
 function consumeAttributes( viewElement: ViewElement, conversionApi: UpcastConversionApi, matcher: Matcher ) {
 	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
 	const { attributes, styles, classes } = mergeMatchResults( matches );
-	const viewAttributes: GHSViewAttribute = {};
+	const viewAttributes: GHSViewAttributes = {};
 
 	// Remove invalid DOM element attributes.
 	if ( attributes.size ) {
@@ -725,9 +725,6 @@ function mergeMatchResults( matches: Array<MatchResult> ):
 
 /**
  * Converts the given iterable object into an object.
- * @param iterable
- * @param getValue
- * @returns
  */
 function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any ) {
 	const attributesObject: Record<string, any> = {};

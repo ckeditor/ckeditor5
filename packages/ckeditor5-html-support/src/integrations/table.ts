@@ -15,7 +15,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import { setViewAttributes, type GHSViewAttribute } from '../conversionutils';
+import { setViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import DataFilter, { type RegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
 
@@ -104,7 +104,7 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( attributeName, viewAttributes as GHSViewAttribute, data.modelRange! );
+					conversionApi.writer.setAttribute( attributeName, viewAttributes as GHSViewAttributes, data.modelRange! );
 				}
 			}
 		}, { priority: 'low' } );
@@ -157,7 +157,7 @@ function modelToViewTableAttributeConverter() {
 				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue as GHSViewAttribute, viewElement! );
+				setViewAttributes( conversionApi.writer, data.attributeNewValue as GHSViewAttributes, viewElement! );
 			} );
 		}
 	};

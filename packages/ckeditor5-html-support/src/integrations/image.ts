@@ -16,7 +16,7 @@ import type {
 	ViewElement } from 'ckeditor5/src/engine';
 
 import DataFilter, { type RegisterEvent } from '../datafilter';
-import { type GHSViewAttribute, setViewAttributes, updateViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../conversionutils';
 import { getDescendantElement } from './integrationutils';
 
 /**
@@ -178,8 +178,8 @@ function modelToViewImageAttributeConverter() {
 
 				updateViewAttributes(
 					conversionApi.writer,
-					attributeOldValue as GHSViewAttribute,
-					attributeNewValue as GHSViewAttribute,
+					attributeOldValue as GHSViewAttributes,
+					attributeNewValue as GHSViewAttributes,
 					viewElement );
 			}, { priority: 'low' } );
 		}
@@ -197,8 +197,8 @@ function modelToViewImageAttributeConverter() {
 				if ( viewElement ) {
 					updateViewAttributes(
 						conversionApi.writer,
-						attributeOldValue as GHSViewAttribute,
-						attributeNewValue as GHSViewAttribute,
+						attributeOldValue as GHSViewAttributes,
+						attributeNewValue as GHSViewAttributes,
 						viewElement );
 					conversionApi.consumable.consume( data.item, evt.name );
 				}
@@ -216,7 +216,7 @@ function modelToViewImageAttributeConverter() {
 
 					setViewAttributes(
 						conversionApi.writer,
-						data.item.getAttribute( 'htmlLinkAttributes' ) as GHSViewAttribute,
+						data.item.getAttribute( 'htmlLinkAttributes' ) as GHSViewAttributes,
 						viewElement );
 				}, { priority: 'low' } );
 			}
