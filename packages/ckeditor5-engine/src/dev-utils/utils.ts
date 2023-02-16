@@ -30,7 +30,7 @@ export function convertMapToTags( map: Iterable<[ string, unknown ]> ): string {
 }
 
 /**
- * Helper function, converts a map to the '{"key1":"value1","key2":"value2"}' format.
+ * Helper function, converts a map to the `{"key1":"value1","key2":"value2"}` format.
  *
  * @param map Map to convert.
  * @returns Converted map.

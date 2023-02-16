@@ -41,9 +41,11 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * The instance of the writer is only available in the {@link module:engine/model/model~Model#change `change()`} or
  * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`}.
  *
- *		model.change( writer => {
- *			writer.insertText( 'foo', paragraph, 'end' );
- *		} );
+ * ```ts
+ * model.change( writer => {
+ * 	writer.insertText( 'foo', paragraph, 'end' );
+ * } );
+ * ```
  *
  * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.

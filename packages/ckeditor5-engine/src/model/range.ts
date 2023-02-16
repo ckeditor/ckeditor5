@@ -742,7 +742,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @internal
 	 * @param insertPosition Position where nodes are inserted.
 	 * @param howMany How many nodes are inserted.
-	 * @param spread Flag indicating whether this {~Range range} should be spread if insertion
+	 * @param spread Flag indicating whether this range should be spread if insertion
 	 * was inside the range. Defaults to `false`.
 	 * @returns Result of the transformation.
 	 */
