@@ -19,25 +19,25 @@ import { logWarning } from '@ckeditor/ckeditor5-utils';
  * the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a
  * minimal {@link module:upload/uploadconfig~SimpleUploadConfig editor configuration}.
  *
- *		ClassicEditor
- *			.create( document.querySelector( '#editor' ), {
- *				simpleUpload: {
- *					uploadUrl: 'http://example.com',
- *					headers: {
- *						...
- *					}
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ * 	.create( document.querySelector( '#editor' ), {
+ * 		simpleUpload: {
+ * 			uploadUrl: 'http://example.com',
+ * 			headers: {
+ * 				...
+ * 			}
+ * 		}
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  *
  * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
  * learn more about the feature (configuration, server–side requirements, etc.).
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SimpleUploadAdapter extends Plugin {
 	/**
@@ -85,35 +85,25 @@ export default class SimpleUploadAdapter extends Plugin {
 
 /**
  * Upload adapter.
- *
- * @private
- * @implements module:upload/filerepository~UploadAdapter
  */
 class Adapter implements UploadAdapter {
+	/**
+	 * FileLoader instance to use during the upload.
+	 */
 	public loader: FileLoader;
+
+	/**
+	 * The configuration of the adapter.
+	 */
 	public options: SimpleUploadConfig;
 
 	private xhr?: XMLHttpRequest;
 
 	/**
 	 * Creates a new adapter instance.
-	 *
-	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:upload/uploadconfig~SimpleUploadConfig} options
 	 */
 	constructor( loader: FileLoader, options: SimpleUploadConfig ) {
-		/**
-		 * FileLoader instance to use during the upload.
-		 *
-		 * @member {module:upload/filerepository~FileLoader} #loader
-		 */
 		this.loader = loader;
-
-		/**
-		 * The configuration of the adapter.
-		 *
-		 * @member {module:upload/uploadconfig~SimpleUploadConfig} #options
-		 */
 		this.options = options;
 	}
 
@@ -121,7 +111,6 @@ class Adapter implements UploadAdapter {
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
-	 * @returns {Promise}
 	 */
 	public upload(): Promise<UploadResponse> {
 		return this.loader.file
@@ -136,7 +125,6 @@ class Adapter implements UploadAdapter {
 	 * Aborts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#abort
-	 * @returns {Promise}
 	 */
 	public abort(): void {
 		if ( this.xhr ) {
@@ -148,8 +136,6 @@ class Adapter implements UploadAdapter {
 	 * Initializes the `XMLHttpRequest` object using the URL specified as
 	 * {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
 	 * configuration.
-	 *
-	 * @private
 	 */
 	private _initRequest(): void {
 		const xhr = this.xhr = new XMLHttpRequest();
@@ -161,10 +147,9 @@ class Adapter implements UploadAdapter {
 	/**
 	 * Initializes XMLHttpRequest listeners
 	 *
-	 * @private
-	 * @param {Function} resolve Callback function to be called when the request is successful.
-	 * @param {Function} reject Callback function to be called when the request cannot be completed.
-	 * @param {File} file Native File object.
+	 * @param resolve Callback function to be called when the request is successful.
+	 * @param reject Callback function to be called when the request cannot be completed.
+	 * @param file Native File object.
 	 */
 	private _initListeners(
 		resolve: ( result: UploadResponse ) => void,
@@ -209,8 +194,7 @@ class Adapter implements UploadAdapter {
 	/**
 	 * Prepares the data and sends the request.
 	 *
-	 * @private
-	 * @param {File} file File instance to be uploaded.
+	 * @param file File instance to be uploaded.
 	 */
 	private _sendRequest( file: File ): void {
 		// Set headers if specified.

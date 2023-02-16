@@ -74,14 +74,16 @@ export interface SimpleUploadConfig {
 	 * property of the request sent to the server during the upload. It affects cross-site requests only and, for instance,
 	 * allows credentials such as cookies to be sent along with the request.
 	 *
-	 *		ClassicEditor
-	 *			.create( editorElement, {
-	 *				simpleUpload: {
-	 *					withCredentials: true
-	 *				}
-	 *			} );
-	 *			.then( ... )
-	 *			.catch( ... );
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		simpleUpload: {
+	 * 			withCredentials: true
+	 * 		}
+	 * 	} );
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
 	 *
 	 * Learn more about the server application requirements in the
 	 * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
