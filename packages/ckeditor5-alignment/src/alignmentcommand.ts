@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import { first } from 'ckeditor5/src/utils';
 import type { Element, Writer } from 'ckeditor5/src/engine';
 
 import { isDefault } from './utils';
-import type { SupportedOption } from './alignmentediting';
+import type { SupportedOption } from './alignmentconfig';
 
 const ALIGNMENT = 'alignment';
 
@@ -107,5 +107,11 @@ function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) 
 function setAlignmentOnSelection( blocks: Array<Element>, writer: Writer, alignment: string ) {
 	for ( const block of blocks ) {
 		writer.setAttribute( ALIGNMENT, alignment, block );
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		alignment: AlignmentCommand;
 	}
 }

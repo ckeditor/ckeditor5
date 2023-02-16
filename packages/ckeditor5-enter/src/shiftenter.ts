@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,8 +17,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
  * See also the {@link module:enter/enter~Enter} plugin.
  *
  * For more information about this feature see the {@glink api/enter package page}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class ShiftEnter extends Plugin {
 	/**
@@ -77,10 +75,6 @@ export default class ShiftEnter extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'shiftEnter': ShiftEnterCommand;
-	}
-
 	interface PluginsMap {
 		[ ShiftEnter.pluginName ]: ShiftEnter;
 	}

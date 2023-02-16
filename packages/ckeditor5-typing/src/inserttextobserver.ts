@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import {
 	DomEventData,
 	Observer,
 	type View,
-	type ViewDocumentCompositionEvent,
+	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentInputEvent,
 	type ViewDocumentSelection,
 	type ViewRange,
@@ -81,7 +81,7 @@ export default class InsertTextObserver extends Observer {
 		} );
 
 		// Note: The priority must be lower than the CompositionObserver handler to call it after the renderer is unblocked.
-		viewDocument.on<ViewDocumentCompositionEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
+		viewDocument.on<ViewDocumentCompositionEndEvent>( 'compositionend', ( evt, { data, domEvent } ) => {
 			// On Android composition events are immediately applied to the model.
 			// On non-Android the model is updated only on composition end.
 			// On Android we can't rely on composition start/end to update model.

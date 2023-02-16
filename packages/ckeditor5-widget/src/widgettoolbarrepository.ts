@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,9 +20,9 @@ import {
 	BalloonPanelView,
 	ContextualBalloon,
 	ToolbarView,
+	type BalloonToolbar,
 	type BaloonToolbarShowEvent,
-	type EditorUIUpdateEvent,
-	type View
+	type EditorUIUpdateEvent
 } from '@ckeditor/ckeditor5-ui';
 
 import {
@@ -84,7 +84,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		// Disables the default balloon toolbar for all widgets.
 		if ( editor.plugins.has( 'BalloonToolbar' ) ) {
-			const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+			const balloonToolbar: BalloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
 			this.listenTo<BaloonToolbarShowEvent>( balloonToolbar, 'show', evt => {
 				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
@@ -148,7 +148,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		{ ariaLabel, items, getRelatedElement, balloonClassName = 'ck-toolbar-container' }: {
 			ariaLabel?: string;
 			items: Array<ToolbarConfigItem>;
-			getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement;
+			getRelatedElement: ( selection: ViewDocumentSelection ) => ( ViewElement | null );
 			balloonClassName?: string;
 		}
 	): void {
@@ -163,7 +163,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * See for instance:
 			 *
 			 * * {@link module:table/table~TableConfig#contentToolbar `config.table.contentToolbar`}
-			 * * {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}
+			 * * {@link module:image/imageconfig~ImageConfig#toolbar `config.image.toolbar`}
 			 *
 			 * @error widget-toolbar-no-items
 			 * @param {String} toolbarId The id of the toolbar that has not been configured correctly.
@@ -189,12 +189,12 @@ export default class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
-
 		const toolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName
+			balloonClassName,
+			itemsConfig: items,
+			initialized: false
 		};
 
 		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
@@ -282,6 +282,11 @@ export default class WidgetToolbarRepository extends Plugin {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
 			repositionContextualBalloon( this.editor, relatedElement );
 		} else if ( !this._isToolbarInBalloon( toolbarDefinition ) ) {
+			if ( !toolbarDefinition.initialized ) {
+				toolbarDefinition.initialized = true;
+				toolbarDefinition.view.fillFromConfig( toolbarDefinition.itemsConfig, this.editor.ui.componentFactory );
+			}
+
 			this._balloon.add( {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
@@ -323,7 +328,7 @@ export default class WidgetToolbarRepository extends Plugin {
 }
 
 function repositionContextualBalloon( editor: Editor, relatedElement: ViewElement ) {
-	const balloon = editor.plugins.get( 'ContextualBalloon' );
+	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
 	const position = getBalloonPositionData( editor, relatedElement );
 
 	balloon.updatePosition( position );
@@ -368,9 +373,11 @@ function isWidgetSelected( selection: ViewDocumentSelection ) {
  * @property {String} balloonClassName CSS class for the widget balloon when a toolbar is displayed.
  */
 interface WidgetRepositoryToolbarDefinition {
-	view: View;
+	view: ToolbarView;
 	getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement | null | undefined;
 	balloonClassName: string;
+	itemsConfig: Array<ToolbarConfigItem>;
+	initialized: boolean;
 }
 
 declare module '@ckeditor/ckeditor5-core' {

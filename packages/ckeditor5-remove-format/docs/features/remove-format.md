@@ -61,14 +61,16 @@ Enable the `RemoveFormatLinks` plugin in the {@link installation/getting-started
 
 ```js
 ClassicEditor
-	.create( ..., {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			RemoveFormat,
 			RemoveFormatLinks,
+			// More plugins.
 			// ...
 		],
 		toolbar: [
 			'removeFormat',
+			// More toolbar items.
 			// ...
 		]
 	} )
@@ -91,15 +93,15 @@ import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ RemoveFormat, ... ],
-		toolbar: [ 'removeFormat', ... ]
+		plugins: [ RemoveFormat, /* ... */ ],
+		toolbar: [ 'removeFormat', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,9 +13,11 @@ import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDro
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
+import type { CodeBlockLanguageDefinition } from './codeblockconfig';
+import type CodeBlockCommand from './codeblockcommand';
+
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
-import type { CodeBlockLanguageDefinition } from './codeblock';
 
 /**
  * The code block UI plugin.
@@ -40,7 +42,7 @@ export default class CodeBlockUI extends Plugin {
 		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
 		componentFactory.add( 'codeBlock', locale => {
-			const command = editor.commands.get( 'codeBlock' )!;
+			const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
 
@@ -73,7 +75,7 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
+			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
 
 			return dropdownView;
 		} );
@@ -87,7 +89,7 @@ export default class CodeBlockUI extends Plugin {
 		normalizedLanguageDefs: Array<CodeBlockLanguageDefinition>
 	): Collection<ListDropdownItemDefinition> {
 		const editor = this.editor;
-		const command = editor.commands.get( 'codeBlock' )!;
+		const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 		for ( const languageDef of normalizedLanguageDefs ) {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,18 +9,11 @@
 
 /**
  * The HTML writer interface.
- *
- * @interface module:engine/dataprocessor/htmlwriter~HtmlWriter
  */
-
-/**
- * Returns an HTML string created from a document fragment.
- *
- * @method module:engine/dataprocessor/htmlwriter~HtmlWriter#getHtml
- * @param {DocumentFragment} fragment
- * @returns {String}
- */
-
 export default interface HtmlWriter {
+
+	/**
+	 * Returns an HTML string created from a document fragment.
+	 */
 	getHtml( fragment: DocumentFragment ): string;
 }

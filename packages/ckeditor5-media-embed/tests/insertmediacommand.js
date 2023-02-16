@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -106,7 +106,7 @@ describe( 'MediaEmbedCommand', () => {
 	describe( 'value', () => {
 		it( 'should be null when no media is selected (paragraph)', () => {
 			setData( model, '<p>foo[]</p>' );
-			expect( command.value ).to.be.null;
+			expect( command.value ).to.be.undefined;
 		} );
 
 		it( 'should equal the url of the selected media', () => {

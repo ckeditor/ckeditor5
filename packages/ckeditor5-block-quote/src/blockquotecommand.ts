@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -219,4 +219,10 @@ function checkCanBeQuoted( schema: Schema, block: Element ): boolean {
 	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
 
 	return isBQAllowed && isBlockAllowedInBQ;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		blockQuote: BlockQuoteCommand;
+	}
 }

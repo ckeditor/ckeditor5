@@ -48,7 +48,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.2.1/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/1.3.0/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
@@ -72,19 +72,36 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ], // Depending on your preference.
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Feature configuration.
+			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuration
 
 The feature can be configured via the {@link module:ckbox/ckbox~CKBoxConfig `config.ckbox`} object.
+
+### Before you start
+
+<info-box>
+	This is a premium feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. 
+
+	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
+
+	If you already have a valid license, please log into your [user dashboard](https://dashboard.ckeditor.com/) to access the feature settings.
+</info-box>
+
+<info-box>
+	There is a [free personal plan than still requires sign-up](https://ckeditor.com/pricing/#plan-ckbox), however.
+</info-box>
+
+After you purchase a license, log into the CKEditor Ecosystem customer dashboard to create access credentials, as explained in the {@link @ckbox guides/configuration/authentication CKBox configuration guide}.
 
 ### Defining upload categories
 
@@ -95,8 +112,8 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			defaultUploadCategories: {
 				Bitmaps: [ 'bmp' ],
@@ -107,8 +124,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Please keep in mind that if you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
@@ -128,14 +145,14 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			ignoreDataId: true
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Changing the language
@@ -147,20 +164,20 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			language: 'es'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/1.2.1/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/1.3.0/ckbox.js"></script>
 <script src="https://cdn.ckbox.io/CKBox/1.2.1/translations/es.js"></script>
 ```
 
@@ -173,14 +190,14 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			tokenUrl: 'https://example.com/cs-token-endpoint'
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring the API service and assets origin
@@ -192,15 +209,15 @@ import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, ... ],
-		toolbar: [ 'ckbox', ... ],
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
 			serviceOrigin: 'https://example.com/',
 			assetsOrigin: 'https://cloud.example.com/',
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Common API

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -181,14 +181,20 @@ DecoupledEditor
 			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
-			'horizontalLine'
+			'horizontalLine',
+			'|',
+			{
+				label: 'Lists',
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
+			},
+			'|',
+			'undo',
+			'redo'
 		],
 
 		// Configuration of the formatting dropdown.
 		formattingOptions: [
-			'undo',
-			'redo',
-			'|',
 			'fontFamily',
 			'fontSize',
 			'fontColor',
@@ -200,12 +206,6 @@ DecoupledEditor
 			'strikethrough',
 			'|',
 			'alignment',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
 			'|',
 			'removeFormat'
 		],

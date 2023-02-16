@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -39,6 +39,8 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui';
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
+
+import '../../uiconfig';
 
 const toPx = toUnit( 'px' );
 
@@ -194,11 +196,11 @@ export default class BalloonToolbar extends Plugin {
 				const editableElement = editor.ui.view.editable.element!;
 
 				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
-				this._resizeObserver = new ResizeObserver( editableElement, () => {
+				this._resizeObserver = new ResizeObserver( editableElement, entry => {
 					// The max-width equals 90% of the editable's width for the best user experience.
 					// The value keeps the balloon very close to the boundaries of the editable and limits the cases
 					// when the balloon juts out from the editable element it belongs to.
-					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
+					this.toolbarView.maxWidth = toPx( entry.contentRect.width * .9 );
 				} );
 			} );
 		}
@@ -452,43 +454,6 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
 
 		return element && schema.isSelectable( element );
 	} );
-}
-
-/**
- * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
- * feature.
- *
- * ## Configuring toolbar items
- *
- *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
- *		};
- *
- * You can also use `'|'` to create a separator between groups of items:
- *
- *		const config = {
- *			balloonToolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
- *		};
- *
- * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * ## Configuring items grouping
- *
- * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
- *
- *		const config = {
- *			balloonToolbar: {
- *				items: [ 'bold', 'italic', 'undo', 'redo' ],
- *				shouldNotGroupWhenFull: true
- *			},
- *		};
- *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
- */
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-		balloonToolbar?: ToolbarConfig;
-	}
 }
 
 export type BaloonToolbarShowEvent = {

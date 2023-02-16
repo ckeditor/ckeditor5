@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -125,6 +125,12 @@ describe( 'ImageResizeButtons', () => {
 		it( 'should have 4 resize options in the `resizeImage` dropdown', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdownView.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdownView.isOpen = true;
+
 			expect( dropdownView.listView.items.length ).to.equal( 4 );
 			expect( dropdownView.listView.items.first.element.textContent ).to.equal( 'Original' );
 			expect( dropdownView.listView.items._items[ 1 ].element.textContent ).to.equal( '25%' );
@@ -137,9 +143,31 @@ describe( 'ImageResizeButtons', () => {
 			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize image' );
 		} );
 
+		it( 'should be created with a proper aria-label', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
+
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdownView.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.listView.ariaLabel ).to.equal( 'Image resize list' );
+		} );
+
 		it( 'should execute resize command with a proper value', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 			const commandSpy = sinon.spy( command, 'execute' );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdownView.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdownView.isOpen = true;
+
 			const resizeBy50Percent = dropdownView.listView.items._items[ 1 ].children._items[ 0 ];
 
 			command.isEnabled = true;
@@ -148,6 +176,8 @@ describe( 'ImageResizeButtons', () => {
 
 			sinon.assert.calledOnce( commandSpy );
 			expect( command.value.width ).to.equal( '25%' );
+
+			dropdownView.element.remove();
 		} );
 	} );
 

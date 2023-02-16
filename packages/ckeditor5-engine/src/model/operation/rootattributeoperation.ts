@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,7 +18,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
  *
  * This operation is needed, because root elements can't be changed through
- * @link module:engine/model/operation/attributeoperation~AttributeOperation}.
+ * {@link module:engine/model/operation/attributeoperation~AttributeOperation}.
  * It is because {@link module:engine/model/operation/attributeoperation~AttributeOperation}
  * requires a range to change and root element can't
  * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.

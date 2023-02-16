@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,8 @@ import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver';
 import ViewSelection from '../selection';
 import type View from '../view';
 import type {
-	ViewDocumentSelectionEvent,
+	ViewDocumentSelectionChangeEvent,
+	ViewDocumentSelectionChangeDoneEvent,
 	ViewDocumentSelectionEventData
 } from './selectionobserver';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -24,29 +25,21 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
  * if arrow keys are pressed.
  * Fires {@link module:engine/view/document~Document#event:selectionChange selectionChange event} simulating natural behaviour of
  * {@link module:engine/view/observer/selectionobserver~SelectionObserver SelectionObserver}.
- *
- * @extends module:engine/view/observer/observer~Observer
  */
 export default class FakeSelectionObserver extends Observer {
+	/**
+	 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
+	 */
 	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.
-	 *
-	 * @param {module:engine/view/view~View} view
 	 */
 	constructor( view: View ) {
 		super( view );
 
-		/**
-		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
-		 *
-		 * @private
-		 * @param {Object} data Selection change data.
-		 * @method #_fireSelectionChangeDoneDebounced
-		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
 	}
 
@@ -91,10 +84,8 @@ export default class FakeSelectionObserver extends Observer {
 	 * {@link module:engine/view/document~Document#event:selectionChangeDone} events imitating behaviour of
 	 * {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
 	 *
-	 * @private
-	 * @param {Number} keyCode
-	 * @fires module:engine/view/document~Document#event:selectionChange
-	 * @fires module:engine/view/document~Document#event:selectionChangeDone
+	 * @fires selectionChange
+	 * @fires selectionChangeDone
 	 */
 	private _handleSelectionMove( keyCode: number ): void {
 		const selection = this.document.selection;
@@ -117,7 +108,7 @@ export default class FakeSelectionObserver extends Observer {
 		};
 
 		// Fire dummy selection change event.
-		this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );
+		this.document.fire<ViewDocumentSelectionChangeEvent>( 'selectionChange', data );
 
 		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 		// This function is debounced what means that `selectionChangeDone` event will be fired only when

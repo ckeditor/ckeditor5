@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,7 @@ import { stringifyLanguageAttribute } from './utils';
 export default class TextPartLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute, the value is set to
-	 * the value of that language in a format:
+	 * the value of that language in the following format:
 	 *
 	 * ```
 	 * <languageCode>:<textDirection>
@@ -122,5 +122,11 @@ export default class TextPartLanguageCommand extends Command {
 		}
 
 		return false;
+	}
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		textPartLanguage: TextPartLanguageCommand;
 	}
 }

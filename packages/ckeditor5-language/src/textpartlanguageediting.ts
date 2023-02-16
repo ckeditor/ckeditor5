@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,8 @@ import type { LanguageDirection } from 'ckeditor5/src/utils';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import TextPartLanguageCommand from './textpartlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
+
+import './textpartlanguageconfig';
 
 /**
  * The text part language editing.
@@ -107,9 +109,5 @@ export default class TextPartLanguageEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
-	}
-
-	interface CommandsMap {
-		textPartLanguage: TextPartLanguageCommand;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -80,7 +80,7 @@ export default class Document extends EmitterMixin() {
 	/**
 	 * Post-fixer callbacks registered to the model document.
 	 */
-	private readonly _postFixers: Set<( writer: Writer ) => boolean>;
+	private readonly _postFixers: Set<ModelPostFixer>;
 
 	/**
 	 * A boolean indicates whether the selection has changed until
@@ -266,7 +266,7 @@ export default class Document extends EmitterMixin() {
 	 * } );
 	 * ```
 	 */
-	public registerPostFixer( postFixer: ( writer: Writer ) => boolean ): void {
+	public registerPostFixer( postFixer: ModelPostFixer ): void {
 		this._postFixers.add( postFixer );
 	}
 
@@ -444,6 +444,11 @@ export type DocumentChangeEvent = {
 	name: 'change' | 'change:data';
 	args: [ batch: Batch ];
 };
+
+/**
+ * Callback passed as an argument to the {@link module:engine/model/document~Document#registerPostFixer} method.
+ */
+export type ModelPostFixer = ( writer: Writer ) => boolean;
 
 /**
  * Checks whether given range boundary position is valid for document selection, meaning that is not between

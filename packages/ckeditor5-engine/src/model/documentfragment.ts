@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
- * @module module:engine/model/documentfragment
+ * @module engine/model/documentfragment
  */
 
 import TypeCheckable from './typecheckable';
@@ -212,7 +212,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns index after last child}.
+	 * too high, returns index after last child.
 	 *
 	 * ```ts
 	 * const textNode = new Text( 'foo' );

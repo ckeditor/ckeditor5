@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -50,13 +50,14 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<Normalizer> = [];
 
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
-		editor.plugins.get( 'ClipboardPipeline' ).on(
+		clipboardPipeline.on(
 			'inputTransformation',
 			( evt, data: NormalizerData ) => {
 				if ( data._isTransformedWithPasteFromOffice ) {

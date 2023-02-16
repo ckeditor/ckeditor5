@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -193,7 +193,7 @@ export default class Position extends TypeCheckable {
 				 * where this position points.
 				 *
 				 * Read more about model positions and offsets in
-				 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture guide}.
+				 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
 				 *
 				 * @error model-position-path-incorrect
 				 * @param position The incorrect position.

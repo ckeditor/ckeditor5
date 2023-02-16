@@ -1,36 +1,33 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
 
 /**
  * @module ui/bindings/clickoutsidehandler
  */
 
+import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
+
 /* global document */
 
 /**
  * Handles clicking **outside** of a specified set of elements, then fires an action.
- *
- * **Note**: Actually, the action is executed upon `mousedown`, not `click`. It prevents
  * certain issues when the user keeps holding the mouse button and the UI cannot react
  * properly.
- *
  * @param {Object} options Configuration options.
  * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior
  * should be added.
  * @param {Function} options.activator Function returning a `Boolean`, to determine whether the handler is active.
- * @param {Array.<HTMLElement>} options.contextElements HTML elements that determine the scope of the
- * handler. Clicking any of them or their descendants will **not** fire the callback.
+ * @param {Array.<HTMLElement>} options.contextElements Array of HTML elements or a callback returning an array of HTML elements
+ * that determine the scope of the handler. Clicking any of them or their descendants will **not** fire the callback.
  * @param {Function} options.callback An action executed by the handler.
  */
 export default function clickOutsideHandler(
 	{ emitter, activator, callback, contextElements }: {
 		emitter: DomEmitter;
 		activator: () => boolean;
-		contextElements: Array<HTMLElement>;
+		contextElements: Array<HTMLElement> | ( () => Array<HTMLElement> );
 		callback: () => void;
 	}
 ): void {
@@ -43,7 +40,9 @@ export default function clickOutsideHandler(
 		// Can be removed when all supported browsers support native shadow DOM.
 		const path = typeof domEvt.composedPath == 'function' ? domEvt.composedPath() : [];
 
-		for ( const contextElement of contextElements ) {
+		const contextElementsList = typeof contextElements == 'function' ? contextElements() : contextElements;
+
+		for ( const contextElement of contextElementsList ) {
 			if ( contextElement.contains( domEvt.target as Node ) || path.includes( contextElement ) ) {
 				return;
 			}

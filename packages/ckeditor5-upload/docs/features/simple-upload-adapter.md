@@ -13,8 +13,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 ## Installation
 
 <info-box info>
-	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link installation/getting-started/predefined-builds#available-builds official editor builds}. Check out the {@link installation/getting-started/installing-plugins "Installing plugins" guide} to learn more.
-</info-box>
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
@@ -29,18 +28,18 @@ import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleu
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, ... ],
-		toolbar: [ ... ],
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
 		simpleUpload: {
 			// Feature configuration.
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -52,8 +51,8 @@ import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleu
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, ... ],
-		toolbar: [ ... ],
+		plugins: [ SimpleUploadAdapter, /* ... */ ],
+		toolbar: [ /* ... */ ],
 		simpleUpload: {
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
@@ -68,8 +67,8 @@ ClassicEditor
 			}
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Configuring allowed file types
@@ -133,7 +132,7 @@ If the upload is successful, the server should return:
 The URL(s) in the server response are used:
 
 * To display the image during the editing (as seen by the user in the editor).
-* In the editor content {@link installation/advanced/saving-data saved to the database}.
+* In the editor content {@link installation/getting-started/getting-and-setting-data saved to the database}.
 
 ### Error handling
 

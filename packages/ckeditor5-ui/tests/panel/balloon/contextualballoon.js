@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@ import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import View from '../../../src/view';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -52,23 +52,10 @@ describe( 'ContextualBalloon', () => {
 				editor = newEditor;
 				balloon = editor.plugins.get( ContextualBalloon );
 
-				// We don't need to execute BalloonPanel pin and attachTo methods
-				// it's enough to check if was called with the proper data.
-				sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-				sinon.stub( balloon.view, 'pin' ).returns( {} );
-
 				viewA = new View();
 				viewB = new View();
 				viewC = new View();
 				viewD = new View();
-
-				// Add viewA to the pane and init viewB.
-				balloon.add( {
-					view: viewA,
-					position: {
-						target: 'fake'
-					}
-				} );
 
 				viewB.render();
 			} );
@@ -91,6 +78,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should create a plugin instance with properties', () => {
 			expect( balloon.view ).to.instanceof( BalloonPanelView );
 		} );
@@ -162,7 +153,42 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
+	describe( 'lazy init', () => {
+		it( 'should create BalloonPanelView on first access to #view', () => {
+			const spy = sinon.spy( balloon, '_createPanelView' );
+
+			expect( balloon._view ).to.be.null;
+			expect( editor.ui.view.body.length ).to.equal( 0 );
+			sinon.assert.notCalled( spy );
+
+			expect( balloon.view ).to.instanceof( BalloonPanelView );
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should create BalloonPanelView on first view added', () => {
+			const spy = sinon.spy( balloon, '_createPanelView' );
+
+			expect( balloon._view ).to.be.null;
+			expect( editor.ui.view.body.length ).to.equal( 0 );
+			sinon.assert.notCalled( spy );
+
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			expect( balloon._view ).to.instanceof( BalloonPanelView );
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'hasView()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should return true when given view is in stack', () => {
 			expect( balloon.hasView( viewA ) ).to.true;
 		} );
@@ -186,6 +212,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'add()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should add view to the `main` stack and display in balloon attached using given position options', () => {
 			const content = balloon.view.content.get( 0 ).content;
 
@@ -397,6 +427,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'visibleView', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should return data of currently visible view', () => {
 			expect( balloon.visibleView ).to.equal( viewA );
 		} );
@@ -431,6 +465,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'showStack()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should hide current view and display last view from the given stack', () => {
 			balloon.add( {
 				stackId: 'second',
@@ -467,6 +505,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'remove()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should remove given view and hide balloon when there is no other view to display', () => {
 			balloon.view.isVisible = true;
 
@@ -632,6 +674,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'updatePosition()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'should attach balloon to the target using position option from the last view in the stack', () => {
 			balloon.add( {
 				view: viewB,
@@ -763,6 +809,10 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'destroy()', () => {
+		beforeEach( () => {
+			stubBalloonPanelView();
+		} );
+
 		it( 'can be called multiple times', () => {
 			expect( () => {
 				balloon.destroy();
@@ -805,6 +855,7 @@ describe( 'ContextualBalloon', () => {
 		let rotatorView;
 
 		beforeEach( () => {
+			stubBalloonPanelView();
 			rotatorView = balloon.view.content.get( 0 );
 		} );
 
@@ -1296,4 +1347,18 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 	} );
+
+	function stubBalloonPanelView() {
+		// We don't need to execute BalloonPanel pin and attachTo methods
+		// it's enough to check if was called with the proper data.
+		sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+		sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+		balloon.add( {
+			view: viewA,
+			position: {
+				target: 'fake'
+			}
+		} );
+	}
 } );

@@ -51,11 +51,11 @@ Now you can load CKEditor 5 inspector by using the newly created bookmark.
 
 ### Enabling the inspector
 
-Attach the inspector to the editor instance when {@link installation/getting-started/basic-api#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
+Attach the inspector to the editor instance when {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create created} using the `CKEditorInspector.attach()` method:
 
 ```js
 ClassicEditor
-	.create( ... )
+	.create( /* ... */ )
 	.then( editor => {
 		CKEditorInspector.attach( editor );
 	} )
@@ -156,6 +156,7 @@ For instance, to take a peek at the editor model, you could use the {@link modul
 ```js
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+// More imports.
 // ...
 
 ClassicEditor

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -105,12 +105,12 @@ export default class BlockQuoteEditing extends Plugin {
 
 		const viewDocument = this.editor.editing.view.document;
 		const selection = editor.model.document.selection;
-		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
+		const blockQuoteCommand: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
 		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
-			if ( !selection.isCollapsed || !blockQuoteCommand!.value ) {
+			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}
 
@@ -146,10 +146,6 @@ export default class BlockQuoteEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		blockQuote: BlockQuoteCommand;
-	}
-
 	interface PluginsMap {
 		[ BlockQuoteEditing.pluginName ]: BlockQuoteEditing;
 	}

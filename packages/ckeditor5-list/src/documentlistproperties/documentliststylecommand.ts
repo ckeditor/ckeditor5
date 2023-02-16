@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,6 +15,8 @@ import {
 } from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
 
+import '../listcommands';
+
 /**
  * The list style command. It changes `listStyle` attribute of the selected list items,
  * letting the user choose styles for the list item markers.
@@ -22,7 +24,7 @@ import { getListTypeFromListStyleType } from './utils/style';
  */
 export default class DocumentListStyleCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: string | null;
 

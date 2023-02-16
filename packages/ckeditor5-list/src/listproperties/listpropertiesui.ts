@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,6 +23,10 @@ import ListPropertiesView from './ui/listpropertiesview';
 
 import type ListStyleCommand from './liststylecommand';
 import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand';
+import type ListStartCommand from './liststartcommand';
+import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand';
+import type ListReversedCommand from './listreversedcommand';
+import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../../theme/icons/numberedlist.svg';
@@ -37,6 +41,7 @@ import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
 import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
+import '../listconfig';
 import '../../theme/liststyles.css';
 
 /**
@@ -197,15 +202,17 @@ function getDropdownViewCreator( {
 
 		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
-		const listPropertiesView = createListPropertiesView( {
-			editor,
-			dropdownView,
-			parentCommandName,
-			styleGridAriaLabel,
-			styleDefinitions
-		} );
+		dropdownView.once( 'change:isOpen', () => {
+			const listPropertiesView = createListPropertiesView( {
+				editor,
+				dropdownView,
+				parentCommandName,
+				styleGridAriaLabel,
+				styleDefinitions
+			} );
 
-		dropdownView.panelView.children.add( listPropertiesView );
+			dropdownView.panelView.children.add( listPropertiesView );
+		} );
 
 		// Focus the editable after executing the command.
 		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
@@ -306,7 +313,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.styles ) {
-		const listStyleCommand = editor.commands.get( 'listStyle' )!;
+		const listStyleCommand: ListStyleCommand | DocumentListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
@@ -336,7 +343,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.startIndex ) {
-		const listStartCommand = editor.commands.get( 'listStart' )!;
+		const listStartCommand: ListStartCommand | DocumentListStartCommand = editor.commands.get( 'listStart' )!;
 
 		listPropertiesView.startIndexFieldView!.bind( 'isEnabled' ).to( listStartCommand );
 		listPropertiesView.startIndexFieldView!.fieldView.bind( 'value' ).to( listStartCommand as any );
@@ -344,7 +351,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.reversed ) {
-		const listReversedCommand = editor.commands.get( 'listReversed' )!;
+		const listReversedCommand: ListReversedCommand | DocumentListReversedCommand = editor.commands.get( 'listReversed' )!;
 
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isEnabled' ).to( listReversedCommand );
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isOn' ).to( listReversedCommand, 'value', value => !!value );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -298,6 +298,71 @@ describe( 'MentionUI', () => {
 					// Should not break;
 					expect( limiter() ).to.be.null;
 				} );
+		} );
+
+		describe( 'relation with the UI language direction of the editor', () => {
+			describe( 'for RTL languages', () => {
+				let contextualBaloonSpy;
+
+				beforeEach( async () => {
+					await editor.destroy();
+
+					return createClassicTestEditor( { ...staticConfig } )
+						.then( () => {
+							const contextualBalloon = editor.plugins.get( ContextualBalloon );
+							setData( model, '<paragraph>foo []</paragraph>' );
+							editor.locale.uiLanguageDirection = 'rtl';
+							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+
+							model.change( writer => {
+								writer.insertText( '@', doc.selection.getFirstPosition() );
+							} );
+						} )
+						.then( waitForDebounce );
+				} );
+
+				it( 'should prefer the west position first (to the left of the caret)', () => {
+					const positionNames = contextualBaloonSpy.firstCall.firstArg.position.positions.map( ( { name } ) => name );
+
+					expect( positionNames ).to.have.ordered.members( [
+						'caret_sw',
+						'caret_se',
+						'caret_nw',
+						'caret_ne'
+					] );
+				} );
+			} );
+
+			describe( 'for ltr languages', () => {
+				let contextualBaloonSpy;
+
+				beforeEach( async () => {
+					await editor.destroy();
+
+					return createClassicTestEditor( { ...staticConfig } )
+						.then( () => {
+							const contextualBalloon = editor.plugins.get( ContextualBalloon );
+							setData( model, '<paragraph>foo []</paragraph>' );
+							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
+
+							model.change( writer => {
+								writer.insertText( '@', doc.selection.getFirstPosition() );
+							} );
+						} )
+						.then( waitForDebounce );
+				} );
+
+				it( 'should prefer the east position first (to the right of the caret)', () => {
+					const positionNames = contextualBaloonSpy.firstCall.firstArg.position.positions.map( ( { name } ) => name );
+
+					expect( positionNames ).to.have.ordered.members( [
+						'caret_se',
+						'caret_sw',
+						'caret_ne',
+						'caret_nw'
+					] );
+				} );
+			} );
 		} );
 	} );
 

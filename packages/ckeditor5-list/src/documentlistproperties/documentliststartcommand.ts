@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,8 @@ import {
 	isListItemBlock
 } from '../documentlist/utils/model';
 
+import '../listcommands';
+
 /**
  * The list start index command. It changes the `listStart` attribute of the selected list items,
  * letting the user to choose the starting point of an ordered list.
@@ -21,7 +23,7 @@ import {
  */
 export default class DocumentListStartCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: number | null;
 

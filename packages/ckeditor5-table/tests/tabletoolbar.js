@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -78,6 +78,10 @@ describe( 'TableToolbar', () => {
 
 		describe( 'toolbar', () => {
 			it( 'should use the config.table.contenToolbar to create items', () => {
+				editor.ui.focusTracker.isFocused = true;
+
+				setData( model, '<table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>' );
+
 				expect( toolbar.items ).to.have.length( 1 );
 				expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
 			} );
@@ -289,6 +293,10 @@ describe( 'TableToolbar', () => {
 			} );
 
 			it( 'should use the config.table.tableWidget to create items', () => {
+				editor.ui.focusTracker.isFocused = true;
+
+				setData( model, '[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
+
 				expect( toolbar.items ).to.have.length( 1 );
 				expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
 			} );

@@ -15,7 +15,7 @@ modified_at: 2021-11-03
 
 ## Update to CKEditor 5 v31.1.0
 
-For the entire list of changes introduced in version 31.1.0, see the [changelog for CKEditor 5 v31.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3110-2021-12-03).
+For the entire list of changes introduced in version 31.1.0, see the [release notes for CKEditor 5 v31.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v31.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v31.1.0.
 
@@ -34,7 +34,7 @@ Starting from v31.1.0, the editor engine will detect attributes that may interru
 ```
 
 <info-box>
-	Please keep in mind, that this new mechanism does not affect the {@link installation/advanced/saving-data data saved by the editor} (e.g. the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
+	Please keep in mind, that this new mechanism does not affect the {@link installation/getting-started/getting-and-setting-data data saved by the editor} (e.g. the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
 </info-box>
 
 If you are the author of a plugin that generates this kind of content in the {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} and you want it to be preserved, you can configure this when creating the element using {@link module:engine/view/downcastwriter~DowncastWriter} during the {@link framework/guides/architecture/editing-engine#conversion model–view conversion}. Methods such as {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement}, {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} accept an option that will disable filtering of specific attributes:
@@ -84,7 +84,7 @@ These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCell
 
 ## Update to CKEditor 5 v31.0.0
 
-For the entire list of changes introduced in version 31.0.0, see the [changelog for CKEditor 5 v31.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3100-2021-10-25).
+For the entire list of changes introduced in version 31.0.0, see the [release notes for CKEditor 5 v31.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v31.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v31.0.0.
 

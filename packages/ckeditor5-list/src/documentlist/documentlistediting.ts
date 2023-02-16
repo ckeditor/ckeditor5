@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,7 +28,7 @@ import type {
 } from 'ckeditor5/src/engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
-import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
@@ -67,7 +67,9 @@ import ListWalker, {
 	iterateSiblingListBlocks,
 	ListBlocksIterable
 } from './utils/listwalker';
+
 import '../../theme/documentlist.css';
+import '../../theme/list.css';
 
 /**
  * A list of base list model attributes.
@@ -206,8 +208,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' )!;
-		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' )!;
+		const mergeBackwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemBackward' )!;
+		const mergeForwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemForward' )!;
 
 		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -288,7 +290,7 @@ export default class DocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
-		const enterCommand = commands.get( 'enter' )!;
+		const enterCommand: EnterCommand = commands.get( 'enter' )!;
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo<ViewDocumentEnterEvent>( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -334,7 +336,7 @@ export default class DocumentListEditing extends Plugin {
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
-			const splitCommand = commands.get( 'splitListItemBefore' )!;
+			const splitCommand: DocumentListSplitCommand = commands.get( 'splitListItemBefore' )!;
 
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
@@ -422,7 +424,8 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo<DocumentChangeEvent>(
 			model.document,
 			'change:data',
-			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this )
+			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ),
+			{ priority: 'high' }
 		);
 
 		// For LI verify if an ID of the attribute element is correct.

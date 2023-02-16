@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,20 +13,22 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
 /**
  * Adds a margin CSS styles processing rules.
  *
- *		editor.data.addStyleProcessorRules( addPaddingRules );
+ * ```ts
+ * editor.data.addStyleProcessorRules( addPaddingRules );
+ * ```
  *
  * The normalized value is stored as:
  *
- *		const styles = {
- *			padding: {
- *				top,
- *				right,
- *				bottom,
- *				left
- *			}
- *		};
- *
- * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
+ * ```ts
+ * const styles = {
+ * 	padding: {
+ * 		top,
+ * 		right,
+ * 		bottom,
+ * 		left
+ * 	}
+ * };
+ * ```
  */
 export function addPaddingRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'padding', getPositionShorthandNormalizer( 'padding' ) );
