@@ -10,7 +10,8 @@
 import type { Element, Schema } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
-import type { StyleDefinition } from './styleconfig';
+import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { isObject } from 'lodash-es';
 
 import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './utils';
 
@@ -171,7 +172,7 @@ export default class StyleCommand extends Command {
 
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const htmlSupport: any = this.editor.plugins.get( 'GeneralHtmlSupport' ); // TODO
+		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		const definition: BlockStyleDefinition | InlineStyleDefinition = [
 			...this._styleDefinitions.inline,
@@ -230,22 +231,24 @@ export default class StyleCommand extends Command {
 /**
  * Verifies if all classes are present in the given GHS attribute.
  */
-function hasAllClasses( ghsAttributeValue: any, classes: Array<string> ): boolean { // TODO
-	if ( !ghsAttributeValue || !ghsAttributeValue.classes ) {
-		return false;
-	}
-
-	return classes.every( className => ghsAttributeValue.classes.includes( className ) );
+function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): boolean {
+	return isObject( ghsAttributeValue ) &&
+		hasClassesProperty( ghsAttributeValue ) &&
+		classes.every( className => ghsAttributeValue.classes.includes( className ) );
 }
 
 /**
  * Returns a set of elements that should be affected by the block-style change.
  */
-function getAffectedBlocks( selectedBlocks: any, elementNames: any, schema: Schema ) { // TODO
-	const blocks = new Set();
+function getAffectedBlocks(
+	selectedBlocks: IterableIterator<Element>,
+	elementNames: Array<string>,
+	schema: Schema
+): Set<Element> {
+	const blocks = new Set<Element>();
 
 	for ( const selectedBlock of selectedBlocks ) {
-		const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } );
+		const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
 		for ( const block of ancestorBlocks ) {
 			if ( schema.isLimit( block ) ) {
@@ -268,6 +271,15 @@ function getAffectedBlocks( selectedBlocks: any, elementNames: any, schema: Sche
  */
 function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
+}
+
+/**
+ * Checks if given object has `classes` property which is an array.
+ *
+ * @param obj Object to check.
+ */
+function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
+	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }
 
 declare module '@ckeditor/ckeditor5-core' {

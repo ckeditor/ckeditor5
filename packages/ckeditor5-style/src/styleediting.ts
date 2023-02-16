@@ -9,6 +9,7 @@
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import type { MatcherPattern } from 'ckeditor5/src/engine';
+import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StyleCommand from './stylecommand';
 import type { StyleConfig, StyleDefinition } from './styleconfig';
@@ -41,7 +42,7 @@ export default class StyleEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const dataSchema: any = editor.plugins.get( 'DataSchema' ); // TODO
+		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
 		const styleDefinitions: StyleConfig['definitions'] = editor.config.get( 'style.definitions' )!;
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, styleDefinitions );
 
@@ -59,7 +60,7 @@ export default class StyleEditing extends Plugin {
 	 * @param {Object} normalizedStyleDefinitions
 	 */
 	private _configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
-		const ghsDataFilter: any = this.editor.plugins.get( 'DataFilter' ); // TODO
+		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
 
 		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
 		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );

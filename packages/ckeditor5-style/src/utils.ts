@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
+
 import { type StyleDefinition } from './styleconfig';
 
 /**
@@ -28,12 +30,14 @@ import { type StyleDefinition } from './styleconfig';
  * }
  * ```
  *
- * @param {module:html-support/dataschema~DataSchema} dataSchema
+ * @param dataSchema
  * @param styleDefinitions
  * @returns An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
  */
-export function normalizeConfig( dataSchema: any, styleDefinitions: Array<StyleDefinition> = [] ): NormalizedStyleDefinitions {
-	// TODO: Update `dataSchema` when GHS module is migrated to TypeScript
+export function normalizeConfig(
+	dataSchema: DataSchema,
+	styleDefinitions: Array<StyleDefinition> = []
+): NormalizedStyleDefinitions {
 	const normalizedDefinitions: NormalizedStyleDefinitions = {
 		block: [],
 		inline: []
@@ -44,7 +48,7 @@ export function normalizeConfig( dataSchema: any, styleDefinitions: Array<StyleD
 		const ghsAttributes = [];
 
 		for ( const ghsDefinition of dataSchema.getDefinitionsForView( definition.element ) ) {
-			if ( ghsDefinition.isBlock ) {
+			if ( 'isBlock' in ghsDefinition ) {
 				modelElements.push( ghsDefinition.model );
 			} else {
 				ghsAttributes.push( ghsDefinition.model );
@@ -67,9 +71,9 @@ export interface NormalizedStyleDefinitions {
 
 export interface BlockStyleDefinition extends StyleDefinition {
 	isBlock: true;
-	modelElements: any; // TODO
+	modelElements: Array<string>;
 }
 
 export interface InlineStyleDefinition extends StyleDefinition {
-	ghsAttributes: any; // TODO
+	ghsAttributes: Array<string>;
 }

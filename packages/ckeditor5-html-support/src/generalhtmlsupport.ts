@@ -102,7 +102,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
 	 */
-	private addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -124,7 +124,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 

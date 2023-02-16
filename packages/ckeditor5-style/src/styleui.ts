@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown } from 'ckeditor5/src/ui';
+import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StylePanelView from './ui/stylepanelview';
 import { normalizeConfig } from './utils';
@@ -36,7 +37,7 @@ export default class StyleUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const dataSchema = editor.plugins.get( 'DataSchema' ); // TODO
+		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
 		const styleDefinitions = editor.config.get( 'style.definitions' );
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, styleDefinitions );
 

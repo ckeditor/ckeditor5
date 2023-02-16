@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-engine": "^36.0.1",
     "@ckeditor/ckeditor5-utils": "^36.0.1",
     "@ckeditor/ckeditor5-widget": "^36.0.1",
-    "lodash-es": "^4.17.11"
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^36.0.1",
