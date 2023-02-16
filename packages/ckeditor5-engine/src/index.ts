@@ -22,6 +22,7 @@ export type {
 	DowncastConversionApi,
 	DowncastInsertEvent,
 	DowncastRemoveEvent,
+	DowncastRemoveMarkerEvent,
 	DowncastSelectionEvent
 } from './conversion/downcastdispatcher';
 export type {
@@ -72,6 +73,7 @@ export { default as Position, type PositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
+export { default as TextProxy } from './model/textproxy';
 export type { default as Document, ModelPostFixer } from './model/document';
 export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';

@@ -2910,7 +2910,7 @@ export type HighlightDescriptorCreatorFunction = (
 		markerName: string;
 	},
 	conversionApi: DowncastConversionApi
-) => HighlightDescriptor;
+) => HighlightDescriptor | null;
 
 export type AddHighlightCallback = (
 	viewElement: ViewElement,
