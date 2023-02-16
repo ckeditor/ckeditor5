@@ -65,7 +65,7 @@ import type { Delete } from 'ckeditor5/src/typing';
  * from the beginning until the caret position.
  * @param callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameter:
- * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
+ * * match RegExp.exec() result of matching the pattern to inserted text.
  */
 export default function blockAutoformatEditing(
 	editor: Editor,
