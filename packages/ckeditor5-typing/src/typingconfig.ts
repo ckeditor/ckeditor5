@@ -35,8 +35,6 @@ export interface TypingConfig {
 	 * The configuration of the {@link module:typing/texttransformation~TextTransformation} feature.
 	 *
 	 * Read more in {@link module:typing/typingconfig~TextTransformationConfig}.
-	 *
-	 * @member {module:typing/typingconfig~TextTransformationConfig} module:typing/typingconfig~TypingConfig#transformations
 	 */
 	transformations: TextTransformationConfig;
 }
@@ -146,12 +144,14 @@ export interface TextTransformationConfig {
 	 * {@link module:typing/typingconfig~TextTransformationConfig#include `transformations.include`} or
 	 * {@link module:typing/typingconfig~TextTransformationConfig#extra `transformations.extra`}.
 	 *
-	 *		const transformationsConfig = {
-	 *			remove: [
-	 *				'ellipsis',    // Remove only 'ellipsis' from the 'typography' group.
-	 *				'mathematical' // Remove all transformations from the 'mathematical' group.
-	 *			]
-	 *		}
+	 * ```ts
+	 * const transformationsConfig = {
+	 * 	remove: [
+	 * 		'ellipsis',    // Remove only 'ellipsis' from the 'typography' group.
+	 * 		'mathematical' // Remove all transformations from the 'mathematical' group.
+	 * 	]
+	 * }
+	 * ```
 	 */
 	remove?: Array<TextTransformationDescription | string>;
 }

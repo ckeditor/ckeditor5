@@ -20,8 +20,6 @@ import './typingconfig';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Input extends Plugin {
 	/**
