@@ -30,8 +30,6 @@ import { type StyleDefinition } from './styleconfig';
  * }
  * ```
  *
- * @param dataSchema
- * @param styleDefinitions
  * @returns An object with normalized style definitions grouped into `block` and `inline` categories (arrays).
  */
 export function normalizeConfig(

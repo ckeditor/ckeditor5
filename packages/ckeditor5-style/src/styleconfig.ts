@@ -67,7 +67,7 @@ export interface StyleConfig {
    * {@glink features/general-html-support General HTML Support feature}. **You do not need to repeat the configuration in
    * {@link module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig}**.
    */
-  definitions: Array<StyleDefinition>;
+  definitions?: Array<StyleDefinition>;
 }
 
 /**
@@ -84,11 +84,11 @@ export interface StyleConfig {
  * }
  * ```
  */
-export type StyleDefinition = {
+export interface StyleDefinition {
   name: string;
   element: string;
   classes: Array<string>;
-};
+}
 
 declare module '@ckeditor/ckeditor5-core' {
 

@@ -17,8 +17,6 @@ import StyleEditing from './styleediting';
  *
  * This is a "glue" plugin that loads the {@link module:style/styleediting~StyleEditing style editing feature}
  * and {@link module:style/styleui~StyleUI style UI feature}.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Style extends Plugin {
 	/**

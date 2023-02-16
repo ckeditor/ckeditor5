@@ -31,7 +31,7 @@ export default class StyleGroupView extends View<HTMLDivElement> {
 	/**
 	 * The label of the group.
 	 */
-	protected readonly labelView: LabelView;
+	public readonly labelView: LabelView;
 
 	/**
 	 * Creates an instance of the {@link module:style/ui/stylegroupview~StyleGroupView} class.

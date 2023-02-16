@@ -30,7 +30,7 @@ export default class StyleGridButtonView extends ButtonView {
 	/**
 	 * The view rendering the preview of the style.
 	 */
-	protected readonly previewView: View;
+	public readonly previewView: View;
 
 	/**
 	 * Creates an instance of the {@link module:style/ui/stylegridbuttonview~StyleGridButtonView} class.

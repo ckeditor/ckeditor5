@@ -56,8 +56,6 @@ export default class StyleEditing extends Plugin {
 	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
 	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
 	 * {@link module:html-support/datafilter~DataFilter} plugin.
-
-	 * @param {Object} normalizedStyleDefinitions
 	 */
 	private _configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
 		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
