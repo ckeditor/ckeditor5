@@ -26,7 +26,7 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla
 ```
 
 <info-box>
-	NPM 6 and below require an extra double-dash in the command above
+	NPM 6 and below doesn't require an extra double-dash in the command above.
 </info-box>
 
 
