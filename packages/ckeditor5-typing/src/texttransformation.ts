@@ -225,8 +225,6 @@ function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
 /**
  * For given `position` returns attributes for the text that is after that position.
  * The text can be in the same text node as the position (`foo[]bar`) or in the next text node (`foo[]<$text bold="true">bar</$text>`).
- * @param position
- * @returns
  */
 function getTextAttributesAfterPosition( position: Position ) {
 	const textNode = position.textNode ? position.textNode : position.nodeAfter;

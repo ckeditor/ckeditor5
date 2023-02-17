@@ -155,7 +155,7 @@ export default class TextWatcher extends ObservableMixin() {
 		const testResult = this.testCallback( text );
 
 		if ( !testResult && this.hasMatch ) {
-			this.fire( 'unmatched' );
+			this.fire<TextWatcherUnmatchedEvent>( 'unmatched' );
 		}
 
 		this._hasMatch = !!testResult;
@@ -168,7 +168,7 @@ export default class TextWatcher extends ObservableMixin() {
 				Object.assign( eventData, testResult );
 			}
 
-			this.fire( `matched:${ suffix }`, eventData );
+			this.fire<TextWatcherMatchedEvent>( `matched:${ suffix }`, eventData );
 		}
 	}
 }
@@ -237,5 +237,9 @@ export interface TextWatcherMatchedSelectionEventData {
 /**
  * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
  *
- * @event unmatched
+ * @eventName unmatched
  */
+export type TextWatcherUnmatchedEvent = {
+	name: 'unmatched';
+	args: [];
+};

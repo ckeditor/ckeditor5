@@ -43,9 +43,11 @@ import type {
  *
  * ```html
  * 		foo{}<$text a="true">bar</$text>
+ * ```
  *
  * 	<kbd>→</kbd>
  *
+ * ```html
  * 		foo<$text a="true">{}bar</$text>
  * ```
  *
@@ -53,11 +55,13 @@ import type {
  *
  * ```html
  * 		foo{}<$text a="true">bar</$text>
+ * ```
  *
  * 	<kbd>→</kbd>
  *
- * 		foo<$text a="true">b{}ar</$text>
  * ```html
+ * 		foo<$text a="true">b{}ar</$text>
+ * ```
  *
  *
  * ## "Leaving" an attribute:
@@ -66,9 +70,11 @@ import type {
  *
  * ```html
  * 		<$text a="true">bar{}</$text>baz
+ * ```
  *
  * 	<kbd>→</kbd>
  *
+ * ```html
  * 		<$text a="true">bar</$text>{}baz
  * ```
  *
@@ -76,9 +82,11 @@ import type {
  *
  * ```html
  * 		<$text a="true">bar{}</$text>baz
+ * ```
  *
  * 	<kbd>→</kbd>
  *
+ * ```html
  * 		<$text a="true">bar</$text>b{}az
  * ```
  *
@@ -88,9 +96,11 @@ import type {
  *
  * ```html
  * 		<$text a="true">bar</$text>{}baz
+ * ```
  *
  * 	<kbd>←</kbd>
  *
+ * ```html
  * 		<$text a="true">bar{}</$text>baz
  * ```
  *
@@ -256,7 +266,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
 	 * @param data Data of the key press.
-	 * @returns {Boolean} `true` when the handler prevented caret movement
+	 * @returns `true` when the handler prevented caret movement.
 	 */
 	private _handleForwardMovement( data: DomEventData ): boolean {
 		const attributes = this.attributes;
