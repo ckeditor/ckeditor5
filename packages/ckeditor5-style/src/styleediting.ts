@@ -43,8 +43,9 @@ export default class StyleEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
+		const styleUtils: StyleUtils = editor.plugins.get( 'StyleUtils' );
 		const styleDefinitions: StyleConfig['definitions'] = editor.config.get( 'style.definitions' )!;
-		const normalizedStyleDefinitions = normalizeConfig( dataSchema, styleDefinitions );
+		const normalizedStyleDefinitions = styleUtils.normalizeConfig( dataSchema, styleDefinitions );
 
 		editor.commands.add( 'style', new StyleCommand( editor, normalizedStyleDefinitions ) );
 
