@@ -17,7 +17,9 @@ import {
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
-	type CallbackOptions
+	type CallbackOptions,
+	type Constructor,
+	type Mix
 } from '@ckeditor/ckeditor5-utils';
 
 import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo';
@@ -45,12 +47,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * }
  * ```
  */
-export default function BubblingEmitterMixin<Base extends abstract new ( ...args: Array<any> ) => Emitter>(
-	base: Base
-): {
-	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & BubblingEmitter;
-	prototype: InstanceType<Base> & BubblingEmitter;
-} {
+export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mix<Base, BubblingEmitter> {
 	abstract class Mixin extends base implements BubblingEmitter {
 		public abstract get selection(): DocumentSelection;
 

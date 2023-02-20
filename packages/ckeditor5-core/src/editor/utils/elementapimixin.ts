@@ -3,15 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
-import { CKEditorError, setDataInElement } from '@ckeditor/ckeditor5-utils';
-
-import type Editor from '../editor';
-
 /**
  * @module core/editor/utils/elementapimixin
  */
+
+import {
+	CKEditorError,
+	setDataInElement,
+	type Constructor,
+	type Mix
+} from '@ckeditor/ckeditor5-utils';
+
+import type Editor from '../editor';
 
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
@@ -19,9 +22,7 @@ import type Editor from '../editor';
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-export default function ElementApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>(
-	base: Base
-) {
+export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mix<Base, ElementApi> {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 
@@ -58,7 +59,7 @@ export default function ElementApiMixin<Base extends abstract new( ...args: Arra
 		}
 	}
 
-	return Mixin;
+	return Mixin as any;
 }
 
 // Backward compatibility with `mix`.
@@ -87,6 +88,6 @@ export default function ElementApiMixin<Base extends abstract new( ...args: Arra
  */
 
 export interface ElementApi {
-	readonly sourceElement: HTMLElement | undefined;
+	sourceElement: HTMLElement | undefined;
 	updateSourceElement( data?: string ): void;
 }

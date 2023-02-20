@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
-import type Editor from '../editor';
-
 /**
  * @module core/editor/utils/dataapimixin
  */
+
+import type Editor from '../editor';
+
+import type { Constructor, Mix } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Implementation of the {@link module:core/editor/utils/dataapimixin~DataApi}.
@@ -17,7 +17,7 @@ import type Editor from '../editor';
  * @mixin DataApiMixin
  * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-export default function DataApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>( base: Base ) {
+export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mix<Base, DataApi> {
 	abstract class Mixin extends base implements DataApi {
 		public setData( data: string ): void {
 			this.data.set( data );
@@ -28,7 +28,7 @@ export default function DataApiMixin<Base extends abstract new( ...args: Array<a
 		}
 	}
 
-	return Mixin;
+	return Mixin as any;
 }
 
 // Backward compatibility with `mix`.
