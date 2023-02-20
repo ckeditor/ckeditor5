@@ -9,11 +9,11 @@
 
 import ButtonView from '../../button/buttonview';
 import type DropdownButton from './dropdownbutton';
-
-import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 import IconView from '../../icon/iconview';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+
+import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
 /**
  * The default dropdown button view class.

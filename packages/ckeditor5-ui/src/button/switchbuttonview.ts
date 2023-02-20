@@ -10,9 +10,9 @@
 import View from '../view';
 import ButtonView from './buttonview';
 
-import '../../theme/components/button/switchbutton.css';
-
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+
+import '../../theme/components/button/switchbutton.css';
 
 /**
  * The switch button view class.

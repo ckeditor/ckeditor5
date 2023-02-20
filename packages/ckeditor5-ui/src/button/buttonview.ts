@@ -10,6 +10,10 @@
 import View from '../view';
 import IconView from '../icon/iconview';
 
+import type { TemplateDefinition } from '../template';
+import type ViewCollection from '../viewcollection';
+import type { default as Button, ButtonExecuteEvent } from './button';
+
 import {
 	env,
 	getEnvKeystrokeText,
@@ -18,10 +22,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/button/button.css';
-
-import type { TemplateDefinition } from '../template';
-import type ViewCollection from '../viewcollection';
-import type { default as Button, ButtonExecuteEvent } from './button';
 
 /**
  * The button view class.

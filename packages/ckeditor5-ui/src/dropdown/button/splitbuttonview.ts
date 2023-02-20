@@ -9,6 +9,9 @@
 
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
+import type ViewCollection from '../../viewcollection';
+import type Button from '../../button/button';
+import type DropdownButton from './dropdownbutton';
 
 import {
 	KeystrokeHandler,
@@ -19,10 +22,6 @@ import {
 import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
 import '../../../theme/components/dropdown/splitbutton.css';
-
-import type ViewCollection from '../../viewcollection';
-import type Button from '../../button/button';
-import type DropdownButton from './dropdownbutton';
 
 /**
  * The split button view class.
@@ -249,9 +248,6 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #actionView} and binds it with main split button
 	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	private _createActionView() {
 		const actionView = new ButtonView();
@@ -284,9 +280,6 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #arrowView} and binds it with main split button
 	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	private _createArrowView() {
 		const arrowView = new ButtonView();

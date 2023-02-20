@@ -9,11 +9,15 @@
 
 import View from '../view';
 import ColorTileView from './colortileview';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
+
+import type { ButtonExecuteEvent } from '../button/button';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type ViewCollection from '../viewcollection';
 
 import {
 	FocusTracker,
+	KeystrokeHandler,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
 	type Locale,
@@ -21,10 +25,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/colorgrid/colorgrid.css';
-
-import type { ButtonExecuteEvent } from '../button/button';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type ViewCollection from '../viewcollection';
 
 /**
  * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
@@ -197,28 +197,38 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 /**
  * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
  *
- *		{
- *			color: 'hsl(0, 0%, 75%)',
- *			label: 'Light Grey',
- *			options: {
- *				hasBorder: true
- *			}
- *		}
- *
- * @typedef {Object} module:ui/colorgrid/colorgrid~ColorDefinition
- * @type Object
- *
- * @property {String} color String representing a color.
- * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
- * @property {String} label String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
- * @property {Object} options Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
- * @property {Boolean} options.hasBorder A flag that indicates if special a CSS class should be added
- * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
+ * ```json
+ * {
+ * 	color: 'hsl(0, 0%, 75%)',
+ * 	label: 'Light Grey',
+ * 	options: {
+ * 		hasBorder: true
+ * 	}
+ * }
+ * ```
  */
 export interface ColorDefinition {
+
+	/**
+	 * String representing a color.
+	 * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 */
 	color: string;
+
+	/**
+	 * String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 */
 	label: string;
+
+	/**
+	 * Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 */
 	options: {
+
+		/**
+		 * A flag that indicates if special a CSS class should be added
+		 * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
+		 */
 		hasBorder: boolean;
 	};
 }

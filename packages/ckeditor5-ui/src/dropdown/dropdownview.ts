@@ -8,6 +8,13 @@
  */
 
 import View from '../view';
+
+import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton';
+import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview';
+import type { FocusableView } from '../focuscycler';
+import type ListView from '../list/listview';
+import type ToolbarView from '../toolbar/toolbarview';
+
 import {
 	KeystrokeHandler,
 	FocusTracker,
@@ -18,12 +25,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/dropdown.css';
-
-import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton';
-import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview';
-import type { FocusableView } from '../focuscycler';
-import type ListView from '../list/listview';
-import type ToolbarView from '../toolbar/toolbarview';
 
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.
@@ -356,75 +357,95 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 *
 	 * * `south`
 	 *
+	 * ```
 	 *			[ Button ]
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southEast`
 	 *
+	 * ```
 	 *		[ Button ]
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southWest`
 	 *
+	 * ```
 	 *		         [ Button ]
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southMiddleEast`
 	 *
+	 * ```
 	 *		  [ Button ]
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southMiddleWest`
 	 *
+	 * ```
 	 *		       [ Button ]
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * **North**
 	 *
 	 * * `north`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
 	 *		    [ Button ]
+	 * ```
 	 *
 	 * * `northEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
 	 *		[ Button ]
+	 * ```
 	 *
 	 * * `northWest`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
 	 *		         [ Button ]
+	 * ```
 	 *
 	 * * `northMiddleEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
 	 *		  [ Button ]
+	 * ```
 	 *
 	 * * `northMiddleWest`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|      Panel      |
 	 *		+-----------------+
 	 *		       [ Button ]
+	 * ```
 	 *
 	 * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
 	 *

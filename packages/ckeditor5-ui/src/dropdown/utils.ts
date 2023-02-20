@@ -21,24 +21,24 @@ import ViewCollection from '../viewcollection';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import {
-	global,
-	priorities,
-	logWarning,
-	type Collection,
-	type Locale
-} from '@ckeditor/ckeditor5-utils';
-
-import '../../theme/components/dropdown/toolbardropdown.css';
-import '../../theme/components/dropdown/listdropdown.css';
-
 import type { default as View, UIViewRenderEvent } from '../view';
 import type { ButtonExecuteEvent } from '../button/button';
 import type Model from '../model';
 import type DropdownButton from './button/dropdownbutton';
 import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import {
+	global,
+	priorities,
+	logWarning,
+	type Collection,
+	type Locale,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import '../../theme/components/dropdown/toolbardropdown.css';
+import '../../theme/components/dropdown/listdropdown.css';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},

@@ -85,13 +85,17 @@ export default function addKeyboardHandlingForGrid(
 	/**
 	 * Function returning the next index.
 	 *
+	 * ```
 	 * before: [ ][x][ ]	after: [ ][ ][x]
 	 * index = 1            index = 2
+	 * ```
 	 *
 	 * If current index is last, function returns first index.
 	 *
+	 * ```
 	 * before: [ ][ ][x]	after: [x][ ][ ]
 	 * index = 2            index = 0
+	 * ```
 	 *
 	 * @param elementIndex Number of current index.
 	 * @param collectionLength A count of collection items.
@@ -107,13 +111,17 @@ export default function addKeyboardHandlingForGrid(
 	/**
 	 * Function returning the previous index.
 	 *
+	 * ```
 	 * before: [ ][x][ ]	after: [x][ ][ ]
 	 * index = 1            index = 0
+	 * ```
 	 *
 	 * If current index is first, function returns last index.
 	 *
+	 * ```
 	 * before: [x][ ][ ]	after: [ ][ ][x]
 	 * index = 0            index = 2
+	 * ```
 	 *
 	 * @param elementIndex Number of current index.
 	 * @param collectionLength A count of collection items.
