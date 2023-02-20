@@ -68,6 +68,7 @@ packages/ckeditor5-paste-from-office/src/**/*.js
 packages/ckeditor5-remove-format/src/**/*.js
 packages/ckeditor5-restricted-editing/src/**/*.js
 packages/ckeditor5-select-all/src/**/*.js
+packages/ckeditor5-source-editing/src/**/*.js
 packages/ckeditor5-special-characters/src/**/*.js
 packages/ckeditor5-table/src/**/*.js
 packages/ckeditor5-typing/src/**/*.js

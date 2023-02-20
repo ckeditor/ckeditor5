@@ -62,7 +62,7 @@ export default function getSubNodes( head: unknown, excludedProperties = new Set
 		}
 	}
 
-	// @if CK_DEBUG_WATCHDOG // return { subNodes, prevNodeMap };
+	// @if CK_DEBUG_WATCHDOG // return { subNodes, prevNodeMap } as any;
 
 	return subNodes;
 }

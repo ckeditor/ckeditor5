@@ -509,9 +509,11 @@ export type ContextWatchdogItemErrorEventData = {
 /**
  * Fired after an item has been restarted.
  *
+ * ```ts
  * 	watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
  *		console.log( 'An item with with the '${ itemId }' ID has been restarted.' );
  * 	} );
+ * ```
  *
  * @eventName itemRestart
  */

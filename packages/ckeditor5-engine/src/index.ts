@@ -13,6 +13,7 @@ export * from './view/placeholder';
 export { default as EditingController } from './controller/editingcontroller';
 export {
 	default as DataController,
+	type DataControllerInitEvent,
 	type DataControllerSetEvent,
 	type DataControllerToModelEvent,
 	type DataControllerToViewEvent
@@ -27,6 +28,7 @@ export type {
 	DowncastConversionApi,
 	DowncastInsertEvent,
 	DowncastRemoveEvent,
+	DowncastRemoveMarkerEvent,
 	DowncastSelectionEvent
 } from './conversion/downcastdispatcher';
 export type {
@@ -42,6 +44,7 @@ export type {
 	ElementCreatorFunction,
 	HighlightDescriptor,
 	RemoveHighlightCallback,
+	MarkerElementCreatorFunction,
 	SlotFilter
 } from './conversion/downcasthelpers';
 export type {
@@ -68,7 +71,7 @@ export { transformSets } from './model/operation/transform';
 // Model.
 export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
 export { default as Range } from './model/range';
-export { default as LiveRange } from './model/liverange';
+export { default as LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
@@ -77,6 +80,7 @@ export { default as Position, type PositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
+export { default as TextProxy } from './model/textproxy';
 export type { default as Document, ModelPostFixer } from './model/document';
 export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
