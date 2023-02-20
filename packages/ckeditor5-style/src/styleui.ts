@@ -116,6 +116,6 @@ export default class StyleUI extends Plugin {
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[StyleUI.pluginName]: StyleUI;
+		[ StyleUI.pluginName ]: StyleUI;
 	}
 }

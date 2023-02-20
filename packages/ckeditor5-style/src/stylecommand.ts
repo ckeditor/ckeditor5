@@ -13,7 +13,7 @@ import { logWarning, first } from 'ckeditor5/src/utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { isObject } from 'lodash-es';
 
-import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './utils';
+import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './styleutils';
 
 /**
  * Style command.
@@ -145,10 +145,10 @@ export default class StyleCommand extends Command {
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Command options.
-	 * @param {String} options.styleName Style name matching the one defined in the
+	 * @param options Command options.
+	 * @param options.styleName Style name matching the one defined in the
 	 * {@link module:style/styleconfig~StyleConfig#definitions configuration}.
-	 * @param {Boolean} [options.forceValue] Whether the command should add given style (`true`) or remove it (`false`) from the selection.
+	 * @param options.forceValue Whether the command should add given style (`true`) or remove it (`false`) from the selection.
 	 * If not set (default), the command will toggle the style basing on the first selected node. Note, that this will not force
 	 * setting a style on an element that cannot receive given style.
 	 */

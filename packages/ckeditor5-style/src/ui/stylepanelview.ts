@@ -12,7 +12,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 
 import StyleGroupView from './stylegroupview';
 import type StyleGridView from './stylegridview';
-import type { NormalizedStyleDefinitions } from '../utils';
+import type { NormalizedStyleDefinitions } from '../styleutils';
 
 import '../../theme/stylepanel.css';
 

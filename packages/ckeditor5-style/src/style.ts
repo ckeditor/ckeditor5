@@ -36,6 +36,6 @@ export default class Style extends Plugin {
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[Style.pluginName]: Style;
+		[ Style.pluginName ]: Style;
 	}
 }

@@ -88,6 +88,6 @@ export interface InlineStyleDefinition extends StyleDefinition {
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[StyleUtils.pluginName]: StyleUtils;
+		[ StyleUtils.pluginName ]: StyleUtils;
 	}
 }
