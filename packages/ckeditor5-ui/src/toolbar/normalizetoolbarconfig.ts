@@ -14,22 +14,26 @@ import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core'
  *
  * * may be defined as an `Array`:
  *
- * 		toolbar: [ 'heading', 'bold', 'italic', 'link', ... ]
+ * ```
+ * toolbar: [ 'heading', 'bold', 'italic', 'link', ... ]
+ * ```
  *
  * * or an `Object`:
  *
- *		toolbar: {
- *			items: [ 'heading', 'bold', 'italic', 'link', ... ],
- *			removeItems: [ 'bold' ],
- *			...
- *		}
+ * ```
+ * toolbar: {
+ * 	items: [ 'heading', 'bold', 'italic', 'link', ... ],
+ * 	removeItems: [ 'bold' ],
+ * 	...
+ * }
+ * ```
  *
  * * or may not be defined at all (`undefined`)
  *
  * and returns it in the object form.
  *
- * @param {Array|Object|undefined} config The value of `config.toolbar`.
- * @returns {Object} A normalized toolbar config object.
+ * @param config The value of `config.toolbar`.
+ * @returns A normalized toolbar config object.
  */
 export default function normalizeToolbarConfig(
 	config: ToolbarConfig | undefined

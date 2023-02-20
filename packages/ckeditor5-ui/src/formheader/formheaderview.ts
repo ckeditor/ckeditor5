@@ -8,11 +8,11 @@
  */
 
 import View from '../view';
+import type ViewCollection from '../viewcollection';
+
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/formheader/formheader.css';
-
-import type ViewCollection from '../viewcollection';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The class component representing a form header view. It should be used in more advanced forms to
@@ -26,22 +26,33 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * and {@link module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}.
  *
  * The latter is an example, where the component has been extended by {@link module:ui/dropdown/dropdownview~DropdownView} view.
- *
- * @extends module:ui/view~View
  */
 export default class FormHeaderView extends View {
+	/**
+	 * A collection of header items.
+	 */
 	public readonly children: ViewCollection;
 
+	/**
+	 * The label of the header.
+	 *
+	 * @observable
+	 */
 	public declare label: string;
+
+	/**
+	 * An additional CSS class added to the {@link #element}.
+	 *
+	 * @observable
+	 */
 	public declare class: string | null;
 
 	/**
 	 * Creates an instance of the form header class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Object} options
-	 * @param {String} options.label A label.
-	 * @param {String} [options.class] An additional class.
+	 * @param locale The locale instance.
+	 * @param options.label A label.
+	 * @param options.class An additional class.
 	 */
 	constructor(
 		locale: Locale | undefined,
@@ -51,28 +62,9 @@ export default class FormHeaderView extends View {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The label of the header.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
 		this.set( 'label', options.label || '' );
-
-		/**
-		 * An additional CSS class added to the {@link #element}.
-		 *
-		 * @observable
-		 * @member {String} #class
-		 */
 		this.set( 'class', options.class || null );
 
-		/**
-		 * A collection of header items.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.children = this.createCollection();
 
 		this.setTemplate( {
