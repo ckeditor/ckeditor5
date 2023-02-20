@@ -27,7 +27,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^36.0.1",
     "@ckeditor/ckeditor5-code-block": "^36.0.1",
     "@ckeditor/ckeditor5-core": "^36.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^33.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^34.0.0",
     "@ckeditor/ckeditor5-easy-image": "^36.0.1",
     "@ckeditor/ckeditor5-editor-classic": "^36.0.1",
     "@ckeditor/ckeditor5-engine": "^36.0.1",
