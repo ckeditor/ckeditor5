@@ -35,9 +35,10 @@ import type View from '../view';
  *
  * @param view View instance that should get this functionality.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base )
-{
+export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base ): {
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & ViewWithCssTransitionDisabler;
+	prototype: InstanceType<Base> & ViewWithCssTransitionDisabler;
+} & Base {
 	class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;
 
@@ -67,7 +68,7 @@ export default function CssTransitionDisablerMixin<Base extends new( ...args: Ar
 		}
 	}
 
-	return Mixin;
+	return Mixin as any;
 }
 
 export type ViewWithCssTransitionDisabler = View & {
