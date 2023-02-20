@@ -1,7 +1,7 @@
 ---
-category: features-image-upload
+category: features-file-management
 menu-title: CKFinder file manager
-order: 40
+order: 20
 badges: [ premium ]
 ---
 

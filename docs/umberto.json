@@ -81,7 +81,7 @@
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"features/toolbar.html": "features/toolbar/toolbar.html",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
-		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
+		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
 		"features/collaboration/annotation-customization/annotations-custom-template.html": "features/collaboration/annotations/annotations-custom-template.html",
 		"features/collaboration/annotation-customization/annotations-custom-theme.html": "features/collaboration/annotations/annotations-custom-theme.html",
@@ -103,7 +103,7 @@
 		"features/easy-image.html": "features/images/image-upload/easy-image.html",
 		"features/image-upload/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/easy-image.html": "features/images/image-upload/easy-image.html",
-		"features/image-upload/ckfinder.html": "features/images/image-upload/ckfinder.html",
+		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
 		"features/lists.html": "features/lists/lists.html",
@@ -112,6 +112,8 @@
 		"features/iframe-embed.html": "features/media-embed.html",
 		"features/video.html": "features/media-embed.html",
 		"features/video-upload.html": "features/media-embed.html",
+		"features/images/image-upload/ckbox.html": "features/file-management/ckbox.html",
+		"features/images/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/images/overview.html": "features/images/images-overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/pagination.html": "features/pagination/pagination.html",
@@ -120,7 +122,7 @@
 		"features/import-word.html": "features/import-word/import-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/collaboration/comments/comments-api.html": "api/comments.html",
-		"features/ckbox.html": "features/images/image-upload/ckbox.html",
+		"features/ckbox.html": "features/file-management/ckbox.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
@@ -365,6 +367,11 @@
 							"order": 500
 						}
 					]
+				},
+				{
+					"name": "File management",
+					"id": "features-file-management",
+					"slug": "file-management"
 				},
 				{
 					"name": "Images",

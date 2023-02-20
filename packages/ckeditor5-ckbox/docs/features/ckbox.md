@@ -1,8 +1,8 @@
 ---
-category: features-image-upload
+category: features-file-management
 menu-title: CKBox file manager
 modified_at: 2022-06-20
-order: 20
+order: 10
 badges: [ premium ]
 ---
 
