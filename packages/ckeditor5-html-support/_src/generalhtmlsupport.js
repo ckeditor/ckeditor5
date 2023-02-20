@@ -301,7 +301,7 @@ function modifyGhsAttribute( writer, item, ghsAttributeName, subject, callback )
  *
  * Read more in {@link module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig}.
  *
- * @member {module:htmlsupport/generalhtmlsupport~GeneralHtmlSupportConfig} module:core/editor/editorconfig~EditorConfig#htmlSupport
+ * @member {module:html-support/generalhtmlsupport~GeneralHtmlSupportConfig} module:core/editor/editorconfig~EditorConfig#htmlSupport
  */
 
 /**
