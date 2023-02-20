@@ -11,7 +11,13 @@ export * from './view/placeholder';
 
 // Controller.
 export { default as EditingController } from './controller/editingcontroller';
-export { default as DataController, type DataControllerSetEvent, type DataControllerInitEvent } from './controller/datacontroller';
+export {
+	default as DataController,
+	type DataControllerInitEvent,
+	type DataControllerSetEvent,
+	type DataControllerToModelEvent,
+	type DataControllerToViewEvent
+} from './controller/datacontroller';
 
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
@@ -47,7 +53,7 @@ export type {
 	MapperViewToModelPositionEvent
 } from './conversion/mapper';
 export type { default as ModelConsumable } from './conversion/modelconsumable';
-export type { Consumables } from './conversion/viewconsumable';
+export type { Consumables, default as ViewConsumable } from './conversion/viewconsumable';
 
 // DataProcessor.
 export { default as DataProcessor } from './dataprocessor/dataprocessor';
@@ -85,7 +91,9 @@ export type { default as RootElement } from './model/rootelement';
 export type {
 	default as Schema,
 	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback
+	SchemaChildCheckCallback,
+	AttributeProperties,
+	SchemaItemDefinition
 } from './model/schema';
 export type { default as Selection, Selectable } from './model/selection';
 export type { default as TypeCheckable } from './model/typecheckable';
@@ -142,7 +150,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match } from './view/matcher';
+export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match, type MatchResult } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';
