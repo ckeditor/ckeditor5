@@ -207,7 +207,8 @@ export default abstract class Watchdog {
 	 * @param evt An error event.
 	 */
 	private _handleError( error: Error, evt: ErrorEvent | PromiseRejectionEvent ): void {
-		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
+		// @if CK_DEBUG // const err = error as CKEditorError;
+		// @if CK_DEBUG // if ( err.is && err.is( 'CKEditorError' ) && err.context === undefined ) {
 		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper item.' );
 		// @if CK_DEBUG // }
 

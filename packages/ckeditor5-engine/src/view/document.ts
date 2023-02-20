@@ -198,8 +198,8 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 		} while ( wasFixed );
 	}
 
-	// @if CK_DEBUG_ENGINE // log( version ) {
-	// @if CK_DEBUG_ENGINE //	logDocument( this, version );
+	// @if CK_DEBUG_ENGINE // public log( version: any ): void {
+	// @if CK_DEBUG_ENGINE // 	logDocument( this, version );
 	// @if CK_DEBUG_ENGINE // }
 }
 
