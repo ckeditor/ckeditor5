@@ -356,7 +356,7 @@ export default class Resizer extends ObservableMixin() {
 	 *
 	 * @param domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
 	 */
-	private _proposeNewSize( domEventData: MouseEvent ) {
+	private _proposeNewSize( domEventData: MouseEvent ): { width: number; height: number; widthPercents: number } {
 		const state = this.state;
 		const currentCoordinates = extractCoordinates( domEventData );
 		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;

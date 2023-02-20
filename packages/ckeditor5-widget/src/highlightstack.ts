@@ -150,7 +150,7 @@ function classesToString( classes: ArrayOrItem<string> ) {
 /**
  * Fired when top element on {@link module:widget/highlightstack~HighlightStack} has been changed
  *
- * @event change:top
+ * @eventName change:top
  */
 export type HighlightStackChangeEvent = {
 	name: 'change' | 'change:top';
