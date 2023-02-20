@@ -49,17 +49,17 @@ import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// Load the plugin.
-		plugins: [ SelectAll, ... ],
+		plugins: [ SelectAll, /* ... */ ],
 
 		// Display the "Select all" button in the toolbar.
-		toolbar: [ 'selectAll', ... ],
+		toolbar: [ 'selectAll', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
 </info-box>
 
 ## Common API

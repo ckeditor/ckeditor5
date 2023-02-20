@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -297,7 +297,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 * @param {Iterable.<module:ui/view~View>} [views] Initial views of the collection.
 	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
-	public createCollection( views?: Iterable<View> ): ViewCollection {
+	public createCollection<TView extends View>( views?: Iterable<TView> ): ViewCollection<TView> {
 		const collection = new ViewCollection( views );
 
 		this._viewCollections.add( collection );

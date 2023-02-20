@@ -16,6 +16,10 @@ The block toolbar comes in handy when the main editor toolbar cannot be accessed
 
 {@snippet features/blocktoolbar}
 
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Configuration
 
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
@@ -61,7 +65,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 		blockToolbar: [
 			'paragraph', 'heading1', 'heading2', 'heading3',
 			'|',
@@ -69,10 +73,10 @@ BalloonEditor
 			'|',
 			'blockQuote', 'uploadImage'
 		],
-		toolbar: [ ... ]
+		toolbar: [ /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 You can also use the `shouldNotGroupWhenFull` option to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar:
@@ -84,7 +88,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 		blockToolbar: {
 			items: [
 				'paragraph', 'heading1', 'heading2', 'heading3',
@@ -95,14 +99,14 @@ BalloonEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
-		toolbar: [ ... ]
+		toolbar: [ /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Contribute

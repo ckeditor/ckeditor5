@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,8 +14,10 @@ import ModelPosition, { type PositionOffset, type PositionStickiness } from './p
 import ModelRange from './range';
 import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection';
 import OperationFactory from './operation/operationfactory';
+import DocumentSelection from './documentselection';
 import Schema from './schema';
 import Writer from './writer';
+import Node from './node';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
@@ -26,7 +28,6 @@ import insertObject from './utils/insertobject';
 import modifySelection from './utils/modifyselection';
 
 import type ModelDocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
 import type Item from './item';
 import type ModelElement from './element';
 import type Operation from './operation/operation';
@@ -42,7 +43,7 @@ import {
 
 /**
  * Editor's data model. Read about the model in the
- * {@glink framework/guides/architecture/editing-engine engine architecture guide}.
+ * {@glink framework/guides/architecture/editing-engine engine architecture} guide.
  */
 export default class Model extends ObservableMixin() {
 	/**
@@ -81,7 +82,7 @@ export default class Model extends ObservableMixin() {
 		this._pendingChanges = [];
 		this._currentWriter = null;
 
-		( [ 'insertContent', 'insertObject', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ] as const )
+		( [ 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ] as const )
 			.forEach( methodName => this.decorate( methodName ) );
 
 		// Adding operation validation with `highest` priority, so it is called before any other feature would like
@@ -152,6 +153,16 @@ export default class Model extends ObservableMixin() {
 
 		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
 		this.document.registerPostFixer( autoParagraphEmptyRoots );
+
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelInsertContentEvent>( 'insertContent', ( evt, [ content, selectable ] ) => {
+			evt.return = insertContent( this, content, selectable );
+		} );
+
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelInsertObjectEvent>( 'insertObject', ( evt, [ element, selection, options ] ) => {
+			evt.return = insertObject( this, element, selection, options );
+		} );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
@@ -515,9 +526,13 @@ export default class Model extends ObservableMixin() {
 	public insertContent(
 		content: Item | ModelDocumentFragment,
 		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset
+		placeOrOffset?: PlaceOrOffset,
+		...rest: Array<unknown>
 	): ModelRange {
-		return insertContent( this, content, selectable, placeOrOffset );
+		const selection = normalizeSelectable( selectable, placeOrOffset );
+
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection, placeOrOffset, ...rest ] )!;
 	}
 
 	/**
@@ -584,7 +599,7 @@ export default class Model extends ObservableMixin() {
 	 * model.insertObject( tableElement, range );
 	 * ```
 	 *
-	 * @param object An object to be inserted into the model document.
+	 * @param element An object to be inserted into the model document.
 	 * @param selectable A selectable where the content should be inserted. If not specified, the current
 	 * {@link module:engine/model/document~Document#selection document selection} will be used instead.
 	 * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
@@ -604,15 +619,20 @@ export default class Model extends ObservableMixin() {
 	 * at the insertion position.
 	 */
 	public insertObject(
-		object: ModelElement,
+		element: ModelElement,
 		selectable?: Selectable,
 		placeOrOffset?: PlaceOrOffset | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
-		}
+		},
+		...rest: Array<unknown>
 	): ModelRange {
-		return insertObject( this, object, selectable, placeOrOffset, options );
+		const selection = normalizeSelectable( selectable, placeOrOffset );
+
+		// Note that options are fired as 2 arguments for backward compatibility with the decorated method.
+		// Passing all call arguments so it acts like decorated method.
+		return this.fire<ModelInsertObjectEvent>( 'insertObject', [ element, selection, options, options, ...rest ] )!;
 	}
 
 	/**
@@ -930,12 +950,8 @@ export default class Model extends ObservableMixin() {
 		return ModelRange._createOn( item );
 	}
 
-	// The three overloads below where added,
-	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
-	public createSelection(): ModelSelection;
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
-	public createSelection( selectable: Selectable, options: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -1002,7 +1018,7 @@ export default class Model extends ObservableMixin() {
 	 *
 	 * @param type {@link module:engine/model/batch~Batch#constructor The type} of the batch.
 	 */
-	public createBatch( type: BatchType ): Batch {
+	public createBatch( type?: BatchType ): Batch {
 		return new Batch( type );
 	}
 
@@ -1059,6 +1075,28 @@ export default class Model extends ObservableMixin() {
 
 		return ret;
 	}
+}
+
+/**
+ * Normalizes a selectable to a Selection or DocumentSelection.
+ */
+function normalizeSelectable(
+	selectable?: Selectable,
+	placeOrOffset?: PlaceOrOffset | null
+): ModelSelection | DocumentSelection | undefined {
+	if ( !selectable ) {
+		return;
+	}
+
+	if ( selectable instanceof ModelSelection || selectable instanceof DocumentSelection ) {
+		return selectable;
+	}
+
+	if ( selectable instanceof Node ) {
+		return new ModelSelection( selectable, placeOrOffset! );
+	}
+
+	return new ModelSelection( selectable );
 }
 
 /**
@@ -1119,7 +1157,15 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
  * @eventName insertContent
  * @param args The arguments passed to the original method.
  */
-export type ModelInsertContentEvent = DecoratedMethodEvent<Model, 'insertContent'>;
+export type ModelInsertContentEvent = {
+	name: 'insertContent';
+	args: [ [
+		content: Item | ModelDocumentFragment,
+		selectable?: ModelSelection | DocumentSelection,
+		...rest: Array<unknown>
+	] ];
+	return: ModelRange;
+};
 
 /**
  * Event fired when the {@link #insertObject} method is called.
@@ -1133,7 +1179,19 @@ export type ModelInsertContentEvent = DecoratedMethodEvent<Model, 'insertContent
  * @eventName insertObject
  * @param args The arguments passed to the original method.
  */
-export type ModelInsertObjectEvent = DecoratedMethodEvent<Model, 'insertObject'>;
+export type ModelInsertObjectEvent = {
+	name: 'insertObject';
+	args: [ [
+		element: ModelElement,
+		selectable?: ModelSelection | DocumentSelection | null,
+		options?: {
+			findOptimalPosition?: 'auto' | 'before' | 'after';
+			setSelection?: 'on' | 'after';
+		},
+		...rest: Array<unknown>
+	] ];
+	return: ModelRange;
+};
 
 /**
  * Event fired when {@link #deleteContent} method is called.

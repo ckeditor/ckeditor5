@@ -56,8 +56,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/code-block-custom-languages}
@@ -84,8 +84,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -150,15 +150,15 @@ import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CodeBlock, ... ],
-		toolbar: [ 'codeBlock', ... ]
+		plugins: [ CodeBlock, /* ... */ ],
+		toolbar: [ 'codeBlock', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

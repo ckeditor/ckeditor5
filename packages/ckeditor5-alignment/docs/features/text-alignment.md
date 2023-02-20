@@ -52,8 +52,8 @@ ClassicEditor
 			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-options}
@@ -81,8 +81,8 @@ ClassicEditor
 			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Configuring the toolbar
@@ -96,8 +96,8 @@ ClassicEditor
 			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
@@ -117,15 +117,15 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Alignment, ... ],
-		toolbar: [ 'alignment', ... ]
+		plugins: [ Alignment, /* ... */ ],
+		toolbar: [ 'alignment', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

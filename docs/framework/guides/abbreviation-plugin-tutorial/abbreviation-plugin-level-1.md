@@ -1,11 +1,11 @@
 ---
 category: abbreviation-plugin
-menu-title: Creating a toolbar button
+menu-title: Defining a model and a view
 order: 24
 modified_at: 2022-07-15
 ---
 
-# Creating a toolbar button
+# Defining a model and a view
 
 This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
 
@@ -259,6 +259,7 @@ export default class AbbreviationEditing extends Plugin {
 	}
 
 	_defineSchema() {
+	// Previously defined schema.
 	// ...
 	}
 
@@ -296,10 +297,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
+	// Schema and converters initialization.
 	// ...
 	}
 
 	_defineSchema() {
+	// Previously defined schema.
 	// ...
 	}
 
@@ -307,6 +310,7 @@ export default class AbbreviationEditing extends Plugin {
 		const conversion = this.editor.conversion;
 
 		conversion.for( 'downcast' ).attributeToElement(
+		// Code responsible for downcast conversion.
 		// ...
 		);
 
@@ -409,7 +413,8 @@ class AbbreviationUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'abbreviation', () => {
-			//...
+			// Previously initialized button view.
+			// ...
 
 			this.listenTo( button, 'execute', () => {
 				const selection = editor.model.document.selection;

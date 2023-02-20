@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,13 +10,15 @@
 import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from '../list/utils';
 
+import '../listcommands';
+
 /**
  * The list start index command. It changes the `listStart` attribute of the selected list items.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
 export default class ListStartCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: number | null;
 

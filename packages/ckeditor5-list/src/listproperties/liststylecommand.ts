@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,8 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
+
+import '../listcommands';
 
 /**
  * The list style command. It changes the `listStyle` attribute of the selected list items.
@@ -21,7 +23,7 @@ export default class ListStyleCommand extends Command {
 	declare public isStyleTypeSupported: undefined;
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 * @readonly
 	 */
 	declare public value: string | null;
@@ -106,7 +108,7 @@ export default class ListStyleCommand extends Command {
 	}
 
 	/**
-	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
+	 * Checks if the provided list style is valid. Also changes the selection to a list if it's not set yet.
 	 *
 	 * @param The type of the list style. If `null` is specified, the function does nothing.
 	*/

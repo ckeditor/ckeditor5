@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
+import type BlockQuoteCommand from './blockquotecommand';
 
 import '../theme/blockquote.css';
 
@@ -35,7 +36,7 @@ export default class BlockQuoteUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'blockQuote', locale => {
-			const command = editor.commands.get( 'blockQuote' )!;
+			const command: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {

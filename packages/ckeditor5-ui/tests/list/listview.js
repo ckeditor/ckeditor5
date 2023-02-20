@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -207,6 +207,18 @@ describe( 'ListView', () => {
 			view.focusLast();
 
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( '#ariaLabel', () => {
+		it( 'should be not set by default', () => {
+			expect( view.element.attributes[ 'aria-label' ] ).to.be.undefined;
+		} );
+
+		it( 'should set aria-label', () => {
+			view.ariaLabel = 'foo';
+
+			expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'foo' );
 		} );
 	} );
 } );

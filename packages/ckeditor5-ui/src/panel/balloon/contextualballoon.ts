@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -71,7 +71,6 @@ const toPx = toUnit( 'px' );
  * @extends module:core/plugin~Plugin
  */
 export default class ContextualBalloon extends Plugin {
-	public readonly view: BalloonPanelView;
 	public positionLimiter: PositionOptions[ 'limiter' ];
 	public visibleStack?: string;
 
@@ -81,8 +80,9 @@ export default class ContextualBalloon extends Plugin {
 
 	private _viewToStack: Map<View, Stack>;
 	private _idToStack: Map<string, Stack>;
-	private readonly _rotatorView: RotatorView;
-	private readonly _fakePanelsView: FakePanelsView;
+	private _view: BalloonPanelView | null = null;
+	private _rotatorView: RotatorView | null = null;
+	private _fakePanelsView: FakePanelsView | null = null;
 
 	/**
 	 * @inheritDoc
@@ -130,16 +130,6 @@ export default class ContextualBalloon extends Plugin {
 		this.set( 'visibleView', null );
 
 		/**
-		 * The common balloon panel view.
-		 *
-		 * @readonly
-		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
-		 */
-		this.view = new BalloonPanelView( editor.locale );
-		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element! );
-
-		/**
 		 * The map of views and their stacks.
 		 *
 		 * @private
@@ -182,7 +172,7 @@ export default class ContextualBalloon extends Plugin {
 		 * @private
 		 * @type {module:ui/panel/balloon/contextualballoon~RotatorView}
 		 */
-		this._rotatorView = this._createRotatorView();
+		this._rotatorView = null;
 
 		/**
 		 * Displays fake panels under the balloon panel view when multiple stacks are added to the balloon.
@@ -190,7 +180,7 @@ export default class ContextualBalloon extends Plugin {
 		 * @private
 		 * @type {module:ui/view~View}
 		 */
-		this._fakePanelsView = this._createFakePanelsView();
+		this._fakePanelsView = null;
 	}
 
 	/**
@@ -199,9 +189,28 @@ export default class ContextualBalloon extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		this.view.destroy();
-		this._rotatorView.destroy();
-		this._fakePanelsView.destroy();
+		if ( this._view ) {
+			this._view.destroy();
+		}
+
+		if ( this._rotatorView ) {
+			this._rotatorView.destroy();
+		}
+
+		if ( this._fakePanelsView ) {
+			this._fakePanelsView.destroy();
+		}
+	}
+
+	/**
+	 * The common balloon panel view.
+	 */
+	public get view(): BalloonPanelView {
+		if ( !this._view ) {
+			this._createPanelView();
+		}
+
+		return this._view!;
 	}
 
 	/**
@@ -227,6 +236,10 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Boolean} [data.singleViewMode=false] Whether the view should be the only visible view even if other stacks were added.
 	 */
 	public add( data: ViewConfiguration ): void {
+		if ( !this._view ) {
+			this._createPanelView();
+		}
+
 		if ( this.hasView( data.view ) ) {
 			/**
 			 * Trying to add configuration of the same view more than once.
@@ -306,7 +319,7 @@ export default class ContextualBalloon extends Plugin {
 				} else {
 					this.view.hide();
 					this.visibleView = null;
-					this._rotatorView.hideView();
+					this._rotatorView!.hideView();
 				}
 			} else {
 				this._showView( Array.from( stack.values() )[ stack.size - 2 ] );
@@ -335,7 +348,7 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		this.view.pin( this._getBalloonPosition()! );
-		this._fakePanelsView.updatePosition();
+		this._fakePanelsView!.updatePosition();
 	}
 
 	/**
@@ -364,6 +377,19 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		this._showView( Array.from( stack.values() ).pop()! );
+	}
+
+	/**
+	 * Initializes view instances.
+	 */
+	private _createPanelView(): void {
+		this._view = new BalloonPanelView( this.editor.locale );
+
+		this.editor.ui.view.body.add( this._view );
+		this.editor.ui.focusTracker.add( this._view.element! );
+
+		this._rotatorView = this._createRotatorView();
+		this._fakePanelsView = this._createFakePanelsView();
 	}
 
 	/**
@@ -512,10 +538,10 @@ export default class ContextualBalloon extends Plugin {
 		this.view.class = balloonClassName;
 		this.view.withArrow = withArrow;
 
-		this._rotatorView.showView( view );
+		this._rotatorView!.showView( view );
 		this.visibleView = view;
 		this.view.pin( this._getBalloonPosition()! );
-		this._fakePanelsView.updatePosition();
+		this._fakePanelsView!.updatePosition();
 
 		if ( singleViewMode ) {
 			this._singleViewMode = true;

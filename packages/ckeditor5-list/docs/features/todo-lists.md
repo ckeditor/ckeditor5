@@ -45,15 +45,15 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ TodoList, ... ],
-		toolbar: [ 'todoList', ... ],
+		plugins: [ TodoList, /* ... */ ],
+		toolbar: [ 'todoList', /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## HTML structure

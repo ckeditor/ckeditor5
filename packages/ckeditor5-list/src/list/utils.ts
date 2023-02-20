@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -151,7 +151,8 @@ export function injectViewList(
 				mergeViewLists( viewWriter, targetPosition.nodeBefore!, targetPosition.nodeAfter! );
 				viewWriter.move( viewWriter.createRangeOn( viewList ), targetPosition );
 
-				walker.position = breakPosition;
+				// This is bad, but those lists will be removed soon anyway.
+				( walker as any )._position = breakPosition;
 			}
 		}
 	} else {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,6 +13,8 @@ import {
 	expandListBlocksToCompleteList,
 	isListItemBlock
 } from '../documentlist/utils/model';
+
+import '../listcommands';
 
 /**
  * The list reversed command. It changes the `listReversed` attribute of the selected list items,

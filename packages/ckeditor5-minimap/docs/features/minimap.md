@@ -10,10 +10,12 @@ modified_at: 2021-07-12
 
 The content minimap feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
 
-You can try the minimap feature in the demo below.
-
 <info-box warning>
 	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
+</info-box>
+
+<info-box info>
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -116,7 +118,7 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
 			container: document.querySelector( '.minimap-container' ),
 		}
@@ -126,7 +128,7 @@ DecoupledEditor
 
 		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 	} )
-	.catch( ... );
+	.catch( /* ... */ );
 ```
 
 ## Installation
@@ -145,17 +147,18 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
+			// Reference to the container element as shown in the configuration section of the guide
 			// ...
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -174,13 +177,13 @@ import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Minimap, ... ],
+		plugins: [ Minimap, /* ... */ ],
 		minimap: {
 			container: document.querySelector( '.minimap-container' )
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Content styles and classes
@@ -190,3 +193,7 @@ The minimap feature uses `<iframe>` internally. For a proper look and operation,
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap).

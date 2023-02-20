@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,6 +22,8 @@ import {
 	type ListElement
 } from './utils/model';
 import ListWalker from './utils/listwalker';
+
+import '../listcommands';
 
 /**
  * The document list merge command. It is used by the {@link module:list/documentlist~DocumentList list feature}.

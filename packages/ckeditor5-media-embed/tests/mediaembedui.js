@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,11 +37,14 @@ describe( 'MediaEmbedUI', () => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
 				button = dropdown.buttonView;
-				form = dropdown.panelView.children.get( 0 );
 
 				dropdown.render();
-
 				global.document.body.appendChild( dropdown.element );
+
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
+
+				form = dropdown.panelView.children.get( 0 );
 			} );
 	} );
 
@@ -221,13 +224,13 @@ describe( 'MediaEmbedUI', () => {
 			form.fire( 'submit' );
 		} );
 
-		it( 'binds urlInputView#isReadOnly to command#isEnabled', () => {
+		it( 'binds urlInputView#isEnabled to command#isEnabled', () => {
 			const command = editor.commands.get( 'mediaEmbed' );
 
-			expect( form.urlInputView.isReadOnly ).to.be.false;
+			expect( form.urlInputView.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
-			expect( form.urlInputView.isReadOnly ).to.be.true;
+			expect( form.urlInputView.isEnabled ).to.be.false;
 		} );
 
 		it( 'should trim URL input value', () => {
@@ -251,6 +254,10 @@ describe( 'MediaEmbedUI', () => {
 			form.urlInputView.fieldView.fire( 'input' );
 
 			expect( form.saveButtonView.isEnabled ).to.be.true;
+		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( form.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		describe( 'validators', () => {

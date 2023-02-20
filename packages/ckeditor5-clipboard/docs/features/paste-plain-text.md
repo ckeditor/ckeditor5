@@ -54,10 +54,10 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Clipboard, Bold, ... ]
+		plugins: [ Clipboard, Bold, /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.
@@ -73,3 +73,7 @@ If you think that support for any of the applications needs improvements, please
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).

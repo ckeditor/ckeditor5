@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,8 @@ import type { Element, Node, Schema } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 
 import { first } from 'ckeditor5/src/utils';
+
+import '../listcommands';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.

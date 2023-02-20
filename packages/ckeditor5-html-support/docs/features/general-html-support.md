@@ -21,7 +21,7 @@ Some examples of HTML features that can be easily enabled using General HTML Sup
 The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, output (e.g. via `editor.getData()`), and are visible in the editing area. Such content can also be edited in the editor, although, to a limited extent. Read more about it in the [Level of support](#level-of-support) section.
 
 <info-box info>
-	The GHS feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -38,7 +38,10 @@ The General HTML Support feature is configured via the `config.htmlSupport` prop
 
 ## Related features
 
-There is a closely related {@link features/source-editing source editing feature} which allows access and edition of the HTML source code of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+There are other HTML editing related CKEditor 5 features you may want to check:
+
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
+* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Level of support
 
@@ -72,14 +75,14 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ GeneralHtmlSupport, ... ],
+		plugins: [ GeneralHtmlSupport, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -328,7 +331,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 ## HTML comments
 
-By default, all HTML comments are filtered out during the editor initialization. The HTML Comments feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/advanced/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
+By default, all HTML comments are filtered out during the editor initialization. The HTML Comments feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link installation/getting-started/getting-and-setting-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
 
 <info-box>
 	The HTML comment feature is **experimental and not yet production-ready**.
@@ -336,11 +339,19 @@ By default, all HTML comments are filtered out during the editor initialization.
 	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues-2) section below.
 </info-box>
 
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation-2) section to learn how to enable it in your editor.
+</info-box>
+
 ### Demo
 
 The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that the HTML comment is present in the document source. You can uncomment the paragraph below the picture and upon leaving the source editing mode, you will see this paragraph in the editable area.
 
 {@snippet features/html-comment}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ### Installation
 
@@ -357,14 +368,14 @@ import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlComment, ... ],
+		plugins: [ HtmlComment, /* ... */ ],
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 HTML comment feature does not require any configuration.

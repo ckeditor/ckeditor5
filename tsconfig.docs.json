@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "./packages/*/src/**/*.ts",
+    "./external/ckeditor5-internal/packages/*/src/**/*.ts",
+    "./external/collaboration-features/packages/*/src/**/*.ts",
+    "./typings/"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

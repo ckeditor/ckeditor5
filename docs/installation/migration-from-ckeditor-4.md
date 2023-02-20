@@ -14,7 +14,7 @@ modified_at: 2022-04-15
 <info-box hint>
 **Quick recap**
 
-In previous tutorials of this section you could learn about installing, configuring and extending your editor. This guide assumes that you know a bit about CKEditor 5, so if you are completely new to CKEditor 5, check the previous articles!
+In the other tutorials from this section you could learn about installing, configuring and extending your CKEditor 5. This guide assumes that you know a bit about this editor, so if you are completely new to it, check the previous articles first!
 
 Before starting, be sure that migrating is your best choice.
 </info-box>
@@ -23,7 +23,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to {@link installation/getting-started/quick-start-other Installation} for more details.
 
-The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/basic-api Basic API} for an introduction.
+The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor Lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} for an introduction.
 
 When it comes to {@link features/index features}, there are two aspects that need to be taken into consideration. CKEditor 5 may still not have all the same features available as CKEditor 4 yet and some existing features may behave differently. Therefore, it is worth spending some time analyzing the features you need in your implementation.
 

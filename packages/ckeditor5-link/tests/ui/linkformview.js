@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -93,10 +93,6 @@ describe( 'LinkFormView', () => {
 				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
 				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
 			} );
-		} );
-
-		it( 'should implement the CSS transition disabling feature', () => {
-			expect( view.disableCssTransitions ).to.be.a( 'function' );
 		} );
 	} );
 
@@ -273,7 +269,7 @@ describe( 'LinkFormView', () => {
 			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
 				name: 'decorator1',
 				label: 'Foo',
-				isOn: undefined
+				isOn: false
 			} );
 			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
 				name: 'decorator2',
@@ -283,7 +279,7 @@ describe( 'LinkFormView', () => {
 			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
 				name: 'decorator3',
 				label: 'Multi',
-				isOn: undefined
+				isOn: false
 			} );
 		} );
 
@@ -292,7 +288,7 @@ describe( 'LinkFormView', () => {
 			const viewItem = view._manualDecoratorSwitches.first;
 
 			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.undefined;
+			expect( viewItem.isOn ).to.be.false;
 
 			viewItem.element.dispatchEvent( new Event( 'click' ) );
 
@@ -326,9 +322,9 @@ describe( 'LinkFormView', () => {
 		describe( 'getDecoratorSwitchesState()', () => {
 			it( 'should provide object with decorators states', () => {
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: undefined,
+					decorator1: false,
 					decorator2: true,
-					decorator3: undefined
+					decorator3: false
 				} );
 
 				view._manualDecoratorSwitches.map( item => {
@@ -346,9 +342,9 @@ describe( 'LinkFormView', () => {
 
 			it( 'should use decorator default value if command and decorator values are not set', () => {
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: undefined,
+					decorator1: false,
 					decorator2: true,
-					decorator3: undefined
+					decorator3: false
 				} );
 			} );
 
@@ -378,9 +374,9 @@ describe( 'LinkFormView', () => {
 				linkCommand.value = '';
 
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: undefined,
-					decorator2: undefined,
-					decorator3: undefined
+					decorator1: false,
+					decorator2: false,
+					decorator3: false
 				} );
 
 				for ( const decorator of collection ) {

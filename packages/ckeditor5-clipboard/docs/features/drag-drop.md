@@ -55,10 +55,10 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Clipboard, Bold, ... ]
+		plugins: [ Clipboard, Bold, /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.
@@ -67,3 +67,6 @@ The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate a
 
 At the moment, the drag and drop feature supports textual content as well as widgets. Bringing support for any types of blocks is tracked in [issue #7731](https://github.com/ckeditor/ckeditor5/issues/7731). If you  would like to see this feature implemented, make sure you add a 👍 &nbsp; to the issue on GitHub.
 
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).

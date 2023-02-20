@@ -15,14 +15,13 @@ modified_at: 2022-12-14
 
 ## Update to CKEditor 5 v36.0.0
 
-For the entire list of changes introduced in version 36.0.0.
-<!-- Add "see the [changelog for CKEditor 5 v36.0.0](...)." after we have a page with changelog-->
+For the entire list of changes introduced in version 36.0.0 see the [release notes for CKEditor 5 v36.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v36.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v36.0.0.
 
 ### Importing `EditorUI` class
 
-The `EditorUI` class was moved from `@ckeditor/ckeditor5-core` to `@ckeditor/ckeditor5-ui` package. Thus, it's enough to update imports (depending on the format used):
+The `EditorUI` class was moved from the `@ckeditor/ckeditor5-core` to the `@ckeditor/ckeditor5-ui` package. Thus, it is enough to update imports (depending on the format used):
 
 * from `'ckeditor5/src/core'` to `'ckeditor5/src/ui'`
 * from `'@ckeditor/ckeditor5-core/src/editor/editorui'` to `'@ckeditor/ckeditor5-ui/src/editorui/editorui'`

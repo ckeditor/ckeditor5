@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,8 +15,7 @@ import BlockButtonView from '../../../src/toolbar/block/blockbuttonview';
 
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';

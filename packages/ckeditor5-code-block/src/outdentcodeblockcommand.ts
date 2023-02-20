@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,6 +15,8 @@ import {
 	getIndentOutdentPositions,
 	isModelSelectionInCodeBlock
 } from './utils';
+
+import './codeblockconfig';
 
 /**
  * The code block indentation decrease command plugin.
@@ -186,4 +188,10 @@ function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 	}
 
 	return nodeAtPosition as Text;
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		outdentCodeBlock: OutdentCodeBlockCommand;
+	}
 }

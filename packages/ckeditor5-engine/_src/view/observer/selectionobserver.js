@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,6 +41,15 @@ export default class SelectionObserver extends Observer {
 		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
 		 */
 		this.mutationObserver = view.getObserver( MutationObserver );
+
+		/**
+		 * Instance of the focus observer. Selection observer calls
+		 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/observer/focusobserver~FocusObserver}
+		 * module:engine/view/observer/focusobserver~FocusObserver#focusObserver
+		 */
 
 		/**
 		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare

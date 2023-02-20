@@ -71,7 +71,7 @@ export default App;
 The `<CKEditor>` component supports the following properties:
 
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
-* `data` &ndash; The initial data for the created editor. See the {@link installation/getting-started/basic-api#interacting-with-the-editor Basic API} guide.
+* `data` &ndash; The initial data for the created editor. See the {@link installation/getting-started/getting-and-setting-data Getting and setting data} guide.
 * `config` &ndash; The editor configuration. See the {@link installation/getting-started/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
@@ -181,7 +181,7 @@ Create your own CKEditor 5 build with customized plugins, toolbar and language i
 
 This option requires making changes to a {@link installation/getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
 
-Read more about customising a predefined build in the {@link installation/getting-started/installing-plugins Installing plugins} guide.
+Read more about customising a predefined build in the {@link installation/plugins/installing-plugins Installing plugins} guide.
 
 ### Integrating the editor from source
 
@@ -404,7 +404,7 @@ yarn add \
 	@ckeditor/ckeditor5-basic-styles
 ```
 
-Please note that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
+Please note that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 #### Modifying the webpack configuration
 
@@ -568,7 +568,7 @@ CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so d
 
 ### Predefined builds
 
-When using one of the {@link installation/getting-started/predefined-builds#available-builds official editor builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
+When using one of the {@link installation/getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
 
 **Official editor builds:**
 

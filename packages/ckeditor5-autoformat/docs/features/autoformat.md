@@ -79,11 +79,11 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Autoformat, ... ],
-		toolbar: [ ... ]
+		plugins: [ Autoformat, /* ... */ ],
+		toolbar: [ /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box hint>
@@ -91,7 +91,7 @@ ClassicEditor
 </info-box>
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Creating custom autoformatters

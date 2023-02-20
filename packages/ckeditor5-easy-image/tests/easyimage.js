@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,8 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import EasyImage from '../src/easyimage';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import UploadGatewayMock from './_utils/uploadgatewaymock';

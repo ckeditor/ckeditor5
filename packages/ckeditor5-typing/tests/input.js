@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -44,22 +44,24 @@ describe( 'Input', () => {
 		} );
 
 		describe( 'init()', () => {
-			it( 'should register the input command (deprecated)', async () => {
-				const editor = await ClassicTestEditor.create( domElement, {
-					plugins: [ Input ]
-				} );
-
-				expect( editor.commands.get( 'input' ) ).to.be.instanceOf( InsertTextCommand );
-
-				await editor.destroy();
-			} );
-
 			it( 'should register the insert text command', async () => {
 				const editor = await ClassicTestEditor.create( domElement, {
 					plugins: [ Input ]
 				} );
 
 				expect( editor.commands.get( 'insertText' ) ).to.be.instanceOf( InsertTextCommand );
+
+				await editor.destroy();
+			} );
+
+			it( 'should register the input command (deprecated) with the same command instance', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Input ]
+				} );
+
+				const insertTextCommand = editor.commands.get( 'insertText' );
+
+				expect( editor.commands.get( 'input' ) ).to.equal( insertTextCommand );
 
 				await editor.destroy();
 			} );
@@ -232,7 +234,6 @@ describe( 'Input', () => {
 			} );
 
 			const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
 			sinon.assert.calledOnce( insertTextCommandSpy );
 			expect( firstCallArgs.text ).to.equal( 'bar' );
 			expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;

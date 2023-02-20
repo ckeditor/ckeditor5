@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -44,9 +44,28 @@ function getCkeditor5Plugins() {
  *
  * @returns {Promise.<Array>}
  */
-function getCkeditor5ModulePaths() {
+async function getCkeditor5ModulePaths() {
+	const files = await globPromise( 'node_modules/@ckeditor/ckeditor5-!(dev-)/src/**/*.[jt]s', { cwd: ROOT_DIRECTORY } );
+	const ossPackages = ( await globPromise( 'packages/*/', { cwd: ROOT_DIRECTORY } ) )
+		.map( packagePath => {
+			const shortPackageName = packagePath.replace( /^packages/, '' );
+
+			return new RegExp( shortPackageName );
+		} );
+
+	return files.filter( modulePath => {
+		return ossPackages.some( pkg => modulePath.match( pkg ) );
+	} );
+}
+
+/**
+ * @param {String} pattern
+ * @param {Object} options
+ * @returns {Promise.<Array.<String>>}
+ */
+function globPromise( pattern, options ) {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.js', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
+		glob( pattern, options, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
@@ -65,7 +84,7 @@ function getCkeditor5ModulePaths() {
 function checkWhetherIsCKEditor5Plugin( modulePath ) {
 	return readFile( path.join( ROOT_DIRECTORY, modulePath ) )
 		.then( content => {
-			const pluginName = path.basename( modulePath, '.js' );
+			const pluginName = path.basename( modulePath.replace( /.[jt]s$/, '' ) );
 
 			if ( content.match( new RegExp( `export default class ${ pluginName } extends Plugin`, 'i' ) ) ) {
 				return Promise.resolve( true );

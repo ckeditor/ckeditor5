@@ -67,8 +67,8 @@ ClassicEditor
 			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/custom-highlight-options}
@@ -91,8 +91,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 {@snippet features/highlight-buttons}
@@ -158,8 +158,8 @@ ClassicEditor
 			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 		]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 Then, update the classes in the stylesheet so the content corresponds to the UI of the editor. It is recommended for the UI buttons and the actual highlights in the text to share the same colors.
@@ -193,15 +193,15 @@ import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Highlight, ... ],
-		toolbar: [ 'highlight', ... ]
+		plugins: [ Highlight, /* ... */ ],
+		toolbar: [ 'highlight', /* ... */ ]
 	} )
-	.then( ... )
-	.catch( ... );
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box info>
-	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
+	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API

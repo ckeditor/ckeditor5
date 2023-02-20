@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -128,6 +128,14 @@ export default class EditableUIView extends View {
 		}
 
 		super.destroy();
+	}
+
+	/**
+	 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
+	 * the view will not render its {@link #template}.
+	 */
+	public get hasExternalElement(): boolean {
+		return this._hasExternalElement;
 	}
 
 	/**

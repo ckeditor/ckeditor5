@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@ import type View from '../view';
 import type DocumentSelection from '../documentselection';
 import type DomConverter from '../domconverter';
 import type Selection from '../selection';
+import FocusObserver from './focusobserver';
 
 type DomSelection = globalThis.Selection;
 
@@ -30,100 +31,80 @@ type DomSelection = globalThis.Selection;
  * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
- *
- * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
+	/**
+	 * Instance of the mutation observer. Selection observer calls
+	 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
+	 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+	 */
 	public readonly mutationObserver: MutationObserver;
+
+	/**
+	 * Instance of the focus observer. Focus observer calls
+	 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.
+	 */
+	public readonly focusObserver: FocusObserver;
+
+	/**
+	 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
+	 * new selection with it.
+	 */
 	public readonly selection: DocumentSelection;
+
+	/**
+	 * Reference to the {@link module:engine/view/view~View#domConverter}.
+	 */
 	public readonly domConverter: DomConverter;
 
+	/**
+	 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
+	 * document.
+	 */
 	private readonly _documents: WeakSet<Document>;
+
+	/**
+	 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
+	 */
 	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
+
+	/**
+	 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
+	 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
+	 * possible infinite selection loop.
+	 */
 	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
+
+	/**
+	 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
+	 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
+	 * after a certain period of time (debounced, postponed by each selectionchange event).
+	 */
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => void>;
+
+	/**
+	 * Private property to check if the code does not enter infinite loop.
+	 */
 	private _loopbackCounter: number;
 
 	constructor( view: View ) {
 		super( view );
 
-		/**
-		 * Instance of the mutation observer. Selection observer calls
-		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
-		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
-		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
-		 */
 		this.mutationObserver = view.getObserver( MutationObserver )!;
-
-		/**
-		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
-		 * new selection with it.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/documentselection~DocumentSelection}
-		 * module:engine/view/observer/selectionobserver~SelectionObserver#selection
-		 */
+		this.focusObserver = view.getObserver( FocusObserver )!;
 		this.selection = this.document.selection;
-
-		/* eslint-disable max-len */
-		/**
-		 * Reference to the {@link module:engine/view/view~View#domConverter}.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/selectionobserver~SelectionObserver#domConverter
-		 */
-		/* eslint-enable max-len */
 		this.domConverter = view.domConverter;
 
-		/**
-		 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
-		 * document.
-		 *
-		 * @private
-		 * @member {WeakSet.<Document>} module:engine/view/observer/selectionobserver~SelectionObserver#_documents
-		 */
 		this._documents = new WeakSet();
 
-		/**
-		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
-		 *
-		 * @private
-		 * @param {Object} data Selection change data.
-		 * @method #_fireSelectionChangeDoneDebounced
-		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
 
-		/**
-		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
-		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
-		 * possible infinite selection loop.
-		 *
-		 * @private
-		 * @member {Number} #_clearInfiniteLoopInterval
-		 */
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
-		/**
-		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
-		 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
-		 * after a certain period of time (debounced, postponed by each selectionchange event).
-		 *
-		 * @private
-		 * @method #_documentIsSelectingInactivityTimeoutDebounced
-		 */
 		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
-		/**
-		 * Private property to check if the code does not enter infinite loop.
-		 *
-		 * @private
-		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
-		 */
 		this._loopbackCounter = 0;
 	}
 
@@ -233,9 +214,8 @@ export default class SelectionObserver extends Observer {
 	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
-	 * @private
-	 * @param {Event} domEvent DOM event.
-	 * @param {Document} domDocument DOM document.
+	 * @param domEvent DOM event.
+	 * @param domDocument DOM document.
 	 */
 	private _handleSelectionChange( domEvent: unknown, domDocument: Document ) {
 		if ( !this.isEnabled ) {
@@ -283,6 +263,9 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
+		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
+		this.focusObserver.flush();
+
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
@@ -301,10 +284,8 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
-			this.document._isFocusChanging = false;
-
 			// Prepare data for new selection and fire appropriate events.
-			this.document.fire<ViewDocumentSelectionEvent>( 'selectionChange', data );
+			this.document.fire<ViewDocumentSelectionChangeEvent>( 'selectionChange', data );
 
 			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
@@ -316,17 +297,30 @@ export default class SelectionObserver extends Observer {
 
 	/**
 	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
-	 *
-	 * @protected
 	 */
 	private _clearInfiniteLoop(): void {
 		this._loopbackCounter = 0;
 	}
 }
 
+/**
+ * The value of {@link ~ViewDocumentSelectionChangeEvent} and {@link ~ViewDocumentSelectionChangeDoneEvent} events.
+ */
 export type ViewDocumentSelectionEventData = {
+
+	/**
+	 * Old View selection which is {@link module:engine/view/document~Document#selection}.
+	 */
 	oldSelection: DocumentSelection;
+
+	/**
+	 * New View selection which is converted DOM selection.
+	 */
 	newSelection: Selection;
+
+	/**
+	 * Native DOM selection.
+	 */
 	domSelection: DomSelection | null;
 };
 
@@ -340,15 +334,10 @@ export type ViewDocumentSelectionEventData = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @event module:engine/view/document~Document#event:selectionChange
- * @param {Object} data
- * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
- * {@link module:engine/view/document~Document#selection}.
- * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
- * @param {Selection} data.domSelection Native DOM selection.
+ * @eventName selectionChange
  */
-export type ViewDocumentSelectionEvent = {
-	name: 'selectionChange' | 'selectionChangeDone';
+export type ViewDocumentSelectionChangeEvent = {
+	name: 'selectionChange';
 	args: [ ViewDocumentSelectionEventData ];
 };
 
@@ -361,10 +350,9 @@ export type ViewDocumentSelectionEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @event module:engine/view/document~Document#event:selectionChangeDone
- * @param {Object} data
- * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
- * {@link module:engine/view/document~Document#selection}.
- * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
- * @param {Selection} data.domSelection Native DOM selection.
+ * @eventName selectionChangeDone
  */
+export type ViewDocumentSelectionChangeDoneEvent = {
+	name: 'selectionChangeDone';
+	args: [ ViewDocumentSelectionEventData ];
+};
