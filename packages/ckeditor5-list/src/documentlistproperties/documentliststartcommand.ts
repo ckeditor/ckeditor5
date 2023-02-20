@@ -23,7 +23,7 @@ import '../listcommands';
  */
 export default class DocumentListStartCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: number | null;
 

@@ -41,7 +41,7 @@ export const FONT_COLOR = 'fontColor';
 export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
 /**
- * Builds a proper {@link module:engine/conversion/conversion~ConverterDefinition converter definition} out of input data.
+ * Builds a proper converter definition out of input data.
  */
 export function buildDefinition(
 	modelAttributeKey: string,

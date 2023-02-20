@@ -159,12 +159,14 @@ export interface FontColorConfig {
  * The configuration of the font family feature.
  * This option is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
  *
+ * ```ts
  * ClassicEditor
  * 	.create( {
  * 		fontFamily: ... // Font family feature configuration.
  * 	} )
  * 	.then( ... )
  * 	.catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */

@@ -53,12 +53,14 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): 
  *
  * For:
  *
+ * ```ts
  * const definitions = {
  * 	{ language: 'php', class: 'language-php', label: 'PHP' },
  * 	{ language: 'javascript', class: 'js', label: 'JavaScript' },
  * };
  *
  * getPropertyAssociation( definitions, 'class', 'language' );
+ * ```
  *
  * returns:
  *

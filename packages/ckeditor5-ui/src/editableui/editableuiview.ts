@@ -114,6 +114,14 @@ export default class EditableUIView extends View {
 	}
 
 	/**
+	 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
+	 * the view will not render its {@link #template}.
+	 */
+	public get hasExternalElement(): boolean {
+		return this._hasExternalElement;
+	}
+
+	/**
 	 * Updates the `ck-focused` and `ck-blurred` CSS classes on the {@link #element} according to
 	 * the {@link #isFocused} property value using the {@link #_editingView editing view} API.
 	 */

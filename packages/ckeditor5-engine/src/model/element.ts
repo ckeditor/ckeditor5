@@ -298,37 +298,37 @@ export default class Element extends Node {
 		return new Element( json.name, json.attributes, children );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `<${ this.rootName || this.name }>`;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelElement: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // public logExtended(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( `ModelElement: ${ this }, ${ this.childCount } children,
-	// @if CK_DEBUG_ENGINE //		attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
+	// @if CK_DEBUG_ENGINE // 	attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logAll() {
+	// @if CK_DEBUG_ENGINE // public logAll(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( '--------------------' );
-	// @if CK_DEBUG_ENGINE //
+
 	// @if CK_DEBUG_ENGINE // 	this.logExtended();
-	// @if CK_DEBUG_ENGINE //	console.log( 'List of children:' );
-	// @if CK_DEBUG_ENGINE //
-	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE // 	console.log( 'List of children:' );
+
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
 	// @if CK_DEBUG_ENGINE // 		child.log();
 	// @if CK_DEBUG_ENGINE // 	}
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // printTree( level = 0) {
+	// @if CK_DEBUG_ENGINE // public printTree( level = 0 ): string {
 	// @if CK_DEBUG_ENGINE // 	let string = '';
 
 	// @if CK_DEBUG_ENGINE // 	string += '\t'.repeat( level );
 	// @if CK_DEBUG_ENGINE // 	string += `<${ this.rootName || this.name }${ convertMapToTags( this.getAttributes() ) }>`;
 
-	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
 	// @if CK_DEBUG_ENGINE // 		string += '\n';
 
 	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
@@ -355,7 +355,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE // 	return string;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // public logTree(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
 	// @if CK_DEBUG_ENGINE // }
 }

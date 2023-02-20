@@ -63,7 +63,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	private readonly _tokens = new Map<TokenUrl, InitializedToken>();
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public static get pluginName(): 'CloudServices' {
 		return 'CloudServices';

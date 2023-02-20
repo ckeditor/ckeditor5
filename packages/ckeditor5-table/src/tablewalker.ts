@@ -8,6 +8,8 @@
  */
 import type { Element, Position } from 'ckeditor5/src/engine';
 
+// @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
+
 interface CellData {
 	cell: Element;
 	row: number;
@@ -486,10 +488,10 @@ class TableSlot {
 		this._table = tableWalker._table;
 	}
 
-	// @if CK_DEBUG // get isSpanned() { throwMissingGetterError( 'isSpanned' ); }
-	// @if CK_DEBUG // get colspan() { throwMissingGetterError( 'colspan' ); }
-	// @if CK_DEBUG // get rowspan() { throwMissingGetterError( 'rowspan' ); }
-	// @if CK_DEBUG // get cellIndex() { throwMissingGetterError( 'cellIndex' ); }
+	// @if CK_DEBUG // public get isSpanned(): unknown { return throwMissingGetterError( 'isSpanned' ); }
+	// @if CK_DEBUG // public get colspan(): unknown { return throwMissingGetterError( 'colspan' ); }
+	// @if CK_DEBUG // public get rowspan(): unknown { return throwMissingGetterError( 'rowspan' ); }
+	// @if CK_DEBUG // public get cellIndex(): unknown { return throwMissingGetterError( 'cellIndex' ); }
 
 	/**
 	 * Whether the cell is anchored in the current slot.
@@ -531,8 +533,6 @@ class TableSlot {
 
 export type { TableSlot };
 
-// @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
-
 /**
  * This `TableSlot`'s getter (property) was removed in CKEditor 5 v20.0.0.
  *
@@ -541,8 +541,8 @@ export type { TableSlot };
  * @error tableslot-getter-removed
  * @param getterName
  */
-// @if CK_DEBUG // function throwMissingGetterError( getterName ) {
-// @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed', this, {
+// @if CK_DEBUG // function throwMissingGetterError( getterName: string ): void {
+// @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed', null, {
 // @if CK_DEBUG //			getterName
 // @if CK_DEBUG //		} );
 // @if CK_DEBUG // }
