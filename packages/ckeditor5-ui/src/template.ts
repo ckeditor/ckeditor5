@@ -638,7 +638,7 @@ export default class Template extends EmitterMixin() {
 	 * Renders the `style` attribute of an HTML element based on
 	 * {@link module:ui/template~Template#attributes}.
 	 *
-	 * A style attribute is an {Object} with static values:
+	 * A style attribute is an object with static values:
 	 *
 	 * ```ts
 	 * attributes: {
