@@ -15,6 +15,7 @@ import type {
 	DowncastDispatcher,
 	DowncastWriter,
 	Element,
+	ElementCreatorFunction,
 	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
@@ -25,7 +26,7 @@ import {
 	setViewAttributes,
 	mergeViewElementAttributes,
 	updateViewAttributes,
-	type GHSViewAttribute
+	type GHSViewAttributes
 } from './conversionutils';
 import type DataFilter from './datafilter';
 import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema';
@@ -54,7 +55,7 @@ export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefi
 export function toObjectWidgetConverter(
 	editor: Editor,
 	{ view: viewName, isInline }: DataSchemaInlineElementDefinition
-): any {
+): ElementCreatorFunction {
 	const t = editor.t;
 
 	return ( modelElement: Element, { writer }: DowncastConversionApi ) => {
@@ -189,8 +190,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }: DataSche
  * Model-to-view conversion helper applying attributes preserved in `htmlAttributes` attribute
  * for block elements.
  *
- * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
- * @returns {Function} Returns a conversion callback.
+ * @returns Returns a conversion callback.
 */
 export function modelToViewBlockAttributeConverter( { model: modelName }: DataSchemaBlockElementDefinition ) {
 	return ( dispatcher: DowncastDispatcher ): void => {
@@ -203,7 +203,7 @@ export function modelToViewBlockAttributeConverter( { model: modelName }: DataSc
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
 
-			updateViewAttributes( viewWriter, attributeOldValue as GHSViewAttribute, attributeNewValue as GHSViewAttribute, viewElement );
+			updateViewAttributes( viewWriter, attributeOldValue as GHSViewAttributes, attributeNewValue as GHSViewAttributes, viewElement );
 		} );
 	};
 }

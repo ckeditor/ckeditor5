@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import StyleEditing from '../src/styleediting';
 import StyleCommand from '../src/stylecommand';
+import StyleUtils from '../src/styleutils';
 
 describe( 'StyleEditing', () => {
 	let editor, editorElement;
@@ -67,8 +68,8 @@ describe( 'StyleEditing', () => {
 		expect( StyleEditing.pluginName ).to.equal( 'StyleEditing' );
 	} );
 
-	it( 'should soft-require the GHS plugin', () => {
-		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport' ] );
+	it( 'should soft-require the GHS plugin and require utils', () => {
+		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport', StyleUtils ] );
 	} );
 
 	it( 'should register the "style" command', () => {

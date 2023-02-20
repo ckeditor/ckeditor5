@@ -11,7 +11,7 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import DataFilter, { type RegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
-import { updateViewAttributes, type GHSViewAttribute } from '../conversionutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -61,8 +61,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 		// Overwrite GHS schema definition for a given elementName.
 		dataSchema.registerBlockElement( {
 			model: 'media',
-			view: mediaElementName,
-			isBlock: true
+			view: mediaElementName
 		} );
 
 		dataFilter.on<RegisterEvent>( 'register:figure', ( ) => {
@@ -149,8 +148,8 @@ function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 
 				updateViewAttributes(
 					conversionApi.writer,
-					attributeOldValue as GHSViewAttribute,
-					attributeNewValue as GHSViewAttribute,
+					attributeOldValue as GHSViewAttributes,
+					attributeNewValue as GHSViewAttributes,
 					viewElement! );
 			} );
 		}

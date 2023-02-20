@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinition } from './dataschema';
+
 /**
  * @module html-support/schemadefinitions
  */
@@ -511,7 +513,7 @@ export default {
 				isBlock: false
 			}
 		}
-	],
+	] as Array<DataSchemaBlockElementDefinition>,
 	inline: [
 		{
 			model: 'htmlAcronym',
@@ -895,5 +897,5 @@ export default {
 				isInline: true
 			}
 		}
-	]
+	] as Array<DataSchemaInlineElementDefinition>
 };

@@ -19,8 +19,6 @@ const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
  *
  * It registers the `'selectAll'` {@link module:select-all/selectallcommand~SelectAllCommand command}
  * and the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke listener which executes it.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SelectAllEditing extends Plugin {
 	/**

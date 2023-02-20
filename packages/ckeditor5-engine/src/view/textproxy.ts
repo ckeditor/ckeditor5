@@ -134,7 +134,7 @@ export default class TextProxy extends TypeCheckable {
 	 * Returns ancestors array of this text proxy.
 	 *
 	 * @param options Options object.
-	 * @param options.includeSelf When set to `true` {#textNode} will be also included in parent's array.
+	 * @param options.includeSelf When set to `true`, textNode will be also included in parent's array.
 	 * @param options.parentFirst When set to `true`, array will be sorted from text proxy parent to
 	 * root element, otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
@@ -154,15 +154,15 @@ export default class TextProxy extends TypeCheckable {
 		return ancestors;
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `#${ this.data }`;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ViewTextProxy: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // public logExtended(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ViewTextProxy: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }

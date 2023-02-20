@@ -211,6 +211,7 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * By default it includes comments at the range boundaries.
 	 *
+	 * @param range
 	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.
 	 * @returns HTML comment IDs
 	 */
@@ -238,7 +239,7 @@ export default class HtmlComment extends Plugin {
  *
  * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
  */
-interface HtmlCommentData {
+export interface HtmlCommentData {
 	position: Position;
 	content: string;
 }

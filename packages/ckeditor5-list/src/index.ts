@@ -9,10 +9,12 @@
 
 export { default as DocumentList } from './documentlist';
 export { default as DocumentListEditing, type DocumentListEditingPostFixerEvent } from './documentlist/documentlistediting';
+export { default as DocumentListIndentCommand } from './documentlist/documentlistindentcommand';
 export { default as DocumentListProperties } from './documentlistproperties';
 export { default as DocumentListPropertiesEditing } from './documentlistproperties/documentlistpropertiesediting';
 export { default as DocumentListUtils } from './documentlist/documentlistutils';
 export { default as DocumentListPropertiesUtils } from './documentlistproperties/documentlistpropertiesutils';
+export { default as IndentCommand } from './list/indentcommand';
 export { default as List } from './list';
 export { default as ListEditing } from './list/listediting';
 export { default as ListUI } from './list/listui';

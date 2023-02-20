@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-// import { normalizeConfig } from '../src/utils';
+/**
+ * @module source-editing
+ */
 
-describe( 'normalizeConfig()', () => {
-	// TODO
-} );
+export { default as SourceEditing } from './sourceediting';

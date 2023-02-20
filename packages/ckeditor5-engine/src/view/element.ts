@@ -829,29 +829,29 @@ export default class Element extends Node {
 	 */
 	public getFillerOffset?(): number | null;
 
-	// @if CK_DEBUG_ENGINE // printTree( level = 0) {
+	// @if CK_DEBUG_ENGINE // public printTree( level = 0 ): string {
 	// @if CK_DEBUG_ENGINE // 	let string = '';
 
-	// @if CK_DEBUG_ENGINE //	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;
+	// @if CK_DEBUG_ENGINE // 	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;
 
-	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
-	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( level + 1 ) + child.data;
-	// @if CK_DEBUG_ENGINE //		} else {
-	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( level + 1 );
-	// @if CK_DEBUG_ENGINE //		}
-	// @if CK_DEBUG_ENGINE //	}
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
+	// @if CK_DEBUG_ENGINE // 			string += '\n' + '\t'.repeat( level + 1 ) + child.data;
+	// @if CK_DEBUG_ENGINE // 		} else {
+	// @if CK_DEBUG_ENGINE // 			string += '\n' + child.printTree( level + 1 );
+	// @if CK_DEBUG_ENGINE // 		}
+	// @if CK_DEBUG_ENGINE // 	}
 
-	// @if CK_DEBUG_ENGINE //	if ( this.childCount ) {
-	// @if CK_DEBUG_ENGINE //		string += '\n' + '\t'.repeat( level );
-	// @if CK_DEBUG_ENGINE //	}
+	// @if CK_DEBUG_ENGINE // 	if ( this.childCount ) {
+	// @if CK_DEBUG_ENGINE // 		string += '\n' + '\t'.repeat( level );
+	// @if CK_DEBUG_ENGINE // 	}
 
-	// @if CK_DEBUG_ENGINE //	string += `</${ this.name }>`;
+	// @if CK_DEBUG_ENGINE // 	string += `</${ this.name }>`;
 
-	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // 	return string;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // public logTree(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
 	// @if CK_DEBUG_ENGINE // }
 }

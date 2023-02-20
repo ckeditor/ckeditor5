@@ -51,7 +51,7 @@ export default class MergeCellCommand extends Command {
 	public readonly isHorizontal: boolean;
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public declare value: Node | undefined;
 

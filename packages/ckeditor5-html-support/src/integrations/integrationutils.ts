@@ -12,6 +12,8 @@ import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
 /**
  * Returns the first view element descendant matching the given view name.
  * Includes view element itself.
+ *
+ * @internal
  */
 export function getDescendantElement(
 	writer: DowncastWriter,

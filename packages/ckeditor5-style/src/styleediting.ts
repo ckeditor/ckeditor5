@@ -12,8 +12,8 @@ import type { MatcherPattern } from 'ckeditor5/src/engine';
 import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StyleCommand from './stylecommand';
+import StyleUtils, { type NormalizedStyleDefinitions } from './styleutils';
 import type { StyleConfig, StyleDefinition } from './styleconfig';
-import { normalizeConfig, type NormalizedStyleDefinitions } from './utils';
 
 /**
  * The style engine feature.
@@ -34,7 +34,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires(): PluginDependencies {
-		return [ 'GeneralHtmlSupport' ];
+		return [ 'GeneralHtmlSupport', StyleUtils ];
 	}
 
 	/**

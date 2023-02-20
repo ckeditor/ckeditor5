@@ -7,12 +7,12 @@
  * @module style/styleui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { createDropdown } from 'ckeditor5/src/ui';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StylePanelView from './ui/stylepanelview';
-import { normalizeConfig } from './utils';
+import StyleUtils from './styleutils';
 import type StyleCommand from './stylecommand';
 
 import '../theme/style.css';
@@ -35,11 +35,19 @@ export default class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires(): PluginDependencies {
+		return [ StyleUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
+		const styleUtils: StyleUtils = editor.plugins.get( 'StyleUtils' );
 		const styleDefinitions = editor.config.get( 'style.definitions' );
-		const normalizedStyleDefinitions = normalizeConfig( dataSchema, styleDefinitions );
+		const normalizedStyleDefinitions = styleUtils.normalizeConfig( dataSchema, styleDefinitions );
 
 		// Add the dropdown to the component factory.
 		editor.ui.componentFactory.add( 'style', locale => {
