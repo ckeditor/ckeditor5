@@ -38,7 +38,7 @@ import {
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
 
 /**
@@ -167,6 +167,7 @@ export default class Model extends ObservableMixin() {
 			evt.return = insertObject( this, element, selection, options );
 		} );
 
+		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.document );
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
 		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
