@@ -94,7 +94,7 @@ export default class InsertTextObserver extends Observer {
 				return;
 			}
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, text: ${ JSON.stringify( data ) }`,
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', ''
 			// @if CK_DEBUG_TYPING // 	);

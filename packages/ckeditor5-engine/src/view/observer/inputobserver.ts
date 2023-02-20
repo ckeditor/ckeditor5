@@ -29,7 +29,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 	 * @inheritDoc
 	 */
 	public onDomEvent( domEvent: InputEvent ): void {
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[InputObserver]%c ${ domEvent.type }: ${ domEvent.inputType }`,
 		// @if CK_DEBUG_TYPING // 		'color: green', 'color: default'
 		// @if CK_DEBUG_TYPING // 	);
@@ -50,7 +50,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		if ( domEvent.data !== null ) {
 			data = domEvent.data;
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data: %c${ JSON.stringify( data ) }`,
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
 			// @if CK_DEBUG_TYPING // 	);
@@ -58,7 +58,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		} else if ( dataTransfer ) {
 			data = dataTransfer.getData( 'text/plain' );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data transfer: %c${ JSON.stringify( data ) }`,
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', 'color: blue;'
 			// @if CK_DEBUG_TYPING // 	);
@@ -71,7 +71,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges,
 			// @if CK_DEBUG_TYPING // 		viewDocument.selection.isFake ? 'fake view selection' : 'fake DOM parent'
@@ -82,7 +82,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				return view.domConverter.domRangeToView( domRange )!;
 			} );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
@@ -95,7 +95,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using selection ranges:',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', 'font-weight:bold', targetRanges
 			// @if CK_DEBUG_TYPING // 	);
@@ -113,7 +113,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				targetRanges: [ view.createRange( targetRanges[ 0 ].end ) ]
 			} );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
 			// @if CK_DEBUG_TYPING // }
 
@@ -156,7 +156,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				}
 			}
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
 			// @if CK_DEBUG_TYPING // }
 
@@ -172,7 +172,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			isComposing: domEvent.isComposing
 		} );
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}

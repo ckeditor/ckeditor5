@@ -458,8 +458,8 @@ export default class DowncastWriter {
 	 */
 	public createRawElement(
 		name: string,
-		attributes: ElementAttributes,
-		renderFunction: ( domElement: DomElement, domConverter: DomConverter ) => void,
+		attributes?: ElementAttributes,
+		renderFunction?: ( domElement: DomElement, domConverter: DomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}

@@ -218,7 +218,7 @@ export default class Renderer extends ObservableMixin() {
 		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 			// @if CK_DEBUG_TYPING // 	);
@@ -227,7 +227,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -328,7 +328,7 @@ export default class Renderer extends ObservableMixin() {
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -560,7 +560,7 @@ export default class Renderer extends ObservableMixin() {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -568,7 +568,7 @@ export default class Renderer extends ObservableMixin() {
 
 		updateTextNode( domText, expectedText );
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -624,7 +624,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -686,7 +686,7 @@ export default class Renderer extends ObservableMixin() {
 		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
-				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', actualDomChildren[ i ]
 				// @if CK_DEBUG_TYPING // 	);
@@ -702,7 +702,7 @@ export default class Renderer extends ObservableMixin() {
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
-				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', expectedDomChildren[ i ]
 				// @if CK_DEBUG_TYPING // 	);
@@ -713,7 +713,7 @@ export default class Renderer extends ObservableMixin() {
 			}
 			// Update the existing text node data. Note that replace action is generated only for Android for now.
 			else if ( action === 'replace' ) {
-				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 				// @if CK_DEBUG_TYPING // 	);
@@ -722,7 +722,7 @@ export default class Renderer extends ObservableMixin() {
 				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
 
-				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
 			} else if ( action === 'equal' ) {
@@ -742,7 +742,7 @@ export default class Renderer extends ObservableMixin() {
 			}
 		}
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -942,7 +942,7 @@ export default class Renderer extends ObservableMixin() {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor! )!;
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus! )!;
 
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
 		// @if CK_DEBUG_TYPING // 	);
@@ -1218,7 +1218,7 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 	const actualText = domText.data;
 
 	if ( actualText == expectedText ) {
-		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
 		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
@@ -1228,7 +1228,7 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 		return;
 	}
 
-	// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+	// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
 	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
 	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`

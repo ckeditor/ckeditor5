@@ -11,7 +11,13 @@ export * from './view/placeholder';
 
 // Controller.
 export { default as EditingController } from './controller/editingcontroller';
-export { default as DataController, type DataControllerSetEvent } from './controller/datacontroller';
+export {
+	default as DataController,
+	type DataControllerInitEvent,
+	type DataControllerSetEvent,
+	type DataControllerToModelEvent,
+	type DataControllerToViewEvent
+} from './controller/datacontroller';
 
 // Conversion.
 export { default as Conversion } from './conversion/conversion';
@@ -22,6 +28,7 @@ export type {
 	DowncastConversionApi,
 	DowncastInsertEvent,
 	DowncastRemoveEvent,
+	DowncastRemoveMarkerEvent,
 	DowncastSelectionEvent
 } from './conversion/downcastdispatcher';
 export type {
@@ -37,6 +44,7 @@ export type {
 	ElementCreatorFunction,
 	HighlightDescriptor,
 	RemoveHighlightCallback,
+	MarkerElementCreatorFunction,
 	SlotFilter
 } from './conversion/downcasthelpers';
 export type {
@@ -45,7 +53,7 @@ export type {
 	MapperViewToModelPositionEvent
 } from './conversion/mapper';
 export type { default as ModelConsumable } from './conversion/modelconsumable';
-export type { Consumables } from './conversion/viewconsumable';
+export type { Consumables, default as ViewConsumable } from './conversion/viewconsumable';
 
 // DataProcessor.
 export { default as DataProcessor } from './dataprocessor/dataprocessor';
@@ -63,7 +71,7 @@ export { transformSets } from './model/operation/transform';
 // Model.
 export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
 export { default as Range } from './model/range';
-export { default as LiveRange } from './model/liverange';
+export { default as LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker, type TreeWalkerValue } from './model/treewalker';
@@ -72,6 +80,7 @@ export { default as Position, type PositionOffset } from './model/position';
 export { default as DocumentFragment } from './model/documentfragment';
 export { default as History } from './model/history';
 export { default as Text } from './model/text';
+export { default as TextProxy } from './model/textproxy';
 export type { default as Document, ModelPostFixer } from './model/document';
 export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
@@ -82,7 +91,9 @@ export type { default as RootElement } from './model/rootelement';
 export type {
 	default as Schema,
 	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback
+	SchemaChildCheckCallback,
+	AttributeProperties,
+	SchemaItemDefinition
 } from './model/schema';
 export type { default as Selection, Selectable } from './model/selection';
 export type { default as TypeCheckable } from './model/typecheckable';
@@ -139,7 +150,7 @@ export { default as TabObserver } from './view/observer/tabobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
-export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match } from './view/matcher';
+export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match, type MatchResult } from './view/matcher';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo';
 export { default as DomEventData } from './view/observer/domeventdata';

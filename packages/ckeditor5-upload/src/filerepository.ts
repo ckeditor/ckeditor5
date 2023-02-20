@@ -37,18 +37,61 @@ import FileReader from './filereader';
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class FileRepository extends Plugin {
-	public loaders!: Collection<FileLoader>;
+	/**
+	 * Collection of loaders associated with this repository.
+	 */
+	public loaders = new Collection<FileLoader>();
+
+	/**
+	 * A factory function which should be defined before using `FileRepository`.
+	 *
+	 * It should return a new instance of {@link module:upload/filerepository~UploadAdapter} that will be used to upload files.
+	 * {@link module:upload/filerepository~FileLoader} instance associated with the adapter
+	 * will be passed to that function.
+	 *
+	 * For more information and example see {@link module:upload/filerepository~UploadAdapter}.
+	 */
 	public createUploadAdapter?: ( loader: FileLoader ) => UploadAdapter;
 
-	private _loadersMap!: Map<File | Promise<File>, FileLoader>;
-	private _pendingAction!: PendingAction | null;
+	/**
+	 * Loaders mappings used to retrieve loaders references.
+	 */
+	private _loadersMap = new Map<File | Promise<File>, FileLoader>();
 
+	/**
+	 * Reference to a pending action registered in a {@link module:core/pendingactions~PendingActions} plugin
+	 * while upload is in progress. When there is no upload then value is `null`.
+	 */
+	private _pendingAction: PendingAction | null = null;
+
+	/**
+	 * Number of bytes uploaded.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploaded: number;
+
+	/**
+	 * Number of total bytes to upload.
+	 *
+	 * It might be different than the file size because of headers and additional data.
+	 * It contains `null` if value is not available yet, so it's better to use {@link #uploadedPercent} to monitor
+	 * the progress.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploadTotal: number | null;
+
+	/**
+	 * Upload progress in percents.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploadedPercent: number;
 
 	/**
@@ -69,74 +112,12 @@ export default class FileRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		/**
-		 * Collection of loaders associated with this repository.
-		 *
-		 * @member {module:utils/collection~Collection} #loaders
-		 */
-		this.loaders = new Collection();
-
 		// Keeps upload in a sync with pending actions.
 		this.loaders.on<CollectionChangeEvent>( 'change', () => this._updatePendingAction() );
 
-		/**
-		 * Loaders mappings used to retrieve loaders references.
-		 *
-		 * @private
-		 * @member {Map<File|Promise, FileLoader>} #_loadersMap
-		 */
-		this._loadersMap = new Map();
-
-		/**
-		 * Reference to a pending action registered in a {@link module:core/pendingactions~PendingActions} plugin
-		 * while upload is in progress. When there is no upload then value is `null`.
-		 *
-		 * @private
-		 * @member {Object} #_pendingAction
-		 */
-		this._pendingAction = null;
-
-		/**
-		 * A factory function which should be defined before using `FileRepository`.
-		 *
-		 * It should return a new instance of {@link module:upload/filerepository~UploadAdapter} that will be used to upload files.
-		 * {@link module:upload/filerepository~FileLoader} instance associated with the adapter
-		 * will be passed to that function.
-		 *
-		 * For more information and example see {@link module:upload/filerepository~UploadAdapter}.
-		 *
-		 * @member {Function} #createUploadAdapter
-		 */
-
-		/**
-		 * Number of bytes uploaded.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number} #uploaded
-		 */
 		this.set( 'uploaded', 0 );
-
-		/**
-		 * Number of total bytes to upload.
-		 *
-		 * It might be different than the file size because of headers and additional data.
-		 * It contains `null` if value is not available yet, so it's better to use {@link #uploadedPercent} to monitor
-		 * the progress.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #uploadTotal
-		 */
 		this.set( 'uploadTotal', null );
 
-		/**
-		 * Upload progress in percents.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number} #uploadedPercent
-		 */
 		this.bind( 'uploadedPercent' ).to( this, 'uploaded', this, 'uploadTotal', ( uploaded, total ) => {
 			return total ? ( uploaded / total * 100 ) : 0;
 		} );
@@ -147,8 +128,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
-	 * @param {File|Promise.<File>} fileOrPromise Native file or promise handle.
-	 * @returns {module:upload/filerepository~FileLoader|null}
+	 * @param fileOrPromise Native file or promise handle.
 	 */
 	public getLoader( fileOrPromise: File | Promise<File> ): FileLoader | null {
 		return this._loadersMap.get( fileOrPromise ) || null;
@@ -159,8 +139,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * Requires {@link #createUploadAdapter} factory to be defined.
 	 *
-	 * @param {File|Promise.<File>} fileOrPromise Native File object or native Promise object which resolves to a File.
-	 * @returns {module:upload/filerepository~FileLoader|null}
+	 * @param fileOrPromise Native File object or native Promise object which resolves to a File.
 	 */
 	public createLoader( fileOrPromise: File | Promise<File> ): FileLoader | null {
 		if ( !this.createUploadAdapter ) {
@@ -237,8 +216,7 @@ export default class FileRepository extends Plugin {
 	/**
 	 * Destroys the given loader.
 	 *
-	 * @param {File|Promise|module:upload/filerepository~FileLoader} fileOrPromiseOrLoader File or Promise associated
-	 * with that loader or loader itself.
+	 * @param fileOrPromiseOrLoader File or Promise associated with that loader or loader itself.
 	 */
 	public destroyLoader( fileOrPromiseOrLoader: File | Promise<File> | FileLoader ): void {
 		const loader = fileOrPromiseOrLoader instanceof FileLoader ? fileOrPromiseOrLoader : this.getLoader( fileOrPromiseOrLoader )!;
@@ -256,8 +234,6 @@ export default class FileRepository extends Plugin {
 
 	/**
 	 * Registers or deregisters pending action bound with upload progress.
-	 *
-	 * @private
 	 */
 	private _updatePendingAction(): void {
 		const pendingActions = this.editor.plugins.get( PendingActions );
@@ -283,131 +259,113 @@ export default class FileRepository extends Plugin {
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
 class FileLoader extends ObservableMixin() {
+	/**
+	 * Unique id of FileLoader instance.
+	 *
+	 * @readonly
+	 */
 	public readonly id: string;
 
+	/**
+	 * Additional wrapper over the initial file promise passed to this loader.
+	 */
 	private _filePromiseWrapper: FilePromiseWrapper;
+
+	/**
+	 * Adapter instance associated with this file loader.
+	 */
 	private _adapter: UploadAdapter;
+
+	/**
+	 * FileReader used by FileLoader.
+	 */
 	private _reader: FileReader;
 
+	/**
+	 * Current status of FileLoader. It can be one of the following:
+	 *
+	 * * 'idle',
+	 * * 'reading',
+	 * * 'uploading',
+	 * * 'aborted',
+	 * * 'error'.
+	 *
+	 * When reading status can change in a following way:
+	 *
+	 * `idle` -> `reading` -> `idle`
+	 * `idle` -> `reading -> `aborted`
+	 * `idle` -> `reading -> `error`
+	 *
+	 * When uploading status can change in a following way:
+	 *
+	 * `idle` -> `uploading` -> `idle`
+	 * `idle` -> `uploading` -> `aborted`
+	 * `idle` -> `uploading` -> `error`
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public status: 'idle' | 'reading' | 'uploading' | 'aborted' | 'error';
 
+	/**
+	 * Number of bytes uploaded.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploaded: number;
+
+	/**
+	 * Number of total bytes to upload.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploadTotal: number | null;
+
+	/**
+	 * Upload progress in percents.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploadedPercent: number;
 
+	/**
+	 * Response of the upload.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public uploadResponse?: UploadResponse | null;
 
 	/**
 	 * Creates a new instance of `FileLoader`.
 	 *
-	 * @param {Promise.<File>} filePromise A promise which resolves to a file instance.
-	 * @param {Function} uploadAdapterCreator The function which returns {@link module:upload/filerepository~UploadAdapter} instance.
+	 * @param filePromise A promise which resolves to a file instance.
+	 * @param uploadAdapterCreator The function which returns {@link module:upload/filerepository~UploadAdapter} instance.
 	 */
 	constructor( filePromise: Promise<File>, uploadAdapterCreator: ( loader: FileLoader ) => UploadAdapter ) {
 		super();
 
-		/**
-		 * Unique id of FileLoader instance.
-		 *
-		 * @readonly
-		 * @member {Number}
-		 */
 		this.id = uid();
-
-		/**
-		 * Additional wrapper over the initial file promise passed to this loader.
-		 *
-		 * @protected
-		 * @member {module:upload/filerepository~FilePromiseWrapper}
-		 */
 		this._filePromiseWrapper = this._createFilePromiseWrapper( filePromise );
-
-		/**
-		 * Adapter instance associated with this file loader.
-		 *
-		 * @private
-		 * @member {module:upload/filerepository~UploadAdapter}
-		 */
 		this._adapter = uploadAdapterCreator( this );
-
-		/**
-		 * FileReader used by FileLoader.
-		 *
-		 * @protected
-		 * @member {module:upload/filereader~FileReader}
-		 */
 		this._reader = new FileReader();
 
-		/**
-		 * Current status of FileLoader. It can be one of the following:
-		 *
-		 * * 'idle',
-		 * * 'reading',
-		 * * 'uploading',
-		 * * 'aborted',
-		 * * 'error'.
-		 *
-		 * When reading status can change in a following way:
-		 *
-		 * `idle` -> `reading` -> `idle`
-		 * `idle` -> `reading -> `aborted`
-		 * `idle` -> `reading -> `error`
-		 *
-		 * When uploading status can change in a following way:
-		 *
-		 * `idle` -> `uploading` -> `idle`
-		 * `idle` -> `uploading` -> `aborted`
-		 * `idle` -> `uploading` -> `error`
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {String} #status
-		 */
 		this.set( 'status', 'idle' );
-
-		/**
-		 * Number of bytes uploaded.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number} #uploaded
-		 */
 		this.set( 'uploaded', 0 );
-
-		/**
-		 * Number of total bytes to upload.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #uploadTotal
-		 */
 		this.set( 'uploadTotal', null );
 
-		/**
-		 * Upload progress in percents.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number} #uploadedPercent
-		 */
 		this.bind( 'uploadedPercent' ).to( this, 'uploaded', this, 'uploadTotal', ( uploaded, total ) => {
 			return total ? ( uploaded / total * 100 ) : 0;
 		} );
 
-		/**
-		 * Response of the upload.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Object|null} #uploadResponse
-		 */
 		this.set( 'uploadResponse', null );
 	}
 
 	/**
 	 * A `Promise` which resolves to a `File` instance associated with this file loader.
-	 *
-	 * @type {Promise.<File|null>}
 	 */
 	public get file(): Promise<File | null> {
 		if ( !this._filePromiseWrapper ) {
@@ -429,8 +387,6 @@ class FileLoader extends ObservableMixin() {
 	/**
 	 * Returns the file data. To read its data, you need for first load the file
 	 * by using the {@link module:upload/filerepository~FileLoader#read `read()`} method.
-	 *
-	 * @type {File|undefined}
 	 */
 	public get data(): string | undefined {
 		return this._reader.data;
@@ -444,17 +400,19 @@ class FileLoader extends ObservableMixin() {
 	 *
 	 * Example usage:
 	 *
-	 *	fileLoader.read()
-	 *		.then( data => { ... } )
-	 *		.catch( err => {
-	 *			if ( err === 'aborted' ) {
-	 *				console.log( 'Reading aborted.' );
-	 *			} else {
-	 *				console.log( 'Reading error.', err );
-	 *			}
-	 *		} );
+	 * ```ts
+	 * fileLoader.read()
+	 * 	.then( data => { ... } )
+	 * 	.catch( err => {
+	 * 		if ( err === 'aborted' ) {
+	 * 			console.log( 'Reading aborted.' );
+	 * 		} else {
+	 * 			console.log( 'Reading error.', err );
+	 * 		}
+	 * 	} );
+	 * ```
 	 *
-	 * @returns {Promise.<String>} Returns promise that will be resolved with read data. Promise will be rejected if error
+	 * @returns Returns promise that will be resolved with read data. Promise will be rejected if error
 	 * occurs or if read process is aborted.
 	 */
 	public read(): Promise<string> {
@@ -500,17 +458,19 @@ class FileLoader extends ObservableMixin() {
 	 * is different than `idle`.
 	 * Example usage:
 	 *
-	 *	fileLoader.upload()
-	 *		.then( data => { ... } )
-	 *		.catch( e => {
-	 *			if ( e === 'aborted' ) {
-	 *				console.log( 'Uploading aborted.' );
-	 *			} else {
-	 *				console.log( 'Uploading error.', e );
-	 *			}
-	 *		} );
+	 * ```ts
+	 * fileLoader.upload()
+	 * 	.then( data => { ... } )
+	 * 	.catch( e => {
+	 * 		if ( e === 'aborted' ) {
+	 * 			console.log( 'Uploading aborted.' );
+	 * 		} else {
+	 * 			console.log( 'Uploading error.', e );
+	 * 		}
+	 * 	} );
+	 * ```
 	 *
-	 * @returns {Promise.<Object>} Returns promise that will be resolved with response data. Promise will be rejected if error
+	 * @returns Returns promise that will be resolved with response data. Promise will be rejected if error
 	 * occurs or if read process is aborted.
 	 */
 	public upload(): Promise<UploadResponse> {
@@ -582,9 +542,7 @@ class FileLoader extends ObservableMixin() {
 	 * Wraps a given file promise into another promise giving additional
 	 * control (resolving, rejecting, checking if fulfilled) over it.
 	 *
-	 * @private
 	 * @param filePromise The initial file promise to be wrapped.
-	 * @returns {module:upload/filerepository~FilePromiseWrapper}
 	 */
 	private _createFilePromiseWrapper( filePromise: Promise<File> ): FilePromiseWrapper {
 		const wrapper: Partial<FilePromiseWrapper> = {};
@@ -617,83 +575,90 @@ export type { FileLoader };
  *
  * Learn how to develop your own upload adapter for CKEditor 5 in the
  * {@glink framework/guides/deep-dive/upload-adapter "Custom upload adapter"} guide.
- *
- * @interface UploadAdapter
  */
 export interface UploadAdapter {
+
+	/**
+	 * Executes the upload process.
+	 * This method should return a promise that will resolve when data will be uploaded to server. Promise should be
+	 * resolved with an object containing information about uploaded file:
+	 *
+	 * ```json
+	 * {
+	 * 	default: 'http://server/default-size.image.png'
+	 * }
+	 * ```
+	 *
+	 * Additionally, other image sizes can be provided:
+	 *
+	 * ```json
+	 * {
+	 * 	default: 'http://server/default-size.image.png',
+	 * 	'160': 'http://server/size-160.image.png',
+	 * 	'500': 'http://server/size-500.image.png',
+	 * 	'1000': 'http://server/size-1000.image.png',
+	 * 	'1052': 'http://server/default-size.image.png'
+	 * }
+	 * ```
+	 *
+	 * You can also pass additional properties from the server. In this case you need to wrap URLs
+	 * in the `urls` object and pass additional properties along the `urls` property.
+	 *
+	 * ```json
+	 * {
+	 * 	myCustomProperty: 'foo',
+	 * 	urls: {
+	 * 		default: 'http://server/default-size.image.png',
+	 * 		'160': 'http://server/size-160.image.png',
+	 * 		'500': 'http://server/size-500.image.png',
+	 * 		'1000': 'http://server/size-1000.image.png',
+	 * 		'1052': 'http://server/default-size.image.png'
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * NOTE: When returning multiple images, the widest returned one should equal the default one. It is essential to
+	 * correctly set `width` attribute of the image. See this discussion:
+	 * https://github.com/ckeditor/ckeditor5-easy-image/issues/4 for more information.
+	 *
+	 * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
+	 * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
+	 *
+	 * @returns Promise that should be resolved when data is uploaded.
+	 */
 	upload(): Promise<UploadResponse>;
+
+	/**
+	 * Aborts the upload process.
+	 * After aborting it should reject promise returned from {@link #upload upload()}.
+	 *
+	 * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
+	 * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
+	 */
 	abort?(): void;
 }
 
 export type UploadResponse = Record<string, unknown>;
 
 /**
- * Executes the upload process.
- * This method should return a promise that will resolve when data will be uploaded to server. Promise should be
- * resolved with an object containing information about uploaded file:
- *
- *		{
- *			default: 'http://server/default-size.image.png'
- *		}
- *
- * Additionally, other image sizes can be provided:
- *
- *		{
- *			default: 'http://server/default-size.image.png',
- *			'160': 'http://server/size-160.image.png',
- *			'500': 'http://server/size-500.image.png',
- *			'1000': 'http://server/size-1000.image.png',
- *			'1052': 'http://server/default-size.image.png'
- *		}
- *
- * You can also pass additional properties from the server. In this case you need to wrap URLs
- * in the `urls` object and pass additional properties along the `urls` property.
- *
- * 		{
- * 			myCustomProperty: 'foo',
- * 			urls: {
- *				default: 'http://server/default-size.image.png',
- *				'160': 'http://server/size-160.image.png',
- *				'500': 'http://server/size-500.image.png',
- *				'1000': 'http://server/size-1000.image.png',
- *				'1052': 'http://server/default-size.image.png'
- *			}
- *		}
- *
- * NOTE: When returning multiple images, the widest returned one should equal the default one. It is essential to
- * correctly set `width` attribute of the image. See this discussion:
- * https://github.com/ckeditor/ckeditor5-easy-image/issues/4 for more information.
- *
- * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
- * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
- *
- * @method module:upload/filerepository~UploadAdapter#upload
- * @returns {Promise.<Object>} Promise that should be resolved when data is uploaded.
- */
-
-/**
- * Aborts the upload process.
- * After aborting it should reject promise returned from {@link #upload upload()}.
- *
- * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
- * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
- *
- * @method module:upload/filerepository~UploadAdapter#abort
- */
-
-/**
  * Object returned by {@link module:upload/filerepository~FileLoader#_createFilePromiseWrapper} method
  * to add more control over the initial file promise passed to {@link module:upload/filerepository~FileLoader}.
- *
- * @protected
- * @typedef {Object} module:upload/filerepository~FilePromiseWrapper
- * @property {Promise.<File>} promise Wrapper promise which can be chained for further processing.
- * @property {Function} rejecter Rejects the promise when called.
- * @property {Boolean} isFulfilled Whether original promise is already fulfilled.
  */
 type FilePromiseWrapper = {
+
+	/**
+	 * Wrapper promise which can be chained for further processing.
+	 */
 	promise: Promise<File>;
+
+	/**
+	 * Rejects the promise when called.
+	 */
 	rejecter: ( reason?: unknown ) => void;
+
+	/**
+	 * Whether original promise is already fulfilled.
+	 */
 	isFulfilled: boolean;
 };
 
