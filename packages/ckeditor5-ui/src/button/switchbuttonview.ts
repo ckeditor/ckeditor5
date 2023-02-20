@@ -17,20 +17,23 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 /**
  * The switch button view class.
  *
- *		const view = new SwitchButtonView();
+ * ```ts
+ * const view = new SwitchButtonView();
  *
- *		view.set( {
- *			withText: true,
- *			label: 'Switch me!'
- *		} );
+ * view.set( {
+ * 	withText: true,
+ * 	label: 'Switch me!'
+ * } );
  *
- *		view.render();
+ * view.render();
  *
- *		document.body.append( view.element );
- *
- * @extends module:ui/button/buttonview~ButtonView
+ * document.body.append( view.element );
+ * ```
  */
 export default class SwitchButtonView extends ButtonView {
+	/**
+	 * The toggle switch of the button.
+	 */
 	public readonly toggleSwitchView: View;
 
 	/**
@@ -40,13 +43,6 @@ export default class SwitchButtonView extends ButtonView {
 		super( locale );
 
 		this.isToggleable = true;
-
-		/**
-		 * The toggle switch of the button.
-		 *
-		 * @readonly
-		 * @member {module:ui/view~View} #toggleSwitchView
-		 */
 		this.toggleSwitchView = this._createToggleView();
 
 		this.extendTemplate( {
@@ -67,9 +63,6 @@ export default class SwitchButtonView extends ButtonView {
 
 	/**
 	 * Creates a toggle child view.
-	 *
-	 * @private
-	 * @returns {module:ui/view~View}
 	 */
 	private _createToggleView() {
 		const toggleSwitchView = new View();

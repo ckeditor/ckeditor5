@@ -14,11 +14,17 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
- *
- * @extends module:ui/button/buttonview~ButtonView
  */
 export default class ColorTileView extends ButtonView {
+	/**
+	 * String representing a color shown as tile's background.
+	 */
 	declare public color: string | undefined;
+
+	/**
+	 * A flag that toggles a special CSS class responsible for displaying
+	 * a border around the button.
+	 */
 	declare public hasBorder: boolean;
 
 	constructor( locale?: Locale ) {
@@ -26,19 +32,7 @@ export default class ColorTileView extends ButtonView {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * String representing a color shown as tile's background.
-		 *
-		 * @type {String}
-		 */
 		this.set( 'color', undefined );
-
-		/**
-		 * A flag that toggles a special CSS class responsible for displaying
-		 * a border around the button.
-		 *
-		 * @type {Boolean}
-		 */
 		this.set( 'hasBorder', false );
 
 		this.icon = checkIcon;

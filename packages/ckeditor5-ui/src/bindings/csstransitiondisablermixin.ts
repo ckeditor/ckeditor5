@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type View from '../view';
-
 /**
-  * @module ui/bindings/csstransitiondisablermixin
-  */
+ * @module ui/bindings/csstransitiondisablermixin
+ */
+
+import type View from '../view';
 
 /**
  * A mixin that brings the possibility to temporarily disable CSS transitions using
@@ -23,7 +23,8 @@ import type View from '../view';
  * The usage comes down to:
  *
  * ```ts
- * const view: MyView & ViewWithCssTransitionDisabler = new ( CssTransitionDisablerMixin( MyView ) )();
+ * const MyViewWithCssTransitionDisabler = CssTransitionDisablerMixin( MyView );
+ * const view = new MyViewWithCssTransitionDisabler();
  *
  * // ...
  *
