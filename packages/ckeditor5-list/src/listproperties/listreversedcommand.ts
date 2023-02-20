@@ -19,7 +19,7 @@ import '../listcommands';
  */
 export default class ListReversedCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: boolean | null;
 

@@ -8,9 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { normalizeConfig } from './utils';
 
 import StyleCommand from './stylecommand';
+import StyleUtils from './styleutils';
 
 /**
  * The style engine feature.
@@ -33,7 +33,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'GeneralHtmlSupport' ];
+		return [ 'GeneralHtmlSupport', StyleUtils ];
 	}
 
 	/**
@@ -42,7 +42,8 @@ export default class StyleEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const dataSchema = editor.plugins.get( 'DataSchema' );
-		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
+		const styleUtils = editor.plugins.get( 'StyleUtils' );
+		const normalizedStyleDefinitions = styleUtils.normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
 
 		editor.commands.add( 'style', new StyleCommand( editor, normalizedStyleDefinitions ) );
 

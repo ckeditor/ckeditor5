@@ -148,7 +148,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		{ ariaLabel, items, getRelatedElement, balloonClassName = 'ck-toolbar-container' }: {
 			ariaLabel?: string;
 			items: Array<ToolbarConfigItem>;
-			getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement;
+			getRelatedElement: ( selection: ViewDocumentSelection ) => ( ViewElement | null );
 			balloonClassName?: string;
 		}
 	): void {

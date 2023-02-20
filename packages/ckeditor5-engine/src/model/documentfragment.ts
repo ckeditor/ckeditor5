@@ -212,7 +212,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns index after last child}.
+	 * too high, returns index after last child.
 	 *
 	 * ```ts
 	 * const textNode = new Text( 'foo' );

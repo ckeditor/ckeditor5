@@ -37,7 +37,7 @@ module.exports = () => {
 	return new Promise( resolve => {
 		getCkeditor5Plugins()
 			.then( ckeditor5Modules => {
-				return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules ) );
+				return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules, ROOT_DIRECTORY ) );
 			} )
 			.then( () => {
 				const webpackConfig = getWebpackConfig();
@@ -135,8 +135,8 @@ module.exports = () => {
 				data += '\n';
 				data += atRulesDefinitions.join( '\n' );
 
-				writeFile( OUTPUT_FILE_PATH, data );
-				resolve();
+				return writeFile( OUTPUT_FILE_PATH, data )
+					.then( resolve );
 			} )
 			.then( () => {
 				console.log( `Content styles have been extracted to ${ OUTPUT_FILE_PATH }` );
@@ -272,7 +272,15 @@ function transformCssRules( rules ) {
 				} )
 				.join( '\n' );
 
-			return `/* ${ rule.file.replace( packagesPath + path.sep, '' ) } */\n${ css }`;
+			let cssPath;
+
+			if ( rule.file.includes( 'node_modules' ) ) {
+				cssPath = rule.file.replace( /(.*)(@ckeditor\/ckeditor5-)/, '$2' );
+			} else {
+				cssPath = rule.file.replace( packagesPath, '@ckeditor' );
+			}
+
+			return `/* ${ cssPath } */\n${ css }`;
 		} )
 		.filter( rule => {
 			// 1st: path to the CSS file, 2nd: selector definition - start block, 3rd: end block
@@ -286,13 +294,16 @@ function transformCssRules( rules ) {
  * Generates a source file that will be used to build the editor.
  *
  * @param {Array.<String>} ckeditor5Modules Paths to CKEditor 5 modules.
+ * @param {String} cwd
  * @returns {Promise>}
  */
-function generateCKEditor5Source( ckeditor5Modules ) {
+function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 	ckeditor5Modules = ckeditor5Modules.map( modulePath => {
-		const pluginName = capitalize( path.basename( modulePath, '.js' ) );
+		const pluginName = capitalize( path.basename( modulePath.replace( /.[jt]s$/, '' ) ) );
 		return { modulePath, pluginName };
 	} );
+
+	const classicEditorImportPath = path.join( cwd, 'node_modules', '@ckeditor', 'ckeditor5-editor-classic', 'src', 'classiceditor' );
 
 	const sourceFileContent = [
 		'/**',
@@ -301,7 +312,7 @@ function generateCKEditor5Source( ckeditor5Modules ) {
 		' */',
 		'',
 		'// The editor creator to use.',
-		'import ClassicEditorBase from \'@ckeditor/ckeditor5-editor-classic/src/classiceditor\';',
+		`import ClassicEditorBase from '${ normalizePath( classicEditorImportPath ) }';`,
 		''
 	];
 

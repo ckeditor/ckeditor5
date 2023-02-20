@@ -378,18 +378,6 @@ export default class Model extends ObservableMixin() {
 	// @if CK_DEBUG_ENGINE // 	return new OperationReplayer( this, '-------', stringifiedOperations );
 	// @if CK_DEBUG_ENGINE // }
 
-	public insertContent(
-		content: Item | ModelDocumentFragment,
-		selectable: Node,
-		placeOrOffset: PlaceOrOffset,
-		...rest: Array<unknown>
-	): ModelRange;
-	public insertContent(
-		content: Item | ModelDocumentFragment,
-		selectable?: Exclude<Selectable, Node>,
-		...rest: Array<unknown>
-	): ModelRange;
-
 	/**
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
@@ -543,27 +531,6 @@ export default class Model extends ObservableMixin() {
 		// Passing all call arguments so it acts like decorated method.
 		return this.fire<ModelInsertContentEvent>( 'insertContent', [ content, selection, placeOrOffset, ...rest ] )!;
 	}
-
-	public insertObject(
-		element: ModelElement,
-		selectable: Node,
-		placeOrOffset: PlaceOrOffset,
-		options?: {
-			findOptimalPosition?: 'auto' | 'before' | 'after';
-			setSelection?: 'on' | 'after';
-		},
-		...rest: Array<unknown>
-	): ModelRange;
-	public insertObject(
-		element: ModelElement,
-		selectable?: Exclude<Selectable, Node>,
-		placeOrOffset?: null,
-		options?: {
-			findOptimalPosition?: 'auto' | 'before' | 'after';
-			setSelection?: 'on' | 'after';
-		},
-		...rest: Array<unknown>
-	): ModelRange;
 
 	/**
 	 * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.
@@ -719,6 +686,7 @@ export default class Model extends ObservableMixin() {
 			doNotResetEntireContent?: boolean;
 			doNotAutoparagraph?: boolean;
 			direction?: 'forward' | 'backward';
+			[ i: string ]: unknown;
 		}
 	): void {
 		deleteContent( this, selection, options );
@@ -1048,7 +1016,7 @@ export default class Model extends ObservableMixin() {
 	 *
 	 * @param type {@link module:engine/model/batch~Batch#constructor The type} of the batch.
 	 */
-	public createBatch( type: BatchType ): Batch {
+	public createBatch( type?: BatchType ): Batch {
 		return new Batch( type );
 	}
 
