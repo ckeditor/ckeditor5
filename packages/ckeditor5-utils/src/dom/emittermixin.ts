@@ -76,7 +76,7 @@ export default function DomEmitterMixin(): {
 	prototype: DomEmitter;
 };
 
-export default function DomEmitterMixin( base?: abstract new ( ...args: Array<any> ) => Emitter ): unknown {
+export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {
 		return defaultEmitterClass;
 	}
