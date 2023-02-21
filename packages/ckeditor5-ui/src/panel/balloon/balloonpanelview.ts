@@ -1151,7 +1151,6 @@ export function generatePositions( options: {
 	/**
 	 * Returns the top coordinate for positions starting with `north*`.
 	 *
-	 * @internal
 	 * @param targetRect A rect of the target.
 	 * @param balloonRect A rect of the balloon.
 	 */
@@ -1162,7 +1161,6 @@ export function generatePositions( options: {
 	/**
 	 * Returns the top coordinate for positions starting with `south*`.
 	 *
-	 * @internal
 	 * @param targetRect A rect of the target.
 	 */
 	function getSouthTop( targetRect: Rect ) {

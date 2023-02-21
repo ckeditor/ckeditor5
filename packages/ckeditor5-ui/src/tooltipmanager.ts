@@ -106,15 +106,11 @@ export default class TooltipManager extends DomEmitterMixin() {
 	/**
 	 * Stores the reference to the DOM element the tooltip is attached to. `null` when there's no tooltip
 	 * in the UI.
-	 *
-	 * @readonly
 	 */
 	private _currentElementWithTooltip: HTMLElement | null = null;
 
 	/**
 	 * Stores the current tooltip position. `null` when there's no tooltip in the UI.
-	 *
-	 * @readonly
 	 */
 	private _currentTooltipPosition: TooltipPosition | null = null;
 
@@ -129,8 +125,6 @@ export default class TooltipManager extends DomEmitterMixin() {
 	/**
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
-	 *
-	 * @readonly
 	 */
 	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 

@@ -255,7 +255,7 @@ export default class FocusCycler {
 	 *
 	 * @param step Either `1` for checking forward from {@link #current} or `-1` for checking backwards.
 	 */
-	private _getFocusableItem( step: number ): FocusableView | null {
+	private _getFocusableItem( step: 1 | -1 ): FocusableView | null {
 		// Cache for speed.
 		const current = this.current;
 		const collectionLength = this.focusables.length;
