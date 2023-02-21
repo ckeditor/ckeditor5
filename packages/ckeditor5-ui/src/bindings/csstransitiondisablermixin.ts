@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type View from '../view';
-
 /**
-  * @module ui/bindings/csstransitiondisablermixin
-  */
+ * @module ui/bindings/csstransitiondisablermixin
+ */
+
+import type View from '../view';
 
 /**
  * A mixin that brings the possibility to temporarily disable CSS transitions using
@@ -23,7 +23,8 @@ import type View from '../view';
  * The usage comes down to:
  *
  * ```ts
- * const view: MyView & ViewWithCssTransitionDisabler = new ( CssTransitionDisablerMixin( MyView ) )();
+ * const MyViewWithCssTransitionDisabler = CssTransitionDisablerMixin( MyView );
+ * const view = new MyViewWithCssTransitionDisabler();
  *
  * // ...
  *
@@ -34,9 +35,10 @@ import type View from '../view';
  *
  * @param view View instance that should get this functionality.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base )
-{
+export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base ): {
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & ViewWithCssTransitionDisabler;
+	prototype: InstanceType<Base> & ViewWithCssTransitionDisabler;
+} & Base {
 	class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;
 
@@ -66,7 +68,7 @@ export default function CssTransitionDisablerMixin<Base extends new( ...args: Ar
 		}
 	}
 
-	return Mixin;
+	return Mixin as any;
 }
 
 export type ViewWithCssTransitionDisabler = View & {

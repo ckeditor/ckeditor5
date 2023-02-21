@@ -13,8 +13,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The text input view class.
- *
- * @extends module:ui/input/inputview~InputView
  */
 export default class InputTextView extends InputView {
 	/**

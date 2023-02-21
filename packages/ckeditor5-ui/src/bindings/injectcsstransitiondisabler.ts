@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type View from '../view';
-import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin';
-
 /**
  * @module ui/bindings/injectcsstransitiondisabler
  */
+
+import type View from '../view';
+import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin';
 
 /**
  * A decorator that brings the possibility to temporarily disable CSS transitions using
@@ -24,37 +24,41 @@ import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin
  * **Note**: This helper extends the {@link module:ui/view~View#template template} and must be used **after**
  * {@link module:ui/view~View#setTemplate} is called:
  *
- *		import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
+ * ```ts
+ * import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
  *
- *		class MyView extends View {
- *			constructor() {
- *				super();
+ * class MyView extends View {
+ * 	constructor() {
+ * 		super();
  *
- *				// ...
+ * 		// ...
  *
- *				this.setTemplate( { ... } );
+ * 		this.setTemplate( { ... } );
  *
- *				// ...
+ * 		// ...
  *
- *				injectCssTransitionDisabler( this );
+ * 		injectCssTransitionDisabler( this );
  *
- *				// ...
- *			}
- *		}
+ * 		// ...
+ * 	}
+ * }
+ * ```
  *
  * The usage comes down to:
  *
- *		const view = new MyView();
+ * ```ts
+ * const view = new MyView();
  *
- *		// ...
+ * // ...
  *
- *		view.disableCssTransitions();
- *		view.show();
- *		view.enableCssTransitions();
+ * view.disableCssTransitions();
+ * view.show();
+ * view.enableCssTransitions();
+ * ```
  *
  * @deprecated
  * @see module:ui/bindings/csstransitiondisablermixin~CssTransitionDisablerMixin
- * @param {module:ui/view~View} view View instance that should get this functionality.
+ * @param view View instance that should get this functionality.
  */
 export default function injectCssTransitionDisabler( view: View ): void {
 	const decorated = view as ViewWithCssTransitionDisabler & { _isCssTransitionsDisabled: boolean };
