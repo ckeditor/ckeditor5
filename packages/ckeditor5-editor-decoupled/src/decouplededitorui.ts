@@ -120,7 +120,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		const editingRoot = editingView.document.getRoot()!;
 		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
-		const placeholderText = editor.config.get( 'placeholder' ) ||
+		const placeholderText = editor.config.get( 'placeholder' ) as string ||
 			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 		if ( placeholderText ) {

@@ -82,7 +82,7 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
+			secureSourceElement( this, sourceElementOrData );
 		}
 
 		const plugins = this.config.get( 'plugins' )!;

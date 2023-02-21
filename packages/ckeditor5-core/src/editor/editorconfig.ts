@@ -432,9 +432,9 @@ import type Editor from './editor';
 export interface EditorConfig {
 	context?: Context;
 	extraPlugins?: Array<PluginConstructor<Editor>>;
-	initialData?: string;
+	initialData?: string | Record<string, string>; // @TODO doc
 	language?: string | LanguageConfig;
-	placeholder?: string;
+	placeholder?: string | Record<string, string>; // @TODO doc
 	plugins?: Array<PluginConstructor<Editor> | string>;
 	removePlugins?: Array<PluginConstructor<Editor> | string>;
 	substitutePlugins?: Array<PluginConstructor<Editor>>;

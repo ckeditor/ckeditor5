@@ -19,7 +19,7 @@ import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
  */
 export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, DataApi> {
 	abstract class Mixin extends base implements DataApi {
-		public setData( data: string ): void {
+		public setData( data: string | Record<string, string> ): void {
 			this.data.set( data );
 		}
 
@@ -89,6 +89,6 @@ export default function DataApiMixin<Base extends Constructor<Editor>>( base: Ba
  */
 
 export interface DataApi {
-	setData( data: string ): void;
+	setData( data: string | Record<string, string> ): void;
 	getData( options?: Record<string, unknown> ): string;
 }
