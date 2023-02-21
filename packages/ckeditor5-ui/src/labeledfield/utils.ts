@@ -30,15 +30,17 @@ import type { InputViewInputEvent } from '../input/inputview';
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
- *		console.log( labeledInputView.fieldView ); // A text input instance.
+ * ```ts
+ * const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
+ * console.log( labeledInputView.fieldView ); // A text input instance.
+ * ```
  *
- * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
- * @param {String} viewUid An UID string that allows DOM logical connection between the
+ * @param labeledFieldView The instance of the labeled field view.
+ * @param viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
- * @param {String} statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
- * @returns {module:ui/inputtext/inputtextview~InputTextView} The input text view instance.
+ * @returns The input text view instance.
  */
 export function createLabeledInputText(
 	labeledFieldView: LabeledFieldView,
@@ -81,15 +83,17 @@ export function createLabeledInputText(
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledFieldView( locale, createLabeledInputNumber );
- *		console.log( labeledInputView.fieldView ); // A number input instance.
+ * ```ts
+ * const labeledInputView = new LabeledFieldView( locale, createLabeledInputNumber );
+ * console.log( labeledInputView.fieldView ); // A number input instance.
+ * ```
  *
- * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
- * @param {String} viewUid An UID string that allows DOM logical connection between the
+ * @param labeledFieldView The instance of the labeled field view.
+ * @param viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
- * @param {String} statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
- * @returns {module:ui/inputnumber/inputnumberview~InputNumberView} The input number view instance.
+ * @returns The input number view instance.
  */
 export function createLabeledInputNumber(
 	labeledFieldView: LabeledFieldView,
@@ -131,15 +135,17 @@ export function createLabeledInputNumber(
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
- *		console.log( labeledInputView.fieldView ); // A dropdown instance.
+ * ```ts
+ * const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
+ * console.log( labeledInputView.fieldView ); // A dropdown instance.
+ * ```
  *
- * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
- * @param {String} viewUid An UID string that allows DOM logical connection between the
+ * @param labeledFieldView The instance of the labeled field view.
+ * @param viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view label} and the dropdown.
- * @param {String} statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view status} and the dropdown.
- * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
+ * @returns The dropdown view instance.
  */
 export function createLabeledDropdown(
 	labeledFieldView: LabeledFieldView,

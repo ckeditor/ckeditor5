@@ -11,10 +11,9 @@
 
 import Template from '../template';
 import ViewCollection from '../viewcollection';
+import type View from '../view';
 
 import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
-
-import type View from '../view';
 
 /**
  * This is a special {@link module:ui/viewcollection~ViewCollection} dedicated to elements that are detached
@@ -31,29 +30,28 @@ import type View from '../view';
  * If you create multiple body collections, this class will create a special wrapper element in the DOM to limit the number of
  * elements created directly in the body and remove it when the last body collection will be
  * {@link ~BodyCollection#detachFromDom detached}.
- *
- * @extends module:ui/viewcollection~ViewCollection
  */
 export default class BodyCollection extends ViewCollection {
+	/**
+	 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
+	 * See the view {@link module:ui/view~View#locale locale} property.
+	 */
 	public readonly locale: Locale;
 
+	/**
+	 * The element holding elements of the body region.
+	 */
 	private _bodyCollectionContainer?: HTMLElement;
 
 	/**
 	 * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
 	 *
-	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor editor's locale} instance.
-	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 * @param locale The {@link module:core/editor/editor~Editor editor's locale} instance.
+	 * @param initialItems The initial items of the collection.
 	 */
 	constructor( locale: Locale, initialItems: Iterable<View> = [] ) {
 		super( initialItems );
 
-		/**
-		 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
-		 * See the view {@link module:ui/view~View#locale locale} property.
-		 *
-		 * @member {module:utils/locale~Locale}
-		 */
 		this.locale = locale;
 	}
 
@@ -62,12 +60,6 @@ export default class BodyCollection extends ViewCollection {
 	 * the body collection.
 	 */
 	public attachToDom(): void {
-		/**
-		 * The element holding elements of the body region.
-		 *
-		 * @protected
-		 * @member {HTMLElement} #_bodyCollectionContainer
-		 */
 		this._bodyCollectionContainer = new Template( {
 			tag: 'div',
 			attributes: {

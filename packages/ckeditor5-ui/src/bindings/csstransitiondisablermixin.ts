@@ -4,8 +4,8 @@
  */
 
 /**
-  * @module ui/bindings/csstransitiondisablermixin
-  */
+ * @module ui/bindings/csstransitiondisablermixin
+ */
 
 import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 
@@ -25,7 +25,8 @@ import type View from '../view';
  * The usage comes down to:
  *
  * ```ts
- * const view: MyView & ViewWithCssTransitionDisabler = new ( CssTransitionDisablerMixin( MyView ) )();
+ * const MyViewWithCssTransitionDisabler = CssTransitionDisablerMixin( MyView );
+ * const view = new MyViewWithCssTransitionDisabler();
  *
  * // ...
  *
