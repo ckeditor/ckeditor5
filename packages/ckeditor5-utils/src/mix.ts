@@ -80,7 +80,7 @@ export type Constructor<Instance = object> = abstract new ( ...args: Array<any> 
  * 	mixinMethod(): void;
  * }
  *
- * function MyMixin<Base extends Constructor>( base: Base ): Mix<Base, MyMixinInterface> {
+ * function MyMixin<Base extends Constructor>( base: Base ): Mixed<Base, MyMixinInterface> {
  * 	// ...
  * }
  *
