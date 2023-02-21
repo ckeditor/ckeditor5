@@ -252,7 +252,7 @@ export default class SelectionObserver extends Observer {
 		// Ensure we are not in the infinite loop (#400).
 		// This counter is reset each second. 60 selection changes in 1 second is enough high number
 		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
-		if ( ++this._loopbackCounter > 60 ) {
+		if ( ++this._loopbackCounter > 3 ) {
 			// Selection change observer detected an infinite rendering loop.
 			// Most probably you try to put the selection in the position which is not allowed
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
