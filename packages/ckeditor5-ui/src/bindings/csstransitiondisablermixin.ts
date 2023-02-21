@@ -7,6 +7,8 @@
  * @module ui/bindings/csstransitiondisablermixin
  */
 
+import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
+
 import type View from '../view';
 
 /**
@@ -35,11 +37,9 @@ import type View from '../view';
  *
  * @param view View instance that should get this functionality.
  */
-export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base ): {
-	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & ViewWithCssTransitionDisabler;
-	prototype: InstanceType<Base> & ViewWithCssTransitionDisabler;
-} & Base {
-	class Mixin extends view {
+export default function CssTransitionDisablerMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, ViewWithCssTransitionDisabler>
+{
+	abstract class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;
 
 		public disableCssTransitions() {
