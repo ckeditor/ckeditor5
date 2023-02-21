@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": ".",
-    "composite": true
+    "composite": true,
+    "emitDeclarationOnly": true
   },
   "include": [
     "src",
