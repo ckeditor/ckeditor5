@@ -11,7 +11,7 @@
 
 import EmitterMixin, { type Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
-import type { Constructor, Mix } from './mix';
+import type { Constructor, Mixed } from './mix';
 
 import { isObject } from 'lodash-es';
 
@@ -45,7 +45,7 @@ const defaultObservableClass = ObservableMixin( EmitterMixin() );
  *
  * @label EXTENDS
  */
-export default function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mix<Base, Observable>;
+export default function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, Observable>;
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the

@@ -9,7 +9,7 @@
 
 import type Editor from '../editor';
 
-import type { Constructor, Mix } from '@ckeditor/ckeditor5-utils';
+import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Implementation of the {@link module:core/editor/utils/dataapimixin~DataApi}.
@@ -17,7 +17,7 @@ import type { Constructor, Mix } from '@ckeditor/ckeditor5-utils';
  * @mixin DataApiMixin
  * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mix<Base, DataApi> {
+export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, DataApi> {
 	abstract class Mixin extends base implements DataApi {
 		public setData( data: string ): void {
 			this.data.set( data );

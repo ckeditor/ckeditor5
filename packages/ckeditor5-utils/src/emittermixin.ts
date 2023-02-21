@@ -11,7 +11,7 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities, { type PriorityString } from './priorities';
 import insertToPriorityArray from './inserttopriorityarray';
-import type { Constructor, Mix } from './mix';
+import type { Constructor, Mixed } from './mix';
 
 // To check if component is loaded more than once.
 import './version';
@@ -43,7 +43,7 @@ const defaultEmitterClass = EmitterMixin( Object );
  *
  * @label EXTENDS
  */
-export default function EmitterMixin<Base extends Constructor>( base: Base ): Mix<Base, Emitter>;
+export default function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base, Emitter>;
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.

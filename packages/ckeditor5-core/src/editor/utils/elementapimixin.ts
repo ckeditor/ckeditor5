@@ -11,7 +11,7 @@ import {
 	CKEditorError,
 	setDataInElement,
 	type Constructor,
-	type Mix
+	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from '../editor';
@@ -22,7 +22,7 @@ import type Editor from '../editor';
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mix<Base, ElementApi> {
+export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 

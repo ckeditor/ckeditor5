@@ -19,7 +19,7 @@ import uid from '../uid';
 import isNode from './isnode';
 import isWindow from './iswindow';
 import type EventInfo from '../eventinfo';
-import type { Constructor, Mix } from '../mix';
+import type { Constructor, Mixed } from '../mix';
 
 const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
 
@@ -47,7 +47,7 @@ const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
  *
  * @label EXTENDS
  */
-export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mix<Base, DomEmitter>;
+export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, DomEmitter>;
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
