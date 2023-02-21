@@ -1,5 +1,8 @@
 {
   "extends": "./tsconfig.release.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": false
+  },
   "include": [
     "./src/",
     "./typings/"
