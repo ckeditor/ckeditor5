@@ -19,9 +19,17 @@ import type Editor from '../editor';
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-export default function ElementApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>(
-	base: Base
-) {
+export default function ElementApiMixin<
+	Base extends abstract new ( ...args: any ) => Editor,
+	ReturnType = InstanceType<Base> & ElementApi
+>( base: Base ): {
+	new( ...args: any ): ReturnType;
+	prototype: ReturnType;
+} & typeof Editor;
+
+export default function ElementApiMixin<
+	Base extends abstract new( ...args: Array<any> ) => Editor
+>( base: Base ): unknown {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 
@@ -87,6 +95,6 @@ export default function ElementApiMixin<Base extends abstract new( ...args: Arra
  */
 
 export interface ElementApi {
-	readonly sourceElement: HTMLElement | undefined;
+	sourceElement: HTMLElement | undefined;
 	updateSourceElement( data?: string ): void;
 }

@@ -12,8 +12,7 @@
 import {
 	Plugin,
 	icons,
-	type Editor,
-	type ToolbarConfig
+	type Editor
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -37,6 +36,7 @@ import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
 import '../../uiconfig';
+import '../../index';
 
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;

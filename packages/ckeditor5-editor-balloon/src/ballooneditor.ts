@@ -53,7 +53,7 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 	/**
 	 * @inheritDoc
 	 */
-	public readonly ui: BalloonEditorUI;
+	public override readonly ui: BalloonEditorUI;
 
 	/**
 	 * Creates an instance of the balloon editor.

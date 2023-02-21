@@ -83,3 +83,4 @@ packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
 src/**/*.js
 src/**/*.d.ts
+**/*.tsbuildinfo

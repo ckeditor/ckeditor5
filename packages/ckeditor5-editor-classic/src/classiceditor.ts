@@ -49,7 +49,7 @@ export default class ClassicEditor extends DataApiMixin( ElementApiMixin( Editor
 	/**
 	 * @inheritDoc
 	 */
-	public readonly ui: ClassicEditorUI;
+	public override readonly ui: ClassicEditorUI;
 
 	/**
 	 * Creates an instance of the classic editor.

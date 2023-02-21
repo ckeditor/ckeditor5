@@ -24,8 +24,6 @@ import {
 	StylesProcessor
 } from '@ckeditor/ckeditor5-engine';
 
-import type { EditorUI } from '@ckeditor/ckeditor5-ui';
-
 import Context from '../context';
 import PluginCollection from '../plugincollection';
 import CommandCollection, { type CommandsMap } from '../commandcollection';
@@ -73,11 +71,6 @@ export default abstract class Editor extends ObservableMixin() {
 
 	public static defaultConfig?: EditorConfig;
 	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
-
-	/**
-	 * The editor UI instance.
-	 */
-	public abstract get ui(): EditorUI;
 
 	protected readonly _context: Context;
 	protected readonly _readOnlyLocks: Set<symbol | string>;

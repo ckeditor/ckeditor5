@@ -59,7 +59,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	/**
 	 * @inheritDoc
 	 */
-	public readonly ui: DecoupledEditorUI;
+	public override readonly ui: DecoupledEditorUI;
 
 	/**
 	 * Creates an instance of the decoupled editor.

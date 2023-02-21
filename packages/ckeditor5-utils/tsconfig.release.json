@@ -1,9 +1,12 @@
 {
   "extends": "../../tsconfig.release.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": ".",
+    "composite": true
+  },
   "include": [
-    "./src/",
-  ],
-  "exclude": [
-    "./tests/"
+    "src",
+    "../../typings/"
   ]
 }

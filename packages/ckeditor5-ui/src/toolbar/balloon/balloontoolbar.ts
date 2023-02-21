@@ -11,8 +11,7 @@ import {
 	Plugin,
 	type Editor,
 	type EditorReadyEvent,
-	type PluginDependencies,
-	type ToolbarConfig
+	type PluginDependencies
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -41,6 +40,7 @@ import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/edi
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../../uiconfig';
+import '../../index';
 
 const toPx = toUnit( 'px' );
 

@@ -17,7 +17,17 @@ import type Editor from '../editor';
  * @mixin DataApiMixin
  * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-export default function DataApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>( base: Base ) {
+export default function DataApiMixin<
+	Base extends abstract new ( ...args: any ) => Editor,
+	ReturnType = InstanceType<Base> & DataApi
+>( base: Base ): {
+	new( ...args: any ): ReturnType;
+	prototype: ReturnType;
+} & typeof Editor;
+
+export default function DataApiMixin<
+	Base extends abstract new( ...args: any ) => Editor
+>( base: Base ): unknown {
 	abstract class Mixin extends base implements DataApi {
 		public setData( data: string ): void {
 			this.data.set( data );

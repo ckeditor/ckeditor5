@@ -10,6 +10,7 @@
     "ckeditor5-dll"
   ],
   "main": "src/index.ts",
+  "types": "src/index.d.ts",
   "dependencies": {
     "ckeditor5": "^36.0.1"
   },

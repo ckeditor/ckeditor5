@@ -26,6 +26,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import { isElement, debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/components/tooltip/tooltip.css';
+import './index';
 
 const BALLOON_CLASS = 'ck-tooltip';
 

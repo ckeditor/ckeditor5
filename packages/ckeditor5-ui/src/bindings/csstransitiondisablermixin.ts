@@ -34,10 +34,19 @@ import type View from '../view';
  *
  * @param view View instance that should get this functionality.
  */
+export default function CssTransitionDisablerMixin<
+	Base extends new ( ...args: any ) => View,
+	ReturnType = InstanceType<Base> & CssTransitionToggler
+>( view: Base ): {
+		new( ...args: ConstructorParameters<Base> ): ReturnType;
+		prototype: ReturnType;
+} & typeof View;
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base )
-{
-	class Mixin extends view {
+export default function CssTransitionDisablerMixin<
+	Base extends new( ...args: any ) => View
+>( view: Base ): unknown {
+	class Mixin extends view implements CssTransitionToggler {
 		declare public _isCssTransitionsDisabled: boolean;
 
 		public disableCssTransitions() {
@@ -69,7 +78,9 @@ export default function CssTransitionDisablerMixin<Base extends new( ...args: Ar
 	return Mixin;
 }
 
-export type ViewWithCssTransitionDisabler = View & {
+export interface CssTransitionToggler {
 	disableCssTransitions(): void;
 	enableCssTransitions(): void;
-};
+}
+
+export type ViewWithCssTransitionDisabler = View & CssTransitionToggler;

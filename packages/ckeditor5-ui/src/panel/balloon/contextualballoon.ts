@@ -31,6 +31,7 @@ import nextIcon from '../../../theme/icons/next-arrow.svg';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
+import '../../index';
 
 const toPx = toUnit( 'px' );
 

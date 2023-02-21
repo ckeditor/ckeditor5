@@ -8,6 +8,7 @@
  */
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import type PendingActions from './pendingactions';
 import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
 
 /**
@@ -641,5 +642,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 }
 
 export interface PluginsMap {
+	[ PendingActions.pluginName ]: PendingActions;
 	[ name: string ]: PluginInterface;
 }
