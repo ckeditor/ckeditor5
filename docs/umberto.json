@@ -161,6 +161,7 @@
 		"framework/guides/contributing/code-style.html": "framework/contributing/code-style.html",
 		"framework/guides/contributing/package-metadata.html": "framework/contributing/package-metadata.html",
 		"framework/guides/contributing/git-commit-message-convention.html": "framework/contributing/git-commit-message-convention.html",
+		"framework/guides/support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/index.html": "installation/index.html",
 		"builds/guides/migrate.html": "updating/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/guides/update-to-25.html",

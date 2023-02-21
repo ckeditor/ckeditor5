@@ -89,7 +89,7 @@ For more advanced users, or those who need to integrate CKEditor 5 with their ow
 
 CKEditor 5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
 
-To find out how to start building your own editor from scratch go to the [CKEditor 5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/overview.html) section of CKEditor 5 documentation.
+To find out how to start building your own editor from scratch go to the [CKEditor 5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) section of CKEditor 5 documentation.
 
 ## Documentation and FAQ
 
