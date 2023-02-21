@@ -181,7 +181,7 @@ module.exports = {
 ```
 
 <info-box>
-    If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
+    If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4. There is also a whole guide dedicated to {@link installation/advanced/integrating-from-source-vite Integration from source using Vite}.
 </info-box>
 
 ### Creating an editor
@@ -371,7 +371,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5.git
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
-	Alternatively, instead of creating a custom build you can {@link installation/advanced/integrating-from-source integrate CKEditor 5 directly from source}. This option allows for even more flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments &mdash; for example in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
+	Alternatively, instead of creating a custom build you can {@link installation/advanced/integrating-from-source-webpack integrate CKEditor 5 directly from source}. This option allows for even more flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments &mdash; for example in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
 </info-box>
 
 <info-box warning>

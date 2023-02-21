@@ -245,6 +245,7 @@
 		"installation/getting-started/quick-start.html#building-the-editor-from-source": "installation/getting-started/quick-start-other.html#building-the-editor-from-source",
 		"installation/getting-started/maintenance.html": "updating/maintaining.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/predefined-builds.html",
+		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"support/getting-support.html": "support/index.html",
 		"framework/guides/overview.html": "framework/index.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html",

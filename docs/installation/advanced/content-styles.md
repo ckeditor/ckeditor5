@@ -39,7 +39,7 @@ The content in the front–end of your application should now look the same as w
 </info-box>
 
 <info-box>
-	If you are not afraid to get your hands dirty, you can always create a custom CKEditor 5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link installation/advanced/integrating-from-source#option-extracting-css dedicated guide}.
+	If you are not afraid to get your hands dirty, you can always create a custom CKEditor 5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link installation/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
 </info-box>
 
 ## The full list of content styles
