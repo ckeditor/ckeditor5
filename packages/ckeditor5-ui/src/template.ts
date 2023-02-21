@@ -1818,116 +1818,196 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 declare const AttributeBindingSymbol: unique symbol;
 declare const ListenerBindingSymbol: unique symbol;
 
-export interface AttributeBinding { _opaque1: typeof AttributeBindingSymbol }
-export interface ListenerBinding { _opaque2: typeof ListenerBindingSymbol }
+export interface AttributeBinding { [ AttributeBindingSymbol ]: 'AttributeBinding' }
+export interface ListenerBinding { [ ListenerBindingSymbol ]: 'ListenerBinding' }
 
 /**
  * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`
  * methods to create the {@link module:utils/observablemixin~Observable observable} attribute and event bindings.
  */
 export interface BindChain<TObservable> {
+
+	/**
+	 * Binds an {@link module:utils/observablemixin~Observable observable} to either:
+	 *
+	 * * an HTML element attribute or a text node `textContent`, so it remains in sync with the observable
+	 * attribute as it changes,
+	 * * or an HTML element DOM event, so the DOM events are propagated through an observable.
+	 *
+	 * Some common use cases of `to()` bindings are presented below:
+	 *
+	 * ```ts
+	 * const bind = Template.bind( observable, emitter );
+	 *
+	 * new Template( {
+	 * 	tag: 'p',
+	 * 	attributes: {
+	 * 		// class="..." attribute gets bound to `observable#a`
+	 * 		class: bind.to( 'a' )
+	 * 	},
+	 * 	children: [
+	 * 		// <p>...</p> gets bound to observable#b; always `toUpperCase()`.
+	 * 		{
+	 * 			text: bind.to( 'b', ( value, node ) => value.toUpperCase() )
+	 * 		}
+	 * 	],
+	 * 	on: {
+	 * 		click: [
+	 * 			// An observable will fire "clicked" upon "click" in the DOM.
+	 * 			bind.to( 'clicked' ),
+	 *
+	 * 			// A custom callback will be executed upon "click" in the DOM.
+	 * 			bind.to( () => {
+	 * 				...
+	 * 			} )
+	 * 		]
+	 * 	}
+	 * } ).render();
+	 * ```
+	 *
+	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
+	 * {@link module:ui/template~TemplateListenerSchema}.
+	 *
+	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
+	 */
 	to<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute
 	): AttributeBinding & ListenerBinding;
 
+	/**
+	 * Binds an {@link module:utils/observablemixin~Observable observable} to either:
+	 *
+	 * * an HTML element attribute or a text node `textContent`, so it remains in sync with the observable
+	 * attribute as it changes,
+	 * * or an HTML element DOM event, so the DOM events are propagated through an observable.
+	 *
+	 * Some common use cases of `to()` bindings are presented below:
+	 *
+	 * ```ts
+	 * const bind = Template.bind( observable, emitter );
+	 *
+	 * new Template( {
+	 * 	tag: 'p',
+	 * 	attributes: {
+	 * 		// class="..." attribute gets bound to `observable#a`
+	 * 		class: bind.to( 'a' )
+	 * 	},
+	 * 	children: [
+	 * 		// <p>...</p> gets bound to observable#b; always `toUpperCase()`.
+	 * 		{
+	 * 			text: bind.to( 'b', ( value, node ) => value.toUpperCase() )
+	 * 		}
+	 * 	],
+	 * 	on: {
+	 * 		click: [
+	 * 			// An observable will fire "clicked" upon "click" in the DOM.
+	 * 			bind.to( 'clicked' ),
+	 *
+	 * 			// A custom callback will be executed upon "click" in the DOM.
+	 * 			bind.to( () => {
+	 * 				...
+	 * 			} )
+	 * 		]
+	 * 	}
+	 * } ).render();
+	 * ```
+	 *
+	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
+	 * {@link module:ui/template~TemplateListenerSchema}.
+	 *
+	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
+	 * @param callback Allows for processing of the value. Accepts `Node` and `value` as arguments.
+	 */
 	to<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute,
 		callback: ( value: TObservable[ TAttribute ], node: Node ) => ( TemplateSimpleValue )
 	): AttributeBinding;
 
+	/**
+	 * Binds an {@link module:utils/observablemixin~Observable observable} to either:
+	 *
+	 * * an HTML element attribute or a text node `textContent`, so it remains in sync with the observable
+	 * attribute as it changes,
+	 * * or an HTML element DOM event, so the DOM events are propagated through an observable.
+	 *
+	 * Some common use cases of `to()` bindings are presented below:
+	 *
+	 * ```ts
+	 * const bind = Template.bind( observable, emitter );
+	 *
+	 * new Template( {
+	 * 	tag: 'p',
+	 * 	attributes: {
+	 * 		// class="..." attribute gets bound to `observable#a`
+	 * 		class: bind.to( 'a' )
+	 * 	},
+	 * 	children: [
+	 * 		// <p>...</p> gets bound to observable#b; always `toUpperCase()`.
+	 * 		{
+	 * 			text: bind.to( 'b', ( value, node ) => value.toUpperCase() )
+	 * 		}
+	 * 	],
+	 * 	on: {
+	 * 		click: [
+	 * 			// An observable will fire "clicked" upon "click" in the DOM.
+	 * 			bind.to( 'clicked' ),
+	 *
+	 * 			// A custom callback will be executed upon "click" in the DOM.
+	 * 			bind.to( () => {
+	 * 				...
+	 * 			} )
+	 * 		]
+	 * 	}
+	 * } ).render();
+	 * ```
+	 *
+	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
+	 * {@link module:ui/template~TemplateListenerSchema}.
+	 *
+	 * @param eventNameOrCallback A DOM event name or an event callback.
+	 */
 	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;
 
+	/**
+	 * Binds an {@link module:utils/observablemixin~Observable observable} to an HTML element attribute or a text
+	 * node `textContent` so it remains in sync with the observable attribute as it changes.
+	 *
+	 * Unlike {@link module:ui/template~BindChain#to}, it controls the presence of the attribute or `textContent`
+	 * depending on the "falseness" of an {@link module:utils/observablemixin~Observable} attribute.
+	 *
+	 * ```ts
+	 * const bind = Template.bind( observable, emitter );
+	 *
+	 * new Template( {
+	 * 	tag: 'input',
+	 * 	attributes: {
+	 * 		// <input checked> when `observable#a` is not undefined/null/false/''
+	 * 		// <input> when `observable#a` is undefined/null/false
+	 * 		checked: bind.if( 'a' )
+	 * 	},
+	 * 	children: [
+	 * 		{
+	 * 			// <input>"b-is-not-set"</input> when `observable#b` is undefined/null/false/''
+	 * 			// <input></input> when `observable#b` is not "falsy"
+	 * 			text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
+	 * 		}
+	 * 	]
+	 * } ).render();
+	 * ```
+	 *
+	 * Learn more about using `if()` in the {@link module:ui/template~TemplateValueSchema}.
+	 *
+	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable} used in the binding.
+	 * @param valueIfTrue Value set when the {@link module:utils/observablemixin~Observable} attribute is not
+	 * undefined/null/false/'' (empty string).
+	 * @param callback Allows for processing of the value. Accepts `Node` and `value` as arguments.
+	 */
 	if<TAttribute extends keyof TObservable & string>(
 		attribute: TAttribute,
 		valueIfTrue?: unknown,
 		callback?: ( value: TObservable[ TAttribute ], node: Node ) => ( boolean | FalsyValue )
 	): AttributeBinding;
 }
-
-/**
- * Binds an {@link module:utils/observablemixin~Observable observable} to either:
- *
- * * an HTML element attribute or a text node `textContent`, so it remains in sync with the observable
- * attribute as it changes,
- * * or an HTML element DOM event, so the DOM events are propagated through an observable.
- *
- * Some common use cases of `to()` bindings are presented below:
- *
- * ```ts
- * const bind = Template.bind( observable, emitter );
- *
- * new Template( {
- * 	tag: 'p',
- * 	attributes: {
- * 		// class="..." attribute gets bound to `observable#a`
- * 		class: bind.to( 'a' )
- * 	},
- * 	children: [
- * 		// <p>...</p> gets bound to observable#b; always `toUpperCase()`.
- * 		{
- * 			text: bind.to( 'b', ( value, node ) => value.toUpperCase() )
- * 		}
- * 	],
- * 	on: {
- * 		click: [
- * 			// An observable will fire "clicked" upon "click" in the DOM.
- * 			bind.to( 'clicked' ),
- *
- * 			// A custom callback will be executed upon "click" in the DOM.
- * 			bind.to( () => {
- * 				...
- * 			} )
- * 		]
- * 	}
- * } ).render();
- * ```
- *
- * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
- * {@link module:ui/template~TemplateListenerSchema}.
- *
- * K TODO this a method of the above interface
- * @method #to
- * @param eventNameOrFunctionOrAttribute An attribute name of
- * {@link module:utils/observablemixin~Observable} or a DOM event name or an event callback.
- * @param [callback] Allows for processing of the value. Accepts `Node` and `value` as arguments.
- */
-
-/**
- * Binds an {@link module:utils/observablemixin~Observable observable} to an HTML element attribute or a text
- * node `textContent` so it remains in sync with the observable attribute as it changes.
- *
- * Unlike {@link module:ui/template~BindChain#to}, it controls the presence of the attribute or `textContent`
- * depending on the "falseness" of an {@link module:utils/observablemixin~Observable} attribute.
- *
- * ```ts
- * const bind = Template.bind( observable, emitter );
- *
- * new Template( {
- * 	tag: 'input',
- * 	attributes: {
- * 		// <input checked> when `observable#a` is not undefined/null/false/''
- * 		// <input> when `observable#a` is undefined/null/false
- * 		checked: bind.if( 'a' )
- * 	},
- * 	children: [
- * 		{
- * 			// <input>"b-is-not-set"</input> when `observable#b` is undefined/null/false/''
- * 			// <input></input> when `observable#b` is not "falsy"
- * 			text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
- * 		}
- * 	]
- * } ).render();
- * ```
- *
- * Learn more about using `if()` in the {@link module:ui/template~TemplateValueSchema}.
- *
- * K TODO this a method of the above interface
- * @method #if
- * @param attribute An attribute name of {@link module:utils/observablemixin~Observable} used in the binding.
- * @param valueIfTrue Value set when the {@link module:utils/observablemixin~Observable} attribute is not
- * undefined/null/false/'' (empty string).
- * @param callback Allows for processing of the value. Accepts `Node` and `value` as arguments.
- */
 
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
