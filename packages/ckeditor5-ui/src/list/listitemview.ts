@@ -63,7 +63,6 @@ export default class ListItemView extends View {
 	 * Focuses the list item.
 	 */
 	public focus(): void {
-		// K TODO maybe a better way?
 		( this.children.first as FocusableView ).focus();
 	}
 }
