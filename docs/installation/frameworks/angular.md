@@ -409,6 +409,27 @@ export class MyComponent {
 </div>
 ```
 
+### `editorWatchdogConfig`
+
+If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`} will be used by default. `editorWatchdogConfig` property allows for passing a {@link module:watchdog/watchdog~WatchdogConfig config} to that watchdog.
+
+```ts
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public myWatchdogConfig = {
+		crashNumberLimit: 5,
+		// ...
+	};
+	// ...
+}
+```
+
+```html
+<ckeditor [editorWatchdogConfig]="myWatchdogConfig" ...></ckeditor>
+```
+
 ### `disableTwoWayDataBinding`
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
