@@ -98,6 +98,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it includes the given class name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
@@ -120,6 +121,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Updates GHS model attribute for a specified view element name, so it does not include the given class name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
