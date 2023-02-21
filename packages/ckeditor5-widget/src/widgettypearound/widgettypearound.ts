@@ -91,11 +91,14 @@ const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
  * with two buttons into each widget instance in the editor. Each of the buttons can be clicked by the
  * user if the widget is next to the "tight spot". Once clicked, a paragraph is created with the selection anchored
  * in it so that users can type (or insert content, paste, etc.) straight away.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class WidgetTypeAround extends Plugin {
-	private _currentFakeCaretModelElement: Element | null;
+	/**
+	 * A reference to the model widget element that has the fake caret active
+	 * on either side of it. It is later used to remove CSS classes associated with the fake caret
+	 * when the widget no longer needs it.
+	 */
+	private _currentFakeCaretModelElement: Element | null = null;
 
 	/**
 	 * @inheritDoc
@@ -109,23 +112,6 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	public static get requires(): PluginDependencies {
 		return [ Enter, Delete ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		/**
-		 * A reference to the model widget element that has the fake caret active
-		 * on either side of it. It is later used to remove CSS classes associated with the fake caret
-		 * when the widget no longer needs it.
-		 *
-		 * @private
-		 * @member {module:engine/model/element~Element|null}
-		 */
-		this._currentFakeCaretModelElement = null;
 	}
 
 	/**
@@ -181,9 +167,8 @@ export default class WidgetTypeAround extends Plugin {
 	 * **Note**: This method is heavily user-oriented and will both focus the editing view and scroll
 	 * the viewport to the selection in the inserted paragraph.
 	 *
-	 * @protected
-	 * @param {module:engine/model/element~Element} widgetModelElement The model widget element next to which a paragraph is inserted.
-	 * @param {'before'|'after'} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
+	 * @param widgetModelElement The model widget element next to which a paragraph is inserted.
+	 * @param position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
 	private _insertParagraph( widgetModelElement: Element, position: 'before' | 'after' ) {
 		const editor = this.editor;
@@ -204,14 +189,12 @@ export default class WidgetTypeAround extends Plugin {
 	 * A wrapper for the {@link module:utils/emittermixin~EmitterMixin#listenTo} method that executes the callbacks only
 	 * when the plugin {@link #isEnabled is enabled}.
 	 *
-	 * @private
-	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
+	 * @param emitter The object that fires the event.
+	 * @param event The name of the event.
+	 * @param callback The function to be called on event.
+	 * @param options Additional options.
+	 * @param options.priority The priority of this event callback. The higher the priority value the sooner
+	 * the callback will be fired. Events having the same priority are called in the order they were added.
 	 */
 	private _listenToIfEnabled<TEvent extends BaseEvent>(
 		emitter: Emitter,
@@ -236,8 +219,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * the insertion can only happen when the widget's fake caret is active (e.g. activated
 	 * using the keyboard).
 	 *
-	 * @private
-	 * @returns {Boolean} Returns `true` when the paragraph was inserted (the attribute was present) and `false` otherwise.
+	 * @returns Returns `true` when the paragraph was inserted (the attribute was present) and `false` otherwise.
 	 */
 	private _insertParagraphAccordingToFakeCaretPosition() {
 		const editor = this.editor;
@@ -268,8 +250,6 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * The UI is delivered as a {@link module:engine/view/uielement~UIElement}
 	 * wrapper which renders DOM buttons that users can use to insert paragraphs.
-	 *
-	 * @private
 	 */
 	private _enableTypeAroundUIInjection() {
 		const editor = this.editor;
@@ -324,8 +304,6 @@ export default class WidgetTypeAround extends Plugin {
 	 *    does the CSS class clean-up in the view.
 	 * 6. Additionally, `change:range` and `FocusTracker#isFocused` listeners also remove the selection
 	 *    attribute (the former also removes widget CSS classes).
-	 *
-	 * @private
 	 */
 	private _enableTypeAroundFakeCaretActivationUsingKeyboardArrows() {
 		const editor = this.editor;
@@ -441,8 +419,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * in this listener, and stopping and preventing the event that would normally be handled by the widget
 	 * plugin that is responsible for the regular keyboard navigation near/across all widgets (that
 	 * includes inline widgets, which are ignored by the widget type around plugin).
-	 *
-	 * @private
 	 */
 	private _handleArrowKeyPress( evt: BubblingEventInfo<'arrowKey'>, domEventData: DomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
@@ -482,10 +458,9 @@ export default class WidgetTypeAround extends Plugin {
 	 * the fake caret for that widget, depending on the current value of the `widget-type-around` model
 	 * selection attribute and the direction of the pressed arrow key.
 	 *
-	 * @private
-	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * @param isForward `true` when the pressed arrow key was responsible for the forward model selection movement
 	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
-	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * @returns Returns `true` when the keypress was handled and no other keydown listener of the editor should
 	 * process the event any further. Returns `false` otherwise.
 	 */
 	private _handleArrowKeyPressOnSelectedWidget( isForward: boolean ) {
@@ -534,10 +509,9 @@ export default class WidgetTypeAround extends Plugin {
 	 * Unfortunately, there is no safe way to let the widget plugin do the selection part first and then just set the
 	 * selection attribute here in the widget type around plugin. This is why this code must duplicate some from the widget plugin.
 	 *
-	 * @private
-	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * @param isForward `true` when the pressed arrow key was responsible for the forward model selection movement
 	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
-	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * @returns Returns `true` when the keypress was handled and no other keydown listener of the editor should
 	 * process the event any further. Returns `false` otherwise.
 	 */
 	private _handleArrowKeyPressWhenSelectionNextToAWidget( isForward: boolean ) {
@@ -568,10 +542,9 @@ export default class WidgetTypeAround extends Plugin {
 	 * Handles the keyboard navigation on "keydown" when a widget is currently selected (together with some other content)
 	 * and the widget is the first or last element in the selection. It activates or deactivates the fake caret for that widget.
 	 *
-	 * @private
-	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * @param isForward `true` when the pressed arrow key was responsible for the forward model selection movement
 	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
-	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * @returns Returns `true` when the keypress was handled and no other keydown listener of the editor should
 	 * process the event any further. Returns `false` otherwise.
 	 */
 	private _handleArrowKeyPressWhenNonCollapsedSelection( isForward: boolean ) {
@@ -604,8 +577,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * Registers a `mousedown` listener for the view document which intercepts events
 	 * coming from the widget type around UI, which happens when a user clicks one of the buttons
 	 * that insert a paragraph next to a widget.
-	 *
-	 * @private
 	 */
 	private _enableInsertingParagraphsOnButtonClick() {
 		const editor = this.editor;
@@ -641,8 +612,6 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * In the second case, the new paragraph is inserted based on whether a soft (<kbd>Shift</kbd>+<kbd>Enter</kbd>) keystroke
 	 * was pressed or not.
-	 *
-	 * @private
 	 */
 	private _enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
@@ -694,8 +663,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * **Note**: At the moment this listener creates 2 undo steps: one for the `insertParagraph` command
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
-	 *
-	 * @private
 	 */
 	private _enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
@@ -736,8 +703,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * The fake caret should create an illusion of a real browser caret so that when it appears before or after
 	 * a widget, pressing <kbd>Delete</kbd> or <kbd>Backspace</kbd> should remove a widget or delete the content
 	 * before or after a widget (depending on the content surrounding the widget).
-	 *
-	 * @private
 	 */
 	private _enableDeleteIntegration() {
 		const editor = this.editor;
@@ -822,8 +787,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * content near a widget when the fake caret is first activated using the arrow keys.
 	 *
 	 * The content is inserted according to the `widget-type-around` selection attribute (see {@link #_handleArrowKeyPress}).
-	 *
-	 * @private
 	 */
 	private _enableInsertContentIntegration() {
 		const editor = this.editor;
@@ -863,8 +826,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * to reflect user's intent of desired insertion position.
 	 *
 	 * The object is inserted according to the `widget-type-around` selection attribute (see {@link #_handleArrowKeyPress}).
-	 *
-	 * @private
 	 */
 	private _enableInsertObjectIntegration() {
 		const editor = this.editor;
@@ -896,8 +857,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * This is required for cases that trigger {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
 	 * before calling {@link module:engine/model/model~Model#insertContent `model.insertContent()`} like, for instance,
 	 * plain text pasting.
-	 *
-	 * @private
 	 */
 	private _enableDeleteContentIntegration() {
 		const editor = this.editor;
@@ -919,11 +878,9 @@ export default class WidgetTypeAround extends Plugin {
 	}
 }
 
-// Injects the type around UI into a view widget instance.
-//
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @param {Object.<String,String>} buttonTitles
-// @param {module:engine/view/element~Element} widgetViewElement
+/**
+ * Injects the type around UI into a view widget instance.
+ */
 function injectUIIntoWidget(
 	viewWriter: DowncastWriter,
 	buttonTitles: { before: string; after: string },
@@ -943,12 +900,11 @@ function injectUIIntoWidget(
 	viewWriter.insert( viewWriter.createPositionAt( widgetViewElement, 'end' ), typeAroundWrapper );
 }
 
-// FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
-// and it's pretty hard to figure out when a view (widget) is gone for good so it's cheaper to use raw
-// <svg> here.
-//
-// @param {HTMLElement} wrapperDomElement
-// @param {Object.<String,String>} buttonTitles
+/**
+ * FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
+ * and it's pretty hard to figure out when a view (widget) is gone for good so it's cheaper to use raw
+ * <svg> here.
+ */
 function injectButtons( wrapperDomElement: HTMLElement, buttonTitles: { before: string; after: string } ) {
 	for ( const position of POSSIBLE_INSERTION_POSITIONS ) {
 		const buttonTemplate = new Template( {
@@ -971,7 +927,6 @@ function injectButtons( wrapperDomElement: HTMLElement, buttonTitles: { before: 
 	}
 }
 
-// @param {HTMLElement} wrapperDomElement
 function injectFakeCaret( wrapperDomElement: HTMLElement ) {
 	const caretTemplate = new Template( {
 		tag: 'div',
@@ -986,16 +941,16 @@ function injectFakeCaret( wrapperDomElement: HTMLElement ) {
 	wrapperDomElement.appendChild( caretTemplate.render() );
 }
 
-// Returns the ancestor of an element closest to the root which is empty. For instance,
-// for `<baz>`:
-//
-//		<foo>abc<bar><baz></baz></bar></foo>
-//
-// it returns `<bar>`.
-//
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/element~Element} element
-// @returns {module:engine/model/element~Element|null}
+/**
+ * Returns the ancestor of an element closest to the root which is empty. For instance,
+ * for `<baz>`:
+ *
+ * ```
+ * <foo>abc<bar><baz></baz></bar></foo>
+ * ```
+ *
+ * it returns `<bar>`.
+ */
 function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 	let deepestEmptyAncestor = element;
 

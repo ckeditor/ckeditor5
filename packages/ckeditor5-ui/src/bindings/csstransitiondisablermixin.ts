@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type View from '../view';
-
 /**
-  * @module ui/bindings/csstransitiondisablermixin
-  */
+ * @module ui/bindings/csstransitiondisablermixin
+ */
+
+import type View from '../view';
 
 /**
  * A mixin that brings the possibility to temporarily disable CSS transitions using
@@ -23,7 +23,8 @@ import type View from '../view';
  * The usage comes down to:
  *
  * ```ts
- * const view: MyView & ViewWithCssTransitionDisabler = new ( CssTransitionDisablerMixin( MyView ) )();
+ * const MyViewWithCssTransitionDisabler = CssTransitionDisablerMixin( MyView );
+ * const view = new MyViewWithCssTransitionDisabler();
  *
  * // ...
  *
@@ -34,19 +35,11 @@ import type View from '../view';
  *
  * @param view View instance that should get this functionality.
  */
-export default function CssTransitionDisablerMixin<
-	Base extends new ( ...args: any ) => View,
-	ReturnType = InstanceType<Base> & CssTransitionToggler
->( view: Base ): {
-		new( ...args: ConstructorParameters<Base> ): ReturnType;
-		prototype: ReturnType;
-} & typeof View;
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function CssTransitionDisablerMixin<
-	Base extends new( ...args: any ) => View
->( view: Base ): unknown {
-	class Mixin extends view implements CssTransitionToggler {
+export default function CssTransitionDisablerMixin<Base extends new( ...args: Array<any> ) => View>( view: Base ): {
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & ViewWithCssTransitionDisabler;
+	prototype: InstanceType<Base> & ViewWithCssTransitionDisabler;
+} & Base {
+	class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;
 
 		public disableCssTransitions() {
@@ -75,12 +68,10 @@ export default function CssTransitionDisablerMixin<
 		}
 	}
 
-	return Mixin;
+	return Mixin as any;
 }
 
-export interface CssTransitionToggler {
+export type ViewWithCssTransitionDisabler = View & {
 	disableCssTransitions(): void;
 	enableCssTransitions(): void;
-}
-
-export type ViewWithCssTransitionDisabler = View & CssTransitionToggler;
+};
