@@ -20,7 +20,7 @@ import CKBoxEditing from './ckboxediting';
  * * {@link module:ckbox/ckboxediting~CKBoxEditing},
  * * {@link module:ckbox/ckboxui~CKBoxUI},
  *
- * See the {@glink features/images/image-upload/ckbox CKBox integration} guide to learn how to configure and use this feature.
+ * See the {@glink features/file-management/ckbox CKBox integration} guide to learn how to configure and use this feature.
  *
  * Check out the {@glink features/images/image-upload/image-upload Image upload} guide to learn about other ways to upload
  * images into CKEditor 5.
