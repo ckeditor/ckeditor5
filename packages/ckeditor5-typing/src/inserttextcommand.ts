@@ -97,13 +97,19 @@ export default class InsertTextCommand extends Command {
 	}
 }
 
+/**
+ * Interface with parameters for executing InsertTextCommand.
+ *
+ * Both `range` and `selection` parameters are used for defining selection but should not be used together.
+ * If both are defined, only `selection` will be considered.
+ */
 export interface InsertTextCommandOptions {
 
 	/**
 	 * The text to be inserted.
 	 */
 	text?: string;
-	// TODO note that those 2 options are exclusive (either selection or range)
+
 	/**
 	 * The selection in which the text is inserted.
 	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
