@@ -31,6 +31,12 @@
 		.box-left {
 			margin-right: 10px;
 		}
+
+		#toolbar.sticky {
+			position: sticky;
+			top: 0px;
+			z-index: 10;
+		}
 	</style>
 </head>
 <body>
@@ -88,7 +94,18 @@
 		.then( editor => {
 			window.editor = editor;
 
-			document.getElementById( 'toolbar' ).appendChild( editor.ui.view.toolbar.element );
+			// Append toolbar to a proper container.
+			const toolbarContainer = document.getElementById( 'toolbar' );
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+			// Make toolbar sticky only when the editor is focused.
+			editor.ui.focusTracker.on( 'change:isFocused', () => {
+				if ( editor.ui.focusTracker.isFocused ) {
+					toolbarContainer.classList.add( 'sticky' );
+				} else {
+					toolbarContainer.classList.remove( 'sticky' );
+				}
+			} );
 		} )
 		.catch( error => {
 			console.error( 'There was a problem initializing the editor.', error );
