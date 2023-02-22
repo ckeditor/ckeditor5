@@ -57,8 +57,6 @@ export interface EditorConfig {
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
 	 * about the {@glink features/toolbar/toolbar toolbar setup}.
-	 *
-	 * K TODO this must accept function MyPlugin( editor ) { ... }
 	 */
 	extraPlugins?: Array<PluginConstructor<Editor>>;
 
@@ -221,8 +219,6 @@ export interface EditorConfig {
 	 *
 	 * **Note:** To load additional plugins, you should use the {@link #extraPlugins `extraPlugins`} configuration.
 	 * To narrow the list of loaded plugins, use the {@link #removePlugins `removePlugins`} configuration.
-	 *
-	 * K TODO this must accept function MyPlugin( editor ) { ... }
 	 */
 	plugins?: Array<PluginConstructor<Editor> | string>;
 

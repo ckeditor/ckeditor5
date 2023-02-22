@@ -8,7 +8,7 @@
  */
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
-import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
+import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginInterface } from './plugin';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
@@ -101,7 +101,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 *
 	 * @param key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 */
-	public get<TConstructor extends PluginConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
+	public get<TConstructor extends PluginClassConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
 	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
 	public get( key: PluginConstructor<TContext> | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
@@ -214,7 +214,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		function isContextPlugin(
 			plugin: PluginConstructor<TContext> | string | null
 		): plugin is PluginConstructor<TContext> & { isContextPlugin: true } {
-			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
+			return isPluginConstructor( plugin ) && !!plugin.isContextPlugin;
 		}
 
 		function isPluginRemoved(
@@ -442,7 +442,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			return pluginConstructors.map( PluginConstructor => {
 				let pluginInstance = that._contextPlugins.get( PluginConstructor ) as ( PluginInterface | undefined );
 
-				pluginInstance = pluginInstance || new PluginConstructor( context );
+				pluginInstance = pluginInstance || new ( PluginConstructor as PluginClassConstructor<TContext> )( context );
 
 				that._add( PluginConstructor, pluginInstance );
 
@@ -480,6 +480,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 					 */
 					throw new CKEditorError( 'plugincollection-replace-plugin-invalid-type', null, { pluginItem } );
 				}
+
 				const pluginName = pluginItem.pluginName;
 
 				if ( !pluginName ) {

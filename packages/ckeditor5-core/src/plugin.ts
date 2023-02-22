@@ -150,7 +150,6 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * In its minimal form a plugin can be a simple function that accepts {@link module:core/editor/editor~Editor the editor}
  * as a parameter:
  *
- * K TODO PluginInterface does not define this type variant
  * ```ts
  * // A simple plugin that enables a data processor.
  * function MyPlugin( editor ) {
@@ -224,12 +223,50 @@ export interface PluginInterface {
  * The constructor can be understood as "before init" and used in special cases, just like
  * {@link #afterInit} serves the special "after init" scenarios (e.g.the code which depends on other
  * plugins, but which does not {@link module:core/plugin~PluginInterface.requires explicitly require} them).
- *
- * K TODO maybe we should have this field in the PluginInterface above?
- * @method #constructor
  */
-export interface PluginConstructor<TContext = Editor> {
+export type PluginConstructor<TContext = Editor> =
+	( PluginClassConstructor<TContext> | PluginFunctionConstructor<TContext> ) & PluginStaticMembers<TContext>;
+
+/**
+ * In most cases, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
+ * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
+ *
+ * ```ts
+ * class MyPlugin extends Plugin {
+ * 	init() {
+ * 		// `listenTo()` and `editor` are available thanks to `Plugin`.
+ * 		// By using `listenTo()` you will ensure that the listener is removed when
+ * 		// the plugin is destroyed.
+ * 		this.listenTo( this.editor.data, 'ready', () => {
+ * 			// Do something when the data is ready.
+ * 		} );
+ * 	}
+ * }
+ * ```
+ */
+export type PluginClassConstructor<TContext = Editor> = {
 	new( editor: TContext ): PluginInterface;
+};
+
+/**
+ * In its minimal form a plugin can be a simple function that accepts {@link module:core/editor/editor~Editor the editor}
+ * as a parameter:
+ *
+ * ```ts
+ * // A simple plugin that enables a data processor.
+ * function MyPlugin( editor ) {
+ * 	editor.data.processor = new MyDataProcessor();
+ * }
+ * ```
+ */
+export type PluginFunctionConstructor<TContext = Editor> = {
+	( editor: TContext ): void;
+};
+
+/**
+ * Static properties of a plugin.
+ */
+export type PluginStaticMembers<TContext = Editor> = {
 
 	/**
 	 * An array of plugins required by this plugin.
@@ -276,8 +313,8 @@ export interface PluginConstructor<TContext = Editor> {
 	/**
 	 * A flag which defines if a plugin is allowed or not allowed to be used directly by a {@link module:core/context~Context}.
 	 */
-	readonly isContextPlugin: boolean;
-}
+	readonly isContextPlugin?: boolean;
+};
 
 export type PluginDependencies<TContext = Editor> = Array<PluginConstructor<TContext> | string>;
 
