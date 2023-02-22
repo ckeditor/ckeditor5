@@ -58,8 +58,5 @@
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "main": "./theme/theme.css",
-  "scripts": {
-    "build": "node -v"
-  }
+  "main": "./theme/theme.css"
 }

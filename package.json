@@ -174,7 +174,6 @@
     "translations:download": "node ./scripts/translations/download.js",
     "translations:upload": "node ./scripts/translations/upload.js",
     "build": "tsc -p ./tsconfig.release-ckeditor5.json",
-    "build:types": "tsc --build --verbose ./tsconfig.release.json",
     "predll:build": "npm run build",
     "dll:build": "node ./scripts/dll/build-dlls.js --base-dll-config ./scripts/dll/webpack.config.dll.js",
     "changelog": "node ./scripts/release/changelog.js",
