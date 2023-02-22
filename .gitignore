@@ -81,5 +81,7 @@ packages/ckeditor5-watchdog/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
 packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
+packages/*/src/**/*.js.map
 src/**/*.js
+src/**/*.js.map
 src/**/*.d.ts
