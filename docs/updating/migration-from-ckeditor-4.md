@@ -605,7 +605,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>
 				<p>N/A.</p>
 				<p>The {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} allows configuring where should the toolbar and the editable element be inserted.</p>
-				<p>In addition to that, CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/framework/multi-root-editor multi-root editor example}.</p>
+				<p>The {@link examples/builds/multi-root-editor multi-root editor} allows for creating an editor instance that contains multiple editable elements (document roots).</p>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-shiftEnterMode">shiftEnterMode</a></td>
