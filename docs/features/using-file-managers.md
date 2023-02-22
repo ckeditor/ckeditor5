@@ -7,13 +7,15 @@ badges: [ premium ]
 
 # Using file managers
 
-One way to upload and insert images in CKEditor is by using file managers. [CKBox](https://ckeditor.com/ckbox/) and [CKFinder](https://ckeditor.com/ckfinder/) are our official file managers and file uploaders that let you upload, manage, and insert images and other files.
+The most con venient way to upload, manage, and insert images into content in CKEditor is by using file managers. [CKBox](https://ckeditor.com/ckbox/) and [CKFinder](https://ckeditor.com/ckfinder/) are our official file managers and file uploaders that let you upload, manage, and insert images and other files.
 
-CKBox and CKFinder are both premium features. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
+<info-box>
+	CKBox and CKFinder are both premium features. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
+</info-box>
 
 ## CKBox file manager
 
-[CKBox](https://ckeditor.com/ckbox/) is a modern file management platform with a clean UI and a top-notch UX.
+CKBox is a modern file management platform with a clean UI and a top-notch UX.
 
 With CKBox you can:
 - Organize images and other files into customizable categories.
@@ -27,7 +29,7 @@ With CKBox you can:
 
 ## CKFinder file manager
 
-[CKFinder](https://ckeditor.com/ckfinder/) is a powerful file manager with various image editing and image upload options.
+CKFinder is a powerful file manager with various image editing and image upload options.
 
 With CKFinder you can:
 - Group images and other files into folders and subfolders.
