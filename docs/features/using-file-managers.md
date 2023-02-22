@@ -19,6 +19,7 @@ CKBox is a modern file management platform with a clean UI and a top-notch UX.
 
 With CKBox you can:
 - Organize images and other files into customizable categories.
+- Create, rename, and delete folders.
 - Delete, rename, and tag files.
 - Search files and filter results by numerous properties.
 - Easily access recently used files.
