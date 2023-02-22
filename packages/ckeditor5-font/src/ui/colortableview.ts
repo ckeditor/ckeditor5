@@ -30,8 +30,8 @@ import '../../theme/fontcolor.css';
  * A class which represents a view with the following sub–components:
  *
  * * A remove color button,
- * * A static {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors defined in the configuration,
- * * A dynamic {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors used in the document.
+ * * A static {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors defined in the configuration,
+ * * A dynamic {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors used in the document.
  */
 export default class ColorTableView extends View {
 	/**
@@ -106,7 +106,7 @@ export default class ColorTableView extends View {
 	declare public selectedColor?: string;
 
 	/**
-	 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
 	 * the default (static) color set.
 	 *
 	 * The property is loaded once the the parent dropdown is opened the first time.
@@ -116,7 +116,7 @@ export default class ColorTableView extends View {
 	public staticColorsGrid: ColorGridView | undefined;
 
 	/**
-	 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
 	 * the document colors. It remains undefined if the document colors feature is disabled.
 	 *
 	 * The property is loaded once the the parent dropdown is opened the first time.
@@ -223,7 +223,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgrid~ColorGridView}s
+	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
 	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */

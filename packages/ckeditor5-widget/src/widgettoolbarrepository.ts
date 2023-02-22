@@ -261,7 +261,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * Otherwise, repositions the toolbar's balloon when toolbar's view is the most top view in balloon stack.
 	 *
 	 * It might happen here that the toolbar's view is under another view. Then do nothing as the other toolbar view
-	 * should be still visible after the {@link module:core/editor/editorui~EditorUI#event:update}.
+	 * should be still visible after the {@link module:ui/editorui/editorui~EditorUI#event:update}.
 	 */
 	private _showToolbar( toolbarDefinition: WidgetRepositoryToolbarDefinition, relatedElement: ViewElement ) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {

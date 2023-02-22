@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/colorgrid/colorgrid
+ * @module ui/colorgrid/colorgridview
  */
 
 import View from '../view';
@@ -27,7 +27,7 @@ import {
 import '../../theme/components/colorgrid/colorgrid.css';
 
 /**
- * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
+ * A grid of {@link module:ui/colorgrid/colortileview~ColorTileView color tiles}.
  */
 export default class ColorGridView extends View implements DropdownPanelFocusable {
 	/**
@@ -58,13 +58,13 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	declare public selectedColor: string | undefined | null;
 
 	/**
-	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
+	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortileview~ColorTileView tiles}.
 	 *
 	 * @fires execute
 	 * @param locale The localization services instance.
 	 * @param options Component configuration
 	 * @param options.colorDefinitions Array with definitions
-	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
+	 * required to create the {@link module:ui/colorgrid/colortileview~ColorTileView tiles}.
 	 * @param options.columns A number of columns to display the tiles.
 	 */
 	constructor(
@@ -195,7 +195,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 }
 
 /**
- * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * A color definition used to create a {@link module:ui/colorgrid/colortileview~ColorTileView}.
  *
  * ```json
  * {
@@ -211,23 +211,23 @@ export interface ColorDefinition {
 
 	/**
 	 * String representing a color.
-	 * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 * It is used as value of background-color style in {@link module:ui/colorgrid/colortileview~ColorTileView}.
 	 */
 	color: string;
 
 	/**
-	 * String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 * String used as label for {@link module:ui/colorgrid/colortileview~ColorTileView}.
 	 */
 	label: string;
 
 	/**
-	 * Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
+	 * Additional options passed to create a {@link module:ui/colorgrid/colortileview~ColorTileView}.
 	 */
 	options: {
 
 		/**
 		 * A flag that indicates if special a CSS class should be added
-		 * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
+		 * to {@link module:ui/colorgrid/colortileview~ColorTileView}, which renders a border around it.
 		 */
 		hasBorder: boolean;
 	};
@@ -250,18 +250,18 @@ export type ColorGridViewExecuteEvent = {
 export interface ColorGridViewExecuteEventData {
 
 	/**
-	 * The value of the selected color ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
+	 * The value of the selected color ({@link module:ui/colorgrid/colorgridview~ColorDefinition#color `color.color`}).
 	 */
 	value: string;
 
 	/**
 	 * The `hasBorder` property of the selected color
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options `color.options.hasBorder`}).
+	 * ({@link module:ui/colorgrid/colorgridview~ColorDefinition#options `color.options.hasBorder`}).
 	 */
 	hasBorder: boolean;
 
 	/**
-	 * The label of the selected color ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
+	 * The label of the selected color ({@link module:ui/colorgrid/colorgridview~ColorDefinition#label `color.label`})
 	 */
 	label: string;
 }

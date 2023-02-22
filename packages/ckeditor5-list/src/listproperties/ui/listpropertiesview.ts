@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/ui/listpropertiesview
+ * @module list/listproperties/ui/listpropertiesview
  */
 
 import {

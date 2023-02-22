@@ -84,7 +84,7 @@ export function normalizeColorOptions( options: Array<ColorOption> ): Array<Norm
 /**
  * Creates a normalized color definition from the user-defined configuration.
  * The "normalization" means it will create full
- * {@link module:ui/colorgrid/colorgrid~ColorDefinition `ColorDefinition-like`}
+ * {@link module:ui/colorgrid/colorgridview~ColorDefinition `ColorDefinition-like`}
  * object for string values, and add a `view` property, for each definition.
  */
 export function normalizeSingleColorDefinition( color: ColorOption ): NormalizedColorOption {

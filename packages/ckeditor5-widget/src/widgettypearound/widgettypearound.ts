@@ -6,7 +6,7 @@
 /* global DOMParser */
 
 /**
- * @module widget/widgettypearound
+ * @module widget/widgettypearound/widgettypearound
  */
 
 import {

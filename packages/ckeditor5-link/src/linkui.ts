@@ -475,7 +475,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Makes the UI react to the {@link module:core/editor/editorui~EditorUI#event:update} event to
+	 * Makes the UI react to the {@link module:ui/editorui/editorui~EditorUI#event:update} event to
 	 * reposition itself when the editor UI should be refreshed.
 	 *
 	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `update` event.

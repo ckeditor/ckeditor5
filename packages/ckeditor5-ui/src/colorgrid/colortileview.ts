@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/colorgrid/colortile
+ * @module ui/colorgrid/colortileview
  */
 
 import ButtonView from '../button/buttonview';
@@ -14,7 +14,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import checkIcon from '../../theme/icons/color-tile-check.svg';
 
 /**
- * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
+ * This class represents a single color tile in the {@link module:ui/colorgrid/colorgridview~ColorGridView}.
  */
 export default class ColorTileView extends ButtonView {
 	/**
