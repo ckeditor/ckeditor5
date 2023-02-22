@@ -179,8 +179,7 @@ export default class Mention extends Plugin {
  *		const mentionFeedPeople = {
  *			marker: '@',
  *			feed: [ '@Alice', '@Bob', ... ],
- *			minimumCharacters: 2,
- *			dropdownLimit: 5
+ *			minimumCharacters: 2
  *		};
  *
  *		// Simple synchronous callback.
