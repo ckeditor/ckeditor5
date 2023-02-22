@@ -78,7 +78,8 @@
     "directory": "packages/ckeditor5-build-balloon"
   },
   "scripts": {
-    "build": "webpack --mode production && tsc -p ./tsconfig.release.json",
+    "build": "webpack --mode production",
+    "postbuild": "tsc -p ./tsconfig.release.json",
     "preversion": "npm run build"
   }
 }
