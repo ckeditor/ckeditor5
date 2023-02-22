@@ -418,7 +418,7 @@ export interface EditorConfig {
 	 * ```
 	 *
 	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
-	 * {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 * {@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
 	 */
 	ui?: UiConfig;
 
