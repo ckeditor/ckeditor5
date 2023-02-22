@@ -4,7 +4,7 @@
 			"name": "CKBox",
 			"className": "CKBox",
 			"description": "Allows inserting images as well as links to files into the rich-text editor content.",
-			"docs": "features/images/image-upload/ckbox.html",
+			"docs": "features/file-management/ckbox.html",
 			"path": "src/ckbox.js",
 			"requires": [
 				"CloudServices",

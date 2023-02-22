@@ -560,7 +560,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckbox.html">CKBox</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html">CKBox</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
@@ -569,7 +569,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/ckfinder.html">CKFinder</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckfinder.html">CKFinder</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
