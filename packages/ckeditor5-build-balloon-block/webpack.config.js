@@ -18,8 +18,8 @@ module.exports = {
 	performance: { hints: false },
 
 	entry: [
-		path.resolve( __dirname, 'src', 'ckeditor.ts' ),
-		path.resolve( __dirname, 'theme', 'theme.css' )
+		path.resolve( __dirname, 'theme', 'theme.css' ),
+		path.resolve( __dirname, 'src', 'ckeditor.ts' )
 	],
 
 	output: {
