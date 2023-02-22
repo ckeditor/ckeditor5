@@ -25,17 +25,14 @@ You may look for more interesting details in the [Tables in CKEditor 5](https://
 
 The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
-TODO
+* Basic table features
+	* Table selection
+	* Typing around tables
+* Table and cell styling tools
+* Table column resize
+* Table caption
+* Nesting tables
 
-* {@link module:table/table~Table}
-* {@link module:table/tabletoolbar~TableToolbar}
-* {@link module:table/tableproperties~TableProperties}
-* {@link module:table/tablecolumnresize~TableColumnResize}
-* {@link module:table/tablecaption~TableCaption}
-* {@link module:table/tablecellproperties~TableCellProperties}
-* {@link module:table/tableselection~TableSelection}
-* {@link module:table/tableclipboard~TableClipboard}
-* {@link module:table/tableutils~TableUtils}
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
 
@@ -57,7 +54,7 @@ The availability of these plugins varies in different {@link installation/gettin
 		</thead>
 		<tbody>
 			<tr>
-				<th >{@link module:image/imagetoolbar~ImageToolbar}</th>
+				<th>{@link module:table/table~Table}</th>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
@@ -66,7 +63,7 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>✅</td>
 			</tr>
 			<tr>
-				<th >{@link module:image/imagecaption~ImageCaption}</th>
+				<th>{@link module:table/tabletoolbar~TableToolbar}</th>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
@@ -75,7 +72,43 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>✅</td>
 			</tr>
 			<tr>
-				<th >{@link module:image/imagestyle~ImageStyle}</th>
+				<th>{@link module:table/tableproperties~TableProperties}</th>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+			</tr>
+			<tr>
+				<th>{@link module:table/tablecellproperties~TableCellProperties}</th>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+			</tr>
+			<tr>
+				<th>{@link module:table/tablecolumnresize~TableColumnResize}</th>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+			</tr>
+			<tr>
+				<th>{@link module:table/tablecaption~TableCaption}</th>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+				<td>❌</td>
+			</tr>
+			<tr>
+				<th>{@link module:table/tableselection~TableSelection}</th>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
@@ -84,7 +117,7 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>✅</td>
 			</tr>
 			<tr>
-				<th >{@link module:image/imagetextalternative~ImageTextAlternative}</th>
+				<th>{@link module:table/tableclipboard~TableClipboard}</th>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
@@ -93,57 +126,12 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>✅</td>
 			</tr>
 			<tr>
-				<th >{@link module:image/imageupload~ImageUpload}</th>
+				<th>{@link module:table/tableutils~TableUtils}</th>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
 				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th >{@link module:image/pictureediting~PictureEditing}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th >{@link module:image/imageresize~ImageResize}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th >{@link module:link/linkimage~LinkImage}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th >{@link module:image/imageinsert~ImageInsert}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th >{@link module:image/autoimage~AutoImage}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
 				<td>✅</td>
 			</tr>
 		</tbody>
@@ -151,23 +139,8 @@ The availability of these plugins varies in different {@link installation/gettin
 </figure>
 
 <info-box>
-	You can add more image features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or {@link features/images-installation manually by customizing your editor build}.
+	You can add more table features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or by customizing your editor build.
 </info-box>
-
-### Basic table features
-
-### Table and cell styling tools
-
-### Table column resize
-
-### Table caption
-
-### Nesting tables
-
-## Table selection
-
-## Typing around tables
-
 
 ## Contribute
 
