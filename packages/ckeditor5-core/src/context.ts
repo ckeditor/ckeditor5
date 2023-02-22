@@ -276,7 +276,7 @@ export default class Context {
 	 *
 	 * This method should only be used by the editor.
 	 *
-	 * @interface
+	 * @internal
 	 * @returns Configuration as a plain object.
 	 */
 	public _getEditorConfig(): Partial<EditorConfig> {

@@ -33,9 +33,6 @@ import type Editor from './editor/editor';
 export default class Command extends ObservableMixin() {
 	/**
 	 * The editor on which this command will be used.
-	 *
-	 * @readonly
-	 * @member {module:core/editor/editor~Editor}
 	 */
 	public readonly editor: Editor;
 

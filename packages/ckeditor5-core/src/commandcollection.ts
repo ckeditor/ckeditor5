@@ -56,7 +56,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 */
 	public execute<TName extends string>(
 		commandName: TName,
-		...args: Parameters<CommandsMap[ TName ][ 'execute' ]>
+		...commandParams: Parameters<CommandsMap[ TName ][ 'execute' ]>
 	): ReturnType<CommandsMap[ TName ][ 'execute' ]> {
 		const command = this.get( commandName );
 
@@ -70,7 +70,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}
 
-		return command.execute( ...args ) as any;
+		return command.execute( ...commandParams ) as any;
 	}
 
 	/**
