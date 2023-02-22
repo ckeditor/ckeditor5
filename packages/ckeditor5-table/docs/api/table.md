@@ -10,7 +10,7 @@ This package implements the table feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/tables#demos demos in the table feature guide}.
+Check out the {@link features/tables#demo demos in the table feature guide}.
 
 ## Documentation
 
