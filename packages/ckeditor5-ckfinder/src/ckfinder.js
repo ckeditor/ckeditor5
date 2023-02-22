@@ -22,7 +22,7 @@ import CKFinderEditing from './ckfinderediting';
  * * {@link module:ckfinder/ckfinderui~CKFinderUI},
  * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}.
  *
- * See the {@glink features/images/image-upload/ckfinder "CKFinder integration" guide} to learn how to configure
+ * See the {@glink features/file-management/ckfinder "CKFinder integration" guide} to learn how to configure
  * and use this feature.
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
