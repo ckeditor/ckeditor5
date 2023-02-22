@@ -66,7 +66,7 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 }
 
 /**
- * The common interface of {@link module:core/context~Context} and {@link core/editor/editor~Editor}.
+ * The common interface of {@link module:core/context~Context} and {@link module:core/editor/editor~Editor}.
  */
 export interface ContextInterface {
 	config: Config<Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>>;

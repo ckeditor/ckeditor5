@@ -45,7 +45,7 @@ import type { EditorConfig } from './editor/editorconfig';
  * If you are using only a single editor on each page, use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
  * In such a case, a context instance will be created by the editor instance in a transparent way.
  *
- * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
+ * See {@link ~Context.create `Context.create()`} for usage examples.
  */
 export default class Context {
 	/**

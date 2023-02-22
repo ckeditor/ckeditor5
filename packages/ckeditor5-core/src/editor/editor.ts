@@ -563,7 +563,7 @@ export default abstract class Editor extends ObservableMixin() {
  * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
  * you cannot even add a listener to the `editor#ready` event.
  *
- * See also the {@link #state `editor.state`} property.
+ * See also the {@link ~Editor#state `editor.state`} property.
  *
  * @eventName ready
  */
@@ -576,7 +576,7 @@ export type EditorReadyEvent = {
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * See also the {@link #state `editor.state`} property.
+ * See also the {@link ~Editor#state `editor.state`} property.
  *
  * @eventName destroy
  */

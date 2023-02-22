@@ -99,7 +99,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * **Note**: This method will throw an error if a plugin is not loaded. Use `{@link #has editor.plugins.has()}`
 	 * to check if a plugin is available.
 	 *
-	 * @param key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @param key The plugin constructor or {@link module:core/plugin~PluginStaticMembers#pluginName name}.
 	 */
 	public get<TConstructor extends PluginClassConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
 	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
@@ -146,7 +146,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * }
 	 * ```
 	 *
-	 * @param key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @param key The plugin constructor or {@link module:core/plugin~PluginStaticMembers#pluginName name}.
 	 */
 	public has( key: PluginConstructor<TContext> | string ): boolean {
 		return this._plugins.has( key );
@@ -156,7 +156,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * Initializes a set of plugins and adds them to the collection.
 	 *
 	 * @param plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
+	 * or {@link module:core/plugin~PluginStaticMembers#pluginName plugin names}.
 	 * @param pluginsToRemove Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
 	 * @param pluginsSubstitutions An array of {@link module:core/plugin~PluginInterface plugin constructors}

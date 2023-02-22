@@ -178,7 +178,7 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * initialize and destroy the plugin.
  *
  * **Note:** When defined as a plain function, the plugin acts as a constructor and will be
- * called in parallel with other plugins' {@link module:core/plugin~PluginInterface#constructor constructors}.
+ * called in parallel with other plugins' {@link module:core/plugin~PluginConstructor constructors}.
  * This means the code of that plugin will be executed **before** {@link module:core/plugin~PluginInterface#init `init()`} and
  * {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
  * you cannot use it to extend other plugins' {@glink framework/guides/architecture/editing-engine#schema schema}
@@ -187,10 +187,10 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
 export interface PluginInterface {
 
 	/**
-	 * The second stage (after plugin {@link #constructor}) of the plugin initialization.
+	 * The second stage (after plugin constructor) of the plugin initialization.
 	 * Unlike the plugin constructor this method can be asynchronous.
 	 *
-	 * A plugin's `init()` method is called after its {@link module:core/plugin~PluginInterface.requires dependencies} are initialized,
+	 * A plugin's `init()` method is called after its {@link module:core/plugin~PluginStaticMembers#requires dependencies} are initialized,
 	 * so in the same order as the constructors of these plugins.
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
@@ -198,7 +198,7 @@ export interface PluginInterface {
 	init?(): Promise<unknown> | null | undefined | void;
 
 	/**
-	 * The third (and last) stage of the plugin initialization. See also {@link #constructor} and {@link #init}.
+	 * The third (and last) stage of the plugin initialization. See also {@link ~PluginConstructor} and {@link #init}.
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
 	 */
@@ -216,13 +216,13 @@ export interface PluginInterface {
  * Creates a new plugin instance. This is the first step of the plugin initialization.
  * See also {@link #init} and {@link #afterInit}.
  *
- * A plugin is always instantiated after its {@link module:core/plugin~PluginInterface.requires dependencies} and the
+ * A plugin is always instantiated after its {@link module:core/plugin~PluginConstructor#requires dependencies} and the
  * {@link #init} and {@link #afterInit} methods are called in the same order.
  *
  * Usually, you will want to put your plugin's initialization code in the {@link #init} method.
  * The constructor can be understood as "before init" and used in special cases, just like
  * {@link #afterInit} serves the special "after init" scenarios (e.g.the code which depends on other
- * plugins, but which does not {@link module:core/plugin~PluginInterface.requires explicitly require} them).
+ * plugins, but which does not {@link module:core/plugin~PluginStaticMembers#requires explicitly require} them).
  */
 export type PluginConstructor<TContext = Editor> =
 	( PluginClassConstructor<TContext> | PluginFunctionConstructor<TContext> ) & PluginStaticMembers<TContext>;
