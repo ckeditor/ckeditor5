@@ -48,16 +48,12 @@ export default class ChangeBuffer {
 
 	/**
 	 * Whether the buffer is locked. A locked buffer cannot be reset unless it gets unlocked.
-	 *
-	 * @readonly
 	 */
 	private _isLocked: boolean;
 
 	/**
 	 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
 	 * the {@link #batch batch} is set to a new one.
-	 *
-	 * @readonly
 	 */
 	private _size: number;
 

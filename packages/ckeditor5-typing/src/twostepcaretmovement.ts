@@ -41,25 +41,25 @@ import type {
  *
  * * When enabled:
  *
- * ```html
+ * ```xml
  * 		foo{}<$text a="true">bar</$text>
  * ```
  *
  * 	<kbd>→</kbd>
  *
- * ```html
+ * ```xml
  * 		foo<$text a="true">{}bar</$text>
  * ```
  *
  * * When disabled:
  *
- * ```html
+ * ```xml
  * 		foo{}<$text a="true">bar</$text>
  * ```
  *
  * 	<kbd>→</kbd>
  *
- * ```html
+ * ```xml
  * 		foo<$text a="true">b{}ar</$text>
  * ```
  *
@@ -68,25 +68,25 @@ import type {
  *
  * * When enabled:
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar{}</$text>baz
  * ```
  *
  * 	<kbd>→</kbd>
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar</$text>{}baz
  * ```
  *
  * * When disabled:
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar{}</$text>baz
  * ```
  *
  * 	<kbd>→</kbd>
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar</$text>b{}az
  * ```
  *
@@ -94,23 +94,25 @@ import type {
  *
  * * When enabled:
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar</$text>{}baz
  * ```
  *
  * 	<kbd>←</kbd>
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar{}</$text>baz
  * ```
  *
  * * When disabled:
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar</$text>{}baz
+ * ```
  *
  * 	<kbd>←</kbd>
  *
+ * ```xml
  * 		<$text a="true">ba{}r</$text>b{}az
  * ```
  *
@@ -118,21 +120,25 @@ import type {
  *
  * * When enabled and many attributes starts or ends at the same position:
  *
- * ```html
+ * ```xml
  * 		<$text a="true" b="true">bar</$text>{}baz
+ * ```
  *
  * 	<kbd>←</kbd>
  *
+ * ```xml
  * 		<$text a="true" b="true">bar{}</$text>baz
  * ```
  *
  * * When enabled and one procedes another:
  *
- * ```html
+ * ```xml
  * 		<$text a="true">bar</$text><$text b="true">{}bar</$text>
+ * ```
  *
  * 	<kbd>←</kbd>
  *
+ * ```xml
  * 		<$text a="true">bar{}</$text><$text b="true">bar</$text>
  * ```
  *

@@ -44,8 +44,6 @@ export default class TextWatcher extends ObservableMixin() {
 
 	/**
 	 * Whether there is a match currently.
-	 *
-	 * @readonly
 	 */
 	private _hasMatch: boolean;
 

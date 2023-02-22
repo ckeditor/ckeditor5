@@ -26,13 +26,13 @@ import type { Model, Range } from '@ckeditor/ckeditor5-engine';
  *
  * For model below, the returned `text` will be "Foo bar baz" and `range` will be set on whole `<paragraph>` content:
  *
- * ```html
+ * ```xml
  * <paragraph>Foo bar baz<paragraph>
  * ```
  *
  * However, in below case, `text` will be set to "baz" and `range` will be set only on "baz".
  *
- * ```html
+ * ```xml
  * <paragraph>Foo<softBreak></softBreak>bar<softBreak></softBreak>baz<paragraph>
  * ```
  */
