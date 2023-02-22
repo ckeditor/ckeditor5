@@ -74,6 +74,9 @@ export default abstract class Editor extends ObservableMixin() {
 	public static defaultConfig?: EditorConfig;
 	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
 
+	/**
+	 * The editor UI instance.
+	 */
 	public abstract get ui(): EditorUI;
 
 	protected readonly _context: Context;

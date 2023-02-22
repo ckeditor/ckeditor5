@@ -173,6 +173,6 @@ export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[PendingActions.pluginName]: PendingActions;
+		[ PendingActions.pluginName ]: PendingActions;
 	}
 }
