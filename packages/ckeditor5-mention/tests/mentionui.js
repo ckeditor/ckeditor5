@@ -1128,8 +1128,7 @@ describe( 'MentionUI', () => {
 							{
 								feed: issuesNumbers,
 								marker: '#',
-								feedText: '',
-								dropdownLimit: undefined
+								feedText: ''
 							}
 						);
 						expect( panelView.isVisible ).to.be.true;
@@ -1342,8 +1341,7 @@ describe( 'MentionUI', () => {
 							{
 								feed: issuesNumbers,
 								marker: '#',
-								feedText: '1',
-								dropdownLimit: undefined
+								feedText: '1'
 							}
 						);
 						expect( feedCallbackCallTimes ).to.equal( 2 );
