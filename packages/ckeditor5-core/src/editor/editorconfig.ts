@@ -439,7 +439,6 @@ export interface EditorConfig {
  * The `config.initialData` option cannot be used together with initial data passed as the first parameter of
  * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
  *
- * K TODO
  * @error editor-create-initial-data
  */
 
