@@ -36,7 +36,6 @@ import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
 import '../../uiconfig';
-import '../../index';
 
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;

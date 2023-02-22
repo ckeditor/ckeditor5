@@ -40,7 +40,6 @@ import type {
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import '../../uiconfig';
-import '../../index';
 
 const toPx = toUnit( 'px' );
 

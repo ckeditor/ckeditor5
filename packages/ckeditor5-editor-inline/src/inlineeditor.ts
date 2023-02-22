@@ -50,7 +50,7 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 	/**
 	 * @inheritDoc
 	 */
-	public override readonly ui: InlineEditorUI;
+	public readonly ui: InlineEditorUI;
 
 	/**
 	 * Creates an instance of the inline editor.
