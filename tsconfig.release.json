@@ -4,7 +4,8 @@
     "incremental": true,
     "sourceMap": false,
     "skipLibCheck": true,
-    "declaration": true
+    "declaration": true,
+    "emitDeclarationOnly": true
   },
   "references": [
     { "path": "packages/ckeditor5-utils/tsconfig.release.json" },
