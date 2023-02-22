@@ -18,10 +18,6 @@ import type Editor from '../editor';
 
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
- *
- * // K TODO what about describing mixins in API docs?
- * @mixin ElementApiMixin
- * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
 export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
 	abstract class Mixin extends base implements ElementApi {

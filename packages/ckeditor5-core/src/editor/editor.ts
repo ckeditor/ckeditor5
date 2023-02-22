@@ -168,7 +168,83 @@ export default abstract class Editor extends ObservableMixin() {
 	 */
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 
+	/**
+	 * The default configuration which is built into the editor class.
+	 *
+	 * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
+	 *
+	 * ```ts
+	 * ClassicEditor.defaultConfig = {
+	 * 	foo: 1,
+	 * 	bar: 2
+	 * };
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement )
+	 * 	.then( editor => {
+	 * 		editor.config.get( 'foo' ); // -> 1
+	 * 		editor.config.get( 'bar' ); // -> 2
+	 * 	} );
+	 *
+	 * // The default options can be overridden by the configuration passed to create().
+	 * ClassicEditor
+	 * 	.create( sourceElement, { bar: 3 } )
+	 * 	.then( editor => {
+	 * 		editor.config.get( 'foo' ); // -> 1
+	 * 		editor.config.get( 'bar' ); // -> 3
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.builtinPlugins}.
+	 */
 	public static defaultConfig?: EditorConfig;
+
+	/**
+	 * An array of plugins built into this editor class.
+	 *
+	 * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
+	 * during the editor initialization.
+	 *
+	 * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and
+	 * unless `config.plugins` is passed.
+	 *
+	 * ```ts
+	 * // Build some plugins into the editor class first.
+	 * ClassicEditor.builtinPlugins = [ FooPlugin, BarPlugin ];
+	 *
+	 * // Normally, you need to define config.plugins, but since ClassicEditor.builtinPlugins was
+	 * // defined, now you can call create() without any configuration.
+	 * ClassicEditor
+	 * 	.create( sourceElement )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+	 * 		editor.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
+	 * 	} );
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement, {
+	 * 		// Do not initialize these plugins (note: it is defined by a string):
+	 * 		removePlugins: [ 'Foo' ]
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> Undefined.
+	 * 		editor.config.get( BarPlugin ); // -> An instance of the Bar plugin.
+	 * 	} );
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement, {
+	 * 		// Load only this plugin. It can also be defined by a string if
+	 * 		// this plugin was built into the editor class.
+	 * 		plugins: [ FooPlugin ]
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+	 * 		editor.config.get( BarPlugin ); // -> Undefined.
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.defaultConfig}.
+	 */
 	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
 
 	/**
@@ -190,7 +266,12 @@ export default abstract class Editor extends ObservableMixin() {
 	/**
 	 * Creates a new instance of the editor class.
 	 *
-	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
+	 * Usually, not to be used directly. See the `create()` methods of the existing editor types to learn how to use them:
+	 *
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
 	 *
 	 * @param config The editor configuration.
 	 */
@@ -470,23 +551,6 @@ export default abstract class Editor extends ObservableMixin() {
 	public focus(): void {
 		this.editing.view.focus();
 	}
-
-	/**
-	 * Creates and initializes a new editor instance.
-	 *
-	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
-	 *
-	 * See the `create()` methods of the existing editor types to learn how to use them:
-	 *
-	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
-	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
-	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
-	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
-	 *
-	 * K TODO
-	 * @abstract
-	 * @method module:core/editor/editor~Editor.create
-	 */
 }
 
 /**
@@ -535,91 +599,5 @@ export type EditorDestroyEvent = {
  * </div>
  * ```
  *
- * K TODO
  * @error editor-wrong-element
- */
-
-/**
- * An array of plugins built into this editor class.
- *
- * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
- * during the editor initialization.
- *
- * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and
- * unless `config.plugins` is passed.
- *
- * ```ts
- * // Build some plugins into the editor class first.
- * ClassicEditor.builtinPlugins = [ FooPlugin, BarPlugin ];
- *
- * // Normally, you need to define config.plugins, but since ClassicEditor.builtinPlugins was
- * // defined, now you can call create() without any configuration.
- * ClassicEditor
- * 	.create( sourceElement )
- * 	.then( editor => {
- * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
- * 		editor.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
- * 	} );
- *
- * ClassicEditor
- * 	.create( sourceElement, {
- * 		// Do not initialize these plugins (note: it is defined by a string):
- * 		removePlugins: [ 'Foo' ]
- * 	} )
- * 	.then( editor => {
- * 		editor.plugins.get( FooPlugin ); // -> Undefined.
- * 		editor.config.get( BarPlugin ); // -> An instance of the Bar plugin.
- * 	} );
- *
- * ClassicEditor
- * 	.create( sourceElement, {
- * 		// Load only this plugin. It can also be defined by a string if
- * 		// this plugin was built into the editor class.
- * 		plugins: [ FooPlugin ]
- * 	} )
- * 	.then( editor => {
- * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
- * 		editor.config.get( BarPlugin ); // -> Undefined.
- * 	} );
- * ```
- *
- * See also {@link module:core/editor/editor~Editor.defaultConfig}.
- *
- * K TODO
- * @static
- * @member {Array.<Function>} module:core/editor/editor~Editor.builtinPlugins
- */
-
-/**
- * The default configuration which is built into the editor class.
- *
- * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
- *
- * ```ts
- * ClassicEditor.defaultConfig = {
- * 	foo: 1,
- * 	bar: 2
- * };
- *
- * ClassicEditor
- * 	.create( sourceElement )
- * 	.then( editor => {
- * 		editor.config.get( 'foo' ); // -> 1
- * 		editor.config.get( 'bar' ); // -> 2
- * 	} );
- *
- * // The default options can be overridden by the configuration passed to create().
- * ClassicEditor
- * 	.create( sourceElement, { bar: 3 } )
- * 	.then( editor => {
- * 		editor.config.get( 'foo' ); // -> 1
- * 		editor.config.get( 'bar' ); // -> 3
- * 	} );
- * ```
- *
- * See also {@link module:core/editor/editor~Editor.builtinPlugins}.
- *
- * K TODO
- * @static
- * @member {Object} module:core/editor/editor~Editor.defaultConfig
  */
