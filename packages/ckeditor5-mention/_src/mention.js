@@ -179,7 +179,8 @@ export default class Mention extends Plugin {
  *		const mentionFeedPeople = {
  *			marker: '@',
  *			feed: [ '@Alice', '@Bob', ... ],
- *			minimumCharacters: 2
+ *			minimumCharacters: 2,
+ *			dropdownLimit: 5
  *		};
  *
  *		// Simple synchronous callback.
@@ -223,6 +224,7 @@ export default class Mention extends Plugin {
  * @property {Number} [minimumCharacters=0] Specifies after how many characters the autocomplete panel should be shown.
  * @property {Function} [itemRenderer] A function that renders a {@link module:mention/mention~MentionFeedItem}
  * to the autocomplete panel.
+ * @property {Number} [dropdownLimit=10] Specify how many available elements per feeds will the users be able to see in the dropdown list.
  */
 
 /**

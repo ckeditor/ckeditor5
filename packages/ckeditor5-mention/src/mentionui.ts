@@ -85,14 +85,14 @@ export default class MentionUI extends Plugin {
 	 */
 	private _balloon: ContextualBalloon | undefined;
 
-	private _items = new Collection<{ item: MentionFeedObjectItem; marker: string }>();
+	private _items = new Collection<{ item: MentionFeedObjectItem; marker: string; dropdownLimit?: number }>();
 
 	private _lastRequested?: string;
 
 	/**
 	 * Debounced feed requester. It uses `lodash#debounce` method to delay function call.
 	 */
-	private _requestFeedDebounced: ( marker: string, feedText: string ) => void;
+	private _requestFeedDebounced: ( marker: string, feedText: string, dropdownLimit?: number ) => void;
 
 	/**
 	 * @inheritDoc
@@ -171,6 +171,8 @@ export default class MentionUI extends Plugin {
 
 			const marker = mentionDescription.marker;
 
+			const dropdownLimit = mentionDescription.dropdownLimit;
+
 			if ( !isValidMentionMarker( marker ) ) {
 				/**
 				 * The marker must be a single character.
@@ -189,7 +191,7 @@ export default class MentionUI extends Plugin {
 
 			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const itemRenderer = mentionDescription.itemRenderer;
-			const definition = { marker, feedCallback, itemRenderer };
+			const definition = { marker, feedCallback, itemRenderer, dropdownLimit };
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
@@ -239,7 +241,7 @@ export default class MentionUI extends Plugin {
 			const { item, marker } = data;
 
 			// Set to 10 by default for backwards compatibility. See: #10479
-			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+			const dropdownLimit = data.dropdownLimit || this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {
 				return null;
@@ -309,7 +311,7 @@ export default class MentionUI extends Plugin {
 	 * @fires discarded
 	 * @fires error
 	 */
-	private _requestFeed( marker: string, feedText: string ): void {
+	private _requestFeed( marker: string, feedText: string, dropdownLimit?: number ): void {
 		// @if CK_DEBUG_MENTION // console.log( '%c[Feed]%c Requesting for', 'color: blue', 'color: black', `"${ feedText }"` );
 
 		// Store the last requested feed - it is used to discard any out-of order requests.
@@ -322,7 +324,7 @@ export default class MentionUI extends Plugin {
 
 		// For synchronous feeds (e.g. callbacks, arrays) fire the response event immediately.
 		if ( !isAsynchronous ) {
-			this.fire<RequestFeedResponseEvent>( 'requestFeed:response', { feed: feedResponse, marker, feedText } );
+			this.fire<RequestFeedResponseEvent>( 'requestFeed:response', { feed: feedResponse, marker, feedText, dropdownLimit } );
 
 			return;
 		}
@@ -333,10 +335,10 @@ export default class MentionUI extends Plugin {
 				// Check the feed text of this response with the last requested one so either:
 				if ( this._lastRequested == feedText ) {
 					// It is the same and fire the response event.
-					this.fire<RequestFeedResponseEvent>( 'requestFeed:response', { feed: response, marker, feedText } );
+					this.fire<RequestFeedResponseEvent>( 'requestFeed:response', { feed: response, marker, feedText, dropdownLimit } );
 				} else {
 					// It is different - most probably out-of-order one, so fire the discarded event.
-					this.fire<RequestFeedDiscardedEvent>( 'requestFeed:discarded', { feed: response, marker, feedText } );
+					this.fire<RequestFeedDiscardedEvent>( 'requestFeed:discarded', { feed: response, marker, feedText, dropdownLimit } );
 				}
 			} )
 			.catch( error => {
@@ -409,7 +411,7 @@ export default class MentionUI extends Plugin {
 				} );
 			}
 
-			this._requestFeedDebounced( markerDefinition!.marker, feedText );
+			this._requestFeedDebounced( markerDefinition!.marker, feedText, markerDefinition.dropdownLimit );
 
 			// @if CK_DEBUG_MENTION // console.groupEnd();
 		} );
@@ -428,7 +430,7 @@ export default class MentionUI extends Plugin {
 	 * Handles the feed response event data.
 	 */
 	private _handleFeedResponse( data: RequestFeedResponseEvent['args'][0] ) {
-		const { feed, marker } = data;
+		const { feed, marker, dropdownLimit } = data;
 
 		// eslint-disable-next-line max-len
 		// @if CK_DEBUG_MENTION // console.log( `%c[Feed]%c Response for "${ data.feedText }" (${ feed.length })`, 'color: blue', 'color: black', feed );
@@ -444,7 +446,7 @@ export default class MentionUI extends Plugin {
 		for ( const feedItem of feed ) {
 			const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
 
-			this._items.add( { item, marker } );
+			this._items.add( { item, marker, ...dropdownLimit && { dropdownLimit } } );
 		}
 
 		const mentionMarker = this.editor.model.markers.get( 'mention' );
@@ -693,7 +695,8 @@ function getLastValidMarkerInText(
 				marker: feed.marker,
 				position: currentMarkerLastIndex,
 				minimumCharacters: feed.minimumCharacters,
-				pattern: feed.pattern
+				pattern: feed.pattern,
+				dropdownLimit: feed.dropdownLimit
 			};
 		}
 	}
@@ -840,6 +843,11 @@ type RequestFeedResponse = {
 	 * The text for which feed items were requested.
 	 */
 	feedText: string;
+
+	/**
+	 * The optional limit of feeds in the dropdown list.
+	 */
+	dropdownLimit?: number;
 };
 
 type RequestFeedError = {
@@ -879,6 +887,7 @@ type Definition = {
 	marker: string;
 	feedCallback: FeedCallback;
 	itemRenderer?: ItemRenderer;
+	dropdownLimit?: number;
 };
 
 type MarkerDefinition = {
@@ -886,6 +895,7 @@ type MarkerDefinition = {
 	minimumCharacters?: number;
 	pattern: RegExp;
 	position: number;
+	dropdownLimit?: number;
 };
 
 declare module '@ckeditor/ckeditor5-core' {

@@ -1128,7 +1128,8 @@ describe( 'MentionUI', () => {
 							{
 								feed: issuesNumbers,
 								marker: '#',
-								feedText: ''
+								feedText: '',
+								dropdownLimit: undefined
 							}
 						);
 						expect( panelView.isVisible ).to.be.true;
@@ -1341,7 +1342,8 @@ describe( 'MentionUI', () => {
 							{
 								feed: issuesNumbers,
 								marker: '#',
-								feedText: '1'
+								feedText: '1',
+								dropdownLimit: undefined
 							}
 						);
 						expect( feedCallbackCallTimes ).to.equal( 2 );
@@ -2391,6 +2393,12 @@ describe( 'MentionUI', () => {
 				feed: longFeed
 			};
 
+			const limitedArrayFeed = {
+				marker: '@',
+				feed: longFeed,
+				dropdownLimit: 5
+			};
+
 			const customFunctionFeed = {
 				marker: '@',
 				feed: () => {
@@ -2451,6 +2459,24 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( mentionsView.items ).to.have.length( simpleArrayFeed.feed.length );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the feeds dropdownLimit value', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: 25,
+					feeds: [ limitedArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 		} );
