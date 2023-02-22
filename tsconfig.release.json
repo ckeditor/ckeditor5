@@ -4,5 +4,8 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "declaration": true
-  }
+  },
+  "include": [
+    "./typings/"
+  ]
 }
