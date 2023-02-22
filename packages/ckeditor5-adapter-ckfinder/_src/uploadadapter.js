@@ -17,7 +17,7 @@ import { getCsrfToken } from './utils';
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
  *
- * See the {@glink features/images/image-upload/ckfinder "CKFinder file manager integration" guide} to learn how to configure
+ * See the {@glink features/file-management/ckfinder "CKFinder file manager integration" guide} to learn how to configure
  * and use this feature as well as find out more about the full integration with the file manager
  * provided by the {@link module:ckfinder/ckfinder~CKFinder} plugin.
  *

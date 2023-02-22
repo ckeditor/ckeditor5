@@ -30,53 +30,149 @@ import '../../theme/components/labeledfield/labeledfieldview.css';
  * The constructor of this class requires a callback that returns a view to be labeled. The callback
  * is called with unique ids that allow binding of DOM properties:
  *
- *		const labeledInputView = new LabeledFieldView( locale, ( labeledFieldView, viewUid, statusUid ) => {
- *			const inputView = new InputTextView( labeledFieldView.locale );
+ * ```ts
+ * const labeledInputView = new LabeledFieldView( locale, ( labeledFieldView, viewUid, statusUid ) => {
+ * 	const inputView = new InputTextView( labeledFieldView.locale );
  *
- *			inputView.set( {
- *				id: viewUid,
- *				ariaDescribedById: statusUid
- *			} );
+ * 	inputView.set( {
+ * 		id: viewUid,
+ * 		ariaDescribedById: statusUid
+ * 	} );
  *
- *			inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
- *			inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
+ * 	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+ * 	inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
  *
- *			return inputView;
- *		} );
+ * 	return inputView;
+ * } );
  *
- *		labeledInputView.label = 'User name';
- *		labeledInputView.infoText = 'Full name like for instance, John Doe.';
- *		labeledInputView.render();
+ * labeledInputView.label = 'User name';
+ * labeledInputView.infoText = 'Full name like for instance, John Doe.';
+ * labeledInputView.render();
  *
- *		document.body.append( labeledInputView.element );
+ * document.body.append( labeledInputView.element );
+ * ```
  *
  * See {@link module:ui/labeledfield/utils} to discover ready–to–use labeled input helpers for common
  * UI components.
- *
- * @extends module:ui/view~View
  */
 export default class LabeledFieldView<TFieldView extends FocusableView = FocusableView> extends View {
+	/**
+	 * The field view that gets labeled.
+	 */
 	public readonly fieldView: TFieldView;
+
+	/**
+	 * The label view instance that describes the entire view.
+	 */
 	public readonly labelView: LabelView;
+
+	/**
+	 * The status view for the {@link #fieldView}. It displays {@link #errorText} and
+	 * {@link #infoText}.
+	 */
 	public readonly statusView: View;
+
+	/**
+	 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (views) next to
+	 * the {@link #fieldView} for easy styling (e.g. positioning).
+	 *
+	 * By default, the collection contains {@link #fieldView} and {@link #labelView}.
+	 */
 	public readonly fieldWrapperChildren: ViewCollection;
 
+	/**
+	 * The text of the label.
+	 *
+	 * @observable
+	 */
 	declare public label: string | undefined;
+
+	/**
+	 * Controls whether the component is in read-only mode.
+	 *
+	 * @observable
+	 */
 	declare public isEnabled: boolean;
+
+	/**
+	 * An observable flag set to `true` when {@link #fieldView} is empty (`false` otherwise).
+	 *
+	 * @readonly
+	 * @observable
+	 * @default true
+	 */
 	declare public isEmpty: boolean;
+
+	/**
+	 * An observable flag set to `true` when {@link #fieldView} is currently focused by
+	 * the user (`false` otherwise).
+	 *
+	 * @readonly
+	 * @observable
+	 * @default false
+	 */
 	declare public isFocused: boolean;
+
+	/**
+	 * The validation error text. When set, it will be displayed
+	 * next to the {@link #fieldView} as a typical validation error message.
+	 * Set it to `null` to hide the message.
+	 *
+	 * **Note:** Setting this property to anything but `null` will automatically
+	 * make the `hasError` of the {@link #fieldView} `true`.
+	 *
+	 * @observable
+	 */
 	declare public errorText: string | null;
+
+	/**
+	 * The additional information text displayed next to the {@link #fieldView} which can
+	 * be used to inform the user about its purpose, provide help or hints.
+	 *
+	 * Set it to `null` to hide the message.
+	 *
+	 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
+	 * latter always takes precedence: if the {@link #errorText} is set, it replaces
+	 * {@link #infoText}.
+	 *
+	 * @observable
+	 * @default null
+	 */
 	declare public infoText: string | null;
+
+	/**
+	 * (Optional) The additional CSS class set on the dropdown {@link #element}.
+	 *
+	 * @observable
+	 */
 	declare public class: string | undefined;
+
+	/**
+	 * The content of the `placeholder` attribute of the {@link #fieldView}.
+	 *
+	 * @observable
+	 */
 	declare public placeholder: string | undefined;
+
+	/**
+	 * The combined status text made of {@link #errorText} and {@link #infoText}.
+	 * Note that when present, {@link #errorText} always takes precedence in the
+	 * status.
+	 *
+	 * @see #errorText
+	 * @see #infoText
+	 * @see #statusView
+	 * @private
+	 * @observable
+	 */
 	declare public _statusText: string | null;
 
 	/**
 	 * Creates an instance of the labeled field view class using a provided creator function
 	 * that provides the view to be labeled.
 	 *
-	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Function} viewCreator A function that returns a {@link module:ui/view~View}
+	 * @param locale The locale instance.
+	 * @param viewCreator A function that returns a {@link module:ui/view~View}
 	 * that will be labeled. The following arguments are passed to the creator function:
 	 *
 	 * * an instance of the `LabeledFieldView` to allow binding observable properties,
@@ -92,132 +188,21 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 		const viewUid = `ck-labeled-field-view-${ uid() }`;
 		const statusUid = `ck-labeled-field-view-status-${ uid() }`;
 
-		/**
-		 * The field view that gets labeled.
-		 *
-		 * @member {module:ui/view~View} #fieldView
-		 */
 		this.fieldView = viewCreator( this, viewUid, statusUid );
 
-		/**
-		 * The text of the label.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
 		this.set( 'label', undefined );
-
-		/**
-		 * Controls whether the component is in read-only mode.
-		 *
-		 * @observable
-		 * @member {Boolean} #isEnabled
-		 */
 		this.set( 'isEnabled', true );
-
-		/**
-		 * An observable flag set to `true` when {@link #fieldView} is empty (`false` otherwise).
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isEmpty
-		 * @default true
-		 */
 		this.set( 'isEmpty', true );
-
-		/**
-		 * An observable flag set to `true` when {@link #fieldView} is currently focused by
-		 * the user (`false` otherwise).
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isFocused
-		 * @default false
-		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * The validation error text. When set, it will be displayed
-		 * next to the {@link #fieldView} as a typical validation error message.
-		 * Set it to `null` to hide the message.
-		 *
-		 * **Note:** Setting this property to anything but `null` will automatically
-		 * make the `hasError` of the {@link #fieldView} `true`.
-		 *
-		 * @observable
-		 * @member {String|null} #errorText
-		 */
 		this.set( 'errorText', null );
-
-		/**
-		 * The additional information text displayed next to the {@link #fieldView} which can
-		 * be used to inform the user about its purpose, provide help or hints.
-		 *
-		 * Set it to `null` to hide the message.
-		 *
-		 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
-		 * latter always takes precedence: if the {@link #errorText} is set, it replaces
-		 * {@link #infoText}.
-		 *
-		 * @observable
-		 * @member {String|null} #infoText
-		 * @default null
-		 */
 		this.set( 'infoText', null );
-
-		/**
-		 * (Optional) The additional CSS class set on the dropdown {@link #element}.
-		 *
-		 * @observable
-		 * @member {String} #class
-		 */
 		this.set( 'class', undefined );
-
-		/**
-		 * The content of the `placeholder` attribute of the {@link #fieldView}.
-		 *
-		 * @observable
-		 * @member {String} #placeholder
-		 */
 		this.set( 'placeholder', undefined );
 
-		/**
-		 * The label view instance that describes the entire view.
-		 *
-		 * @member {module:ui/label/labelview~LabelView} #labelView
-		 */
 		this.labelView = this._createLabelView( viewUid );
-
-		/**
-		 * The status view for the {@link #fieldView}. It displays {@link #errorText} and
-		 * {@link #infoText}.
-		 *
-		 * @member {module:ui/view~View} #statusView
-		 */
 		this.statusView = this._createStatusView( statusUid );
-
-		/**
-		 * A collection of children of the internal wrapper element. Allows inserting additional DOM elements (views) next to
-		 * the {@link #fieldView} for easy styling (e.g. positioning).
-		 *
-		 * By default, the collection contains {@link #fieldView} and {@link #labelView}.
-		 *
-		 * @member {module:ui/viewcollection~ViewCollection} #fieldWrapperChildren
-		 */
 		this.fieldWrapperChildren = this.createCollection( [ this.fieldView, this.labelView ] );
 
-		/**
-		 * The combined status text made of {@link #errorText} and {@link #infoText}.
-		 * Note that when present, {@link #errorText} always takes precedence in the
-		 * status.
-		 *
-		 * @see #errorText
-		 * @see #infoText
-		 * @see #statusView
-		 * @private
-		 * @observable
-		 * @member {String|null} #_statusText
-		 */
 		this.bind( '_statusText' ).to(
 			this, 'errorText',
 			this, 'infoText',
@@ -259,9 +244,7 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	/**
 	 * Creates label view class instance and bind with view.
 	 *
-	 * @private
-	 * @param {String} id Unique id to set as labelView#for attribute.
-	 * @returns {module:ui/label/labelview~LabelView}
+	 * @param id Unique id to set as labelView#for attribute.
 	 */
 	private _createLabelView( id: string ): LabelView {
 		const labelView = new LabelView( this.locale );
@@ -276,10 +259,8 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	 * Creates the status view instance. It displays {@link #errorText} and {@link #infoText}
 	 * next to the {@link #fieldView}. See {@link #_statusText}.
 	 *
-	 * @private
-	 * @param {String} statusUid Unique id of the status, shared with the {@link #fieldView view's}
+	 * @param statusUid Unique id of the status, shared with the {@link #fieldView view's}
 	 * `aria-describedby` attribute.
-	 * @returns {module:ui/view~View}
 	 */
 	private _createStatusView( statusUid: string ): View {
 		const statusView = new View( this.locale );
