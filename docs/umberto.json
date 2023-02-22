@@ -121,6 +121,7 @@
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/collaboration/comments/comments-api.html": "api/comments.html",
 		"features/ckbox.html": "features/images/image-upload/ckbox.html",
+		"features/table.html": "features/tables/tables.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
@@ -405,6 +406,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Tables",
+					"id": "tables",
+					"slug": "tables"
 				},
 				{
 					"name": "Toolbar",

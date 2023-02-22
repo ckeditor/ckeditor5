@@ -1,8 +1,10 @@
 ---
-title: Tables
-category: features
-modified_at: 2022-05-19
+menu-title: Overview
+category: tables
+modified_at: 2023-02-22
 ---
+
+# Tables in CKEditor 5 (overview)
 
 {@snippet features/build-table-source}
 
@@ -22,7 +24,7 @@ The editor below shows the basic set of table features focusing on the **structu
 
 Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
 
-{@snippet features/table}
+{@snippet features/tables}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
@@ -80,7 +82,7 @@ You can test this feature in the demo below by adding a table in the *"abandoned
 {@snippet features/table-nesting}
 
 <info-box>
-    If you would like to block the possibility to nest tables in your editor, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section to learn how to disable this functionality.
+    If you would like to block the possibility to nest tables in your editor, see the {@link features/tables#disallow-nesting-tables Disallow nesting tables} section to learn how to disable this functionality.
 </info-box>
 
 ## Table selection

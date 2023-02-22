@@ -61,7 +61,7 @@ Rich text would not be rich without images. You can upload them, caption them, s
 
 An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 
-Provide clear and accessible data using {@link features/table tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
+Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
 
 Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 
