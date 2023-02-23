@@ -158,7 +158,7 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * ```
  *
  * In most cases however, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
- * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
+ * {@link module:utils/observablemixin~Observable} and is, therefore, more convenient:
  *
  * ```ts
  * class MyPlugin extends Plugin {
@@ -172,6 +172,8 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * 	}
  * }
  * ```
+ *
+ * The plugin class can have `pluginName` and `requires` static members. See {@link ~PluginStaticMembers} for more details.
  *
  * The plugin can also implement methods (e.g. {@link module:core/plugin~PluginInterface#init `init()`} or
  * {@link module:core/plugin~PluginInterface#destroy `destroy()`}) which, when present, will be used to properly
@@ -215,6 +217,8 @@ export interface PluginInterface {
 /**
  * Creates a new plugin instance. This is the first step of the plugin initialization.
  * See also {@link #init} and {@link #afterInit}.
+ *
+ * The plugin static properties should conform to {@link ~PluginStaticMembers `PluginStaticMembers` interface}.
  *
  * A plugin is always instantiated after its {@link module:core/plugin~PluginConstructor#requires dependencies} and the
  * {@link #init} and {@link #afterInit} methods are called in the same order.
