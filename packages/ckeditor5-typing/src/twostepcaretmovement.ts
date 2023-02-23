@@ -42,25 +42,25 @@ import type {
  * * When enabled:
  *
  * ```xml
- * 		foo{}<$text a="true">bar</$text>
+ * foo{}<$text a="true">bar</$text>
  * ```
  *
  * 	<kbd>→</kbd>
  *
  * ```xml
- * 		foo<$text a="true">{}bar</$text>
+ * foo<$text a="true">{}bar</$text>
  * ```
  *
  * * When disabled:
  *
  * ```xml
- * 		foo{}<$text a="true">bar</$text>
+ * foo{}<$text a="true">bar</$text>
  * ```
  *
  * 	<kbd>→</kbd>
  *
  * ```xml
- * 		foo<$text a="true">b{}ar</$text>
+ * foo<$text a="true">b{}ar</$text>
  * ```
  *
  *
@@ -69,25 +69,25 @@ import type {
  * * When enabled:
  *
  * ```xml
- * 		<$text a="true">bar{}</$text>baz
+ * <$text a="true">bar{}</$text>baz
  * ```
  *
  * 	<kbd>→</kbd>
  *
  * ```xml
- * 		<$text a="true">bar</$text>{}baz
+ * <$text a="true">bar</$text>{}baz
  * ```
  *
  * * When disabled:
  *
  * ```xml
- * 		<$text a="true">bar{}</$text>baz
+ * <$text a="true">bar{}</$text>baz
  * ```
  *
  * 	<kbd>→</kbd>
  *
  * ```xml
- * 		<$text a="true">bar</$text>b{}az
+ * <$text a="true">bar</$text>b{}az
  * ```
  *
  * # Backward movement
@@ -95,25 +95,25 @@ import type {
  * * When enabled:
  *
  * ```xml
- * 		<$text a="true">bar</$text>{}baz
+ * <$text a="true">bar</$text>{}baz
  * ```
  *
  * 	<kbd>←</kbd>
  *
  * ```xml
- * 		<$text a="true">bar{}</$text>baz
+ * <$text a="true">bar{}</$text>baz
  * ```
  *
  * * When disabled:
  *
  * ```xml
- * 		<$text a="true">bar</$text>{}baz
+ * <$text a="true">bar</$text>{}baz
  * ```
  *
  * 	<kbd>←</kbd>
  *
  * ```xml
- * 		<$text a="true">ba{}r</$text>b{}az
+ * <$text a="true">ba{}r</$text>b{}az
  * ```
  *
  * # Multiple attributes
@@ -121,25 +121,25 @@ import type {
  * * When enabled and many attributes starts or ends at the same position:
  *
  * ```xml
- * 		<$text a="true" b="true">bar</$text>{}baz
+ * <$text a="true" b="true">bar</$text>{}baz
  * ```
  *
  * 	<kbd>←</kbd>
  *
  * ```xml
- * 		<$text a="true" b="true">bar{}</$text>baz
+ * <$text a="true" b="true">bar{}</$text>baz
  * ```
  *
  * * When enabled and one procedes another:
  *
  * ```xml
- * 		<$text a="true">bar</$text><$text b="true">{}bar</$text>
+ * <$text a="true">bar</$text><$text b="true">{}bar</$text>
  * ```
  *
  * 	<kbd>←</kbd>
  *
  * ```xml
- * 		<$text a="true">bar{}</$text><$text b="true">bar</$text>
+ * <$text a="true">bar{}</$text><$text b="true">bar</$text>
  * ```
  *
  */

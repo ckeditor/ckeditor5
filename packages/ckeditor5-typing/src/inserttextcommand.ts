@@ -25,7 +25,6 @@ export default class InsertTextCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param editor
 	 * @param undoStepSize The maximum number of atomic changes
 	 * which can be contained in one batch in the command buffer.
 	 */
