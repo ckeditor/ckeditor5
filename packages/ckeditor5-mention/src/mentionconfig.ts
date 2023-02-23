@@ -194,6 +194,12 @@ export interface MentionFeed {
 	 * to the autocomplete panel.
 	 */
 	itemRenderer?: ItemRenderer;
+
+	/**
+	 * Specify how many available elements per feeds will the users be able to see in the dropdown list.
+	 * If it not set, limit is inherited from {@link module:mention/mentionconfig~MentionConfig#dropdownLimit MentionConfig}.
+	 */
+	dropdownLimit?: number;
 }
 
 /**
