@@ -34,27 +34,19 @@ import type PluginCollection from './plugincollection';
  * * A context plugin can require another context plugin.
  * * An {@link module:core/plugin~Plugin editor plugin} can require a context plugin.
  * * A context plugin MUST NOT require an {@link module:core/plugin~Plugin editor plugin}.
- *
- * @implements module:core/plugin~PluginInterface
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ContextPlugin extends ObservableMixin() implements PluginInterface {
+	/**
+	 * The context or editor instance.
+	 */
 	public readonly context: ContextInterface;
 
 	/**
 	 * Creates a new plugin instance.
-	 *
-	 * @param {module:core/context~Context|module:core/editor/editor~Editor} context
 	 */
 	constructor( context: Context | Editor ) {
 		super();
 
-		/**
-		 * The context instance.
-		 *
-		 * @readonly
-		 * @type {module:core/context~Context|module:core/editor/editor~Editor}
-		 */
 		this.context = context as ContextInterface;
 	}
 
@@ -73,6 +65,9 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 	}
 }
 
+/**
+ * The common interface of {@link module:core/context~Context} and {@link module:core/editor/editor~Editor}.
+ */
 export interface ContextInterface {
 	config: Config<Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>>;
 	plugins: PluginCollection<Context | Editor>;

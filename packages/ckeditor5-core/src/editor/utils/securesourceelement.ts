@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module core/editor/utils/securesourceelement
+ */
+
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type { default as Editor, EditorDestroyEvent } from '../editor';
 import type { ElementApi } from './elementapimixin';
-
-/**
- * @module core/editor/utils/securesourceelement
- */
 
 /**
  * Marks the source element on which the editor was initialized. This prevents other editor instances from using this element.
@@ -30,7 +30,7 @@ export default function secureSourceElement( editor: Editor, sourceElement: HTML
 		 * created with an unique DOM element.
 		 *
 		 * @error editor-source-element-already-used
-		 * @param {HTMLElement} element DOM element that caused the collision.
+		 * @param element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
 			'editor-source-element-already-used',

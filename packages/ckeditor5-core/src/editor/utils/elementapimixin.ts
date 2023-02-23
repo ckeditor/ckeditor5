@@ -18,9 +18,6 @@ import type Editor from '../editor';
 
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
- *
- * @mixin ElementApiMixin
- * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
 export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
 	abstract class Mixin extends base implements ElementApi {
@@ -70,24 +67,18 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
  *
  * Such an editor should provide a method to
  * {@link module:core/editor/utils/elementapimixin~ElementApi#updateSourceElement update the replaced element with the current data}.
- *
- * @interface ElementApi
  */
-
-/**
- * The element on which the editor has been initialized.
- *
- * @readonly
- * @member {HTMLElement} #sourceElement
- */
-
-/**
- * Updates the {@link #sourceElement editor source element}'s content with the data.
- *
- * @method #updateSourceElement
- */
-
 export interface ElementApi {
+
+	/**
+	 * The element on which the editor has been initialized.
+	 *
+	 * @readonly
+	 */
 	sourceElement: HTMLElement | undefined;
+
+	/**
+	 * Updates the {@link #sourceElement editor source element}'s content with the data.
+	 */
 	updateSourceElement( data?: string ): void;
 }

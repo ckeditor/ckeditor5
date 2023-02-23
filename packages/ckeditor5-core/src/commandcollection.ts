@@ -14,26 +14,22 @@ import type Command from './command';
  * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  */
 export default class CommandCollection implements Iterable<[ string, Command ]> {
+	/**
+	 * Command map.
+	 */
 	private _commands: Map<string, Command>;
 
 	/**
 	 * Creates collection instance.
 	 */
 	constructor() {
-		/**
-		 * Command map.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
 		this._commands = new Map();
 	}
 
 	/**
 	 * Registers a new command.
 	 *
-	 * @param {String} commandName The name of the command.
-	 * @param {module:core/command~Command} command
+	 * @param commandName The name of the command.
 	 */
 	public add<TName extends string>(
 		commandName: TName,
@@ -45,8 +41,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	/**
 	 * Retrieves a command from the collection.
 	 *
-	 * @param {String} commandName The name of the command.
-	 * @returns {module:core/command~Command}
+	 * @param commandName The name of the command.
 	 */
 	public get<TName extends string>( commandName: TName ): CommandsMap[ TName ] | undefined {
 		return this._commands.get( commandName );
@@ -55,13 +50,13 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	/**
 	 * Executes a command.
 	 *
-	 * @param {String} commandName The name of the command.
-	 * @param {*} [...commandParams] Command parameters.
-	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
+	 * @param commandName The name of the command.
+	 * @param commandParams Command parameters.
+	 * @returns The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
 	public execute<TName extends string>(
 		commandName: TName,
-		...args: Parameters<CommandsMap[ TName ][ 'execute' ]>
+		...commandParams: Parameters<CommandsMap[ TName ][ 'execute' ]>
 	): ReturnType<CommandsMap[ TName ][ 'execute' ]> {
 		const command = this.get( commandName );
 
@@ -70,18 +65,16 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 			 * Command does not exist.
 			 *
 			 * @error commandcollection-command-not-found
-			 * @param {String} commandName Name of the command.
+			 * @param commandName Name of the command.
 			 */
 			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}
 
-		return command.execute( ...args ) as any;
+		return command.execute( ...commandParams ) as any;
 	}
 
 	/**
 	 * Returns iterator of command names.
-	 *
-	 * @returns {Iterable.<String>}
 	 */
 	public* names(): IterableIterator<string> {
 		yield* this._commands.keys();
@@ -89,8 +82,6 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 
 	/**
 	 * Returns iterator of command instances.
-	 *
-	 * @returns {Iterable.<module:core/command~Command>}
 	 */
 	public* commands(): IterableIterator<Command> {
 		yield* this._commands.values();
@@ -100,8 +91,6 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	 * Iterable interface.
 	 *
 	 * Returns `[ commandName, commandInstance ]` pairs.
-	 *
-	 * @returns {Iterator.<Array>}
 	 */
 	public [ Symbol.iterator ](): Iterator<[ string, Command ]> {
 		return this._commands[ Symbol.iterator ]();
@@ -117,6 +106,30 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 	}
 }
 
+/**
+ * Helper type that maps command names to their types.
+ * It is meant to be extended with module augmentation.
+ *
+ * ```ts
+ * class MyCommand extends Command {
+ * 	public execute( parameter: A ): B {
+ * 		// ...
+ * 	}
+ * }
+ *
+ * declare module '@ckeditor/ckeditor5-core' {
+ * 	interface CommandsMap {
+ * 		myCommand: MyCommand;
+ * 	}
+ * }
+ *
+ * // Returns `MyCommand | undefined`.
+ * const myCommand = editor.commands.get( 'myCommand' );
+ *
+ * // Expects `A` type as parameter and returns `B`.
+ * const value = editor.commands.execute( 'myCommand', new A() );
+ * ```
+ */
 export interface CommandsMap {
 	[ name: string ]: Command;
 }

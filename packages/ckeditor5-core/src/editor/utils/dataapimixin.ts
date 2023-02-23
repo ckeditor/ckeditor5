@@ -13,9 +13,6 @@ import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Implementation of the {@link module:core/editor/utils/dataapimixin~DataApi}.
- *
- * @mixin DataApiMixin
- * @implements module:core/editor/utils/dataapimixin~DataApi
  */
 export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, DataApi> {
 	abstract class Mixin extends base implements DataApi {
@@ -46,54 +43,57 @@ export default function DataApiMixin<Base extends Constructor<Editor>>( base: Ba
  * This interface is not a part of the {@link module:core/editor/editor~Editor} class because one may want to implement
  * an editor with multiple root elements, in which case the methods for setting and getting data will need to be implemented
  * differently.
- *
- * @interface DataApi
  */
-
-/**
- * Sets the data in the editor.
- *
- *		editor.setData( '<p>This is editor!</p>' );
- *
- * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor root names and values
- * equal to the data that should be set in each root:
- *
- *		editor.setData( {
- *		    header: '<p>Content for header part.</p>',
- *		    content: '<p>Content for main part.</p>',
- *		    footer: '<p>Content for footer part.</p>'
- *		} );
- *
- * By default the editor accepts HTML. This can be controlled by injecting a different data processor.
- * See the {@glink features/markdown Markdown output} guide for more details.
- *
- * @method #setData
- * @param {String} data Input data.
- */
-
-/**
- * Gets the data from the editor.
- *
- *		editor.getData(); // -> '<p>This is editor!</p>'
- *
- * If your editor implementation uses multiple roots, you should pass root name as one of the options:
- *
- *		editor.getData( { rootName: 'header' } ); // -> '<p>Content for header part.</p>'
- *
- * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
- * See the {@glink features/markdown Markdown output} guide for more details.
- *
- * @method #getData
- * @param {Object} [options] Additional configuration for the retrieved data.
- * Editor features may introduce more configuration options that can be set through this parameter.
- * @param {String} [options.rootName='main'] Root name.
- * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `'empty'` by default,
- * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
- * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
- * @returns {String} Output data.
- */
-
 export interface DataApi {
-	setData( data: string | Record<string, string> ): void;
+
+	/**
+	 * Sets the data in the editor.
+	 *
+	 * ```ts
+	 * editor.setData( '<p>This is editor!</p>' );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor root names and values
+	 * equal to the data that should be set in each root:
+	 *
+	 * ```ts
+	 * editor.setData( {
+	 *     header: '<p>Content for header part.</p>',
+	 *     content: '<p>Content for main part.</p>',
+	 *     footer: '<p>Content for footer part.</p>'
+	 * } );
+	 * ```
+	 *
+	 * By default the editor accepts HTML. This can be controlled by injecting a different data processor.
+	 * See the {@glink features/markdown Markdown output} guide for more details.
+	 *
+	 * @param data Input data.
+	 */
+	setData( data: string ): void;
+
+	/**
+	 * Gets the data from the editor.
+	 *
+	 * ```ts
+	 * editor.getData(); // -> '<p>This is editor!</p>'
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass root name as one of the options:
+	 *
+	 * ```ts
+	 * editor.getData( { rootName: 'header' } ); // -> '<p>Content for header part.</p>'
+	 * ```
+	 *
+	 * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
+	 * See the {@glink features/markdown Markdown output} guide for more details.
+	 *
+	 * @param options Additional configuration for the retrieved data.
+	 * Editor features may introduce more configuration options that can be set through this parameter.
+	 * @param options.rootName Root name. Default to `'main'`.
+	 * @param options.trim Whether returned data should be trimmed. This option is set to `'empty'` by default,
+	 * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
+	 * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
+	 * @returns Output data.
+	 */
 	getData( options?: Record<string, unknown> ): string;
 }
