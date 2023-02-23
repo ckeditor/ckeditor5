@@ -223,6 +223,9 @@ export default class Mention extends Plugin {
  * @property {Number} [minimumCharacters=0] Specifies after how many characters the autocomplete panel should be shown.
  * @property {Function} [itemRenderer] A function that renders a {@link module:mention/mention~MentionFeedItem}
  * to the autocomplete panel.
+ * @property {Number} [dropdownLimit] An optional number to specify how many available elements per feeds
+ * will the users be able to see in the dropdown list. If this property is not provided, the default value is
+ * reflected by the general option of {@link module:mention/mention~MentionConfig#dropdownLimit dropdownLimit}.
  */
 
 /**

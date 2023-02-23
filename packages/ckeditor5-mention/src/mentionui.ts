@@ -167,9 +167,7 @@ export default class MentionUI extends Plugin {
 		const feeds = editor.config.get( 'mention.feeds' )!;
 
 		for ( const mentionDescription of feeds ) {
-			const feed = mentionDescription.feed;
-
-			const marker = mentionDescription.marker;
+			const { feed, marker, dropdownLimit } = mentionDescription;
 
 			if ( !isValidMentionMarker( marker ) ) {
 				/**
@@ -189,7 +187,7 @@ export default class MentionUI extends Plugin {
 
 			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const itemRenderer = mentionDescription.itemRenderer;
-			const definition = { marker, feedCallback, itemRenderer };
+			const definition = { marker, feedCallback, itemRenderer, dropdownLimit };
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
@@ -238,8 +236,10 @@ export default class MentionUI extends Plugin {
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
+			const { dropdownLimit: markerDropdownLimit } = this._mentionsConfigurations.get( marker )!;
+
 			// Set to 10 by default for backwards compatibility. See: #10479
-			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+			const dropdownLimit = markerDropdownLimit || this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {
 				return null;
@@ -879,6 +879,7 @@ type Definition = {
 	marker: string;
 	feedCallback: FeedCallback;
 	itemRenderer?: ItemRenderer;
+	dropdownLimit?: number;
 };
 
 type MarkerDefinition = {
