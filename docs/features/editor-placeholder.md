@@ -6,7 +6,7 @@ category: features
 
 # Editor placeholder
 
-CKEditor 5 can display a configurable placeholder text when the content is empty. The placeholder helps users locate the editor in the application and prompts to input the content. It works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
+You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
