@@ -5,9 +5,7 @@ category: features
 
 {@snippet features/build-indent-source}
 
-The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists.
-
-Its main purpose is to visually distinguish parts of the content. Block indentation is mostly useful for graphically differentiate structure elements like headings or lists. It can also be applied to present quotes or to make paragraphs or passages that need to be separated from the main content body stick out more.
+The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
 <info-box info>
 	Block indentation can be removed with the {@link features/remove-format remove format} feature.
@@ -19,7 +17,7 @@ Its main purpose is to visually distinguish parts of the content. Block indentat
 
 ## Demo
 
-Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers and list items.
+Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers, and list items.
 
 {@snippet features/indent}
 
@@ -29,7 +27,7 @@ Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} 
 
 ## Related features
 
-Here are some CKEditor 5 features that may aid structuring your content better:
+Here are some CKEditor 5 features that may help structure your content better:
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
@@ -95,7 +93,7 @@ ClassicEditor
 
 Using classes instead of fixed units (`px` or `em`) has another advantage &mdash; you retain control over what indentation levels are used in the documents. For instance, you can limit indentation to 2 or 3 different levels and there is no way the users can go beyond that. In the example above, the `.custom-block-indent-c` class level is the maximum allowed indentation value. This should help keep your content clean and predictable.
 
-In this configuration the WYSIWYG editor will restrict indentation levels to the set of provided classes. The class with the last index in the array has the biggest indentation.
+In this configuration, the WYSIWYG editor will restrict indentation levels to the set of provided classes. The class with the last index in the array has the biggest indentation.
 
 In the demo below the CSS classes are defined as follows:
 
@@ -130,7 +128,7 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock` and `List`).
+This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`).
 
 ## Installation
 
@@ -199,4 +197,4 @@ The {@link module:indent/indentblock~IndentBlock} plugin registers the following
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font).

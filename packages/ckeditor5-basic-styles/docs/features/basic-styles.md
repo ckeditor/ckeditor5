@@ -8,6 +8,10 @@ category: features
 The basic styles feature lets you apply the most essential formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
 <info-box info>
+	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
+</info-box>
+
+<info-box info>
 	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only
 </info-box>
 
@@ -24,10 +28,6 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 * Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`
 * Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
-
-<info-box info>
-	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
 
 ## Related features
 
