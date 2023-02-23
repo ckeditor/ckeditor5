@@ -24,16 +24,16 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root/src/ckeditor';
 
 MultiRootEditor
-    .create(
+	.create(
 		// Define roots / editable areas:
 		{
-            header: document.querySelector( '#header' ),
-            content: document.querySelector( '#content' ),
-            leftSide: document.querySelector( '#left-side' ),
-            rightSide: document.querySelector( '#right-side' )
-        },
-        // Editor configration:
-        {
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' ),
+			leftSide: document.querySelector( '#left-side' ),
+			rightSide: document.querySelector( '#right-side' )
+		},
+		// Editor configration:
+		{
 			cloudServices: {
 				// All predefined builds include the Easy Image feature.
 				// Provide correct configuration values to use it.
@@ -74,22 +74,22 @@ MultiRootEditor
 ```html
 <div id="toolbar"></div>
 <!--
-    Wrapping the structure inside a pair of
-    contenteditable="true" + contenteditable="false" elements
-    is required to provide proper caret handling when
-    using arrow keys at the start and end of an editable area.
-    
-    You can skip them if you don't want to move the
-    caret between editable areas using arrow keys.
+	Wrapping the structure inside a pair of
+	contenteditable="true" + contenteditable="false" elements
+	is required to provide proper caret handling when
+	using arrow keys at the start and end of an editable area.
+	
+	You can skip them if you don't want to move the
+	caret between editable areas using arrow keys.
 !--> 
 <div contenteditable="true">
 	<div contenteditable="false">
-        <div id="header">
-            Header content is inserted here.
-        </div>
-        <div id="content">
-            Main content is inserted here.
-        </div>
+		<div id="header">
+			Header content is inserted here.
+		</div>
+		<div id="content">
+			Main content is inserted here.
+		</div>
 		<div class="boxes">
 			<div class="box box-left editor">
 				<div id="left-side">
@@ -114,20 +114,20 @@ MultiRootEditor
 		margin-right: 10px;
 	}
 
-    /*
-        Make the editable "fill" the whole box.
-        The box will grow if the other box grows too.
-        This makes the whole box "clickable".
-     */
+	/*
+		Make the editable "fill" the whole box.
+		The box will grow if the other box grows too.
+		This makes the whole box "clickable".
+	 */
 	.box .ck-editor__editable {
 		height: 100%;
 	}
 
 	/*
-        When toolbar receives this class, it becomes sticky.
-        If the toolbar would be scrolled outside of the visible area,
-        instead it is kept at the top edge of the window.
-     */
+		When toolbar receives this class, it becomes sticky.
+		If the toolbar would be scrolled outside of the visible area,
+		instead it is kept at the top edge of the window.
+	 */
 	#toolbar.sticky {
 		position: sticky;
 		top: 0px;
@@ -147,32 +147,32 @@ Please note that setting and reading the editor data is different for multi-root
 
 Setting the data using `editor.setData()`:
 ```js
-    editor.setData( {
-        header: '<p>Content for header part.</p>',
-        content: '<p>Content for main part.</p>',
-        leftSide: '<p>Content for left-side box.</p>',
-        rightSide: '<p>Content for right-side box.</p>'
-    } );
+	editor.setData( {
+		header: '<p>Content for header part.</p>',
+		content: '<p>Content for main part.</p>',
+		leftSide: '<p>Content for left-side box.</p>',
+		rightSide: '<p>Content for right-side box.</p>'
+	} );
 ```
 
 Setting the data through `config.initialData`:
 ```js
-    MultiRootEditor.create(
-        {
-            header: document.querySelector( '#header' ),
-            content: document.querySelector( '#content' ),
-            leftSide: document.querySelector( '#left-side' ),
-            rightSide: document.querySelector( '#right-side' )
-        },
-        {
-            initialData: {
-                header: '<p>Content for header part.</p>',
-                content: '<p>Content for main part.</p>',
-                leftSide: '<p>Content for left-side box.</p>',
-                rightSide: '<p>Content for right-side box.</p>'
-            }
-        }
-    );
+	MultiRootEditor.create(
+		{
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' ),
+			leftSide: document.querySelector( '#left-side' ),
+			rightSide: document.querySelector( '#right-side' )
+		},
+		{
+			initialData: {
+				header: '<p>Content for header part.</p>',
+				content: '<p>Content for main part.</p>',
+				leftSide: '<p>Content for left-side box.</p>',
+				rightSide: '<p>Content for right-side box.</p>'
+			}
+		}
+	);
 ```
 </details>
 
@@ -180,7 +180,7 @@ Setting the data through `config.initialData`:
 <summary>Specify root name when obtaining the data</summary>
 
 ```js
-    editor.getData( { rootName: 'leftSide' } ); // -> '<p>Content for left-side box.</p>'
+	editor.getData( { rootName: 'leftSide' } ); // -> '<p>Content for left-side box.</p>'
 ```
 </details>
 
