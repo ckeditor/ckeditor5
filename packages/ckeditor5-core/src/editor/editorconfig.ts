@@ -102,7 +102,7 @@ export interface EditorConfig {
 	 * .catch( ... );
 	 * ```
 	 *
-	 * See also {@link module:core/editor/editor~Editor.create Editor.create()}.
+	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
 	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
 	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
@@ -186,9 +186,12 @@ export interface EditorConfig {
 	 * used by inputs.
 	 *
 	 * ```ts
-	 * const config = {
-	 * 	placeholder: 'Type some text...'
-	 * };
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		placeholder: 'Type some text...'
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
 	 * ```
 	 *
 	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
