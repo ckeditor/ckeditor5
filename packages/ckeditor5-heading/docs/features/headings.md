@@ -6,27 +6,7 @@ category: features
 
 {@snippet features/heading-source}
 
-The heading feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
-
-Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-## Heading levels
-
-By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the {@link features/title page's main title} and the page content will usually start from `<h2>`.
-
-<info-box hint>
-	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link installation/plugins/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
-</info-box>
-
-By default, when your editor build does not include the title plugin, a `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
-
-<info-box hint>
-	You can read more about why the editor should not create `<h1>` elements for content headings in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
-</info-box>
+The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
 
 ## Demo
 
@@ -38,6 +18,20 @@ Use the toolbar dropdown to style a heading, or type one or more `#` characters 
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
+## Heading levels
+
+By default, this feature is configured to support `<h2>`, `<h3>`, and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the {@link features/title page's main title} and the page content will usually start from `<h2>`.
+
+<info-box hint>
+	Support for adding a document title is provided through the {@link module:heading/title~Title} plugin. This plugin is optional and needs to be {@link installation/plugins/installing-plugins added to your editor build}. When it is enabled, a `<h1>` element pasted into the editor will be rendered as the {@link features/title document title}.
+</info-box>
+
+By default, when your editor build does not include the title plugin, an `<h1>` element pasted into the rich-text editor is converted to `<h2>` ("Heading 1").
+
+<info-box hint>
+	You can read more about why the editor should not create `<h1>` elements for content headings in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
+</info-box>
+
 ## Heading buttons
 
 The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
@@ -47,7 +41,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 ## Related features
 
 There are more CKEditor 5 features that can help you format your content:
-* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered lists you can style.
@@ -141,7 +135,7 @@ ClassicEditor
 
 ### Configuring toolbar buttons
 
-In order to use individual toolbar buttons instead of the heading dropdown, you need to properly configure the feature. You also need to import proper UI elements; see the [installation section](#installation-with-toolbar-heading-buttons) for instructions on how to do it.
+To use individual toolbar buttons instead of the heading dropdown, you need to properly configure the feature. You also need to import proper UI elements; see the [installation section](#installation-with-toolbar-heading-buttons) for instructions on how to do it.
 
 ```js
 ClassicEditor
@@ -168,7 +162,7 @@ ClassicEditor
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
@@ -193,7 +187,7 @@ ClassicEditor
 
 ### Installation with toolbar heading buttons
 
-In order to be able to configure the toolbar buttons for headings and paragraph, you need to import the following into your plugin list and configuration:
+To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
 ```js
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
@@ -234,4 +228,4 @@ The {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin register
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-heading](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-heading).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-heading](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-heading).
