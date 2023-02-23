@@ -8,10 +8,6 @@ category: features
 
 You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
 ## Demo
 
 See the demo of the placeholder feature:
@@ -23,6 +19,10 @@ See the demo of the placeholder feature:
 </info-box>
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:
 

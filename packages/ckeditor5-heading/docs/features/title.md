@@ -7,10 +7,6 @@ menu-title: Document title
 
 The title feature lets you add a single title field at the beginning of your document. This way you can clearly divide your content into the title and body sections.
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
 ## Demo
 
 Use the editor to create a document with clearly separated title and body sections. You can check the content of the title and body elements in the console below.
@@ -52,6 +48,10 @@ ClassicEditor
 ```
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 

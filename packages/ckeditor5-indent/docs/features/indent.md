@@ -7,14 +7,6 @@ category: features
 
 The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
-<info-box info>
-	Block indentation can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
-
-<info-box info>
-	The block indent feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
-
 ## Demo
 
 Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers, and list items.
@@ -31,7 +23,11 @@ Here are some CKEditor 5 features that may help structure your content better:
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
-* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+
+<info-box info>
+	Block indentation can be removed with the {@link features/remove-format remove format} feature.
+</info-box>
 
 ## Configuring the block indentation feature
 
@@ -131,6 +127,10 @@ The target behavior comes from two other plugins:
 This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`).
 
 ## Installation
+
+<info-box info>
+	The block indent feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-indent`](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent) package:
 

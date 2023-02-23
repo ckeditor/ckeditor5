@@ -7,14 +7,6 @@ category: features
 
 The basic styles feature lets you apply the most essential formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
-<info-box info>
-	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
-
-<info-box info>
-	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only
-</info-box>
-
 ## Demo
 
 {@snippet features/basic-styles}
@@ -39,6 +31,10 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
+<info-box info>
+	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
+</info-box>
 
 ## Available text styles
 
@@ -87,7 +83,7 @@ CKEditor 5 allows for typing both at the inner and outer boundaries of code to m
 ## Installation
 
 <info-box info>
-	Selected styles are enabled in certain predefined builds, as enumerated at the beginning of this guide. These installation instructions are for developers interested in building their own, custom editor.
+	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. These installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:

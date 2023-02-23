@@ -3,11 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-The autoformat feature lets you quickly format your content with Markdown-like shortcodes. This way you don't need to use toolbar buttons and dropdowns for the most common formatting features. 
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+The autoformat feature lets you quickly format your content with Markdown-like shortcodes. This way you don't need to use toolbar buttons and dropdowns for the most common formatting features.
 
 ## Demo
 
@@ -61,7 +57,7 @@ Coupled with the {@link features/markdown Markdown output} feature, the autoform
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:
