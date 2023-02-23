@@ -1029,6 +1029,3 @@ class ClassWithSecrets {
 	 */
 	private _shouldNotBeEmitted: string;
 }
-```
-
-[History of the change.](https://github.com/cksource/ckeditor5-internal/issues/2643)
