@@ -45,6 +45,7 @@ require( '@ckeditor/ckeditor5-dev-release-tools' )
 				// automated/manual tests, translations, documentation, content styles.
 				// If you need to release anything from the directory, type a full path to the file/directory.
 				'src/*.js',
+				'src/*.d.ts',
 				'build/ckeditor5-dll.js',
 				'build/ckeditor5-dll.manifest.json',
 				'build/translations/*.js',

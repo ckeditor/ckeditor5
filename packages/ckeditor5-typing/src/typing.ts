@@ -16,8 +16,6 @@ import Delete from './delete';
  *
  * This is a "glue" plugin which loads the {@link module:typing/input~Input} and {@link module:typing/delete~Delete}
  * plugins.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class Typing extends Plugin {
 	public static get requires(): PluginDependencies {

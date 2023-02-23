@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "sourceMap": false,
-    "declaration": false
+    "sourceMap": true,
+    "declaration": true
   },
   "include": [
     "./typings/"

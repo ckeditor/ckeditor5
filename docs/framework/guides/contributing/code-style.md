@@ -460,7 +460,7 @@ You can use ES6 getters to simplify class API:
 class Position {
 	// More methods.
 	// ...
-	
+
 	get offset() {
 		return this.path[ this.path.length - 1 ];
 	}
@@ -1003,3 +1003,30 @@ To create a code executed only in the debug mode, follow the description of the 
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/12479)
+
+### Non public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
+
+**This rule should only be used on `.ts` files.**
+
+In order to remove non public members from typings, the `@internal` tag has to be used in member's JSDoc.
+
+Then option `"stripInternal": true` in `tsconfig.json` can be used to remove them from declaration types.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+class ClassWithSecrets {
+	private _shouldNotBeEmitted: string;
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+class ClassWithSecrets {
+	/**
+	 * @internal
+	 */
+	private _shouldNotBeEmitted: string;
+}
+```
