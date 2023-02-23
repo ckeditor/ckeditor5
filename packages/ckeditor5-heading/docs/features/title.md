@@ -5,7 +5,7 @@ menu-title: Document title
 
 # Document title
 
-This feature lets you add a single title field at the beginning of your document. That way you can clearly divide your content into the title and body sections.
+The title feature lets you add a single title field at the beginning of your document. This way you can clearly divide your content into the title and body sections.
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.

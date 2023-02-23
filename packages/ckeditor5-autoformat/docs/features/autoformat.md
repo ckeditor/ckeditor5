@@ -3,7 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-Autoformatting lets you quickly format your content with Markdown-like shortcodes. This way you don't need to use toolbar buttons or dropdowns for the most common formatting features. 
+The autoformat feature lets you quickly format your content with Markdown-like shortcodes. This way you don't need to use toolbar buttons and dropdowns for the most common formatting features. 
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
