@@ -13,10 +13,7 @@ import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginIn
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
-export default class PluginCollection<TContext extends object>
-	extends EmitterMixin()
-	implements Iterable<[ PluginConstructor<TContext>, PluginInterface ]>
-{
+export default class PluginCollection<TContext extends object> extends EmitterMixin() implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;
 
 	private _plugins = new Map<PluginConstructor<TContext> | string, PluginInterface>();
@@ -45,7 +42,7 @@ export default class PluginCollection<TContext extends object>
 	constructor(
 		context: TContext,
 		availablePlugins: Iterable<PluginConstructor<TContext>> = [],
-		contextPlugins: Iterable<[ PluginConstructor<TContext>, PluginInterface ]> = []
+		contextPlugins: Iterable<PluginEntry<TContext>> = []
 	) {
 		super();
 
@@ -76,7 +73,7 @@ export default class PluginCollection<TContext extends object>
 	 *
 	 * Returns `[ PluginConstructor, pluginInstance ]` pairs.
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<[ PluginConstructor<TContext>, PluginInterface ]> {
+	public* [ Symbol.iterator ](): IterableIterator<PluginEntry<TContext>> {
 		for ( const entry of this._plugins ) {
 			if ( typeof entry[ 0 ] == 'function' ) {
 				yield entry as any;
@@ -620,6 +617,11 @@ export default class PluginCollection<TContext extends object>
 		this._plugins.set( pluginName, plugin );
 	}
 }
+
+/**
+ * A `[ PluginConstructor, pluginInstance ]` pair.
+ */
+export type PluginEntry<TContext> = [ PluginConstructor<TContext>, PluginInterface ];
 
 /**
  * Helper type that maps plugin names to their types.
