@@ -27,9 +27,9 @@ const _emitterId = Symbol( 'emitterId' );
  * Mixin that injects the {@link ~Emitter events API} into its host.
  *
  * Read more about the concept of emitters in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/deep-dive/event-system Event system} deep dive guide.
  *
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
@@ -333,9 +333,9 @@ export default EmitterMixin;
  * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
  *
  * Read more about the usage of this interface in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/deep-dive/event-system Event system} deep dive guide.
  *
  * @interface Emitter
  */

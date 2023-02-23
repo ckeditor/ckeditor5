@@ -130,7 +130,7 @@ import viewToPlainText from './utils/viewtoplaintext';
  * 3. For the `cut` method, calls {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
  *    on the current selection.
  *
- * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
+ * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
  */
 export default class ClipboardPipeline extends Plugin {
 	/**
@@ -298,7 +298,7 @@ export default class ClipboardPipeline extends Plugin {
  * * The `method` indicates the original DOM event (for example `'drop'` or `'paste'`).
  * * The `targetRanges` property is an array of view ranges (it is available only for `'drop'`).
  *
- * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
  * **Note**: You should not stop this event if you want to change the input data. You should modify the `content` property instead.
  *
@@ -321,7 +321,7 @@ export interface ClipboardInputTransformationData {
 	/**
 	 * The event data.
 	 * The content to be inserted into the editor. It can be modified by event listeners. Read more about the clipboard pipelines in
-	 * the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
+	 * the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
 
@@ -351,7 +351,7 @@ export interface ClipboardInputTransformationData {
  *
  * Event handlers can modify the content according to the final insertion position.
  *
- * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
  * **Note**: You should not stop this event if you want to change the input data. You should modify the `content` property instead.
  *
@@ -374,7 +374,7 @@ export interface ClipboardContentInsertionData {
 
 	/**
 	 * The content to be inserted into the editor.
-	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
+	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: DocumentFragment;
 
@@ -405,7 +405,7 @@ export interface ClipboardContentInsertionData {
  * Fired on {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
  * with a copy of the selected content. The content can be processed before it ends up in the clipboard.
  *
- * It is a part of the {@glink framework/guides/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
+ * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
@@ -432,7 +432,7 @@ export interface ClipboardOutputEventData {
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
-	 * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep-dive} guide.
+	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
 

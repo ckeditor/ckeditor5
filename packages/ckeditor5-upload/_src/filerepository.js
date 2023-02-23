@@ -26,7 +26,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
- * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
+ * the {@glink framework/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
@@ -167,7 +167,7 @@ export default class FileRepository extends Plugin {
 			 * You can choose one of the existing upload adapters listed in the
 			 * {@glink features/images/image-upload/image-upload "Image upload overview"}.
 			 *
-			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own image upload adapter}.
+			 * You can also implement your {@glink framework/deep-dive/upload-adapter own image upload adapter}.
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
@@ -586,7 +586,7 @@ mix( FileLoader, ObservableMixin );
  * It should contain a logic necessary to initiate an upload process and monitor its progress.
  *
  * Learn how to develop your own upload adapter for CKEditor 5 in the
- * {@glink framework/guides/deep-dive/upload-adapter "Custom upload adapter" guide}.
+ * {@glink framework/deep-dive/upload-adapter "Custom upload adapter" guide}.
  *
  * @interface UploadAdapter
  */

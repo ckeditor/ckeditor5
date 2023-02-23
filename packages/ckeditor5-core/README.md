@@ -10,7 +10,7 @@ This package implements CKEditor 5's core editor architecture &mdash; a set of c
 
 ## Documentation
 
-For general introduction see the [Overview of CKEditor 5 framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html) guide and then the [core editor architecture guide](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/core-editor-architecture.html).
+For general introduction see the [Overview of CKEditor 5 framework](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) guide and then the [core editor architecture guide](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html).
 
 Additionally, see the [`@ckeditor/ckeditor5-core` package](https://ckeditor.com/docs/ckeditor5/latest/api/core.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) for even more information.
 

@@ -11,7 +11,7 @@ The main difference between a multi-root editor and using multiple separate edit
 
 Out of the box, CKEditor 5 does not offer a ready-to-use multi-root editor yet. However, such an editor can be implemented by using the {@link framework/index CKEditor 5 Framework}.
 
-Check out the {@link framework/guides/custom-editor-creator "Implementing a custom editor creator" guide} which contains the source code of the demo below.
+Check out the {@link framework/custom-editor-creator "Implementing a custom editor creator" guide} which contains the source code of the demo below.
 
 {@snippet examples/multi-root-editor}
 

@@ -27,9 +27,9 @@ const _decoratedOriginal = Symbol( 'decoratedOriginal' );
  * {@link ~Observable} interface.
  *
  * Read more about the concept of observables in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide,
+ * * {@glink framework/deep-dive/observables Observables deep dive} guide.
  *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -705,9 +705,9 @@ function attachBindToListeners( observable, toBindings ) {
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
  * Read more about the usage of this interface in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
- * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide,
+ * * {@glink framework/deep-dive/observables Observables deep dive} guide.
  *
  * @interface Observable
  * @extends module:utils/emittermixin~Emitter
@@ -781,7 +781,7 @@ function attachBindToListeners( observable, toBindings ) {
  * Binds {@link #set observable properties} to other objects implementing the
  * {@link module:utils/observablemixin~Observable} interface.
  *
- * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
+ * Read more in the {@glink framework/deep-dive/observables#property-bindings dedicated guide}
  * covering the topic of property bindings with some additional examples.
  *
  * Consider two objects: a `button` and an associated `command` (both `Observable`).
@@ -853,7 +853,7 @@ function attachBindToListeners( observable, toBindings ) {
  * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
  * (named after the method) and the original action will be plugged as a listener to that event.
  *
- * Read more in the {@glink framework/guides/deep-dive/observables#decorating-object-methods dedicated guide}
+ * Read more in the {@glink framework/deep-dive/observables#decorating-object-methods dedicated guide}
  * covering the topic of decorating methods with some additional examples.
  *
  * Decorating the method does not change its behavior (it only adds an event),
