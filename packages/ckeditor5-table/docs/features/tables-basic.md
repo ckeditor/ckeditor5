@@ -39,61 +39,6 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
 
-## Installation
-
-### Basic table features
-
-<info-box info>
-	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
-
-To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
-
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
-
-```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-### Default table headers
-
-In order to make every inserted table to have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
-
-```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
-		table: {
-			defaultHeadings: { rows: 1, columns: 1 }
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
-
-{@snippet features/table-default-headings}
-
 ## Block vs inline content in table cells
 
 The table feature allows for creating block content (like paragraphs, lists, headings, etc.) inside table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
@@ -200,6 +145,60 @@ The above model structure will be rendered to the data and to the editing view a
 <info-box info>
 	At the moment, it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Feel free to upvote 👍&nbsp; if this feature is important to you.
 </info-box>
+
+## Installation
+
+<info-box info>
+	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+</info-box>
+
+To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+
+```
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Default table headers
+
+In order to make every inserted table to have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
+		toolbar: [ 'insertTable', /* ... */ ],
+		table: {
+			defaultHeadings: { rows: 1, columns: 1 }
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
+
+{@snippet features/table-default-headings}
 
 ## Common API
 
