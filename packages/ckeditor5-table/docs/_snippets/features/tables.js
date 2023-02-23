@@ -8,7 +8,10 @@
 ClassicEditor
 	.create( document.querySelector( '#snippet-tables' ), {
 		extraPlugins: [
-			CKEditorPlugins.TableCaption, CKEditorPlugins.TableProperties, CKEditorPlugins.TableCellProperties
+			CKEditorPlugins.TableColumnResize,
+			CKEditorPlugins.TableCaption,
+			CKEditorPlugins.TableProperties,
+			CKEditorPlugins.TableCellProperties
 		],
 		table: {
 			contentToolbar: [ 'toggleTableCaption', '|', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
