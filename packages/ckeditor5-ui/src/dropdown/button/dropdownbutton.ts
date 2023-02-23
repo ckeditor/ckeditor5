@@ -14,7 +14,7 @@ import type ViewCollection from '../../viewcollection';
  * The dropdown button interface.
  */
 export default interface DropdownButton extends Button {
-    children: ViewCollection;
+	children: ViewCollection;
 }
 
 /**
@@ -24,6 +24,6 @@ export default interface DropdownButton extends Button {
  * @eventName open
  */
 export type DropdownButtonOpenEvent = {
-    name: 'open';
-    args: [];
+	name: 'open';
+	args: [];
 };

@@ -48,7 +48,7 @@ export default class FontSize extends Plugin {
 	}
 }
 
- declare module '@ckeditor/ckeditor5-core' {
+declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ FontSize.pluginName ]: FontSize;
 	}

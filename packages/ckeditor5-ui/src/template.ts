@@ -1818,8 +1818,8 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 declare const AttributeBindingSymbol: unique symbol;
 declare const ListenerBindingSymbol: unique symbol;
 
-export interface AttributeBinding { [ AttributeBindingSymbol ]: 'AttributeBinding' }
-export interface ListenerBinding { [ ListenerBindingSymbol ]: 'ListenerBinding' }
+export interface AttributeBinding { _opaqueAttributeBinding: typeof AttributeBindingSymbol }
+export interface ListenerBinding { _opaqueListenerBinding: typeof ListenerBindingSymbol }
 
 /**
  * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`

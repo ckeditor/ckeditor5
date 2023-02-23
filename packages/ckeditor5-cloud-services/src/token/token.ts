@@ -4,7 +4,7 @@
  */
 
 /**
- * @module cloud-services/token
+ * @module cloud-services/token/token
  */
 
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
@@ -25,7 +25,7 @@ export default class Token extends ObservableMixin() {
 	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.
 	 * `create` method creates token with initialized value from url.
 	 *
-	 * @see module:cloud-services/token~InitializedToken
+	 * @see module:cloud-services/token/token~InitializedToken
 	 * @observable
 	 * @readonly
 	 */
