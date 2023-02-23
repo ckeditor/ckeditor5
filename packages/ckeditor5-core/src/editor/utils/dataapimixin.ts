@@ -55,7 +55,7 @@ export default function DataApiMixin<Base extends Constructor<Editor>>( base: Ba
  *
  *		editor.setData( '<p>This is editor!</p>' );
  *
- * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots and values
+ * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor root names and values
  * equal to the data that should be set in each root:
  *
  *		editor.setData( {

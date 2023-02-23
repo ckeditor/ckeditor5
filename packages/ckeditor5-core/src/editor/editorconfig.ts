@@ -48,7 +48,31 @@ import type Editor from './editor';
  * This configuration option lets you override this behavior and pass different initial data.
  * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
  *
- * See also {@link module:core/editor/editor~Editor.create Editor.create()}.
+ * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
+ * roots names and values equal to the data that should be set in each root:
+ *
+ * 		MultiRootEditor.create(
+ * 			// Roots for the editor:
+ * 			{
+ * 				header: document.querySelector( '#header' ),
+ * 				content: document.querySelector( '#content' ),
+ * 				leftSide: document.querySelector( '#left-side' ),
+ * 				rightSide: document.querySelector( '#right-side' )
+ * 			},
+ * 			// Config:
+ * 			{
+ * 				initialData: {
+ * 					header: '<p>Content for header part.</p>',
+ * 					content: '<p>Content for main part.</p>',
+ * 					leftSide: '<p>Content for left-side box.</p>',
+ * 					rightSide: '<p>Content for right-side box.</p>'
+ * 				}
+ * 			}
+ * 		)
+ * 		.then( ... )
+ * 		.catch( ... );
+ *
+ * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
  *
  * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
  * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
@@ -57,7 +81,7 @@ import type Editor from './editor';
  * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
  * plugins can read and/or modify it during initialization.
  *
- * @member {String} module:core/editor/editorconfig~EditorConfig#initialData
+ * @member {String|Object} module:core/editor/editorconfig~EditorConfig#initialData
  */
 
 /**
@@ -366,9 +390,36 @@ import type Editor from './editor';
  * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
  * used by inputs.
  *
- *		const config = {
- *			placeholder: 'Type some text...'
- *		};
+ * 		ClassicEditor
+ * 			.create( document.querySelector( '#editor' ), {
+ * 				placeholder: 'Type some text...'
+ * 			} )
+ * 			.then( ... )
+ * 			.catch( ... );
+ *
+ * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
+ * roots names and values equal to the placeholder that should be set in each root:
+ *
+ * 		MultiRootEditor.create(
+ * 			// Roots for the editor:
+ * 			{
+ * 				header: document.querySelector( '#header' ),
+ * 				content: document.querySelector( '#content' ),
+ * 				leftSide: document.querySelector( '#left-side' ),
+ * 				rightSide: document.querySelector( '#right-side' )
+ * 			},
+ * 			// Config:
+ * 			{
+ * 				placeholder: {
+ * 					header: 'Type header...',
+ * 					content: 'Type content...',
+ * 					leftSide: 'Type left-side...',
+ * 					rightSide: 'Type right-side...'
+ * 				}
+ * 			}
+ * 		)
+ * 		.then( ... )
+ * 		.catch( ... );
  *
  * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
  * The paragraph has the `.ck-placeholder` CSS class and the `data-placeholder` attribute.
@@ -385,7 +436,7 @@ import type Editor from './editor';
  *
  * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
  *
- * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
+ * @member {String|Object} module:core/editor/editorconfig~EditorConfig#placeholder
  */
 
 /**
@@ -432,9 +483,9 @@ import type Editor from './editor';
 export interface EditorConfig {
 	context?: Context;
 	extraPlugins?: Array<PluginConstructor<Editor>>;
-	initialData?: string | Record<string, string>; // @TODO doc
+	initialData?: string | Record<string, string>;
 	language?: string | LanguageConfig;
-	placeholder?: string | Record<string, string>; // @TODO doc
+	placeholder?: string | Record<string, string>;
 	plugins?: Array<PluginConstructor<Editor> | string>;
 	removePlugins?: Array<PluginConstructor<Editor> | string>;
 	substitutePlugins?: Array<PluginConstructor<Editor>>;
