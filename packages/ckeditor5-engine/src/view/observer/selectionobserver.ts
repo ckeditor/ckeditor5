@@ -154,20 +154,20 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest', useCapture: true } );
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView.getSelection();
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	const domSelection = domDocument.defaultView!.getSelection();
 			// @if CK_DEBUG_TYPING // 	console.group( '%c[SelectionObserver]%c selectionchange', 'color:green', ''
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c DOM Selection:', 'font-weight:bold;color:green', '',
-			// @if CK_DEBUG_TYPING // 		{ node: domSelection.anchorNode, offset: domSelection.anchorOffset },
-			// @if CK_DEBUG_TYPING // 		{ node: domSelection.focusNode, offset: domSelection.focusOffset }
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.anchorNode, offset: domSelection!.anchorOffset },
+			// @if CK_DEBUG_TYPING // 		{ node: domSelection!.focusNode, offset: domSelection!.focusOffset }
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
 			// The Renderer is disabled while composing on non-android browsers, so we can't update the view selection
 			// because the DOM and view tree drifted apart. Position mapping could fail because of it.
 			if ( this.document.isComposing && !env.isAndroid ) {
-				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Selection change ignored (isComposing)',
 				// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', ''
 				// @if CK_DEBUG_TYPING // 	);
@@ -179,7 +179,7 @@ export default class SelectionObserver extends Observer {
 
 			this._handleSelectionChange( domEvent, domDocument );
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.groupEnd();
 			// @if CK_DEBUG_TYPING // }
 
@@ -277,7 +277,7 @@ export default class SelectionObserver extends Observer {
 				domSelection
 			};
 
-			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[SelectionObserver]%c Fire selection change:',
 			// @if CK_DEBUG_TYPING // 		'font-weight:bold;color:green', '',
 			// @if CK_DEBUG_TYPING // 		newViewSelection.getFirstRange()

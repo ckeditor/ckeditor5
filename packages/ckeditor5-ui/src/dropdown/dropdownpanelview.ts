@@ -8,22 +8,42 @@
  */
 
 import View from '../view';
-import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
-
 import type ViewCollection from '../viewcollection';
 import type DropdownPanelFocusable from './dropdownpanelfocusable';
+
+import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The dropdown panel view class.
  *
  * See {@link module:ui/dropdown/dropdownview~DropdownView} to learn about the common usage.
- *
- * @extends module:ui/view~View
  */
 export default class DropdownPanelView extends View implements DropdownPanelFocusable {
+	/**
+	 * Collection of the child views in this panel.
+	 *
+	 * A common child type is the {@link module:ui/list/listview~ListView} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
+	 * See {@link module:ui/dropdown/utils~addListToDropdown} and
+	 * {@link module:ui/dropdown/utils~addToolbarToDropdown} to learn more about child views of dropdowns.
+	 */
 	public readonly children: ViewCollection;
 
+	/**
+	 * Controls whether the panel is visible.
+	 *
+	 * @observable
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * The position of the panel, relative to the parent.
+	 *
+	 * This property is reflected in the CSS class set to {@link #element} that controls
+	 * the position of the panel.
+	 *
+	 * @observable
+	 * @default 'se'
+	 */
 	declare public position: PanelPosition;
 
 	/**
@@ -34,36 +54,9 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * Controls whether the panel is visible.
-		 *
-		 * @observable
-		 * @member {Boolean} #isVisible
-		 */
 		this.set( 'isVisible', false );
-
-		/**
-		 * The position of the panel, relative to the parent.
-		 *
-		 * This property is reflected in the CSS class set to {@link #element} that controls
-		 * the position of the panel.
-		 *
-		 * @observable
-		 * @default 'se'
-		 * @member {'s'|'se'|'sw'|'sme'|'smw'|'n'|'ne'|'nw'|'nme'|'nmw'} #position
-		 */
 		this.set( 'position', 'se' );
 
-		/**
-		 * Collection of the child views in this panel.
-		 *
-		 * A common child type is the {@link module:ui/list/listview~ListView} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
-		 * See {@link module:ui/dropdown/utils~addListToDropdown} and
-		 * {@link module:ui/dropdown/utils~addToolbarToDropdown} to learn more about child views of dropdowns.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.children = this.createCollection();
 
 		this.setTemplate( {
@@ -113,8 +106,8 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 				 * provides the `focus()` method for the best user experience.
 				 *
 				 * @error ui-dropdown-panel-focus-child-missing-focus
-				 * @param {module:ui/view~View} childView
-				 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} dropdownPanel
+				 * @param childView
+				 * @param dropdownPanel
 				 */
 				logWarning( 'ui-dropdown-panel-focus-child-missing-focus', { childView: this.children.first, dropdownPanel: this } );
 			}
@@ -139,4 +132,7 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 	}
 }
 
+/**
+ * The position of the panel, relative to the parent.
+ */
 export type PanelPosition = 's' | 'se' | 'sw' | 'sme' | 'smw' | 'n' | 'ne' | 'nw' | 'nme' | 'nmw';

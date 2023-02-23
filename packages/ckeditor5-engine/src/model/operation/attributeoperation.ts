@@ -193,9 +193,9 @@ export default class AttributeOperation extends Operation {
 		return new AttributeOperation( Range.fromJSON( json.range, document ), json.key, json.oldValue, json.newValue, json.baseVersion );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `AttributeOperation( ${ this.baseVersion } ): ` +
-	// @if CK_DEBUG_ENGINE //		`"${ this.key }": ${ JSON.stringify( this.oldValue ) }` +
-	// @if CK_DEBUG_ENGINE //		` -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
+	// @if CK_DEBUG_ENGINE // 		`"${ this.key }": ${ JSON.stringify( this.oldValue ) }` +
+	// @if CK_DEBUG_ENGINE // 		` -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
 	// @if CK_DEBUG_ENGINE // }
 }

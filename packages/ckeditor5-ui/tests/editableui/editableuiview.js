@@ -43,6 +43,8 @@ describe( 'EditableUIView', () => {
 			expect( view.name ).to.be.null;
 			expect( view._externalElement ).to.be.undefined;
 			expect( view._editingView ).to.equal( editingView );
+			expect( view._hasExternalElement ).to.be.false;
+			expect( view.hasExternalElement ).to.be.false;
 
 			view.destroy();
 		} );
@@ -56,6 +58,8 @@ describe( 'EditableUIView', () => {
 			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
 			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._externalElement ).to.be.undefined;
+			expect( view._hasExternalElement ).to.be.false;
+			expect( view.hasExternalElement ).to.be.false;
 			expect( view.isRendered ).to.be.true;
 		} );
 
@@ -73,6 +77,7 @@ describe( 'EditableUIView', () => {
 			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
 			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._hasExternalElement ).to.be.true;
+			expect( view.hasExternalElement ).to.be.true;
 			expect( view.isRendered ).to.be.true;
 
 			view.destroy();

@@ -22,15 +22,15 @@ const icon = icons.paragraph;
  * This plugin is not loaded automatically by the {@link module:paragraph/paragraph~Paragraph} plugin. It must
  * be added manually.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
- *				toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
+ *     toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class ParagraphButtonUI extends Plugin {
 	/**

@@ -403,7 +403,7 @@ export default class Document extends EmitterMixin() {
 		} while ( wasFixed );
 	}
 
-	// @if CK_DEBUG_ENGINE // log( version = null ) {
+	// @if CK_DEBUG_ENGINE // public log( version: any = null ): void {
 	// @if CK_DEBUG_ENGINE // 	version = version === null ? this.version : version;
 	// @if CK_DEBUG_ENGINE // 	logDocument( this, version );
 	// @if CK_DEBUG_ENGINE // }

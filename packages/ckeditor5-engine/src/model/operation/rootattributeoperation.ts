@@ -18,7 +18,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
  *
  * This operation is needed, because root elements can't be changed through
- * @link module:engine/model/operation/attributeoperation~AttributeOperation}.
+ * {@link module:engine/model/operation/attributeoperation~AttributeOperation}.
  * It is because {@link module:engine/model/operation/attributeoperation~AttributeOperation}
  * requires a range to change and root element can't
  * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.
@@ -211,7 +211,7 @@ export default class RootAttributeOperation extends Operation {
 		return new RootAttributeOperation( document.getRoot( json.root )!, json.key, json.oldValue, json.newValue, json.baseVersion );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `RootAttributeOperation( ${ this.baseVersion } ): ` +
 	// @if CK_DEBUG_ENGINE //		`"${ this.key }": ${ JSON.stringify( this.oldValue ) }` +
 	// @if CK_DEBUG_ENGINE //		` -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;

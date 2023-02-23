@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Button from '../../button/button';
-import type ViewCollection from '../../viewcollection';
-
 /**
  * @module ui/dropdown/button/dropdownbutton
  */
 
+import type Button from '../../button/button';
+import type ViewCollection from '../../viewcollection';
+
 /**
  * The dropdown button interface.
- *
- * @interface module:ui/dropdown/button/dropdownbutton~DropdownButton
- * @extends module:ui/button/button~Button
  */
 export default interface DropdownButton extends Button {
     children: ViewCollection;
@@ -24,9 +21,8 @@ export default interface DropdownButton extends Button {
  * Fired when the dropdown should be opened.
  * It will not be fired when the button {@link #isEnabled is disabled}.
  *
- * @event open
+ * @eventName open
  */
-
 export type DropdownButtonOpenEvent = {
     name: 'open';
     args: [];

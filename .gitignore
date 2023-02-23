@@ -52,6 +52,7 @@ packages/ckeditor5-heading/src/**/*.js
 packages/ckeditor5-highlight/src/**/*.js
 packages/ckeditor5-horizontal-line/src/**/*.js
 packages/ckeditor5-html-embed/src/**/*.js
+packages/ckeditor5-html-support/src/**/*.js
 packages/ckeditor5-image/src/**/*.js
 packages/ckeditor5-indent/src/**/*.js
 packages/ckeditor5-language/src/**/*.js
@@ -67,7 +68,9 @@ packages/ckeditor5-paste-from-office/src/**/*.js
 packages/ckeditor5-remove-format/src/**/*.js
 packages/ckeditor5-restricted-editing/src/**/*.js
 packages/ckeditor5-select-all/src/**/*.js
+packages/ckeditor5-source-editing/src/**/*.js
 packages/ckeditor5-special-characters/src/**/*.js
+packages/ckeditor5-style/src/**/*.js
 packages/ckeditor5-table/src/**/*.js
 packages/ckeditor5-typing/src/**/*.js
 packages/ckeditor5-ui/src/**/*.js
@@ -78,5 +81,7 @@ packages/ckeditor5-watchdog/src/**/*.js
 packages/ckeditor5-widget/src/**/*.js
 packages/ckeditor5-word-count/src/**/*.js
 packages/*/src/**/*.d.ts
+packages/*/src/**/*.js.map
 src/**/*.js
+src/**/*.js.map
 src/**/*.d.ts

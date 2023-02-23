@@ -4,9 +4,7 @@
  */
 
 /**
- * @module style
+ * @module source-editing
  */
 
-export { default as Style } from './style';
-export { default as StyleEditing } from './styleediting';
-export { default as StyleUI } from './styleui';
+export { default as SourceEditing } from './sourceediting';
