@@ -20,15 +20,13 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
 	/**
 	 * The editor instance.
 	 *
-	 * Note that most editors implement the {@link module:core/editor/editorwithui~EditorWithUI} interface in addition
-	 * to the base {@link module:core/editor/editor~Editor} interface. However, editors with an external UI
-	 * (i.e. Bootstrap-based) or a headless editor may not implement the {@link module:core/editor/editorwithui~EditorWithUI}
-	 * interface.
+	 * Note that most editors implement the {@link module:core/editor/editor~Editor#ui} property.
+	 * However, editors with an external UI (i.e. Bootstrap-based) or a headless editor may not have this property or
+	 * throw an error when accessing it.
 	 *
 	 * Because of above, to make plugins more universal, it is recommended to split features into:
-	 *  - The "editing" part that only uses the {@link module:core/editor/editor~Editor} interface.
-	 *  - The "UI" part that uses both the {@link module:core/editor/editor~Editor} interface and
-	 *  the {@link module:core/editor/editorwithui~EditorWithUI} interface.
+	 *  - The "editing" part that uses the {@link module:core/editor/editor~Editor} class without `ui` property.
+	 *  - The "UI" part that uses the {@link module:core/editor/editor~Editor} class and accesses `ui` property.
 	 */
 	public readonly editor: Editor;
 
@@ -38,8 +36,10 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
 	 *
 	 * Plugin can be simply disabled like that:
 	 *
-	 *		// Disable the plugin so that no toolbars are visible.
-	 *		editor.plugins.get( 'TextTransformation' ).isEnabled = false;
+	 * ```ts
+	 * // Disable the plugin so that no toolbars are visible.
+	 * editor.plugins.get( 'TextTransformation' ).isEnabled = false;
+	 * ```
 	 *
 	 * You can also use {@link #forceDisabled} method.
 	 *
@@ -229,7 +229,7 @@ export type PluginConstructor<TContext = Editor> =
 
 /**
  * In most cases, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
- * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
+ * {@link module:utils/observablemixin~Observable} and is, therefore, more convenient:
  *
  * ```ts
  * class MyPlugin extends Plugin {
@@ -244,9 +244,7 @@ export type PluginConstructor<TContext = Editor> =
  * }
  * ```
  */
-export type PluginClassConstructor<TContext = Editor> = {
-	new( editor: TContext ): PluginInterface;
-};
+export type PluginClassConstructor<TContext = Editor> = new ( editor: TContext ) => PluginInterface;
 
 /**
  * In its minimal form a plugin can be a simple function that accepts {@link module:core/editor/editor~Editor the editor}
@@ -259,9 +257,7 @@ export type PluginClassConstructor<TContext = Editor> = {
  * }
  * ```
  */
-export type PluginFunctionConstructor<TContext = Editor> = {
-	( editor: TContext ): void;
-};
+export type PluginFunctionConstructor<TContext = Editor> = ( editor: TContext ) => void;
 
 /**
  * Static properties of a plugin.
@@ -323,7 +319,9 @@ export type PluginDependencies<TContext = Editor> = Array<PluginConstructor<TCon
  */
 export type LoadedPlugins = Array<PluginInterface>;
 
-// Helper function that forces plugin to be disabled.
+/**
+ * Helper function that forces plugin to be disabled.
+ */
 function forceDisable( evt: EventInfo<string, boolean> ) {
 	evt.return = false;
 	evt.stop();

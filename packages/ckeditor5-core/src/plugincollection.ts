@@ -13,7 +13,10 @@ import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginIn
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
-export default class PluginCollection<TContext extends object> extends EmitterMixin() {
+export default class PluginCollection<TContext extends object>
+	extends EmitterMixin()
+	implements Iterable<[ PluginConstructor<TContext>, PluginInterface ]>
+{
 	private _context: TContext;
 
 	private _plugins = new Map<PluginConstructor<TContext> | string, PluginInterface>();
@@ -618,6 +621,27 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	}
 }
 
+/**
+ * Helper type that maps plugin names to their types.
+ * It is meant to be extended with module augmentation.
+ *
+ * ```ts
+ * class MyPlugin extends Plugin {
+ * 	public static pluginName(): 'MyPlugin' {
+ * 		return 'MyPlugin';
+ * 	}
+ * }
+ *
+ * declare module '@ckeditor/ckeditor5-core' {
+ * 	interface PluginsMap {
+ * 		[ MyPlugin.pluginName ]: MyPlugin;
+ * 	}
+ * }
+ *
+ * // Returns `MyPlugin`.
+ * const myPlugin = editor.plugins.get( 'MyPlugin' );
+ * ```
+ */
 export interface PluginsMap {
 	[ name: string ]: PluginInterface;
 }
