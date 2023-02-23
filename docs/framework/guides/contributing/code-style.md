@@ -1016,7 +1016,7 @@ Then option `"stripInternal": true` in `tsconfig.json` can be used to remove the
 
 ```ts
 class ClassWithSecrets {
-    private _shouldNotBeEmitted: string;
+	private _shouldNotBeEmitted: string;
 }
 ```
 
@@ -1029,3 +1029,4 @@ class ClassWithSecrets {
 	 */
 	private _shouldNotBeEmitted: string;
 }
+```
