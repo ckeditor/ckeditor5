@@ -422,7 +422,7 @@ schema.register( 'mySelectable', {
 The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()`} method can later be used to check this property.
 
 <info-box>
-	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/tables-basic#table-selection table selection} plugin takes advantage of this fact and allows users to create rectangular selections made of multiple table cells.
+	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/tables#table-selection table selection} plugin takes advantage of this fact and allows users to create rectangular selections made of multiple table cells.
 </info-box>
 
 ### Content elements
