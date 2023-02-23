@@ -25,13 +25,14 @@ You may look for more interesting details in the [Tables in CKEditor 5](https://
 
 The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
-* Basic table features
-	* Table selection
-	* Typing around tables
-* Table and cell styling tools
-* Table column resize
-* Table caption
-* Nesting tables
+* {@link features/tables-basic Basic table features} allow users to insert tables into content, add or remove columns and rows and merge or split cells. They also provide support for:
+	* {@link features/tables-basic#table-selection Table selection}
+	* {@link features/tables-basic#typing-around-tables Typing around tables}
+	* Contextual toolbar
+* {@link features/tables-styling Table and cell styling tools} let you control the table's border color and style, background color, padding, or text alignment.
+* {@link features/tables-resize Table column resize} allows for easy column resize by dragging the border.
+* {@link features/tables-caption Table caption feature} allows for adding dedicated table headers with a description.
+* {@link features/tables-nesting Nesting tables} enables the user to put table into other tables, creating advanced layouts.
 
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:

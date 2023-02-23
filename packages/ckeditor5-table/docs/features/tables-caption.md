@@ -2,14 +2,12 @@
 menu-title: Table caption
 category: tables
 order: 50
-modified_at: 2023-02-22
+modified_at: 2022-05-19
 ---
 
-
-
-
-
 # Table caption
+
+{@snippet features/build-table-source}
 
 The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessibility point of view as they would be read by screen readers.
 

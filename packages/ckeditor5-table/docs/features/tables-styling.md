@@ -2,12 +2,14 @@
 menu-title: Styling tables
 category: tables
 order: 30
-modified_at: 2023-02-22
+modified_at: 2022-05-19
 ---
 
 # Table and cell styling tools
 
-CKEditor 5 comes with some additional tools that will help you modify **the look of tables and table cells**. For instance, you can control their border color and style, background color, padding, or text alignment. The table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} are available from the table toolbar on click, just like basic table features.
+{@snippet features/build-table-source}
+
+CKEditor 5 comes with some additional tools that will help you modify **the look of tables and table cells**. For instance, you can control their border color and style, background color, padding, or text alignment. The table and cell properties are available from the table toolbar on click, just like basic table features.
 
 <info-box>
 	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately. See the [installation](#installation) section to learn how to enable them in your editor.
@@ -15,7 +17,7 @@ CKEditor 5 comes with some additional tools that will help you modify **the look
 
 ## Demo
 
-Put the caret anywhere inside the table to invoke the table toolbar. Then click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button, a similar interface will appear with styling options for individual table cells.
+Put the caret anywhere inside the table to invoke the table toolbar. Then click the **"Table properties"** button {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}, a similar interface will appear with styling options for individual table cells.
 
 [Learn more](#configuring-styling-tools) about configuring color palettes in the table styling pop–up interfaces.
 

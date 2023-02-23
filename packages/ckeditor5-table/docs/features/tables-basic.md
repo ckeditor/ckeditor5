@@ -2,9 +2,11 @@
 menu-title: Basic table features
 category: tables
 order: 20
-modified_at: 2023-02-22
+modified_at: 2022-05-19
 ---
 # Basic table features
+
+{@snippet features/build-table-source}
 
 The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
 
@@ -16,7 +18,7 @@ The basic table features allow users to insert tables into content, add or remov
 
 The editor below shows the basic set of table features focusing on the **structure and semantics**. Use the **Insert table** toolbar button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} in the editor below to create new tables. 
 
-Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table. Click anywhere inside the table to invoke the table toolbar. 
+Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
 {@snippet features/table-basic}
 

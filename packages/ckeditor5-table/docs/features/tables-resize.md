@@ -2,13 +2,13 @@
 menu-title: Table column resizing
 category: tables
 order: 40
-modified_at: 2023-02-22
+modified_at: 2022-05-19
 ---
 # Table column resize
 
-The {@link module:table/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns. It gives the content creator full control over the column width. It is a great tool to control both the content and the look of the table. By resizing individual columns, the authors can adjust them to their needs, depending on content inside.
+{@snippet features/build-table-source}
 
-To resize a column, simply hover your pointer over the column edge until it gets highlighted. Just drag the column edge until you achieve the desired size and release.
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin adds support for resizing tables and table columns. It gives the content creator full control over the column width. It is a great tool to control both the content and the look of the table. By resizing individual columns, the authors can adjust them to their needs, depending on content inside.
 
 The column resize feature is compatible with the {@link features/export-word Export to Word} feature. The converter will respect the column width set in the editor and retain it in the effecting .DOCX file.
 
@@ -17,6 +17,8 @@ The column resize feature is compatible with the {@link features/export-word Exp
 </info-box>
 
 ## Demo
+
+To resize a column, simply hover your pointer over the column edge until it gets highlighted. Just drag the column edge until you achieve the desired size and release.
 
 {@snippet features/table-column-resize}
 

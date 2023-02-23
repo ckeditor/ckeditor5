@@ -2,10 +2,12 @@
 menu-title: Nesting tables
 category: tables
 order: 60
-modified_at: 2023-02-22
+modified_at: 2022-05-19
 ---
 
 # Nesting tables
+
+{@snippet features/build-table-source}
 
 CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
