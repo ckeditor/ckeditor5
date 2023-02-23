@@ -38,7 +38,7 @@ async function cleanReleaseArtifacts( options ) {
 
 	const removePatterns = [
 		...typeScriptPatterns,
-		'src/**/*.@(js|d.ts)'
+		'src/**/*.@(js|js.map|d.ts)'
 	];
 
 	for ( const pattern of removePatterns ) {
