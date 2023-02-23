@@ -28,20 +28,46 @@ npm install --save @ckeditor/ckeditor5-build-multi-root
 And use it in your website:
 
 ```html
-<div id="editor">
-	<p>This is the editor content.</p>
+<div id="toolbar"></div>
+<div id="header">
+	<p>Content for header.</p>
+</div>
+<div id="content">
+	<p>Main editor content.</p>
+</div>
+<div class="boxes">
+	<div class="box box-left editor">
+		<div id="left-side">
+			<p>Content for left-side box.</p>
+		</div>
+	</div>
+	<div class="box box-right editor">
+		<div id="right-side">
+			<p>Content for right-side box.</p>
+		</div>
+	</div>
 </div>
 <script src="./node_modules/@ckeditor/ckeditor5-build-multi-root/build/ckeditor.js"></script>
 <script>
 	MultiRootEditor
-		.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			window.editor = editor;
-		} )
-		.catch( error => {
-			console.error( 'There was a problem initializing the editor.', error );
-		} );
+			.create( {
+				header: document.getElementById( 'header' ),
+				content: document.getElementById( 'content' ),
+				leftSide: document.getElementById( 'left-side' ),
+				rightSide: document.getElementById( 'right-side' )
+			} )
+			.then( editor => {
+				window.editor = editor;
+
+				// Append toolbar to a proper container.
+				const toolbarContainer = document.getElementById( 'toolbar' );
+				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+			} )
+			.catch( error => {
+				console.error( 'There was a problem initializing the editor.', error );
+			} );
 </script>
+
 ```
 
 Or in your JavaScript application:
@@ -53,9 +79,18 @@ import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
 // const MultiRootEditor = require( '@ckeditor/ckeditor5-build-multi-root' );
 
 MultiRootEditor
-	.create( document.querySelector( '#editor' ) )
+	.create( {
+		header: document.getElementById( 'header' ),
+		content: document.getElementById( 'content' ),
+		leftSide: document.getElementById( 'left-side' ),
+		rightSide: document.getElementById( 'right-side' )
+	} )
 	.then( editor => {
 		window.editor = editor;
+
+		// Append toolbar to a proper container.
+		const toolbarContainer = document.getElementById( 'toolbar' );
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 	} )
 	.catch( error => {
 		console.error( 'There was a problem initializing the editor.', error );
