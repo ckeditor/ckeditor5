@@ -174,7 +174,7 @@ mix( Plugin, ObservableMixin );
  * called in parallel with other plugins' {@link module:core/plugin~PluginInterface#constructor constructors}.
  * This means the code of that plugin will be executed **before** {@link module:core/plugin~PluginInterface#init `init()`} and
  * {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
- * you cannot use it to extend other plugins' {@glink framework/guides/architecture/editing-engine#schema schema}
+ * you cannot use it to extend other plugins' {@glink framework/architecture/editing-engine#schema schema}
  * rules as they are defined later on during the `init()` stage.
  *
  * @interface PluginInterface

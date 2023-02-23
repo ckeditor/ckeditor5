@@ -43,7 +43,7 @@ import {
 
 /**
  * Editor's data model. Read about the model in the
- * {@glink framework/guides/architecture/editing-engine engine architecture} guide.
+ * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
 export default class Model extends ObservableMixin() {
 	/**
@@ -353,8 +353,8 @@ export default class Model extends ObservableMixin() {
 	 *
 	 * This is a low-level way of changing the model. It is exposed for very specific use cases (like the undo feature).
 	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~Writer `Writer`}.
-	 * See also {@glink framework/guides/architecture/editing-engine#changing-the-model Changing the model} section
-	 * of the {@glink framework/guides/architecture/editing-engine Editing architecture} guide.
+	 * See also {@glink framework/architecture/editing-engine#changing-the-model Changing the model} section
+	 * of the {@glink framework/architecture/editing-engine Editing architecture} guide.
 	 *
 	 * @param operation The operation to apply.
 	 */
@@ -383,7 +383,7 @@ export default class Model extends ObservableMixin() {
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
 	 *
-	 * **Note**: If you want to insert an {@glink framework/guides/deep-dive/schema#object-elements object element}
+	 * **Note**: If you want to insert an {@glink framework/deep-dive/schema#object-elements object element}
 	 * (e.g. a {@link module:widget/utils~toWidget widget}), see {@link #insertObject} instead.
 	 *
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
@@ -402,8 +402,8 @@ export default class Model extends ObservableMixin() {
 	 * Inserting elements and text nodes into the model is not enough to make CKEditor 5 render that content
 	 * to the user. CKEditor 5 implements a model-view-controller architecture and what `model.insertContent()` does
 	 * is only adding nodes to the model. Additionally, you need to define
-	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
-	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
+	 * {@glink framework/architecture/editing-engine#conversion converters} between the model and view
+	 * and define those nodes in the {@glink framework/architecture/editing-engine#schema schema}.
 	 *
 	 * So, while this method may seem similar to CKEditor 4 `editor.insertHtml()` (in fact, both methods
 	 * are used for paste-like content insertion), the CKEditor 5 method cannot be use to insert arbitrary HTML
@@ -534,7 +534,7 @@ export default class Model extends ObservableMixin() {
 	}
 
 	/**
-	 * Inserts an {@glink framework/guides/deep-dive/schema#object-elements object element} at a specific position in the editor content.
+	 * Inserts an {@glink framework/deep-dive/schema#object-elements object element} at a specific position in the editor content.
 	 *
 	 * This is a high-level API:
 	 * * It takes the {@link #schema schema} into consideration,
@@ -553,8 +553,8 @@ export default class Model extends ObservableMixin() {
 	 * * Inserting object into the model is not enough to make CKEditor 5 render that content to the user.
 	 * CKEditor 5 implements a model-view-controller architecture and what `model.insertObject()` does
 	 * is only adding nodes to the model. Additionally, you need to define
-	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
-	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
+	 * {@glink framework/architecture/editing-engine#conversion converters} between the model and view
+	 * and define those nodes in the {@glink framework/architecture/editing-engine#schema schema}.
 	 *
 	 * # Examples
 	 *

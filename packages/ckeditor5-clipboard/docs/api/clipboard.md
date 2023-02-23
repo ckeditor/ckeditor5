@@ -10,7 +10,7 @@ This package implements the clipboard (copy, cut, paste) support for CKEditor 5.
 
 ## Documentation
 
-See the {@link module:clipboard/clipboard~Clipboard} plugin documentation and the {@link framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+See the {@link module:clipboard/clipboard~Clipboard} plugin documentation and the {@link framework/deep-dive/clipboard clipboard deep dive guide}.
 
 This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 

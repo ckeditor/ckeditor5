@@ -14,7 +14,7 @@ The editor below presents integration between React library and a block widget f
 
 ## Detailed guide
 
-If you would like to create such a widget on your own, take a look at the {@link framework/guides/tutorials/using-react-in-a-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided.
+If you would like to create such a widget on your own, take a look at the {@link framework/tutorials/using-react-in-a-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided.
 
 ## Editor example configuration
 

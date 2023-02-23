@@ -14,7 +14,7 @@ The editor presented below offers a custom plugin that lets you add predefined p
 
 ## Detailed guide
 
-If you would like to create such a feature on your own, take a look at the {@link framework/guides/tutorials/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
+If you would like to create such a feature on your own, take a look at the {@link framework/tutorials/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
 
 ## Editor example configuration
 

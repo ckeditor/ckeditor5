@@ -105,7 +105,7 @@ import '../theme/clipboard.css';
 /**
  * The drag and drop feature. It works on top of the {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
  *
- * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
+ * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep dive guide}.
  *
  * @extends module:core/plugin~Plugin
  */

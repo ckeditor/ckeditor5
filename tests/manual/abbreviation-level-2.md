@@ -7,10 +7,10 @@ order: 25
 
 In this part of the tutorial we will focus on creating a dialog box, which will get user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
+We will pick up where we left off in the first part, so make sure you {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our starter files for this part.
 
 <info-box>
-As we will mostly work on the UI, we recommend reading up on our {@link framework/guides/architecture/ui-library UI library} before you start coding.
+As we will mostly work on the UI, we recommend reading up on our {@link framework/architecture/ui-library UI library} before you start coding.
 </info-box>
 
 If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -23,9 +23,9 @@ The most important part of the UI for this plugin is a dialog box with a form, w
 
 Let's start by creating a view with a form. It will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a separate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
 
-Our new `FormView` class will extend the {@link framework/guides/architecture/ui-library#views View} class, so start by importing it from the UI library.
+Our new `FormView` class will extend the {@link framework/architecture/ui-library#views View} class, so start by importing it from the UI library.
 
-In the `FormView` constructor we will define a template for our abbreviation form. We need to set a tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/guides/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
+In the `FormView` constructor we will define a template for our abbreviation form. We need to set a tag of the HTML element, and a couple of its attributes. To make sure our view is focusable, let's add {@link framework/deep-dive/focus-tracking#implementing-focusable-ui-components `tabindex="-1"`}.
 
 We will also pass the editor's {@link module:utils/locale~Locale} instance to the constructor, so we can localize all our UI components with the help of the {@link module:utils/locale~Locale#t `t()` function}.
 
@@ -202,7 +202,7 @@ In the `constructor`, create a {@link module:ui/viewcollection~ViewCollection} w
 
 Let's also add `render()` method to our `FormView`.  We will use there a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the submit event on a view instead.
 
-We also need a `focus()` method, which will focus on the first child, so our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/guides/deep-dive/focus-tracking focus tracking} can do in CKEditor 5, we will go into it more in next part of this tutorial.
+We also need a `focus()` method, which will focus on the first child, so our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/deep-dive/focus-tracking focus tracking} can do in CKEditor 5, we will go into it more in next part of this tutorial.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -523,7 +523,7 @@ class AbbreviationUI extends Plugin {
 	}
 }
 ```
-That's it for this part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding {@link framework/guides/architecture/core-editor-architecture#commands a command}, focus tracking, and more. We will do it in {@link framework/guides/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 the third part of the tutorial}, so head there.
+That's it for this part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding {@link framework/architecture/core-editor-architecture#commands a command}, focus tracking, and more. We will do it in {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 the third part of the tutorial}, so head there.
 
 ## Demo
 
