@@ -173,10 +173,10 @@ function getSelectedListBlocks( selection: DocumentSelection ) {
 }
 
 /**
- * Event fired by the {@link #execute} method.
+ * Event fired by the {@link ~DocumentListIndentCommand#execute} method.
  *
- * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
- * for example adjusting attributes of changed list items.
+ * It allows to execute an action after executing the {@link module:list/documentlist/documentlistcommand~DocumentListCommand#execute}
+ * method, for example adjusting attributes of changed list items.
  *
  * @internal
  * @eventName afterExecute

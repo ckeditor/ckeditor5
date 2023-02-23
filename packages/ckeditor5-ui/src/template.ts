@@ -393,7 +393,7 @@ export default class Template extends EmitterMixin() {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
 			 * the {@link module:ui/template~Template.extend extending} works for an element,
-			 * make sure it happens before {@link #render} is called.
+			 * make sure it happens before {@link ~Template#render} is called.
 			 *
 			 * @error template-extend-render
 			 */
@@ -2012,7 +2012,7 @@ export interface BindChain<TObservable> {
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
  */
-interface RenderData {
+export interface RenderData {
 
 	/**
 	 * A node which is being rendered.
@@ -2027,15 +2027,14 @@ interface RenderData {
 	intoFragment: boolean;
 
 	/**
-	 * Indicates whether the {@module:ui/template~RenderNodeOptions#node} has
-	 * been provided by {@module:ui/template~Template#apply}.
+	 * Indicates whether the {@link #node} has been provided by {@link module:ui/template~Template#apply}.
 	 */
 	isApplying: boolean;
 
 	/**
-	 * An object storing the data that helps {@module:ui/template~Template#revert}
+	 * An object storing the data that helps {@link module:ui/template~Template#revert}
 	 * bringing back an element to its initial state, i.e. before
-	 * {@module:ui/template~Template#apply} was called.
+	 * {@link module:ui/template~Template#apply} was called.
 	 */
 	revertData?: RevertData;
 }

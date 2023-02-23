@@ -194,7 +194,7 @@ export type ViewDocumentInputEvent = {
 };
 
 /**
- * The value of the {@link module:engine/view/document~ViewDocumentInputEvent} event.
+ * The value of the {@link ~ViewDocumentInputEvent} event.
  */
 export interface InputEventData extends DomEventData<InputEvent> {
 

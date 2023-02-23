@@ -268,8 +268,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 	protected get _editableElements(): unknown {
 		/**
 		 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
-		 * deprecated and will be removed in the near future. Please use {@link #setEditableElement `setEditableElement()`} and
-		 * {@link #getEditableElement `getEditableElement()`} methods instead.
+		 * deprecated and will be removed in the near future. Please use {@link ~EditorUI#setEditableElement `setEditableElement()`} and
+		 * {@link ~EditorUI#getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
 		 * @param editorUI Editor UI instance the deprecated property belongs to.
@@ -555,7 +555,7 @@ export interface FocusableToolbarOptions {
 
 	/**
 	 * Specify a callback executed after the toolbar instance DOM element loses focus upon
-	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
+	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link ~EditorUI#setEditableElement editable element}.
 	 */
 	afterBlur?: () => void;
 }

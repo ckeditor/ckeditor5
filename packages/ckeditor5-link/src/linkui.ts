@@ -364,7 +364,7 @@ export default class LinkUI extends Plugin {
 	 * Closes the form view. Decides whether the balloon should be hidden completely or if the action view should be shown. This is
 	 * decided upon the link command value (which has a value if the document selection is in the link).
 	 *
-	 * Additionally, if any {@link module:link/link~LinkConfig#decorators} are defined in the editor configuration, the state of
+	 * Additionally, if any {@link module:link/linkconfig~LinkConfig#decorators} are defined in the editor configuration, the state of
 	 * switch buttons responsible for manual decorator handling is restored.
 	 */
 	private _closeFormView(): void {

@@ -157,7 +157,7 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * }
  * ```
  *
- * In most cases however, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
+ * In most cases however, you will want to inherit from the {@link ~Plugin} class which implements the
  * {@link module:utils/observablemixin~Observable} and is, therefore, more convenient:
  *
  * ```ts
@@ -175,14 +175,14 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  *
  * The plugin class can have `pluginName` and `requires` static members. See {@link ~PluginStaticMembers} for more details.
  *
- * The plugin can also implement methods (e.g. {@link module:core/plugin~PluginInterface#init `init()`} or
- * {@link module:core/plugin~PluginInterface#destroy `destroy()`}) which, when present, will be used to properly
+ * The plugin can also implement methods (e.g. {@link ~PluginInterface#init `init()`} or
+ * {@link ~PluginInterface#destroy `destroy()`}) which, when present, will be used to properly
  * initialize and destroy the plugin.
  *
  * **Note:** When defined as a plain function, the plugin acts as a constructor and will be
- * called in parallel with other plugins' {@link module:core/plugin~PluginConstructor constructors}.
- * This means the code of that plugin will be executed **before** {@link module:core/plugin~PluginInterface#init `init()`} and
- * {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
+ * called in parallel with other plugins' {@link ~PluginConstructor constructors}.
+ * This means the code of that plugin will be executed **before** {@link ~PluginInterface#init `init()`} and
+ * {@link ~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
  * you cannot use it to extend other plugins' {@glink framework/guides/architecture/editing-engine#schema schema}
  * rules as they are defined later on during the `init()` stage.
  */
@@ -192,7 +192,7 @@ export interface PluginInterface {
 	 * The second stage (after plugin constructor) of the plugin initialization.
 	 * Unlike the plugin constructor this method can be asynchronous.
 	 *
-	 * A plugin's `init()` method is called after its {@link module:core/plugin~PluginStaticMembers#requires dependencies} are initialized,
+	 * A plugin's `init()` method is called after its {@link ~PluginStaticMembers#requires dependencies} are initialized,
 	 * so in the same order as the constructors of these plugins.
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
@@ -200,7 +200,7 @@ export interface PluginInterface {
 	init?(): Promise<unknown> | null | undefined | void;
 
 	/**
-	 * The third (and last) stage of the plugin initialization. See also {@link ~PluginConstructor} and {@link #init}.
+	 * The third (and last) stage of the plugin initialization. See also {@link ~PluginConstructor} and {@link ~PluginInterface#init}.
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
 	 */
@@ -216,23 +216,23 @@ export interface PluginInterface {
 
 /**
  * Creates a new plugin instance. This is the first step of the plugin initialization.
- * See also {@link #init} and {@link #afterInit}.
+ * See also {@link ~PluginInterface#init} and {@link ~PluginInterface#afterInit}.
  *
  * The plugin static properties should conform to {@link ~PluginStaticMembers `PluginStaticMembers` interface}.
  *
- * A plugin is always instantiated after its {@link module:core/plugin~PluginConstructor#requires dependencies} and the
- * {@link #init} and {@link #afterInit} methods are called in the same order.
+ * A plugin is always instantiated after its {@link ~PluginStaticMembers#requires dependencies} and the
+ * {@link ~PluginInterface#init} and {@link ~PluginInterface#afterInit} methods are called in the same order.
  *
- * Usually, you will want to put your plugin's initialization code in the {@link #init} method.
+ * Usually, you will want to put your plugin's initialization code in the {@link ~PluginInterface#init} method.
  * The constructor can be understood as "before init" and used in special cases, just like
- * {@link #afterInit} serves the special "after init" scenarios (e.g.the code which depends on other
- * plugins, but which does not {@link module:core/plugin~PluginStaticMembers#requires explicitly require} them).
+ * {@link ~PluginInterface#afterInit} serves the special "after init" scenarios (e.g.the code which depends on other
+ * plugins, but which does not {@link ~PluginStaticMembers#requires explicitly require} them).
  */
 export type PluginConstructor<TContext = Editor> =
 	( PluginClassConstructor<TContext> | PluginFunctionConstructor<TContext> ) & PluginStaticMembers<TContext>;
 
 /**
- * In most cases, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
+ * In most cases, you will want to inherit from the {@link ~Plugin} class which implements the
  * {@link module:utils/observablemixin~Observable} and is, therefore, more convenient:
  *
  * ```ts
@@ -266,7 +266,7 @@ export type PluginFunctionConstructor<TContext = Editor> = ( editor: TContext ) 
 /**
  * Static properties of a plugin.
  */
-export type PluginStaticMembers<TContext = Editor> = {
+export interface PluginStaticMembers<TContext = Editor> {
 
 	/**
 	 * An array of plugins required by this plugin.
@@ -314,7 +314,7 @@ export type PluginStaticMembers<TContext = Editor> = {
 	 * A flag which defines if a plugin is allowed or not allowed to be used directly by a {@link module:core/context~Context}.
 	 */
 	readonly isContextPlugin?: boolean;
-};
+}
 
 export type PluginDependencies<TContext = Editor> = Array<PluginConstructor<TContext> | string>;
 

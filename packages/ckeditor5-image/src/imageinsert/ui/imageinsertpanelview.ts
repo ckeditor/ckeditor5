@@ -255,7 +255,7 @@ export default class ImageInsertPanelView extends View {
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. by a click on {@link #insertButtonView}.
+ * e.g. by a click on {@link ~ImageInsertPanelView#insertButtonView}.
  *
  * @eventName submit
  */
@@ -265,7 +265,7 @@ export type SubmitEvent = {
 };
 
 /**
- * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, e.g. by a click on {@link ~ImageInsertPanelView#cancelButtonView}.
  *
  * @eventName cancel
  */

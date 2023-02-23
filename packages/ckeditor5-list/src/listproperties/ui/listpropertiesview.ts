@@ -413,7 +413,7 @@ export type StylesView = View & {
 };
 
 /**
- * Fired when the list start index value has changed via {@link #startIndexFieldView}.
+ * Fired when the list start index value has changed via {@link ~ListPropertiesView#startIndexFieldView}.
  *
  * @eventName listStart
  */
@@ -423,7 +423,7 @@ export type ListPropertiesViewListStartEvent = {
 };
 
 /**
- * Fired when the list order has changed (reversed) via {@link #reversedSwitchButtonView}.
+ * Fired when the list order has changed (reversed) via {@link ~ListPropertiesView#reversedSwitchButtonView}.
  *
  * @eventName listReversed
  */

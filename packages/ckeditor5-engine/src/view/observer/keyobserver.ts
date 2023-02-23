@@ -76,8 +76,7 @@ export type ViewDocumentKeyUpEvent = {
 };
 
 /**
- * The value of both events - {@link module:engine/view/document~ViewDocumentKeyDownEvent} and
- * {@link module:engine/view/document~ViewDocumentKeyUpEvent}.
+ * The value of both events - {@link ~ViewDocumentKeyDownEvent} and {@link ~ViewDocumentKeyUpEvent}.
  */
 export interface KeyEventData extends DomEventData<KeyboardEvent>, KeystrokeInfo {
 

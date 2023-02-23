@@ -45,7 +45,7 @@ export interface RestrictedEditingConfig {
 	 * ```
 	 *
 	 * To make a command always enabled (also outside non-restricted areas) use
-	 * {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingModeEditing#enableCommand} method.
+	 * {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand} method.
 	 */
 	allowedCommands: Array<string>;
 

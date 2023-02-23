@@ -656,7 +656,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 
 /**
  * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
- * {@link #convertChanges `convertChanges()`} will fire any conversion events.
+ * {@link ~DowncastDispatcher#convertChanges `convertChanges()`} will fire any conversion events.
  *
  * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
  * to trigger reconversion of an element when e.g. its attribute has changes.

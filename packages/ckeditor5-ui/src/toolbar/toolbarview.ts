@@ -552,7 +552,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 }
 
 /**
- * Fired when some toolbar {@link #items} were grouped or ungrouped as a result of some change
+ * Fired when some toolbar {@link ~ToolbarView#items} were grouped or ungrouped as a result of some change
  * in the toolbar geometry.
  *
  * **Note**: This event is always fired **once** regardless of the number of items that were be
@@ -1103,7 +1103,7 @@ export interface ToolbarOptions {
  * {@link module:ui/toolbar/toolbarview~ToolbarView#render rendering}. They can be enabled
  * conditionally, e.g. depending on the configuration of the toolbar.
  */
-interface ToolbarBehavior {
+export interface ToolbarBehavior {
 
 	/**
 	 * A method called after the toolbar has been {@link module:ui/toolbar/toolbarview~ToolbarView#render rendered}.

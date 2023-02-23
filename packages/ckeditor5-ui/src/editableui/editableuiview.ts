@@ -87,7 +87,8 @@ export default class EditableUIView extends View {
 
 	/**
 	 * Renders the view by either applying the {@link #template} to the existing
-	 * {@link #_editableElement} or assigning {@link #element} as {@link #_editableElement}.
+	 * {@link module:ui/editableui/editableuiview~EditableUIView#_editableElement} or assigning {@link #element}
+	 * as {@link #_editableElement}.
 	 */
 	public override render(): void {
 		super.render();

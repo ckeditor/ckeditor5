@@ -537,7 +537,7 @@ type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFrag
  * **Note:** Keep in mind that this object is shared by reference between all conversion callbacks that will be called.
  * This means that callbacks can override values if needed, and these values will be available in other callbacks.
  */
-export type UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment = ViewItem | ViewDocumentFragment> = {
+export interface UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment = ViewItem | ViewDocumentFragment> {
 
 	/**
 	 * The converted item.
@@ -555,7 +555,7 @@ export type UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment =
 	 * the converted element should be reflected by setting or modifying this property.
 	 */
 	modelRange: ModelRange | null;
-};
+}
 
 /**
  * Fired when an {@link module:engine/view/element~Element} is converted.

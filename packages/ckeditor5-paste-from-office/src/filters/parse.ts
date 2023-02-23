@@ -54,7 +54,7 @@ export function parseHtml( htmlString: string, stylesProcessor: StylesProcessor 
 }
 
 /**
- * The result of {@link #parseHtml}.
+ * The result of {@link ~parseHtml}.
  */
 export interface ParseHtmlResult {
 

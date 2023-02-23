@@ -359,7 +359,7 @@ type ConsumableType = ( typeof CONSUMABLE_TYPES )[ number ];
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
  */
-class ViewElementConsumables {
+export class ViewElementConsumables {
 	public readonly element: Node | DocumentFragment;
 
 	/**

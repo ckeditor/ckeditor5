@@ -457,8 +457,8 @@ export default class View extends ObservableMixin() {
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link #change} or {@link #forceRender} during rendering process,
-			 * * calling {@link #change} or {@link #forceRender} inside of
+			 * * calling {@link ~View#change} or {@link ~View#forceRender} during rendering process,
+			 * * calling {@link ~View#change} or {@link ~View#forceRender} inside of
 			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree

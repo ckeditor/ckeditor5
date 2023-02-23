@@ -93,7 +93,7 @@ export default class ComponentFactory {
 			/**
 			 * The required component is not registered in the component factory. Please make sure
 			 * the provided name is correct and the component has been correctly
-			 * {@link #add added} to the factory.
+			 * {@link ~ComponentFactory#add added} to the factory.
 			 *
 			 * @error componentfactory-item-missing
 			 * @param name The name of the missing component.

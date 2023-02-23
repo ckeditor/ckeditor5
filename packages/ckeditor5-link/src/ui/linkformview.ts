@@ -331,7 +331,7 @@ export default class LinkFormView extends View {
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * for example with a click on {@link #saveButtonView}.
+ * for example with a click on {@link ~LinkFormView#saveButtonView}.
  *
  * @eventName submit
  */
@@ -341,7 +341,7 @@ export type SubmitEvent = {
 };
 
 /**
- * Fired when the form view is canceled, for example with a click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, for example with a click on {@link ~LinkFormView#cancelButtonView}.
  *
  * @eventName cancel
  */
