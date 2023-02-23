@@ -8,11 +8,11 @@ order: 10
 
 Inserting {@link features/images-overview images} into content created with CKEditor 5 is a very common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
 
-* **Pasting** an image from the clipboard.
-* **Dragging** a file from the file system.
-* Selecting an image through a **file system dialog**.
-* Selecting an image from a **media management tool** in your application.
-* **Pasting** and URL to an image, either into the editor dialog or directly into the content.
+* **Pasting** an image from the clipboard
+* **Dragging** a file from the file system
+* Selecting an image through a **file system dialog**
+* Selecting an image from a **media management tool** in your application
+* **Pasting** a URL to an image, either into the editor dialog or directly into the content
 
 With the exception of pasting URLs, all other solutions require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
 
@@ -29,7 +29,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows you to {@link features/images-inserting paste image URLs directly}:
 
 {@snippet build-classic-source}
 
@@ -39,11 +39,11 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 
 ### CKBox
 
-CKBox is a modern SaaS file management platform with a clean interface, responsive images and top-notch UX. We keep expanding and updating it constantly, adding new features and functions. If you are a part of an organization with many different files to manage, such as images or documents, and regularly have issues finding the right files for the task at hand, CKBox is the right solution.
+CKBox is a modern SaaS file management platform with a clean interface, responsive images, and top-notch UX. We keep expanding and updating it constantly, adding new features and functions. If you are a part of an organization with many different files to manage, such as images or documents, and regularly have issues finding the right files for the task at hand, CKBox is the right solution.
 
 CKBox is a part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer.
 
-With the CKBox platform, users can upload files and categorize them into different groups. They can also change the way the files are organized as various interface modification options exist. For example, you can modify the image thumbnail sizes or decide how many files are displayed within the navigation that users can view. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date or size are also easily accessible and can be used to sort the files view alonside a regular search.
+With the CKBox platform, users can upload files and categorize them into different groups. They can also change the way the files are organized as various interface modification options exist. For example, you can modify the image thumbnail sizes or decide how many files are displayed within the navigation that users can view. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date or size are also easily accessible and can be used to sort the files view alongside a regular search.
 
 {@link features/ckbox **Learn how to use CKBox in your project**}.
 
@@ -57,7 +57,7 @@ Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.
 
 ### CKFinder
 
-The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based commercial file uploader with its server-side connectors (PHP, Java and ASP.NET).
+The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based commercial file uploader with its server-side connectors (PHP, Java, and ASP.NET).
 
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
@@ -66,10 +66,10 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 	But there are more cool features available, for instance:
 
-	* **uploading** using the full user interface,
-	* **browsing** previously uploaded images,
-	* **editing** images (cropping, resizing, etc.),
-	* **organizing** or deleting images.
+	* **Uploading** using the full user interface
+	* **Browsing** previously uploaded images
+	* **Editing** images (cropping, resizing, etc.)
+	* **Organizing** or deleting images
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
@@ -91,12 +91,12 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 
 ## Implementing your own upload adapter
 
-CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take the **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
+CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop your own upload adapter for CKEditor 5**}.
 
 ## Inserting images via URL
 
-CKEditor 5 supports inserting images into the document via pasting URLs. These may be pasted both into the image insertion dialog or, thanks to the `AutoImage` function, directly into content.
+CKEditor 5 supports inserting images into the document via pasting URLs. These may be pasted both into the image insertion dialog or, thanks to the `AutoImage` function, directly into the content.
 
 {@link features/images-inserting **Learn how to paste images into CKEditor 5 using URLs**}.

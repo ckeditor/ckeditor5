@@ -1,5 +1,5 @@
 ---
-title: Font
+title: Font family, size and color
 category: features
 ---
 

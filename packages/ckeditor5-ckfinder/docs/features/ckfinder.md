@@ -1,15 +1,15 @@
 ---
-category: features-image-upload
-menu-title: CKFinder file manager
-order: 40
+category: features-file-management
+menu-title: CKFinder
+order: 20
 badges: [ premium ]
 ---
 
 {@snippet features/build-ckfinder-source}
 
-# CKFinder file manager integration
+# CKFinder
 
-This CKFinder integration feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
+This CKFinder integration feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET, and Java and version 2.x for ASP and ColdFusion.
 
 <info-box info>
 	This is a premium feature and you need a license for it on top of your CKEditor 5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
@@ -21,16 +21,16 @@ This CKFinder integration feature allows you to insert images as well as links t
 
 This feature can be used in the rich-text editor in two different ways:
 
-* [**As a server-side connector only**](#configuring-the-image-upload-only) ([demo](#image-upload-only)). In this scenario, images which are dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
-* [**As a server and client-side file manager integration**](#configuring-the-full-integration) ([demo](#full-integration)). Images dropped and pasted directly into the editor are uploaded to the server (just like in the first option).
+* [**As a server-side connector only**](#configuring-the-image-upload-only) ([demo](#image-upload-only)). In this scenario, images dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
+* [**As a server and client-side file manager integration**](#configuring-the-full-integration) ([demo](#full-integration)). Images dropped or pasted directly into the editor are uploaded to the server (just like in the first option).
 
 	But there are more cool features available, for instance:
 
-	* **uploading** using the full user interface,
-	* uploading **multiple files** at once,
-	* **browsing** previously uploaded images,
-	* **editing** images (cropping, resizing, etc.),
-	* **organizing** or deleting images.
+	* **Uploading** using the full user interface
+	* Uploading **multiple files** at once
+	* **Browsing** previously uploaded images
+	* **Editing** images (cropping, resizing, etc.)
+	* **Organizing** or deleting images
 
 	Check out the [CKFinder file manager website](https://ckeditor.com/ckfinder/) to learn more about the features you can use in your project.
 
@@ -106,7 +106,7 @@ Then:
 * In order to display the toolbar button that opens the CKFinder file manager UI allowing the users to choose the files on the server, make sure that `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
 * Additionally, you can use {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} to define [CKFinder's options](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config). For example:
 	* You can define [`options.resourceType`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-resourceType) to tell CKFinder the specified resource type can be browsed when the user clicks the button.
-	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default it will be set to the UI language of the editor.
+	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default, it will be set to the UI language of the editor.
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -158,16 +158,16 @@ ClassicEditor
 
 ### Configuring allowed file types
 
-The allowed file types that can be uploaded should actually be configured in two places:
+The allowed file types that can be uploaded should be configured in two places:
 
-* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
-* On the server side, in CKFinder, restricting the file formats that are accepted in CKFinder.
+* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands
+* On the server side, in CKFinder, restricting the file formats that are accepted in CKFinder
 
 #### Client-side configuration
 
 Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
-By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
 
 #### Server-side configuration
 
@@ -207,8 +207,8 @@ ClassicEditor
 
 The {@link module:ckfinder/ckfinder~CKFinder} plugin registers:
 
-* The `'ckfinder'` UI button component.
-* The `'ckfinder'` command implemented by the {@link module:ckfinder/ckfindercommand~CKFinderCommand}.
+* The `'ckfinder'` UI button component
+* The `'ckfinder'` command implemented by the {@link module:ckfinder/ckfindercommand~CKFinderCommand}
 
 	You can open CKFinder by executing the following code:
 
@@ -218,8 +218,8 @@ The {@link module:ckfinder/ckfinder~CKFinder} plugin registers:
 
 Additionally, in the "image upload only" integration, you can use the following button and command registered by the {@link module:image/imageupload~ImageUpload} plugin:
 
-* The `'uploadImage'` UI button component.
-* The `'uploadImage'` command implemented by the {@link module:image/imageupload/uploadimagecommand~UploadImageCommand}.
+* The `'uploadImage'` UI button component
+* The `'uploadImage'` command implemented by the {@link module:image/imageupload/uploadimagecommand~UploadImageCommand}
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -233,4 +233,4 @@ See the {@link features/images-overview image feature guide} to find out more ab
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckfinder](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckfinder).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckfinder](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckfinder).
