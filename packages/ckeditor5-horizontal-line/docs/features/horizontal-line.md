@@ -5,17 +5,11 @@ menu-title: Horizontal line
 
 # Horizontal line
 
-The horizontal line feature allows inserting a horizontal line into the rich-text editor.
-
-Often known as the horizontal rule, it provides a visual way to separate the content. It may indicate a thematic shift (like a change of topic) between paragraphs or parts of the story or just be a simple graphic separator to help organize the content.
-
-<info-box info>
-	The horizontal line feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It's an easy way to organize the content or indicate a change of topic.
 
 ## Demo
 
-To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
+To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start a new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/horizontal-line}
 
@@ -33,6 +27,10 @@ There are more CKEditor 5 features that can help you organize your document cont
 * {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Installation
+
+<info-box info>
+	The horizontal line feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-horizontal-line`](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line) package:
 
@@ -77,4 +75,4 @@ editor.execute( 'horizontalLine' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line).
