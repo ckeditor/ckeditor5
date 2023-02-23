@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig.release.json",
   "compilerOptions": {
-    "sourceMap": true,
-    "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./build"
   },
