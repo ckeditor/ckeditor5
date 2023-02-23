@@ -6,9 +6,7 @@ menu-title: Block quote
 
 # Block quote
 
-The block quote feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
-
-The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
+The block quote feature lets you easily include block quotations or pull quotes in your content. It's also an attractive way to draw the readers' attention to selected parts of the text.
 
 <info-box info>
 	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
@@ -42,7 +40,7 @@ Here are some other CKEditor 5 features that you can use similarly to the block 
 
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
-* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it or justify.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it, or justify.
 * {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
 
 ## Installation
@@ -81,7 +79,7 @@ ClassicEditor
 
 By default, the editor supports inserting a block quote into another block quote.
 
-In order to disallow nesting block quotes, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor, hence it is best to implement it as a plugin:
+To disallow nesting block quotes, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor, hence it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingBlockQuotes( editor ) {
@@ -129,4 +127,4 @@ editor.execute( 'blockQuote' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-block-quote).
