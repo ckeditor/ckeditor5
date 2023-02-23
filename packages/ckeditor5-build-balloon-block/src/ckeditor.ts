@@ -34,6 +34,11 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
+/**
+ * @internal
+ */
+import '../theme/theme.css';
+
 export default class BalloonEditor extends BalloonEditorBase {}
 
 // Plugins to include in the build.

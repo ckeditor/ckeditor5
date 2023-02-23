@@ -4,7 +4,8 @@
     "sourceMap": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./build"
+    "outDir": "./build",
+    "stripInternal": true
   },
   "include": [
     "./src/",
