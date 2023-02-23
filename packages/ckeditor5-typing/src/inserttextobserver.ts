@@ -36,8 +36,6 @@ const TYPING_INPUT_TYPES = [
 
 /**
  * Text insertion observer introduces the {@link module:engine/view/document~Document#event:insertText} event.
- *
- * @extends module:engine/view/observer/observer~Observer
  */
 export default class InsertTextObserver extends Observer {
 	/**
@@ -139,12 +137,8 @@ export default class InsertTextObserver extends Observer {
  *
  * **Note**: This event is fired by the {@link module:typing/inserttextobserver~InsertTextObserver input feature}.
  *
- * @event module:engine/view/document~Document#event:insertText
- * @param {module:engine/view/observer/domeventdata~DomEventData} data
- * @param {String} data.text The text to be inserted.
- * @param {module:engine/view/selection~Selection} [data.selection] The selection into which the text should be inserted.
- * If not specified, the insertion should occur at the current view selection.
- * @param {module:engine/view/range~Range} [data.resultRange] The range that view selection should be set to after insertion.
+ * @eventName module:engine/view/document~Document#event:insertText
+ * @param data The event data.
  */
 export type ViewDocumentInsertTextEvent = {
 	name: 'insertText';
@@ -152,7 +146,20 @@ export type ViewDocumentInsertTextEvent = {
 };
 
 export interface InsertTextEventData extends DomEventData {
+
+	/**
+	 *  The text to be inserted.
+	 */
 	text: string;
+
+	/**
+	 * The selection into which the text should be inserted.
+	 * If not specified, the insertion should occur at the current view selection.
+	 */
 	selection: ViewSelection | ViewDocumentSelection;
+
+	/**
+	 * The range that view selection should be set to after insertion.
+	 */
 	resultRange?: ViewRange;
 }

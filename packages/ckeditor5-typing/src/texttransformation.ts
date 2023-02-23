@@ -80,8 +80,6 @@ const DEFAULT_TRANSFORMATIONS = [
 
 /**
  * The text transformation plugin.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class TextTransformation extends Plugin {
 	/**
@@ -128,8 +126,6 @@ export default class TextTransformation extends Plugin {
 
 	/**
 	 * Create new TextWatcher listening to the editor for typing and selection events.
-	 *
-	 * @private
 	 */
 	private _enableTransformationWatchers(): void {
 		const editor = this.editor;
@@ -196,13 +192,12 @@ export default class TextTransformation extends Plugin {
 	}
 }
 
-// Normalizes the configuration `from` parameter value.
-// The normalized value for the `from` parameter is a RegExp instance. If the passed `from` is already a RegExp instance,
-// it is returned unchanged.
-//
-// @param {String|RegExp} from
-// @returns {RegExp}
-function normalizeFrom( from: string | RegExp ) {
+/**
+ * Normalizes the configuration `from` parameter value.
+ * The normalized value for the `from` parameter is a RegExp instance. If the passed `from` is already a RegExp instance,
+ * it is returned unchanged.
+ */
+function normalizeFrom( from: string | RegExp ): RegExp {
 	if ( typeof from == 'string' ) {
 		return new RegExp( `(${ escapeRegExp( from ) })$` );
 	}
@@ -211,12 +206,11 @@ function normalizeFrom( from: string | RegExp ) {
 	return from;
 }
 
-// Normalizes the configuration `to` parameter value.
-// The normalized value for the `to` parameter is a function that takes an array and returns an array. See more in the
-// configuration description. If the passed `to` is already a function, it is returned unchanged.
-//
-// @param {String|Array.<null|String>|Function} to
-// @returns {Function}
+/**
+ * Normalizes the configuration `to` parameter value.
+ * The normalized value for the `to` parameter is a function that takes an array and returns an array. See more in the
+ * configuration description. If the passed `to` is already a function, it is returned unchanged.
+ */
 function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
 	if ( typeof to == 'string' ) {
 		return () => [ to ];
@@ -228,29 +222,28 @@ function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
 	return to;
 }
 
-// For given `position` returns attributes for the text that is after that position.
-// The text can be in the same text node as the position (`foo[]bar`) or in the next text node (`foo[]<$text bold="true">bar</$text>`).
-//
-// @param {module:engine/model/position~Position} position
-// @returns {Iterable.<*>}
+/**
+ * For given `position` returns attributes for the text that is after that position.
+ * The text can be in the same text node as the position (`foo[]bar`) or in the next text node (`foo[]<$text bold="true">bar</$text>`).
+ */
 function getTextAttributesAfterPosition( position: Position ) {
 	const textNode = position.textNode ? position.textNode : position.nodeAfter;
 
 	return textNode!.getAttributes();
 }
 
-// Returns a RegExp pattern string that detects a sentence inside a quote.
-//
-// @param {String} quoteCharacter The character to create a pattern for.
-// @returns {String}
-function buildQuotesRegExp( quoteCharacter: string ) {
+/**
+ * Returns a RegExp pattern string that detects a sentence inside a quote.
+ *
+ * @param quoteCharacter The character to create a pattern for.
+ */
+function buildQuotesRegExp( quoteCharacter: string ): RegExp {
 	return new RegExp( `(^|\\s)(${ quoteCharacter })([^${ quoteCharacter }]*)(${ quoteCharacter })$` );
 }
 
-// Reads text transformation config and returns normalized array of transformations objects.
-//
-// @param {module:typing/texttransformation~TextTransformationDescription} config
-// @returns {Array.<{from:String,to:Function}>}
+/**
+ * Reads text transformation config and returns normalized array of transformations objects.
+ */
 function normalizeTransformations( config: TextTransformationConfig ): Array<NormalizedTransformationConfig> {
 	const extra = config.extra || [];
 	const remove = config.remove || [];
@@ -271,11 +264,10 @@ function normalizeTransformations( config: TextTransformationConfig ): Array<Nor
 		} ) );
 }
 
-// Reads definitions and expands named groups if needed to transformation names.
-// This method also removes duplicated named transformations if any.
-//
-// @param {Array.<String|Object>} definitions
-// @returns {Array.<String|Object>}
+/**
+ * Reads definitions and expands named groups if needed to transformation names.
+ * This method also removes duplicated named transformations if any.
+ */
 function expandGroupsAndRemoveDuplicates(
 	definitions: Array<TextTransformationDescription | string>
 ): Array<TextTransformationDescription | string> {
