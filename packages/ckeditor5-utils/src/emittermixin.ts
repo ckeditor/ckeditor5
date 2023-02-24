@@ -36,9 +36,9 @@ const defaultEmitterClass = EmitterMixin( Object );
  * ```
  *
  * Read more about the concept of emitters in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep-dive guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/deep-dive/event-system Event system} deep-dive guide.
  *
  * @label EXTENDS
  */
@@ -61,9 +61,9 @@ export default function EmitterMixin<Base extends abstract new ( ...args: Array<
  * ```
  *
  * Read more about the concept of emitters in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/deep-dive/event-system Event system} deep dive guide.
  *
  * @label NO_ARGUMENTS
  */
@@ -397,9 +397,9 @@ export default function EmitterMixin( base?: abstract new( ...args: Array<any> )
  * ```
  *
  * Read more about the usage of this interface in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
- * * {@glink framework/guides/deep-dive/event-system Event system} deep-dive guide.
+ * * {@glink framework/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/deep-dive/event-system Event system} deep-dive guide.
  */
 export interface Emitter {
 

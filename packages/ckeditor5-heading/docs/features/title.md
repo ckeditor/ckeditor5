@@ -9,11 +9,19 @@ The title feature enables support for adding the title field to your document. I
 
 This feature can be used to implement a rich-text editor with a clear division of content into the title and body sections, similar to solutions available in Medium, Grammarly, Slack post editor or some content management systems.
 
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
+
 ## Demo
 
 Use the editor to create a document with clearly separated title and body sections. You can check the content of the title and body elements in the console below.
 
 {@snippet features/title}
+
+<info-box info>
+	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Related features
 
@@ -91,7 +99,7 @@ In the CKEditor 5 data model the document title is represented as follows:
 ```
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

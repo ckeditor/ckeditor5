@@ -32,6 +32,10 @@ Images can also be pre-resized using styling, as observed below (the last three 
 
 {@snippet features/image-resize}
 
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
 
 * Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`) as described in the {@link features/images-resizing#installation installation} of this guide.
@@ -315,7 +319,7 @@ The {@link module:image/imageresize~ImageResize} plugin registers:
 * The {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `'resizeImage'` command} that accepts the target width.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

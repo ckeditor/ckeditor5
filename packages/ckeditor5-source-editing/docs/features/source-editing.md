@@ -9,7 +9,7 @@ modified_at: 2021-06-28
 
 The source editing feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are high-level ones.
 
-The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
+The changes made to the document source will be applied to the editor's {@link framework/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
 <info-box>
 	Currently, the source editing mode is supported in the {@link examples/builds/classic-editor classic editor}. The source editing feature is not compatible with {@link features/collaboration CKEditor 5 collaboration features}. If you would like to use collaboration features, but for some reason you would like to also enable source editing, please [contact us](https://ckeditor.com/contact/).
@@ -89,7 +89,7 @@ The {@link module:source-editing/sourceediting~SourceEditing} plugin registers:
 * The `'sourceEditing'` UI button component.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

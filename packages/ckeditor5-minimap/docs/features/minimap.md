@@ -10,10 +10,12 @@ modified_at: 2021-07-12
 
 The content minimap feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
 
-You can try the minimap feature in the demo below.
-
 <info-box warning>
 	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
+</info-box>
+
+<info-box info>
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -189,5 +191,9 @@ DecoupledEditor
 The minimap feature uses `<iframe>` internally. For a proper look and operation, is is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimap~MinimapConfig#extraClasses detailed classes documentation} to learn more.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap).

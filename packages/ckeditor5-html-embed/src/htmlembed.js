@@ -112,7 +112,7 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
- * An output (safe) HTML that will be inserted into the {@glink framework/guides/architecture/editing-engine editing view}.
+ * An output (safe) HTML that will be inserted into the {@glink framework/architecture/editing-engine editing view}.
  *
  * @member {String} module:html-embed/htmlembed~HtmlEmbedSanitizeOutput#html
  */

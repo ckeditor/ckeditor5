@@ -83,13 +83,13 @@ To find out how to start with other builds check the [Predefined builds](https:/
 
 ### CKEditor 5 advanced installation
 
-For more advanced users, or those who need to integrate CKEditor 5 with their own applications, we have prepared several other, advanced methods to do it. You can [integrate the editor from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source.html), use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html) or utilize some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html), like [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html), [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html) or [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html).
+For more advanced users, or those who need to integrate CKEditor 5 with their own applications, we have prepared several other, advanced methods to do it. You can [integrate the editor from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source-webpack.html), use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html) or utilize some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html), like [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html), [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html) or [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html).
 
 #### CKEditor 5 Framework
 
 CKEditor 5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
 
-To find out how to start building your own editor from scratch go to the [CKEditor 5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html) section of CKEditor 5 documentation.
+To find out how to start building your own editor from scratch go to the [CKEditor 5 Framework overview](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) section of CKEditor 5 documentation.
 
 ## Documentation and FAQ
 
@@ -130,9 +130,9 @@ The development repository of CKEditor 5 is located at [https://github.com/ckedi
 
 CKEditor 5 is a modular, multi-package, [monorepo](https://en.wikipedia.org/wiki/Monorepo) project. It consists of several packages that create the editing framework, based on which the feature packages are implemented.
 
-The [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
+The [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/development-environment.html) can be found in the documentation.
 
-See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html) to learn how to contribute your code to the project.
+See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/contributing.html) to learn how to contribute your code to the project.
 
 ### Reporting issues and feature requests
 

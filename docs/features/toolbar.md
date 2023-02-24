@@ -35,6 +35,10 @@ This is how a simplified toolbar from the snippet above looks in the CKEditor 5 
 
 {@snippet features/toolbar-basic}
 
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
 ## Separating toolbar items
 
 You can use `'|'` to create a separator between groups of toolbar items. It works in both the basic and [extended](#extended-toolbar-configuration-format) configuration formats:
@@ -272,8 +276,12 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 
 The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor} scenarios).
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui).

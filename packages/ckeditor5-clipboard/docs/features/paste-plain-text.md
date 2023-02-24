@@ -73,3 +73,7 @@ If you think that support for any of the applications needs improvements, please
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).

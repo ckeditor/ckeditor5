@@ -545,7 +545,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 <info-box>
-	Check the {@link framework/guides/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
+	Check the {@link framework/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API
@@ -599,7 +599,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 <table>
 	<thead>
 		<tr>
-			<th>{@link framework/guides/architecture/core-editor-architecture#commands Command} name</th>
+			<th>{@link framework/architecture/core-editor-architecture#commands Command} name</th>
 			<th>Command class</th>
 			<th>Belongs to (top–level plugin)</th>
 		</tr>
@@ -749,7 +749,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 </table>
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Known issues

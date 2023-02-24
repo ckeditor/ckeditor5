@@ -110,7 +110,7 @@ Starting from v29.0.0, the existing {@link module:image/image~Image} plugin load
 * The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
-	**Note:** It is possible to load only one of these plugins, but only when {@link installation/advanced/integrating-from-source building the editor from source}.
+	**Note:** It is possible to load only one of these plugins, but only when {@link installation/advanced/integrating-from-source-webpack building the editor from source}.
 </info-box>
 
 ### Image caption
@@ -316,9 +316,9 @@ The following helpers were removed from the public API:
 
 Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-However, for integrations that {@link installation/advanced/integrating-from-source build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -340,9 +340,9 @@ Check out the comprehensive {@link features/images-installation installation gui
 
 Please note that the {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-However, for integrations that {@link installation/advanced/integrating-from-source build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider';

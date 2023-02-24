@@ -22,7 +22,7 @@ By default, content styles are loaded by the editor JavaScript which makes them 
 To avoid unnecessary dependencies in your front–end, use a stylesheet with a complete list of CKEditor 5 content styles used by all editor features. There are two ways to obtain it:
 
 * By taking it directly from [this guide](#the-full-list-of-content-styles) and saving it as a static resource in your application (e.g. `content-styles.css`) (**recommended**).
-* By generating it using a dedicated script. Learn more in the {@link framework/guides/contributing/development-environment#generating-content-styles Development environment} guide.
+* By generating it using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide.
 
 Load the `content-styles.css` file in your application by adding the following code to the template:
 
@@ -39,7 +39,7 @@ The content in the front–end of your application should now look the same as w
 </info-box>
 
 <info-box>
-	If you are not afraid to get your hands dirty, you can always create a custom CKEditor 5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link installation/advanced/integrating-from-source#option-extracting-css dedicated guide}.
+	If you are not afraid to get your hands dirty, you can always create a custom CKEditor 5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link installation/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
 </info-box>
 
 ## The full list of content styles
