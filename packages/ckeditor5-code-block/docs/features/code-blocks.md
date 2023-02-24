@@ -20,18 +20,6 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/ic
 
 Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
-## Related features
-
-Here are some CKEditor 5 features that you may find helpfully similar:
-* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
-
-<info-box>
-	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
-</info-box>
-
 ## Configuring code block languages
 
 Each code block can be assigned a programming language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:
@@ -213,6 +201,18 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Related features
+
+Here are some CKEditor 5 features that you may find helpfully similar:
+* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+
+<info-box>
+	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
 ## Contribute

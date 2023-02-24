@@ -18,10 +18,6 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-
 ## Installation
 
 <info-box info>
@@ -80,6 +76,11 @@ editor.execute( 'replaceAll', 'diesel', 'steam' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+
+## Related features
+
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 
 ## Contribute
 

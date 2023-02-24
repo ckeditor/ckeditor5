@@ -21,21 +21,6 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 * Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
-## Related features
-
-Check out also these CKEditor 5 features to gain better control over your content style and format:
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
-* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
-* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
-* {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
-* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-
-<info-box info>
-	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
-
 ## Available text styles
 
 | Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
@@ -128,6 +113,21 @@ editor.execute( 'bold' );
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Related features
+
+Check out also these CKEditor 5 features to gain better control over your content style and format:
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+* {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
+<info-box info>
+	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
 ## Contribute

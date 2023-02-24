@@ -30,15 +30,6 @@ Support for nested block quotes is provided as backward compatibility for loadin
 	If you would want to block the possibility to nest block quotes in your editor, refer to the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section to learn how to disable this functionality.
 </info-box>
 
-## Related features
-
-Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
-
-* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
-* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it, or justify.
-* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
-
 ## Installation
 
 <info-box info>
@@ -120,6 +111,16 @@ editor.execute( 'blockQuote' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+
+## Related features
+
+Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
+
+* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it, or justify.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
 
 ## Contribute
 

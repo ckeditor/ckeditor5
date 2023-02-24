@@ -17,15 +17,6 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-There are more CKEditor 5 features that can help you organize your document content better:
-* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
-* {@link features/page-break Page break} &ndash; Divide your document into pages.
-* {@link features/title Document title} &ndash; Clearly separate the title from the body.
-* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
-
 ## Installation
 
 <info-box info>
@@ -72,6 +63,15 @@ editor.execute( 'horizontalLine' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Related features
+
+CKEditor 5 has more features that can help you better organize your document content:
+* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
+* {@link features/page-break Page break} &ndash; Divide your document into pages.
+* {@link features/title Document title} &ndash; Clearly separate the title from the body.
+* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Contribute
 

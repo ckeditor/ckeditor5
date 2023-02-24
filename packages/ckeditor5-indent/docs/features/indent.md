@@ -17,18 +17,6 @@ Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} 
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-Here are some CKEditor 5 features that may help structure your content better:
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
-* {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
-* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
-
-<info-box info>
-	Block indentation can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
-
 ## Configuring the block indentation feature
 
 This feature offers a few configuration options that can be used to adjust the text block indentation behavior. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}.
@@ -193,6 +181,18 @@ The {@link module:indent/indentblock~IndentBlock} plugin registers the following
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Related features
+
+Here are some CKEditor 5 features that may help structure your content better:
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+
+<info-box info>
+	Block indentation can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
 ## Contribute
