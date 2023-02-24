@@ -5,11 +5,7 @@ category: features
 
 {@snippet features/build-select-all-source}
 
-The select all feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or the toolbar button. It is mostly useful when you need to copy all the content to another document or want to clear the editor area easily.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} as a keyboard shortcut. See the [installation](#installation) section for information on adding a toolbar button to your editor.
-</info-box>
+The select all feature lets you select the entire content using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or a toolbar button. This way you can clear or copy all the content in one move.
 
 ## Demo
 
@@ -32,7 +28,7 @@ Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@ic
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds (loaded by the {@link module:essentials/essentials~Essentials} plugin) as a keyboard shortcut. The installation instructions are for developers interested in building their own, custom rich text editor or willing to configure the toolbar button.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} (loaded by the {@link module:essentials/essentials~Essentials} plugin) as a keyboard shortcut. The installation instructions are for developers interested in building their own, custom rich text editor or willing to configure the toolbar button.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-select-all`](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all) package:
@@ -79,4 +75,4 @@ editor.execute( 'selectAll' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all).
