@@ -64,13 +64,13 @@ By default, the table caption is placed above the table. You can change the plac
 
 ### UI components
 
-The table caption plugin registers the following UI components:
+The {@link module:table/tablecaption~TableCaption} plugin registers the following UI component:
 
 * The `toggleTableCaption` button
 
 #### Toolbars
 
-The contextual table toolbar shows up when the whole table is selected, for instance using the widget handler or clicking anywhere inside a table. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content. This plugin allows adding the `toggleTableCaption` item to the toolbar.
+{@link module:table/tablecaption~TableCaption} plugin allows adding the `toggleTableCaption` item to the toolbar. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
 
 ### Editor commands
 

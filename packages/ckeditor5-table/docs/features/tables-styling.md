@@ -233,7 +233,7 @@ Read more about all supported properties for the {@link module:table/tableproper
 
 ### UI components
 
-The properties plugins register the following UI components:
+The {@link module:table/tableproperties~TableProperties} and {@link module:table/tablecellproperties~TableCellProperties} plugins register the following UI components:
 
 <table>
 	<thead>
@@ -252,12 +252,9 @@ The properties plugins register the following UI components:
 	</tbody>
 </table>
 
-* The `tableProperties` button
-* The `tableCellProperties` button
-
 #### Toolbars
 
-The contextual table toolbar shows up when the whole table is selected, for instance using the widget handler or clicking anywhere inside a table. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content. These plugins allow adding the `tableProperties` and `tableCellProperties` items to the toolbar.
+The {@link module:table/tableproperties~TableProperties} and {@link module:table/tablecellproperties~TableCellProperties} plugins allow adding the `tableProperties` and `tableCellProperties` items to the toolbar. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content. 
 
 ### Editor commands
 
