@@ -23,8 +23,8 @@ import Selection from './selection';
  * To manipulate a view which was or is being downcasted from the the model use the
  * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
  *
- * Read more about changing the view in the {@glink framework/guides/architecture/editing-engine#changing-the-view Changing the view}
- * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
+ * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
+ * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  *
  * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
  * `UpcastWriter` can be created wherever you need it:

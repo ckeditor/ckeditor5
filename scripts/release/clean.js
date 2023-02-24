@@ -34,7 +34,7 @@ cleanReleaseArtifacts( options ).then(
  */
 async function cleanReleaseArtifacts( options ) {
 	const typeScriptPackages = await findTypeScriptPackages( options.cwd );
-	const typeScriptPatterns = typeScriptPackages.map( pkg => `packages/${ pkg }/src/**/*.@(js|d.ts)` );
+	const typeScriptPatterns = typeScriptPackages.map( pkg => `packages/${ pkg }/src/**/*.@(js|js.map|d.ts)` );
 
 	const removePatterns = [
 		...typeScriptPatterns,

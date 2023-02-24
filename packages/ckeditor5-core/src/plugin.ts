@@ -183,7 +183,7 @@ export default class Plugin extends ObservableMixin() implements PluginInterface
  * called in parallel with other plugins' {@link ~PluginConstructor constructors}.
  * This means the code of that plugin will be executed **before** {@link ~PluginInterface#init `init()`} and
  * {@link ~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
- * you cannot use it to extend other plugins' {@glink framework/guides/architecture/editing-engine#schema schema}
+ * you cannot use it to extend other plugins' {@glink framework/architecture/editing-engine#schema schema}
  * rules as they are defined later on during the `init()` stage.
  */
 export interface PluginInterface {

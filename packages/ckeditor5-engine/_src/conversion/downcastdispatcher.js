@@ -78,7 +78,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * You can read more about conversion in the following guide:
  *
- * * {@glink framework/guides/deep-dive/conversion/downcast Downcast conversion}
+ * * {@glink framework/deep-dive/conversion/downcast Downcast conversion}
  *
  * An example of a custom converter for the downcast dispatcher:
  *

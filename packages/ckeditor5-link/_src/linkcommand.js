@@ -100,7 +100,7 @@ export default class LinkCommand extends Command {
 	 * # Decorators and model attribute management
 	 *
 	 * There is an optional argument to this command that applies or removes model
-	 * {@glink framework/guides/architecture/editing-engine#text-attributes text attributes} brought by
+	 * {@glink framework/architecture/editing-engine#text-attributes text attributes} brought by
 	 * {@link module:link/utils~ManualDecorator manual link decorators}.
 	 *
 	 * Text attribute names in the model correspond to the entries in the {@link module:link/link~LinkConfig#decorators configuration}.
