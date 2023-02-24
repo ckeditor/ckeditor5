@@ -51,70 +51,9 @@ ClassicEditor
 
 ## Common API
 
-### UI components
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin does not registers UI components.
 
-The {@link module:table/tablecolumnresize~TableColumnResize} plugin registers the following UI components:
-
-<table>
-	<thead>
-		<th>{@link features/toolbar Component} name</th>
-		<th>Registered by</th>
-	</thead>
-	<tbody>
-		<tr>
-			<td>The <code>'insertTable'</code> dropdown</td>
-			<td rowspan="4">{@link module:table/table~Table}</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableColumn'</code> dropdown</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableRow'</code> dropdown</td>
-		</tr>
-		<tr>
-			<td>The <code>'mergeTableCells'</code> split button</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableProperties'</code> button</td>
-			<td>{@link module:table/tableproperties~TableProperties}</td>
-		</tr>
-		<tr>
-			<td>The <code>'toggleTableCaption'</code> button</td>
-			<td>{@link module:table/tablecaption~TableCaption}</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableCellProperties'</code> button</td>
-			<td>{@link module:table/tablecellproperties~TableCellProperties}</td>
-		</tr>
-	</tbody>
-</table>
-
-#### Toolbars
-
-The {@link module:table/tablecolumnresize~TableColumnResize} plugin does not register toolbar items.
-
-### Editor commands
-
-<table>
-	<thead>
-		<tr>
-			<th>{@link framework/architecture/core-editor-architecture#commands Command} name</th>
-			<th>Command class</th>
-			<th>Belongs to (top–level plugin)</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><code>'insertTable'</code></td>
-			<td>{@link module:table/commands/inserttablecommand~InsertTableCommand}</td>
-			<td rowspan="17">{@link module:table/table~Table}</td>
-		</tr>
-		<tr>
-			<td><code>'insertTableColumnLeft'</code></td>
-			<td>{@link module:table/commands/insertcolumncommand~InsertColumnCommand}</td>
-		</tr>
-	</tbody>
-</table>
+<!-- Only drag handle, so this need to be checked. No commands, tho. -->
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
