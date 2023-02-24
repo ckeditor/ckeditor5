@@ -48,8 +48,7 @@ require( '@ckeditor/ckeditor5-dev-release-tools' )
 				'src/*.d.ts',
 				'build/ckeditor5-dll.js',
 				'build/ckeditor5-dll.manifest.json',
-				'build/translations/*.js',
-				'typings/*.d.ts'
+				'build/translations/*.js'
 			]
 		},
 		optionalFilesAndDirectories: {
