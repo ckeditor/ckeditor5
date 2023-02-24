@@ -29,9 +29,9 @@ Control the caption {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Tabl
 The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
 * {@link features/tables-basic Basic table features} allow users to insert tables into content, add or remove columns and rows and merge or split cells.
-* [Table selection](#table-selection)
-* [Typing around tables](#typing-around-tables)
-* [Contextual toolbar](#table-contextual-toolbar)
+* {@link features/tables-basic#table-selection Table selection}
+* {@link features/tables-basic#typing-around-tables Typing around tables}
+* {@link features/tables-basic#table-contextual-toolbar Contextual toolbar}
 * {@link features/tables-styling Table and cell styling tools} let you control the table's border color and style, background color, padding, or text alignment.
 * {@link features/tables-resize Table column resize} allows for easy column resize by dragging the border.
 * {@link features/tables-caption Table caption feature} allows for adding dedicated table headers with a description.

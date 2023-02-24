@@ -45,7 +45,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin available in all edito
 
 {@img assets/img/table-toolbar.png 569 An extended contextual toolbar.}
 
-The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demo above](#demo).
+The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demo above](#demo). Learn more about configuring contextual toolbar in the Common API section [below](#toolbars).
 
 ## Block vs inline content in table cells
 
@@ -259,7 +259,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 <table>
 	<thead>
 		<tr>
-			<th>{@link framework/guides/architecture/core-editor-architecture#commands Command} name</th>
+			<th>{@link framework/architecture/core-editor-architecture#commands Command} name</th>
 			<th>Command class</th>
 			<th>Belongs to (top–level plugin)</th>
 		</tr>
@@ -409,7 +409,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 </table>
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute
