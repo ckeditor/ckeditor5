@@ -31,7 +31,9 @@ import { cloneDeep } from 'lodash-es';
 /**
  * Upcast conversion helper functions.
  *
- * Learn more about {@glink framework/guides/deep-dive/conversion/upcast upcast helpers}.
+ * Learn more about {@glink framework/deep-dive/conversion/upcast upcast helpers}.
+ *
+ * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
 export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	/**

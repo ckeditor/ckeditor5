@@ -90,7 +90,7 @@ ClassicEditor
 
 Decorators are configured through definitions provided in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration option.
 
-Each decorator definition must have its own unique name. In case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/guides/architecture/editing-engine#text-attributes document model}.
+Each decorator definition must have its own unique name. In case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/architecture/editing-engine#text-attributes document model}.
 
 <info-box warning>
 	Link decorators work independently of one another and no conflict resolution mechanism exists. For example, configuring the `target` attribute using both an automatic and a manual decorator at the same time could end up with quirky results. The same applies if multiple manual or automatic decorators were defined for the same attribute.
@@ -190,7 +190,7 @@ ClassicEditor
 
 #### Adding attributes to links based on pre–defined rules (automatic decorators)
 
-Automatic link decorators match all links in the editor content against a {@link module:link/link~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/guides/architecture/editing-engine#conversion data downcast} only.
+Automatic link decorators match all links in the editor content against a {@link module:link/link~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/architecture/editing-engine#conversion data downcast} only.
 
 For instance, to create an automatic decorator that adds the `download="file.pdf"` attribute to all links ending with the `".pdf"` extension, you should add the following {@link module:link/link~LinkDecoratorAutomaticDefinition definition} to {@link module:link/link~LinkConfig#decorators `config.link.decorators`}:
 
@@ -324,7 +324,7 @@ The package provides a plugin for {@link module:link/linkimage~LinkImage linking
 Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

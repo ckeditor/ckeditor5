@@ -60,7 +60,9 @@ import { cloneDeep } from 'lodash-es';
 /**
  * Downcast conversion helper functions.
  *
- * Learn more about {@glink framework/guides/deep-dive/conversion/downcast downcast helpers}.
+ * Learn more about {@glink framework/deep-dive/conversion/downcast downcast helpers}.
+ *
+ * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
 export default class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	/**
@@ -195,7 +197,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * to the conversion process.
 	 *
 	 * You can read more about the element-to-element conversion in the
-	 * {@glink framework/guides/deep-dive/conversion/downcast downcast conversion} guide.
+	 * {@glink framework/deep-dive/conversion/downcast downcast conversion} guide.
 	 *
 	 * @param config Conversion configuration.
 	 * @param config.model The description or a name of the model element to convert.
@@ -2010,7 +2012,7 @@ function downcastElementToStructure(
 			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
 			 *
 			 * For instance, this may be the result of `myElement` allowing the content of
-			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 * {@glink framework/deep-dive/schema#generic-items `$block`} in its schema definition:
 			 *
 			 * ```ts
 			 * // Element definition in schema.

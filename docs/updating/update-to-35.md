@@ -99,7 +99,11 @@ Listed below are the most important changes that require your attention when upg
 ### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
 <info-box>
+<<<<<<< HEAD
 	This information applies only to integrators who develop their own editor creators from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
+=======
+	This information applies only to integrators who develop their own {@link framework/custom-editor-creator editor creators} from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
+>>>>>>> master
 </info-box>
 
 * The `enableToolbarKeyboardFocus()` helper that allowed the navigation has been removed. To bring this functionality back, use the {@link module:core/editor/editorui~EditorUI#addToolbar} method instead.
@@ -209,7 +213,7 @@ Keep in mind that you do not need to worry about showing and hiding your custom 
 
 In this release, several changes were made to improve the accessibility and overall contrast of the UI. Since we understand that some integrations may prefer the previous look of the editor, we prepared a CSS snippet you can use to bring it back.
 
-For the best results, make sure the custom properties listed below are set after the main editor style sheets. For more information, please check out the {@link framework/guides/theme-customization theme customization guide}.
+For the best results, make sure the custom properties listed below are set after the main editor style sheets. For more information, please check out the {@link framework/theme-customization theme customization guide}.
 
 ```css
 :root {

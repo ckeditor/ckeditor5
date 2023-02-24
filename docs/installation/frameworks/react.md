@@ -192,7 +192,7 @@ Read more about this option in the [Integrating CKEditor 5 from source](#integra
 
 ### Using the document editor build
 
-If you use the {@link framework/guides/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
+If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';

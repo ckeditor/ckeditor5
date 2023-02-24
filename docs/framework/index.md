@@ -60,6 +60,6 @@ There are a few groups of packages:
 
 To start using the framework refer to:
 
-* The {@link framework/guides/quick-start Quick start} guide.
-* The {@link framework/guides/architecture/intro Introduction to the framework architecture} guide.
-* The {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide.
+* The {@link framework/quick-start Quick start} guide.
+* The {@link framework/architecture/intro Introduction to the framework architecture} guide.
+* The {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide.
