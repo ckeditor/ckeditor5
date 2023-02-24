@@ -1,6 +1,6 @@
 # Widget selection handle
 
-**Note**: For the best testing, run manual tests adding Arabic to [additional languages configuration](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/testing-environment.html#running-manual-tests).
+**Note**: For the best testing, run manual tests adding Arabic to [additional languages configuration](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/testing-environment.html#running-manual-tests).
 
 ---
 

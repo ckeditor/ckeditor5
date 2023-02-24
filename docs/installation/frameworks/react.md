@@ -75,6 +75,7 @@ The `<CKEditor>` component supports the following properties:
 * `config` &ndash; The editor configuration. See the {@link installation/getting-started/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
+* `watchdogConfig` &ndash; {@link module:watchdog/watchdog~WatchdogConfig Configuration object} for the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html).
 * `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
@@ -191,7 +192,7 @@ Read more about this option in the [Integrating CKEditor 5 from source](#integra
 
 ### Using the document editor build
 
-If you use the {@link framework/guides/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
+If you use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
 ```jsx
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
@@ -527,7 +528,7 @@ Besides the CKEditor base and plugins, you need to install additional packages t
 Install necessary packages alongside the default theme using the following command.
 
 ```
-npm install --save \ 
+npm install --save \
 	@ckeditor/vite-plugin-ckeditor5 \
 	@ckeditor/ckeditor5-react \
 	@ckeditor/ckeditor5-theme-lark \

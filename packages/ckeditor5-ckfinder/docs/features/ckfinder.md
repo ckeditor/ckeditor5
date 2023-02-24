@@ -1,13 +1,13 @@
 ---
 category: features-file-management
-menu-title: CKFinder file manager
+menu-title: CKFinder
 order: 20
 badges: [ premium ]
 ---
 
 {@snippet features/build-ckfinder-source}
 
-# CKFinder file manager integration
+# CKFinder
 
 This CKFinder integration feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET, and Java and version 2.x for ASP and ColdFusion.
 
@@ -222,7 +222,7 @@ Additionally, in the "image upload only" integration, you can use the following 
 * The `'uploadImage'` command implemented by the {@link module:image/imageupload/uploadimagecommand~UploadImageCommand}
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?

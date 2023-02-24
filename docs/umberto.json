@@ -124,13 +124,47 @@
 		"features/collaboration/comments/comments-api.html": "api/comments.html",
 		"features/table.html": "features/tables/tables.html",
 		"features/ckbox.html": "features/file-management/ckbox.html",
-		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
-		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
-		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/plugins/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin-timestamp.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html",
-		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/guides/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/guides/quick-start.html": "framework/quick-start.html",
+		"framework/guides/development-tools.html": "framework/development-tools.html",
+		"framework/guides/architecture/intro.html": "framework/architecture/intro.html",
+		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
+		"framework/guides/architecture/editing-engine.html": "framework/architecture/editing-engine.html",
+		"framework/guides/architecture/ui-library.html": "framework/architecture/ui-library.html",
+		"framework/guides/ui/document-editor.html": "framework/deep-dive/ui/document-editor.html",
+		"framework/guides/ui/external-ui.html": "framework/deep-dive/ui/external-ui.html",
+		"framework/guides/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
+		"framework/guides/plugins/creating-simple-plugin.html": "framework/plugins/creating-simple-plugin-timestamp.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-1.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-2.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html",
+		"framework/guides/plugins/simple-plugin/abbreviation-plugin-level-3.html": "framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html",
+		"framework/guides/plugins/package-generator/javascript-package.html": "framework/plugins/package-generator/javascript-package.html",
+		"framework/guides/plugins/package-generator/typescript-package.html": "framework/plugins/package-generator/typescript-package.html",
+		"framework/guides/tutorials/implementing-a-block-widget.html": "framework/tutorials/implementing-a-block-widget.html",
+		"framework/guides/tutorials/implementing-an-inline-widget.html": "framework/tutorials/implementing-an-inline-widget.html",
+		"framework/guides/tutorials/data-from-external-source.html": "framework/tutorials/data-from-external-source.html",
+		"framework/guides/tutorials/using-react-in-a-widget.html": "framework/tutorials/using-react-in-a-widget.html",
+		"framework/guides/deep-dive/clipboard.html": "framework/deep-dive/clipboard.html",
+		"framework/guides/deep-dive/upload-adapter.html": "framework/deep-dive/upload-adapter.html",
+		"framework/guides/deep-dive/event-system.html": "framework/deep-dive/event-system.html",
+		"framework/guides/deep-dive/observables.html": "framework/deep-dive/observables.html",
+		"framework/guides/deep-dive/schema.html": "framework/deep-dive/schema.html",
+		"framework/guides/deep-dive/conversion/intro.html": "framework/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/downcast.html": "framework/deep-dive/conversion/downcast.html",
+		"framework/guides/deep-dive/conversion/upcast.html": "framework/deep-dive/conversion/upcast.html",
+		"framework/guides/deep-dive/conversion/helpers/intro.html": "framework/deep-dive/conversion/helpers/intro.html",
+		"framework/guides/deep-dive/conversion/helpers/downcast.html": "framework/deep-dive/conversion/helpers/downcast.html",
+		"framework/guides/deep-dive/conversion/helpers/upcast.html": "framework/deep-dive/conversion/helpers/upcast.html",
+		"framework/guides/deep-dive/ui/focus-tracking.html": "framework/deep-dive/ui/focus-tracking.html",
+		"framework/guides/deep-dive/ui/widget-internals.html": "framework/deep-dive/ui/widget-internals.html",
+		"framework/guides/deep-dive/ui/custom-editor-creator.html": "framework/deep-dive/ui/custom-editor-creator.html",
+		"framework/guides/deep-dive/ui/localization.html": "framework/deep-dive/ui/localization.html",
+		"framework/guides/contributing/contributing.html": "framework/contributing/contributing.html",
+		"framework/guides/contributing/development-environment.html": "framework/contributing/development-environment.html",
+		"framework/guides/contributing/testing-environment.html": "framework/contributing/testing-environment.html",
+		"framework/guides/contributing/code-style.html": "framework/contributing/code-style.html",
+		"framework/guides/contributing/package-metadata.html": "framework/contributing/package-metadata.html",
+		"framework/guides/contributing/git-commit-message-convention.html": "framework/contributing/git-commit-message-convention.html",
+		"framework/guides/support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/index.html": "installation/index.html",
 		"builds/guides/migrate.html": "updating/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/guides/update-to-25.html",
@@ -205,11 +239,11 @@
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
-		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
-		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/deep-dive/conversion/intro.html",
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/getting-started/quick-start.html#building-the-editor-from-source": "installation/getting-started/quick-start-other.html#building-the-editor-from-source",
 		"installation/getting-started/maintenance.html": "updating/maintaining.html",
@@ -222,7 +256,7 @@
 		"installation/overview.html": "installation/index.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
-		"framework/guides/plugins/package-generator.html": "framework/guides/plugins/package-generator/using-package-generator.html",
+		"framework/guides/plugins/package-generator.html": "framework/plugins/package-generator/using-package-generator.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html"
 	},
 	"scripts": {
@@ -478,77 +512,70 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Guides",
-					"id": "framework-guides",
-					"slug": "guides",
+					"name": "Architecture",
+					"id": "framework-architecture",
+					"slug": "architecture",
+					"order": 100
+				},
+				{
+					"name": "Developing custom plugins",
+					"id": "framework-plugins",
+					"slug": "plugins",
+					"order": 200,
 					"categories": [
 						{
-							"name": "Architecture",
-							"id": "framework-architecture",
-							"slug": "architecture",
-							"order": 100
+							"name": "Creating an abbreviation plugin",
+							"id": "abbreviation-plugin",
+							"slug": "abbreviation-plugin",
+							"order": 20
 						},
 						{
-							"name": "Developing custom plugins",
-							"id": "framework-plugins",
-							"slug": "plugins",
-							"order": 200,
-							"categories": [
-								{
-									"name": "Creating an abbreviation plugin",
-									"id": "abbreviation-plugin",
-									"slug": "abbreviation-plugin",
-									"order": 20
-								},
-								{
-									"name": "Package Generator",
-									"id": "package-generator",
-									"slug": "package-generator",
-									"order": 40
-								}
-							]
-						},
-						{
-							"name": "Advanced tutorials",
-							"id": "framework-tutorials",
-							"slug": "tutorials",
-							"order": 250
-						},
-						{
-							"name": "Deep dive",
-							"id": "framework-deep-dive",
-							"slug": "deep-dive",
-							"order": 300,
-							"categories": [
-								{
-									"name": "Conversion",
-									"id": "framework-deep-dive-conversion",
-									"slug": "conversion",
-									"order": 100,
-									"categories": [
-										{
-											"name": "Conversion helpers",
-											"id": "framework-deep-dive-conversion-helpers",
-											"slug": "helpers",
-											"order": 100
-										}
-									]
-								},
-								{
-									"name": "User interface",
-									"id": "framework-deep-dive-ui",
-									"slug": "ui",
-									"order": 110
-								}
-							]
-						},
-						{
-							"name": "Contributing",
-							"id": "framework-contributing",
-							"slug": "contributing",
-							"order": 400
+							"name": "Package Generator",
+							"id": "package-generator",
+							"slug": "package-generator",
+							"order": 40
 						}
 					]
+				},
+				{
+					"name": "Advanced tutorials",
+					"id": "framework-tutorials",
+					"slug": "tutorials",
+					"order": 250
+				},
+				{
+					"name": "Deep dive",
+					"id": "framework-deep-dive",
+					"slug": "deep-dive",
+					"order": 300,
+					"categories": [
+						{
+							"name": "Conversion",
+							"id": "framework-deep-dive-conversion",
+							"slug": "conversion",
+							"order": 100,
+							"categories": [
+								{
+									"name": "Conversion helpers",
+									"id": "framework-deep-dive-conversion-helpers",
+									"slug": "helpers",
+									"order": 100
+								}
+							]
+						},
+						{
+							"name": "User interface",
+							"id": "framework-deep-dive-ui",
+							"slug": "ui",
+							"order": 110
+						}
+					]
+				},
+				{
+					"name": "Contributing",
+					"id": "framework-contributing",
+					"slug": "contributing",
+					"order": 400
 				}
 			]
 		},

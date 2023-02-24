@@ -1,6 +1,6 @@
 ---
 category: features-file-management
-menu-title: CKBox file manager
+menu-title: CKBox
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
@@ -8,7 +8,7 @@ badges: [ premium ]
 
 {@snippet features/build-ckbox-source}
 
-# CKBox file manager
+# CKBox
 
 This CKBox integration feature allows you to effortlessly and intuitively insert images as well as links to other files into the rich-text editor content. CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
@@ -48,7 +48,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/1.3.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
 ```
 
 Then, install the [`@ckeditor/ckeditor5-ckbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package:
@@ -177,7 +177,7 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/1.3.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
 <script src="https://cdn.ckbox.io/CKBox/1.2.1/translations/es.js"></script>
 ```
 
@@ -234,7 +234,7 @@ The {@link module:ckbox/ckbox~CKBox} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
