@@ -559,7 +559,9 @@ export default abstract class Editor extends ObservableMixin() {
 	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
 	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
 	 */
-	public static create( ...args: Array<unknown> ): void {}
+	public static create( ...args: Array<unknown> ): void {
+		throw new Error( 'This is an abstract method.' );
+	}
 }
 
 /**
