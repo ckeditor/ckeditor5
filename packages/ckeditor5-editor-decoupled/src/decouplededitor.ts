@@ -250,7 +250,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js

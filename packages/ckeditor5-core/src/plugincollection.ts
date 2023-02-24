@@ -578,7 +578,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 
 		if ( this._plugins.has( pluginName ) ) {
 			/**
-			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
+			 * Two plugins with the same {@link module:core/plugin~PluginStaticMembers#pluginName} were loaded.
 			 * This will lead to runtime conflicts between these plugins.
 			 *
 			 * In practice, this warning usually means that new plugins were added to an existing CKEditor 5 build.
