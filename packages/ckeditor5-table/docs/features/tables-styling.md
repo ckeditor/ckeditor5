@@ -233,7 +233,7 @@ Read more about all supported properties for the {@link module:table/tableproper
 
 ### UI components
 
-The table plugins register the following UI components:
+The properties plugins register the following UI components:
 
 <table>
 	<thead>
@@ -242,25 +242,8 @@ The table plugins register the following UI components:
 	</thead>
 	<tbody>
 		<tr>
-			<td>The <code>'insertTable'</code> dropdown</td>
-			<td rowspan="4">{@link module:table/table~Table}</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableColumn'</code> dropdown</td>
-		</tr>
-		<tr>
-			<td>The <code>'tableRow'</code> dropdown</td>
-		</tr>
-		<tr>
-			<td>The <code>'mergeTableCells'</code> split button</td>
-		</tr>
-		<tr>
 			<td>The <code>'tableProperties'</code> button</td>
 			<td>{@link module:table/tableproperties~TableProperties}</td>
-		</tr>
-		<tr>
-			<td>The <code>'toggleTableCaption'</code> button</td>
-			<td>{@link module:table/tablecaption~TableCaption}</td>
 		</tr>
 		<tr>
 			<td>The <code>'tableCellProperties'</code> button</td>
@@ -269,11 +252,12 @@ The table plugins register the following UI components:
 	</tbody>
 </table>
 
+* The `tableProperties` button
+* The `tableCellProperties` button
+
 #### Toolbars
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
-* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'` and `'tableRow'` dropdowns and `'mergeTableCells'` split button.
-* The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
+The contextual table toolbar shows up when the whole table is selected, for instance using the widget handler or clicking anywhere inside a table. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content. These plugins allow adding the `tableProperties` and `tableCellProperties` items to the toolbar.
 
 ### Editor commands
 
@@ -286,80 +270,6 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td><code>'insertTable'</code></td>
-			<td>{@link module:table/commands/inserttablecommand~InsertTableCommand}</td>
-			<td rowspan="17">{@link module:table/table~Table}</td>
-		</tr>
-		<tr>
-			<td><code>'insertTableColumnLeft'</code></td>
-			<td>{@link module:table/commands/insertcolumncommand~InsertColumnCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'insertTableColumnRight'</code></td>
-			<td>{@link module:table/commands/insertcolumncommand~InsertColumnCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'insertTableRowAbove'</code></td>
-			<td>{@link module:table/commands/insertrowcommand~InsertRowCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'insertTableRowBelow'</code></td>
-			<td>{@link module:table/commands/insertrowcommand~InsertRowCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'removeTableColumn'</code></td>
-			<td>{@link module:table/commands/removecolumncommand~RemoveColumnCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'removeTableRow'</code></td>
-			<td>{@link module:table/commands/removerowcommand~RemoveRowCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'selectTableColumn'</code></td>
-			<td>{@link module:table/commands/selectcolumncommand~SelectColumnCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'selectTableRow'</code></td>
-			<td>{@link module:table/commands/selectrowcommand~SelectRowCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'setTableColumnHeader'</code></td>
-			<td>{@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'setTableRowHeader'</code></td>
-			<td>{@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'mergeTableCellRight'</code></td>
-			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'mergeTableCellLeft'</code></td>
-			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'mergeTableCellUp'</code></td>
-			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'mergeTableCellDown'</code></td>
-			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'splitTableCellVertically'</code></td>
-			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'splitTableCellHorizontally'</code></td>
-			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
-		</tr>
-		<tr>
-			<td><code>'toggleTableCaption'</code></td>
-			<td>{@link module:table/tablecaption/toggletablecaptioncommand~ToggleTableCaptionCommand}</td>
-			<td>{@link module:table/tablecaption~TableCaption}</td>
-		</tr>
 		<tr>
 			<td><code>'tableBorderColor'</code></td>
 			<td>{@link module:table/tableproperties/commands/tablebordercolorcommand~TableBorderColorCommand}</td>
