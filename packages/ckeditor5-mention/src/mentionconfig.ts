@@ -278,7 +278,7 @@ export type MentionFeedObjectItem = {
 	/**
 	 * Text inserted into the editor when creating a mention.
 	 */
-	text: string;
+	text?: string;
 };
 
 declare module '@ckeditor/ckeditor5-core' {
