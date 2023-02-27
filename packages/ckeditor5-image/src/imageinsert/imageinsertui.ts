@@ -176,9 +176,3 @@ export default class ImageInsertUI extends Plugin {
 		return dropdownView;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageInsertUI.pluginName ]: ImageInsertUI;
-	}
-}

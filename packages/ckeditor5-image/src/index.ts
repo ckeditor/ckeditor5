@@ -31,3 +31,21 @@ export { default as ImageUploadEditing, ImageUploadCompleteEvent } from './image
 export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
 export { default as ImageUploadUI } from './imageupload/imageuploadui';
 export { default as PictureEditing } from './pictureediting';
+
+export type { ImageConfig } from './imageconfig';
+export type { default as ImageBlock } from './imageblock';
+export type { default as ImageInline } from './imageinline';
+export type { default as ImageInsertViaUrl } from './imageinsertviaurl';
+export type { default as ImageUtils } from './imageutils';
+export type { default as ImageBlockEditing } from './image/imageblockediting';
+export type { default as ImageCaptionUI } from './imagecaption/imagecaptionui';
+export type { default as ImageTypeCommand } from './image/imagetypecommand';
+export type { default as InsertImageCommand } from './image/insertimagecommand';
+export type { default as ReplaceImageSourceCommand } from './image/replaceimagesourcecommand';
+export type { default as ToggleImageCaptionCommand } from './imagecaption/toggleimagecaptioncommand';
+export type { default as ResizeImageCommand } from './imageresize/resizeimagecommand';
+export type { default as ImageStyleCommand } from './imagestyle/imagestylecommand';
+export type { default as ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand';
+export type { default as UploadImageCommand } from './imageupload/uploadimagecommand';
+
+import '../plugin';

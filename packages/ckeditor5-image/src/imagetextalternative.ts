@@ -35,9 +35,3 @@ export default class ImageTextAlternative extends Plugin {
 		return 'ImageTextAlternative';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageTextAlternative.pluginName ]: ImageTextAlternative;
-	}
-}

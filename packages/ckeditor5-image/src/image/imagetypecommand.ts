@@ -100,10 +100,3 @@ export default class ImageTypeCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		imageTypeBlock: ImageTypeCommand;
-		imageTypeInline: ImageTypeCommand;
-	}
-}

@@ -75,9 +75,3 @@ export default class ImageCaptionUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageCaptionUI.pluginName ]: ImageCaptionUI;
-	}
-}

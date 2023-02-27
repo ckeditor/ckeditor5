@@ -65,9 +65,3 @@ export default class ImageToolbar extends Plugin {
 function normalizeDeclarativeConfig( config: Array<string | ImageStyleDropdownDefinition> ): Array<string> {
 	return config.map( item => isObject( item ) ? item.name : item );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageToolbar.pluginName ]: ImageToolbar;
-	}
-}

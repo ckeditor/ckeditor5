@@ -38,9 +38,3 @@ export default class ImageTextAlternativeEditing extends Plugin {
 		this.editor.commands.add( 'imageTextAlternative', new ImageTextAlternativeCommand( this.editor ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;
-	}
-}

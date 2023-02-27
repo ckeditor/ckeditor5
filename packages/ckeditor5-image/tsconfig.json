@@ -1,7 +1,8 @@
 {
-  "extends": "ckeditor5/tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": [
     "src",
-    "../../typings"
+    "plugin.d.ts",
+    "../../typings/"
   ]
 }
