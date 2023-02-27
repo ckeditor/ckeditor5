@@ -11,7 +11,7 @@ modified_at: 2022-05-19
 The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
 
 <info-box info>
-	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo

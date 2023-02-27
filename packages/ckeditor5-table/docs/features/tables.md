@@ -13,10 +13,6 @@ The table feature offers table creation and editing tools that help content auth
 
 You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
-<info-box info>
-	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
 ## Demo
 Use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} to insert a new table into the content. Click a table of table cell to invoke the contextual toolbar and add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 

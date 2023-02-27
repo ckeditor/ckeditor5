@@ -51,9 +51,9 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:table/tablecolumnresize~TableColumnResize} plugin does not registers UI components.
+The {@link module:table/tablecolumnresize~TableColumnResize} plugin does not register UI components.
 
-<!-- Only drag handle, so this need to be checked. No commands, tho. -->
+<!-- Only drag handle, so this needs to be checked. No commands, tho. -->
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
