@@ -33,9 +33,3 @@ export default class List extends Plugin {
 		return 'List';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ List.pluginName ]: List;
-	}
-}

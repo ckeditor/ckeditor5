@@ -41,7 +41,6 @@ import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
 import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
-import '../listconfig';
 import '../../theme/liststyles.css';
 
 /**
@@ -389,10 +388,4 @@ interface StyleDefinition {
 	 * The tooltip text of the button (shorter than verbose label).
 	 */
 	tooltip: string;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-	}
 }
