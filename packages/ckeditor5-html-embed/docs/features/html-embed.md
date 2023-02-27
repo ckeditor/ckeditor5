@@ -17,7 +17,7 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/ic
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## How it works
+## Additional feature information
 
 This feature lets you embed any HTML code and bypass CKEditor 5's filtering mechanisms. You can use it to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
 

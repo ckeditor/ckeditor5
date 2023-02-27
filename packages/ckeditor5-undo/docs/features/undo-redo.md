@@ -19,7 +19,7 @@ Alternatively, utilize the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## How it works
+## Additional feature information
 
 All operations of the undo feature are remembered and organized into batches that can later be easily undone or redone. Thanks to this approach, the feature can selectively revert past changes, not just the latest ones. This allows handling asynchronous actions such as image uploads without blocking the user from editing the document in the meantime.
 
