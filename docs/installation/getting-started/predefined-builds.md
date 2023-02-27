@@ -18,6 +18,7 @@ The following CKEditor 5 builds are currently available:
  * [Balloon editor](#balloon-editor)
  * [Balloon block editor](#balloon-block-editor)
  * [Document editor](#document-editor)
+ * [Multi-root editor](#multi-root-editor)
  * [Superbuild](#superbuild)
 
 
@@ -466,6 +467,78 @@ Full code example:
 </html>
 ```
 
+### Multi-root editor
+
+Multi-root editor is an editor type that features multiple, separate editable areas.
+
+The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
+
+
+{@img assets/img/editor-multi-root.png 925 Screenshot of a multi-root editor.}
+
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}.
+
+#### Installation example
+
+In your HTML page add an element that CKEditor 5 should make editable:
+
+```html
+<div id="editor"></div>
+```
+
+Load the multi-root editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/multi-root/ckeditor.js"></script>
+```
+
+Alternatively, you may install CKEditor 5 from `npm`:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-multi-root
+```
+
+Then bundle it together with your app.
+
+Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
+
+```html
+<script>
+	InlineEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+Full code example: <!-- update -->
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 - Inline editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/multi-root/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Inline editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		InlineEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+
 ### Superbuild
 
 The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
@@ -482,7 +555,7 @@ Please refer to the {@link installation/getting-started/quick-start#running-a-fu
 
 ## List of plugins included in the CKEditor 5 predefined builds
 
-The table below presents the list of all plugins included in various builds.
+The table below presents the list of all plugins included in various builds. <!-- update -->
 
 <figure class="table">
 	<table border="1" cellpadding="1" cellspacing="1">
