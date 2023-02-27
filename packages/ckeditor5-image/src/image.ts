@@ -12,6 +12,7 @@ import ImageBlock from './imageblock';
 import ImageInline from './imageinline';
 
 import '../theme/image.css';
+import './imageconfig';
 
 /**
  * The image plugin.
