@@ -7,11 +7,7 @@ menu-title: UI language
 
 # Setting the UI language
 
-The UI of the editor can be localized. Currently, 41 of the available languages are fully translated. 38 languages were translated professionally. There are also numerous other languages covered by community translators. A full list of professional translations is available in the [latter part of this document](#list-of-available-professional-translations).
-
-<info-box>
-	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
-</info-box>
+You can change the language of the editor's UI. On top of 41 fully translated languages (including [38 professional translations](#list-of-available-professional-translations)), there are many other languages covered by community translators.
 
 ## Demo
 
@@ -355,12 +351,16 @@ ClassicEditor
 	</tbody>
 </table>
 
+<info-box>
+	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
+</info-box>
+
 ## Related features
 
-There are other CKEditor 5 features that will help you control the content language:
+CKEditor 5 has other features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations).
