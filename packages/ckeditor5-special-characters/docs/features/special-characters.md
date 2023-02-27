@@ -5,11 +5,7 @@ menu-title: Special characters
 
 # Special characters
 
-The special characters feature provides the ability to insert special characters into the rich-text editor. These would typically include characters and signs that serve a specific purpose, like **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (e.g. arrows or bullets). The feature may be used to provide fast access to a broader selection of Unicode letters typically not accessible from the keyboard, like **umlauts** or **other diacritics**. It also provides support for **emojis**.
-
-<info-box info>
-	The Special characters feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The special characters feature lets you insert **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**). The feature also supports **emojis**.
 
 ## Demo
 
@@ -25,7 +21,7 @@ Use the toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons
 
 ## Configuration
 
-By default, a few categories of special characters have been defined. You can easily customize the special characters available in your WYSIWYG editor installation by adding new categories, extending the existing ones or removing them altogether.
+By default, a few categories of special characters have been defined. You can easily customize the special characters available in your WYSIWYG editor installation by adding new categories, extending the existing ones, or removing them altogether.
 
 ### Adding a new category
 
@@ -76,7 +72,7 @@ Below you can see a demo based on the example shown above. Use the special chara
 
 ### Adding characters to an existing category
 
-By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters into an existing category.
+By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters to an existing category.
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
@@ -176,6 +172,10 @@ ClassicEditor
 
 ## Installation
 
+<info-box info>
+	The special characters feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-special-characters`](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters) package:
 
 ```plaintext
@@ -213,4 +213,4 @@ The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters).
+The source code of the feature is available at GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters).
