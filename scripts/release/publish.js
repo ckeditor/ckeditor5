@@ -11,6 +11,13 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
+const minimist = require( 'minimist' );
+
+const argv = minimist( process.argv.slice( 2 ), {
+	string: [
+		'npm-tag'
+	]
+} );
 
 // This scripts publish changes.
 //
@@ -29,6 +36,7 @@ require( '@ckeditor/ckeditor5-dev-release-tools' )
 		cwd: process.cwd(),
 		packages: 'packages',
 		releaseBranch: 'release',
+		npmTag: argv[ 'npm-tag' ],
 		customReleases: [
 			'ckeditor5'
 		],
@@ -48,8 +56,7 @@ require( '@ckeditor/ckeditor5-dev-release-tools' )
 				'src/*.d.ts',
 				'build/ckeditor5-dll.js',
 				'build/ckeditor5-dll.manifest.json',
-				'build/translations/*.js',
-				'typings/*.d.ts'
+				'build/translations/*.js'
 			]
 		},
 		optionalFilesAndDirectories: {
