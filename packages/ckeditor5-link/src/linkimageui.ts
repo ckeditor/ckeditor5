@@ -15,7 +15,7 @@ import type {
 	ViewDocumentClickEvent
 } from 'ckeditor5/src/engine';
 
-import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
