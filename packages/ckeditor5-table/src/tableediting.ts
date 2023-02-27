@@ -217,12 +217,6 @@ export default class TableEditing extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableEditing.pluginName]: TableEditing;
-	}
-}
-
 /**
  * Returns fixed colspan and rowspan attrbutes values.
  *

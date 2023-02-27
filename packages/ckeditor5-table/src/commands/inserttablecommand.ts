@@ -17,8 +17,6 @@ import type {
 } from 'ckeditor5/src/engine';
 import type TableUtils from '../tableutils';
 
-import '../tableconfig';
-
 /**
  * The insert table command.
  *
@@ -85,13 +83,6 @@ export default class InsertTableCommand extends Command {
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		insertTable: InsertTableCommand;
 	}
 }
 

@@ -1,10 +1,10 @@
 {
-  "extends": "../../tsconfig.release.json",
-  "include": [
-    "./src/",
-    "../../typings/"
-  ],
-  "exclude": [
-    "./tests/"
-  ]
+	"extends": "../../tsconfig.release.json",
+	"include": [
+		"src",
+		"../../typings"
+	],
+	"exclude": [
+		"tests"
+	]
 }

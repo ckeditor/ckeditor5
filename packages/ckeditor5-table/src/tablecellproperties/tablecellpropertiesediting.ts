@@ -24,8 +24,6 @@ import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand'
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
 import { enableProperty } from '../utils/common';
 
-import '../tableconfig';
-
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
 
@@ -131,12 +129,6 @@ export default class TableCellPropertiesEditing extends Plugin {
 			'tableCellVerticalAlignment',
 			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableCellPropertiesEditing.pluginName]: TableCellPropertiesEditing;
 	}
 }
 

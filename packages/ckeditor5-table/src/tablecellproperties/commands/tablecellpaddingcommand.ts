@@ -78,10 +78,3 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 		return newValue;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableCellPadding: TableCellPaddingCommand;
-	}
-}

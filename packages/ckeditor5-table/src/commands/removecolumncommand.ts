@@ -81,13 +81,6 @@ export default class RemoveColumnCommand extends Command {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		removeTableColumn: RemoveColumnCommand;
-	}
-}
-
 /**
  * Returns a proper table cell to focus after removing a column.
  * - selection is on last table cell it will return previous cell.

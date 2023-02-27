@@ -1,14 +1,14 @@
 {
-  "extends": "../../tsconfig.release.json",
-  "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "outDir": "./build"
-  },
-  "include": [
-    "./src/",
-    "../../typings/"
-  ],
-  "exclude": [
-    "./tests/"
-  ]
+	"extends": "../../tsconfig.release.json",
+	"compilerOptions": {
+		"emitDeclarationOnly": true,
+		"outDir": "./build"
+	},
+	"include": [
+		"src",
+		"../../typings"
+	],
+	"exclude": [
+		"tests"
+	]
 }

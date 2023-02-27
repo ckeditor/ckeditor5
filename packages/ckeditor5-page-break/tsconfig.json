@@ -1,7 +1,9 @@
 {
-  "extends": "ckeditor5/tsconfig.json",
-  "include": [
-    "src",
-    "../../typings"
-  ]
+	"extends": "ckeditor5/tsconfig.json",
+	"include": [
+		"src",
+		"../../typings",
+		"../../packages/*/src/augmentation.ts",
+		"../../external/*/packages/*/src/augmentation.ts"
+	]
 }

@@ -73,13 +73,6 @@ export default class MergeCellsCommand extends Command {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		mergeTableCells: MergeCellsCommand;
-	}
-}
-
 /**
  *  Merges two table cells. It will ensure that after merging cells with empty paragraphs the resulting table cell will only have one
  * paragraph. If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.

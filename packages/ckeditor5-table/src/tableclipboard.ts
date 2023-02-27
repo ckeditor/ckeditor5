@@ -376,12 +376,6 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableClipboard.pluginName]: TableClipboard;
-	}
-}
-
 /**
  * Prepares a table for pasting and returns adjusted selection dimensions.
  */

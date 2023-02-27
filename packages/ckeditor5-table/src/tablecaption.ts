@@ -31,9 +31,3 @@ export default class TableCaption extends Plugin {
 		return [ TableCaptionEditing, TableCaptionUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableCaption.pluginName ]: TableCaption;
-	}
-}

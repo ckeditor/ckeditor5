@@ -60,10 +60,3 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 		return value;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableCellWidth: TableCellWidthCommand;
-	}
-}
