@@ -7,13 +7,7 @@ menu-title: Word and character count
 
 # Word count and character count
 
-The word count feature provides a possibility to track the number of words and characters written in the rich-text editor.
-
-It is a feature crucial for writing professionals but also for students and marketers. Keeping track of the document's word or character count helps planning the overall content volume, meeting assignment requirements or keeping within the preset text length goal. The word or character count aids quick assessment of work that was done and needs yet to be done as well as supports the writing process planning and management.
-
-<info-box info>
-	The Word count feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The word count feature lets you track the number of words and characters in the editor. This helps you control the volume of your content and check the progress of your work.
 
 ## Demo
 
@@ -49,15 +43,6 @@ ClassicEditor
 	} )
 	.catch( /* ... */ );
 ```
-
-## Related features
-
-CKEditor 5 provides other productivity-boosting features that you may find helpful:
-
-* {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
-* {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
-* {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
 
 ## Configuration
 
@@ -109,7 +94,7 @@ ClassicEditor
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature in action. See the code used to create the demo listed below in this section.
+Below you can play with a demo post editor with a soft 120 characters limit. The progress chart underneath it indicates how many characters there are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature in action. See the code used to create the demo listed below in this section.
 
 {@snippet features/word-count-update}
 
@@ -246,6 +231,10 @@ Here is the HTML structure used to create the customized word and character coun
 
 ## Installation
 
+<info-box info>
+	The Word count feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-word-count`](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count) package:
 
 ```bash
@@ -292,6 +281,15 @@ The {@link module:word-count/wordcount~WordCount} plugin provides:
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Related features
+
+CKEditor 5 provides other productivity-boosting features that you may find helpful:
+
+* {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
+* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
+* {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
+* {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
+
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-word-count).
