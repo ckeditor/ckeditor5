@@ -39,6 +39,32 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
 
+## Nesting tables
+
+{@snippet features/build-table-source}
+
+CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
+
+<info-box info>
+	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
+
+### Demo
+
+<!-- We may reconsider this demo, as the feature will still work in the first one -->
+
+You can test this feature in the demo below by adding a table in the *"abandoned"* section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+
+{@snippet features/table-nesting}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Known issues
+
+While the table nesting functionality is fully functional, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables ([#9475](https://github.com/ckeditor/ckeditor5/issues/9475)). Feel free to upvote 👍&nbsp; this issue on GitHub if it is important for you.
+
 ## Table contextual toolbar
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin available in all editor builds introduces a contextual toolbar for table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. If these features are configured, the toolbar will also contain buttons for captions {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} and table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} properties.
@@ -207,6 +233,41 @@ ClassicEditor
 Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
 
 {@snippet features/table-default-headings}
+
+### Disallow nesting tables
+
+By default, the editor allows nesting a table inside another table's cell.
+
+In order to disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
+
+```js
+function DisallowNestingTables( editor ) {
+	editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+}
+
+// Pass it via config.extraPlugins or config.plugins:
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ DisallowNestingTables ],
+
+		// The rest of the configuration.
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+<info-box>
+	Check the {@link framework/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
+</info-box>
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 
 ## Common API
 

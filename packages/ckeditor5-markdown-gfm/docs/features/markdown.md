@@ -112,7 +112,7 @@ ClassicEditor
 While the Markdown plugin is stable and ready to use, some issues are still being worked on. Feel free to upvote 👍&nbsp; these on GitHub if you would like to see this introduced.
 
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
-* The Markdown code generated with the Markdown output feature will not properly render {@link features/tables-nesting nested tables}. GitHUb issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
+* The Markdown code generated with the Markdown output feature will not properly render {@link features/tables-basic#nesting-tables nested tables}. GitHUb issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
 
 ## Contribute
 

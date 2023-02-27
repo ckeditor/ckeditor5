@@ -31,7 +31,7 @@ The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/tables-styling Table and cell styling tools} let you control the table's border color and style, background color, padding, or text alignment.
 * {@link features/tables-resize Table column resize} allows for easy column resize by dragging the border.
 * {@link features/tables-caption Table caption feature} allows for adding dedicated table headers with a description.
-* {@link features/tables-nesting Nesting tables} enables the user to put table into other tables, creating advanced layouts.
+* {@link features/tables-basic#nesting-tables Nesting tables} enables the user to put table into other tables, creating advanced layouts.
 
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
