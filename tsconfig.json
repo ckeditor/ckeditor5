@@ -15,6 +15,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "./typings/"
+    "./typings/",
+    "./packages/*/src/augmentation.ts",
+    "./external/*/packages/*/src/augmentation.ts"
   ]
 }
