@@ -4,7 +4,7 @@
 			"name": "Source editing",
 			"className": "SourceEditing",
 			"description": "Allows for viewing and editing the source of the document.",
-			"docs": "features/html/source-editing.html",
+			"docs": "features/source-editing.html",
 			"path": "src/sourceediting.js",
 			"uiComponents": [
 				{

@@ -111,7 +111,6 @@
 		"features/general-html-support.html": "features/html/general-html-support.html",
 		"features/html-comments.html": "features/html/html-comments.html",
 		"features/html-embed.html": "features/html/html-embed.html",
-		"features/source-editing.html": "features/html/source-editing.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/iframe-embed.html": "features/media-embed.html",
 		"features/video.html": "features/media-embed.html",

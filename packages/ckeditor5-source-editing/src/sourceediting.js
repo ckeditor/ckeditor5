@@ -25,7 +25,7 @@ const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
  *
  * It provides the possibility to view and edit the source of the document.
  *
- * For a detailed overview, check the {@glink features/html/source-editing source editing feature documentation} and the
+ * For a detailed overview, check the {@glink features/source-editing source editing feature documentation} and the
  * {@glink api/source-editing package page}.
  *
  * @extends module:core/plugin~Plugin

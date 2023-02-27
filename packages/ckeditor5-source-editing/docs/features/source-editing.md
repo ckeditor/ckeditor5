@@ -1,6 +1,5 @@
 ---
-category: features-html
-order: 50
+category: features
 menu-title: Source editing
 modified_at: 2021-06-28
 ---
