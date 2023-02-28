@@ -55,10 +55,13 @@ export default class FontSizeUI extends Plugin {
 
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
-				label: t( 'Font Size' ),
 				icon: fontSizeIcon,
-				tooltip: true
+				tooltip: t( 'Font Size' ),
+				role: 'combobox',
+				ariaHasPopup: 'listbox'
 			} );
+
+			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => value ? t( 'Font Size, ' + value ) : t( 'Font Size' ) );
 
 			dropdownView.extendTemplate( {
 				attributes: {
@@ -118,7 +121,9 @@ export default class FontSizeUI extends Plugin {
 /**
  * Prepares FontSize dropdown items.
  */
-function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeCommand ): Collection<ListDropdownItemDefinition> {
+function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeCommand ):
+	Collection<ListDropdownItemDefinition>
+{
 	const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 	for ( const option of options ) {
@@ -129,6 +134,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 				commandParam: option.model,
 				label: option.title,
 				class: 'ck-fontsize-option',
+				role: 'option',
 				withText: true
 			} )
 		};
@@ -143,6 +149,8 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 		}
 
 		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+
+		def.model.bind( 'ariaIsSelected' ).to( command, 'value', value => value === option.model );
 
 		// Add the option to the collection.
 		itemDefinitions.add( def );

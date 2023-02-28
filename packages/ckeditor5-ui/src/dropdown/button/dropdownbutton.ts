@@ -14,6 +14,7 @@ import type ViewCollection from '../../viewcollection';
  * The dropdown button interface.
  */
 export default interface DropdownButton extends Button {
+	ariaHasPopup: string | boolean;
     children: ViewCollection;
 }
 

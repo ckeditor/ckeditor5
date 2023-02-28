@@ -158,6 +158,11 @@ export default interface Button {
 	 * @observable
 	 */
 	labelStyle: string | undefined;
+
+	/**
+	 * @observable
+	 */
+	role: string;
 }
 
 /**

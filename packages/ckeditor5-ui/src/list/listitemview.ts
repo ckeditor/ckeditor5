@@ -52,7 +52,9 @@ export default class ListItemView extends View {
 					'ck',
 					'ck-list__item',
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
-				]
+				],
+				// Probably should also be configurable. We almost never use list items with just text, though.
+				role: 'presentation'
 			},
 
 			children: this.children
