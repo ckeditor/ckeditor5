@@ -1,6 +1,6 @@
 ---
 category: features-images
-menu-title: Overview
+menu-title: Basics
 order: 10
 modified_at: 2021-06-17
 ---
