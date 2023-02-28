@@ -155,17 +155,20 @@ export default class InlineEditorUI extends EditorUI {
 		const editingRoot = editingView.document.getRoot()!;
 		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
-		const placeholderText = editor.config.get( 'placeholder' ) as string ||
-			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
+		const placeholder = editor.config.get( 'placeholder' );
 
-		if ( placeholderText ) {
-			enablePlaceholder( {
-				view: editingView,
-				element: editingRoot,
-				text: placeholderText,
-				isDirectHost: false,
-				keepOnFocus: true
-			} );
+		if ( placeholder ) {
+			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
+
+			if ( placeholderText ) {
+				enablePlaceholder( {
+					view: editingView,
+					element: editingRoot,
+					text: placeholderText,
+					isDirectHost: false,
+					keepOnFocus: true
+				} );
+			}
 		}
 	}
 }
