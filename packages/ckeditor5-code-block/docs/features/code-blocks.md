@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The code block feature lets you insert and edit blocks of pre-formatted code. It's perfect for presenting programming- or software-related issues in an attractive, easily readable form.
+The code block feature lets you insert and edit blocks of pre-formatted code. It is perfect for presenting programming- or software-related issues in an attractive, easily readable form.
 
 ## Demo
 

@@ -41,7 +41,7 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 
 ### Supported input
 
-By default, each feature can upcast more than one type of content. Here's the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
+By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
 
 | Style feature | Supported input elements |
 |-----|---|
@@ -127,7 +127,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 <info-box info>
-	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
+	You can remove all basic text styles with the {@link features/remove-format remove format} feature.
 </info-box>
 
 ## Contribute

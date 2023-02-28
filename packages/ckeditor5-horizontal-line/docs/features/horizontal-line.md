@@ -5,7 +5,7 @@ menu-title: Horizontal line
 
 # Horizontal line
 
-The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It's an easy way to organize the content or indicate a change of topic.
+The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.
 
 ## Demo
 

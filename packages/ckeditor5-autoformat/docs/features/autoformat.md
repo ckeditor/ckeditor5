@@ -3,7 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-The autoformat feature lets you quickly format your content with Markdown-like shortcodes. This way you don't need to use toolbar buttons and dropdowns for the most common formatting features.
+The autoformat feature lets you quickly format your content with Markdown-like shortcodes. This way you do not need to use toolbar buttons and dropdowns for the most common formatting features.
 
 ## Demo
 
