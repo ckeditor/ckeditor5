@@ -144,7 +144,7 @@
 			"name": "Table toolbar",
 			"className": "TableToolbar",
 			"description": "Creates configurable toolbars for both the table feature and table content. They show up when the table widget or the content inside a table cell are selected.",
-			"docs": "features/tables/tables-basic.html#toolbars",
+			"docs": "features/tables/tables.html#toolbars",
 			"path": "src/tabletoolbar.js",
 			"requires": [
 				"Table"

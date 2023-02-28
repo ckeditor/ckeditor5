@@ -22,7 +22,7 @@ Listed below are the most important changes that require your attention when upg
 
 Prior to version 27.1.0 inserting a table into another table was not allowed.
 
-If you wish to bring back this restriction, see the {@link features/tables-basic#disallow-nesting-tables#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
+If you wish to bring back this restriction, see the {@link features/tables#disallow-nesting-tables#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
 
 ### Disallowing nesting block quotes
 
