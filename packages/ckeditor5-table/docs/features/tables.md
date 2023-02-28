@@ -1,5 +1,5 @@
 ---
-menu-title: Overview
+menu-title: Basics
 category: tables
 order: 10
 modified_at: 2023-02-22
