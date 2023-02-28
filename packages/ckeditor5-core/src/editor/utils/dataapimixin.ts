@@ -69,7 +69,7 @@ export interface DataApi {
 	 *
 	 * @param data Input data.
 	 */
-	setData( data: string ): void;
+	setData( data: string | Record<string, string> ): void;
 
 	/**
 	 * Gets the data from the editor.

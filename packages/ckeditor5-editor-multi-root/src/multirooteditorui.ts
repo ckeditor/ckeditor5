@@ -51,7 +51,7 @@ export default class MultiRootEditorUI extends EditorUI {
 
 		let lastFocusedEditableElement: HTMLElement | null;
 
-		for ( const editableName of Object.keys( this.view.editables ) ) {
+		for ( const editableName of Object.keys( view.editables ) ) {
 			view.editables[ editableName ].name = editableName;
 		}
 

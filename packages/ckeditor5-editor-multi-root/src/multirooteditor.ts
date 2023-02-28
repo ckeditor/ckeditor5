@@ -139,8 +139,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * 	// Remove the toolbar from DOM.
 	 * 	editor.ui.view.toolbar.element.remove();
 	 *
-	 * 	// Remove the editable from DOM.
-	 * 	editor.ui.view.editable.element.remove();
+	 * 	// Remove editable elements from DOM.
+	 * 	for ( const editable of Object.values( editor.ui.view.editables ) ) {
+	 * 	    editable.element.remove();
+	 * 	}
 	 *
 	 * 	console.log( 'Editor was destroyed' );
 	 * } );

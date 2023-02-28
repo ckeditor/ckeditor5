@@ -46,7 +46,10 @@ function destroyEditor() {
 	editor.destroy()
 		.then( () => {
 			editor.ui.view.toolbar.element.remove();
-			document.querySelector( '.editable-container' ).innerHTML = '';
+
+			for ( const editable of Object.values( editor.ui.view.editables ) ) {
+			    editable.element.remove();
+			}
 
 			window.editor = editor = null;
 
