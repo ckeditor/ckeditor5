@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout, console */
+/* globals document, console */
 
 import MultiRootEditorUI from '../src/multirooteditorui';
 import MultiRootEditorUIView from '../src/multirooteditoruiview';
@@ -148,7 +148,7 @@ describe( 'MultiRootEditor', () => {
 				editableElements = {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
-				}
+				};
 
 				editableElements.foo.innerHTML = editorData.foo;
 				editableElements.bar.innerHTML = editorData.bar;
@@ -364,7 +364,7 @@ describe( 'MultiRootEditor', () => {
 				editableElements = {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
-				}
+				};
 
 				editableElements.foo.innerHTML = editorData.foo;
 				editableElements.bar.innerHTML = editorData.bar;

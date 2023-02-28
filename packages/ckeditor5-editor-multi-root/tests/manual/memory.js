@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, document, window */
+/* globals console:false, document */
 
 import MultiRootEditor from '../../src/multirooteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';

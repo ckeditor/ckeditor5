@@ -53,8 +53,8 @@ export interface DataApi {
 	 * editor.setData( '<p>This is editor!</p>' );
 	 * ```
 	 *
-	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor root names and values
-	 * equal to the data that should be set in each root:
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding
+	 * to the editor root names and values equal to the data that should be set in each root:
 	 *
 	 * ```ts
 	 * editor.setData( {

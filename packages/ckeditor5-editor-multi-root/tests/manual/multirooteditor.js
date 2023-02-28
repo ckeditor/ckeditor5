@@ -19,7 +19,8 @@ const editorData = {
 	content: document.querySelector( '#editor-content' ),
 	outro: document.querySelector( '#editor-outro' )
 };
-let editor, editables;
+
+let editor;
 
 function initEditor() {
 	MultiRootEditor
@@ -33,7 +34,7 @@ function initEditor() {
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 
 			window.editor = editor = newEditor;
-			window.editables = editables = newEditor.ui.view.editables;
+			window.editables = newEditor.ui.view.editables;
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -46,7 +47,7 @@ function destroyEditor() {
 			editor.ui.view.toolbar.element.remove();
 
 			window.editor = editor = null;
-			window.editables = editables = null;
+			window.editables = null;
 
 			console.log( 'Editor was destroyed' );
 		} );

@@ -14,11 +14,11 @@ MultiRootEditor.create( {
 	leftSide: document.getElementById( 'left-side' ),
 	rightSide: document.getElementById( 'right-side' )
 } )
-.then( editor => {
-	window.editor = editor;
+	.then( editor => {
+		window.editor = editor;
 
-	document.getElementById( 'toolbar' ).appendChild( editor.ui.view.toolbar.element );
-} )
-.catch( error => {
-	console.error( 'There was a problem initializing the editor.', error );
-} );
+		document.getElementById( 'toolbar' ).appendChild( editor.ui.view.toolbar.element );
+	} )
+	.catch( error => {
+		console.error( 'There was a problem initializing the editor.', error );
+	} );

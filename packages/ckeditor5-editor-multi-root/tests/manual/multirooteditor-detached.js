@@ -48,7 +48,7 @@ function destroyEditor() {
 			editor.ui.view.toolbar.element.remove();
 
 			for ( const editable of Object.values( editor.ui.view.editables ) ) {
-			    editable.element.remove();
+				editable.element.remove();
 			}
 
 			window.editor = editor = null;

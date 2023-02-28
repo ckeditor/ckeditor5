@@ -6,16 +6,14 @@
 /* globals document, Event */
 
 import MultiRootEditor from '../src/multirooteditor';
-import MultiRootEditorUI from '../src/multirooteditorui';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 describe( 'MultiRootEditorUI', () => {
-	let editor, view, ui, viewElement;
+	let editor, view, ui;
 
 	testUtils.createSinonSandbox();
 
@@ -30,7 +28,6 @@ describe( 'MultiRootEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
-				viewElement = view.element;
 			} );
 	} );
 
