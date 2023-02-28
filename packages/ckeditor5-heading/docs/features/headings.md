@@ -188,6 +188,16 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+There are more CKEditor 5 features that can help you format your content:
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered lists you can style.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as headings) as you type with Markdown code.
+
 ## Common API
 
 The {@link module:heading/heading~Heading} plugin registers:
@@ -215,17 +225,6 @@ The {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin register
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-
-## Related features
-
-There are more CKEditor 5 features that can help you format your content:
-* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered lists you can style.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as headings) as you type with Markdown code.
 
 ## Contribute
 

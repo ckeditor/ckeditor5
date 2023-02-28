@@ -258,6 +258,16 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+
+## Related features
+
+CKEditor 5 provides other productivity-boosting features that you may find helpful:
+
+* {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
+* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
+* {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
+* {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
+
 ## Common API
 
 The {@link module:word-count/wordcount~WordCount} plugin provides:
@@ -280,15 +290,6 @@ The {@link module:word-count/wordcount~WordCount} plugin provides:
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-## Related features
-
-CKEditor 5 provides other productivity-boosting features that you may find helpful:
-
-* {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
-* {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
-* {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
 
 ## Contribute
 

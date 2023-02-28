@@ -47,6 +47,15 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+CKEditor 5 has more features that can help you better organize your document content:
+* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
+* {@link features/page-break Page break} &ndash; Divide your document into pages.
+* {@link features/title Document title} &ndash; Clearly separate the title from the body.
+* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+
 ## Common API
 
 The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin registers:
@@ -63,15 +72,6 @@ editor.execute( 'horizontalLine' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-## Related features
-
-CKEditor 5 has more features that can help you better organize your document content:
-* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
-* {@link features/page-break Page break} &ndash; Divide your document into pages.
-* {@link features/title Document title} &ndash; Clearly separate the title from the body.
-* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Contribute
 

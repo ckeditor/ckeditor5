@@ -327,6 +327,15 @@ Note that the editor will automatically distinguish text and block styles and gr
 
 At present, the style feature may clash with other features that bring in similar content (e.g. headings). Problems with overlapping styles applied to the same element may also occur.
 
+## Related features
+
+Check out also these CKEditor 5 features to gain better control over your content style and format:
+* {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
+
 ## Common API
 
 The {@link module:style/style~Style Style} plugin registers:
@@ -345,15 +354,6 @@ editor.execute( 'style', 'Article category' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-## Related features
-
-Check out also these CKEditor 5 features to gain better control over your content style and format:
-* {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-* {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 
 ## Contribute
 

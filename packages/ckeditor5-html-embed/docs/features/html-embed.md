@@ -130,6 +130,13 @@ The default settings of these libraries usually strip all potentially malicious 
 
 In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as stylesheets, images, and fonts.
 
+## Related features
+
+CKEditor 5 supports a wider range of embed and code features, including:
+
+* {@link features/media-embed Media embed} &ndash; Insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+* {@link features/code-blocks Code blocks} &ndash; Insert longer, multiline listings of pre-formatted code with a programming language assigned.
+
 ## Common API
 
 The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
@@ -152,13 +159,6 @@ editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-## Related features
-
-CKEditor 5 supports a wider range of embed and code features, including:
-
-* {@link features/media-embed Media embed} &ndash; Insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
-* {@link features/code-blocks Code blocks} &ndash; Insert longer, multiline listings of pre-formatted code with a programming language assigned.
 
 ## Contribute
 

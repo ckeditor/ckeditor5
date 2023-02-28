@@ -103,18 +103,6 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
-## Common API
-
-Each style feature registers a [command](#available-text-styles) which can be executed from code. For example, the following snippet will apply the bold style to the current selection in the editor:
-
-```js
-editor.execute( 'bold' );
-```
-
-<info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
-
 ## Related features
 
 Check out also these CKEditor 5 features to gain better control over your content style and format:
@@ -128,6 +116,18 @@ Check out also these CKEditor 5 features to gain better control over your conten
 
 <info-box info>
 	You can remove all basic text styles with the {@link features/remove-format remove format} feature.
+</info-box>
+
+## Common API
+
+Each style feature registers a [command](#available-text-styles) which can be executed from code. For example, the following snippet will apply the bold style to the current selection in the editor:
+
+```js
+editor.execute( 'bold' );
+```
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

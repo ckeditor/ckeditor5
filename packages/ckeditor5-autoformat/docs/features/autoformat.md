@@ -42,18 +42,6 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 * Code &ndash; Type ``` `text` ```,
 * Strikethrough &ndash; Type `~~text~~`.
 
-## Related features
-
-In addition to enabling automatic text formatting, you may want to check the following productivity features:
-
-* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
-* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
-* {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
-* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
-
-Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
-
 ## Installation
 
 <info-box info>
@@ -99,6 +87,18 @@ You can use these tools to create your own autoformatters. Check the [`Autoforma
 While the autoformatting feature is stable and ready to use, some issues were reported for it. Feel free to upvote 👍&nbsp; them on GitHub if they are important for you:
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * Setting a specific code block language is not supported yet (it defaults to plain text on insertion). GitHub issue: [#8598](https://github.com/ckeditor/ckeditor5/issues/8598).
+
+## Related features
+
+In addition to enabling automatic text formatting, you may want to check the following productivity features:
+
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
+
+Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
 ## Contribute
 

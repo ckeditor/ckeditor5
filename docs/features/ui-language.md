@@ -39,7 +39,7 @@ See the demo of the editor in Arabic:
 
 We are doing our best to deliver the best RTL support to our users and we constantly improve the editor. Check out the [RTL support](https://github.com/ckeditor/ckeditor5/issues/1151) issue on GitHub to learn more and stay up–to–date. Your feedback is much appreciated!
 
-## Loading additional languages from CDN, npm and zip file
+## Loading additional languages from CDN, npm, and a zip file
 
  By default, the editor will display in English. This is the language built into the `ckeditor.js` files. In order to change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 

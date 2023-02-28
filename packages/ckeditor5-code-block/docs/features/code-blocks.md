@@ -149,6 +149,18 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+Here are some CKEditor 5 features that you may find helpfully similar:
+* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+
+<info-box>
+	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
+</info-box>
+
 ## Common API
 
 The {@link module:code-block/codeblock~CodeBlock} plugin registers:
@@ -201,18 +213,6 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
-
-## Related features
-
-Here are some CKEditor 5 features that you may find helpfully similar:
-* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
-
-<info-box>
-	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
 ## Contribute

@@ -47,6 +47,14 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+Here are some useful CKEditor 5 features that you can use together with the page break plugin for an all-around paged editing experience:
+
+* The {@link features/pagination pagination feature} allows you to see where page breaks would be after the document is [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html).
+* The [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) feature will allow you to generate editable, paged `.docx` files out of your editor-created content.
+* The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) feature will allow you to generate portable, paged PDF files out of your editor-created content.
+
 ## Common API
 
 The {@link module:page-break/pagebreak~PageBreak} plugin registers:
@@ -64,14 +72,6 @@ editor.execute( 'pageBreak' );
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
-## Related features
-
-Here are some useful CKEditor 5 features that you can use together with the page break plugin for an all-around paged editing experience:
-
-* The {@link features/pagination pagination feature} allows you to see where page breaks would be after the document is [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html).
-* The [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) feature will allow you to generate editable, paged `.docx` files out of your editor-created content.
-* The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) feature will allow you to generate portable, paged PDF files out of your editor-created content.
 
 ## Contribute
 
