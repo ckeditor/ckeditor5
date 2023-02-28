@@ -949,8 +949,37 @@ export default class Model extends ObservableMixin() {
 		return ModelRange._createOn( item );
 	}
 
+	/**
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * or creates an empty selection if no arguments were passed.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 *
+	 * ```ts
+	 * // Creates selection at the given offset in the given element.
+	 * const paragraph = writer.createElement( 'paragraph' );
+	 * const selection = writer.createSelection( paragraph, offset );
+	 *
+	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 * // Additional options (`'backward'`) can be specified as the last argument.
+	 *
+	 * // Creates backward selection.
+	 * const selection = writer.createSelection( element, 'in', { backward: true } );
+	 * ```
+	 *
+	 * See also: {@link #createSelection:SELECTABLE `createSelection( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -985,24 +1014,18 @@ export default class Model extends ObservableMixin() {
 	 * const position = writer.createPositionFromPath( root, path );
 	 * const selection = writer.createSelection( position );
 	 *
-	 * // Creates selection at the given offset in the given element.
-	 * const paragraph = writer.createElement( 'paragraph' );
-	 * const selection = writer.createSelection( paragraph, offset );
-	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = writer.createSelection( paragraph, 'in' );
-	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = writer.createSelection( paragraph, 'on' );
-	 *
 	 * // Additional options (`'backward'`) can be specified as the last argument.
 	 *
 	 * // Creates backward selection.
 	 * const selection = writer.createSelection( range, { backward: true } );
 	 * ```
+	 *
+	 * See also: {@link #createSelection:NODE_OFFSET `createSelection( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
+
 	public createSelection( ...args: ConstructorParameters<typeof ModelSelection> ): ModelSelection {
 		return new ModelSelection( ...args );
 	}

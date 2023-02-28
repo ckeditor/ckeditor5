@@ -293,6 +293,7 @@ export default class Mapper extends EmitterMixin() {
 	 *
 	 * **Note:** {@link module:engine/view/uielement~UIElement} does not have corresponding element in model.
 	 *
+	 * @label ELEMENT
 	 * @param viewElement View element.
 	 * @returns Corresponding model element or `undefined` if not found.
 	 */
@@ -301,6 +302,7 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding model document fragment.
 	 *
+	 * @label DOCUMENT_FRAGMENT
 	 * @param viewDocumentFragment View document fragment.
 	 * @returns Corresponding model document fragment or `undefined` if not found.
 	 */
@@ -313,6 +315,7 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding view element.
 	 *
+	 * @label ELEMENT
 	 * @param modelElement Model element.
 	 * @returns Corresponding view element or `undefined` if not found.
 	 */
@@ -321,6 +324,7 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding view document fragment.
 	 *
+	 * @label DOCUMENT_FRAGMENT
 	 * @param modelDocumentFragment Model document fragment.
 	 * @returns Corresponding view document fragment or `undefined` if not found.
 	 */

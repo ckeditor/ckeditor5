@@ -1868,6 +1868,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label ATTRIBUTE
 	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
 	 */
 	to<TAttribute extends keyof TObservable & string>(
@@ -1915,6 +1916,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label ATTRIBUTE_CALLBACK
 	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
 	 * @param callback Allows for processing of the value. Accepts `Node` and `value` as arguments.
 	 */
@@ -1964,6 +1966,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label EVENT
 	 * @param eventNameOrCallback A DOM event name or an event callback.
 	 */
 	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;

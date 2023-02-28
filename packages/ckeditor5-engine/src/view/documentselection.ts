@@ -40,8 +40,47 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 */
 	private readonly _selection: Selection;
 
+	/**
+	 * Creates new DocumentSelection instance.
+	 *
+	 * ```ts
+	 * // Creates collapsed selection at the position of given item and offset.
+	 * const paragraph = writer.createContainerElement( 'paragraph' );
+	 * const selection = new DocumentSelection( paragraph, offset );
+	 *
+	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = new DocumentSelection( paragraph, 'in' );
+	 *
+	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = new DocumentSelection( paragraph, 'on' );
+	 * ```
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 * ```ts
+	 * // Creates backward selection.
+	 * const selection = new DocumentSelection( element, 'in', { backward: true } );
+	 * ```
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 * ```ts
+	 * // Creates fake selection with label.
+	 * const selection = new DocumentSelection( element, 'in', { fake: true, label: 'foo' } );
+	 * ```
+	 *
+	 * See also: {@link #constructor:SELECTABLE `constructor( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public constructor( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
-	public constructor( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions );
 
 	/**
 	 * Creates new DocumentSelection instance.
@@ -65,18 +104,6 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * // Creates selection at the given position.
 	 * const position = writer.createPositionAt( root, offset );
 	 * const selection = new DocumentSelection( position );
-	 *
-	 * // Creates collapsed selection at the position of given item and offset.
-	 * const paragraph = writer.createContainerElement( 'paragraph' );
-	 * const selection = new DocumentSelection( paragraph, offset );
-	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = new DocumentSelection( paragraph, 'in' );
-	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = new DocumentSelection( paragraph, 'on' );
 	 * ```
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
@@ -97,7 +124,13 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * // Creates fake selection with label.
 	 * const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
 	 * ```
+	 *
+	 * See also: {@link #constructor:NODE_OFFSET `constructor( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public constructor( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions );
+
 	constructor( ...args: ConstructorParameters<typeof Selection> ) {
 		super();
 
