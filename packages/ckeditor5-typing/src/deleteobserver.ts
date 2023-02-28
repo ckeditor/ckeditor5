@@ -14,7 +14,8 @@ import {
 	Observer,
 	type BubblingEvent,
 	type ViewDocumentInputEvent,
-	type ViewDocumentKeyEvent,
+	type ViewDocumentKeyDownEvent,
+	type ViewDocumentKeyUpEvent,
 	type ViewDocumentSelection,
 	type ViewSelection,
 	type View
@@ -118,8 +119,6 @@ const DELETE_EVENT_TYPES: Record<string, DeleteEventSpec> = {
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
- *
- * @extends module:engine/view/observer/observer~Observer
  */
 export default class DeleteObserver extends Observer {
 	/**
@@ -216,15 +215,8 @@ export default class DeleteObserver extends Observer {
  * Note: This event is fired by the {@link module:typing/deleteobserver~DeleteObserver delete observer}
  * (usually registered by the {@link module:typing/delete~Delete delete feature}).
  *
- * @event module:engine/view/document~Document#event:delete
- * @param {module:engine/view/observer/domeventdata~DomEventData} data
- * @param {'forward'|'backward'} data.direction The direction in which the deletion should happen.
- * @param {'character'|'word'|'codePoint'|'selection'} data.unit The "amount" of content that should be deleted.
- * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
- * If it's 2 or more it means that the key was pressed and hold.
- * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
- * current selection should be used.
- * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
+ * @eventName delete
+ * @param data The event data.
  */
 export type ViewDocumentDeleteEvent = BubblingEvent<{
 	name: 'delete';
@@ -232,13 +224,33 @@ export type ViewDocumentDeleteEvent = BubblingEvent<{
 }>;
 
 export interface DeleteEventData extends DomEventData<InputEvent> {
+
+	/**
+	 * The direction in which the deletion should happen.
+	 */
 	direction: 'backward' | 'forward';
+
+	/**
+	 * The "amount" of content that should be deleted.
+	 */
 	unit: 'selection' | 'codePoint' | 'character' | 'word';
+
+	/**
+	 * A number describing which subsequent delete event it is without the key being released.
+	 * If it's 2 or more it means that the key was pressed and hold.
+	 */
 	sequence: number;
+
+	/**
+	 * View selection which content should be removed. If not set,
+	 * current selection should be used.
+	 */
 	selectionToRemove?: ViewSelection | ViewDocumentSelection;
 }
 
-// Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
+/**
+ * Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
+ */
 function enableChromeWorkaround( observer: DeleteObserver ) {
 	const view = observer.view;
 	const document = view.document;
@@ -246,12 +258,12 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	let pressedKeyCode: number | null = null;
 	let beforeInputReceived = false;
 
-	document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, { keyCode } ) => {
+	document.on<ViewDocumentKeyDownEvent>( 'keydown', ( evt, { keyCode } ) => {
 		pressedKeyCode = keyCode;
 		beforeInputReceived = false;
 	} );
 
-	document.on<ViewDocumentKeyEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
+	document.on<ViewDocumentKeyUpEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
 		const selection = document.selection;
 		const shouldFireDeleteEvent = observer.isEnabled &&
 			keyCode == pressedKeyCode &&

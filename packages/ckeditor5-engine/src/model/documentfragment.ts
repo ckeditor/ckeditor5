@@ -4,7 +4,7 @@
  */
 
 /**
- * @module module:engine/model/documentfragment
+ * @module engine/model/documentfragment
  */
 
 import TypeCheckable from './typecheckable';
@@ -212,7 +212,7 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns index after last child}.
+	 * too high, returns index after last child.
 	 *
 	 * ```ts
 	 * const textNode = new Text( 'foo' );
@@ -324,41 +324,41 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 		return nodes;
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): 'documentFragment' {
 	// @if CK_DEBUG_ENGINE // 	return 'documentFragment';
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelDocumentFragment: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // printTree() {
-	// @if CK_DEBUG_ENGINE //	let string = 'ModelDocumentFragment: [';
+	// @if CK_DEBUG_ENGINE // public printTree(): string {
+	// @if CK_DEBUG_ENGINE // 	let string = 'ModelDocumentFragment: [';
 
-	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		string += '\n';
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
+	// @if CK_DEBUG_ENGINE // 		string += '\n';
 
-	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
-	// @if CK_DEBUG_ENGINE //			const textAttrs = stringifyMap( child._attrs );
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
+	// @if CK_DEBUG_ENGINE // 			const textAttrs = stringifyMap( child._attrs );
 
-	// @if CK_DEBUG_ENGINE //			string += '\t'.repeat( 1 );
+	// @if CK_DEBUG_ENGINE // 			string += '\t'.repeat( 1 );
 
-	// @if CK_DEBUG_ENGINE //			if ( textAttrs !== '' ) {
-	// @if CK_DEBUG_ENGINE //				string += `<$text${ textAttrs }>` + child.data + '</$text>';
-	// @if CK_DEBUG_ENGINE //			} else {
-	// @if CK_DEBUG_ENGINE //				string += child.data;
-	// @if CK_DEBUG_ENGINE //			}
-	// @if CK_DEBUG_ENGINE //		} else {
-	// @if CK_DEBUG_ENGINE //			string += child.printTree( 1 );
-	// @if CK_DEBUG_ENGINE //		}
-	// @if CK_DEBUG_ENGINE //	}
+	// @if CK_DEBUG_ENGINE // 			if ( textAttrs !== '' ) {
+	// @if CK_DEBUG_ENGINE // 				string += `<$text${ textAttrs }>` + child.data + '</$text>';
+	// @if CK_DEBUG_ENGINE // 			} else {
+	// @if CK_DEBUG_ENGINE // 				string += child.data;
+	// @if CK_DEBUG_ENGINE // 			}
+	// @if CK_DEBUG_ENGINE // 		} else {
+	// @if CK_DEBUG_ENGINE // 			string += child.printTree( 1 );
+	// @if CK_DEBUG_ENGINE // 		}
+	// @if CK_DEBUG_ENGINE // 	}
 
-	// @if CK_DEBUG_ENGINE //	string += '\n]';
+	// @if CK_DEBUG_ENGINE // 	string += '\n]';
 
-	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // 	return string;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // public logTree(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
 	// @if CK_DEBUG_ENGINE // }
 }

@@ -21,25 +21,24 @@ import ViewCollection from '../viewcollection';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
-import {
-	global,
-	priorities,
-	logWarning,
-	CKEditorError,
-	type Collection,
-	type Locale
-} from '@ckeditor/ckeditor5-utils';
-
-import '../../theme/components/dropdown/toolbardropdown.css';
-import '../../theme/components/dropdown/listdropdown.css';
-
 import type { default as View, UIViewRenderEvent } from '../view';
 import type { ButtonExecuteEvent } from '../button/button';
 import type Model from '../model';
 import type DropdownButton from './button/dropdownbutton';
 import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import {
+	global,
+	priorities,
+	logWarning,
+	type Collection,
+	type Locale,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
+
+import '../../theme/components/dropdown/toolbardropdown.css';
+import '../../theme/components/dropdown/listdropdown.css';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -51,57 +50,63 @@ import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils/src/observ
  * By default, the default {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView} class is used as
  * definition of the button:
  *
- *		const dropdown = createDropdown( model );
+ * ```ts
+ * const dropdown = createDropdown( model );
  *
- *		// Configure dropdown's button properties:
- *		dropdown.buttonView.set( {
- *			label: 'A dropdown',
- *			withText: true
- *		} );
+ * // Configure dropdown's button properties:
+ * dropdown.buttonView.set( {
+ * 	label: 'A dropdown',
+ * 	withText: true
+ * } );
  *
- *		dropdown.render();
+ * dropdown.render();
  *
- *		// Will render a dropdown labeled "A dropdown" with an empty panel.
- *		document.body.appendChild( dropdown.element );
+ * // Will render a dropdown labeled "A dropdown" with an empty panel.
+ * document.body.appendChild( dropdown.element );
+ * ```
  *
  * You can also provide other button views (they need to implement the
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface). For instance, you can use
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} to create a dropdown with a split button.
  *
- *		const dropdown = createDropdown( locale, SplitButtonView );
+ * ```ts
+ * const dropdown = createDropdown( locale, SplitButtonView );
  *
- *		// Configure dropdown's button properties:
- *		dropdown.buttonView.set( {
- *			label: 'A dropdown',
- *			withText: true
- *		} );
+ * // Configure dropdown's button properties:
+ * dropdown.buttonView.set( {
+ * 	label: 'A dropdown',
+ * 	withText: true
+ * } );
  *
- *		dropdown.buttonView.on( 'execute', () => {
- *			// Add the behavior of the "action part" of the split button.
- *			// Split button consists of the "action part" and "arrow part".
- *			// The arrow opens the dropdown while the action part can have some other behavior.
- * 		} );
+ * dropdown.buttonView.on( 'execute', () => {
+ * 	// Add the behavior of the "action part" of the split button.
+ * 	// Split button consists of the "action part" and "arrow part".
+ * 	// The arrow opens the dropdown while the action part can have some other behavior.
+ * } );
  *
- *		dropdown.render();
+ * dropdown.render();
  *
- *		// Will render a dropdown labeled "A dropdown" with an empty panel.
- *		document.body.appendChild( dropdown.element );
+ * // Will render a dropdown labeled "A dropdown" with an empty panel.
+ * document.body.appendChild( dropdown.element );
+ * ```
  *
  * # Adding content to the dropdown's panel
  *
  * The content of the panel can be inserted directly into the `dropdown.panelView.element`:
  *
- *		dropdown.panelView.element.textContent = 'Content of the panel';
+ * ```ts
+ * dropdown.panelView.element.textContent = 'Content of the panel';
+ * ```
  *
  * However, most of the time you will want to add there either a {@link module:ui/list/listview~ListView list of options}
  * or a list of buttons (i.e. a {@link module:ui/toolbar/toolbarview~ToolbarView toolbar}).
  * To simplify the task, you can use, respectively, {@link module:ui/dropdown/utils~addListToDropdown} or
  * {@link module:ui/dropdown/utils~addToolbarToDropdown} utils.
  *
- * @param {module:utils/locale~Locale} locale The locale instance.
- * @param {Function} ButtonClass The dropdown button view class. Needs to implement the
+ * @param locale The locale instance.
+ * @param ButtonClass The dropdown button view class. Needs to implement the
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
- * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
+ * @returns The dropdown view instance.
  */
 export function createDropdown(
 	locale: Locale | undefined,
@@ -128,23 +133,25 @@ export function createDropdown(
 /**
  * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
  *
- *		const buttonsCreator = () => {
- *			const buttons = [];
+ * ```ts
+ * const buttonsCreator = () => {
+ * 	const buttons = [];
  *
- *			// Either create a new ButtonView instance or create existing.
- *			buttons.push( new ButtonView() );
- *			buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
- *		};
+ * 	// Either create a new ButtonView instance or create existing.
+ * 	buttons.push( new ButtonView() );
+ * 	buttons.push( editor.ui.componentFactory.create( 'someButton' ) );
+ * };
  *
- *		const dropdown = createDropdown( locale );
+ * const dropdown = createDropdown( locale );
  *
- *		addToolbarToDropdown( dropdown, buttonsCreator, { isVertical: true } );
+ * addToolbarToDropdown( dropdown, buttonsCreator, { isVertical: true } );
  *
- *		// Will render a vertical button dropdown labeled "A button dropdown"
- *		// with a button group in the panel containing two buttons.
- *		// Buttons inside the dropdown will be created on first dropdown panel open.
- *		dropdown.render()
- *		document.body.appendChild( dropdown.element );
+ * // Will render a vertical button dropdown labeled "A button dropdown"
+ * // with a button group in the panel containing two buttons.
+ * // Buttons inside the dropdown will be created on first dropdown panel open.
+ * dropdown.render()
+ * document.body.appendChild( dropdown.element );
+ * ```
  *
  * **Note:** To improve the accessibility, you can tell the dropdown to focus the first active button of the toolbar when the dropdown
  * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}. See the documentation of `options` to learn more.
@@ -153,21 +160,19 @@ export function createDropdown(
  *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
- * @param {Iterable.<module:ui/button/buttonview~ButtonView>|Function} buttonsOrCallback
- * @param {Object} [options]
- * @param {Boolean} [options.enableActiveItemFocusOnDropdownOpen=false] When set `true`, the focus will automatically move to the first
+ * @param dropdownView A dropdown instance to which `ToolbarView` will be added.
+ * @param options.enableActiveItemFocusOnDropdownOpen When set `true`, the focus will automatically move to the first
  * active {@link module:ui/toolbar/toolbarview~ToolbarView#items item} of the toolbar upon
  * {@link module:ui/dropdown/dropdownview~DropdownView#isOpen opening} the dropdown. Active items are those with the `isOn` property set
  * `true` (for instance {@link module:ui/button/buttonview~ButtonView buttons}). If no active items is found, the toolbar will be focused
  * as a whole resulting in the focus moving to its first focusable item (default behavior of
  * {@link module:ui/dropdown/dropdownview~DropdownView}).
- * @param {String} [options.ariaLabel] Label used by assistive technologies to describe toolbar element.
- * @param {String} [options.maxWidth] The maximum width of the toolbar element.
+ * @param options.ariaLabel Label used by assistive technologies to describe toolbar element.
+ * @param options.maxWidth The maximum width of the toolbar element.
  * Details: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
- * @param {String} [options.class] An additional CSS class added to the toolbar element.
- * @param {Boolean} [options.isCompact] When set true, makes the toolbar look compact with toolbar element.
- * @param {Boolean} [options.isVertical] Controls the orientation of toolbar items.
+ * @param options.class An additional CSS class added to the toolbar element.
+ * @param options.isCompact When set true, makes the toolbar look compact with toolbar element.
+ * @param options.isVertical Controls the orientation of toolbar items.
  */
 export function addToolbarToDropdown(
 	dropdownView: DropdownView,
@@ -217,7 +222,7 @@ function addToolbarToOpenDropdown(
 		isVertical?: boolean;
 	}
 ): void {
-	const locale = dropdownView.locale;
+	const locale = dropdownView.locale!;
 	const t = locale.t;
 
 	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
@@ -254,34 +259,36 @@ function addToolbarToOpenDropdown(
 /**
  * Adds an instance of {@link module:ui/list/listview~ListView} to a dropdown.
  *
- *		const items = new Collection();
+ * ```ts
+ * const items = new Collection();
  *
- *		items.add( {
- *			type: 'button',
- *			model: new Model( {
- *				withText: true,
- *				label: 'First item',
- *				labelStyle: 'color: red'
- *			} )
- *		} );
+ * items.add( {
+ * 	type: 'button',
+ * 	model: new Model( {
+ * 		withText: true,
+ * 		label: 'First item',
+ * 		labelStyle: 'color: red'
+ * 	} )
+ * } );
  *
- *		items.add( {
- *			 type: 'button',
- *			 model: new Model( {
- *				withText: true,
- *				label: 'Second item',
- *				labelStyle: 'color: green',
- *				class: 'foo'
- *			} )
- *		} );
+ * items.add( {
+ * 	 type: 'button',
+ * 	 model: new Model( {
+ * 		withText: true,
+ * 		label: 'Second item',
+ * 		labelStyle: 'color: green',
+ * 		class: 'foo'
+ * 	} )
+ * } );
  *
- *		const dropdown = createDropdown( locale );
+ * const dropdown = createDropdown( locale );
  *
- *		addListToDropdown( dropdown, items );
+ * addListToDropdown( dropdown, items );
  *
- *		// Will render a dropdown with a list in the panel containing two items.
- *		dropdown.render()
- *		document.body.appendChild( dropdown.element );
+ * // Will render a dropdown with a list in the panel containing two items.
+ * dropdown.render()
+ * document.body.appendChild( dropdown.element );
+ * ```
  *
  * The `items` collection passed to this methods controls the presence and attributes of respective
  * {@link module:ui/list/listitemview~ListItemView list items}.
@@ -294,11 +301,9 @@ function addToolbarToOpenDropdown(
  *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>|Function} itemsOrCallback A collection of the list item
- * definitions or a callback returning a list item definitions to populate the list.
- * @param {Object} [options]
- * @param {String} [options.ariaLabel] Label used by assistive technologies to describe list element.
+ * @param dropdownView A dropdown instance to which `ListVIew` will be added.
+ * @param itemsOrCallback A collection of the list item definitions or a callback returning a list item definitions to populate the list.
+ * @param options.ariaLabel Label used by assistive technologies to describe list element.
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
@@ -378,8 +383,8 @@ function addListToOpenDropdown(
  * A helper to be used on an existing {@link module:ui/dropdown/dropdownview~DropdownView} that focuses
  * a specific child in DOM when the dropdown {@link module:ui/dropdown/dropdownview~DropdownView#isOpen gets open}.
  *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which the focus behavior will be added.
- * @param {Function} childSelectorCallback A callback executed when the dropdown gets open. It should return a {@link module:ui/view~View}
+ * @param dropdownView A dropdown instance to which the focus behavior will be added.
+ * @param childSelectorCallback A callback executed when the dropdown gets open. It should return a {@link module:ui/view~View}
  * instance (child of {@link module:ui/dropdown/dropdownview~DropdownView#panelView}) that will get focused or a falsy value.
  * If falsy value is returned, a default behavior of the dropdown will engage focusing the first focusable child in
  * the {@link module:ui/dropdown/dropdownview~DropdownView#panelView}.
@@ -421,9 +426,9 @@ export function focusChildOnDropdownOpen(
 	}, { priority: priorities.low - 10 } );
 }
 
-// Add a set of default behaviors to dropdown view.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Add a set of default behaviors to dropdown view.
+ */
 function addDefaultBehavior( dropdownView: DropdownView ) {
 	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
@@ -433,9 +438,9 @@ function addDefaultBehavior( dropdownView: DropdownView ) {
 	focusDropdownPanelOnOpen( dropdownView );
 }
 
-// Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
+ */
 function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 	dropdownView.on<UIViewRenderEvent>( 'render', () => {
 		clickOutsideHandler( {
@@ -449,9 +454,9 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdownView that closes the dropdown view on "execute" event.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior to a dropdownView that closes the dropdown view on "execute" event.
+ */
 function closeDropdownOnExecute( dropdownView: DropdownView ) {
 	// Close the dropdown when one of the list items has been executed.
 	dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
@@ -464,9 +469,9 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdown view that closes opened dropdown when it loses focus.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior to a dropdown view that closes opened dropdown when it loses focus.
+ */
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
 		if ( dropdownView.isOpen && !isFocused ) {
@@ -475,9 +480,9 @@ function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdownView that focuses the dropdown's panel view contents on keystrokes.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior to a dropdownView that focuses the dropdown's panel view contents on keystrokes.
+ */
 function focusDropdownContentsOnArrows( dropdownView: DropdownView ) {
 	// If the dropdown panel is already open, the arrow down key should focus the first child of the #panelView.
 	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
@@ -496,10 +501,10 @@ function focusDropdownContentsOnArrows( dropdownView: DropdownView ) {
 	} );
 }
 
-// Adds a behavior that focuses the #buttonView when the dropdown was closed but focus was within the #panelView element.
-// This makes sure the focus is never lost.
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior that focuses the #buttonView when the dropdown was closed but focus was within the #panelView element.
+ * This makes sure the focus is never lost.
+ */
 function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( isOpen ) {
@@ -517,9 +522,9 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 	} );
 }
 
-// Adds a behavior that focuses the #panelView when dropdown gets open (accessibility).
-//
-// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+/**
+ * Adds a behavior that focuses the #panelView when dropdown gets open (accessibility).
+ */
 function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
 	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
 		if ( !isOpen ) {
@@ -538,16 +543,24 @@ function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
 /**
  * A definition of the list item used by the {@link module:ui/dropdown/utils~addListToDropdown}
  * utility.
- *
- * @typedef {Object} module:ui/dropdown/utils~ListDropdownItemDefinition
- *
- * @property {String} type Either `'separator'`, `'button'` or `'switchbutton'`.
- * @property {module:ui/model~Model} [model] Model of the item (when **not** `'separator'`).
- * Its properties fuel the newly created list item (or its children, depending on the `type`).
  */
-export type ListDropdownItemDefinition = {
+export type ListDropdownItemDefinition = ListDropdownSeparatorDefinition | ListDropdownButtonDefinition;
+
+/**
+ * A definition of the 'separator' list item.
+ */
+export type ListDropdownSeparatorDefinition = {
 	type: 'separator';
-} | {
+};
+
+/**
+ * A definition of the 'button' or 'switchbutton' list item.
+ */
+export type ListDropdownButtonDefinition = {
 	type: 'button' | 'switchbutton';
+
+	/**
+	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
+	 */
 	model: Model;
 };

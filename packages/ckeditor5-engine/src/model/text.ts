@@ -21,8 +21,6 @@ import Node, { type NodeAttributes } from './node';
  * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
- *
- * @extends module:engine/model/node~Node
  */
 export default class Text extends Node {
 	/**
@@ -94,15 +92,15 @@ export default class Text extends Node {
 		return new Text( json.data, json.attributes );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `#${ this.data }`;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // public logExtended(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( `ModelText: ${ this }, attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelText: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }

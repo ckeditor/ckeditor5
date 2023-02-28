@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core';
-import type { CodeBlockLanguageDefinition } from './codeblock';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig';
 import { first } from 'ckeditor5/src/utils';
 import type {
 	DocumentSelection,
@@ -25,7 +25,7 @@ import type {
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:
  *
- * * To consider the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
+ * * To consider the editor localization, i.e. to display {@link module:code-block/codeblockconfig~CodeBlockLanguageDefinition}
  * in the correct language. There is no way to use {@link module:utils/locale~Locale#t} when the user
  * configuration is defined because the editor does not exist yet.
  * * To make sure each definition has a CSS class associated with it even if not specified
@@ -53,12 +53,14 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): 
  *
  * For:
  *
+ * ```ts
  * const definitions = {
  * 	{ language: 'php', class: 'language-php', label: 'PHP' },
  * 	{ language: 'javascript', class: 'js', label: 'JavaScript' },
  * };
  *
  * getPropertyAssociation( definitions, 'class', 'language' );
+ * ```
  *
  * returns:
  *

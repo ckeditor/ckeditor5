@@ -9,18 +9,11 @@
 
 /**
  * The HTML writer interface.
- *
- * @interface module:engine/dataprocessor/htmlwriter~HtmlWriter
  */
-
-/**
- * Returns an HTML string created from a document fragment.
- *
- * @method module:engine/dataprocessor/htmlwriter~HtmlWriter#getHtml
- * @param {DocumentFragment} fragment
- * @returns {String}
- */
-
 export default interface HtmlWriter {
+
+	/**
+	 * Returns an HTML string created from a document fragment.
+	 */
 	getHtml( fragment: DocumentFragment ): string;
 }

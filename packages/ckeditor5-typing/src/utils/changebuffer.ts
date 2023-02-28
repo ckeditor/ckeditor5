@@ -27,61 +27,60 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
- *		const buffer = new ChangeBuffer( model, LIMIT );
+ * ```ts
+ * const buffer = new ChangeBuffer( model, LIMIT );
  *
- *		// Later on in your feature:
- *		buffer.batch.insert( pos, insertedCharacters );
- *		buffer.input( insertedCharacters.length );
- *
+ * // Later on in your feature:
+ * buffer.batch.insert( pos, insertedCharacters );
+ * buffer.input( insertedCharacters.length );
+ * ```
  */
 export default class ChangeBuffer {
+	/**
+	 * The model instance.
+	 */
 	public readonly model: Model;
+
+	/**
+	 * The maximum number of atomic changes which can be contained in one batch.
+	 */
 	public readonly limit: number;
 
+	/**
+	 * Whether the buffer is locked. A locked buffer cannot be reset unless it gets unlocked.
+	 */
 	private _isLocked: boolean;
+
+	/**
+	 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
+	 * the {@link #batch batch} is set to a new one.
+	 */
 	private _size: number;
+
+	/**
+	 * The current batch instance.
+	 */
 	private _batch: Batch | null = null;
+
+	/**
+	 * The callback to document the change event which later needs to be removed.
+	 */
 	private readonly _changeCallback: ( evt: EventInfo, batch: Batch ) => void;
+
+	/**
+	 * The callback to document selection `change:attribute` and `change:range` events which resets the buffer.
+	 */
 	private readonly _selectionChangeCallback: () => void;
 
 	/**
 	 * Creates a new instance of the change buffer.
 	 *
-	 * @param {module:engine/model/model~Model} model
-	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
+	 * @param limit The maximum number of atomic changes which can be contained in one batch.
 	 */
 	constructor( model: Model, limit: number = 20 ) {
-		/**
-		 * The model instance.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model} #model
-		 */
 		this.model = model;
-
-		/**
-		 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
-		 * the {@link #batch batch} is set to a new one.
-		 *
-		 * @readonly
-		 * @member {Number} #size
-		 */
 		this._size = 0;
-
-		/**
-		 * The maximum number of atomic changes which can be contained in one batch.
-		 *
-		 * @readonly
-		 * @member {Number} #limit
-		 */
 		this.limit = limit;
-
-		/**
-		 * Whether the buffer is locked. A locked buffer cannot be reset unless it gets unlocked.
-		 *
-		 * @readonly
-		 * @member {Boolean} #isLocked
-		 */
 		this._isLocked = false;
 
 		// The function to be called in order to notify the buffer about batches which appeared in the document.
@@ -104,34 +103,11 @@ export default class ChangeBuffer {
 
 		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
 		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
-
-		/**
-		 * The current batch instance.
-		 *
-		 * @private
-		 * @member #_batch
-		 */
-
-		/**
-		 * The callback to document the change event which later needs to be removed.
-		 *
-		 * @private
-		 * @member #_changeCallback
-		 */
-
-		/**
-		 * The callback to document selection `change:attribute` and `change:range` events which resets the buffer.
-		 *
-		 * @private
-		 * @member #_selectionChangeCallback
-		 */
 	}
 
 	/**
 	 * The current batch to which a feature should add its operations. Once the {@link #size}
 	 * is reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
-	 *
-	 * @type {module:engine/model/batch~Batch}
 	 */
 	public get batch(): Batch {
 		if ( !this._batch ) {
@@ -153,7 +129,7 @@ export default class ChangeBuffer {
 	 * The input number of changes into the buffer. Once the {@link #size} is
 	 * reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
-	 * @param {Number} changeCount The number of atomic changes to input.
+	 * @param changeCount The number of atomic changes to input.
 	 */
 	public input( changeCount: number ): void {
 		this._size += changeCount;
@@ -196,8 +172,7 @@ export default class ChangeBuffer {
 	/**
 	 * Resets the change buffer.
 	 *
-	 * @private
-	 * @param {Boolean} [ignoreLock] Whether internal lock {@link #isLocked} should be ignored.
+	 * @param ignoreLock Whether internal lock {@link #isLocked} should be ignored.
 	 */
 	private _reset( ignoreLock: boolean = false ): void {
 		if ( !this.isLocked || ignoreLock ) {

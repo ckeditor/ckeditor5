@@ -44,19 +44,22 @@ Promise.resolve()
 			}
 
 			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
-		},
-		externalRepositories: [
-			{
-				cwd: CKEDITOR5_INTERNAL_PATH,
-				packages: 'packages',
-				skipLinks: true
-			},
-			{
-				cwd: COLLABORATION_FEATURES_PATH,
-				packages: 'packages',
-				skipLinks: true
-			}
-		]
+		}
+		// Temporary, as we publish only packages from the `ckeditor/ckeditor5` repository.
+		// externalRepositories: [
+		// 	{
+		// 		cwd: CKEDITOR5_INTERNAL_PATH,
+		// 		packages: 'packages',
+		// 		skipLinks: true,
+		// 		from: 'v36.0.1' // TODO: To be removed once a new major version is live.
+		// 	},
+		// 	{
+		// 		cwd: COLLABORATION_FEATURES_PATH,
+		// 		packages: 'packages',
+		// 		skipLinks: true,
+		// 		from: 'v36.0.1' // TODO: To be removed once a new major version is live.
+		// 	}
+		// ]
 	} ) )
 	.then( () => {
 		console.log( 'Done!' );

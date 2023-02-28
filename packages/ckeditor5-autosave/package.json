@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-autosave",
-  "version": "36.0.1",
+  "version": "37.0.0-alpha.0",
   "description": "Autosave feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,18 +10,19 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "^36.0.1",
+    "ckeditor5": "^37.0.0-alpha.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^36.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^32.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^36.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^36.0.1",
-    "@ckeditor/ckeditor5-source-editing": "^36.0.1",
-    "@ckeditor/ckeditor5-theme-lark": "^36.0.1",
+    "@ckeditor/ckeditor5-core": "^37.0.0-alpha.0",
+    "@ckeditor/ckeditor5-dev-utils": "^34.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^37.0.0-alpha.0",
+    "@ckeditor/ckeditor5-paragraph": "^37.0.0-alpha.0",
+    "@ckeditor/ckeditor5-source-editing": "^37.0.0-alpha.0",
+    "@ckeditor/ckeditor5-theme-lark": "^37.0.0-alpha.0",
+    "typescript": "^4.8.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
@@ -40,13 +41,16 @@
   },
   "files": [
     "lang",
-    "src",
+    "src/**/*.js",
+    "src/**/*.d.ts",
     "theme",
     "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dll:build": "webpack"
+    "dll:build": "webpack",
+    "build": "tsc -p ./tsconfig.release.json",
+    "postversion": "npm run build"
   }
 }

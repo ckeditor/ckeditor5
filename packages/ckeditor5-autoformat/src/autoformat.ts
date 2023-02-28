@@ -23,7 +23,7 @@ import inlineAutoformatEditing from './inlineautoformatediting';
  */
 export default class Autoformat extends Plugin {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public static get requires(): PluginDependencies {
 		return [ Delete ];

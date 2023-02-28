@@ -25,20 +25,74 @@ import {
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
 
+import '../uiconfig';
+
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
- *
- * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default abstract class EditorUI extends ObservableMixin() {
+	/**
+	 * The editor that the UI belongs to.
+	 */
 	public readonly editor: Editor;
+
+	/**
+	 * An instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
+	 * to register factories of specific UI components.
+	 */
 	public readonly componentFactory: ComponentFactory;
+
+	/**
+	 * Stores the information about the editor UI focus and propagates it so various plugins and components
+	 * are unified as a focus group.
+	 */
 	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * Manages the tooltips displayed on mouseover and focus across the UI.
+	 */
 	public readonly tooltipManager: TooltipManager;
-	public isReady: boolean;
+
+	/**
+	 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
+	 *
+	 * @readonly
+	 * @default false
+	 */
+	public isReady: boolean = false;
 
 	public abstract get view(): EditorUIView;
 
+	/**
+	 * Stores viewport offsets from every direction.
+	 *
+	 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
+	 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
+	 *
+	 * Example `editor.ui.viewportOffset` returns:
+	 *
+	 * ```js
+	 * {
+	 * 	top: 50,
+	 * 	right: 50,
+	 * 	bottom: 50,
+	 * 	left: 50
+	 * }
+	 * ```
+	 *
+	 * This property can be overriden after editor already being initialized:
+	 *
+	 * ```js
+	 * editor.ui.viewportOffset = {
+	 * 	top: 100,
+	 * 	right: 0,
+	 * 	bottom: 0,
+	 * 	left: 0
+	 * };
+	 * ```
+	 *
+	 * @observable
+	 */
 	public declare viewportOffset: {
 		left?: number;
 		right?: number;
@@ -46,111 +100,34 @@ export default abstract class EditorUI extends ObservableMixin() {
 		bottom?: number;
 	};
 
-	private _editableElementsMap: Map<string, HTMLElement>;
-	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition>;
+	/**
+	 * Stores all editable elements used by the editor instance.
+	 */
+	private _editableElementsMap = new Map<string, HTMLElement>();
+
+	/**
+	 * All available & focusable toolbars.
+	 */
+	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition> = [];
 
 	/**
 	 * Creates an instance of the editor UI class.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param editor The editor instance.
 	 */
 	constructor( editor: Editor ) {
 		super();
 
-		/**
-		 * The editor that the UI belongs to.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor} #editor
-		 */
 		this.editor = editor;
-
-		/**
-		 * An instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
-		 * to register factories of specific UI components.
-		 *
-		 * @readonly
-		 * @member {module:ui/componentfactory~ComponentFactory} #componentFactory
-		 */
 		this.componentFactory = new ComponentFactory( editor );
-
-		/**
-		 * Stores the information about the editor UI focus and propagates it so various plugins and components
-		 * are unified as a focus group.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * Manages the tooltips displayed on mouseover and focus across the UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/tooltipmanager~TooltipManager}
-		 */
 		this.tooltipManager = new TooltipManager( editor );
 
-		/**
-		 * Stores viewport offsets from every direction.
-		 *
-		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
-		 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
-		 *
-		 * Example `editor.ui.viewportOffset` returns:
-		 *
-		 * ```js
-		 * {
-		 * 	top: 50,
-		 * 	right: 50,
-		 * 	bottom: 50,
-		 * 	left: 50
-		 * }
-		 * ```
-		 *
-		 * This property can be overriden after editor already being initialized:
-		 *
-		 * ```js
-		 * editor.ui.viewportOffset = {
-		 * 	top: 100,
-		 * 	right: 0,
-		 * 	bottom: 0,
-		 * 	left: 0
-		 * };
-		 * ```
-		 *
-		 * @observable
-		 * @member {Object} #viewportOffset
-		 */
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
-		/**
-		 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
-		 *
-		 * @readonly
-		 * @default false
-		 * @member {Boolean} #isReady
-		 */
-		this.isReady = false;
 		this.once<EditorUIReadyEvent>( 'ready', () => {
 			this.isReady = true;
 		} );
-
-		/**
-		 * Stores all editable elements used by the editor instance.
-		 *
-		 * @private
-		 * @member {Map.<String,HTMLElement>}
-		 */
-		this._editableElementsMap = new Map();
-
-		/**
-		 * All available & focusable toolbars.
-		 *
-		 * @private
-		 * @type {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
-		 */
-		this._focusableToolbarDefinitions = [];
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo<ViewDocumentLayoutChangedEvent>( editor.editing.view.document, 'layoutChanged', () => this.update() );
@@ -169,9 +146,6 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 *
 	 * This property can be understood as a shorthand for retrieving the element that a specific editor integration
 	 * considers to be its main DOM element.
-	 *
-	 * @readonly
-	 * @member {HTMLElement|null} #element
 	 */
 	public get element(): HTMLElement | null {
 		return null;
@@ -211,8 +185,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * Also, registers the element in the editor to maintain the accessibility of the UI. When the user is editing text in a focusable
 	 * editable area, they can use the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke to navigate over editor toolbars. See {@link #addToolbar}.
 	 *
-	 * @param {String} rootName The unique name of the editable element.
-	 * @param {HTMLElement} domElement The native DOM editable element.
+	 * @param rootName The unique name of the editable element.
+	 * @param domElement The native DOM editable element.
 	 */
 	public setEditableElement( rootName: string, domElement: HTMLElement ): void {
 		this._editableElementsMap.set( rootName, domElement );
@@ -251,8 +225,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	/**
 	 * Returns the editable editor element with the given name or null if editable does not exist.
 	 *
-	 * @param {String} [rootName=main] The editable name.
-	 * @returns {HTMLElement|undefined}
+	 * @param rootName The editable name.
 	 */
 	public getEditableElement( rootName: string = 'main' ): HTMLElement | undefined {
 		return this._editableElementsMap.get( rootName );
@@ -260,8 +233,6 @@ export default abstract class EditorUI extends ObservableMixin() {
 
 	/**
 	 * Returns array of names of all editor editable elements.
-	 *
-	 * @returns {Iterable.<String>}
 	 */
 	public getEditableElementsNames(): IterableIterator<string> {
 		return this._editableElementsMap.keys();
@@ -273,14 +244,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * Focusable toolbars can be accessed (focused) by users by pressing the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
 	 * Successive keystroke presses navigate over available toolbars.
 	 *
-	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbarView A instance of the toolbar to be registered.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.isContextual] Set `true` if the toolbar is attached to the content of the editor. Such toolbar takes
-	 * a precedence over other toolbars when a user pressed <kbd>Alt</kbd> + <kbd>F10</kbd>.
-	 * @param {Function} [options.beforeFocus] Specify a callback executed before the toolbar instance DOM element gains focus
-	 * upon the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
-	 * @param {Function} [options.afterBlur] Specify a callback executed after the toolbar instance DOM element loses focus upon
-	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
+	 * @param toolbarView A instance of the toolbar to be registered.
 	 */
 	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
 		if ( toolbarView.isRendered ) {
@@ -299,9 +263,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	/**
 	 * Stores all editable elements used by the editor instance.
 	 *
-	 * @protected
 	 * @deprecated
-	 * @member {Map.<String,HTMLElement>}
 	 */
 	protected get _editableElements(): unknown {
 		/**
@@ -310,7 +272,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		 * {@link #getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
-		 * @param {module:core/editor/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
+		 * @param editorUI Editor UI instance the deprecated property belongs to.
 		 */
 		console.warn(
 			'editor-ui-deprecated-editable-elements: ' +
@@ -333,9 +295,6 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * ```
 	 *
 	 * Only top property is currently supported.
-	 *
-	 * @private
-	 * @return {Object}
 	 */
 	private _readViewportOffsetFromConfig() {
 		const editor = this.editor;
@@ -374,8 +333,6 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * Starts listening for <kbd>Alt</kbd> + <kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes in the context of focusable
 	 * {@link #setEditableElement editable elements} and {@link #addToolbar toolbars}
 	 * to allow users navigate across the UI.
-	 *
-	 * @private
 	 */
 	private _initFocusTracking(): void {
 		const editor = this.editor;
@@ -477,12 +434,9 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * at this stage because it depends on its implementation, that in turn depends on the editing context (selection).
 	 *
 	 * **Note**: Contextual toolbars take precedence over regular toolbars.
-	 *
-	 * @private
-	 * @returns {Array.<module:core/editor/editorui~FocusableToolbarDefinition>}
 	 */
-	private _getFocusableCandidateToolbarDefinitions() {
-		const definitions = [];
+	private _getFocusableCandidateToolbarDefinitions(): Array<FocusableToolbarDefinition> {
+		const definitions: Array<FocusableToolbarDefinition> = [];
 
 		for ( const toolbarDef of this._focusableToolbarDefinitions ) {
 			const { toolbarView, options } = toolbarDef;
@@ -503,11 +457,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * Returns a definition of the toolbar that is currently visible and focused (one of its children has focus).
 	 *
 	 * `null` is returned when no toolbar is currently focused.
-	 *
-	 * @private
-	 * @returns {module:core/editor/editorui~FocusableToolbarDefinition|null}
 	 */
-	private _getCurrentFocusedToolbarDefinition() {
+	private _getCurrentFocusedToolbarDefinition(): FocusableToolbarDefinition | null {
 		for ( const definition of this._focusableToolbarDefinitions ) {
 			if ( definition.toolbarView.element && definition.toolbarView.element.contains( this.focusTracker.focusedElement ) ) {
 				return definition;
@@ -520,11 +471,10 @@ export default abstract class EditorUI extends ObservableMixin() {
 	/**
 	 * Focuses a focusable toolbar candidate using its definition.
 	 *
-	 * @private
-	 * @param {module:core/editor/editorui~FocusableToolbarDefinition} candidateToolbarDefinition A definition of the toolbar to focus.
-	 * @returns {Boolean} `true` when the toolbar candidate was focused. `false` otherwise.
+	 * @param candidateToolbarDefinition A definition of the toolbar to focus.
+	 * @returns `true` when the toolbar candidate was focused. `false` otherwise.
 	 */
-	private _focusFocusableCandidateToolbar( candidateToolbarDefinition: FocusableToolbarDefinition ) {
+	private _focusFocusableCandidateToolbar( candidateToolbarDefinition: FocusableToolbarDefinition ): boolean {
 		const { toolbarView, options: { beforeFocus } } = candidateToolbarDefinition;
 
 		if ( beforeFocus ) {
@@ -540,30 +490,28 @@ export default abstract class EditorUI extends ObservableMixin() {
 
 		return true;
 	}
-
-	/**
-	 * Fired when the editor UI is ready.
-	 *
-	 * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
-	 *
-	 * @event ready
-	 */
-
-	/**
-	 * Fired whenever the UI (all related components) should be refreshed.
-	 *
-	 * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
-	 * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
-	 *
-	 * @event update
-	 */
 }
 
+/**
+ * Fired when the editor UI is ready.
+ *
+ * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
+ *
+ * @eventName ready
+ */
 export type EditorUIReadyEvent = {
 	name: 'ready';
 	args: [];
 };
 
+/**
+ * Fired whenever the UI (all related components) should be refreshed.
+ *
+ * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
+ * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
+ *
+ * @eventName update
+ */
 export type EditorUIUpdateEvent = {
 	name: 'update';
 	args: [];
@@ -571,48 +519,56 @@ export type EditorUIUpdateEvent = {
 
 /**
  * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.
- *
- * @private
- * @interface module:core/editor/editorui~FocusableToolbarDefinition
  */
-
 export interface FocusableToolbarDefinition {
+
+	/**
+	 * An instance of a focusable toolbar view.
+	 */
 	toolbarView: ToolbarView;
+
+	/**
+	 * Options of a focusable toolbar view:
+	 *
+	 * * `isContextual`: Marks the higher priority toolbar. For example when there are 2 visible toolbars,
+	 * it allows to distinguish which toolbar should be focused first after the `alt+f10` keystroke
+	 * * `beforeFocus`: A callback executed before the `ToolbarView` gains focus upon the `Alt+F10` keystroke.
+	 * * `afterBlur`: A callback executed after `ToolbarView` loses focus upon `Esc` keystroke but before
+	 * the focus goes back to the `origin`.
+	 */
 	options: FocusableToolbarOptions;
 }
 
 export interface FocusableToolbarOptions {
+
+	/**
+	 * Set `true` if the toolbar is attached to the content of the editor. Such toolbar takes
+	 * a precedence over other toolbars when a user pressed <kbd>Alt</kbd> + <kbd>F10</kbd>.
+	 */
 	isContextual?: boolean;
+
+	/**
+	 * Specify a callback executed before the toolbar instance DOM element gains focus
+	 * upon the <kbd>Alt</kbd> + <kbd>F10</kbd> keystroke.
+	 */
 	beforeFocus?: () => void;
+
+	/**
+	 * Specify a callback executed after the toolbar instance DOM element loses focus upon
+	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
+	 */
 	afterBlur?: () => void;
 }
 
 /**
- * An instance of a focusable toolbar view.
+ * Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
+ * contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
  *
- * @member {module:ui/toolbar/toolbarview~ToolbarView} #toolbarView
+ * A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
+ *
+ * @param toolbarDef A toolbar definition to be weighted.
  */
-
-/**
- * Options of a focusable toolbar view:
- *
- * * `isContextual`: Marks the higher priority toolbar. For example when there are 2 visible toolbars,
- * it allows to distinguish which toolbar should be focused first after the `alt+f10` keystroke
- * * `beforeFocus`: A callback executed before the `ToolbarView` gains focus upon the `Alt+F10` keystroke.
- * * `afterBlur`: A callback executed after `ToolbarView` loses focus upon `Esc` keystroke but before the focus goes back to the `origin`.
- *
- * @member {Object} #options
- */
-
-// Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
-// contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
-//
-// A standard invisible toolbar is the heaviest. A visible contextual toolbar is the lightest.
-//
-// @private
-// @param {module:core/editor/editorui~FocusableToolbarDefinition} toolbarDef A toolbar definition to be weighted.
-// @returns {Number}
-function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ) {
+function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): number {
 	const { toolbarView, options } = toolbarDef;
 	let weight = 10;
 

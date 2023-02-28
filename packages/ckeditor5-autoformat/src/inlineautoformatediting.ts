@@ -26,7 +26,7 @@ import type {
 	Range,
 	Writer
 } from 'ckeditor5/src/engine';
-import type { LastTextLineData } from 'ckeditor5/src/typing';
+import type { Delete, LastTextLineData } from 'ckeditor5/src/typing';
 
 import type Autoformat from './autoformat';
 
@@ -200,7 +200,9 @@ export default function inlineAutoformatEditing(
 			}
 
 			model.enqueueChange( () => {
-				editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
+				const deletePlugin: Delete = editor.plugins.get( 'Delete' );
+
+				deletePlugin.requestUndoOnBackspace();
 			} );
 		} );
 	} );
