@@ -73,6 +73,10 @@ export default class BoldEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		bold: AttributeCommand;
+	}
+
 	interface PluginsMap {
 		[ BoldEditing.pluginName ]: BoldEditing;
 	}

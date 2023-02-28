@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import DocumentListEditing from './documentlist/documentlistediting';
 import ListUI from './list/listui';
 
-import './listconfig';
-
 /**
  * The document list feature.
  *

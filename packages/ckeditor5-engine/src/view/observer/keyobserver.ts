@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import type View from '../view';
 import type DomEventData from './domeventdata';
 import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
@@ -15,16 +16,16 @@ import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
  * Observer for events connected with pressing keyboard keys.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ *
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', KeystrokeInfo & { keystroke: number }> {
-	/**
-	 * @inheritDoc
-	 */
-	public readonly domEventType = [ 'keydown', 'keyup' ] as const;
+	constructor( view: View ) {
+		super( view );
 
-	/**
-	 * @inheritDoc
-	 */
+		this.domEventType = [ 'keydown', 'keyup' ];
+	}
+
 	public onDomEvent( domEvt: KeyboardEvent ): void {
 		const data = {
 			keyCode: domEvt.keyCode,
@@ -43,6 +44,11 @@ export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', K
 	}
 }
 
+export type ViewDocumentKeyEvent = {
+	name: 'keydown' | 'keyup';
+	args: [ data: DomEventData<KeyboardEvent> & KeystrokeInfo & { keystroke: number } ];
+};
+
 /**
  * Fired when a key has been pressed.
  *
@@ -52,12 +58,9 @@ export default class KeyObserver extends DomEventObserver<'keydown' | 'keyup', K
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName keydown
+ * @event module:engine/view/document~Document#event:keydown
+ * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData
  */
-export type ViewDocumentKeyDownEvent = {
-	name: 'keydown';
-	args: [ data: KeyEventData ];
-};
 
 /**
  * Fired when a key has been released.
@@ -68,21 +71,22 @@ export type ViewDocumentKeyDownEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName keyup
+ * @event module:engine/view/document~Document#event:keyup
+ * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData
  */
-export type ViewDocumentKeyUpEvent = {
-	name: 'keyup';
-	args: [ data: KeyEventData ];
-};
 
 /**
- * The value of both events - {@link module:engine/view/document~ViewDocumentKeyDownEvent} and
- * {@link module:engine/view/document~ViewDocumentKeyUpEvent}.
+ * The value of both events - {@link module:engine/view/document~Document#event:keydown} and
+ * {@link module:engine/view/document~Document#event:keyup}.
+ *
+ * @class module:engine/view/observer/keyobserver~KeyEventData
+ * @extends module:engine/view/observer/domeventdata~DomEventData
+ * @implements module:utils/keyboard~KeystrokeInfo
  */
-export interface KeyEventData extends DomEventData<KeyboardEvent>, KeystrokeInfo {
 
-	/**
-	 * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.
-	 */
-	keystroke: number;
-}
+/**
+ * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.
+ *
+ * @readonly
+ * @member {Number} module:engine/view/observer/keyobserver~KeyEventData#keystroke
+ */

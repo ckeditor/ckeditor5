@@ -16,8 +16,6 @@ import { first } from 'ckeditor5/src/utils';
 
 import type Autoformat from './autoformat';
 
-import type { Delete } from 'ckeditor5/src/typing';
-
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
  * it can be configured to turn a paragraph starting with `*` and followed by a space into a list item.
@@ -65,7 +63,7 @@ import type { Delete } from 'ckeditor5/src/typing';
  * from the beginning until the caret position.
  * @param callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameter:
- * * match RegExp.exec() result of matching the pattern to inserted text.
+ * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
  */
 export default function blockAutoformatEditing(
 	editor: Editor,
@@ -172,9 +170,7 @@ export default function blockAutoformatEditing(
 			range.detach();
 
 			editor.model.enqueueChange( () => {
-				const deletePlugin: Delete = editor.plugins.get( 'Delete' );
-
-				deletePlugin.requestUndoOnBackspace();
+				editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
 			} );
 		} );
 	} );

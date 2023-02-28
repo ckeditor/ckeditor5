@@ -9,11 +9,11 @@
 
 import type { Editor } from 'ckeditor5/src/core';
 
-import type { HeadingOption } from './headingconfig';
+import type { HeadingOption } from './heading';
 
 /**
  * Returns heading options as defined in `config.heading.options` but processed to consider
- * the editor localization, i.e. to display {@link module:heading/headingconfig~HeadingOption}
+ * the editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
  * in the correct language.
  *
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}

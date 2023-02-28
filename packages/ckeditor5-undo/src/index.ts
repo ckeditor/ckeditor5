@@ -10,4 +10,3 @@
 export { default as Undo } from './undo';
 export { default as UndoEditing } from './undoediting';
 export { default as UndoUi } from './undoui';
-export type { default as UndoCommand } from './undocommand';

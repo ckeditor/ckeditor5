@@ -20,57 +20,51 @@ import type View from './view';
 /**
  * Collects {@link module:ui/view~View} instances.
  *
- * ```ts
- * const parentView = new ParentView( locale );
- * const collection = new ViewCollection( locale );
+ *		const parentView = new ParentView( locale );
+ *		const collection = new ViewCollection( locale );
  *
- * collection.setParent( parentView.element );
+ *		collection.setParent( parentView.element );
  *
- * const viewA = new ChildView( locale );
- * const viewB = new ChildView( locale );
- * ```
+ *		const viewA = new ChildView( locale );
+ *		const viewB = new ChildView( locale );
  *
  * View collection renders and manages view {@link module:ui/view~View#element elements}:
  *
- * ```ts
- * collection.add( viewA );
- * collection.add( viewB );
+ *		collection.add( viewA );
+ *		collection.add( viewB );
  *
- * console.log( parentView.element.firsChild ); // -> viewA.element
- * console.log( parentView.element.lastChild ); // -> viewB.element
- * ```
+ *		console.log( parentView.element.firsChild ); // -> viewA.element
+ *		console.log( parentView.element.lastChild ); // -> viewB.element
  *
  * It {@link module:ui/viewcollection~ViewCollection#delegate propagates} DOM events too:
  *
- * ```ts
- * // Delegate #click and #keydown events from viewA and viewB to the parentView.
- * collection.delegate( 'click' ).to( parentView );
+ *		// Delegate #click and #keydown events from viewA and viewB to the parentView.
+ *		collection.delegate( 'click' ).to( parentView );
  *
- * parentView.on( 'click', ( evt ) => {
- * 	console.log( `${ evt.source } has been clicked.` );
- * } );
+ *		parentView.on( 'click', ( evt ) => {
+ *			console.log( `${ evt.source } has been clicked.` );
+ *		} );
  *
- * // This event will be delegated to the parentView.
- * viewB.fire( 'click' );
- * ```
+ *		// This event will be delegated to the parentView.
+ *		viewB.fire( 'click' );
  *
  * **Note**: A view collection can be used directly in the {@link module:ui/template~TemplateDefinition definition}
  * of a {@link module:ui/template~Template template}.
+ *
+ * @extends module:utils/collection~Collection
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
-export default class ViewCollection<TView extends View = View> extends Collection<TView> {
+export default class ViewCollection extends Collection<View> {
 	public id?: string;
 
-	/**
-	 * A parent element within which child views are rendered and managed in DOM.
-	 */
 	private _parentElement: DocumentFragment | HTMLElement | null;
 
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param initialItems The initial items of the collection.
+	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( initialItems: Iterable<TView> = [] ) {
+	constructor( initialItems: Iterable<View> = [] ) {
 		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
@@ -78,17 +72,23 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
-		this.on<CollectionAddEvent<TView>>( 'add', ( evt, view, index ) => {
+		this.on<CollectionAddEvent<View>>( 'add', ( evt, view, index ) => {
 			this._renderViewIntoCollectionParent( view, index );
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
-		this.on<CollectionRemoveEvent<TView>>( 'remove', ( evt, view ) => {
+		this.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
 			if ( view.element && this._parentElement ) {
 				view.element.remove();
 			}
 		} );
 
+		/**
+		 * A parent element within which child views are rendered and managed in DOM.
+		 *
+		 * @protected
+		 * @member {HTMLElement}
+		 */
 		this._parentElement = null;
 	}
 
@@ -105,7 +105,7 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	 * {@link #remove removing} views in the collection synchronizes their
 	 * {@link module:ui/view~View#element elements} in the parent element.
 	 *
-	 * @param element A new parent element.
+	 * @param {HTMLElement} element A new parent element.
 	 */
 	public setParent( elementOrDocFragment: DocumentFragment | HTMLElement ): void {
 		this._parentElement = elementOrDocFragment;
@@ -122,37 +122,32 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	 *
 	 * For the following views and collection:
 	 *
-	 * ```ts
-	 * const viewA = new View();
-	 * const viewB = new View();
-	 * const viewC = new View();
+	 *		const viewA = new View();
+	 *		const viewB = new View();
+	 *		const viewC = new View();
 	 *
-	 * const views = parentView.createCollection();
+	 *		const views = parentView.createCollection();
 	 *
-	 * views.delegate( 'eventX' ).to( viewB );
-	 * views.delegate( 'eventX', 'eventY' ).to( viewC );
+	 *		views.delegate( 'eventX' ).to( viewB );
+	 *		views.delegate( 'eventX', 'eventY' ).to( viewC );
 	 *
-	 * views.add( viewA );
-	 * ```
+	 *		views.add( viewA );
 	 *
 	 * the `eventX` is delegated (fired by) `viewB` and `viewC` along with `customData`:
 	 *
-	 * ```ts
-	 * viewA.fire( 'eventX', customData );
-	 * ```
+	 *		viewA.fire( 'eventX', customData );
 	 *
 	 * and `eventY` is delegated (fired by) `viewC` along with `customData`:
 	 *
-	 * ```ts
-	 * viewA.fire( 'eventY', customData );
-	 * ```
+	 *		viewA.fire( 'eventY', customData );
 	 *
 	 * See {@link module:utils/emittermixin~Emitter#delegate}.
 	 *
-	 * @param events {@link module:ui/view~View} event names to be delegated to another
+	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another
 	 * {@link module:utils/emittermixin~Emitter}.
-	 * @returns Object with `to` property, a function which accepts the destination
-	 * of {@link module:utils/emittermixin~Emitter#delegate delegated} events.
+	 * @returns {Object}
+	 * @returns {Function} return.to A function which accepts the destination of
+	 * {@link module:utils/emittermixin~Emitter#delegate delegated} events.
 	 */
 	public override delegate( ...events: Array<string> ): EmitterMixinDelegateChain {
 		if ( !events.length || !isStringArray( events ) ) {
@@ -168,6 +163,14 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 		}
 
 		return {
+			/**
+			 * Selects destination for {@link module:utils/emittermixin~Emitter#delegate} events.
+			 *
+			 * @memberOf module:ui/viewcollection~ViewCollection#delegate
+			 * @function module:ui/viewcollection~ViewCollection#delegate.to
+			 * @param {module:utils/emittermixin~Emitter} dest An `Emitter` instance which is
+			 * the destination for delegated events.
+			 */
 			to: dest => {
 				// Activate delegating on existing views in this collection.
 				for ( const view of this ) {
@@ -202,11 +205,12 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	 * **Note**: If index is not specified, the view's element is pushed as the last child
 	 * of the parent element.
 	 *
-	 * @param view A new view added to the collection.
-	 * @param index An index the view holds in the collection. When not specified,
+	 * @private
+	 * @param {module:ui/view~View} view A new view added to the collection.
+	 * @param {Number} [index] An index the view holds in the collection. When not specified,
 	 * the view is added at the end.
 	 */
-	private _renderViewIntoCollectionParent( view: View, index?: number ): void {
+	public _renderViewIntoCollectionParent( view: View, index?: number ): void {
 		if ( !view.isRendered ) {
 			view.render();
 		}
@@ -223,19 +227,17 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	 *
 	 * See the {@link #add} method.
 	 *
-	 * @param subject The view to remove, its id or index in the collection.
-	 * @returns The removed view.
+	 * @method #remove
+	 * @param {module:ui/view~View|Number|String} subject The view to remove, its id or index in the collection.
+	 * @returns {Object} The removed view.
 	 */
-	public override remove( subject: TView | number | string ): TView {
-		return super.remove( subject );
-	}
 }
 
-/**
- * Check if all entries of the array are of `String` type.
- *
- * @param arr An array to be checked.
- */
+// Check if all entries of the array are of `String` type.
+//
+// @private
+// @param {Array} arr An array to be checked.
+// @returns {Boolean}
 function isStringArray( arr: Array<unknown> ): arr is Array<string> {
 	return arr.every( a => typeof a == 'string' );
 }

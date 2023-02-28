@@ -9,7 +9,6 @@
 
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler';
-export { default as CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin';
 export { default as submitHandler } from './bindings/submithandler';
 export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid';
 
@@ -20,7 +19,7 @@ export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
 export * from './colorgrid/utils';
-export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
+export { default as ColorGridView } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
 
 export { default as ComponentFactory } from './componentfactory';
@@ -36,7 +35,7 @@ export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview';
 
 export { default as FormHeaderView } from './formheader/formheaderview';
-export { default as FocusCycler, type FocusableView } from './focuscycler';
+export { default as FocusCycler } from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
 export { default as InputView } from './input/inputview';

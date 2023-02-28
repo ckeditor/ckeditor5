@@ -15,6 +15,8 @@ import redoIcon from '../theme/icons/redo.svg';
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class UndoUI extends Plugin {
 	/**
@@ -42,10 +44,11 @@ export default class UndoUI extends Plugin {
 	/**
 	 * Creates a button for the specified command.
 	 *
-	 * @param name Command name.
-	 * @param label Button label.
-	 * @param keystroke Command keystroke.
-	 * @param Icon Source of the icon.
+	 * @private
+	 * @param {String} name Command name.
+	 * @param {String} label Button label.
+	 * @param {String} keystroke Command keystroke.
+	 * @param {String} Icon Source of the icon.
 	 */
 	private _addButton( name: 'undo' | 'redo', label: string, keystroke: string, Icon: string ) {
 		const editor = this.editor;

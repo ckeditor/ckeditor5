@@ -3,23 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module core/editor/utils/elementapimixin
- */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import {
-	CKEditorError,
-	setDataInElement,
-	type Constructor,
-	type Mixed
-} from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, setDataInElement } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from '../editor';
 
 /**
- * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
+ * @module core/editor/utils/elementapimixin
  */
-export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
+
+/**
+ * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
+ *
+ * @mixin ElementApiMixin
+ * @implements module:core/editor/utils/elementapimixin~ElementApi
+ */
+export default function ElementApiMixin<Base extends abstract new( ...args: Array<any> ) => Editor>(
+	base: Base
+) {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 
@@ -56,7 +58,7 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
 		}
 	}
 
-	return Mixin as any;
+	return Mixin;
 }
 
 // Backward compatibility with `mix`.
@@ -67,18 +69,24 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
  *
  * Such an editor should provide a method to
  * {@link module:core/editor/utils/elementapimixin~ElementApi#updateSourceElement update the replaced element with the current data}.
+ *
+ * @interface ElementApi
  */
+
+/**
+ * The element on which the editor has been initialized.
+ *
+ * @readonly
+ * @member {HTMLElement} #sourceElement
+ */
+
+/**
+ * Updates the {@link #sourceElement editor source element}'s content with the data.
+ *
+ * @method #updateSourceElement
+ */
+
 export interface ElementApi {
-
-	/**
-	 * The element on which the editor has been initialized.
-	 *
-	 * @readonly
-	 */
-	sourceElement: HTMLElement | undefined;
-
-	/**
-	 * Updates the {@link #sourceElement editor source element}'s content with the data.
-	 */
+	readonly sourceElement: HTMLElement | undefined;
 	updateSourceElement( data?: string ): void;
 }

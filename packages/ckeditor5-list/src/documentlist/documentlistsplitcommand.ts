@@ -17,8 +17,6 @@ import {
 	splitListItemBefore
 } from './utils/model';
 
-import '../listcommands';
-
 /**
  * The document list split command that splits the list item at the selection.
  *

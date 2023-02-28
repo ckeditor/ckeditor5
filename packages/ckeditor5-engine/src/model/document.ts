@@ -80,7 +80,7 @@ export default class Document extends EmitterMixin() {
 	/**
 	 * Post-fixer callbacks registered to the model document.
 	 */
-	private readonly _postFixers: Set<ModelPostFixer>;
+	private readonly _postFixers: Set<( writer: Writer ) => boolean>;
 
 	/**
 	 * A boolean indicates whether the selection has changed until
@@ -266,7 +266,7 @@ export default class Document extends EmitterMixin() {
 	 * } );
 	 * ```
 	 */
-	public registerPostFixer( postFixer: ModelPostFixer ): void {
+	public registerPostFixer( postFixer: ( writer: Writer ) => boolean ): void {
 		this._postFixers.add( postFixer );
 	}
 
@@ -403,7 +403,7 @@ export default class Document extends EmitterMixin() {
 		} while ( wasFixed );
 	}
 
-	// @if CK_DEBUG_ENGINE // public log( version: any = null ): void {
+	// @if CK_DEBUG_ENGINE // log( version = null ) {
 	// @if CK_DEBUG_ENGINE // 	version = version === null ? this.version : version;
 	// @if CK_DEBUG_ENGINE // 	logDocument( this, version );
 	// @if CK_DEBUG_ENGINE // }
@@ -444,11 +444,6 @@ export type DocumentChangeEvent = {
 	name: 'change' | 'change:data';
 	args: [ batch: Batch ];
 };
-
-/**
- * Callback passed as an argument to the {@link module:engine/model/document~Document#registerPostFixer} method.
- */
-export type ModelPostFixer = ( writer: Writer ) => boolean;
 
 /**
  * Checks whether given range boundary position is valid for document selection, meaning that is not between

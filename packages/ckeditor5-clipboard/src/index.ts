@@ -10,20 +10,8 @@
 export { default as Clipboard } from './clipboard';
 export {
 	default as ClipboardPipeline,
-	type ClipboardContentInsertionEvent,
 	type ClipboardInputTransformationEvent,
-	type ClipboardInputTransformationData,
-	type ClipboardOutputEvent
+	type ClipboardInputTransformationData
 } from './clipboardpipeline';
-
-export type {
-	ClipboardEventData
-} from './clipboardobserver';
-
 export { default as DragDrop } from './dragdrop';
 export { default as PastePlainText } from './pasteplaintext';
-export type {
-	ViewDocumentClipboardInputEvent,
-	ViewDocumentCopyEvent,
-	ViewDocumentCutEvent
-} from './clipboardobserver';

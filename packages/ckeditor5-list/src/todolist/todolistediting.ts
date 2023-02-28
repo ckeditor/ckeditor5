@@ -17,7 +17,7 @@ import type {
 	ModelApplyOperationEvent,
 	UpcastElementEvent,
 	ViewDocumentArrowKeyEvent,
-	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyEvent,
 	AttributeOperation,
 	RenameOperation
 } from 'ckeditor5/src/engine';
@@ -148,7 +148,7 @@ export default class TodoListEditing extends Plugin {
 		);
 
 		// Toggle check state of selected to-do list items on keystroke.
-		this.listenTo<ViewDocumentKeyDownEvent>( editing.view.document, 'keydown', ( evt, data ) => {
+		this.listenTo<ViewDocumentKeyEvent>( editing.view.document, 'keydown', ( evt, data ) => {
 			if ( getCode( data ) === ITEM_TOGGLE_KEYSTROKE ) {
 				editor.execute( 'checkTodoList' );
 				evt.stop();

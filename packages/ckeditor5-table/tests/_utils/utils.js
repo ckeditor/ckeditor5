@@ -35,9 +35,7 @@ const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable'
  *
  * @returns {String}
  */
-export function modelTable( tableData, attributes = {} ) {
-	const { columnWidths, ...attrs } = attributes;
-
+export function modelTable( tableData, attributes ) {
 	const tableRows = makeRows( tableData, {
 		cellElement: 'tableCell',
 		rowElement: 'tableRow',
@@ -46,9 +44,7 @@ export function modelTable( tableData, attributes = {} ) {
 		enforceWrapping: true
 	} );
 
-	const tableCols = makeColGroup( columnWidths );
-
-	return `<table${ formatAttributes( attrs ) }>${ tableRows }${ tableCols }</table>`;
+	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
 }
 
 /**
@@ -409,19 +405,6 @@ function makeRows( tableData, options ) {
 
 			return `${ previousRowsString }<${ rowElement }>${ tableRowString }</${ rowElement }>`;
 		}, '' );
-}
-
-function makeColGroup( columnWidths ) {
-	if ( !columnWidths ) {
-		return '';
-	}
-
-	const cols = columnWidths
-		.split( ',' )
-		.map( width => `<tableColumn columnWidth="${ width }"></tableColumn>` )
-		.join( '' );
-
-	return `<tableColumnGroup>${ cols }</tableColumnGroup>`;
 }
 
 // Properly handles passed CSS class - editor do sort them.

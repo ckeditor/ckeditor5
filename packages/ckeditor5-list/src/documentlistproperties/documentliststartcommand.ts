@@ -14,8 +14,6 @@ import {
 	isListItemBlock
 } from '../documentlist/utils/model';
 
-import '../listcommands';
-
 /**
  * The list start index command. It changes the `listStart` attribute of the selected list items,
  * letting the user to choose the starting point of an ordered list.
@@ -23,7 +21,7 @@ import '../listcommands';
  */
 export default class DocumentListStartCommand extends Command {
 	/**
-	 * @inheritDoc
+	 * @inheritdoc
 	 */
 	declare public value: number | null;
 

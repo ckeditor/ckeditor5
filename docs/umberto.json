@@ -108,6 +108,9 @@
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
 		"features/lists.html": "features/lists/lists.html",
 		"features/todo-lists.html": "features/lists/todo-lists.html",
+		"features/general-html-support.html": "features/html/general-html-support.html",
+		"features/html-comments.html": "features/html/html-comments.html",
+		"features/html-embed.html": "features/html/html-embed.html",
 		"features/easy-video.html": "features/media-embed.html",
 		"features/iframe-embed.html": "features/media-embed.html",
 		"features/video.html": "features/media-embed.html",
@@ -402,6 +405,11 @@
 							"order": 500
 						}
 					]
+				},
+				{
+					"name": "HTML advanced support",
+					"id": "features-html",
+					"slug": "html"
 				},
 				{
 					"name": "File management",

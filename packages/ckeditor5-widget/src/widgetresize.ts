@@ -26,7 +26,7 @@ import {
 	type DomEventData,
 	type Element,
 	type ViewContainerElement,
-	type ViewDocumentMouseDownEvent,
+	type ViewDocumentMouseEvent,
 	type ViewSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -47,32 +47,20 @@ import '../theme/widgetresize.css';
  * The widget resize feature plugin.
  *
  * Use the {@link module:widget/widgetresize~WidgetResize#attachTo} method to create a resizer for the specified widget.
+ *
+ * @extends module:core/plugin~Plugin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class WidgetResize extends Plugin {
-	/**
-	 * The currently selected resizer.
-	 *
-	 * @observable
-	 */
 	declare public selectedResizer: Resizer | null;
 
 	/**
-	 * References an active resizer.
-	 *
-	 * Active resizer means a resizer which handle is actively used by the end user.
-	 *
 	 * @internal
-	 * @observable
 	 */
 	declare public _activeResizer: Resizer | null;
 
-	/**
-	 * A map of resizers created using this plugin instance.
-	 */
-	private _resizers = new Map<ViewContainerElement, Resizer>();
-
+	private _resizers!: Map<ViewContainerElement, Resizer>;
 	private _observer!: DomEmitter;
-
 	private _redrawSelectedResizerThrottled!: DebouncedFunc<() => void>;
 
 	/**
@@ -89,14 +77,38 @@ export default class WidgetResize extends Plugin {
 		const editing = this.editor.editing;
 		const domDocument = global.window.document;
 
+		/**
+		 * The currently selected resizer.
+		 *
+		 * @observable
+		 * @member {module:widget/widgetresize/resizer~Resizer|null} #selectedResizer
+		 */
 		this.set( 'selectedResizer', null );
+
+		/**
+		 * References an active resizer.
+		 *
+		 * Active resizer means a resizer which handle is actively used by the end user.
+		 *
+		 * @protected
+		 * @observable
+		 * @member {module:widget/widgetresize/resizer~Resizer|null} #_activeResizer
+		 */
 		this.set( '_activeResizer', null );
+
+		/**
+		 * A map of resizers created using this plugin instance.
+		 *
+		 * @protected
+		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
+		 */
+		this._resizers = new Map();
 
 		editing.view.addObserver( MouseObserver );
 
 		this._observer = new ( DomEmitterMixin() )();
 
-		this.listenTo<ViewDocumentMouseDownEvent>(
+		this.listenTo<ViewDocumentMouseEvent>(
 			editing.view.document,
 			'mousedown',
 			this._mouseDownListener.bind( this ),
@@ -166,6 +178,8 @@ export default class WidgetResize extends Plugin {
 
 	/**
 	 * Marks resizer as selected.
+	 *
+	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
 	 */
 	public select( resizer: Resizer ): void {
 		this.deselect();
@@ -185,7 +199,8 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * @param options Resizer options.
+	 * @param {module:widget/widgetresize~ResizerOptions} [options] Resizer options.
+	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
 	public attachTo( options: ResizerOptions ): Resizer {
 		const resizer = new Resizer( options );
@@ -227,7 +242,8 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * Returns a resizer created for a given view element (widget element).
 	 *
-	 * @param viewElement View element associated with the resizer.
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement View element associated with the resizer.
+	 * @returns {module:widget/widgetresize/resizer~Resizer|undefined}
 	 */
 	public getResizerByViewElement( viewElement: ViewContainerElement ): Resizer | undefined {
 		return this._resizers.get( viewElement );
@@ -235,6 +251,10 @@ export default class WidgetResize extends Plugin {
 
 	/**
 	 * Returns a resizer that contains a given resize handle.
+	 *
+	 * @protected
+	 * @param {HTMLElement} domResizeHandle
+	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
 	private _getResizerByHandle( domResizeHandle: HTMLElement ): Resizer | undefined {
 		for ( const resizer of this._resizers.values() ) {
@@ -245,7 +265,9 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * @param domEventData Native DOM event.
+	 * @protected
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Event} domEventData Native DOM event.
 	 */
 	private _mouseDownListener( event: EventInfo, domEventData: DomEventData ) {
 		const resizeHandle = domEventData.domTarget;
@@ -266,7 +288,9 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * @param domEventData Native DOM event.
+	 * @protected
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Event} domEventData Native DOM event.
 	 */
 	private _mouseMoveListener( event: unknown, domEventData: MouseEvent ) {
 		if ( this._activeResizer ) {
@@ -274,6 +298,9 @@ export default class WidgetResize extends Plugin {
 		}
 	}
 
+	/**
+	 * @protected
+	 */
 	private _mouseUpListener(): void {
 		if ( this._activeResizer ) {
 			this._activeResizer.commit();
@@ -284,49 +311,65 @@ export default class WidgetResize extends Plugin {
 
 /**
  * Interface describing a resizer. It allows to specify the resizing host, custom logic for calculating aspect ratio, etc.
+ *
+ * @interface ResizerOptions
+ */
+
+/**
+ * Editor instance associated with the resizer.
+ *
+ * @member {module:core/editor/editor~Editor} module:widget/widgetresize~ResizerOptions#editor
+ */
+
+/**
+ * @member {module:engine/model/element~Element} module:widget/widgetresize~ResizerOptions#modelElement
+ */
+
+/**
+ * A view of an element to be resized. Typically it's the main widget's view instance.
+ *
+ * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresize~ResizerOptions#viewElement
+ */
+
+/**
+ * A callback to be executed once the resizing process is done.
+ *
+ * It receives a `Number` (`newValue`) as a parameter.
+ *
+ * For example, {@link module:image/imageresize~ImageResize} uses it to execute the resize image command
+ * which puts the new value into the model.
+ *
+ * ```js
+ * {
+ *	editor,
+ *	modelElement: data.item,
+ *	viewElement: widget,
+ *
+ *	onCommit( newValue ) {
+ *		editor.execute( 'resizeImage', { width: newValue } );
+ *	}
+ * };
+ * ```
+ *
+ *
+ * @member {Function} module:widget/widgetresize~ResizerOptions#onCommit
+ */
+
+/**
+ * @member {Function} module:widget/widgetresize~ResizerOptions#getResizeHost
+ */
+
+/**
+ * @member {Function} module:widget/widgetresize~ResizerOptions#isCentered
  */
 export interface ResizerOptions {
-
-	/**
-	 * Editor instance associated with the resizer.
-	 */
 	editor: Editor;
-
 	modelElement: Element;
-
-	/**
-	 * A view of an element to be resized. Typically it's the main widget's view instance.
-	 */
 	viewElement: ViewContainerElement;
-
 	unit?: 'px' | '%';
-
-	/**
-	 * A callback to be executed once the resizing process is done.
-	 *
-	 * It receives a `Number` (`newValue`) as a parameter.
-	 *
-	 * For example, {@link module:image/imageresize~ImageResize} uses it to execute the resize image command
-	 * which puts the new value into the model.
-	 *
-	 * ```ts
-	 * {
-	 *	editor,
-	 *	modelElement: data.item,
-	 *	viewElement: widget,
-	 *
-	 *	onCommit( newValue ) {
-	 *		editor.execute( 'resizeImage', { width: newValue } );
-	 *	}
-	 * };
-	 * ```
-	 */
 	onCommit: ( newValue: string ) => void;
-
 	getResizeHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
-
 	getHandleHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
-
 	isCentered?: ( resizer: Resizer ) => boolean;
 }
 

@@ -21,61 +21,22 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
  */
-export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
-	/**
-	 * Walking direction. Defaults `'forward'`.
-	 */
+export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	public readonly direction: TreeWalkerDirection;
-
-	/**
-	 * Iterator boundaries.
-	 *
-	 * When the iterator is walking `'forward'` on the end of boundary or is walking `'backward'`
-	 * on the start of boundary, then `{ done: true }` is returned.
-	 *
-	 * If boundaries are not defined they are set before first and after last child of the root node.
-	 */
 	public readonly boundaries: Range | null;
-
-	/**
-	 * Flag indicating whether all characters from {@link module:engine/view/text~Text} should be returned as one
-	 * {@link module:engine/view/text~Text} or one by one as {@link module:engine/view/textproxy~TextProxy}.
-	 */
+	public position: Position;
 	public readonly singleCharacters: boolean;
-
-	/**
-	 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
-	 * iterated node will not be returned along with `elementEnd` tag.
-	 */
 	public readonly shallow: boolean;
-
-	/**
-	 * Flag indicating whether iterator should ignore `elementEnd` tags. If set to `true`, walker will not
-	 * return a parent node of the start position. Each {@link module:engine/view/element~Element} will be returned once.
-	 * When set to `false` each element might be returned twice: for `'elementStart'` and `'elementEnd'`.
-	 */
 	public readonly ignoreElementEnd: boolean;
 
-	/**
-	 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
-	 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
-	 */
-	private _position: Position;
-
-	/**
-	 * Start boundary parent.
-	 */
-	private readonly _boundaryStartParent: Node | DocumentFragment | null;
-
-	/**
-	 * End boundary parent.
-	 */
-	private readonly _boundaryEndParent: Node | DocumentFragment | null;
+	private _boundaryStartParent: Node | DocumentFragment | null;
+	private _boundaryEndParent: Node | DocumentFragment | null;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
-	 * @param options Object with configuration.
+	 * @constructor
+	 * @param {TODO ~TreeWalkerOptions} options Object with configuration.
 	 */
 	constructor( options: TreeWalkerOptions = {} ) {
 		if ( !options.boundaries && !options.startPosition ) {
@@ -99,36 +60,92 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			throw new CKEditorError( 'view-tree-walker-unknown-direction', options.startPosition, { direction: options.direction } );
 		}
 
+		/**
+		 * Iterator boundaries.
+		 *
+		 * When the iterator is walking `'forward'` on the end of boundary or is walking `'backward'`
+		 * on the start of boundary, then `{ done: true }` is returned.
+		 *
+		 * If boundaries are not defined they are set before first and after last child of the root node.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/range~Range} module:engine/view/treewalker~TreeWalker#boundaries
+		 */
 		this.boundaries = options.boundaries || null;
 
+		/**
+		 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
+		 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/position~Position} module:engine/view/treewalker~TreeWalker#position
+		 */
 		if ( options.startPosition ) {
-			this._position = Position._createAt( options.startPosition );
+			this.position = Position._createAt( options.startPosition );
 		} else {
-			this._position = Position._createAt( options.boundaries![ options.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = Position._createAt( options.boundaries![ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
+		/**
+		 * Walking direction. Defaults `'forward'`.
+		 *
+		 * @readonly
+		 * @member {'backward'|'forward'} module:engine/view/treewalker~TreeWalker#direction
+		 */
 		this.direction = options.direction || 'forward';
+
+		/**
+		 * Flag indicating whether all characters from {@link module:engine/view/text~Text} should be returned as one
+		 * {@link module:engine/view/text~Text} or one by one as {@link module:engine/view/textproxy~TextProxy}.
+		 *
+		 * @readonly
+		 * @member {Boolean} module:engine/view/treewalker~TreeWalker#singleCharacters
+		 */
 		this.singleCharacters = !!options.singleCharacters;
+
+		/**
+		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
+		 * iterated node will not be returned along with `elementEnd` tag.
+		 *
+		 * @readonly
+		 * @member {Boolean} module:engine/view/treewalker~TreeWalker#shallow
+		 */
 		this.shallow = !!options.shallow;
+
+		/**
+		 * Flag indicating whether iterator should ignore `elementEnd` tags. If set to `true`, walker will not
+		 * return a parent node of the start position. Each {@link module:engine/view/element~Element} will be returned once.
+		 * When set to `false` each element might be returned twice: for `'elementStart'` and `'elementEnd'`.
+		 *
+		 * @readonly
+		 * @member {Boolean} module:engine/view/treewalker~TreeWalker#ignoreElementEnd
+		 */
 		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
+		/**
+		 * Start boundary parent.
+		 *
+		 * @private
+		 * @member {module:engine/view/node~Node} module:engine/view/treewalker~TreeWalker#_boundaryStartParent
+		 */
 		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
+
+		/**
+		 * End boundary parent.
+		 *
+		 * @private
+		 * @member {module:engine/view/node~Node} module:engine/view/treewalker~TreeWalker#_boundaryEndParent
+		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 	}
 
 	/**
 	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
 	public [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
 		return this;
-	}
-
-	/**
-	 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
-	 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
-	 */
-	public get position(): Position {
-		return this._position;
 	}
 
 	/**
@@ -136,36 +153,34 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 *
 	 * For example:
 	 *
-	 * ```ts
-	 * walker.skip( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
-	 * walker.skip( value => true ); // Move the position to the end: <p>{}foo</p> -> <p>foo</p>[]
-	 * walker.skip( value => false ); // Do not move the position.
-	 * ```
+	 * 		walker.skip( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
+	 * 		walker.skip( value => true ); // Move the position to the end: <p>{}foo</p> -> <p>foo</p>[]
+	 * 		walker.skip( value => false ); // Do not move the position.
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
+	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
 	 */
 	public skip( skip: ( value: TreeWalkerValue ) => boolean ): void {
-		let nextResult: IteratorResult<TreeWalkerValue>;
-		let prevPosition: Position;
+		let done, value, prevPosition;
 
 		do {
 			prevPosition = this.position;
-			nextResult = this.next();
-		} while ( !nextResult.done && skip( nextResult.value ) );
 
-		if ( !nextResult.done ) {
-			this._position = prevPosition;
+			( { done, value } = this.next() );
+		} while ( !done && skip( value ) );
+
+		if ( !done ) {
+			this.position = prevPosition;
 		}
 	}
 
 	/**
 	 * Gets the next tree walker's value.
 	 *
-	 * @returns Object implementing iterator interface, returning
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue} Object implementing iterator interface, returning
 	 * information about taken step.
 	 */
-	public next(): IteratorResult<TreeWalkerValue, undefined> {
+	public next(): IteratorResult<TreeWalkerValue> {
 		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
@@ -175,8 +190,13 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 	/**
 	 * Makes a step forward in view. Moves the {@link #position} to the next position and returns the encountered value.
+	 *
+	 * @private
+	 * @returns {Object}
+	 * @returns {Boolean} return.done `true` if iterator is done, `false` otherwise.
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
-	private _next(): IteratorResult<TreeWalkerValue, undefined> {
+	private _next(): IteratorResult<TreeWalkerValue> {
 		let position = this.position.clone();
 		const previousPosition = this.position;
 		const parent = position.parent;
@@ -198,7 +218,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		if ( parent instanceof Text ) {
 			if ( position.isAtEnd ) {
 				// Prevent returning "elementEnd" for Text node. Skip that value and return the next walker step.
-				this._position = Position._createAfter( parent );
+				this.position = Position._createAfter( parent );
 
 				return this._next();
 			}
@@ -215,13 +235,13 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				position.offset++;
 			}
 
-			this._position = position;
+			this.position = position;
 
 			return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, 0 );
-				this._position = position;
+				this.position = position;
 
 				return this._next();
 			} else {
@@ -239,7 +259,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 					position.offset++;
 				}
 
-				this._position = position;
+				this.position = position;
 
 				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
@@ -258,13 +278,13 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
 
 			position.offset += textLength;
-			this._position = position;
+			this.position = position;
 
 			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position = Position._createAfter( parent as any );
-			this._position = position;
+			this.position = position;
 
 			if ( this.ignoreElementEnd ) {
 				return this._next();
@@ -276,8 +296,13 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 	/**
 	 * Makes a step backward in view. Moves the {@link #position} to the previous position and returns the encountered value.
+	 *
+	 * @private
+	 * @returns {Object}
+	 * @returns {Boolean} return.done True if iterator is done.
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
-	private _previous(): IteratorResult<TreeWalkerValue, undefined> {
+	private _previous(): IteratorResult<TreeWalkerValue> {
 		let position = this.position.clone();
 		const previousPosition = this.position;
 		const parent = position.parent;
@@ -299,7 +324,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		if ( parent instanceof Text ) {
 			if ( position.isAtStart ) {
 				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
-				this._position = Position._createBefore( parent );
+				this.position = Position._createBefore( parent );
 
 				return this._previous();
 			}
@@ -312,7 +337,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
 				position = new Position( node, node.childCount );
-				this._position = position;
+				this.position = position;
 
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
@@ -321,14 +346,14 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				}
 			} else {
 				position.offset--;
-				this._position = position;
+				this.position = position;
 
 				return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, node.data.length );
-				this._position = position;
+				this.position = position;
 
 				return this._previous();
 			} else {
@@ -348,7 +373,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 					position.offset--;
 				}
 
-				this._position = position;
+				this.position = position;
 
 				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
@@ -368,26 +393,28 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
 
-			this._position = position;
+			this.position = position;
 
 			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position._createBefore( parent as any );
-			this._position = position;
+			this.position = position;
 
-			return this._formatReturnValue( 'elementStart', parent as Element, previousPosition, position, 1 );
+			return this._formatReturnValue( 'elementStart', parent as any, previousPosition, position, 1 );
 		}
 	}
 
 	/**
 	 * Format returned data and adjust `previousPosition` and `nextPosition` if reach the bound of the {@link module:engine/view/text~Text}.
 	 *
-	 * @param type Type of step.
-	 * @param item Item between old and new position.
-	 * @param previousPosition Previous position of iterator.
-	 * @param nextPosition Next position of iterator.
-	 * @param length Length of the item.
+	 * @private
+	 * @param {module:engine/view/treewalker~TreeWalkerValueType} type Type of step.
+	 * @param {module:engine/view/item~Item} item Item between old and new position.
+	 * @param {module:engine/view/position~Position} previousPosition Previous position of iterator.
+	 * @param {module:engine/view/position~Position} nextPosition Next position of iterator.
+	 * @param {Number} [length] Length of the item.
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue}
 	 */
 	private _formatReturnValue(
 		type: TreeWalkerValueType,
@@ -395,7 +422,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		previousPosition: Position,
 		nextPosition: Position,
 		length?: number
-	): IteratorYieldResult<TreeWalkerValue> {
+	): IteratorResult<TreeWalkerValue> {
 		// Text is a specific parent, because contains string instead of children.
 		// Walker doesn't enter to the Text except situations when walker is iterating over every single character,
 		// or the bound starts/ends inside the Text. So when the position is at the beginning or at the end of the Text
@@ -406,7 +433,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				if ( this.direction == 'forward' && !( this.boundaries && this.boundaries.end.isEqual( this.position ) ) ) {
 					nextPosition = Position._createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
-					this._position = nextPosition;
+					this.position = nextPosition;
 				} else {
 					previousPosition = Position._createAfter( item.textNode );
 				}
@@ -417,7 +444,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				if ( this.direction == 'backward' && !( this.boundaries && this.boundaries.start.isEqual( this.position ) ) ) {
 					nextPosition = Position._createBefore( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
-					this._position = nextPosition;
+					this.position = nextPosition;
 				} else {
 					previousPosition = Position._createBefore( item.textNode );
 				}
@@ -442,98 +469,72 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end
  * of node, or `'text'` if walker traversed over single and multiple characters.
  * For {@link module:engine/view/text~Text} `elementStart` and `elementEnd` is not returned.
+ *
+ * @typedef {String} module:engine/view/treewalker~TreeWalkerValueType
  */
 export type TreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
 
 /**
  * Object returned by {@link module:engine/view/treewalker~TreeWalker} when traversing tree view.
+ *
+ * @typedef {Object} module:engine/view/treewalker~TreeWalkerValue
+ * @property {module:engine/view/treewalker~TreeWalkerValueType} type
+ * @property {module:engine/view/item~Item} item Item between the old and the new positions
+ * of the tree walker.
+ * @property {module:engine/view/position~Position} previousPosition Previous position of the iterator.
+ * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
+ * position before the item.
+ * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
+ * the position after item.
+ * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
+ * inside of the text to its parent just before or just after that text.
+ * @property {module:engine/view/position~Position} nextPosition Next position of the iterator.
+ * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
+ * the position after the item.
+ * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
+ * before the item.
+ * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
+ * inside of the text to its parent just before or just after that text.
+ * @property {Number} [length] Length of the item. For `'elementStart'` it is `1`. For `'text'` it is
+ * the length of that text. For `'elementEnd'` it is `undefined`.
  */
 export interface TreeWalkerValue {
-
-	/**
-	 * Type of the step made by {@link module:engine/view/treewalker~TreeWalker}.
-	 */
 	type: TreeWalkerValueType;
-
-	/**
-	 * Item between the old and the new positions of the tree walker.
-	 */
 	item: Item;
-
-	/**
-	 * Previous position of the iterator.
-	 * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
-	 * position before the item.
-	 * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
-	 * the position after item.
-	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
-	 * inside of the text to its parent just before or just after that text.
-	 */
 	previousPosition: Position;
-
-	/**
-	 * Next position of the iterator.
-	 * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
-	 * the position after the item.
-	 * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
-	 * before the item.
-	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
-	 * inside of the text to its parent just before or just after that text.
-	 */
 	nextPosition: Position;
-
-	/**
-	 * Length of the item. For `'elementStart'` it is `1`. For `'text'` it is
-	 * the length of that text. For `'elementEnd'` it is `undefined`.
-	 */
 	length?: number;
 }
 
 /**
- * Tree walking direction.
+ * Tree walking directions.
+ *
+ * @typedef {'forward'|'backward'} module:engine/view/treewalker~TreeWalkerDirection
  */
 export type TreeWalkerDirection = 'forward' | 'backward';
 
 /**
- * The configuration of {@link ~TreeWalker}.
+ * TODO
+ *
+ * @typedef TreeWalkerOptions
+ * @param {module:engine/view/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
+ * @param {module:engine/view/position~Position} [options.startPosition] Starting position.
+ * @param {'forward'|'backward'} [options.direction='forward'] Walking direction.
+ * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all characters from
+ * {@link module:engine/view/text~Text} should be returned as one {@link module:engine/view/text~Text} (`false`) ore one by one as
+ * {@link module:engine/view/textproxy~TextProxy} (`true`).
+ * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
+ * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
+ * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `elementEnd`
+ * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
+ * each {@link module:engine/view/element~Element} will be returned once, while if the option is `false` they might be returned
+ * twice: for `'elementStart'` and `'elementEnd'`.
  */
-export interface TreeWalkerOptions {
-
-	/**
-	 * Walking direction.
-	 *
-	 * @default 'forward'
-	 */
+export type TreeWalkerOptions = {
 	direction?: TreeWalkerDirection;
-
-	/**
-	 * Range to define boundaries of the iterator.
-	 */
 	boundaries?: Range | null;
-
-	/**
-	 * Starting position.
-	 */
 	startPosition?: Position;
-
-	/**
-	 * Flag indicating whether all characters from
-	 * {@link module:engine/view/text~Text} should be returned as one {@link module:engine/view/text~Text} (`false`) or one by one as
-	 * {@link module:engine/view/textproxy~TextProxy} (`true`).
-	 */
 	singleCharacters?: boolean;
-
-	/**
-	 * Flag indicating whether iterator should enter elements or not. If the
-	 * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
-	 */
 	shallow?: boolean;
-
-	/**
-	 * Flag indicating whether iterator should ignore `elementEnd`
-	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
-	 * each {@link module:engine/view/element~Element} will be returned once, while if the option is `false` they might be returned
-	 * twice: for `'elementStart'` and `'elementEnd'`.
-	 */
 	ignoreElementEnd?: boolean;
-}
+};

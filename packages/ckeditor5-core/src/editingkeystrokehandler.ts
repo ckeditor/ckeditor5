@@ -18,23 +18,29 @@ import type Editor from './editor/editor';
  *
  * E.g. an undo plugin would do this:
  *
- * ```ts
- * editor.keystrokes.set( 'Ctrl+Z', 'undo' );
- * editor.keystrokes.set( 'Ctrl+Shift+Z', 'redo' );
- * editor.keystrokes.set( 'Ctrl+Y', 'redo' );
- * ```
+ *		editor.keystrokes.set( 'Ctrl+Z', 'undo' );
+ *		editor.keystrokes.set( 'Ctrl+Shift+Z', 'redo' );
+ *		editor.keystrokes.set( 'Ctrl+Y', 'redo' );
+ *
+ * @extends module:utils/keystrokehandler~KeystrokeHandler
  */
 export default class EditingKeystrokeHandler extends KeystrokeHandler {
-	/**
-	 * The editor instance.
-	 */
 	public readonly editor: Editor;
 
 	/**
 	 * Creates an instance of the keystroke handler.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor: Editor ) {
 		super();
+
+		/**
+		 * The editor instance.
+		 *
+		 * @readonly
+		 * @member {module:core/editor/editor~Editor}
+		 */
 		this.editor = editor;
 	}
 
@@ -43,21 +49,21 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 *
 	 * The handler can be specified as a command name or a callback.
 	 *
-	 * @param keystroke Keystroke defined in a format accepted by
+	 * @param {String|Array.<String|Number>} keystroke Keystroke defined in a format accepted by
 	 * the {@link module:utils/keyboard~parseKeystroke} function.
-	 * @param callback If a string is passed, then the keystroke will
+	 * @param {Function|String} callback If a string is passed, then the keystroke will
 	 * {@link module:core/editor/editor~Editor#execute execute a command}.
 	 * If a function, then it will be called with the
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
 	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
-	 * @param options Additional options.
-	 * @param options.priority The priority of the keystroke callback. The higher the priority value
-	 * the sooner the callback will be executed. Keystrokes having the same priority
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
+	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
 	 * are called in the order they were added.
 	 */
 	public override set(
 		keystroke: string | Array<string | number>,
-		callback: EditingKeystrokeCallback,
+		callback: string | ( ( ev: KeyboardEvent, cancel: () => void ) => void ),
 		options: { readonly priority?: PriorityString } = {}
 	): void {
 		if ( typeof callback == 'string' ) {
@@ -72,8 +78,3 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 		super.set( keystroke, callback, options );
 	}
 }
-
-/**
- * Command name or a callback to be executed when a given keystroke is pressed.
- */
-export type EditingKeystrokeCallback = string | ( ( ev: KeyboardEvent, cancel: () => void ) => void );

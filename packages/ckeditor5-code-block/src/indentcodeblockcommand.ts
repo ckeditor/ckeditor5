@@ -13,8 +13,6 @@ import {
 	isModelSelectionInCodeBlock
 } from './utils';
 
-import './codeblockconfig';
-
 /**
  * The code block indentation increase command plugin.
  */
@@ -95,11 +93,5 @@ export default class IndentCodeBlockCommand extends Command {
 		// Indent (forward) command is always enabled when there's any code block in the selection
 		// because you can always indent code lines.
 		return isModelSelectionInCodeBlock( this.editor.model.document.selection );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		indentCodeBlock: IndentCodeBlockCommand;
 	}
 }

@@ -14,7 +14,7 @@ import {
 } from 'ckeditor5/src/core';
 
 import type {
-	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyEvent,
 	Marker,
 	Position
 } from 'ckeditor5/src/engine';
@@ -49,7 +49,7 @@ import type {
 	MentionFeedItem,
 	ItemRenderer,
 	MentionFeedObjectItem
-} from './mentionconfig';
+} from './mention';
 
 const VERTICAL_SPACING = 3;
 
@@ -133,7 +133,7 @@ export default class MentionUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Key listener that handles navigation in mention view.
-		editor.editing.view.document.on<ViewDocumentKeyDownEvent>( 'keydown', ( evt, data ) => {
+		editor.editing.view.document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, data ) => {
 			if ( isHandledKey( data.keyCode ) && this._isUIVisible ) {
 				data.preventDefault();
 				evt.stop(); // Required for Enter key overriding.
@@ -167,7 +167,9 @@ export default class MentionUI extends Plugin {
 		const feeds = editor.config.get( 'mention.feeds' )!;
 
 		for ( const mentionDescription of feeds ) {
-			const { feed, marker, dropdownLimit } = mentionDescription;
+			const feed = mentionDescription.feed;
+
+			const marker = mentionDescription.marker;
 
 			if ( !isValidMentionMarker( marker ) ) {
 				/**
@@ -177,7 +179,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * Incorrect markers: `'$$'`, `'[@'`.
 				 *
-				 * See {@link module:mention/mentionconfig~MentionConfig}.
+				 * See {@link module:mention/mention~MentionConfig}.
 				 *
 				 * @error mentionconfig-incorrect-marker
 				 * @param marker Configured marker
@@ -187,7 +189,7 @@ export default class MentionUI extends Plugin {
 
 			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const itemRenderer = mentionDescription.itemRenderer;
-			const definition = { marker, feedCallback, itemRenderer, dropdownLimit };
+			const definition = { marker, feedCallback, itemRenderer };
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
@@ -236,10 +238,8 @@ export default class MentionUI extends Plugin {
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
-			const { dropdownLimit: markerDropdownLimit } = this._mentionsConfigurations.get( marker )!;
-
 			// Set to 10 by default for backwards compatibility. See: #10479
-			const dropdownLimit = markerDropdownLimit || this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {
 				return null;
@@ -411,7 +411,7 @@ export default class MentionUI extends Plugin {
 
 			this._requestFeedDebounced( markerDefinition!.marker, feedText );
 
-			// @if CK_DEBUG_MENTION // console.groupEnd();
+			// @if CK_DEBUG_MENTION // console.groupEnd( '[TextWatcher] matched' );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -546,7 +546,6 @@ export default class MentionUI extends Plugin {
 		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
-		const uiLanguageDirection = editor.locale.uiLanguageDirection;
 
 		return {
 			target: () => {
@@ -574,7 +573,7 @@ export default class MentionUI extends Plugin {
 
 				return null;
 			},
-			positions: getBalloonPanelPositions( preferredPosition, uiLanguageDirection )
+			positions: getBalloonPanelPositions( preferredPosition )
 		};
 	}
 }
@@ -582,10 +581,7 @@ export default class MentionUI extends Plugin {
 /**
  * Returns the balloon positions data callbacks.
  */
-function getBalloonPanelPositions(
-	preferredPosition: MentionsView['position'],
-	uiLanguageDirection: string
-): PositionOptions['positions'] {
+function getBalloonPanelPositions( preferredPosition: MentionsView['position'] ): PositionOptions['positions'] {
 	const positions: Record<string, PositionOptions['positions'][0]> = {
 		// Positions the panel to the southeast of the caret rectangle.
 		'caret_se': ( targetRect: Rect ) => {
@@ -643,17 +639,12 @@ function getBalloonPanelPositions(
 		];
 	}
 
-	// By default, return all position callbacks ordered depending on the UI language direction.
-	return uiLanguageDirection !== 'rtl' ? [
+	// By default return all position callbacks.
+	return [
 		positions.caret_se,
 		positions.caret_sw,
 		positions.caret_ne,
 		positions.caret_nw
-	] : [
-		positions.caret_sw,
-		positions.caret_se,
-		positions.caret_nw,
-		positions.caret_ne
 	];
 }
 
@@ -868,7 +859,7 @@ type RequestFeedDiscardedEvent = {
 };
 
 /**
- * Fired whenever the requested {@link module:mention/mentionconfig~MentionFeed#feed} promise fails with error.
+ * Fired whenever the requested {@link module:mention/mention~MentionFeed#feed} promise fails with error.
  */
 type RequestFeedErrorEvent = {
 	name: 'requestFeed:error';
@@ -879,7 +870,6 @@ type Definition = {
 	marker: string;
 	feedCallback: FeedCallback;
 	itemRenderer?: ItemRenderer;
-	dropdownLimit?: number;
 };
 
 type MarkerDefinition = {

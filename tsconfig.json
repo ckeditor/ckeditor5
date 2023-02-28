@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "lib": [
-      "DOM",
-      "DOM.Iterable"
+      "DOM"
     ],
     "noImplicitAny": true,
     "noImplicitOverride": true,
@@ -11,8 +10,7 @@
     "target": "es2020",
     "sourceMap": true,
     "allowJs": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true
+    "moduleResolution": "node"
   },
   "include": [
     "./typings/"

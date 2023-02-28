@@ -1,19 +1,10 @@
 ## Mention
 
-The mention configuration with a custom `config.mention.dropdownLimit` configuration and a static list of autocomplete feed. You can also limit the dropdown per feeds object:
-```json
-{
-	marker: '#',
-	feed: [
-		...
-	],
-	dropdownLimit: 3
-}
-```
+The mention configuration with a custom `config.mention.dropdownLimit` configuration and a static list of autocomplete feed.
 
 ### Configuration
 
-Type "@" to display the list of 20 mentions out of 21 available or type "#" to see shorter list limited to 3.
+Type "@" to display the list of 20 mentions out of 21 available or type "#" to see shorter list.
 
 ### Interaction
 

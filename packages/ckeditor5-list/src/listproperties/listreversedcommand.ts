@@ -10,8 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from '../list/utils';
 
-import '../listcommands';
-
 /**
  * The reversed list command. It changes the `listReversed` attribute of the selected list items. As a result, the list order will be
  * reversed.
@@ -19,7 +17,7 @@ import '../listcommands';
  */
 export default class ListReversedCommand extends Command {
 	/**
-	 * @inheritDoc
+	 * @inheritdoc
 	 */
 	declare public value: boolean | null;
 

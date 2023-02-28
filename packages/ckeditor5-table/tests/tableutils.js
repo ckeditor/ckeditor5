@@ -13,7 +13,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import TableSelection from '../src/tableselection';
 import TableEditing from '../src/tableediting';
 import TableUtils from '../src/tableutils';
-import TableColumnResize from '../src/tablecolumnresize';
 
 import { modelTable } from './_utils/utils';
 import TableWalker from '../src/tablewalker';
@@ -23,23 +22,24 @@ describe( 'TableUtils', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( async () => {
-		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableEditing, TableUtils, TableColumnResize ]
-		} );
+	beforeEach( () => {
+		return ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableUtils ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
+			root = model.document.getRoot( 'main' );
+			tableUtils = editor.plugins.get( TableUtils );
 
-		model = editor.model;
-		root = model.document.getRoot( 'main' );
-		tableUtils = editor.plugins.get( 'TableUtils' );
-
-		model.schema.register( 'foo', {
-			allowIn: 'table',
-			allowContentOf: '$block',
-			isLimit: true
-		} );
-		editor.conversion.elementToElement( {
-			view: 'foo',
-			model: 'foo'
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
 		} );
 	} );
 

@@ -16,6 +16,8 @@ import type { Batch } from '@ckeditor/ckeditor5-engine';
  * batches from {@link module:engine/model/document~Document#history history} that happened after the reversed batch.
  *
  * The undo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}.
+ *
+ * @extends module:undo/basecommand~BaseCommand
  */
 export default class UndoCommand extends BaseCommand {
 	/**
@@ -25,7 +27,7 @@ export default class UndoCommand extends BaseCommand {
 	 *
 	 * @fires execute
 	 * @fires revert
-	 * @param batch A batch that should be undone. If not set, the last added batch will be undone.
+	 * @param {module:engine/model/batch~Batch} [batch] A batch that should be undone. If not set, the last added batch will be undone.
 	 */
 	public override execute( batch: Batch | null = null ): void {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
@@ -52,15 +54,9 @@ export default class UndoCommand extends BaseCommand {
 /**
  * Fired when execution of the command reverts some batch.
  *
- * @eventName revert
+ * @event revert
  */
 export type UndoCommandRevertEvent = {
 	name: 'revert';
 	args: [ batch: Batch, undoingBatch: Batch ];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		undo: UndoCommand;
-	}
-}

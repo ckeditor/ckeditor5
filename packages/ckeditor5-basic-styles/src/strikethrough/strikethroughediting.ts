@@ -63,6 +63,10 @@ export default class StrikethroughEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		strikethrough: AttributeCommand;
+	}
+
 	interface PluginsMap {
 		[ StrikethroughEditing.pluginName ]: StrikethroughEditing;
 	}

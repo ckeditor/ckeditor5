@@ -17,6 +17,8 @@ import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
  * See also the {@link module:enter/shiftenter~ShiftEnter} plugin.
  *
  * For more information about this feature see the {@glink api/enter package page}.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class Enter extends Plugin {
 	/**
@@ -55,6 +57,10 @@ export default class Enter extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		'enter': EnterCommand;
+	}
+
 	interface PluginsMap {
 		[ Enter.pluginName ]: Enter;
 	}

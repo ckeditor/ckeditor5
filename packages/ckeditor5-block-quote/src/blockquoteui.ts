@@ -9,7 +9,6 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import type BlockQuoteCommand from './blockquotecommand';
 
 import '../theme/blockquote.css';
 
@@ -36,7 +35,7 @@ export default class BlockQuoteUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'blockQuote', locale => {
-			const command: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
+			const command = editor.commands.get( 'blockQuote' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {

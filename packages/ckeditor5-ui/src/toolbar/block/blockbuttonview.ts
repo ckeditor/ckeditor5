@@ -8,10 +8,9 @@
  */
 
 import ButtonView from '../../button/buttonview';
+import '../../../theme/components/toolbar/blocktoolbar.css';
 
 import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
-
-import '../../../theme/components/toolbar/blocktoolbar.css';
 
 const toPx = toUnit( 'px' );
 
@@ -21,20 +20,11 @@ const toPx = toUnit( 'px' );
  * This view represents a button attached next to block element where the selection is anchored.
  *
  * See {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}.
+ *
+ * @extends {module:ui/button/buttonview~ButtonView}
  */
 export default class BlockButtonView extends ButtonView {
-	/**
-	 * Top offset.
-	 *
-	 * @observable
-	 */
 	declare public top: number;
-
-	/**
-	 * Left offset.
-	 *
-	 * @observable
-	 */
 	declare public left: number;
 
 	/**
@@ -50,7 +40,18 @@ export default class BlockButtonView extends ButtonView {
 
 		this.isToggleable = true;
 
+		/**
+		 * Top offset.
+		 *
+		 * @member {Number} #top
+		 */
 		this.set( 'top', 0 );
+
+		/**
+		 * Left offset.
+		 *
+		 * @member {Number} #left
+		 */
 		this.set( 'left', 0 );
 
 		this.extendTemplate( {

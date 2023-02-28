@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
 
 import strikethroughIcon from '../../theme/icons/strikethrough.svg';
 
@@ -35,7 +34,7 @@ export default class StrikethroughUI extends Plugin {
 
 		// Add strikethrough button to feature components.
 		editor.ui.componentFactory.add( STRIKETHROUGH, locale => {
-			const command: AttributeCommand = editor.commands.get( STRIKETHROUGH )!;
+			const command = editor.commands.get( STRIKETHROUGH )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

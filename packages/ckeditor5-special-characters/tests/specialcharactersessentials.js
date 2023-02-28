@@ -21,8 +21,4 @@ describe( 'SpecialCharactersEssentials', () => {
 			SpecialCharactersLatin
 		] );
 	} );
-
-	it( 'should be named', () => {
-		expect( SpecialCharactersEssentials.pluginName ).to.equal( 'SpecialCharactersEssentials' );
-	} );
 } );

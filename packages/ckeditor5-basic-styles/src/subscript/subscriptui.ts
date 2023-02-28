@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
@@ -35,7 +34,7 @@ export default class SubscriptUI extends Plugin {
 
 		// Add subscript button to feature components.
 		editor.ui.componentFactory.add( SUBSCRIPT, locale => {
-			const command: AttributeCommand = editor.commands.get( SUBSCRIPT )!;
+			const command = editor.commands.get( SUBSCRIPT )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

@@ -19,7 +19,6 @@ import uid from '../uid';
 import isNode from './isnode';
 import isWindow from './iswindow';
 import type EventInfo from '../eventinfo';
-import type { Constructor, Mixed } from '../mix';
 
 const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
 
@@ -47,7 +46,12 @@ const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
  *
  * @label EXTENDS
  */
-export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, DomEmitter>;
+export default function DomEmitterMixin<Base extends abstract new ( ...args: Array<any> ) => Emitter>(
+	base: Base
+): {
+	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & DomEmitter;
+	prototype: InstanceType<Base> & DomEmitter;
+};
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -76,7 +80,7 @@ export default function DomEmitterMixin(): {
 	prototype: DomEmitter;
 };
 
-export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
+export default function DomEmitterMixin( base?: abstract new ( ...args: Array<any> ) => Emitter ): unknown {
 	if ( !base ) {
 		return defaultEmitterClass;
 	}
@@ -376,9 +380,6 @@ function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: 
 	return id;
 }
 
-export interface DomEventMap extends HTMLElementEventMap, WindowEventMap {
-}
-
 /**
  * Interface representing classes which mix in {@link module:utils/dom/emittermixin~DomEmitterMixin}.
  *
@@ -406,10 +407,10 @@ export interface DomEmitter extends Emitter {
 	 * @param options.usePassive Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
-	listenTo<K extends keyof DomEventMap>(
+	listenTo<K extends keyof HTMLElementEventMap>(
 		emitter: Node | Window,
 		event: K,
-		callback: ( this: this, ev: EventInfo, event: DomEventMap[ K ] ) => void,
+		callback: ( this: this, ev: EventInfo, event: HTMLElementEventMap[ K ] ) => void,
 		options?: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
 	): void;
 

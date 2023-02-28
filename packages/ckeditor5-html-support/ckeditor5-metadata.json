@@ -4,7 +4,7 @@
 			"name": "General HTML Support",
 			"className": "GeneralHtmlSupport",
 			"description": "Allows enabling unsupported HTML features at low cost.",
-			"docs": "features/general-html-support.html",
+			"docs": "features/html/general-html-support.html",
 			"path": "src/generalhtmlsupport.js",
 			"htmlOutput": [
 				{
@@ -41,7 +41,7 @@
 			"name": "HTML comment",
 			"className": "HtmlComment",
 			"description": "Preserves the HTML comments in the editor data.",
-			"docs": "features/general-html-support.html#html-comments",
+			"docs": "features/html/html-comments.html",
 			"path": "src/htmlcomment.js",
 			"htmlOutput": [
 				{

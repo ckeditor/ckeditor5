@@ -61,6 +61,10 @@ export default class ItalicEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		italic: AttributeCommand;
+	}
+
 	interface PluginsMap {
 		[ ItalicEditing.pluginName ]: ItalicEditing;
 	}

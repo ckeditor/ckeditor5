@@ -8,8 +8,8 @@
  */
 
 import { findOptimalInsertionRange } from './findoptimalinsertionrange';
-import type DocumentSelection from '../documentselection';
-import type Selection from '../selection';
+import DocumentSelection from '../documentselection';
+import Selection, { type PlaceOrOffset, type Selectable } from '../selection';
 
 import type Element from '../element';
 import type Model from '../model';
@@ -52,7 +52,8 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 export default function insertObject(
 	model: Model,
 	object: Element,
-	selectable?: Selection | DocumentSelection | null,
+	selectable?: Selectable,
+	placeOrOffset?: PlaceOrOffset | null,
 	options: {
 		findOptimalPosition?: 'auto' | 'before' | 'after';
 		setSelection?: 'on' | 'after';
@@ -71,7 +72,15 @@ export default function insertObject(
 	}
 
 	// Normalize selectable to a selection instance.
-	const originalSelection: Selection | DocumentSelection = selectable ? selectable : model.document.selection;
+	let originalSelection: Selection | DocumentSelection;
+
+	if ( !selectable ) {
+		originalSelection = model.document.selection;
+	} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
+		originalSelection = selectable;
+	} else {
+		originalSelection = model.createSelection( selectable, placeOrOffset! );
+	}
 
 	// Adjust the insertion selection.
 	let insertionSelection = originalSelection;

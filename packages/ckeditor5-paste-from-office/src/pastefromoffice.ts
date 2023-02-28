@@ -50,14 +50,13 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<Normalizer> = [];
 
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
-		clipboardPipeline.on(
+		editor.plugins.get( 'ClipboardPipeline' ).on(
 			'inputTransformation',
 			( evt, data: NormalizerData ) => {
 				if ( data._isTransformedWithPasteFromOffice ) {

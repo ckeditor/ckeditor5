@@ -95,13 +95,13 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	constructor(
 		...args: [] |
 		[
-			selectable: Node,
-			placeOrOffset: PlaceOrOffset,
+			selectable: Selectable,
+			placeOrOffset?: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] |
 		[
-			selectable?: Exclude<Selectable, Node>,
-			options?: { backward?: boolean }
+			selectable: Selectable,
+			options: { backward?: boolean }
 		]
 	) {
 		super();
@@ -349,12 +349,12 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 */
 	public setTo(
 		...args: [
-			selectable: Node,
-			placeOrOffset: PlaceOrOffset,
+			selectable: Selectable,
+			placeOrOffset?: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] | [
-			selectable?: Exclude<Selectable, Node>,
-			options?: { backward?: boolean }
+			selectable: Selectable,
+			options: { backward?: boolean }
 		]
 	): void {
 		let [ selectable, placeOrOffset, options ] = args;

@@ -28,7 +28,7 @@ import type {
 } from 'ckeditor5/src/engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
-import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
@@ -208,8 +208,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemBackward' )!;
-		const mergeForwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemForward' )!;
+		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' )!;
+		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' )!;
 
 		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -290,7 +290,7 @@ export default class DocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
-		const enterCommand: EnterCommand = commands.get( 'enter' )!;
+		const enterCommand = commands.get( 'enter' )!;
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo<ViewDocumentEnterEvent>( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -336,7 +336,7 @@ export default class DocumentListEditing extends Plugin {
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
-			const splitCommand: DocumentListSplitCommand = commands.get( 'splitListItemBefore' )!;
+			const splitCommand = commands.get( 'splitListItemBefore' )!;
 
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.

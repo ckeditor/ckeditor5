@@ -13,6 +13,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list separator view class.
+ *
+ * @extends module:ui/view~View
  */
 export default class ListSeparatorView extends View {
 	/**

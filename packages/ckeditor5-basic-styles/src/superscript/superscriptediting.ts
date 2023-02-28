@@ -58,6 +58,10 @@ export default class SuperscriptEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		superscript: AttributeCommand;
+	}
+
 	interface PluginsMap {
 		[ SuperscriptEditing.pluginName ]: SuperscriptEditing;
 	}
