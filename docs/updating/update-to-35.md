@@ -99,11 +99,7 @@ Listed below are the most important changes that require your attention when upg
 ### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
 <info-box>
-<<<<<<< HEAD
 	This information applies only to integrators who develop their own editor creators from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
-=======
-	This information applies only to integrators who develop their own {@link framework/custom-editor-creator editor creators} from scratch by using the {@link module:core/editor/editor~Editor} and {@link module:core/editor/editorui~EditorUI} classes as building blocks.
->>>>>>> master
 </info-box>
 
 * The `enableToolbarKeyboardFocus()` helper that allowed the navigation has been removed. To bring this functionality back, use the {@link module:core/editor/editorui~EditorUI#addToolbar} method instead.
