@@ -100,7 +100,7 @@ describe( 'BalloonEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from editor.config.placeholder - objet', () => {
+			it( 'sets placeholder from editor.config.placeholder - object', () => {
 				return VirtualBalloonTestEditor
 					.create( 'foo', {
 						extraPlugins: [ BalloonToolbar, Paragraph ],
