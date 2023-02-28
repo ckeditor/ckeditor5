@@ -13,22 +13,20 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
 /**
  * Adds a margin CSS styles processing rules.
  *
- * ```ts
- * editor.data.addStyleProcessorRules( addMarginRules );
- * ```
+ *		editor.data.addStyleProcessorRules( addMarginRules );
  *
  * The normalized value is stored as:
  *
- * ```ts
- * const styles = {
- * 	margin: {
- * 		top,
- * 		right,
- * 		bottom,
- * 		left
- * 	}
- * };
- * ```
+ *		const styles = {
+ *			margin: {
+ *				top,
+ *				right,
+ *				bottom,
+ *				left
+ *			}
+ *		};
+ *
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addMarginRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );

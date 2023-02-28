@@ -21,6 +21,8 @@ import Node, { type NodeAttributes } from './node';
  * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
+ *
+ * @extends module:engine/model/node~Node
  */
 export default class Text extends Node {
 	/**

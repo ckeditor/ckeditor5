@@ -9,31 +9,21 @@
 
 'use strict';
 
-const path = require( 'path' );
 const fs = require( 'fs' );
 const rimraf = require( 'rimraf' );
-const minimist = require( 'minimist' );
 
-const options = parseArguments( process.argv.slice( 2 ) );
-
-cleanReleaseArtifacts( options ).then(
-	() => {
-		console.log( 'Done!' );
-	},
-	err => {
-		console.error( err.stack );
-	}
+cleanReleaseArtifacts().then(
+	() => { console.log( 'Done!' ); },
+	err => { console.error( err.stack ); }
 );
 
 /**
  * Removes all build artifacts from source directories.
  *
- * @aram {Object} options
- * @aram {String} options.cwd An absolute path to the repository where to look for packages.
  * @returns {Promise}
  */
-async function cleanReleaseArtifacts( options ) {
-	const typeScriptPackages = await findTypeScriptPackages( options.cwd );
+async function cleanReleaseArtifacts() {
+	const typeScriptPackages = await findTypeScriptPackages();
 	const typeScriptPatterns = typeScriptPackages.map( pkg => `packages/${ pkg }/src/**/*.@(js|d.ts)` );
 
 	const removePatterns = [
@@ -49,11 +39,10 @@ async function cleanReleaseArtifacts( options ) {
 /**
  * Finds all packages in `packages` directory that are in TypeScript.
  *
- * @param {String} repositoryRoot An absolute path to the repository where to look for packages.
  * @returns {Promise} Array of package names.
  */
-async function findTypeScriptPackages( repositoryRoot ) {
-	const allPackages = await findAllPackages( repositoryRoot );
+async function findTypeScriptPackages() {
+	const allPackages = await findAllPackages();
 	const result = [];
 
 	for ( const pkg of allPackages ) {
@@ -68,12 +57,11 @@ async function findTypeScriptPackages( repositoryRoot ) {
 /**
  * Finds all packages in `packages` directory.
  *
- * @param {String} repositoryRoot An absolute path to the repository where to look for packages.
  * @returns {Promise} Array of package names.
  */
-function findAllPackages( repositoryRoot ) {
+function findAllPackages() {
 	return new Promise( ( resolve, reject ) => {
-		fs.readdir( path.join( repositoryRoot, 'packages' ), ( err, files ) => {
+		fs.readdir( 'packages', ( err, files ) => {
 			if ( err ) {
 				reject( err );
 			} else {
@@ -113,28 +101,4 @@ function removeFiles( pattern ) {
 			}
 		} );
 	} );
-}
-
-/**
- * Parses CLI arguments and prepares configuration for the crawler.
- *
- * @param {Array.<String>} args CLI arguments and options.
- * @returns {Object} options
- */
-function parseArguments( args ) {
-	const config = {
-		string: [
-			'cwd'
-		],
-
-		default: {
-			cwd: process.cwd()
-		}
-	};
-
-	const options = minimist( args, config );
-
-	options.cwd = path.resolve( options.cwd );
-
-	return options;
 }

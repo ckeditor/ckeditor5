@@ -30,49 +30,60 @@ import type ViewText from '../text';
  * all changes are reverted in the DOM (the DOM is synced with the editor's view structure).
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ *
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class MutationObserver extends Observer {
-	/**
-	 * Reference to the {@link module:engine/view/view~View#domConverter}.
-	 */
-	public readonly domConverter: DomConverter;
+	public domConverter: DomConverter;
+	public renderer: Renderer;
 
-	/**
-	 * Reference to the {@link module:engine/view/view~View#_renderer}.
-	 */
-	public readonly renderer: Renderer;
-
-	/**
-	 * Native mutation observer config.
-	 */
 	private readonly _config: MutationObserverInit;
-
-	/**
-	 * Observed DOM elements.
-	 */
 	private readonly _domElements: Array<HTMLElement>;
-
-	/**
-	 * Native mutation observer.
-	 */
 	private _mutationObserver: InstanceType<typeof global.MutationObserver>;
 
-	/**
-	 * @inheritDoc
-	 */
 	constructor( view: View ) {
 		super( view );
 
+		/**
+		 * Native mutation observer config.
+		 *
+		 * @private
+		 * @member {Object}
+		 */
 		this._config = {
 			childList: true,
 			characterData: true,
 			subtree: true
 		};
 
+		/**
+		 * Reference to the {@link module:engine/view/view~View#domConverter}.
+		 *
+		 * @member {module:engine/view/domconverter~DomConverter}
+		 */
 		this.domConverter = view.domConverter;
-		this.renderer = view._renderer;
 
+		/**
+		 * Reference to the {@link module:engine/view/view~View#_renderer}.
+		 *
+		 * @member {module:engine/view/renderer~Renderer}
+		 */
+		this.renderer = ( view as any )._renderer;
+
+		/**
+		 * Observed DOM elements.
+		 *
+		 * @private
+		 * @member {Array.<HTMLElement>}
+		 */
 		this._domElements = [];
+
+		/**
+		 * Native mutation observer.
+		 *
+		 * @private
+		 * @member {MutationObserver}
+		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
@@ -126,7 +137,8 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Handles mutations. Mark view elements to sync and call render.
 	 *
-	 * @param domMutations Array of native mutations.
+	 * @private
+	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	private _onMutations( domMutations: Array<MutationRecord> ) {
 		// As a result of this.flush() we can have an empty collection.
@@ -196,7 +208,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( const viewElement of elementsWithMutatedChildren ) {
-			const domElement = domConverter.mapViewToDom( viewElement )!;
+			const domElement = domConverter.mapViewToDom( viewElement ) as HTMLElement;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement, { withChildren: false } ) );
 
@@ -231,7 +243,9 @@ export default class MutationObserver extends Observer {
 	 * Such mutations are generated while pressing space or performing native spellchecker correction
 	 * on the end of the block element in Firefox browser.
 	 *
-	 * @param mutation Native mutation object.
+	 * @private
+	 * @param {Object} mutation Native mutation object.
+	 * @returns {Boolean}
 	 */
 	private _isBogusBrMutation( mutation: MutationRecord ) {
 		let addedNode = null;

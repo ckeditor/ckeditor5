@@ -10,6 +10,7 @@
 export { default as env } from './env';
 export { default as diff, type DiffResult } from './diff';
 export { default as fastDiff } from './fastdiff';
+export { default as diffToChanges } from './difftochanges';
 
 export { default as mix } from './mix';
 

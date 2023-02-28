@@ -60,7 +60,7 @@ import type {
 /**
  * Downcast conversion helper functions.
  *
- * Learn more about {@glink framework/guides/deep-dive/conversion/downcast downcast helpers}.
+ * Learn more about {@glink framework/deep-dive/conversion/downcast downcast helpers}.
  *
  * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
@@ -177,7 +177,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * to the conversion process.
 	 *
 	 * You can read more about the element-to-element conversion in the
-	 * {@glink framework/guides/deep-dive/conversion/downcast downcast conversion} guide.
+	 * {@glink framework/deep-dive/conversion/downcast downcast conversion} guide.
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
@@ -1943,7 +1943,7 @@ function downcastElementToStructure(
 			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
 			 *
 			 * For instance, this may be the result of `myElement` allowing the content of
-			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 * {@glink framework/deep-dive/schema#generic-items `$block`} in its schema definition:
 			 *
 			 *		// Element definition in schema.
 			 *		schema.register( 'myElement', {
@@ -2506,7 +2506,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {Function} Exposed by writer as createSlot().
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => {
+	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter = 'children' ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;

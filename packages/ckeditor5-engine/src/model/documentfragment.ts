@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/model/documentfragment
+ * @module module:engine/model/documentfragment
  */
 
 import TypeCheckable from './typecheckable';

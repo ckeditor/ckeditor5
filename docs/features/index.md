@@ -8,6 +8,12 @@ feedback-widget: false
 
 The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. Premium features, which require an additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
+<span class="navigation-hint_mobile">
+<info-box>
+	Use the **main menu button in the upper-left corner** to navigate through the documentation.
+</info-box>
+</span>
+
 ## Using CKEditor 5 features
 
 Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
@@ -16,10 +22,6 @@ Most of the features are easily accessible from a {@link features/toolbar highly
 ## CKEditor 5 WYSIWYG editor features and functions
 
 CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
-
-<info-box>
-	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through a full selection of CKEditor 5 features.
-</info-box>
 
 ### Collaboration
 
@@ -120,6 +122,6 @@ CKEditor 5 is in active development now and new features are added all the time,
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin-timestamp creating custom features}.
+We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/creating-simple-plugin-timestamp creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!

@@ -163,7 +163,7 @@ describe( 'Delete', () => {
 		} );
 
 		it( 'should not work if the observer is disabled', () => {
-			view.getObserver( DeleteObserver )._isEnabled = false;
+			view.getObserver( DeleteObserver ).isEnabled = false;
 
 			fireBeforeInputDomEvent( domRoot, {
 				inputType: 'deleteContentBackward'

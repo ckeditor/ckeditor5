@@ -12,7 +12,7 @@ CKEditor 5 plugins, responsible for various features, are distributed through [n
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
 
 * When you use a {@link installation/getting-started/predefined-builds predefined editor build}.
-* When you {@link framework/guides/quick-start build your editor from source}.
+* When you {@link framework/quick-start build your editor from source}.
 
 <info-box hint>
 	If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
@@ -150,7 +150,7 @@ This was a quick version of how a build can be customized. Read more about {@lin
 
 ## Adding a plugin to an editor
 
-If you {@link framework/guides/quick-start build the editor from source}, then the process of installing a new plugin boils down to these three steps:
+If you {@link framework/quick-start build the editor from source}, then the process of installing a new plugin boils down to these three steps:
 
 1. Installing the plugin package.
 2. Adding it to your editor's configuration.

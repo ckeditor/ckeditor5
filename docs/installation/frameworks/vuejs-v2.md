@@ -238,13 +238,59 @@ Finally, import the build in your application:
 
 Integrating the rich text editor from source allows you to use the full power of {@link framework/index CKEditor 5 Framework}.
 
+### Vite
+
+This guide assumes you have Vue 2 with Vite already configured. `create-vue` uses Vue 3 by default, so keep that in mind if you want to start from scratch. You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
+
+<info-box>
+	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
+</info-box>
+
+It's time to install CKEditor packages. Install them using the following command.
+
+```bash
+npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
+```
+
+#### Configuring `vite.config.js`
+
+Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing config by importing the `ckeditor5` package. Then add it to the list of plugins.
+
+```js
+// vite.config.js
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue2'
+import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
+
+export default defineConfig( {
+  plugins: [
+    vue(),
+    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+  ],
+} )
+```
+
+The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+
+```js
+// vite.config.js
+
+import { createRequire } from 'node:module';
+const require = createRequire( import.meta.url );
+```
+
+Now, your setup with Vite and Vue 2 is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+
+### Webpack
+
 This guide assumes that you are using [Vue CLI 3+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source Integrating the editor from the source} guide.
+	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
 
-### Configuring `vue.config.js`
+#### Configuring `vue.config.js`
 
 To build CKEditor with your application, certain changes must be made to the default project configuration.
 
@@ -420,7 +466,7 @@ Now all you need to do is specify the list of rich text editor options (**includ
 
 ## Using the Document editor build
 
-If you use the {@link framework/guides/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
+If you use the {@link framework/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
 
 Since accessing the editor toolbar is not possible until after the editor instance is {@link module:core/editor/editor~Editor#event:ready ready}, put your toolbar insertion code in a method executed upon the [`ready`](#ready) event of the component, like in the following example:
 

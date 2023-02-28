@@ -16,7 +16,7 @@ order: 20
 
 CKEditor 5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
@@ -82,7 +82,7 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
-npm install --save @ckeditor/ckeditor5-angular @ckeditor/ckeditor5-watchdog
+npm install --save @ckeditor/ckeditor5-angular
 ```
 
 Install one of the {@link installation/getting-started/predefined-builds predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
@@ -131,7 +131,7 @@ Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
 ### Using the Document editor build
 
-If you want to use the {@link framework/guides/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
+If you want to use the {@link framework/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
 ```ts
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
@@ -408,6 +408,14 @@ export class MyComponent {
 	<ckeditor [watchdog]="watchdog" ...></ckeditor>
 </div>
 ```
+
+### `disableTwoWayDataBinding`
+
+Allows disabling the two-way data binding mechanism. The default value is `false`.
+
+The reason for the introduction of this option are performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize the data between the editor instance and the connected property. This results in calling the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} function, which causes a massive slowdown while typing in large documents.
+
+This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
 
 ## Supported `@Output` properties
 

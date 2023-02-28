@@ -18,7 +18,7 @@ import {
 	type Node,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentFragment,
-	type ViewDocumentMouseDownEvent,
+	type ViewDocumentMouseEvent,
 	type ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -163,7 +163,7 @@ export default class Widget extends Plugin {
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		view.addObserver( MouseObserver );
-		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between

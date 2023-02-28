@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
-import type { ViewElementDefinition } from 'ckeditor5/src/engine';
+import type { ElementDefinition } from 'ckeditor5/src/engine';
 
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
@@ -117,7 +117,7 @@ export interface HeadingElementOption {
 	/**
 	 * Definition of a view element to convert from/to.
 	 */
-	view: ViewElementDefinition;
+	view: ElementDefinition;
 
 	/**
 	 * The user-readable title of the option.

@@ -7,19 +7,11 @@
  * @module core/contextplugin
  */
 
-import {
-	ObservableMixin,
-	type Collection,
-	type Config,
-	type Locale,
-	type LocaleTranslate
-} from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor/editor';
-import type { EditorConfig } from './editor/editorconfig';
 import type Context from './context';
-import type { PluginDependencies, PluginInterface } from './plugin';
-import type PluginCollection from './plugincollection';
+import type { PluginInterface } from './plugin';
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
@@ -39,7 +31,7 @@ import type PluginCollection from './plugincollection';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ContextPlugin extends ObservableMixin() implements PluginInterface {
-	public readonly context: ContextInterface;
+	public readonly context: Context | Editor;
 
 	/**
 	 * Creates a new plugin instance.
@@ -55,7 +47,7 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 		 * @readonly
 		 * @type {module:core/context~Context|module:core/editor/editor~Editor}
 		 */
-		this.context = context as ContextInterface;
+		this.context = context;
 	}
 
 	/**
@@ -72,13 +64,3 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 		return true;
 	}
 }
-
-export interface ContextInterface {
-	config: Config<Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>>;
-	plugins: PluginCollection<Context | Editor>;
-	locale: Locale;
-	t: LocaleTranslate;
-	editors?: Collection<Editor>;
-}
-
-export type ContextPluginDependencies = PluginDependencies<Context | Editor>;

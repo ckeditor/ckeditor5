@@ -24,7 +24,7 @@ See the demo of the editor in Spanish:
 </info-box>
 
 <info-box>
-	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
+	If you are interested in creating features that can be localized, check out the {@link framework/deep-dive/localization localization guide}.
 </info-box>
 
 ## Right–to–left (RTL) languages support
@@ -209,139 +209,148 @@ ClassicEditor
 
 ## List of available professional translations
 
-<table style="width:800px">
+<style>
+	td {
+		text-align: center;
+		vertical-align: middle;
+	}
+	table {
+		table-layout: fixed;
+	}
+</style>
+<table>
 	<tbody>
 		<tr>
-			<td style="width:200px">
-			<p style="text-align:center">Arabic</p>
+			<td>
+			Arabic
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Bengali</p>
+			<td>
+			Bengali
 			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Bulgarian</p>
+			<td>
+			Bulgarian
 			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Catalan</p>
-			</td>
-		</tr>
-		<tr>
-			<td style="width:200px">
-			<p style="text-align:center">Chinese (China)</p>
-			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Chinese (Taiwan)</p>
-			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Czech</p>
-			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Danish</p>
+			<td>
+			Catalan
 			</td>
 		</tr>
 		<tr>
-			<td style="width:200px">
-			<p style="text-align:center">Dutch</p>
+			<td>
+			Chinese (China)
 			</td>
-			<td style="width:200px">
-			<p style="text-align:center">English</p>
+			<td>
+			Chinese (Taiwan)
 			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Estonian</p>
+			<td>
+			Czech
 			</td>
-			<td style="width:200px">
-			<p style="text-align:center">Finnish</p>
-			</td>
-		</tr>
-		<tr>
-			<td style="text-align:center; width:200px">French</td>
-			<td style="text-align:center; width:200px">
-			<p>German</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Greek</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Hebrew</p>
+			<td>
+			Danish
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">Hindi</td>
-			<td style="text-align:center; width:200px">
-			<p>Indonesian</p>
+			<td>
+			Dutch
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Italian</p>
+			<td>
+			English
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Japanese</p>
+			<td>
+			Estonian
 			</td>
-		</tr>
-		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Korean</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Latvian</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Lithuanian</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Malay</p>
+			<td>
+			Finnish
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Norwegian</p>
+			<td>French</td>
+			<td>
+			German
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Polish</p>
+			<td>
+			Greek
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Portuguese (Brazilian)</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Portuguese</p>
+			<td>
+			Hebrew
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Romanian</p>
+			<td>Hindi</td>
+			<td>
+			Indonesian
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Russian</p>
+			<td>
+			Italian
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Serbian</p>
-			</td>
-			<td style="text-align:center; width:200px">
-			<p>Slovak</p>
+			<td>
+			Japanese
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Spanish</p>
+			<td>
+			Korean
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Swedish</p>
+			<td>
+			Latvian
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Thai</p>
+			<td>
+			Lithuanian
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Turkish</p>
+			<td>
+			Malay
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align:center; width:200px">
-			<p>Ukrainian</p>
+			<td>
+			Norwegian
 			</td>
-			<td style="text-align:center; width:200px">
-			<p>Vietnamese</p>
+			<td>
+			Polish
 			</td>
-			<td style="text-align:center; width:200px">&nbsp;</td>
-			<td style="text-align:center; width:200px">&nbsp;</td>
+			<td>
+			Portuguese (Brazilian)
+			</td>
+			<td>
+			Portuguese
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Romanian
+			</td>
+			<td>
+			Russian
+			</td>
+			<td>
+			Serbian
+			</td>
+			<td>
+			Slovak
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Spanish
+			</td>
+			<td>
+			Swedish
+			</td>
+			<td>
+			Thai
+			</td>
+			<td>
+			Turkish
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Ukrainian
+			</td>
+			<td>
+			Vietnamese
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>
@@ -351,3 +360,7 @@ ClassicEditor
 There are other CKEditor 5 features that will help you control the content language:
 
 * {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
+
+## Contribute
+
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-translations).

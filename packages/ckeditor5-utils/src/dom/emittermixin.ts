@@ -380,9 +380,6 @@ function getProxyEmitterId( node: Node | Window, options: { [ option: string ]: 
 	return id;
 }
 
-export interface DomEventMap extends HTMLElementEventMap, WindowEventMap {
-}
-
 /**
  * Interface representing classes which mix in {@link module:utils/dom/emittermixin~DomEmitterMixin}.
  *
@@ -410,10 +407,10 @@ export interface DomEmitter extends Emitter {
 	 * @param options.usePassive Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
-	listenTo<K extends keyof DomEventMap>(
+	listenTo<K extends keyof HTMLElementEventMap>(
 		emitter: Node | Window,
 		event: K,
-		callback: ( this: this, ev: EventInfo, event: DomEventMap[ K ] ) => void,
+		callback: ( this: this, ev: EventInfo, event: HTMLElementEventMap[ K ] ) => void,
 		options?: CallbackOptions & { readonly useCapture?: boolean; readonly usePassive?: boolean }
 	): void;
 

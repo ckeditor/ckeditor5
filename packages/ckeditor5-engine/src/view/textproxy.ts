@@ -37,34 +37,29 @@ import type Text from './text';
  * an instance of this class by your own.
  */
 export default class TextProxy extends TypeCheckable {
-	/**
-	 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
-	 */
 	public readonly textNode: Text;
-
-	/**
-	 * Text data represented by this text proxy.
-	 */
 	public readonly data: string;
-
-	/**
-	 * Offset in the `textNode` where this `TextProxy` instance starts.
-	 */
 	public readonly offsetInText: number;
 
 	/**
 	 * Creates a text proxy.
 	 *
-	 * @internal
-	 * @param textNode Text node which part is represented by this text proxy.
-	 * @param offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
+	 * @protected
+	 * @param {module:engine/view/text~Text} textNode Text node which part is represented by this text proxy.
+	 * @param {Number} offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
 	 * from which the text proxy starts.
-	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
+	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 * @constructor
 	 */
 	constructor( textNode: Text, offsetInText: number, length: number ) {
 		super();
 
+		/**
+		 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/text~Text} module:engine/view/textproxy~TextProxy#textNode
+		 */
 		this.textNode = textNode;
 
 		if ( offsetInText < 0 || offsetInText > textNode.data.length ) {
@@ -85,12 +80,28 @@ export default class TextProxy extends TypeCheckable {
 			throw new CKEditorError( 'view-textproxy-wrong-length', this );
 		}
 
+		/**
+		 * Text data represented by this text proxy.
+		 *
+		 * @readonly
+		 * @member {String} module:engine/view/textproxy~TextProxy#data
+		 */
 		this.data = textNode.data.substring( offsetInText, offsetInText + length );
+
+		/**
+		 * Offset in the `textNode` where this `TextProxy` instance starts.
+		 *
+		 * @readonly
+		 * @member {Number} module:engine/view/textproxy~TextProxy#offsetInText
+		 */
 		this.offsetInText = offsetInText;
 	}
 
 	/**
 	 * Offset size of this node.
+	 *
+	 * @readonly
+	 * @type {Number}
 	 */
 	public get offsetSize(): number {
 		return this.data.length;
@@ -103,6 +114,9 @@ export default class TextProxy extends TypeCheckable {
 	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/view/textproxy~TextProxy#textNode textNode}
 	 * ({@link module:engine/view/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
+	 *
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	public get isPartial(): boolean {
 		return this.data.length !== this.textNode.data.length;
@@ -110,6 +124,9 @@ export default class TextProxy extends TypeCheckable {
 
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	public get parent(): Element | DocumentFragment | null {
 		return this.textNode.parent;
@@ -117,6 +134,9 @@ export default class TextProxy extends TypeCheckable {
 
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	public get root(): Node | DocumentFragment {
 		return this.textNode.root;
@@ -125,6 +145,9 @@ export default class TextProxy extends TypeCheckable {
 	/**
 	 * {@link module:engine/view/document~Document View document} that owns this text proxy, or `null` if the text proxy is inside
 	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/document~Document|null}
 	 */
 	public get document(): Document | null {
 		return this.textNode.document;
@@ -133,11 +156,11 @@ export default class TextProxy extends TypeCheckable {
 	/**
 	 * Returns ancestors array of this text proxy.
 	 *
-	 * @param options Options object.
-	 * @param options.includeSelf When set to `true` {#textNode} will be also included in parent's array.
-	 * @param options.parentFirst When set to `true`, array will be sorted from text proxy parent to
+	 * @param {Object} options Options object.
+	 * @param {Boolean} [options.includeSelf=false] When set to `true` {#textNode} will be also included in parent's array.
+	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from text proxy parent to
 	 * root element, otherwise root element will be the first item in the array.
-	 * @returns Array with ancestors.
+	 * @returns {Array} Array with ancestors.
 	 */
 	public getAncestors( options: {
 		includeSelf?: boolean;
@@ -167,8 +190,24 @@ export default class TextProxy extends TypeCheckable {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
-// Proper overload would interfere with that.
+/**
+ * Checks whether this object is of the given type.
+ *
+ *		textProxy.is( '$textProxy' ); // -> true
+ *		textProxy.is( 'view:$textProxy' ); // -> true
+ *
+ *		textProxy.is( 'model:$textProxy' ); // -> false
+ *		textProxy.is( 'element' ); // -> false
+ *		textProxy.is( 'range' ); // -> false
+ *
+ * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+ *
+ * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxy'` type is still
+ * accepted for backward compatibility.
+ *
+ * @param {String} type Type to check.
+ * @returns {Boolean}
+ */
 TextProxy.prototype.is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'view:$textProxy' ||
 		// This are legacy values kept for backward compatibility.

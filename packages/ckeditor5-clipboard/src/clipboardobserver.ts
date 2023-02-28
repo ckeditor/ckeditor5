@@ -45,14 +45,12 @@ export default class ClipboardObserver extends DomEventObserver<
 	'paste' | 'copy' | 'cut' | 'drop' | 'dragover' | 'dragstart' | 'dragend' | 'dragenter' | 'dragleave',
 	ClipboardEventData
 > {
-	public readonly domEventType = [
-		'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave'
-	] as const;
-
 	constructor( view: View ) {
 		super( view );
 
 		const viewDocument = this.document;
+
+		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ];
 
 		this.listenTo<ViewDocumentPasteEvent>( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
 		this.listenTo<ViewDocumentDropEvent>( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
@@ -141,7 +139,7 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
 /**
  * Fired as a continuation of the {@link #event:paste} and {@link #event:drop} events.
  *
- * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
  * This event carries a `dataTransfer` object which comes from the clipboard and whose content should be processed
  * and inserted into the editor.
@@ -301,7 +299,7 @@ export type ViewDocumentCutEvent = {
 /**
  * Fired as a continuation of the {@link #event:dragover} event.
  *
- * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
+ * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
  * This event carries a `dataTransfer` object which comes from the clipboard and whose content should be processed
  * and inserted into the editor.

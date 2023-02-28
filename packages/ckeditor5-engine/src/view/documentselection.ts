@@ -8,20 +8,14 @@
  */
 
 import TypeCheckable from './typecheckable';
-import Selection, {
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions,
-	type ViewSelectionChangeEvent
-} from './selection';
+import Selection, { type ViewSelectionChangeEvent } from './selection';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type EditableElement from './editableelement';
 import type Element from './element';
-import type Node from './node';
 import type Item from './item';
-import type { default as Position, PositionOffset } from './position';
+import type Position from './position';
 import type Range from './range';
 
 /**
@@ -35,56 +29,46 @@ import type Range from './range';
  * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
 export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
-	/**
-	 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
-	 */
 	private readonly _selection: Selection;
-
-	public constructor( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
-	public constructor( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions );
 
 	/**
 	 * Creates new DocumentSelection instance.
 	 *
-	 * ```ts
-	 * // Creates empty selection without ranges.
-	 * const selection = new DocumentSelection();
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = new DocumentSelection();
 	 *
-	 * // Creates selection at the given range.
-	 * const range = writer.createRange( start, end );
-	 * const selection = new DocumentSelection( range );
+	 *		// Creates selection at the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = new DocumentSelection( range );
 	 *
-	 * // Creates selection at the given ranges
-	 * const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
-	 * const selection = new DocumentSelection( ranges );
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
+	 *		const selection = new DocumentSelection( ranges );
 	 *
-	 * // Creates selection from the other selection.
-	 * const otherSelection = writer.createSelection();
-	 * const selection = new DocumentSelection( otherSelection );
+	 *		// Creates selection from the other selection.
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = new DocumentSelection( otherSelection );
 	 *
-	 * // Creates selection at the given position.
-	 * const position = writer.createPositionAt( root, offset );
-	 * const selection = new DocumentSelection( position );
+	 * 		// Creates selection at the given position.
+	 *		const position = writer.createPositionAt( root, offset );
+	 *		const selection = new DocumentSelection( position );
 	 *
-	 * // Creates collapsed selection at the position of given item and offset.
-	 * const paragraph = writer.createContainerElement( 'paragraph' );
-	 * const selection = new DocumentSelection( paragraph, offset );
+	 *		// Creates collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 *		const selection = new DocumentSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = new DocumentSelection( paragraph, 'in' );
+	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = new DocumentSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = new DocumentSelection( paragraph, 'on' );
-	 * ```
+	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = new DocumentSelection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
-	 * ```ts
-	 * // Creates backward selection.
-	 * const selection = new DocumentSelection( range, { backward: true } );
-	 * ```
+	 *		// Creates backward selection.
+	 *		const selection = new DocumentSelection( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -93,14 +77,25 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
 	 * (and be  properly handled by screen readers).
 	 *
-	 * ```ts
-	 * // Creates fake selection with label.
-	 * const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
-	 * ```
+	 *		// Creates fake selection with label.
+	 *		const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
+	 *
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	constructor( ...args: ConstructorParameters<typeof Selection> ) {
 		super();
 
+		/**
+		 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
+		 *
+		 * @private
+		 * @member {module:engine/view/selection~Selection}
+		 */
 		this._selection = new Selection();
 
 		// Delegate change event to be fired on DocumentSelection instance.
@@ -116,6 +111,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns true if selection instance is marked as `fake`.
 	 *
 	 * @see #_setTo
+	 * @type {Boolean}
 	 */
 	public get isFake(): boolean {
 		return this._selection.isFake;
@@ -125,6 +121,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns fake selection label.
 	 *
 	 * @see #_setTo
+	 * @type {String}
 	 */
 	public get fakeSelectionLabel(): string {
 		return this._selection.fakeSelectionLabel;
@@ -137,6 +134,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
 	 * @see #focus
+	 * @type {module:engine/view/position~Position}
 	 */
 	public get anchor(): Position | null {
 		return this._selection.anchor;
@@ -146,6 +144,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Selection focus. Focus is a position where the selection ends.
 	 *
 	 * @see #anchor
+	 * @type {module:engine/view/position~Position}
 	 */
 	public get focus(): Position | null {
 		return this._selection.focus;
@@ -154,6 +153,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
 	 * collapsed.
+	 *
+	 * @type {Boolean}
 	 */
 	public get isCollapsed(): boolean {
 		return this._selection.isCollapsed;
@@ -161,6 +162,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns number of ranges in selection.
+	 *
+	 * @type {Number}
 	 */
 	public get rangeCount(): number {
 		return this._selection.rangeCount;
@@ -168,6 +171,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Specifies whether the {@link #focus} precedes {@link #anchor}.
+	 *
+	 * @type {Boolean}
 	 */
 	public get isBackward(): boolean {
 		return this._selection.isBackward;
@@ -176,6 +181,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	/**
 	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this selection, or `null`
 	 * if the selection is not inside an editable element.
+	 *
+	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
 	public get editableElement(): EditableElement | null {
 		return this._selection.editableElement;
@@ -184,7 +191,7 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	/**
 	 * Used for the compatibility with the {@link module:engine/view/selection~Selection#isEqual} method.
 	 *
-	 * @internal
+	 * @protected
 	 */
 	public get _ranges(): Array<Range> {
 		return ( this._selection as any )._ranges;
@@ -192,6 +199,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns an iterable that contains copies of all ranges added to the selection.
+	 *
+	 * @returns {Iterable.<module:engine/view/range~Range>}
 	 */
 	public* getRanges(): IterableIterator<Range> {
 		yield* this._selection.getRanges();
@@ -202,6 +211,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {module:engine/view/range~Range|null}
 	 */
 	public getFirstRange(): Range | null {
 		return this._selection.getFirstRange();
@@ -211,6 +222,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
 	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {module:engine/view/range~Range|null}
 	 */
 	public getLastRange(): Range | null {
 		return this._selection.getLastRange();
@@ -220,6 +233,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns copy of the first position in the selection. First position is the position that
 	 * {@link module:engine/view/position~Position#isBefore is before} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {module:engine/view/position~Position|null}
 	 */
 	public getFirstPosition(): Position | null {
 		return this._selection.getFirstPosition();
@@ -229,6 +244,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns copy of the last position in the selection. Last position is the position that
 	 * {@link module:engine/view/position~Position#isAfter is after} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {module:engine/view/position~Position|null}
 	 */
 	public getLastPosition(): Position | null {
 		return this._selection.getLastPosition();
@@ -238,6 +255,8 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/view/element~Element|null}
 	 */
 	public getSelectedElement(): Element | null {
 		return this._selection.getSelectedElement();
@@ -247,8 +266,9 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
-	 * @param otherSelection Selection to compare with.
-	 * @returns `true` if selections are equal, `false` otherwise.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
+	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	public isEqual( otherSelection: Selection | DocumentSelection ): boolean {
 		return this._selection.isEqual( otherSelection );
@@ -259,8 +279,9 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
-	 * @param otherSelection Selection to compare with.
-	 * @returns `true` if selections are similar, `false` otherwise.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
+	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
 	 */
 	public isSimilar( otherSelection: Selection | DocumentSelection ): boolean {
 		return this._selection.isSimilar( otherSelection );
@@ -270,49 +291,41 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/view/selection~Selectable selectable}.
 	 *
-	 * ```ts
-	 * // Sets selection to the given range.
-	 * const range = writer.createRange( start, end );
-	 * documentSelection._setTo( range );
+	 *		// Sets selection to the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		documentSelection._setTo( range );
 	 *
-	 * // Sets selection to given ranges.
-	 * const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
-	 * documentSelection._setTo( range );
+	 *		// Sets selection to given ranges.
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
+	 *		documentSelection._setTo( range );
 	 *
-	 * // Sets selection to the other selection.
-	 * const otherSelection = writer.createSelection();
-	 * documentSelection._setTo( otherSelection );
+	 *		// Sets selection to the other selection.
+	 *		const otherSelection = writer.createSelection();
+	 *		documentSelection._setTo( otherSelection );
 	 *
-	 * // Sets collapsed selection at the given position.
-	 * const position = writer.createPositionAt( root, offset );
-	 * documentSelection._setTo( position );
+	 * 		// Sets collapsed selection at the given position.
+	 *		const position = writer.createPositionAt( root, offset );
+	 *		documentSelection._setTo( position );
 	 *
-	 * // Sets collapsed selection at the position of given item and offset.
-	 * documentSelection._setTo( paragraph, offset );
-	 * ```
+	 * 		// Sets collapsed selection at the position of given item and offset.
+	 *		documentSelection._setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * ```ts
-	 * documentSelection._setTo( paragraph, 'in' );
-	 * ```
+	 *		documentSelection._setTo( paragraph, 'in' );
 	 *
 	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
 	 *
-	 * ```ts
-	 * documentSelection._setTo( paragraph, 'on' );
+	 *		documentSelection._setTo( paragraph, 'on' );
 	 *
-	 * // Clears selection. Removes all ranges.
-	 * documentSelection._setTo( null );
-	 * ```
+	 * 		// Clears selection. Removes all ranges.
+	 *		documentSelection._setTo( null );
 	 *
 	 * `Selection#_setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
-	 * ```ts
-	 * // Sets selection as backward.
-	 * documentSelection._setTo( range, { backward: true } );
-	 * ```
+	 *		// Sets selection as backward.
+	 *		documentSelection._setTo( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -321,15 +334,19 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * Additionally fake's selection label can be provided. It will be used to des cribe fake selection in DOM
 	 * (and be  properly handled by screen readers).
 	 *
-	 * ```ts
-	 * // Creates fake selection with label.
-	 * documentSelection._setTo( range, { fake: true, label: 'foo' } );
-	 * ```
+	 *		// Creates fake selection with label.
+	 *		documentSelection._setTo( range, { fake: true, label: 'foo' } );
 	 *
-	 * @internal
+	 * @protected
 	 * @fires change
+	 * @param {module:engine/view/selection~Selectable} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	public _setTo( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public _setTo( ...args: Parameters< Selection[ 'setTo' ]> ): void {
 		this._selection.setTo( ...args );
 	}
 
@@ -339,17 +356,40 @@ export default class DocumentSelection extends EmitterMixin( TypeCheckable ) {
 	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
-	 * @internal
+	 * @protected
 	 * @fires change
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public _setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: Item | Position, offset?: number | 'before' | 'end' | 'after' ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
+
+	/**
+	 * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
+	 *
+	 * @event change
+	 */
 }
 
-// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
-// Proper overload would interfere with that.
+/**
+ * Checks whether this object is of the given type.
+ *
+ *		docSelection.is( 'selection' ); // -> true
+ *		docSelection.is( 'documentSelection' ); // -> true
+ *		docSelection.is( 'view:selection' ); // -> true
+ *		docSelection.is( 'view:documentSelection' ); // -> true
+ *
+ *		docSelection.is( 'model:documentSelection' ); // -> false
+ *		docSelection.is( 'element' ); // -> false
+ *		docSelection.is( 'node' ); // -> false
+ *
+ * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+ *
+ * @param {String} type
+ * @returns {Boolean}
+ */
 DocumentSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'documentSelection' ||
@@ -357,9 +397,4 @@ DocumentSelection.prototype.is = function( type: string ): boolean {
 		type == 'view:documentSelection';
 };
 
-/**
- * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
- *
- * @eventName change
- */
 export type ViewDocumentSelectionChangeEvent = ViewSelectionChangeEvent;

@@ -4,7 +4,6 @@
  */
 
 import type View from '../view';
-import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin';
 
 /**
  * @module ui/bindings/injectcsstransitiondisabler
@@ -52,12 +51,10 @@ import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin
  *		view.show();
  *		view.enableCssTransitions();
  *
- * @deprecated
- * @see module:ui/bindings/csstransitiondisablermixin~CssTransitionDisablerMixin
  * @param {module:ui/view~View} view View instance that should get this functionality.
  */
-export default function injectCssTransitionDisabler( view: View ): void {
-	const decorated = view as ViewWithCssTransitionDisabler & { _isCssTransitionsDisabled: boolean };
+export default function injectCssTransitionDisabler( view: View ): asserts view is ViewWithCssTransitionDisabler {
+	const decorated = view as ViewWithCssTransitionDisabler;
 
 	decorated.set( '_isCssTransitionsDisabled', false );
 
@@ -77,3 +74,9 @@ export default function injectCssTransitionDisabler( view: View ): void {
 		}
 	} );
 }
+
+export type ViewWithCssTransitionDisabler = View & {
+	_isCssTransitionsDisabled: boolean;
+	disableCssTransitions(): void;
+	enableCssTransitions(): void;
+};

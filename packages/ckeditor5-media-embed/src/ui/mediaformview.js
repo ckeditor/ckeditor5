@@ -147,7 +147,6 @@ export default class MediaFormView extends View {
 			]
 		} );
 
-		// When rewriting to typescript try to change it to CssTransitionDisablerMixin.
 		injectCssTransitionDisabler( this );
 
 		/**

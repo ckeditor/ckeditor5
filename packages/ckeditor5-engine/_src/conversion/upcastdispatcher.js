@@ -40,7 +40,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}
  * which provides additional tools for converters.
  *
- * You can read more about conversion in the {@glink framework/guides/deep-dive/conversion/upcast Upcast conversion} guide.
+ * You can read more about conversion in the {@glink framework/deep-dive/conversion/upcast Upcast conversion} guide.
  *
  * Examples of event-based converters:
  *

@@ -14,8 +14,7 @@ import {
 	Observer,
 	type BubblingEvent,
 	type ViewDocumentInputEvent,
-	type ViewDocumentKeyDownEvent,
-	type ViewDocumentKeyUpEvent,
+	type ViewDocumentKeyEvent,
 	type ViewDocumentSelection,
 	type ViewSelection,
 	type View
@@ -247,12 +246,12 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	let pressedKeyCode: number | null = null;
 	let beforeInputReceived = false;
 
-	document.on<ViewDocumentKeyDownEvent>( 'keydown', ( evt, { keyCode } ) => {
+	document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, { keyCode } ) => {
 		pressedKeyCode = keyCode;
 		beforeInputReceived = false;
 	} );
 
-	document.on<ViewDocumentKeyUpEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
+	document.on<ViewDocumentKeyEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
 		const selection = document.selection;
 		const shouldFireDeleteEvent = observer.isEnabled &&
 			keyCode == pressedKeyCode &&

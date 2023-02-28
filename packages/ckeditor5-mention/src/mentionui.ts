@@ -14,7 +14,7 @@ import {
 } from 'ckeditor5/src/core';
 
 import type {
-	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyEvent,
 	Marker,
 	Position
 } from 'ckeditor5/src/engine';
@@ -133,7 +133,7 @@ export default class MentionUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Key listener that handles navigation in mention view.
-		editor.editing.view.document.on<ViewDocumentKeyDownEvent>( 'keydown', ( evt, data ) => {
+		editor.editing.view.document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, data ) => {
 			if ( isHandledKey( data.keyCode ) && this._isUIVisible ) {
 				data.preventDefault();
 				evt.stop(); // Required for Enter key overriding.
