@@ -24,56 +24,71 @@ import type {
  * Fires the {@link module:typing/textwatcher~TextWatcher#event:matched:data `matched:data`},
  * {@link module:typing/textwatcher~TextWatcher#event:matched:selection `matched:selection`} and
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
+ *
+ * @private
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class TextWatcher extends ObservableMixin() {
-	/**
-	 * The editor's model.
-	 */
 	public readonly model: Model;
-
-	/**
-	 * The function used to match the text.
-	 *
-	 * The test callback can return 3 values:
-	 *
-	 * * `false` if there is no match,
-	 * * `true` if there is a match,
-	 * * an object if there is a match and we want to pass some additional information to the {@link #event:matched:data} event.
-	 */
 	public testCallback: ( text: string ) => unknown;
 
-	/**
-	 * Whether there is a match currently.
-	 */
 	private _hasMatch: boolean;
 
-	/**
-	 * Flag indicating whether the `TextWatcher` instance is enabled or disabled.
-	 * A disabled TextWatcher will not evaluate text.
-	 *
-	 * To disable TextWatcher:
-	 *
-	 * ```ts
-	 * const watcher = new TextWatcher( editor.model, testCallback );
-	 *
-	 * // After this a testCallback will not be called.
-	 * watcher.isEnabled = false;
-	 * ```
-	 */
 	declare public isEnabled: boolean;
 
 	/**
 	 * Creates a text watcher instance.
 	 *
-	 * @param testCallback See {@link module:typing/textwatcher~TextWatcher#testCallback}.
+	 * @param {module:engine/model/model~Model} model
+	 * @param {Function} testCallback See {@link module:typing/textwatcher~TextWatcher#testCallback}.
 	 */
 	constructor( model: Model, testCallback: ( text: string ) => unknown ) {
 		super();
 
+		/**
+		 * The editor's model.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/model~Model}
+		 */
 		this.model = model;
+
+		/**
+		 * The function used to match the text.
+		 *
+		 * The test callback can return 3 values:
+		 *
+		 * * `false` if there is no match,
+		 * * `true` if there is a match,
+		 * * an object if there is a match and we want to pass some additional information to the {@link #event:matched:data} event.
+		 *
+		 * @member {Function} #testCallback
+		 * @returns {Object} testResult
+		 */
 		this.testCallback = testCallback;
+
+		/**
+		 * Whether there is a match currently.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
 		this._hasMatch = false;
 
+		/**
+		 * Flag indicating whether the `TextWatcher` instance is enabled or disabled.
+		 * A disabled TextWatcher will not evaluate text.
+		 *
+		 * To disable TextWatcher:
+		 *
+		 *		const watcher = new TextWatcher( editor.model, testCallback );
+		 *
+		 *		// After this a testCallback will not be called.
+		 *		watcher.isEnabled = false;
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
 		this.set( 'isEnabled', true );
 
 		// Toggle text watching on isEnabled state change.
@@ -90,7 +105,7 @@ export default class TextWatcher extends ObservableMixin() {
 	}
 
 	/**
-	 * Flag indicating whether there is a match currently.
+	 * TODO
 	 */
 	public get hasMatch(): boolean {
 		return this._hasMatch;
@@ -98,6 +113,8 @@ export default class TextWatcher extends ObservableMixin() {
 
 	/**
 	 * Starts listening to the editor for typing and selection events.
+	 *
+	 * @private
 	 */
 	private _startListening(): void {
 		const model = this.model;
@@ -138,8 +155,9 @@ export default class TextWatcher extends ObservableMixin() {
 	 * @fires matched:selection
 	 * @fires unmatched
 	 *
-	 * @param suffix A suffix used for generating the event name.
-	 * @param data Data object for event.
+	 * @private
+	 * @param {'data'|'selection'} suffix A suffix used for generating the event name.
+	 * @param {Object} data Data object for event.
 	 */
 	private _evaluateTextBeforeSelection( suffix: 'data' | 'selection', data: { batch?: Batch } = {} ): void {
 		const model = this.model;
@@ -153,7 +171,7 @@ export default class TextWatcher extends ObservableMixin() {
 		const testResult = this.testCallback( text );
 
 		if ( !testResult && this.hasMatch ) {
-			this.fire<TextWatcherUnmatchedEvent>( 'unmatched' );
+			this.fire( 'unmatched' );
 		}
 
 		this._hasMatch = !!testResult;
@@ -166,7 +184,7 @@ export default class TextWatcher extends ObservableMixin() {
 				Object.assign( eventData, testResult );
 			}
 
-			this.fire<TextWatcherMatchedEvent>( `matched:${ suffix }`, eventData );
+			this.fire( `matched:${ suffix }`, eventData );
 		}
 	}
 }
@@ -183,61 +201,40 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
 /**
  * Fired whenever the text watcher found a match for data changes.
  *
- * @eventName matched:data
- * @param data Event data.
- * @param data.testResult The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
+ * @event matched:data
+ * @param {Object} data Event data.
+ * @param {String} data.text The full text before selection to which the regexp was applied.
+ * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
+ * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
 export type TextWatcherMatchedDataEvent<TCallbackResult extends Record<string, unknown>> = {
 	name: 'matched:data';
-	args: [ data: TextWatcherMatchedDataEventData & TCallbackResult ];
+	args: [ {
+		text: string;
+		range: Range;
+		batch: Batch;
+	} & TCallbackResult ];
 };
-
-export interface TextWatcherMatchedDataEventData {
-
-	/**
-	 * The full text before selection to which the regexp was applied.
-	 */
-	text: string;
-
-	/**
-	 * The range representing the position of the `data.text`.
-	 */
-	range: Range;
-
-	batch: Batch;
-}
 
 /**
  * Fired whenever the text watcher found a match for selection changes.
  *
- * @eventName matched:selection
- * @param data Event data.
- * @param data.testResult The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
+ * @event matched:selection
+ * @param {Object} data Event data.
+ * @param {String} data.text The full text before selection.
+ * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
+ * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
 export type TextWatcherMatchedSelectionEvent<TCallbackResult extends Record<string, unknown>> = {
 	name: 'matched:selection';
-	args: [ data: TextWatcherMatchedSelectionEventData & TCallbackResult ];
+	args: [ {
+		text: string;
+		range: Range;
+	} & TCallbackResult ];
 };
-
-export interface TextWatcherMatchedSelectionEventData {
-
-	/**
-	 * The full text before selection.
-	 */
-	text: string;
-
-	/**
-	 * The range representing the position of the `data.text`.
-	 */
-	range: Range;
-}
 
 /**
  * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
  *
- * @eventName unmatched
+ * @event unmatched
  */
-export type TextWatcherUnmatchedEvent = {
-	name: 'unmatched';
-	args: [];
-};

@@ -82,7 +82,7 @@ describe( 'table properties', () => {
 
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
-				expect( tablePropertiesUI._undoStepBatch ).to.be.undefined;
+				expect( tablePropertiesUI._undoStepBatch ).to.be.null;
 			} );
 
 			it( 'should set normalized default table properties', () => {

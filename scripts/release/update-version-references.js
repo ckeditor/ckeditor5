@@ -22,11 +22,10 @@ const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 const ENTRIES_TO_UPDATE = [
-	// TODO: We do not want to update CDN to alpha.
-	// {
-	// 	file: 'README.md',
-	// 	pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/
-	// },
+	{
+		file: 'README.md',
+		pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/
+	},
 	{
 		file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
 		pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/

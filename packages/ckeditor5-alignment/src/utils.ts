@@ -4,7 +4,7 @@
  */
 
 import { CKEditorError, logWarning, type Locale } from 'ckeditor5/src/utils';
-import type { AlignmentFormat, SupportedOption } from './alignmentconfig';
+import type { AlignmentFormat, SupportedOption } from './alignmentediting';
 
 /**
  * @module alignment/utils

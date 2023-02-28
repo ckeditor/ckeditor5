@@ -10,5 +10,3 @@
 export { default as Enter } from './enter';
 export { default as ShiftEnter } from './shiftenter';
 export type { ViewDocumentEnterEvent } from './enterobserver';
-export type { default as EnterCommand } from './entercommand';
-export type { default as ShiftEnterCommand } from './shiftentercommand';

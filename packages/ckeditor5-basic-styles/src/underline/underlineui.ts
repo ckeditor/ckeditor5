@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import type AttributeCommand from '../attributecommand';
 
 import underlineIcon from '../../theme/icons/underline.svg';
 
@@ -35,7 +34,7 @@ export default class UnderlineUI extends Plugin {
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( UNDERLINE, locale => {
-			const command: AttributeCommand = editor.commands.get( UNDERLINE )!;
+			const command = editor.commands.get( UNDERLINE )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

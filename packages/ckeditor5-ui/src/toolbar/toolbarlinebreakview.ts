@@ -13,6 +13,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The toolbar line break view class.
+ *
+ * @extends module:ui/view~View
  */
 export default class ToolbarLineBreakView extends View {
 	/**

@@ -356,8 +356,4 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 		} );
 	} );
-
-	it( 'should implement the CSS transition disabling feature', () => {
-		expect( form.disableCssTransitions ).to.be.a( 'function' );
-	} );
 } );

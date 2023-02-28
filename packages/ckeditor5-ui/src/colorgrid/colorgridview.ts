@@ -9,15 +9,11 @@
 
 import View from '../view';
 import ColorTileView from './colortileview';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid';
-
-import type { ButtonExecuteEvent } from '../button/button';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type ViewCollection from '../viewcollection';
 
 import {
 	FocusTracker,
-	KeystrokeHandler,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
 	type Locale,
@@ -26,46 +22,31 @@ import {
 
 import '../../theme/components/colorgrid/colorgrid.css';
 
+import type { ButtonExecuteEvent } from '../button/button';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type ViewCollection from '../viewcollection';
+
 /**
  * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
+ *
+ * @extends module:ui/view~View
  */
 export default class ColorGridView extends View implements DropdownPanelFocusable {
-	/**
-	 * A number of columns for the tiles grid.
-	 */
 	public readonly columns: number;
-
-	/**
-	 * Collection of the child tile views.
-	 */
-	public readonly items: ViewCollection<ColorTileView>;
-
-	/**
-	 * Tracks information about DOM focus in the grid.
-	 */
+	public readonly items: ViewCollection;
 	public readonly focusTracker: FocusTracker;
-
-	/**
-	 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 */
 	public readonly keystrokes: KeystrokeHandler;
 
-	/**
-	 * The color of the currently selected color tile in {@link #items}.
-	 *
-	 * @observable
-	 */
-	declare public selectedColor: string | undefined | null;
+	declare public selectedColor: string | undefined;
 
 	/**
 	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 *
-	 * @fires execute
-	 * @param locale The localization services instance.
-	 * @param options Component configuration
-	 * @param options.colorDefinitions Array with definitions
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {Object} options Component configuration
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} [options.colorDefinitions] Array with definitions
 	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
-	 * @param options.columns A number of columns to display the tiles.
+	 * @param {Number} [options.columns=5] A number of columns to display the tiles.
 	 */
 	constructor(
 		locale?: Locale,
@@ -76,18 +57,50 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	) {
 		super( locale );
 
-		const colorDefinitions = options?.colorDefinitions ?? [];
+		const colorDefinitions = options && options.colorDefinitions || [];
 
-		this.columns = options?.columns ?? 5;
+		/**
+		 * A number of columns for the tiles grid.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.columns = options && options.columns ? options.columns : 5;
 
 		const viewStyleAttribute = {
 			gridTemplateColumns: `repeat( ${ this.columns }, 1fr)`
 		};
 
+		/**
+		 * The color of the currently selected color tile in {@link #items}.
+		 *
+		 * @observable
+		 * @type {String}
+		 */
 		this.set( 'selectedColor', undefined );
 
+		/**
+		 * Collection of the child tile views.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
 		this.items = this.createCollection();
+
+		/**
+		 * Tracks information about DOM focus in the grid.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
 		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
 		this.keystrokes = new KeystrokeHandler();
 
 		this.items.on<CollectionAddEvent<ColorTileView>>( 'add', ( evt, colorTile ) => {
@@ -129,7 +142,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 
 		this.on<ObservableChangeEvent<string | undefined>>( 'change:selectedColor', ( evt, name, selectedColor ) => {
 			for ( const item of this.items ) {
-				item.isOn = item.color === selectedColor;
+				( item as ColorTileView ).isOn = ( item as ColorTileView ).color === selectedColor;
 			}
 		} );
 	}
@@ -139,7 +152,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	 */
 	public focus(): void {
 		if ( this.items.length ) {
-			this.items.first!.focus();
+			( this.items.first as ColorTileView ).focus();
 		}
 	}
 
@@ -148,7 +161,7 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 	 */
 	public focusLast(): void {
 		if ( this.items.length ) {
-			this.items.last!.focus();
+			( this.items.last as ColorTileView ).focus();
 		}
 	}
 
@@ -192,76 +205,55 @@ export default class ColorGridView extends View implements DropdownPanelFocusabl
 		this.focusTracker.destroy();
 		this.keystrokes.destroy();
 	}
+
+	/**
+	 * Fired when the `ColorTileView` for the picked item is executed.
+	 *
+	 * @event execute
+	 * @param {Object} data Additional information about the event.
+	 * @param {String} data.value The value of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
+	 * @param {Boolean} data.hasBorder The `hasBorder` property of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options `color.options.hasBorder`}).
+	 * @param {String} data.Label The label of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
+	 */
 }
 
 /**
  * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
  *
- * ```json
- * {
- * 	color: 'hsl(0, 0%, 75%)',
- * 	label: 'Light Grey',
- * 	options: {
- * 		hasBorder: true
- * 	}
- * }
- * ```
+ *		{
+ *			color: 'hsl(0, 0%, 75%)',
+ *			label: 'Light Grey',
+ *			options: {
+ *				hasBorder: true
+ *			}
+ *		}
+ *
+ * @typedef {Object} module:ui/colorgrid/colorgrid~ColorDefinition
+ * @type Object
+ *
+ * @property {String} color String representing a color.
+ * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * @property {String} label String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * @property {Object} options Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * @property {Boolean} options.hasBorder A flag that indicates if special a CSS class should be added
+ * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
  */
 export interface ColorDefinition {
-
-	/**
-	 * String representing a color.
-	 * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
-	 */
 	color: string;
-
-	/**
-	 * String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
-	 */
 	label: string;
-
-	/**
-	 * Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
-	 */
 	options: {
-
-		/**
-		 * A flag that indicates if special a CSS class should be added
-		 * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
-		 */
 		hasBorder: boolean;
 	};
 }
 
-/**
- * Fired when the `ColorTileView` for the picked item is executed.
- *
- * @eventName execute
- * @param data Additional information about the event.
-*/
 export type ColorGridViewExecuteEvent = {
 	name: 'execute';
-	args: [ data: ColorGridViewExecuteEventData ];
+	args: [ {
+		value: string;
+		hasBorder: boolean;
+		label: string;
+	} ];
 };
-
-/**
- * The data of {@link ~ColorGridViewExecuteEvent execute event}.
- */
-export interface ColorGridViewExecuteEventData {
-
-	/**
-	 * The value of the selected color ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
-	 */
-	value: string;
-
-	/**
-	 * The `hasBorder` property of the selected color
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options `color.options.hasBorder`}).
-	 */
-	hasBorder: boolean;
-
-	/**
-	 * The label of the selected color ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
-	 */
-	label: string;
-}

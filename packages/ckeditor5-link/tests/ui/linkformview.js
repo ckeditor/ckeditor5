@@ -94,6 +94,10 @@ describe( 'LinkFormView', () => {
 				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
 			} );
 		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -269,7 +273,7 @@ describe( 'LinkFormView', () => {
 			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
 				name: 'decorator1',
 				label: 'Foo',
-				isOn: false
+				isOn: undefined
 			} );
 			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
 				name: 'decorator2',
@@ -279,7 +283,7 @@ describe( 'LinkFormView', () => {
 			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
 				name: 'decorator3',
 				label: 'Multi',
-				isOn: false
+				isOn: undefined
 			} );
 		} );
 
@@ -288,7 +292,7 @@ describe( 'LinkFormView', () => {
 			const viewItem = view._manualDecoratorSwitches.first;
 
 			expect( modelItem.value ).to.be.undefined;
-			expect( viewItem.isOn ).to.be.false;
+			expect( viewItem.isOn ).to.be.undefined;
 
 			viewItem.element.dispatchEvent( new Event( 'click' ) );
 
@@ -322,9 +326,9 @@ describe( 'LinkFormView', () => {
 		describe( 'getDecoratorSwitchesState()', () => {
 			it( 'should provide object with decorators states', () => {
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
+					decorator1: undefined,
 					decorator2: true,
-					decorator3: false
+					decorator3: undefined
 				} );
 
 				view._manualDecoratorSwitches.map( item => {
@@ -342,9 +346,9 @@ describe( 'LinkFormView', () => {
 
 			it( 'should use decorator default value if command and decorator values are not set', () => {
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
+					decorator1: undefined,
 					decorator2: true,
-					decorator3: false
+					decorator3: undefined
 				} );
 			} );
 
@@ -374,9 +378,9 @@ describe( 'LinkFormView', () => {
 				linkCommand.value = '';
 
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
-					decorator1: false,
-					decorator2: false,
-					decorator3: false
+					decorator1: undefined,
+					decorator2: undefined,
+					decorator3: undefined
 				} );
 
 				for ( const decorator of collection ) {

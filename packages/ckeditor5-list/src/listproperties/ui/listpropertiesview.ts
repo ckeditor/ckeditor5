@@ -41,7 +41,7 @@ import '../../../theme/listproperties.css';
  */
 export default class ListPropertiesView extends View {
 	/**
-	 * @inheritDoc
+	 * @inheritdoc
 	 */
 	declare public locale: Locale;
 

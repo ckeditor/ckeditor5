@@ -12,8 +12,6 @@ import type { Element } from 'ckeditor5/src/engine';
 
 const attributeKey = 'todoListChecked';
 
-import '../listcommands';
-
 /**
  * The check to-do command.
  *
@@ -31,10 +29,8 @@ export default class CheckTodoListCommand extends Command {
 
 	/**
 	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
-	 *
-	 * @internal
 	 */
-	public _selectedElements: Array<Element>;
+	private _selectedElements: Array<Element>;
 
 	/**
 	 * @inheritDoc

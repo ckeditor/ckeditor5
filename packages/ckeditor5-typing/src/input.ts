@@ -20,6 +20,8 @@ import './typingconfig';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class Input extends Plugin {
 	/**
@@ -91,7 +93,7 @@ export default class Input extends Plugin {
 				selection: model.createSelection( modelRanges )
 			};
 
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute insertText:',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
 			// @if CK_DEBUG_TYPING // 		insertText,
@@ -115,13 +117,10 @@ export default class Input extends Plugin {
 					return;
 				}
 
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
-				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
-
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c KeyDown 229 -> model.deleteContent()',
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`
+				// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
@@ -135,13 +134,10 @@ export default class Input extends Plugin {
 					return;
 				}
 
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
-				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
-
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start -> model.deleteContent()',
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`
+				// @if CK_DEBUG_TYPING // 		`[${ modelSelection.getFirstPosition().path }]-[${ modelSelection.getLastPosition().path }]`
 				// @if CK_DEBUG_TYPING // 	);
 				// @if CK_DEBUG_TYPING // }
 
@@ -152,6 +148,10 @@ export default class Input extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		insertText: InsertTextCommand;
+	}
+
 	interface PluginsMap {
 		[ Input.pluginName ]: Input;
 	}

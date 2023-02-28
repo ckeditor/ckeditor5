@@ -17,23 +17,19 @@ import type DomEventData from './domeventdata';
  * {@link module:engine/view/document~Document#event:compositionend compositionend} events observer.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ *
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class CompositionObserver extends DomEventObserver<'compositionstart' | 'compositionupdate' | 'compositionend'> {
-	/**
-	 * @inheritDoc
-	 */
-	public readonly domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ] as const;
-
-	/**
-	 * @inheritDoc
-	 */
 	constructor( view: View ) {
 		super( view );
 
+		this.domEventType = [ 'compositionstart', 'compositionupdate', 'compositionend' ];
+
 		const document = this.document;
 
-		document.on<ViewDocumentCompositionStartEvent>( 'compositionstart', () => {
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		document.on<ViewDocumentCompositionEvent>( 'compositionstart', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'┌───────────────────────────── isComposing = true ─────────────────────────────┐',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
@@ -42,8 +38,8 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			document.isComposing = true;
 		}, { priority: 'low' } );
 
-		document.on<ViewDocumentCompositionEndEvent>( 'compositionend', () => {
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		document.on<ViewDocumentCompositionEvent>( 'compositionend', () => {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[CompositionObserver] ' +
 			// @if CK_DEBUG_TYPING // 		'└───────────────────────────── isComposing = false ─────────────────────────────┘',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green'
@@ -53,11 +49,8 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 		}, { priority: 'low' } );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public onDomEvent( domEvent: CompositionEvent ): void {
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( `%c[CompositionObserver]%c ${ domEvent.type }`, 'color: green', '' );
 		// @if CK_DEBUG_TYPING // }
 
@@ -65,11 +58,16 @@ export default class CompositionObserver extends DomEventObserver<'compositionst
 			data: domEvent.data
 		} );
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
 }
+
+export type ViewDocumentCompositionEvent = {
+	name: 'compositionstart' | 'compositionupdate' | 'compositionend';
+	args: [ data: CompositionEventData ];
+};
 
 export interface CompositionEventData extends DomEventData<CompositionEvent> {
 	data: string | null;
@@ -84,13 +82,9 @@ export interface CompositionEventData extends DomEventData<CompositionEvent> {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionstart
- * @param data Event data.
+ * @event module:engine/view/document~Document#event:compositionstart
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
-export type ViewDocumentCompositionStartEvent = {
-	name: 'compositionstart';
-	args: [ data: CompositionEventData ];
-};
 
 /**
  * Fired when composition is updated inside one of the editables.
@@ -101,13 +95,9 @@ export type ViewDocumentCompositionStartEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionupdate
- * @param data Event data.
+ * @event module:engine/view/document~Document#event:compositionupdate
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
-export type ViewDocumentCompositionUpdateEvent = {
-	name: 'compositionupdate';
-	args: [ data: CompositionEventData ];
-};
 
 /**
  * Fired when composition ends inside one of the editables.
@@ -118,10 +108,6 @@ export type ViewDocumentCompositionUpdateEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionend
- * @param data Event data.
+ * @event module:engine/view/document~Document#event:compositionend
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
-export type ViewDocumentCompositionEndEvent = {
-	name: 'compositionend';
-	args: [ data: CompositionEventData ];
-};

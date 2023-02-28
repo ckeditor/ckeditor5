@@ -44,17 +44,7 @@ describe( 'Document', () => {
 				baseVersion: 0,
 				isDocumentOperation: true,
 				_execute: sinon.stub().returns( data ),
-				_validate: () => {},
-				toJSON() {
-					// This method creates only a shallow copy, all nested objects should be defined separately.
-					// See https://github.com/ckeditor/ckeditor5-engine/issues/1477.
-					const json = Object.assign( {}, this );
-
-					// Remove reference to the parent `Batch` to avoid circular dependencies.
-					delete json.batch;
-
-					return json;
-				}
+				_validate: () => {}
 			};
 
 			batch = new Batch();

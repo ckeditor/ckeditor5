@@ -224,13 +224,13 @@ describe( 'MediaEmbedUI', () => {
 			form.fire( 'submit' );
 		} );
 
-		it( 'binds urlInputView#isEnabled to command#isEnabled', () => {
+		it( 'binds urlInputView#isReadOnly to command#isEnabled', () => {
 			const command = editor.commands.get( 'mediaEmbed' );
 
-			expect( form.urlInputView.isEnabled ).to.be.true;
+			expect( form.urlInputView.isReadOnly ).to.be.false;
 
 			command.isEnabled = false;
-			expect( form.urlInputView.isEnabled ).to.be.false;
+			expect( form.urlInputView.isReadOnly ).to.be.true;
 		} );
 
 		it( 'should trim URL input value', () => {
@@ -254,10 +254,6 @@ describe( 'MediaEmbedUI', () => {
 			form.urlInputView.fieldView.fire( 'input' );
 
 			expect( form.saveButtonView.isEnabled ).to.be.true;
-		} );
-
-		it( 'should implement the CSS transition disabling feature', () => {
-			expect( form.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		describe( 'validators', () => {

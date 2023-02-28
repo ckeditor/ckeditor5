@@ -16,8 +16,9 @@
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.
  *
- * @param map Map to convert.
- * @returns Converted map.
+ * @private
+ * @param {Map} map Map to convert.
+ * @returns {String} Converted map.
  */
 export function convertMapToTags( map: Iterable<[ string, unknown ]> ): string {
 	let string = '';
@@ -30,10 +31,11 @@ export function convertMapToTags( map: Iterable<[ string, unknown ]> ): string {
 }
 
 /**
- * Helper function, converts a map to the `{"key1":"value1","key2":"value2"}` format.
+ * Helper function, converts a map to the '{"key1":"value1","key2":"value2"}' format.
  *
- * @param map Map to convert.
- * @returns Converted map.
+ * @private
+ * @param {Map} map Map to convert.
+ * @returns {String} Converted map.
  */
 export function convertMapToStringifiedObject( map: Iterable<[ string, unknown ]> ): string {
 	const obj: any = {};
@@ -50,6 +52,10 @@ const maxTreeDumpLength = 20;
 
 /**
  * Helper function that stores the `document` state for a given `version`.
+ *
+ * @private
+ * @param {*} document
+ * @param {*} version
  */
 export function dumpTrees( document: any, version: any ): void {
 	console.log( document, version );
@@ -71,6 +77,9 @@ export function dumpTrees( document: any, version: any ): void {
 
 /**
  * Helper function that initializes document dumping.
+ *
+ * @private
+ * @param {*} document
  */
 export function initDocumentDumping( document: any ): void {
 	document[ treeDump ] = [];
@@ -78,6 +87,10 @@ export function initDocumentDumping( document: any ): void {
 
 /**
  * Helper function that logs document for the given version.
+ *
+ * @private
+ * @param {*} document
+ * @param {*} version
  */
 export function logDocument( document: any, version: any ): void {
 	console.log( '--------------------' );

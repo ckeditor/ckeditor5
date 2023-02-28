@@ -19,34 +19,47 @@ import './typingconfig';
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
+ *
+ * @extends module:core/command~Command
  */
 export default class DeleteCommand extends Command {
-	/**
-	 * The directionality of the delete describing in what direction it should
-	 * consume the content when the selection is collapsed.
-	 */
 	public readonly direction: 'forward' | 'backward';
 
-	/**
-	 * Delete's change buffer used to group subsequent changes into batches.
-	 */
 	private readonly _buffer: ChangeBuffer;
 
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param direction The directionality of the delete describing in what direction it
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {'forward'|'backward'} direction The directionality of the delete describing in what direction it
 	 * should consume the content when the selection is collapsed.
 	 */
 	constructor( editor: Editor, direction: 'forward' | 'backward' ) {
 		super( editor );
 
+		/**
+		 * The directionality of the delete describing in what direction it should
+		 * consume the content when the selection is collapsed.
+		 *
+		 * @readonly
+		 * @member {'forward'|'backward'} #direction
+		 */
 		this.direction = direction;
+
+		/**
+		 * Delete's change buffer used to group subsequent changes into batches.
+		 *
+		 * @readonly
+		 * @private
+		 * @type {module:typing/utils/changebuffer~ChangeBuffer}
+		 */
 		this._buffer = new ChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
 	}
 
 	/**
 	 * The current change buffer.
+	 *
+	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 	 */
 	public get buffer(): ChangeBuffer {
 		return this._buffer;
@@ -57,11 +70,13 @@ export default class DeleteCommand extends Command {
 	 * or a piece of content in the {@link #direction defined direction}.
 	 *
 	 * @fires execute
-	 * @param options The command options.
-	 * @param options.unit See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
-	 * @param options.sequence A number describing which subsequent delete event it is without the key being released.
+	 * @param {Object} [options] The command options.
+	 * @param {'character'|'codePoint'|'word'} [options.unit='character']
+	 * See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
+	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
-	 * @param options.selection Selection to remove. If not set, current model selection will be used.
+	 * @param {module:engine/model/selection~Selection} [options.selection] Selection to remove. If not set, current model selection
+	 * will be used.
 	 */
 	public override execute( options: {
 		unit?: 'character' | 'codePoint' | 'word';
@@ -121,10 +136,10 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.log( '%c[DeleteCommand]%c Delete content',
 			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition()!.path }]-[${ selection.getLastPosition()!.path }]`, options
+			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition().path }]-[${ selection.getLastPosition().path }]`, options
 			// @if CK_DEBUG_TYPING // 	);
 			// @if CK_DEBUG_TYPING // }
 
@@ -155,7 +170,9 @@ export default class DeleteCommand extends Command {
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-typing/issues/61.
 	 *
-	 * @param sequence A number describing which subsequent delete event it is without the key being released.
+	 * @private
+	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
+	 * @returns {Boolean}
 	 */
 	private _shouldEntireContentBeReplacedWithParagraph( sequence: number ): boolean {
 		// Does nothing if user pressed and held the "Backspace" or "Delete" key.
@@ -195,7 +212,8 @@ export default class DeleteCommand extends Command {
 	/**
 	 * The entire content is replaced with the paragraph. Selection is moved inside the paragraph.
 	 *
-	 * @param writer The model writer.
+	 * @private
+	 * @param {module:engine/model/writer~Writer} writer The model writer.
 	 */
 	private _replaceEntireContentWithParagraph( writer: Writer ): void {
 		const model = this.editor.model;
@@ -214,8 +232,10 @@ export default class DeleteCommand extends Command {
 	 * Checks if the selection is inside an empty element that is the first child of the limit element
 	 * and should be replaced with a paragraph.
 	 *
-	 * @param selection The selection.
-	 * @param sequence A number describing which subsequent delete event it is without the key being released.
+	 * @private
+	 * @param {module:engine/model/selection~Selection} selection The selection.
+	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
+	 * @returns {Boolean}
 	 */
 	private _shouldReplaceFirstBlockWithParagraph( selection: Selection, sequence: number ): boolean {
 		const model = this.editor.model;
@@ -255,12 +275,5 @@ export default class DeleteCommand extends Command {
 		}
 
 		return true;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		deleteForward: DeleteCommand;
-		delete: DeleteCommand;
 	}
 }

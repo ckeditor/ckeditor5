@@ -54,88 +54,97 @@ type DomSelection = globalThis.Selection;
  * to and from the DOM.
  */
 export default class Renderer extends ObservableMixin() {
-	/**
-	 * Set of DOM Documents instances.
-	 */
-	public readonly domDocuments: Set<DomDocument> = new Set();
-
-	/**
-	 * Converter instance.
-	 */
+	public readonly domDocuments: Set<DomDocument>;
 	public readonly domConverter: DomConverter;
-
-	/**
-	 * Set of nodes which attributes changed and may need to be rendered.
-	 */
-	public readonly markedAttributes: Set<ViewElement> = new Set();
-
-	/**
-	 * Set of elements which child lists changed and may need to be rendered.
-	 */
-	public readonly markedChildren: Set<ViewElement> = new Set();
-
-	/**
-	 * Set of text nodes which text data changed and may need to be rendered.
-	 */
-	public readonly markedTexts: Set<ViewNode> = new Set();
-
-	/**
-	 * View selection. Renderer updates DOM selection based on the view selection.
-	 */
+	public readonly markedAttributes: Set<ViewElement>;
+	public readonly markedChildren: Set<ViewElement>;
+	public readonly markedTexts: Set<ViewNode>;
 	public readonly selection: DocumentSelection;
 
-	/**
-	 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
-	 * this is set to `false`.
-	 *
-	 * @observable
-	 */
 	declare public readonly isFocused: boolean;
-
-	/**
-	 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
-	 * When they stop selecting, the property goes back to `false`.
-	 *
-	 * Note: In some browsers, the renderer will stop rendering the selection and inline fillers while the user is making
-	 * a selection to avoid glitches in DOM selection
-	 * (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
-	 *
-	 * @observable
-	 */
 	declare public readonly isSelecting: boolean;
-
-	/**
-	 * True if composition is in progress inside the document.
-	 *
-	 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
-	 *
-	 * @observable
-	 */
 	declare public readonly isComposing: boolean;
 
-	/**
-	 * The text node in which the inline filler was rendered.
-	 */
-	private _inlineFiller: DomText | null = null;
-
-	/**
-	 * DOM element containing fake selection.
-	 */
-	private _fakeSelectionContainer: DomElement | null = null;
+	private _inlineFiller: DomText | null;
+	private _fakeSelectionContainer: DomElement | null;
 
 	/**
 	 * Creates a renderer instance.
 	 *
-	 * @param domConverter Converter instance.
-	 * @param selection View selection.
+	 * @param {module:engine/view/domconverter~DomConverter} domConverter Converter instance.
+	 * @param {module:engine/view/documentselection~DocumentSelection} selection View selection.
 	 */
 	constructor( domConverter: DomConverter, selection: DocumentSelection ) {
 		super();
 
+		/**
+		 * Set of DOM Documents instances.
+		 *
+		 * @readonly
+		 * @member {Set.<Document>}
+		 */
+		this.domDocuments = new Set();
+
+		/**
+		 * Converter instance.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/domconverter~DomConverter}
+		 */
 		this.domConverter = domConverter;
+
+		/**
+		 * Set of nodes which attributes changed and may need to be rendered.
+		 *
+		 * @readonly
+		 * @member {Set.<module:engine/view/node~ViewNode>}
+		 */
+		this.markedAttributes = new Set();
+
+		/**
+		 * Set of elements which child lists changed and may need to be rendered.
+		 *
+		 * @readonly
+		 * @member {Set.<module:engine/view/node~ViewNode>}
+		 */
+		this.markedChildren = new Set();
+
+		/**
+		 * Set of text nodes which text data changed and may need to be rendered.
+		 *
+		 * @readonly
+		 * @member {Set.<module:engine/view/node~ViewNode>}
+		 */
+		this.markedTexts = new Set();
+
+		/**
+		 * View selection. Renderer updates DOM selection based on the view selection.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/documentselection~DocumentSelection}
+		 */
 		this.selection = selection;
 
+		/**
+		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
+		 * this is set to `false`.
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
 		this.set( 'isFocused', false );
+
+		/**
+		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
+		 * When they stop selecting, the property goes back to `false`.
+		 *
+		 * Note: In some browsers, the renderer will stop rendering the selection and inline fillers while the user is making
+		 * a selection to avoid glitches in DOM selection
+		 * (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
 		this.set( 'isSelecting', false );
 
 		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
@@ -150,13 +159,37 @@ export default class Renderer extends ObservableMixin() {
 			} );
 		}
 
+		/**
+		 * True if composition is in progress inside the document.
+		 *
+		 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
 		this.set( 'isComposing', false );
 
-		this.on<ObservableChangeEvent>( 'change:isComposing', () => {
+		this.on( 'change:isComposing', () => {
 			if ( !this.isComposing ) {
 				this.render();
 			}
 		} );
+
+		/**
+		 * The text node in which the inline filler was rendered.
+		 *
+		 * @private
+		 * @member {Text}
+		 */
+		this._inlineFiller = null;
+
+		/**
+		 * DOM element containing fake selection.
+		 *
+		 * @private
+		 * @type {null|HTMLElement}
+		 */
+		this._fakeSelectionContainer = null;
 	}
 
 	/**
@@ -168,8 +201,8 @@ export default class Renderer extends ObservableMixin() {
 	 * @see #markedChildren
 	 * @see #markedTexts
 	 *
-	 * @param type Type of the change.
-	 * @param node ViewNode to be marked.
+	 * @param {module:engine/view/document~ChangeType} type Type of the change.
+	 * @param {module:engine/view/node~ViewNode} node ViewNode to be marked.
 	 */
 	public markToSync( type: ChangeType, node: ViewNode ): void {
 		if ( type === 'text' ) {
@@ -188,9 +221,6 @@ export default class Renderer extends ObservableMixin() {
 			} else if ( type === 'children' ) {
 				this.markedChildren.add( node as ViewElement );
 			} else {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const unreachable: never = type;
-
 				/**
 				 * Unknown type passed to Renderer.markToSync.
 				 *
@@ -218,7 +248,7 @@ export default class Renderer extends ObservableMixin() {
 		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
-			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
 			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 			// @if CK_DEBUG_TYPING // 	);
@@ -227,7 +257,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -328,7 +358,7 @@ export default class Renderer extends ObservableMixin() {
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -340,7 +370,8 @@ export default class Renderer extends ObservableMixin() {
 	 * This means that their mappings can be updated so the new view elements are mapped to the existing DOM elements.
 	 * Thanks to that these elements do not need to be re-rendered completely.
 	 *
-	 * @param viewElement The view element whose children mappings will be updated.
+	 * @private
+	 * @param {module:engine/view/node~ViewNode} viewElement The view element whose children mappings will be updated.
 	 */
 	private _updateChildrenMappings( viewElement: ViewElement ): void {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -393,8 +424,9 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Updates mappings of a given view element.
 	 *
-	 * @param viewElement The view element whose mappings will be updated.
-	 * @param domElement The DOM element representing the given view element.
+	 * @private
+	 * @param {module:engine/view/node~ViewNode} viewElement The view element whose mappings will be updated.
+	 * @param {ViewNode} domElement The DOM element representing the given view element.
 	 */
 	private _updateElementMappings( viewElement: ViewElement, domElement: DomElement ): void {
 		// Remap 'DomConverter' bindings.
@@ -425,6 +457,9 @@ export default class Renderer extends ObservableMixin() {
 	 * Note: The filler position cannot be restored based on the filler's DOM text node, because
 	 * when this method is called (before rendering), the bindings will often be broken. View-to-DOM
 	 * bindings are only dependable after rendering.
+	 *
+	 * @private
+	 * @returns {module:engine/view/position~Position}
 	 */
 	private _getInlineFillerPosition(): ViewPosition {
 		const firstPos = this.selection.getFirstPosition()!;
@@ -441,7 +476,8 @@ export default class Renderer extends ObservableMixin() {
 	 * If it is `true`, it means that the filler had been added for a reason and the selection did not
 	 * leave the filler's text node. For example, the user can be in the middle of a composition so it should not be touched.
 	 *
-	 * @returns `true` if the inline filler and selection are in the same place.
+	 * @private
+	 * @returns {Boolean} `true` if the inline filler and selection are in the same place.
 	 */
 	private _isSelectionInInlineFiller(): boolean {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
@@ -469,6 +505,8 @@ export default class Renderer extends ObservableMixin() {
 
 	/**
 	 * Removes the inline filler.
+	 *
+	 * @private
 	 */
 	private _removeInlineFiller(): void {
 		const domFillerNode = this._inlineFiller!;
@@ -496,7 +534,8 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks if the inline {@link module:engine/view/filler filler} should be added.
 	 *
-	 * @returns `true` if the inline filler should be added.
+	 * @private
+	 * @returns {Boolean} `true` if the inline filler should be added.
 	 */
 	private _needsInlineFillerAtSelection(): boolean {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
@@ -546,8 +585,11 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks if text needs to be updated and possibly updates it.
 	 *
-	 * @param viewText View text to update.
-	 * @param options.inlineFillerPosition The position where the inline filler should be rendered.
+	 * @private
+	 * @param {module:engine/view/text~Text} viewText View text to update.
+	 * @param {Object} options
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
+	 * filler should be rendered.
 	 */
 	private _updateText( viewText: ViewText, options: { inlineFillerPosition?: ViewPosition | null } ) {
 		const domText = this.domConverter.findCorrespondingDomText( viewText )!;
@@ -560,7 +602,7 @@ export default class Renderer extends ObservableMixin() {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -568,7 +610,7 @@ export default class Renderer extends ObservableMixin() {
 
 		updateTextNode( domText, expectedText );
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -576,7 +618,8 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks if attribute list needs to be updated and possibly updates it.
 	 *
-	 * @param viewElement The view element to update.
+	 * @private
+	 * @param {module:engine/view/element~Element} viewElement The view element to update.
 	 */
 	private _updateAttrs( viewElement: ViewElement ): void {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -612,8 +655,11 @@ export default class Renderer extends ObservableMixin() {
 	 * Note that on Android, to reduce the risk of composition breaks, it tries to update data of an existing
 	 * child text nodes instead of replacing them completely.
 	 *
-	 * @param viewElement View element to update.
-	 * @param options.inlineFillerPosition The position where the inline filler should be rendered.
+	 * @private
+	 * @param {module:engine/view/element~Element} viewElement View element to update.
+	 * @param {Object} options
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
+	 * filler should be rendered.
 	 */
 	private _updateChildren( viewElement: ViewElement, options: { inlineFillerPosition: ViewPosition | null } ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -624,7 +670,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 		// @if CK_DEBUG_TYPING // 	);
@@ -686,7 +732,7 @@ export default class Renderer extends ObservableMixin() {
 		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', actualDomChildren[ i ]
 				// @if CK_DEBUG_TYPING // 	);
@@ -702,7 +748,7 @@ export default class Renderer extends ObservableMixin() {
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', expectedDomChildren[ i ]
 				// @if CK_DEBUG_TYPING // 	);
@@ -713,7 +759,7 @@ export default class Renderer extends ObservableMixin() {
 			}
 			// Update the existing text node data. Note that replace action is generated only for Android for now.
 			else if ( action === 'replace' ) {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
 				// @if CK_DEBUG_TYPING // 	);
@@ -722,7 +768,7 @@ export default class Renderer extends ObservableMixin() {
 				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
 
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
 			} else if ( action === 'equal' ) {
@@ -742,7 +788,7 @@ export default class Renderer extends ObservableMixin() {
 			}
 		}
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
@@ -750,9 +796,10 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Shorthand for diffing two arrays or node lists of DOM nodes.
 	 *
-	 * @param actualDomChildren Actual DOM children
-	 * @param expectedDomChildren Expected DOM children.
-	 * @returns The list of actions based on the {@link module:utils/diff~diff} function.
+	 * @private
+	 * @param {Array.<ViewNode>|NodeList} actualDomChildren Actual DOM children
+	 * @param {Array.<ViewNode>|NodeList} expectedDomChildren Expected DOM children.
+	 * @returns {Array.<String>} The list of actions based on the {@link module:utils/diff~diff} function.
 	 */
 	private _diffNodeLists( actualDomChildren: Array<DomNode> | NodeList, expectedDomChildren: Array<DomNode> | NodeList ) {
 		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
@@ -764,19 +811,18 @@ export default class Renderer extends ObservableMixin() {
 	 * Finds DOM nodes that were replaced with the similar nodes (same tag name) in the view. All nodes are compared
 	 * within one `insert`/`delete` action group, for example:
 	 *
-	 * ```
-	 * Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
-	 * Expected DOM:	<p>Bar<b>123</b><i>Baz</i><b>456</b></p>
-	 * Input actions:	[ insert, insert, delete, delete, equal, insert, delete ]
-	 * Output actions:	[ insert, replace, delete, equal, replace ]
-	 * ```
+	 * 		Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
+	 * 		Expected DOM:	<p>Bar<b>123</b><i>Baz</i><b>456</b></p>
+	 * 		Input actions:	[ insert, insert, delete, delete, equal, insert, delete ]
+	 * 		Output actions:	[ insert, replace, delete, equal, replace ]
 	 *
-	 * @param actions Actions array which is a result of the {@link module:utils/diff~diff} function.
-	 * @param actualDom Actual DOM children
-	 * @param expectedDom Expected DOM children.
-	 * @param options Options
-	 * @param options.replaceText Mark text nodes replacement.
-	 * @returns Actions array modified with the `replace` actions.
+	 * @private
+	 * @param {Array.<String>} actions Actions array which is a result of the {@link module:utils/diff~diff} function.
+	 * @param {Array.<ViewNode>|NodeList} actualDom Actual DOM children
+	 * @param {Array.<ViewNode>} expectedDom Expected DOM children.
+	 * @param {Object} [options] Options
+	 * @param {Boolean} [options.replaceText] Mark text nodes replacement.
+	 * @returns {Array.<String>} Actions array modified with the `replace` actions.
 	 */
 	private _findReplaceActions(
 		actions: Array<DiffResult>,
@@ -824,7 +870,8 @@ export default class Renderer extends ObservableMixin() {
 	 *
 	 * If a text node is passed, it will be marked. If an element is passed, all descendant text nodes inside it will be marked.
 	 *
-	 * @param viewNode View node to sync.
+	 * @private
+	 * @param {module:engine/view/node~ViewNode} viewNode View node to sync.
 	 */
 	private _markDescendantTextToSync( viewNode: ViewNode | undefined ): void {
 		if ( !viewNode ) {
@@ -842,6 +889,8 @@ export default class Renderer extends ObservableMixin() {
 
 	/**
 	 * Checks if the selection needs to be updated and possibly updates it.
+	 *
+	 * @private
 	 */
 	private _updateSelection(): void {
 		// Block updating DOM selection in (non-Android) Blink while the user is selecting to prevent accidental selection collapsing.
@@ -860,7 +909,7 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
+		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! ) as DomElement;
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
@@ -889,7 +938,8 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Updates the fake selection.
 	 *
-	 * @param domRoot A valid DOM root where the fake selection container should be added.
+	 * @private
+	 * @param {HTMLElement} domRoot A valid DOM root where the fake selection container should be added.
 	 */
 	private _updateFakeSelection( domRoot: DomElement ): void {
 		const domDocument = domRoot.ownerDocument;
@@ -924,7 +974,8 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Updates the DOM selection.
 	 *
-	 * @param domRoot A valid DOM root where the DOM selection should be rendered.
+	 * @private
+	 * @param {HTMLElement} domRoot A valid DOM root where the DOM selection should be rendered.
 	 */
 	private _updateDomSelection( domRoot: DomElement ) {
 		const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
@@ -942,7 +993,7 @@ export default class Renderer extends ObservableMixin() {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor! )!;
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus! )!;
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
 		// @if CK_DEBUG_TYPING // 	);
@@ -960,7 +1011,9 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks whether a given DOM selection needs to be updated.
 	 *
-	 * @param domSelection The DOM selection to check.
+	 * @private
+	 * @param {Selection} domSelection The DOM selection to check.
+	 * @returns {Boolean}
 	 */
 	private _domSelectionNeedsUpdate( domSelection: Selection ): boolean {
 		if ( !this.domConverter.isDomSelectionCorrect( domSelection ) ) {
@@ -987,7 +1040,9 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks whether the fake selection needs to be updated.
 	 *
-	 * @param domRoot A valid DOM root where a new fake selection container should be added.
+	 * @private
+	 * @param {HTMLElement} domRoot A valid DOM root where a new fake selection container should be added.
+	 * @returns {Boolean}
 	 */
 	private _fakeSelectionNeedsUpdate( domRoot: DomElement ): boolean {
 		const container = this._fakeSelectionContainer;
@@ -1009,6 +1064,8 @@ export default class Renderer extends ObservableMixin() {
 
 	/**
 	 * Removes the DOM selection.
+	 *
+	 * @private
 	 */
 	private _removeDomSelection(): void {
 		for ( const doc of this.domDocuments ) {
@@ -1027,6 +1084,8 @@ export default class Renderer extends ObservableMixin() {
 
 	/**
 	 * Removes the fake selection.
+	 *
+	 * @private
 	 */
 	private _removeFakeSelection(): void {
 		const container = this._fakeSelectionContainer;
@@ -1038,6 +1097,8 @@ export default class Renderer extends ObservableMixin() {
 
 	/**
 	 * Checks if focus needs to be updated and possibly updates it.
+	 *
+	 * @private
 	 */
 	private _updateFocus(): void {
 		if ( this.isFocused ) {
@@ -1050,9 +1111,11 @@ export default class Renderer extends ObservableMixin() {
 	}
 }
 
-/**
- * Checks if provided element is editable.
- */
+// Checks if provided element is editable.
+//
+// @private
+// @param {module:engine/view/element~Element} element
+// @returns {Boolean}
 function isEditable( element: ViewElement ): boolean {
 	if ( element.getAttribute( 'contenteditable' ) == 'false' ) {
 		return false;
@@ -1063,14 +1126,16 @@ function isEditable( element: ViewElement ): boolean {
 	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
 }
 
-/**
- * Adds inline filler at a given position.
- *
- * The position can be given as an array of DOM nodes and an offset in that array,
- * or a DOM parent element and an offset in that element.
- *
- * @returns The DOM text node that contains an inline filler.
- */
+// Adds inline filler at a given position.
+//
+// The position can be given as an array of DOM nodes and an offset in that array,
+// or a DOM parent element and an offset in that element.
+//
+// @private
+// @param {Document} domDocument
+// @param {Element|Array.<ViewNode>} domParentOrArray
+// @param {Number} offset
+// @returns {Text} The DOM text node that contains an inline filler.
 function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | Array<DomNode>, offset: number ): DomText {
 	const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 	const nodeAfterFiller = childNodes[ offset ];
@@ -1092,10 +1157,13 @@ function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | 
 	}
 }
 
-/**
- * Whether two DOM nodes should be considered as similar.
- * Nodes are considered similar if they have the same tag name.
- */
+// Whether two DOM nodes should be considered as similar.
+// Nodes are considered similar if they have the same tag name.
+//
+// @private
+// @param {ViewNode} node1
+// @param {ViewNode} node2
+// @returns {Boolean}
 function areSimilar( node1: DomNode, node2: DomNode ): boolean {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
@@ -1103,24 +1171,24 @@ function areSimilar( node1: DomNode, node2: DomNode ): boolean {
 		( node1 as DomElement ).tagName.toLowerCase() === ( node2 as DomElement ).tagName.toLowerCase();
 }
 
-/**
- * Whether two DOM nodes are text nodes.
- */
+// Whether two DOM nodes are text nodes.
 function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
 	return isNode( node1 ) && isNode( node2 ) &&
 		isText( node1 ) && isText( node2 );
 }
 
-/**
- * Whether two dom nodes should be considered as the same.
- * Two nodes which are considered the same are:
- *
- * * Text nodes with the same text.
- * * Element nodes represented by the same object.
- * * Two block filler elements.
- *
- * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
- */
+// Whether two dom nodes should be considered as the same.
+// Two nodes which are considered the same are:
+//
+//		* Text nodes with the same text.
+//		* Element nodes represented by the same object.
+//		* Two block filler elements.
+//
+// @private
+// @param {String} blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
+// @param {ViewNode} node1
+// @param {ViewNode} node2
+// @returns {Boolean}
 function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
 	// Elements.
 	if ( actualDomChild === expectedDomChild ) {
@@ -1140,17 +1208,13 @@ function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expecte
 	return false;
 }
 
-/**
- * The following is a Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
- * When the native DOM selection is at the end of the block and preceded by <br /> e.g.
- *
- * ```html
- * <p>foo<br/>[]</p>
- * ```
- *
- * which happens a lot when using the soft line break, the browser fails to (visually) move the
- * caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
- */
+// The following is a Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
+// When the native DOM selection is at the end of the block and preceded by <br /> e.g.
+//
+//		<p>foo<br/>[]</p>
+//
+// which happens a lot when using the soft line break, the browser fails to (visually) move the
+// caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
 function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPositionToDom' ]>, domSelection: DomSelection ) {
 	const parent = focus!.parent;
 
@@ -1185,9 +1249,11 @@ function filterOutFakeSelectionContainer( domChildList: Array<DomNode> | NodeLis
 	return childList;
 }
 
-/**
- * Creates a fake selection container for a given document.
- */
+// Creates a fake selection container for a given document.
+//
+// @private
+// @param {Document} domDocument
+// @returns {HTMLElement}
 function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	const container = domDocument.createElement( 'div' );
 
@@ -1207,18 +1273,16 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	return container;
 }
 
-/**
- * Checks if text needs to be updated and possibly updates it by removing and inserting only parts
- * of the data from the existing text node to reduce impact on the IME composition.
- *
- * @param domText DOM text node to update.
- * @param expectedText The expected data of a text node.
- */
+// Checks if text needs to be updated and possibly updates it by removing and inserting only parts
+// of the data from the existing text node to reduce impact on the IME composition.
+//
+// @param {Text} domText DOM text node to update.
+// @param {String} expectedText The expected data of a text node.
 function updateTextNode( domText: DomText, expectedText: string ) {
 	const actualText = domText.data;
 
 	if ( actualText == expectedText ) {
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
 		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
 		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
@@ -1228,7 +1292,7 @@ function updateTextNode( domText: DomText, expectedText: string ) {
 		return;
 	}
 
-	// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+	// @if CK_DEBUG_TYPING // if ( window.logCKETyping ) {
 	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
 	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
 	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`

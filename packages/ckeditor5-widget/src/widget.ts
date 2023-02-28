@@ -18,7 +18,7 @@ import {
 	type Node,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentFragment,
-	type ViewDocumentMouseDownEvent,
+	type ViewDocumentMouseEvent,
 	type ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -49,12 +49,11 @@ import '../theme/widget.css';
  * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, the `ck-widget_selected` CSS class
  * is added to indicate that widget has been selected.
  * * The mouse and keyboard events handling on and around widget elements.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class Widget extends Plugin {
-	/**
-	 * Holds previously selected widgets.
-	 */
-	private _previouslySelected = new Set<ViewElement>();
+	private _previouslySelected!: Set<ViewElement>;
 
 	/**
 	 * @inheritDoc
@@ -77,6 +76,14 @@ export default class Widget extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+
+		/**
+		 * Holds previously selected widgets.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/view/element~Element>}
+		 */
+		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection.
@@ -156,7 +163,7 @@ export default class Widget extends Plugin {
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		view.addObserver( MouseObserver );
-		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
@@ -195,6 +202,10 @@ export default class Widget extends Plugin {
 
 	/**
 	 * Handles {@link module:engine/view/document~Document#event:mousedown mousedown} events on widget elements.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	private _onMousedown( eventInfo: EventInfo, domEventData: DomEventData<MouseEvent> ) {
 		const editor = this.editor;
@@ -257,6 +268,10 @@ export default class Widget extends Plugin {
 	 * * the selection is next to a widget and the widget should become selected upon the arrow key press.
 	 *
 	 * See {@link #_preventDefaultOnArrowKeyPress}.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	private _handleSelectionChangeOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const keyCode = domEventData.keyCode;
@@ -335,6 +350,10 @@ export default class Widget extends Plugin {
 	 * container.
 	 *
 	 * See {@link #_handleSelectionChangeOnArrowKeyPress}.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	private _preventDefaultOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const model = this.editor.model;
@@ -351,8 +370,9 @@ export default class Widget extends Plugin {
 	/**
 	 * Handles delete keys: backspace and delete.
 	 *
-	 * @param isForward Set to true if delete was performed in forward direction.
-	 * @returns Returns `true` if keys were handled correctly.
+	 * @private
+	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	private _handleDelete( isForward: boolean ) {
 		// Do nothing when the read only mode is enabled.
@@ -393,6 +413,8 @@ export default class Widget extends Plugin {
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @internal
+	 * @protected
+	 * @param {module:engine/model/element~Element} element
 	 */
 	public _setSelectionOverElement( element: Node ): void {
 		this.editor.model.change( writer => {
@@ -406,7 +428,9 @@ export default class Widget extends Plugin {
 	 * {@link module:engine/model/schema~Schema schema} as `object`.
 	 *
 	 * @internal
-	 * @param forward Direction of checking.
+	 * @protected
+	 * @param {Boolean} forward Direction of checking.
+	 * @returns {module:engine/model/element~Element|null}
 	 */
 	public _getObjectElementNextToSelection( forward: boolean ): Element | null {
 		const model = this.editor.model;
@@ -434,6 +458,9 @@ export default class Widget extends Plugin {
 
 	/**
 	 * Removes CSS class from previously selected widgets.
+	 *
+	 * @private
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	private _clearPreviouslySelectedWidgets( writer: DowncastWriter ) {
 		for ( const widget of this._previouslySelected ) {
@@ -444,9 +471,10 @@ export default class Widget extends Plugin {
 	}
 }
 
-/**
- * Returns `true` when element is a nested editable or is placed inside one.
- */
+// Returns `true` when element is a nested editable or is placed inside one.
+//
+// @param {module:engine/view/element~Element}
+// @returns {Boolean}
 function isInsideNestedEditable( element: ViewElement ) {
 	let currentElement: ViewElement | ViewDocumentFragment | null = element;
 
@@ -466,12 +494,11 @@ function isInsideNestedEditable( element: ViewElement ) {
 	return false;
 }
 
-/**
- * Checks whether the specified `element` is a child of the `parent` element.
- *
- * @param element An element to check.
- * @param parent A parent for the element.
- */
+// Checks whether the specified `element` is a child of the `parent` element.
+//
+// @param {module:engine/view/element~Element} element An element to check.
+// @param {module:engine/view/element~Element|null} parent A parent for the element.
+// @returns {Boolean}
 function isChild( element: ViewElement, parent: ViewElement | null ) {
 	if ( !parent ) {
 		return false;

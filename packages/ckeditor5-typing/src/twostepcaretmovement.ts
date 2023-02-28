@@ -13,7 +13,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	DocumentSelection,
-	DocumentSelectionChangeEvent,
 	DomEventData,
 	Model,
 	Position,
@@ -41,126 +40,79 @@ import type {
  *
  * * When enabled:
  *
- * ```xml
- * foo{}<$text a="true">bar</$text>
- * ```
+ *   		foo{}<$text a="true">bar</$text>
  *
- * 	<kbd>→</kbd>
+ *    <kbd>→</kbd>
  *
- * ```xml
- * foo<$text a="true">{}bar</$text>
- * ```
+ *   		foo<$text a="true">{}bar</$text>
  *
  * * When disabled:
  *
- * ```xml
- * foo{}<$text a="true">bar</$text>
- * ```
+ *   		foo{}<$text a="true">bar</$text>
  *
- * 	<kbd>→</kbd>
+ *   <kbd>→</kbd>
  *
- * ```xml
- * foo<$text a="true">b{}ar</$text>
- * ```
+ *   		foo<$text a="true">b{}ar</$text>
  *
  *
  * ## "Leaving" an attribute:
  *
  * * When enabled:
  *
- * ```xml
- * <$text a="true">bar{}</$text>baz
- * ```
+ *   		<$text a="true">bar{}</$text>baz
  *
- * 	<kbd>→</kbd>
+ *    <kbd>→</kbd>
  *
- * ```xml
- * <$text a="true">bar</$text>{}baz
- * ```
+ *   		<$text a="true">bar</$text>{}baz
  *
  * * When disabled:
  *
- * ```xml
- * <$text a="true">bar{}</$text>baz
- * ```
+ *   		<$text a="true">bar{}</$text>baz
  *
- * 	<kbd>→</kbd>
+ *   <kbd>→</kbd>
  *
- * ```xml
- * <$text a="true">bar</$text>b{}az
- * ```
+ *   		<$text a="true">bar</$text>b{}az
  *
  * # Backward movement
  *
  * * When enabled:
  *
- * ```xml
- * <$text a="true">bar</$text>{}baz
- * ```
+ *   		<$text a="true">bar</$text>{}baz
  *
- * 	<kbd>←</kbd>
+ *    <kbd>←</kbd>
  *
- * ```xml
- * <$text a="true">bar{}</$text>baz
- * ```
+ *   		<$text a="true">bar{}</$text>baz
  *
  * * When disabled:
  *
- * ```xml
- * <$text a="true">bar</$text>{}baz
- * ```
+ *   		<$text a="true">bar</$text>{}baz
  *
- * 	<kbd>←</kbd>
+ *   <kbd>←</kbd>
  *
- * ```xml
- * <$text a="true">ba{}r</$text>b{}az
- * ```
+ *   		<$text a="true">ba{}r</$text>b{}az
  *
  * # Multiple attributes
  *
  * * When enabled and many attributes starts or ends at the same position:
  *
- * ```xml
- * <$text a="true" b="true">bar</$text>{}baz
- * ```
+ *   		<$text a="true" b="true">bar</$text>{}baz
  *
- * 	<kbd>←</kbd>
+ *    <kbd>←</kbd>
  *
- * ```xml
- * <$text a="true" b="true">bar{}</$text>baz
- * ```
+ *   		<$text a="true" b="true">bar{}</$text>baz
  *
  * * When enabled and one procedes another:
  *
- * ```xml
- * <$text a="true">bar</$text><$text b="true">{}bar</$text>
- * ```
+ *   		<$text a="true">bar</$text><$text b="true">{}bar</$text>
  *
- * 	<kbd>←</kbd>
+ *    <kbd>←</kbd>
  *
- * ```xml
- * <$text a="true">bar{}</$text><$text b="true">bar</$text>
- * ```
+ *   		<$text a="true">bar{}</$text><$text b="true">bar</$text>
  *
  */
 export default class TwoStepCaretMovement extends Plugin {
-	/**
-	 * A set of attributes to handle.
-	 */
 	private attributes: Set<string>;
-
-	/**
-	 * The current UID of the overridden gravity, as returned by
-	 * {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
-	 */
 	private _overrideUid: string | null;
-
-	/**
-	 * A flag indicating that the automatic gravity restoration should not happen upon the next
-	 * gravity restoration.
-	 * {@link module:engine/model/selection~Selection#event:change:range} event.
-	 */
-
 	private _isNextGravityRestorationSkipped!: boolean;
 
 	/**
@@ -176,7 +128,21 @@ export default class TwoStepCaretMovement extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		/**
+		 * A set of attributes to handle.
+		 *
+		 * @protected
+		 * @property {module:typing/twostepcaretmovement~TwoStepCaretMovement}
+		 */
 		this.attributes = new Set();
+
+		/**
+		 * The current UID of the overridden gravity, as returned by
+		 * {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+		 *
+		 * @private
+		 * @member {String}
+		 */
 		this._overrideUid = null;
 	}
 
@@ -228,10 +194,18 @@ export default class TwoStepCaretMovement extends Plugin {
 			}
 		}, { context: '$text', priority: 'highest' } );
 
+		/**
+		 * A flag indicating that the automatic gravity restoration should not happen upon the next
+		 * gravity restoration.
+		 * {@link module:engine/model/selection~Selection#event:change:range} event.
+		 *
+		 * @private
+		 * @member {String}
+		 */
 		this._isNextGravityRestorationSkipped = false;
 
 		// The automatic gravity restoration logic.
-		this.listenTo<DocumentSelectionChangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
+		this.listenTo( modelSelection, 'change:range', ( evt, data ) => {
 			// Skipping the automatic restoration is needed if the selection should change
 			// but the gravity must remain overridden afterwards. See the #handleBackwardMovement
 			// to learn more.
@@ -261,7 +235,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * Registers a given attribute for the two-step caret movement.
 	 *
-	 * @param attribute Name of the attribute to handle.
+	 * @param {String} attribute Name of the attribute to handle.
 	 */
 	public registerAttribute( attribute: string ): void {
 		this.attributes.add( attribute );
@@ -271,8 +245,9 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
-	 * @returns `true` when the handler prevented caret movement.
+	 * @private
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
 	private _handleForwardMovement( data: DomEventData ): boolean {
 		const attributes = this.attributes;
@@ -325,8 +300,9 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
-	 * @returns `true` when the handler prevented caret movement
+	 * @private
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
 	private _handleBackwardMovement( data: DomEventData ): boolean {
 		const attributes = this.attributes;
@@ -408,6 +384,10 @@ export default class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * `true` when the gravity is overridden for the plugin.
+	 *
+	 * @readonly
+	 * @private
+	 * @type {Boolean}
 	 */
 	private get _isGravityOverridden(): boolean {
 		return !!this._overrideUid;
@@ -418,6 +398,8 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * and stores the information about this fact in the {@link #_overrideUid}.
 	 *
 	 * A shorthand for {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 *
+	 * @private
 	 */
 	private _overrideGravity(): void {
 		this._overrideUid = this.editor.model.change( writer => {
@@ -429,6 +411,8 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Restores the gravity using the {@link module:engine/model/writer~Writer model writer}.
 	 *
 	 * A shorthand for {@link module:engine/model/writer~Writer#restoreSelectionGravity}.
+	 *
+	 * @private
 	 */
 	private _restoreGravity(): void {
 		this.editor.model.change( writer => {
@@ -438,10 +422,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	}
 }
 
-/**
- * Checks whether the selection has any of given attributes.
- */
-function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> ): boolean {
+// Checks whether the selection has any of given attributes.
+//
+// @param {module:engine/model/documentselection~DocumentSelection} selection
+// @param {Iterable.<String>} attributes
+function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> ) {
 	for ( const observedAttribute of attributes ) {
 		if ( selection.hasAttribute( observedAttribute ) ) {
 			return true;
@@ -451,11 +436,13 @@ function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> 
 	return false;
 }
 
-/**
- * Applies the given attributes to the current selection using using the
- * values from the node before the current position. Uses
- * the {@link module:engine/model/writer~Writer model writer}.
- */
+// Applies the given attributes to the current selection using using the
+// values from the node before the current position. Uses
+// the {@link module:engine/model/writer~Writer model writer}.
+//
+// @param {module:engine/model/model~Model}
+// @param {Iterable.<String>} attributess
+// @param {module:engine/model/position~Position} position
 function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: Position ) {
 	const nodeBefore = position.nodeBefore;
 	model.change( writer => {
@@ -467,27 +454,27 @@ function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<
 	} );
 }
 
-/**
- * Prevents the caret movement in the view by calling `preventDefault` on the event data.
- *
- * @alias data.preventDefault
- */
+// Prevents the caret movement in the view by calling `preventDefault` on the event data.
+//
+// @alias data.preventDefault
 function preventCaretMovement( data: DomEventData ) {
 	data.preventDefault();
 }
 
-/**
- * Checks whether the step before `isBetweenDifferentAttributes()`.
- */
-function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<string> ): boolean {
+// Checks whether the step before `isBetweenDifferentAttributes()`.
+//
+// @param {module:engine/model/position~Position} position
+// @param {String} attribute
+function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<string> ) {
 	const positionBefore = position.getShiftedBy( -1 );
 	return isBetweenDifferentAttributes( positionBefore, attributes );
 }
 
-/**
- * Checks whether the given position is between different values of given attributes.
- */
-function isBetweenDifferentAttributes( position: Position, attributes: Set<string> ): boolean {
+// Checks whether the given position is between different values of given attributes.
+//
+// @param {module:engine/model/position~Position} position
+// @param {Iterable.<String>} attributes
+function isBetweenDifferentAttributes( position: Position, attributes: Set<string> ) {
 	const { nodeBefore, nodeAfter } = position;
 	for ( const observedAttribute of attributes ) {
 		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;

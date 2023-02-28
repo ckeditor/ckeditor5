@@ -45,86 +45,97 @@ import type Range from '../model/range';
  *
  * Consuming multiple values in a single callback:
  *
- * ```ts
- * // Converter for custom `imageBlock` element that might have a `caption` element inside which changes
- * // how the image is displayed in the view:
- * //
- * // Model:
- * //
- * // [imageBlock]
- * //   └─ [caption]
- * //       └─ foo
- * //
- * // View:
- * //
- * // <figure>
- * //   ├─ <img />
- * //   └─ <caption>
- * //       └─ foo
- * modelConversionDispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
- * 	// First, consume the `imageBlock` element.
- * 	conversionApi.consumable.consume( data.item, 'insert' );
+ *		// Converter for custom `imageBlock` element that might have a `caption` element inside which changes
+ *		// how the image is displayed in the view:
+ *		//
+ *		// Model:
+ *		//
+ *		// [imageBlock]
+ *		//   └─ [caption]
+ *		//       └─ foo
+ *		//
+ *		// View:
+ *		//
+ *		// <figure>
+ *		//   ├─ <img />
+ *		//   └─ <caption>
+ *		//       └─ foo
+ *		modelConversionDispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+ *			// First, consume the `imageBlock` element.
+ *			conversionApi.consumable.consume( data.item, 'insert' );
  *
- * 	// Just create normal image element for the view.
- * 	// Maybe it will be "decorated" later.
- * 	const viewImage = new ViewElement( 'img' );
- * 	const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
- * 	const viewWriter = conversionApi.writer;
+ *			// Just create normal image element for the view.
+ *			// Maybe it will be "decorated" later.
+ *			const viewImage = new ViewElement( 'img' );
+ *			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
+ *			const viewWriter = conversionApi.writer;
  *
- * 	// Check if the `imageBlock` element has children.
- * 	if ( data.item.childCount > 0 ) {
- * 		const modelCaption = data.item.getChild( 0 );
+ *			// Check if the `imageBlock` element has children.
+ *			if ( data.item.childCount > 0 ) {
+ *				const modelCaption = data.item.getChild( 0 );
  *
- * 		// `modelCaption` insertion change is consumed from consumable values.
- * 		// It will not be converted by other converters, but it's children (probably some text) will be.
- * 		// Through mapping, converters for text will know where to insert contents of `modelCaption`.
- * 		if ( conversionApi.consumable.consume( modelCaption, 'insert' ) ) {
- * 			const viewCaption = new ViewElement( 'figcaption' );
+ *				// `modelCaption` insertion change is consumed from consumable values.
+ *				// It will not be converted by other converters, but it's children (probably some text) will be.
+ *				// Through mapping, converters for text will know where to insert contents of `modelCaption`.
+ *				if ( conversionApi.consumable.consume( modelCaption, 'insert' ) ) {
+ *					const viewCaption = new ViewElement( 'figcaption' );
  *
- * 			const viewImageHolder = new ViewElement( 'figure', null, [ viewImage, viewCaption ] );
+ *					const viewImageHolder = new ViewElement( 'figure', null, [ viewImage, viewCaption ] );
  *
- * 			conversionApi.mapper.bindElements( modelCaption, viewCaption );
- * 			conversionApi.mapper.bindElements( data.item, viewImageHolder );
- * 			viewWriter.insert( insertPosition, viewImageHolder );
- * 		}
- * 	} else {
- * 		conversionApi.mapper.bindElements( data.item, viewImage );
- * 		viewWriter.insert( insertPosition, viewImage );
- * 	}
+ *					conversionApi.mapper.bindElements( modelCaption, viewCaption );
+ *					conversionApi.mapper.bindElements( data.item, viewImageHolder );
+ *					viewWriter.insert( insertPosition, viewImageHolder );
+ *				}
+ *			} else {
+ *				conversionApi.mapper.bindElements( data.item, viewImage );
+ *				viewWriter.insert( insertPosition, viewImage );
+ *			}
  *
- * 	evt.stop();
- * } );
- * ```
+ *			evt.stop();
+ *		} );
  */
 export default class ModelConsumable {
-	/**
-	 * Contains list of consumable values.
-	 */
-	private _consumable = new Map<any, Map<string, boolean>>();
+	private _consumable: Map<any, Map<string, boolean>>;
+	private _textProxyRegistry: Map<number | null, Map<number | null, Map<unknown, symbol>>>;
 
 	/**
-	 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds a parent
-	 * of that `TextProxy` and the start and end indices of that `TextProxy`. This allows identification of the `TextProxy`
-	 * instances that point to the same part of the model but are different instances. Each distinct `TextProxy`
-	 * is given a unique `Symbol` which is then registered as consumable. This process is transparent for the `ModelConsumable`
-	 * API user because whenever `TextProxy` is added, tested, consumed or reverted, the internal mechanisms of
-	 * `ModelConsumable` translate `TextProxy` to that unique `Symbol`.
+	 * Creates an empty consumables list.
 	 */
-	private _textProxyRegistry = new Map<number | null, Map<number | null, Map<unknown, symbol>>>();
+	constructor() {
+		/**
+		 * Contains list of consumable values.
+		 *
+		 * @private
+		 * @member {Map} module:engine/conversion/modelconsumable~ModelConsumable#_consumable
+		 */
+		this._consumable = new Map();
+
+		/**
+		 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds a parent
+		 * of that `TextProxy` and the start and end indices of that `TextProxy`. This allows identification of the `TextProxy`
+		 * instances that point to the same part of the model but are different instances. Each distinct `TextProxy`
+		 * is given a unique `Symbol` which is then registered as consumable. This process is transparent for the `ModelConsumable`
+		 * API user because whenever `TextProxy` is added, tested, consumed or reverted, the internal mechanisms of
+		 * `ModelConsumable` translate `TextProxy` to that unique `Symbol`.
+		 *
+		 * @private
+		 * @member {Map} module:engine/conversion/modelconsumable~ModelConsumable#_textProxyRegistry
+		 */
+		this._textProxyRegistry = new Map();
+	}
 
 	/**
 	 * Adds a consumable value to the consumables list and links it with a given model item.
 	 *
-	 * ```ts
-	 * modelConsumable.add( modelElement, 'insert' ); // Add `modelElement` insertion change to consumable values.
-	 * modelConsumable.add( modelElement, 'addAttribute:bold' ); // Add `bold` attribute insertion on `modelElement` change.
-	 * modelConsumable.add( modelElement, 'removeAttribute:bold' ); // Add `bold` attribute removal on `modelElement` change.
-	 * modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
-	 * modelConsumable.add( modelRange, 'range' ); // Add `modelRange` to consumable values.
-	 * ```
+	 *		modelConsumable.add( modelElement, 'insert' ); // Add `modelElement` insertion change to consumable values.
+	 *		modelConsumable.add( modelElement, 'addAttribute:bold' ); // Add `bold` attribute insertion on `modelElement` change.
+	 *		modelConsumable.add( modelElement, 'removeAttribute:bold' ); // Add `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
+	 *		modelConsumable.add( modelRange, 'range' ); // Add `modelRange` to consumable values.
 	 *
-	 * @param item Model item, range or selection that has the consumable.
-	 * @param type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection that has the consumable.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
 	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 */
 	public add(
@@ -147,18 +158,17 @@ export default class ModelConsumable {
 	/**
 	 * Removes a given consumable value from a given model item.
 	 *
-	 * ```ts
-	 * modelConsumable.consume( modelElement, 'insert' ); // Remove `modelElement` insertion change from consumable values.
-	 * modelConsumable.consume( modelElement, 'addAttribute:bold' ); // Remove `bold` attribute insertion on `modelElement` change.
-	 * modelConsumable.consume( modelElement, 'removeAttribute:bold' ); // Remove `bold` attribute removal on `modelElement` change.
-	 * modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
-	 * modelConsumable.consume( modelRange, 'range' ); // Remove 'modelRange' from consumable values.
-	 * ```
+	 *		modelConsumable.consume( modelElement, 'insert' ); // Remove `modelElement` insertion change from consumable values.
+	 *		modelConsumable.consume( modelElement, 'addAttribute:bold' ); // Remove `bold` attribute insertion on `modelElement` change.
+	 *		modelConsumable.consume( modelElement, 'removeAttribute:bold' ); // Remove `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
+	 *		modelConsumable.consume( modelRange, 'range' ); // Remove 'modelRange' from consumable values.
 	 *
-	 * @param item Model item, range or selection from which consumable will be consumed.
-	 * @param type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection from which consumable will be consumed.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
 	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
-	 * @returns `true` if consumable value was available and was consumed, `false` otherwise.
+	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
 	public consume(
 		item: Item | Selection | DocumentSelection | Range,
@@ -182,18 +192,17 @@ export default class ModelConsumable {
 	/**
 	 * Tests whether there is a consumable value of a given type connected with a given model item.
 	 *
-	 * ```ts
-	 * modelConsumable.test( modelElement, 'insert' ); // Check for `modelElement` insertion change.
-	 * modelConsumable.test( modelElement, 'addAttribute:bold' ); // Check for `bold` attribute insertion on `modelElement` change.
-	 * modelConsumable.test( modelElement, 'removeAttribute:bold' ); // Check for `bold` attribute removal on `modelElement` change.
-	 * modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
-	 * modelConsumable.test( modelRange, 'range' ); // Check if `modelRange` is consumable.
-	 * ```
+	 *		modelConsumable.test( modelElement, 'insert' ); // Check for `modelElement` insertion change.
+	 *		modelConsumable.test( modelElement, 'addAttribute:bold' ); // Check for `bold` attribute insertion on `modelElement` change.
+	 *		modelConsumable.test( modelElement, 'removeAttribute:bold' ); // Check for `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
+	 *		modelConsumable.test( modelRange, 'range' ); // Check if `modelRange` is consumable.
 	 *
-	 * @param item Model item, range or selection to be tested.
-	 * @param type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection to be tested.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
 	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
-	 * @returns `null` if such consumable was never added, `false` if the consumable values was
+	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	public test(
@@ -224,17 +233,16 @@ export default class ModelConsumable {
 	/**
 	 * Reverts consuming of a consumable value.
 	 *
-	 * ```ts
-	 * modelConsumable.revert( modelElement, 'insert' ); // Revert consuming `modelElement` insertion change.
-	 * modelConsumable.revert( modelElement, 'addAttribute:bold' ); // Revert consuming `bold` attribute insert from `modelElement`.
-	 * modelConsumable.revert( modelElement, 'removeAttribute:bold' ); // Revert consuming `bold` attribute remove from `modelElement`.
-	 * modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
-	 * modelConsumable.revert( modelRange, 'range' ); // Revert consuming `modelRange`.
-	 * ```
+	 *		modelConsumable.revert( modelElement, 'insert' ); // Revert consuming `modelElement` insertion change.
+	 *		modelConsumable.revert( modelElement, 'addAttribute:bold' ); // Revert consuming `bold` attribute insert from `modelElement`.
+	 *		modelConsumable.revert( modelElement, 'removeAttribute:bold' ); // Revert consuming `bold` attribute remove from `modelElement`.
+	 *		modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
+	 *		modelConsumable.revert( modelRange, 'range' ); // Revert consuming `modelRange`.
 	 *
-	 * @param item Model item, range or selection to be reverted.
-	 * @param type Consumable type.
-	 * @returns `true` if consumable has been reversed, `false` otherwise. `null` if the consumable has
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection to be reverted.
+	 * @param {String} type Consumable type.
+	 * @returns {null|Boolean} `true` if consumable has been reversed, `false` otherwise. `null` if the consumable has
 	 * never been added.
 	 */
 	public revert(
@@ -263,7 +271,7 @@ export default class ModelConsumable {
 	/**
 	 * Verifies if all events from the specified group were consumed.
 	 *
-	 * @param eventGroup The events group to verify.
+	 * @param {String} eventGroup The events group to verify.
 	 */
 	public verifyAllConsumed( eventGroup: string ): void {
 		const items = [];
@@ -309,8 +317,9 @@ export default class ModelConsumable {
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @internal
-	 * @param textProxy `TextProxy` instance to get a symbol for.
-	 * @returns Symbol representing all equal instances of `TextProxy`.
+	 * @protected
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy `TextProxy` instance to get a symbol for.
+	 * @returns {Symbol} Symbol representing all equal instances of `TextProxy`.
 	 */
 	public _getSymbolForTextProxy( textProxy: TextProxy ): symbol {
 		let symbol = null;
@@ -337,8 +346,9 @@ export default class ModelConsumable {
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
-	 * @param textProxy Text proxy instance.
-	 * @returns Symbol generated for given `TextProxy`.
+	 * @private
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy Text proxy instance.
+	 * @returns {Symbol} Symbol generated for given `TextProxy`.
 	 */
 	private _addSymbolForTextProxy( textProxy: TextProxy ): symbol {
 		const start = textProxy.startOffset;
@@ -369,14 +379,12 @@ export default class ModelConsumable {
 	}
 }
 
-/**
- * Returns a normalized consumable type name from the given string. A normalized consumable type name is a string that has
- * at most one colon, for example: `insert` or `addMarker:highlight`. If a string to normalize has more "parts" (more colons),
- * the further parts are dropped, for example: `addattribute:bold:$text` -> `addattributes:bold`.
- *
- * @param type Consumable type.
- * @returns Normalized consumable type.
- */
+// Returns a normalized consumable type name from the given string. A normalized consumable type name is a string that has
+// at most one colon, for example: `insert` or `addMarker:highlight`. If a string to normalize has more "parts" (more colons),
+// the further parts are dropped, for example: `addattribute:bold:$text` -> `addattributes:bold`.
+//
+// @param {String} type Consumable type.
+// @returns {String} Normalized consumable type.
 function _normalizeConsumableType( type: string ) {
 	const parts = type.split( ':' );
 

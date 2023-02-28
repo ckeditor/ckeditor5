@@ -10,7 +10,7 @@
 import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
-import type { HeadingOption } from './headingconfig';
+import type { HeadingOption } from './heading';
 
 import HeadingCommand from './headingcommand';
 
@@ -124,5 +124,9 @@ export default class HeadingEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ HeadingEditing.pluginName ]: HeadingEditing;
+	}
+
+	interface CommandsMap {
+		heading: HeadingCommand;
 	}
 }

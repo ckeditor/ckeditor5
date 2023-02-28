@@ -84,7 +84,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
-				expect( tableCellPropertiesUI._undoStepBatch ).to.be.undefined;
+				expect( tableCellPropertiesUI._undoStepBatch ).to.be.null;
 			} );
 
 			describe( '#view', () => {

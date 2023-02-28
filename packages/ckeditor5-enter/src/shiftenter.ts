@@ -17,6 +17,8 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
  * See also the {@link module:enter/enter~Enter} plugin.
  *
  * For more information about this feature see the {@glink api/enter package page}.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class ShiftEnter extends Plugin {
 	/**
@@ -75,6 +77,10 @@ export default class ShiftEnter extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		'shiftEnter': ShiftEnterCommand;
+	}
+
 	interface PluginsMap {
 		[ ShiftEnter.pluginName ]: ShiftEnter;
 	}

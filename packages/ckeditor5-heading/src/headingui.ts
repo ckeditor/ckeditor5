@@ -16,10 +16,8 @@ import {
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
-import type { ParagraphCommand } from 'ckeditor5/src/paragraph';
 
 import { getLocalizedOptions } from './utils';
-import type HeadingCommand from './headingcommand';
 
 import '../theme/heading.css';
 
@@ -49,8 +47,8 @@ export default class HeadingUI extends Plugin {
 			const titles: Record<string, string> = {};
 			const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
 
-			const headingCommand: HeadingCommand = editor.commands.get( 'heading' )!;
-			const paragraphCommand: ParagraphCommand = editor.commands.get( 'paragraph' )!;
+			const headingCommand = editor.commands.get( 'heading' )!;
+			const paragraphCommand = editor.commands.get( 'paragraph' )!;
 
 			const commands: Array<Command> = [ headingCommand ];
 

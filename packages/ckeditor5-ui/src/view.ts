@@ -38,144 +38,70 @@ import '../theme/globals/globals.css';
  * See the {@link module:ui/template~TemplateDefinition} syntax to learn more about shaping view
  * elements, attributes and listeners.
  *
- * ```ts
- * class SampleView extends View {
- * 	constructor( locale ) {
- * 		super( locale );
+ *		class SampleView extends View {
+ *			constructor( locale ) {
+ *				super( locale );
  *
- * 		const bind = this.bindTemplate;
+ *				const bind = this.bindTemplate;
  *
- * 		// Views define their interface (state) using observable attributes.
- * 		this.set( 'elementClass', 'bar' );
+ *				// Views define their interface (state) using observable attributes.
+ *				this.set( 'elementClass', 'bar' );
  *
- * 		this.setTemplate( {
- * 			tag: 'p',
+ *				this.setTemplate( {
+ *					tag: 'p',
  *
- * 			// The element of the view can be defined with its children.
- * 			children: [
- * 				'Hello',
- * 				{
- * 					tag: 'b',
- * 					children: [ 'world!' ]
- * 				}
- * 			],
- * 			attributes: {
- * 				class: [
- * 					'foo',
+ *					// The element of the view can be defined with its children.
+ *					children: [
+ *						'Hello',
+ *						{
+ *							tag: 'b',
+ *							children: [ 'world!' ]
+ *						}
+ *					],
+ *					attributes: {
+ *						class: [
+ *							'foo',
  *
- * 					// Observable attributes control the state of the view in DOM.
- * 					bind.to( 'elementClass' )
- * 				]
- * 			},
- * 			on: {
- * 				// Views listen to DOM events and propagate them.
- * 				click: bind.to( 'clicked' )
- * 			}
- * 		} );
- * 	}
- * }
+ *							// Observable attributes control the state of the view in DOM.
+ *							bind.to( 'elementClass' )
+ *						]
+ *					},
+ *					on: {
+ *						// Views listen to DOM events and propagate them.
+ *						click: bind.to( 'clicked' )
+ *					}
+ *				} );
+ *			}
+ *		}
  *
- * const view = new SampleView( locale );
+ *		const view = new SampleView( locale );
  *
- * view.render();
+ *		view.render();
  *
- * // Append <p class="foo bar">Hello<b>world</b></p> to the <body>
- * document.body.appendChild( view.element );
+ *		// Append <p class="foo bar">Hello<b>world</b></p> to the <body>
+ *		document.body.appendChild( view.element );
  *
- * // Change the class attribute to <p class="foo baz">Hello<b>world</b></p>
- * view.elementClass = 'baz';
+ *		// Change the class attribute to <p class="foo baz">Hello<b>world</b></p>
+ *		view.elementClass = 'baz';
  *
- * // Respond to the "click" event in DOM by executing a custom action.
- * view.on( 'clicked', () => {
- * 	console.log( 'The view has been clicked!' );
- * } );
- * ```
+ *		// Respond to the "click" event in DOM by executing a custom action.
+ *		view.on( 'clicked', () => {
+ *			console.log( 'The view has been clicked!' );
+ *		} );
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class View<TElement extends HTMLElement = HTMLElement> extends DomEmitterMixin( ObservableMixin() ) {
-	/**
-	 * An HTML element of the view. `null` until {@link #render rendered}
-	 * from the {@link #template}.
-	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor() {
-	 * 		super();
-	 *
-	 * 		// A template instance the #element will be created from.
-	 * 		this.setTemplate( {
-	 * 			tag: 'p'
-	 *
-	 * 			// ...
-	 * 		} );
-	 * 	}
-	 * }
-	 *
-	 * const view = new SampleView();
-	 *
-	 * // Renders the #template.
-	 * view.render();
-	 *
-	 * // Append the HTML element of the view to <body>.
-	 * document.body.appendChild( view.element );
-	 * ```
-	 *
-	 * **Note**: The element of the view can also be assigned directly:
-	 *
-	 * ```ts
-	 * view.element = document.querySelector( '#my-container' );
-	 * ```
-	 */
 	public element: TElement | null;
-
-	/**
-	 * Set `true` when the view has already been {@link module:ui/view~View#render rendered}.
-	 *
-	 * @readonly
-	 */
 	public isRendered: boolean;
-
-	/**
-	 * A set of tools to localize the user interface.
-	 *
-	 * Also see {@link module:core/editor/editor~Editor#locale}.
-	 *
-	 * @readonly
-	 */
 	public locale: Locale | undefined;
-
-	/**
-	 * Shorthand for {@link module:utils/locale~Locale#t}.
-	 *
-	 * Note: If {@link #locale} instance hasn't been passed to the view this method may not
-	 * be available.
-	 *
-	 * @see module:utils/locale~Locale#t
-	 */
 	public t: LocaleTranslate | undefined;
-
-	/**
-	 * Template of this view. It provides the {@link #element} representing
-	 * the view in DOM, which is {@link #render rendered}.
-	 */
 	public template?: Template;
-
 	public viewUid?: string;
 
-	/**
-	 * Collections registered with {@link #createCollection}.
-	 */
 	protected _viewCollections: Collection<ViewCollection>;
-
-	/**
-	 * A collection of view instances, which have been added directly
-	 * into the {@link module:ui/template~Template#children}.
-	 */
 	protected _unboundChildren: ViewCollection;
 
-	/**
-	 * Cached {@link module:ui/template~BindChain bind chain} object created by the
-	 * {@link #template}. See {@link #bindTemplate}.
-	 */
 	private _bindTemplate?: BindChain<this>;
 
 	/**
@@ -183,18 +109,88 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 *
 	 * Also see {@link #render}.
 	 *
-	 * @param locale The localization services instance.
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 */
 	constructor( locale?: Locale ) {
 		super();
 
+		/**
+		 * An HTML element of the view. `null` until {@link #render rendered}
+		 * from the {@link #template}.
+		 *
+		 *		class SampleView extends View {
+		 *			constructor() {
+		 *				super();
+		 *
+		 *				// A template instance the #element will be created from.
+		 *				this.setTemplate( {
+		 *					tag: 'p'
+		 *
+		 *					// ...
+		 *				} );
+		 *			}
+		 *		}
+		 *
+		 *		const view = new SampleView();
+		 *
+		 *		// Renders the #template.
+		 *		view.render();
+		 *
+		 *		// Append the HTML element of the view to <body>.
+		 *		document.body.appendChild( view.element );
+		 *
+		 * **Note**: The element of the view can also be assigned directly:
+		 *
+		 *		view.element = document.querySelector( '#my-container' );
+		 *
+		 * @member {HTMLElement}
+		 */
 		this.element = null;
+
+		/**
+		 * Set `true` when the view has already been {@link module:ui/view~View#render rendered}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isRendered
+		 */
 		this.isRendered = false;
 
+		/**
+		 * A set of tools to localize the user interface.
+		 *
+		 * Also see {@link module:core/editor/editor~Editor#locale}.
+		 *
+		 * @readonly
+		 * @member {module:utils/locale~Locale}
+		 */
 		this.locale = locale;
+
+		/**
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
+		 *
+		 * Note: If {@link #locale} instance hasn't been passed to the view this method may not
+		 * be available.
+		 *
+		 * @see module:utils/locale~Locale#t
+		 * @method
+		 */
 		this.t = locale && locale.t;
 
+		/**
+		 * Collections registered with {@link #createCollection}.
+		 *
+		 * @protected
+		 * @member {Set.<module:ui/viewcollection~ViewCollection>}
+		 */
 		this._viewCollections = new Collection();
+
+		/**
+		 * A collection of view instances, which have been added directly
+		 * into the {@link module:ui/template~Template#children}.
+		 *
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
 		this._unboundChildren = this.createCollection();
 
 		// Pass parent locale to its children.
@@ -202,6 +198,21 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 			collection.locale = locale;
 			collection.t = locale && locale.t;
 		} );
+
+		/**
+		 * Template of this view. It provides the {@link #element} representing
+		 * the view in DOM, which is {@link #render rendered}.
+		 *
+		 * @member {module:ui/template~Template} #template
+		 */
+
+		/**
+		 * Cached {@link module:ui/template~BindChain bind chain} object created by the
+		 * {@link #template}. See {@link #bindTemplate}.
+		 *
+		 * @private
+		 * @member {Object} #_bindTemplate
+		 */
 
 		this.decorate( 'render' );
 	}
@@ -214,40 +225,40 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 * {@link module:ui/template~BindChain#if `if()`} methods that initialize bindings with
 	 * observable attributes and attach DOM listeners.
 	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor( locale ) {
-	 * 		super( locale );
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
 	 *
-	 * 		const bind = this.bindTemplate;
+	 *				const bind = this.bindTemplate;
 	 *
-	 * 		// These {@link module:utils/observablemixin~Observable observable} attributes will control
-	 * 		// the state of the view in DOM.
-	 * 		this.set( {
-	 * 			elementClass: 'foo',
-	 * 		 	isEnabled: true
-	 * 		 } );
+	 *				// These {@link module:utils/observablemixin~Observable observable} attributes will control
+	 *				// the state of the view in DOM.
+	 *				this.set( {
+	 *					elementClass: 'foo',
+	 *				 	isEnabled: true
+	 *				 } );
 	 *
-	 * 		this.setTemplate( {
-	 * 			tag: 'p',
+	 *				this.setTemplate( {
+	 *					tag: 'p',
 	 *
-	 * 			attributes: {
-	 * 				// The class HTML attribute will follow elementClass
-	 * 				// and isEnabled view attributes.
-	 * 				class: [
-	 * 					bind.to( 'elementClass' )
-	 * 					bind.if( 'isEnabled', 'present-when-enabled' )
-	 * 				]
-	 * 			},
+	 *					attributes: {
+	 *						// The class HTML attribute will follow elementClass
+	 *						// and isEnabled view attributes.
+	 *						class: [
+	 *							bind.to( 'elementClass' )
+	 *							bind.if( 'isEnabled', 'present-when-enabled' )
+	 *						]
+	 *					},
 	 *
-	 * 			on: {
-	 * 				// The view will fire the "clicked" event upon clicking <p> in DOM.
-	 * 				click: bind.to( 'clicked' )
-	 * 			}
-	 * 		} );
-	 * 	}
-	 * }
-	 * ```
+	 *					on: {
+	 *						// The view will fire the "clicked" event upon clicking <p> in DOM.
+	 *						click: bind.to( 'clicked' )
+	 *					}
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 * @method #bindTemplate
 	 */
 	public get bindTemplate(): BindChain<this> {
 		if ( this._bindTemplate ) {
@@ -261,35 +272,33 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 * Creates a new collection of views, which can be used as
 	 * {@link module:ui/template~Template#children} of this view.
 	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor( locale ) {
-	 * 		super( locale );
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
 	 *
-	 * 		const child = new ChildView( locale );
-	 * 		this.items = this.createCollection( [ child ] );
+	 *				const child = new ChildView( locale );
+	 *				this.items = this.createCollection( [ child ] );
  	 *
-	 * 		this.setTemplate( {
-	 * 			tag: 'p',
+	 *				this.setTemplate( {
+	 *					tag: 'p',
 	 *
-	 * 			// `items` collection will render here.
-	 * 			children: this.items
-	 * 		} );
-	 * 	}
-	 * }
+	 *					// `items` collection will render here.
+	 *					children: this.items
+	 *				} );
+	 *			}
+	 *		}
 	 *
-	 * const view = new SampleView( locale );
-	 * view.render();
+	 *		const view = new SampleView( locale );
+	 *		view.render();
 	 *
-	 * // It will append <p><child#element></p> to the <body>.
-	 * document.body.appendChild( view.element );
-	 * ```
+	 *		// It will append <p><child#element></p> to the <body>.
+	 *		document.body.appendChild( view.element );
 	 *
-	 * @param views Initial views of the collection.
-	 * @returns A new collection of view instances.
+	 * @param {Iterable.<module:ui/view~View>} [views] Initial views of the collection.
+	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
-	public createCollection<T extends View = View>( views?: Iterable<T> ): ViewCollection<T> {
-		const collection = new ViewCollection<T>( views );
+	public createCollection( views?: Iterable<View> ): ViewCollection {
+		const collection = new ViewCollection( views );
 
 		this._viewCollections.add( collection );
 
@@ -303,61 +312,57 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 *
 	 * To revert this, use {@link #deregisterChild}.
 	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor( locale ) {
-	 * 		super( locale );
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
 	 *
-	 * 		this.childA = new SomeChildView( locale );
-	 * 		this.childB = new SomeChildView( locale );
+	 *				this.childA = new SomeChildView( locale );
+	 *				this.childB = new SomeChildView( locale );
 	 *
-	 * 		this.setTemplate( { tag: 'p' } );
+	 *				this.setTemplate( { tag: 'p' } );
 	 *
-	 * 		// Register the children.
-	 * 		this.registerChild( [ this.childA, this.childB ] );
-	 * 	}
+	 *				// Register the children.
+	 *				this.registerChild( [ this.childA, this.childB ] );
+	 *			}
 	 *
-	 * 	render() {
-	 * 		super.render();
+	 *			render() {
+	 *				super.render();
 	 *
-	 * 		this.element.appendChild( this.childA.element );
-	 * 		this.element.appendChild( this.childB.element );
-	 * 	}
-	 * }
+	 *				this.element.appendChild( this.childA.element );
+	 *				this.element.appendChild( this.childB.element );
+	 *			}
+	 *		}
 	 *
-	 * const view = new SampleView( locale );
+	 *		const view = new SampleView( locale );
 	 *
-	 * view.render();
+	 *		view.render();
 	 *
-	 * // Will append <p><childA#element><b></b><childB#element></p>.
-	 * document.body.appendChild( view.element );
-	 * ```
+	 *		// Will append <p><childA#element><b></b><childB#element></p>.
+	 *		document.body.appendChild( view.element );
 	 *
 	 * **Note**: There's no need to add child views if they're already referenced in the
 	 * {@link #template}:
 	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor( locale ) {
-	 * 		super( locale );
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
 	 *
-	 * 		this.childA = new SomeChildView( locale );
-	 * 		this.childB = new SomeChildView( locale );
+	 *				this.childA = new SomeChildView( locale );
+	 *				this.childB = new SomeChildView( locale );
 	 *
-	 * 		this.setTemplate( {
-	 * 			tag: 'p',
+	 *				this.setTemplate( {
+	 *					tag: 'p',
 	 *
- 	 * 			// These children will be added automatically. There's no
- 	 * 			// need to call {@link #registerChild} for any of them.
-	 * 			children: [ this.childA, this.childB ]
-	 * 		} );
-	 * 	}
+ 	 *					// These children will be added automatically. There's no
+ 	 *					// need to call {@link #registerChild} for any of them.
+	 *					children: [ this.childA, this.childB ]
+	 *				} );
+	 *			}
 	 *
-	 * 	// ...
-	 * }
-	 * ```
+	 *			// ...
+	 *		}
 	 *
-	 * @param children Children views to be registered.
+	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
 	public registerChild( children: View | Iterable<View> ): void {
 		if ( !isIterable( children ) ) {
@@ -375,7 +380,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 * become a child of another parent view.
 	 *
 	 * @see #registerChild
-	 * @param children Child views to be removed.
+	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Child views to be removed.
 	 */
 	public deregisterChild( children: View | Iterable<View> ): void {
 		if ( !isIterable( children ) ) {
@@ -392,11 +397,9 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 *
 	 * A shorthand for:
 	 *
-	 * ```ts
-	 * view.setTemplate( definition );
-	 * ```
+	 *		view.setTemplate( definition );
 	 *
-	 * @param definition Definition of view's template.
+	 * @param {module:ui/template~TemplateDefinition} definition Definition of view's template.
 	 */
 	public setTemplate( definition: TemplateDefinition ): void {
 		this.template = new Template( definition );
@@ -408,13 +411,12 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 *
 	 * A shorthand for:
 	 *
-	 * ```ts
-	 * Template.extend( view.template, definition );
-	 * ```
+	 *		Template.extend( view.template, definition );
 	 *
 	 * **Note**: Is requires the {@link #template} to be already set. See {@link #setTemplate}.
 	 *
-	 * @param definition Definition which extends the {@link #template}.
+	 * @param {module:ui/template~TemplateDefinition} definition Definition which
+	 * extends the {@link #template}.
 	 */
 	public extendTemplate( definition: Partial<TemplateDefinition> ): void {
 		Template.extend( this.template!, definition );
@@ -440,44 +442,42 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 	 * the view is rendered. To allow an early customization of the view (e.g. by its parent),
 	 * such references should be done in `render()`.
 	 *
-	 * ```ts
-	 * class SampleView extends View {
-	 * 	constructor() {
-	 * 		this.setTemplate( {
-	 * 			// ...
-	 * 		} );
-	 * 	},
+	 *		class SampleView extends View {
+	 *			constructor() {
+	 *				this.setTemplate( {
+	 *					// ...
+	 *				} );
+	 *			},
 	 *
-	 * 	render() {
-	 * 		// View#element becomes available.
-	 * 		super.render();
+	 *			render() {
+	 *				// View#element becomes available.
+	 *				super.render();
 	 *
-	 * 		// The "scroll" listener depends on #element.
-	 * 		this.listenTo( window, 'scroll', () => {
-	 * 			// A reference to #element would render the #template and make it non-extendable.
-	 * 			if ( window.scrollY > 0 ) {
-	 * 				this.element.scrollLeft = 100;
-	 * 			} else {
-	 * 				this.element.scrollLeft = 0;
-	 * 			}
-	 * 		} );
-	 * 	}
-	 * }
+	 *				// The "scroll" listener depends on #element.
+	 *				this.listenTo( window, 'scroll', () => {
+	 *					// A reference to #element would render the #template and make it non-extendable.
+	 *					if ( window.scrollY > 0 ) {
+	 *						this.element.scrollLeft = 100;
+	 *					} else {
+	 *						this.element.scrollLeft = 0;
+	 *					}
+	 *				} );
+	 *			}
+	 *		}
 	 *
-	 * const view = new SampleView();
+	 *		const view = new SampleView();
 	 *
-	 * // Let's customize the view before it gets rendered.
-	 * view.extendTemplate( {
-	 * 	attributes: {
-	 * 		class: [
-	 * 			'additional-class'
-	 * 		]
-	 * 	}
-	 * } );
+	 *		// Let's customize the view before it gets rendered.
+	 *		view.extendTemplate( {
+	 *			attributes: {
+	 *				class: [
+	 *					'additional-class'
+	 *				]
+	 *			}
+	 *		} );
 	 *
-	 * // Late rendering allows customization of the view.
-	 * view.render();
-	 * ```
+	 *		// Late rendering allows customization of the view.
+	 *		view.render();
 	 */
 	public render(): void {
 		if ( this.isRendered ) {
@@ -518,14 +518,15 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 			this.template.revert( this.element! );
 		}
 	}
+
+	/**
+	 * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
+	 * this event with the default priority.
+	 *
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event render
+	 */
 }
 
-/**
- * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
- * this event with the default priority.
- *
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
- *
- * @eventName render
- */
 export type UIViewRenderEvent = DecoratedMethodEvent<View, 'render'>;

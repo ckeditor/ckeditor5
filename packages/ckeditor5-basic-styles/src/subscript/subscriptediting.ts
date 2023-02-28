@@ -58,6 +58,10 @@ export default class SubscriptEditing extends Plugin {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		subscript: AttributeCommand;
+	}
+
 	interface PluginsMap {
 		[ SubscriptEditing.pluginName ]: SubscriptEditing;
 	}

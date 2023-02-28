@@ -13,11 +13,9 @@ import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDro
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import type CodeBlockCommand from './codeblockcommand';
-
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
+import type { CodeBlockLanguageDefinition } from './codeblock';
 
 /**
  * The code block UI plugin.
@@ -42,7 +40,7 @@ export default class CodeBlockUI extends Plugin {
 		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
 		componentFactory.add( 'codeBlock', locale => {
-			const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
+			const command = editor.commands.get( 'codeBlock' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
 
@@ -89,7 +87,7 @@ export default class CodeBlockUI extends Plugin {
 		normalizedLanguageDefs: Array<CodeBlockLanguageDefinition>
 	): Collection<ListDropdownItemDefinition> {
 		const editor = this.editor;
-		const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
+		const command = editor.commands.get( 'codeBlock' )!;
 		const itemDefinitions = new Collection<ListDropdownItemDefinition>();
 
 		for ( const languageDef of normalizedLanguageDefs ) {

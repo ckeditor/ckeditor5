@@ -13,8 +13,6 @@ import { Plugin, type Editor } from 'ckeditor5/src/core';
 import TextPartLanguageCommand from './textpartlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
-import './textpartlanguageconfig';
-
 /**
  * The text part language editing.
  *
@@ -109,5 +107,9 @@ export default class TextPartLanguageEditing extends Plugin {
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
+	}
+
+	interface CommandsMap {
+		textPartLanguage: TextPartLanguageCommand;
 	}
 }

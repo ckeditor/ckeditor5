@@ -13,8 +13,6 @@ export { default as fastDiff } from './fastdiff';
 
 export { default as mix } from './mix';
 
-export { Constructor, Mixed } from './mix';
-
 export {
 	default as EmitterMixin,
 	Emitter,

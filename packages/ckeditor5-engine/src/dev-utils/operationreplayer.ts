@@ -23,9 +23,9 @@ export default class OperationReplayer {
 	private _operationsToReplay!: Array<Operation>;
 
 	/**
-	 * @param model Data model.
-	 * @param logSeparator Separator between operations.
-	 * @param stringifiedOperations Operations to replay.
+	 * @param {module:engine/model/model~Model} model Data model.
+	 * @param {String} logSeparator Separator between operations.
+	 * @param {String} stringifiedOperations Operations to replay.
 	 */
 	constructor( model: Model, logSeparator: string, stringifiedOperations: string ) {
 		this._model = model;
@@ -36,7 +36,7 @@ export default class OperationReplayer {
 	/**
 	 * Parses the given string containing stringified operations and sets parsed operations as operations to replay.
 	 *
-	 * @param stringifiedOperations Stringified operations to replay.
+	 * @param {String} stringifiedOperations Stringified operations to replay.
 	 */
 	public setStringifiedOperations( stringifiedOperations: string ): void {
 		if ( stringifiedOperations === '' ) {
@@ -52,6 +52,8 @@ export default class OperationReplayer {
 
 	/**
 	 * Returns operations to replay.
+	 *
+	 * @returns {Array.<module:engine/model/operation/operation~Operation>}
 	 */
 	public getOperationsToReplay(): Array<Operation> {
 		return this._operationsToReplay;
@@ -60,7 +62,8 @@ export default class OperationReplayer {
 	/**
 	 * Applies all operations with a delay between actions.
 	 *
-	 * @param timeInterval Time between applying operations.
+	 * @param {Number} timeInterval Time between applying operations.
+	 * @returns {Promise}
 	 */
 	public play( timeInterval = 1000 ): Promise<void> {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
@@ -86,7 +89,8 @@ export default class OperationReplayer {
 	/**
 	 * Applies `numberOfOperations` operations, beginning after the last applied operation (or first, if no operations were applied).
 	 *
-	 * @param numberOfOperations The number of operations to apply.
+	 * @param {Number} numberOfOperations The number of operations to apply.
+	 * @returns {Promise}
 	 */
 	public applyOperations( numberOfOperations: number ): Promise<void> | undefined {
 		if ( numberOfOperations <= 0 ) {
@@ -103,6 +107,8 @@ export default class OperationReplayer {
 
 	/**
 	 * Applies all operations to replay at once.
+	 *
+	 * @returns {Promise}
 	 */
 	public applyAllOperations(): Promise<void> {
 		return this.applyNextOperation()
@@ -116,6 +122,8 @@ export default class OperationReplayer {
 	/**
 	 * Applies the next operation to replay. Returns a promise with the `isFinished` parameter that is `true` if the last
 	 * operation in the replayer has been applied, `false` otherwise.
+	 *
+	 * @returns {Promise.<Boolean>}
 	 */
 	public applyNextOperation(): Promise<boolean> {
 		const model = this._model;

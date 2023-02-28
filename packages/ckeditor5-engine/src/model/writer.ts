@@ -41,11 +41,9 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * The instance of the writer is only available in the {@link module:engine/model/model~Model#change `change()`} or
  * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`}.
  *
- * ```ts
- * model.change( writer => {
- * 	writer.insertText( 'foo', paragraph, 'end' );
- * } );
- * ```
+ *		model.change( writer => {
+ *			writer.insertText( 'foo', paragraph, 'end' );
+ *		} );
  *
  * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.
@@ -817,8 +815,12 @@ export default class Writer {
 		return this.model.createRangeOn( element );
 	}
 
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
+	// The three overloads below where added,
+	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
+	public createSelection(): Selection;
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
+	public createSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable: Selectable, options: { backward?: boolean } ): Selection;
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
@@ -1305,8 +1307,10 @@ export default class Writer {
 		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
 	}
 
-	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
+	// The two overloads below where added,
+	// because they render better in API Docs than rest parameter with union of tuples type (see the constructor of `Selection`).
+	public setSelection( selectable: Selectable, placeOrOffset?: PlaceOrOffset, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: Selectable, options: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
