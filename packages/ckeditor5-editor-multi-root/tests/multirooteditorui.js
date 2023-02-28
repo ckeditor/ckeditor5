@@ -81,7 +81,24 @@ describe( 'MultiRootEditorUI', () => {
 			} );
 		} );
 
-		it( 'sets placeholder from editor.config.placeholder', () => {
+		it( 'sets placeholder from editor.config.placeholder - string', () => {
+			return MultiRootEditor
+				.create( { foo: '', bar: '' }, {
+					extraPlugins: [ Paragraph ],
+					placeholder: 'Type here...'
+				} )
+				.then( newEditor => {
+					const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
+					expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+
+					const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
+					expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'sets placeholder from editor.config.placeholder - object', () => {
 			return MultiRootEditor
 				.create( { foo: '', bar: '' }, {
 					extraPlugins: [ Paragraph ],

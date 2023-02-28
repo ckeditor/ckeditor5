@@ -165,12 +165,15 @@ export default class MultiRootEditorUI extends EditorUI {
 	private _initPlaceholder(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const placeholder = editor.config.get( 'placeholder' );
+
+		if ( !placeholder ) {
+			return;
+		}
 
 		for ( const editable of Object.values( this.view.editables ) ) {
 			const editingRoot = editingView.document.getRoot( editable.name! )!;
-			const placeholder = editor.config.get( 'placeholder' ) as Record<string, string>;
-
-			const placeholderText = placeholder?.[ editable.name! ];
+			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder?.[ editable.name! ];
 
 			if ( placeholderText ) {
 				enablePlaceholder( {
