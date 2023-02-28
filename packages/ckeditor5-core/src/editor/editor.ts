@@ -51,27 +51,200 @@ import type { EditorConfig } from './editorconfig';
  * It does not define the editor UI, which is available only if
  * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
  * (as most editor implementations do).
- *
- * @abstract
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default abstract class Editor extends ObservableMixin() {
+	/**
+	 * Commands registered to the editor.
+	 *
+	 * Use the shorthand {@link #execute `editor.execute()`} method to execute commands:
+	 *
+	 * ```ts
+	 * // Execute the bold command:
+	 * editor.execute( 'bold' );
+	 *
+	 * // Check the state of the bold command:
+	 * editor.commands.get( 'bold' ).value;
+	 * ```
+	 */
 	public readonly commands: CommandCollection;
+
+	/**
+	 * Stores all configurations specific to this editor instance.
+	 *
+	 * ```ts
+	 * editor.config.get( 'image.toolbar' );
+	 * // -> [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+	 * ```
+	 */
 	public readonly config: Config<EditorConfig>;
+
+	/**
+	 * Conversion manager through which you can register model-to-view and view-to-model converters.
+	 *
+	 * See the {@link module:engine/conversion/conversion~Conversion} documentation to learn how to add converters.
+	 */
 	public readonly conversion: Conversion;
+
+	/**
+	 * The {@link module:engine/controller/datacontroller~DataController data controller}.
+	 * Used e.g. for setting and retrieving the editor data.
+	 */
 	public readonly data: DataController;
+
+	/**
+	 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+	 * Controls user input and rendering the content for editing.
+	 */
 	public readonly editing: EditingController;
+
+	/**
+	 * The locale instance.
+	 */
 	public readonly locale: Locale;
+
+	/**
+	 * The editor's model.
+	 *
+	 * The central point of the editor's abstract data model.
+	 */
 	public readonly model: Model;
+
+	/**
+	 * The plugins loaded and in use by this editor instance.
+	 *
+	 * ```ts
+	 * editor.plugins.get( 'ClipboardPipeline' ); // -> An instance of the clipboard pipeline plugin.
+	 * ```
+	 */
 	public readonly plugins: PluginCollection<Editor>;
+
+	/**
+	 * An instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
+	 *
+	 * It allows setting simple keystrokes:
+	 *
+	 * ```ts
+	 * // Execute the bold command on Ctrl+E:
+	 * editor.keystrokes.set( 'Ctrl+E', 'bold' );
+	 *
+	 * // Execute your own callback:
+	 * editor.keystrokes.set( 'Ctrl+E', ( data, cancel ) => {
+	 * 	console.log( data.keyCode );
+	 *
+	 * 	// Prevent the default (native) action and stop the underlying keydown event
+	 * 	// so no other editor feature will interfere.
+	 * 	cancel();
+	 * } );
+	 * ```
+	 *
+	 * Note: Certain typing-oriented keystrokes (like <kbd>Backspace</kbd> or <kbd>Enter</kbd>) are handled
+	 * by a low-level mechanism and trying to listen to them via the keystroke handler will not work reliably.
+	 * To handle these specific keystrokes, see the events fired by the
+	 * {@link module:engine/view/document~Document editing view document} (`editor.editing.view.document`).
+	 */
 	public readonly keystrokes: EditingKeystrokeHandler;
+
+	/**
+	 * Shorthand for {@link module:utils/locale~Locale#t}.
+	 *
+	 * @see module:utils/locale~Locale#t
+	 */
 	public readonly t: LocaleTranslate;
 
 	public declare readonly id: string;
 
+	/**
+	 * Indicates the editor life-cycle state.
+	 *
+	 * The editor is in one of the following states:
+	 *
+	 * * `initializing` &ndash; During the editor initialization (before
+	 * {@link module:core/editor/editor~Editor.create `Editor.create()`}) finished its job.
+	 * * `ready` &ndash; After the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
+	 * method is resolved.
+	 * * `destroyed` &ndash; Once the {@link #destroy `editor.destroy()`} method was called.
+	 *
+	 * @observable
+	 */
 	public declare state: 'initializing' | 'ready' | 'destroyed';
 
+	/**
+	 * The default configuration which is built into the editor class.
+	 *
+	 * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
+	 *
+	 * ```ts
+	 * ClassicEditor.defaultConfig = {
+	 * 	foo: 1,
+	 * 	bar: 2
+	 * };
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement )
+	 * 	.then( editor => {
+	 * 		editor.config.get( 'foo' ); // -> 1
+	 * 		editor.config.get( 'bar' ); // -> 2
+	 * 	} );
+	 *
+	 * // The default options can be overridden by the configuration passed to create().
+	 * ClassicEditor
+	 * 	.create( sourceElement, { bar: 3 } )
+	 * 	.then( editor => {
+	 * 		editor.config.get( 'foo' ); // -> 1
+	 * 		editor.config.get( 'bar' ); // -> 3
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.builtinPlugins}.
+	 */
 	public static defaultConfig?: EditorConfig;
+
+	/**
+	 * An array of plugins built into this editor class.
+	 *
+	 * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
+	 * during the editor initialization.
+	 *
+	 * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and
+	 * unless `config.plugins` is passed.
+	 *
+	 * ```ts
+	 * // Build some plugins into the editor class first.
+	 * ClassicEditor.builtinPlugins = [ FooPlugin, BarPlugin ];
+	 *
+	 * // Normally, you need to define config.plugins, but since ClassicEditor.builtinPlugins was
+	 * // defined, now you can call create() without any configuration.
+	 * ClassicEditor
+	 * 	.create( sourceElement )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+	 * 		editor.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
+	 * 	} );
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement, {
+	 * 		// Do not initialize these plugins (note: it is defined by a string):
+	 * 		removePlugins: [ 'Foo' ]
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> Undefined.
+	 * 		editor.config.get( BarPlugin ); // -> An instance of the Bar plugin.
+	 * 	} );
+	 *
+	 * ClassicEditor
+	 * 	.create( sourceElement, {
+	 * 		// Load only this plugin. It can also be defined by a string if
+	 * 		// this plugin was built into the editor class.
+	 * 		plugins: [ FooPlugin ]
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+	 * 		editor.config.get( BarPlugin ); // -> Undefined.
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.defaultConfig}.
+	 */
 	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
 
 	/**
@@ -79,15 +252,28 @@ export default abstract class Editor extends ObservableMixin() {
 	 */
 	public abstract get ui(): EditorUI;
 
+	/**
+	 * The editor context.
+	 * When it is not provided through the configuration, the editor creates it.
+	 */
 	protected readonly _context: Context;
+
+	/**
+	 * A set of lock IDs for the {@link #isReadOnly} getter.
+	 */
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
 	 * Creates a new instance of the editor class.
 	 *
-	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
+	 * Usually, not to be used directly. See the `create()` methods of the existing editor types to learn how to use them:
 	 *
-	 * @param {Object} [config={}] The editor configuration.
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
+	 *
+	 * @param config The editor configuration.
 	 */
 	constructor( config: EditorConfig = {} ) {
 		super();
@@ -97,13 +283,6 @@ export default abstract class Editor extends ObservableMixin() {
 		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
 		const language = config.language || ( constructor.defaultConfig && constructor.defaultConfig.language );
 
-		/**
-		 * The editor context.
-		 * When it is not provided through the configuration, the editor creates it.
-		 *
-		 * @protected
-		 * @type {module:core/context~Context}
-		 */
 		this._context = config.context || new Context( { language } );
 		this._context._addEditor( this, !config.context );
 
@@ -111,155 +290,36 @@ export default abstract class Editor extends ObservableMixin() {
 		// between editors and make the watchdog feature work correctly.
 		const availablePlugins = Array.from( constructor.builtinPlugins || [] );
 
-		/**
-		 * Stores all configurations specific to this editor instance.
-		 *
-		 *		editor.config.get( 'image.toolbar' );
-		 *		// -> [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
-		 *
-		 * @readonly
-		 * @member {module:utils/config~Config}
-		 */
 		this.config = new Config<EditorConfig>( config, constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
 		this.config.define( this._context._getEditorConfig() );
 
-		/**
-		 * The plugins loaded and in use by this editor instance.
-		 *
-		 *		editor.plugins.get( 'ClipboardPipeline' ); // -> An instance of the clipboard pipeline plugin.
-		 *
-		 * @readonly
-		 * @member {module:core/plugincollection~PluginCollection}
-		 */
 		this.plugins = new PluginCollection<Editor>( this, availablePlugins, this._context.plugins );
 
-		/**
-		 * The locale instance.
-		 *
-		 * @readonly
-		 * @type {module:utils/locale~Locale}
-		 */
 		this.locale = this._context.locale;
-
-		/**
-		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * @see module:utils/locale~Locale#t
-		 * @method #t
-		 */
 		this.t = this.locale.t;
 
-		/**
-		 * A set of lock IDs for the {@link #isReadOnly} getter.
-		 *
-		 * @private
-		 * @type {Set.<String|Symbol>}
-		 */
 		this._readOnlyLocks = new Set();
 
-		/**
-		 * Commands registered to the editor.
-		 *
-		 * Use the shorthand {@link #execute `editor.execute()`} method to execute commands:
-		 *
-		 *		// Execute the bold command:
-		 *		editor.execute( 'bold' );
-		 *
-		 *		// Check the state of the bold command:
-		 *		editor.commands.get( 'bold' ).value;
-		 *
-		 * @readonly
-		 * @member {module:core/commandcollection~CommandCollection}
-		 */
 		this.commands = new CommandCollection();
 
-		/**
-		 * Indicates the editor life-cycle state.
-		 *
-		 * The editor is in one of the following states:
-		 *
-		 * * `initializing` &ndash; During the editor initialization (before
-		 * {@link module:core/editor/editor~Editor.create `Editor.create()`}) finished its job.
-		 * * `ready` &ndash; After the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
-		 * method is resolved.
-		 * * `destroyed` &ndash; Once the {@link #destroy `editor.destroy()`} method was called.
-		 *
-		 * @observable
-		 * @member {'initializing'|'ready'|'destroyed'} #state
-		 */
 		this.set( 'state', 'initializing' );
 		this.once<EditorReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
 		this.once<EditorDestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
-		/**
-		 * The editor's model.
-		 *
-		 * The central point of the editor's abstract data model.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model}
-		 */
 		this.model = new Model();
 
 		const stylesProcessor = new StylesProcessor();
 
-		/**
-		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
-		 * Used e.g. for setting and retrieving the editor data.
-		 *
-		 * @readonly
-		 * @member {module:engine/controller/datacontroller~DataController}
-		 */
 		this.data = new DataController( this.model, stylesProcessor );
 
-		/**
-		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
-		 * Controls user input and rendering the content for editing.
-		 *
-		 * @readonly
-		 * @member {module:engine/controller/editingcontroller~EditingController}
-		 */
 		this.editing = new EditingController( this.model, stylesProcessor );
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
-		/**
-		 * Conversion manager through which you can register model-to-view and view-to-model converters.
-		 *
-		 * See the {@link module:engine/conversion/conversion~Conversion} documentation to learn how to add converters.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/conversion~Conversion}
-		 */
 		this.conversion = new Conversion( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ], this.data.upcastDispatcher );
 		this.conversion.addAlias( 'dataDowncast', this.data.downcastDispatcher );
 		this.conversion.addAlias( 'editingDowncast', this.editing.downcastDispatcher );
 
-		/**
-		 * An instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
-		 *
-		 * It allows setting simple keystrokes:
-		 *
-		 *		// Execute the bold command on Ctrl+E:
-		 *		editor.keystrokes.set( 'Ctrl+E', 'bold' );
-		 *
-		 *		// Execute your own callback:
-		 *		editor.keystrokes.set( 'Ctrl+E', ( data, cancel ) => {
-		 *			console.log( data.keyCode );
-		 *
-		 *			// Prevent the default (native) action and stop the underlying keydown event
-		 *			// so no other editor feature will interfere.
-		 *			cancel();
-		 *		} );
-		 *
-		 * Note: Certain typing-oriented keystrokes (like <kbd>Backspace</kbd> or <kbd>Enter</kbd>) are handled
-		 * by a low-level mechanism and trying to listen to them via the keystroke handler will not work reliably.
-		 * To handle these specific keystrokes, see the events fired by the
-		 * {@link module:engine/view/document~Document editing view document} (`editor.editing.view.document`).
-		 *
-		 * @readonly
-		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
-		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
 	}
@@ -272,15 +332,18 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * In order to make the editor read-only, you need to call the {@link #enableReadOnlyMode} method:
 	 *
-	 *		editor.enableReadOnlyMode( 'feature-id' );
+	 * ```ts
+	 * editor.enableReadOnlyMode( 'feature-id' );
+	 * ```
 	 *
      * Later, to turn off the read-only mode, call {@link #disableReadOnlyMode}:
 	 *
-	 * 		editor.disableReadOnlyMode( 'feature-id' );
+	 * ```ts
+	 * editor.disableReadOnlyMode( 'feature-id' );
+	 * ```
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Boolean} #isReadOnly
 	 */
 	public get isReadOnly(): boolean {
 		return this._readOnlyLocks.size > 0;
@@ -294,13 +357,17 @@ export default abstract class Editor extends ObservableMixin() {
 		 *
 		 * Usage before version `34.0.0`:
 		 *
-		 *		editor.isReadOnly = true;
-		 * 		editor.isReadOnly = false;
+		 * ```ts
+		 * editor.isReadOnly = true;
+		 * editor.isReadOnly = false;
+		 * ```
 		 *
 		 * Usage since version `34.0.0`:
 		 *
-		 *		editor.enableReadOnlyMode( 'my-feature-id' );
-		 * 		editor.disableReadOnlyMode( 'my-feature-id' );
+		 * ```ts
+		 * editor.enableReadOnlyMode( 'my-feature-id' );
+		 * editor.disableReadOnlyMode( 'my-feature-id' );
+		 * ```
 		 *
 		 * @error editor-isreadonly-has-no-setter
 		 */
@@ -322,28 +389,34 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * After the first `enableReadOnlyMode()` call, the {@link #isReadOnly `isReadOnly` property} will be set to `true`:
 	 *
-	 *		editor.isReadOnly; // `false`.
-	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
-	 * 		editor.isReadOnly; // `true`.
+	 * ```ts
+	 * editor.isReadOnly; // `false`.
+	 * editor.enableReadOnlyMode( 'my-feature-id' );
+	 * editor.isReadOnly; // `true`.
+	 * ```
 	 *
 	 * You can turn off the read-only mode ("clear the lock") using the {@link #disableReadOnlyMode `disableReadOnlyMode()`} method:
 	 *
-	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
-	 * 		// ...
-	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
-	 * 		editor.isReadOnly; // `false`.
+	 * ```ts
+	 * editor.enableReadOnlyMode( 'my-feature-id' );
+	 * // ...
+	 * editor.disableReadOnlyMode( 'my-feature-id' );
+	 * editor.isReadOnly; // `false`.
+	 * ```
 	 *
 	 * All "locks" need to be removed to enable editing:
 	 *
-	 * 		editor.enableReadOnlyMode( 'my-feature-id' );
-	 * 		editor.enableReadOnlyMode( 'my-other-feature-id' );
-	 * 		// ...
-	 * 		editor.disableReadOnlyMode( 'my-feature-id' );
-	 * 		editor.isReadOnly; // `true`.
-	 * 		editor.disableReadOnlyMode( 'my-other-feature-id' );
-	 * 		editor.isReadOnly; // `false`.
+	 * ```ts
+	 * editor.enableReadOnlyMode( 'my-feature-id' );
+	 * editor.enableReadOnlyMode( 'my-other-feature-id' );
+	 * // ...
+	 * editor.disableReadOnlyMode( 'my-feature-id' );
+	 * editor.isReadOnly; // `true`.
+	 * editor.disableReadOnlyMode( 'my-other-feature-id' );
+	 * editor.isReadOnly; // `false`.
+	 * ```
 	 *
-	 * @param {String|Symbol} lockId A unique ID for setting the editor to the read-only state.
+	 * @param lockId A unique ID for setting the editor to the read-only state.
 	 */
 	public enableReadOnlyMode( lockId: string | symbol ): void {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
@@ -372,7 +445,7 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * When no lock is present on the editor anymore, then the {@link #isReadOnly `isReadOnly` property} will be set to `false`.
 	 *
-	 * @param {String|Symbol} lockId The lock ID for setting the editor to the read-only state.
+	 * @param lockId The lock ID for setting the editor to the read-only state.
 	 */
 	public disableReadOnlyMode( lockId: string | symbol ): void {
 		if ( typeof lockId !== 'string' && typeof lockId !== 'symbol' ) {
@@ -394,8 +467,7 @@ export default abstract class Editor extends ObservableMixin() {
 	/**
 	 * Loads and initializes plugins specified in the configuration.
 	 *
-	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
-	 * once the initialization is completed, providing an array of loaded plugins.
+	 * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
 	 */
 	public initPlugins(): Promise<LoadedPlugins> {
 		const config = this.config;
@@ -414,7 +486,7 @@ export default abstract class Editor extends ObservableMixin() {
 	 * while the editor {@link #state is being initialized}, it will wait for the editor initialization before destroying it.
 	 *
 	 * @fires destroy
-	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
+	 * @returns A promise that resolves once the editor instance is fully destroyed.
 	 */
 	public destroy(): Promise<unknown> {
 		let readyPromise: Promise<unknown> = Promise.resolve();
@@ -446,18 +518,20 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * Shorthand for:
 	 *
-	 *		editor.commands.get( commandName ).execute( ... );
+	 * ```ts
+	 * editor.commands.get( commandName ).execute( ... );
+	 * ```
 	 *
-	 * @param {String} commandName The name of the command to execute.
-	 * @param {*} [...commandParams] Command parameters.
-	 * @returns {*} The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
+	 * @param commandName The name of the command to execute.
+	 * @param commandParams Command parameters.
+	 * @returns The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
 	 */
 	public execute<TName extends string>(
 		commandName: TName,
-		...args: Parameters<CommandsMap[ TName ][ 'execute' ]>
+		...commandParams: Parameters<CommandsMap[ TName ][ 'execute' ]>
 	): ReturnType<CommandsMap[ TName ][ 'execute' ]> {
 		try {
-			return this.commands.execute( commandName, ...args );
+			return this.commands.execute( commandName, ...commandParams );
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
 			/* istanbul ignore next */
@@ -477,22 +551,6 @@ export default abstract class Editor extends ObservableMixin() {
 	public focus(): void {
 		this.editing.view.focus();
 	}
-
-	/**
-	 * Creates and initializes a new editor instance.
-	 *
-	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
-	 *
-	 * See the `create()` methods of the existing editor types to learn how to use them:
-	 *
-	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
-	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
-	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
-	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
-	 *
-	 * @abstract
-	 * @method module:core/editor/editor~Editor.create
-	 */
 }
 
 /**
@@ -505,11 +563,10 @@ export default abstract class Editor extends ObservableMixin() {
  * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
  * you cannot even add a listener to the `editor#ready` event.
  *
- * See also the {@link #state `editor.state`} property.
+ * See also the {@link ~Editor#state `editor.state`} property.
  *
- * @event ready
+ * @eventName ready
  */
-
 export type EditorReadyEvent = {
 	name: 'ready';
 	args: [];
@@ -519,12 +576,10 @@ export type EditorReadyEvent = {
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
+ * See also the {@link ~Editor#state `editor.state`} property.
  *
- * See also the {@link #state `editor.state`} property.
- *
- * @event destroy
+ * @eventName destroy
  */
-
 export type EditorDestroyEvent = {
 	name: 'destroy';
 	args: [];
@@ -538,88 +593,11 @@ export type EditorDestroyEvent = {
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *
- *		<div id="editor">
- *			<p>Initial content.</p>
- *		</div>
+ * ```html
+ * <div id="editor">
+ * 	<p>Initial content.</p>
+ * </div>
+ * ```
  *
  * @error editor-wrong-element
- */
-
-/**
- * An array of plugins built into this editor class.
- *
- * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
- * during the editor initialization.
- *
- * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and
- * unless `config.plugins` is passed.
- *
- *		// Build some plugins into the editor class first.
- *		ClassicEditor.builtinPlugins = [ FooPlugin, BarPlugin ];
- *
- *		// Normally, you need to define config.plugins, but since ClassicEditor.builtinPlugins was
- *		// defined, now you can call create() without any configuration.
- *		ClassicEditor
- *			.create( sourceElement )
- *			.then( editor => {
- *				editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
- *				editor.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
- *			} );
- *
- *		ClassicEditor
- *			.create( sourceElement, {
- *				// Do not initialize these plugins (note: it is defined by a string):
- *				removePlugins: [ 'Foo' ]
- *			} )
- *			.then( editor => {
- *				editor.plugins.get( FooPlugin ); // -> Undefined.
- *				editor.config.get( BarPlugin ); // -> An instance of the Bar plugin.
- *			} );
- *
- *		ClassicEditor
- *			.create( sourceElement, {
- *				// Load only this plugin. It can also be defined by a string if
- *				// this plugin was built into the editor class.
- *				plugins: [ FooPlugin ]
- *			} )
- *			.then( editor => {
- *				editor.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
- *				editor.config.get( BarPlugin ); // -> Undefined.
- *			} );
- *
- * See also {@link module:core/editor/editor~Editor.defaultConfig}.
- *
- * @static
- * @member {Array.<Function>} module:core/editor/editor~Editor.builtinPlugins
- */
-
-/**
- * The default configuration which is built into the editor class.
- *
- * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
- *
- *		ClassicEditor.defaultConfig = {
- *			foo: 1,
- *			bar: 2
- *		};
- *
- *		ClassicEditor
- *			.create( sourceElement )
- *			.then( editor => {
- *				editor.config.get( 'foo' ); // -> 1
- *				editor.config.get( 'bar' ); // -> 2
- *			} );
- *
- *		// The default options can be overridden by the configuration passed to create().
- *		ClassicEditor
- *			.create( sourceElement, { bar: 3 } )
- *			.then( editor => {
- *				editor.config.get( 'foo' ); // -> 1
- *				editor.config.get( 'bar' ); // -> 3
- *			} );
- *
- * See also {@link module:core/editor/editor~Editor.builtinPlugins}.
- *
- * @static
- * @member {Object} module:core/editor/editor~Editor.defaultConfig
  */

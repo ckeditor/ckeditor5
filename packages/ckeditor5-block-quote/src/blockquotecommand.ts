@@ -220,3 +220,9 @@ function checkCanBeQuoted( schema: Schema, block: Element ): boolean {
 
 	return isBQAllowed && isBlockAllowedInBQ;
 }
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		blockQuote: BlockQuoteCommand;
+	}
+}

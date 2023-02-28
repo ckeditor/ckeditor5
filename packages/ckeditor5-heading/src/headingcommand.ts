@@ -28,7 +28,7 @@ export default class HeadingCommand extends Command {
 
 	/**
 	 * Set of defined model's elements names that this command support.
-	 * See {@link module:heading/heading~HeadingOption}.
+	 * See {@link module:heading/headingconfig~HeadingOption}.
 	 */
 	public readonly modelElements: Array<string>;
 
@@ -91,4 +91,10 @@ export default class HeadingCommand extends Command {
  */
 function checkCanBecomeHeading( block: Element, heading: string, schema: Schema ) {
 	return schema.checkChild( block.parent as Element, heading ) && !schema.isObject( block );
+}
+
+declare module '@ckeditor/ckeditor5-core' {
+	interface CommandsMap {
+		heading: HeadingCommand;
+	}
 }

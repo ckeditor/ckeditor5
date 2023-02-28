@@ -22,6 +22,8 @@ import {
 	isListItemBlock
 } from './utils/model';
 
+import '../listcommands';
+
 /**
  * The list command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.
  */

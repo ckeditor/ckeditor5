@@ -9,7 +9,6 @@
 
 import Observer from './observer';
 import DomEventData from './domeventdata';
-import type View from '../view';
 
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
@@ -24,61 +23,46 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  *
  * For instance:
  *
- *		class ClickObserver extends DomEventObserver {
- *			// It can also be defined as a normal property in the constructor.
- *			get domEventType() {
- *				return 'click';
- *			}
+ * ```ts
+ * class ClickObserver extends DomEventObserver<'click'> {
+ * 	// It can also be defined as a normal property in the constructor.
+ * 	get domEventType(): 'click' {
+ * 		return 'click';
+ * 	}
  *
- *			onDomEvent( domEvent ) {
- *				this.fire( 'click', domEvent );
- *			}
- *		}
+ * 	onDomEvent( domEvent: MouseEvent ): void {
+ * 		this.fire( 'click', domEvent );
+ * 	}
+ * }
+ * ```
  *
- * @extends module:engine/view/observer/observer~Observer
+ * @typeParam EventType DOM Event type name or an union of those.
+ * @typeParam AdditionalData Additional data passed along with the event.
  */
 
 export default abstract class DomEventObserver<
 	EventType extends keyof HTMLElementEventMap,
 	AdditionalData extends object = object
 > extends Observer {
-	public domEventType!: EventType | Array<EventType>;
-
-	public useCapture: boolean;
-
 	/**
 	 * Type of the DOM event the observer should listen to. Array of types can be defined
 	 * if the observer should listen to multiple DOM events.
-	 *
-	 * @readonly
-	 * @member {String|Array.<String>} #domEventType
 	 */
+	public abstract get domEventType(): EventType | ReadonlyArray<EventType>;
+
+	/**
+	 * If set to `true` DOM events will be listened on the capturing phase.
+	 * Default value is `false`.
+	 */
+	public useCapture: boolean = false;
 
 	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
 	 * observer {@link #isEnabled is not enabled}.
 	 *
 	 * @see #domEventType
-	 * @abstract
-	 * @method #onDomEvent
 	 */
-
 	public abstract onDomEvent( event: HTMLElementEventMap[ EventType ] ): void;
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( view: View ) {
-		super( view );
-
-		/**
-		 * If set to `true` DOM events will be listened on the capturing phase.
-		 * Default value is `false`.
-		 *
-		 * @member {Boolean}
-		 */
-		this.useCapture = false;
-	}
 
 	/**
 	 * @inheritDoc
@@ -98,10 +82,10 @@ export default abstract class DomEventObserver<
 	/**
 	 * Calls `Document#fire()` if observer {@link #isEnabled is enabled}.
 	 *
-	 * @see module:utils/emittermixin~EmitterMixin#fire
-	 * @param {String} eventType The event type (name).
-	 * @param {Event} domEvent The DOM event.
-	 * @param {Object} [additionalData] The additional data which should extend the
+	 * @see module:utils/emittermixin~Emitter#fire
+	 * @param eventType The event type (name).
+	 * @param domEvent The DOM event.
+	 * @param additionalData The additional data which should extend the
 	 * {@link module:engine/view/observer/domeventdata~DomEventData event data} object.
 	 */
 	public override fire( eventType: string | EventInfo, domEvent: Event, additionalData?: AdditionalData ): void {

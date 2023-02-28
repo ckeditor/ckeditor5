@@ -10,6 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
+import type AttributeCommand from '../attributecommand';
+
 import codeIcon from '../../theme/icons/code.svg';
 
 import '../../theme/code.css';
@@ -36,7 +38,7 @@ export default class CodeUI extends Plugin {
 
 		// Add code button to feature components.
 		editor.ui.componentFactory.add( CODE, locale => {
-			const command = editor.commands.get( CODE )!;
+			const command: AttributeCommand = editor.commands.get( CODE )!;
 			const view = new ButtonView( locale );
 
 			view.set( {

@@ -19,38 +19,31 @@ import type Document from './document';
  * method when working on data downcasted from the model or the
  * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
  * method when working on non-semantic views.
- *
- * @extends module:engine/view/node~Node
  */
 export default class Text extends Node {
+	/**
+	 * The text content.
+	 *
+	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 */
 	private _textData: string;
 
 	/**
 	 * Creates a tree view text node.
 	 *
-	 * @protected
-	 * @param {module:engine/view/document~Document} document The document instance to which this text node belongs.
-	 * @param {String} data The text's data.
+	 * @see module:engine/view/downcastwriter~DowncastWriter#createText
+	 * @internal
+	 * @param document The document instance to which this text node belongs.
+	 * @param data The text's data.
 	 */
 	constructor( document: Document, data: string ) {
 		super( document );
 
-		/**
-		 * The text content.
-		 *
-		 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
-		 *
-		 * @protected
-		 * @member {String} module:engine/view/text~Text#_textData
-		 */
 		this._textData = data;
 	}
 
 	/**
 	 * The text content.
-	 *
-	 * @readonly
-	 * @type {String}
 	 */
 	public get data(): string {
 		return this._textData;
@@ -61,18 +54,19 @@ export default class Text extends Node {
 	 *
 	 * The getter is required when using the addition assignment operator on protected property:
 	 *
-	 *		const foo = downcastWriter.createText( 'foo' );
-	 *		const bar = downcastWriter.createText( 'bar' );
+	 * ```ts
+	 * const foo = downcastWriter.createText( 'foo' );
+	 * const bar = downcastWriter.createText( 'bar' );
 	 *
-	 *		foo._data += bar.data;   // executes: `foo._data = foo._data + bar.data`
-	 *		console.log( foo.data ); // prints: 'foobar'
+	 * foo._data += bar.data;   // executes: `foo._data = foo._data + bar.data`
+	 * console.log( foo.data ); // prints: 'foobar'
+	 * ```
 	 *
 	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
 	 *
 	 * The setter sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
 	 *
-	 * @protected
-	 * @type {String}
+	 * @internal
 	 */
 	public get _data(): string {
 		return this.data;
@@ -88,8 +82,7 @@ export default class Text extends Node {
 	 * Checks if this text node is similar to other text node.
 	 * Both nodes should have the same data to be considered as similar.
 	 *
-	 * @param {module:engine/view/node~Node} otherNode Node to check if it is same as this node.
-	 * @returns {Boolean}
+	 * @param otherNode Node to check if it is same as this node.
 	 */
 	public isSimilar( otherNode: Node ): boolean {
 		if ( !( otherNode instanceof Text ) ) {
@@ -102,46 +95,28 @@ export default class Text extends Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @protected
-	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
+	 * @internal
+	 * @returns Text node that is a clone of this node.
 	 */
 	public _clone(): Text {
 		return new Text( this.document, this.data );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `#${ this.data }`;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ViewText: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // public logExtended(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ViewText: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
 
-/**
- * Checks whether this object is of the given type.
- *
- *		text.is( '$text' ); // -> true
- *		text.is( 'node' ); // -> true
- *		text.is( 'view:$text' ); // -> true
- *		text.is( 'view:node' ); // -> true
- *
- *		text.is( 'model:$text' ); // -> false
- *		text.is( 'element' ); // -> false
- *		text.is( 'range' ); // -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
- * accepted for backward compatibility.
- *
- * @param {String} type Type to check.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 Text.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'view:$text' ||
 		// This are legacy values kept for backward compatibility.

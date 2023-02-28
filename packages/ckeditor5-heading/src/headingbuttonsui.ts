@@ -11,7 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getLocalizedOptions } from './utils';
-import type { HeadingOption } from './heading';
+import type { HeadingOption } from './headingconfig';
+import type HeadingCommand from './headingcommand';
 
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';
@@ -36,7 +37,7 @@ const defaultIcons: Record<string, string> = {
  * This feature is not enabled by default by the {@link module:heading/heading~Heading} plugin and needs to be
  * installed manually to the editor configuration.
  *
- * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/heading~HeadingOption}.
+ * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/headingconfig~HeadingOption}.
  *
  * ```ts
  * ClassicEditor
@@ -59,7 +60,7 @@ const defaultIcons: Record<string, string> = {
  * NOTE: The `'paragraph'` button is defined in by the {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin
  * which needs to be loaded manually as well.
  *
- * It is possible to use custom icons by providing `icon` config option in {@link module:heading/heading~HeadingOption}.
+ * It is possible to use custom icons by providing `icon` config option in {@link module:heading/headingconfig~HeadingOption}.
  * For the default configuration standard icons are used.
  */
 export default class HeadingButtonsUI extends Plugin {
@@ -82,7 +83,7 @@ export default class HeadingButtonsUI extends Plugin {
 
 		editor.ui.componentFactory.add( option.model, locale => {
 			const view = new ButtonView( locale );
-			const command = editor.commands.get( 'heading' )!;
+			const command: HeadingCommand = editor.commands.get( 'heading' )!;
 
 			view.label = option.title;
 			view.icon = option.icon || defaultIcons[ option.model ];

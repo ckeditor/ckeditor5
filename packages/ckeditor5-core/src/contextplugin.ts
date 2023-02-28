@@ -7,11 +7,19 @@
  * @module core/contextplugin
  */
 
-import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import {
+	ObservableMixin,
+	type Collection,
+	type Config,
+	type Locale,
+	type LocaleTranslate
+} from '@ckeditor/ckeditor5-utils';
 
 import type Editor from './editor/editor';
+import type { EditorConfig } from './editor/editorconfig';
 import type Context from './context';
-import type { PluginInterface } from './plugin';
+import type { PluginDependencies, PluginInterface } from './plugin';
+import type PluginCollection from './plugincollection';
 
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
@@ -26,28 +34,20 @@ import type { PluginInterface } from './plugin';
  * * A context plugin can require another context plugin.
  * * An {@link module:core/plugin~Plugin editor plugin} can require a context plugin.
  * * A context plugin MUST NOT require an {@link module:core/plugin~Plugin editor plugin}.
- *
- * @implements module:core/plugin~PluginInterface
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ContextPlugin extends ObservableMixin() implements PluginInterface {
-	public readonly context: Context | Editor;
+	/**
+	 * The context or editor instance.
+	 */
+	public readonly context: ContextInterface;
 
 	/**
 	 * Creates a new plugin instance.
-	 *
-	 * @param {module:core/context~Context|module:core/editor/editor~Editor} context
 	 */
 	constructor( context: Context | Editor ) {
 		super();
 
-		/**
-		 * The context instance.
-		 *
-		 * @readonly
-		 * @type {module:core/context~Context|module:core/editor/editor~Editor}
-		 */
-		this.context = context;
+		this.context = context as ContextInterface;
 	}
 
 	/**
@@ -64,3 +64,16 @@ export default class ContextPlugin extends ObservableMixin() implements PluginIn
 		return true;
 	}
 }
+
+/**
+ * The common interface of {@link module:core/context~Context} and {@link module:core/editor/editor~Editor}.
+ */
+export interface ContextInterface {
+	config: Config<Omit<EditorConfig, 'plugins' | 'substitutePlugins' | 'removePlugins' | 'extraPlugins'>>;
+	plugins: PluginCollection<Context | Editor>;
+	locale: Locale;
+	t: LocaleTranslate;
+	editors?: Collection<Editor>;
+}
+
+export type ContextPluginDependencies = PluginDependencies<Context | Editor>;

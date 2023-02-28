@@ -45,92 +45,131 @@ import type { EditorConfig } from './editor/editorconfig';
  * If you are using only a single editor on each page, use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
  * In such a case, a context instance will be created by the editor instance in a transparent way.
  *
- * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
+ * See {@link ~Context.create `Context.create()`} for usage examples.
  */
 export default class Context {
+	/**
+	 * Stores all the configurations specific to this context instance.
+	 */
 	public readonly config: Config<ContextConfig>;
+
+	/**
+	 * The plugins loaded and in use by this context instance.
+	 */
 	public readonly plugins: PluginCollection<Context | Editor>;
+
 	public readonly locale: Locale;
+
+	/**
+	 * Shorthand for {@link module:utils/locale~Locale#t}.
+	 */
 	public readonly t: LocaleTranslate;
+
+	/**
+	 * A list of editors that this context instance is injected to.
+	 */
 	public readonly editors: Collection<Editor>;
 
+	/**
+	 * The default configuration which is built into the `Context` class.
+	 *
+	 * It is used in CKEditor 5 builds featuring `Context` to provide the default configuration options which are later used during the
+	 * context initialization.
+	 *
+	 * ```ts
+	 * Context.defaultConfig = {
+	 * 	foo: 1,
+	 * 	bar: 2
+	 * };
+	 *
+	 * Context
+	 * 	.create()
+	 * 	.then( context => {
+	 * 		context.config.get( 'foo' ); // -> 1
+	 * 		context.config.get( 'bar' ); // -> 2
+	 * 	} );
+	 *
+	 * // The default options can be overridden by the configuration passed to create().
+	 * Context
+	 * 	.create( { bar: 3 } )
+	 * 	.then( context => {
+	 * 		context.config.get( 'foo' ); // -> 1
+	 * 		context.config.get( 'bar' ); // -> 3
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/context~Context.builtinPlugins `Context.builtinPlugins`}
+	 * and {@link module:core/editor/editor~Editor.defaultConfig `Editor.defaultConfig`}.
+	 */
 	public static defaultConfig: ContextConfig;
+
+	/**
+	 * An array of plugins built into the `Context` class.
+	 *
+	 * It is used in CKEditor 5 builds featuring `Context` to provide a list of context plugins which are later automatically initialized
+	 * during the context initialization.
+	 *
+	 * They will be automatically initialized by `Context` unless `config.plugins` is passed.
+	 *
+	 * ```ts
+	 * // Build some context plugins into the Context class first.
+	 * Context.builtinPlugins = [ FooPlugin, BarPlugin ];
+	 *
+	 * // Normally, you need to define config.plugins, but since Context.builtinPlugins was
+	 * // defined, now you can call create() without any configuration.
+	 * Context
+	 * 	.create()
+	 * 	.then( context => {
+	 * 		context.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+	 * 		context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
+	 * 	} );
+	 * ```
+	 *
+	 * See also {@link module:core/context~Context.defaultConfig `Context.defaultConfig`}
+	 * and {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
+	 */
 	public static builtinPlugins: Array<PluginConstructor<Context | Editor>>;
 
-	private _contextOwner: Editor | null;
+	/**
+	 * Reference to the editor which created the context.
+	 * Null when the context was created outside of the editor.
+	 *
+	 * It is used to destroy the context when removing the editor that has created the context.
+	 */
+	private _contextOwner: Editor | null = null;
 
 	/**
 	 * Creates a context instance with a given configuration.
 	 *
 	 * Usually not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
 	 *
-	 * @param {Object} [config={}] The context configuration.
+	 * @param config The context configuration.
 	 */
 	constructor( config?: ContextConfig ) {
-		/**
-		 * Stores all the configurations specific to this context instance.
-		 *
-		 * @readonly
-		 * @type {module:utils/config~Config}
-		 */
 		this.config = new Config<ContextConfig>( config, ( this.constructor as typeof Context ).defaultConfig );
 
 		const availablePlugins = ( this.constructor as typeof Context ).builtinPlugins;
 
 		this.config.define( 'plugins', availablePlugins );
 
-		/**
-		 * The plugins loaded and in use by this context instance.
-		 *
-		 * @readonly
-		 * @type {module:core/plugincollection~PluginCollection}
-		 */
 		this.plugins = new PluginCollection<Context | Editor>( this, availablePlugins );
 
 		const languageConfig = this.config.get( 'language' ) || {};
 
-		/**
-		 * @readonly
-		 * @type {module:utils/locale~Locale}
-		 */
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
 			contentLanguage: this.config.get( 'language.content' )
 		} );
 
-		/**
-		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * @see module:utils/locale~Locale#t
-		 * @method #t
-		 */
 		this.t = this.locale.t;
 
-		/**
-		 * A list of editors that this context instance is injected to.
-		 *
-		 * @readonly
-		 * @type {module:utils/collection~Collection}
-		 */
 		this.editors = new Collection<Editor>();
-
-		/**
-		 * Reference to the editor which created the context.
-		 * Null when the context was created outside of the editor.
-		 *
-		 * It is used to destroy the context when removing the editor that has created the context.
-		 *
-		 * @private
-		 * @type {module:core/editor/editor~Editor|null}
-		 */
-		this._contextOwner = null;
 	}
 
 	/**
 	 * Loads and initializes plugins specified in the configuration.
 	 *
-	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
-	 * once the initialization is completed, providing an array of loaded plugins.
+	 * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
 	 */
 	public initPlugins(): Promise<LoadedPlugins> {
 		const plugins = this.config.get( 'plugins' ) || [];
@@ -173,7 +212,7 @@ export default class Context {
 	 * Destroys the context instance and all editors used with the context,
 	 * releasing all resources used by the context.
 	 *
-	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
+	 * @returns A promise that resolves once the context instance is fully destroyed.
 	 */
 	public destroy(): Promise<unknown> {
 		return Promise.all( Array.from( this.editors, editor => editor.destroy() ) )
@@ -188,9 +227,8 @@ export default class Context {
 	 *
 	 * This method should only be used by the editor.
 	 *
-	 * @protected
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Boolean} isContextOwner Stores the given editor as a context owner.
+	 * @internal
+	 * @param isContextOwner Stores the given editor as a context owner.
 	 */
 	public _addEditor( editor: Editor, isContextOwner: boolean ): void {
 		if ( this._contextOwner ) {
@@ -215,9 +253,8 @@ export default class Context {
 	 *
 	 * This method should only be used by the editor.
 	 *
-	 * @protected
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context was destroyed.
+	 * @internal
+	 * @return A promise that resolves once the editor is removed from the context or when the context was destroyed.
 	 */
 	public _removeEditor( editor: Editor ): Promise<unknown> {
 		if ( this.editors.has( editor ) ) {
@@ -239,8 +276,8 @@ export default class Context {
 	 *
 	 * This method should only be used by the editor.
 	 *
-	 * @protected
-	 * @returns {Object} Configuration as a plain object.
+	 * @internal
+	 * @returns Configuration as a plain object.
 	 */
 	public _getEditorConfig(): Partial<EditorConfig> {
 		const result: Record<string, unknown> = {};
@@ -257,51 +294,53 @@ export default class Context {
 	/**
 	 * Creates and initializes a new context instance.
 	 *
-	 *		const commonConfig = { ... }; // Configuration for all the plugins and editors.
-	 *		const editorPlugins = [ ... ]; // Regular plugins here.
+	 * ```ts
+	 * const commonConfig = { ... }; // Configuration for all the plugins and editors.
+	 * const editorPlugins = [ ... ]; // Regular plugins here.
 	 *
-	 *		Context
-	 *			.create( {
-	 *				// Only context plugins here.
-	 *				plugins: [ ... ],
+	 * Context
+	 * 	.create( {
+	 * 		// Only context plugins here.
+	 * 		plugins: [ ... ],
 	 *
-	 *				// Configure the language for all the editors (it cannot be overwritten).
-	 *				language: { ... },
+	 * 		// Configure the language for all the editors (it cannot be overwritten).
+	 * 		language: { ... },
 	 *
-	 *				// Configuration for context plugins.
-	 *				comments: { ... },
-	 *				...
+	 * 		// Configuration for context plugins.
+	 * 		comments: { ... },
+	 * 		...
 	 *
-	 *				// Default configuration for editor plugins.
-	 *				toolbar: { ... },
-	 *				image: { ... },
-	 *				...
-	 *			} )
-	 *			.then( context => {
-	 *				const promises = [];
+	 * 		// Default configuration for editor plugins.
+	 * 		toolbar: { ... },
+	 * 		image: { ... },
+	 * 		...
+	 * 	} )
+	 * 	.then( context => {
+	 * 		const promises = [];
 	 *
-	 *				promises.push( ClassicEditor.create(
-	 *					document.getElementById( 'editor1' ),
-	 *					{
-	 *						editorPlugins,
-	 *						context
-	 *					}
-	 *				) );
+	 * 		promises.push( ClassicEditor.create(
+	 * 			document.getElementById( 'editor1' ),
+	 * 			{
+	 * 				editorPlugins,
+	 * 				context
+	 * 			}
+	 * 		) );
 	 *
-	 *				promises.push( ClassicEditor.create(
-	 *					document.getElementById( 'editor2' ),
-	 *					{
-	 *						editorPlugins,
-	 *						context,
-	 *						toolbar: { ... } // You can overwrite the configuration of the context.
-	 *					}
-	 *				) );
+	 * 		promises.push( ClassicEditor.create(
+	 * 			document.getElementById( 'editor2' ),
+	 * 			{
+	 * 				editorPlugins,
+	 * 				context,
+	 * 				toolbar: { ... } // You can overwrite the configuration of the context.
+	 * 			}
+	 * 		) );
 	 *
-	 *				return Promise.all( promises );
-	 *			} );
+	 * 		return Promise.all( promises );
+	 * 	} );
+	 * ```
 	 *
-	 * @param {Object} [config] The context configuration.
-	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
+	 * @param config The context configuration.
+	 * @returns A promise resolved once the context is ready. The promise resolves with the created context instance.
 	 */
 	public static create( config?: ContextConfig ): Promise<Context> {
 		return new Promise( resolve => {
@@ -313,65 +352,8 @@ export default class Context {
 }
 
 /**
- * An array of plugins built into the `Context` class.
- *
- * It is used in CKEditor 5 builds featuring `Context` to provide a list of context plugins which are later automatically initialized
- * during the context initialization.
- *
- * They will be automatically initialized by `Context` unless `config.plugins` is passed.
- *
- *		// Build some context plugins into the Context class first.
- *		Context.builtinPlugins = [ FooPlugin, BarPlugin ];
- *
- *		// Normally, you need to define config.plugins, but since Context.builtinPlugins was
- *		// defined, now you can call create() without any configuration.
- *		Context
- *			.create()
- *			.then( context => {
- *				context.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
- *				context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
- *			} );
- *
- * See also {@link module:core/context~Context.defaultConfig `Context.defaultConfig`}
- * and {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
- *
- * @static
- * @member {Array.<Function>} module:core/context~Context.builtinPlugins
+ * The context configuration.
  */
-
-/**
- * The default configuration which is built into the `Context` class.
- *
- * It is used in CKEditor 5 builds featuring `Context` to provide the default configuration options which are later used during the
- * context initialization.
- *
- *		Context.defaultConfig = {
- *			foo: 1,
- *			bar: 2
- *		};
- *
- *		Context
- *			.create()
- *			.then( context => {
- *				context.config.get( 'foo' ); // -> 1
- *				context.config.get( 'bar' ); // -> 2
- *			} );
- *
- *		// The default options can be overridden by the configuration passed to create().
- *		Context
- *			.create( { bar: 3 } )
- *			.then( context => {
- *				context.config.get( 'foo' ); // -> 1
- *				context.config.get( 'bar' ); // -> 3
- *			} );
- *
- * See also {@link module:core/context~Context.builtinPlugins `Context.builtinPlugins`}
- * and {@link module:core/editor/editor~Editor.defaultConfig `Editor.defaultConfig`}.
- *
- * @static
- * @member {Object} module:core/context~Context.defaultConfig
- */
-
 export type ContextConfig = {
 	plugins?: Array<PluginConstructor<Context | Editor>>;
 	substitutePlugins?: Array<PluginConstructor<Context | Editor>>;

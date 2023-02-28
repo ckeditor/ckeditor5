@@ -10,6 +10,10 @@
 import View from '../view';
 import IconView from '../icon/iconview';
 
+import type { TemplateDefinition } from '../template';
+import type ViewCollection from '../viewcollection';
+import type { default as Button, ButtonExecuteEvent } from './button';
+
 import {
 	env,
 	getEnvKeystrokeText,
@@ -19,50 +23,131 @@ import {
 
 import '../../theme/components/button/button.css';
 
-import type { TemplateDefinition } from '../template';
-import type ViewCollection from '../viewcollection';
-import type { default as Button, ButtonExecuteEvent } from './button';
-
 /**
  * The button view class.
  *
- *		const view = new ButtonView();
+ * ```ts
+ * const view = new ButtonView();
  *
- *		view.set( {
- *			label: 'A button',
- *			keystroke: 'Ctrl+B',
- *			tooltip: true,
- *			withText: true
- *		} );
+ * view.set( {
+ * 	label: 'A button',
+ * 	keystroke: 'Ctrl+B',
+ * 	tooltip: true,
+ * 	withText: true
+ * } );
  *
- *		view.render();
+ * view.render();
  *
- *		document.body.append( view.element );
- *
- * @extends module:ui/view~View
- * @implements module:ui/button/button~Button
+ * document.body.append( view.element );
+ * ```
  */
-export default class ButtonView extends View implements Button {
+export default class ButtonView extends View<HTMLButtonElement> implements Button {
+	/**
+	 * Collection of the child views inside of the button {@link #element}.
+	 */
 	public readonly children: ViewCollection;
+
+	/**
+	 * Label of the button view. It is configurable using the {@link #label label attribute}.
+	 */
 	public readonly labelView: View;
+
+	/**
+	 * The icon view of the button. Will be added to {@link #children} when the
+	 * {@link #icon icon attribute} is defined.
+	 */
 	public readonly iconView: IconView;
+
+	/**
+	 * A view displaying the keystroke of the button next to the {@link #labelView label}.
+	 * Added to {@link #children} when the {@link #withKeystroke `withKeystroke` attribute}
+	 * is defined.
+	 */
 	public readonly keystrokeView: View;
 
+	/**
+	 * @inheritDoc
+	 */
 	declare public class: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public labelStyle: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public icon: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isEnabled: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isOn: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isToggleable: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public keystroke: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public label: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tabindex: number;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tooltip: Button[ 'tooltip' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tooltipPosition: Button[ 'tooltipPosition' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public type: Button[ 'type' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public withText: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public withKeystroke: boolean;
+
+	/**
+	 * Tooltip of the button bound to the template.
+	 *
+	 * @see #tooltip
+	 * @see #_getTooltipString
+	 * @internal
+	 * @observable
+	 */
 	declare public _tooltipString: string;
 
 	/**
@@ -91,56 +176,18 @@ export default class ButtonView extends View implements Button {
 		this.set( 'withText', false );
 		this.set( 'withKeystroke', false );
 
-		/**
-		 * Collection of the child views inside of the button {@link #element}.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.children = this.createCollection();
-
-		/**
-		 * Label of the button view. It is configurable using the {@link #label label attribute}.
-		 *
-		 * @readonly
-		 * @member {module:ui/view~View} #labelView
-		 */
 		this.labelView = this._createLabelView( ariaLabelUid );
 
-		/**
-		 * The icon view of the button. Will be added to {@link #children} when the
-		 * {@link #icon icon attribute} is defined.
-		 *
-		 * @readonly
-		 * @member {module:ui/icon/iconview~IconView} #iconView
-		 */
 		this.iconView = new IconView();
-
 		this.iconView.extendTemplate( {
 			attributes: {
 				class: 'ck-button__icon'
 			}
 		} );
 
-		/**
-		 * A view displaying the keystroke of the button next to the {@link #labelView label}.
-		 * Added to {@link #children} when the {@link #withKeystroke `withKeystroke` attribute}
-		 * is defined.
-		 *
-		 * @readonly
-		 * @member {module:ui/view/view~View} #keystrokeView
-		 */
 		this.keystrokeView = this._createKeystrokeView();
 
-		/**
-		 * Tooltip of the button bound to the template.
-		 *
-		 * @see #tooltip
-		 * @see #_getTooltipString
-		 * @private
-		 * @observable
-		 * @member {String|undefined} #_tooltipString
-		 */
 		this.bind( '_tooltipString' ).to(
 			this, 'tooltip',
 			this, 'label',
@@ -228,9 +275,7 @@ export default class ButtonView extends View implements Button {
 	/**
 	 * Creates a label view instance and binds it with button attributes.
 	 *
-	 * @private
-	 * @param {String} ariaLabelUid The aria label UID.
-	 * @returns {module:ui/view~View}
+	 * @param ariaLabelUid The aria label UID.
 	 */
 	private _createLabelView( ariaLabelUid: string ) {
 		const labelView = new View();
@@ -250,7 +295,7 @@ export default class ButtonView extends View implements Button {
 
 			children: [
 				{
-					text: this.bindTemplate.to( 'label' )
+					text: bind.to( 'label' )
 				}
 			]
 		} );
@@ -261,9 +306,6 @@ export default class ButtonView extends View implements Button {
 	/**
 	 * Creates a view that displays a keystroke next to a {@link #labelView label }
 	 * and binds it with button attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/view~View}
 	 */
 	private _createKeystrokeView() {
 		const keystrokeView = new View();
@@ -292,13 +334,11 @@ export default class ButtonView extends View implements Button {
 	 * Gets the text for the tooltip from the combination of
 	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
-	 * @private
 	 * @see #tooltip
 	 * @see #_tooltipString
-	 * @param {Boolean|String|Function} tooltip Button tooltip.
-	 * @param {String} label Button label.
-	 * @param {String} keystroke Button keystroke.
-	 * @returns {String}
+	 * @param tooltip Button tooltip.
+	 * @param label Button label.
+	 * @param keystroke Button keystroke.
 	 */
 	private _getTooltipString(
 		tooltip: Button[ 'tooltip' ],

@@ -9,7 +9,7 @@
 
 import type { GetCallback } from 'ckeditor5/src/utils';
 import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from 'ckeditor5/src/engine';
-import type { CodeBlockLanguageDefinition } from './codeblock';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig';
 import { getPropertyAssociation } from './utils';
 
 /**

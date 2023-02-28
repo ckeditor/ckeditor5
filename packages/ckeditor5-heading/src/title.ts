@@ -386,7 +386,7 @@ export default class Title extends Plugin {
 
 				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'element', 'title-content' ) ) {
 					const firstBodyElement = model.document.getRoot()!.getChild( 1 );
-					writer.setSelection( firstBodyElement, 0 );
+					writer.setSelection( firstBodyElement!, 0 );
 					cancel();
 				}
 			} );
@@ -409,7 +409,7 @@ export default class Title extends Plugin {
 				const body = root.getChild( 1 );
 
 				if ( selectedElement === body && selectionPosition.isAtStart ) {
-					writer.setSelection( title.getChild( 0 ), 0 );
+					writer.setSelection( title.getChild( 0 )!, 0 );
 					cancel();
 				}
 			} );

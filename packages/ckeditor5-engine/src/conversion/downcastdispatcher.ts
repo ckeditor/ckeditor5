@@ -94,56 +94,53 @@ import type ViewElement from '../view/element';
  *
  * An example of a custom converter for the downcast dispatcher:
  *
- *		// You will convert inserting a "paragraph" model element into the model.
- *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
- *			// Remember to check whether the change has not been consumed yet and consume it.
- *			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
- *				return;
- *			}
+ * ```ts
+ * // You will convert inserting a "paragraph" model element into the model.
+ * downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+ * 	// Remember to check whether the change has not been consumed yet and consume it.
+ * 	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+ * 		return;
+ * 	}
  *
- *			// Translate the position in the model to a position in the view.
- *			const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+ * 	// Translate the position in the model to a position in the view.
+ * 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
- *			// Create a <p> element that will be inserted into the view at the `viewPosition`.
- *			const viewElement = conversionApi.writer.createContainerElement( 'p' );
+ * 	// Create a <p> element that will be inserted into the view at the `viewPosition`.
+ * 	const viewElement = conversionApi.writer.createContainerElement( 'p' );
  *
- *			// Bind the newly created view element to the model element so positions will map accordingly in the future.
- *			conversionApi.mapper.bindElements( data.item, viewElement );
+ * 	// Bind the newly created view element to the model element so positions will map accordingly in the future.
+ * 	conversionApi.mapper.bindElements( data.item, viewElement );
  *
- *			// Add the newly created view element to the view.
- *			conversionApi.writer.insert( viewPosition, viewElement );
- *		} );
+ * 	// Add the newly created view element to the view.
+ * 	conversionApi.writer.insert( viewPosition, viewElement );
+ * } );
+ * ```
  */
 export default class DowncastDispatcher extends EmitterMixin() {
-	/** @internal */
+	/**
+	 * A template for an interface passed by the dispatcher to the event callbacks.
+	 *
+	 * @internal
+	 */
 	public readonly _conversionApi: Pick<DowncastConversionApi, 'dispatcher' | 'mapper' | 'schema'>;
 
+	/**
+	 * A map of already fired events for a given `ModelConsumable`.
+	 */
 	private readonly _firedEventsMap: WeakMap<DowncastConversionApi, Map<unknown, Set<string>>>;
 
 	/**
 	 * Creates a downcast dispatcher instance.
 	 *
 	 * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
-	 * @param {Object} conversionApi Additional properties for an interface that will be passed to events fired
+	 *
+	 * @param conversionApi Additional properties for an interface that will be passed to events fired
 	 * by the downcast dispatcher.
 	 */
 	constructor( conversionApi: Pick<DowncastConversionApi, 'mapper' | 'schema'> ) {
 		super();
 
-		/**
-		 * A template for an interface passed by the dispatcher to the event callbacks.
-		 *
-		 * @protected
-		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
-		 */
 		this._conversionApi = { dispatcher: this, ...conversionApi };
-
-		/**
-		 * A map of already fired events for a given `ModelConsumable`.
-		 *
-		 * @private
-		 * @member {WeakMap.<module:engine/conversion/downcastdispatcher~DowncastConversionApi,Map>}
-		 */
 		this._firedEventsMap = new WeakMap();
 	}
 
@@ -157,9 +154,9 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * @fires addMarker
  	 * @fires removeMarker
 	 * @fires reduceChanges
-	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers related to the model fragment to convert.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
+	 * @param differ The differ object with buffered changes.
+	 * @param markers Markers related to the model fragment to convert.
+	 * @param writer The view writer that should be used to modify the view document.
 	 */
 	public convertChanges(
 		differ: Differ,
@@ -215,16 +212,16 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * @fires insert
 	 * @fires attribute
 	 * @fires addMarker
-	 * @param {module:engine/model/range~Range} range The inserted range.
-	 * @param {Map<String,module:engine/model/range~Range>} markers The map of markers that should be down-casted.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 * @param {Object} [options] Optional options object passed to `convertionApi.options`.
+	 * @param range The inserted range.
+	 * @param markers The map of markers that should be down-casted.
+	 * @param writer The view writer that should be used to modify the view document.
+	 * @param options Optional options object passed to `convertionApi.options`.
 	 */
 	public convert(
 		range: Range,
 		markers: Map<string, Range>,
 		writer: DowncastWriter,
-		options: unknown = {}
+		options: DowncastConversionApi[ 'options' ] = {}
 	): void {
 		const conversionApi = this._createConversionApi( writer, undefined, options );
 
@@ -246,9 +243,9 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * @fires selection
 	 * @fires addMarker
 	 * @fires attribute
-	 * @param {module:engine/model/selection~Selection} selection The selection to convert.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with the converted model.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
+	 * @param selection The selection to convert.
+	 * @param markers Markers connected with the converted model.
+	 * @param writer View writer that should be used to modify the view document.
 	 */
 	public convertSelection(
 		selection: Selection | DocumentSelection,
@@ -307,13 +304,11 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
 	 * {@link #event:attribute `attribute` event is fired}.
 	 *
-	 * @protected
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The inserted range.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.doNotAddConsumables=false] Whether the ModelConsumable should not get populated
+	 * @param range The inserted range.
+	 * @param conversionApi The conversion API object.
+	 * @param options.doNotAddConsumables Whether the ModelConsumable should not get populated
 	 * for items in the provided range.
 	 */
 	private _convertInsert(
@@ -335,11 +330,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Fires conversion of a single node removal. Fires {@link #event:remove remove event} with provided data.
 	 *
-	 * @protected
-	 * @param {module:engine/model/position~Position} position Position from which node was removed.
-	 * @param {Number} length Offset size of removed node.
-	 * @param {String} name Name of removed node.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param position Position from which node was removed.
+	 * @param length Offset size of removed node.
+	 * @param name Name of removed node.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _convertRemove(
 		position: Position,
@@ -355,13 +349,12 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 *
 	 * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
 	 *
-	 * @protected
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range Changed range.
-	 * @param {String} key Key of the attribute that has changed.
-	 * @param {*} oldValue Attribute value before the change or `null` if the attribute has not been set before.
-	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param range Changed range.
+	 * @param key Key of the attribute that has changed.
+	 * @param oldValue Attribute value before the change or `null` if the attribute has not been set before.
+	 * @param newValue New attribute value or `null` if the attribute has been removed.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _convertAttribute(
 		range: Range,
@@ -394,11 +387,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * For each node in the range on its depth (without children), {@link #event:insert `insert` event} is fired.
 	 * For each attribute on each node, {@link #event:attribute `attribute` event} is fired.
 	 *
-	 * @protected
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The range to reinsert.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param range The range to reinsert.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _convertReinsert( range: Range, conversionApi: DowncastConversionApi ): void {
 		// Convert the elements - without converting children.
@@ -417,11 +409,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * Converts the added marker. Fires the {@link #event:addMarker `addMarker`} event for each item
 	 * in the marker's range. If the range is collapsed, a single event is dispatched. See the event description for more details.
 	 *
-	 * @protected
 	 * @fires addMarker
-	 * @param {String} markerName Marker name.
-	 * @param {module:engine/model/range~Range} markerRange The marker range.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param markerName Marker name.
+	 * @param markerRange The marker range.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _convertMarkerAdd(
 		markerName: string,
@@ -471,11 +462,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Fires the conversion of the marker removal. Fires the {@link #event:removeMarker `removeMarker`} event with the provided data.
 	 *
-	 * @protected
 	 * @fires removeMarker
-	 * @param {String} markerName Marker name.
-	 * @param {module:engine/model/range~Range} markerRange The marker range.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param markerName Marker name.
+	 * @param markerRange The marker range.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _convertMarkerRemove( markerName: string, markerRange: Range, conversionApi: DowncastConversionApi ) {
 		// Do not convert if range is in graveyard.
@@ -493,10 +483,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * reconversion. The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
 	 * `DowncastHelpers.elementToStructure()`} is using this event to trigger reconversion.
 	 *
-	 * @private
 	 * @fires reduceChanges
-	 * @param {Iterable.<module:engine/model/differ~DiffItem>} changes
-	 * @returns {Iterable.<module:engine/model/differ~DiffItem>}
 	 */
 	private _reduceChanges( changes: Iterable<DiffItem> ): Iterable<DiffItem | DiffItemReinsert> {
 		const data: { changes: Iterable<DiffItem | DiffItemReinsert> } = { changes };
@@ -510,10 +497,9 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
 	 * assuming that the range has just been inserted to the model.
 	 *
-	 * @private
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
-	 * @param {Iterable.<module:engine/model/treewalker~TreeWalkerValue>} walkerValues The walker values for the inserted range.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
+	 * @param consumable The consumable.
+	 * @param walkerValues The walker values for the inserted range.
+	 * @returns The values to consume.
 	 */
 	private _addConsumablesForInsert(
 		consumable: Consumable,
@@ -538,11 +524,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
 	 *
-	 * @private
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
-	 * @param {module:engine/model/range~Range} range The affected range.
-	 * @param {String} type Consumable type.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
+	 * @param consumable The consumable.
+	 * @param range The affected range.
+	 * @param type Consumable type.
+	 * @returns The values to consume.
 	 */
 	private _addConsumablesForRange(
 		consumable: Consumable,
@@ -559,11 +544,10 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
 	 *
-	 * @private
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
-	 * @param {module:engine/model/selection~Selection} selection The selection to create the consumable from.
-	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers that contain the selection.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
+	 * @param consumable The consumable.
+	 * @param selection The selection to create the consumable from.
+	 * @param markers Markers that contain the selection.
+	 * @returns The values to consume.
 	 */
 	private _addConsumablesForSelection(
 		consumable: Consumable,
@@ -586,12 +570,11 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Tests whether given event wasn't already fired and if so, fires it.
 	 *
-	 * @private
 	 * @fires insert
 	 * @fires attribute
-	 * @param {String} type Event type.
-	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param type Event type.
+	 * @param data Event data.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _testAndFire<TType extends 'insert' | 'attribute'>(
 		type: TType | `${ TType }:${ string }`,
@@ -618,9 +601,8 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	/**
 	 * Fires not already fired events for setting attributes on just inserted item.
 	 *
-	 * @private
-	 * @param {module:engine/model/item~Item} item The model item to convert attributes for.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param item The model item to convert attributes for.
+	 * @param conversionApi The conversion API object.
 	 */
 	private _testAndFireAddAttributes(
 		item: Item,
@@ -644,17 +626,16 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * Builds an instance of the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi} from a template and a given
 	 * {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`} and options object.
 	 *
-	 * @private
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
-	 * @param {Set.<module:engine/model/element~Element>} [refreshedItems] A set of model elements that should not reuse their
+	 * @param writer View writer that should be used to modify the view document.
+	 * @param refreshedItems A set of model elements that should not reuse their
 	 * previous view representations.
-	 * @param {Object} [options] Optional options passed to `convertionApi.options`.
-	 * @return {module:engine/conversion/downcastdispatcher~DowncastConversionApi} The conversion API object.
+	 * @param options Optional options passed to `convertionApi.options`.
+	 * @return The conversion API object.
 	 */
 	private _createConversionApi(
 		writer: DowncastWriter,
 		refreshedItems: Set<Item> = new Set(),
-		options: unknown = {}
+		options: DowncastConversionApi[ 'options' ] = {}
 	): DowncastConversionApi {
 		const conversionApi: DowncastConversionApi = {
 			...this._conversionApi,
@@ -671,148 +652,31 @@ export default class DowncastDispatcher extends EmitterMixin() {
 
 		return conversionApi;
 	}
-
-	/**
-	 * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
-	 * {@link #convertChanges `convertChanges()`} will fire any conversion events.
-	 *
-	 * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
-	 * to trigger reconversion of an element when e.g. its attribute has changes.
-	 * The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
-	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
-	 * its attributes or direct children changed.
-	 *
-	 * @param {Object} data
-	 * @param {Iterable.<module:engine/model/differ~DiffItem>} data.changes A buffered changes to get reduced.
-	 * @event reduceChanges
-	 */
-
-	/**
-	 * Fired for inserted nodes.
-	 *
-	 * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
-	 * or {@link module:engine/model/element~Element#name name} of inserted element.
-	 *
-	 * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
-	 *
-	 * @event insert
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item} data.item The inserted item.
-	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in the `DowncastDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired for removed nodes.
-	 *
-	 * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~Text a text node} has been removed,
-	 * or the {@link module:engine/model/element~Element#name name} of removed element.
-	 *
-	 * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
-	 *
-	 * @event remove
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
-	 * @param {Number} data.length Offset size of the removed node.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired in the following cases:
-	 *
-	 * * when an attribute has been added, changed, or removed from a node,
-	 * * when a node with an attribute is inserted,
-	 * * when a collapsed model selection attribute is converted.
-	 *
-	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
-	 * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
-	 * or the {@link module:engine/model/element~Element#name name} of element which attribute has changed.
-	 *
-	 * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).
-	 *
-	 * @event attribute
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
-	 * or converted selection.
-	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
-	 * @param {String} data.attributeKey Attribute key.
-	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
-	 * @param {*} data.attributeNewValue New attribute value.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired for {@link module:engine/model/selection~Selection selection} changes.
-	 *
-	 * @event selection
-	 * @param {module:engine/model/selection~Selection} selection Selection that is converted.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.
-	 *
-	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
-	 * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `addMarker:foo` or `addMarker:foo:abc` and
-	 * `addMarker:foo:bar` events.
-	 *
-	 * If the marker range is not collapsed:
-	 *
-	 * * the event is fired for each item in the marker range one by one,
-	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as the event name.
-	 *
-	 * If the marker range is collapsed:
-	 *
-	 * * there is only one event,
-	 * * `conversionApi.consumable` includes marker range with the event name.
-	 *
-	 * If the selection inside a marker is converted:
-	 *
-	 * * there is only one event,
-	 * * `conversionApi.consumable` includes the selection instance with the event name.
-	 *
-	 * @event addMarker
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} data.item Item inside the new marker or
-	 * the selection that is being converted.
-	 * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only in marker conversion, if
-	 * the marker range was not collapsed.
-	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
-	 * @param {String} data.markerName Marker name.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired when a marker is removed from the model.
-	 *
-	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `removeMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
-	 * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `removeMarker:foo` or `removeMarker:foo:abc` and
-	 * `removeMarker:foo:bar` events.
-	 *
-	 * @event removeMarker
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
-	 * @param {String} data.markerName Marker name.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
-	 * to be used by callback, passed in `DowncastDispatcher` constructor.
-	 */
 }
 
+/**
+ * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
+ * {@link #convertChanges `convertChanges()`} will fire any conversion events.
+ *
+ * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
+ * to trigger reconversion of an element when e.g. its attribute has changes.
+ * The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
+ * its attributes or direct children changed.
+ *
+ * @eventName reduceChanges
+ */
 export type DowncastReduceChangesEvent = {
 	name: 'reduceChanges';
-	args: [ data: {
-		changes: Iterable<DiffItem | DiffItemReinsert>;
-	} ];
+	args: [ data: DowncastReduceChangesEventData ];
+};
+
+export type DowncastReduceChangesEventData = {
+
+	/**
+	 * A buffered changes to get reduced.
+	 */
+	changes: Iterable<DiffItem | DiffItemReinsert>;
 };
 
 type EventMap<TItem = Item> = {
@@ -852,16 +716,130 @@ export type DowncastEvent<TName extends keyof EventMap<TItem>, TItem = Item> = {
 	args: [ data: EventMap<TItem>[ TName ], conversionApi: DowncastConversionApi ];
 };
 
+/**
+ * Fired for inserted nodes.
+ *
+ * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
+ * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
+ * or {@link module:engine/model/element~Element#name name} of inserted element.
+ *
+ * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
+ *
+ * @eventName insert
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/model/item~Item} data.item The inserted item.
+ * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in the `DowncastDispatcher` constructor.
+ */
 export type DowncastInsertEvent<TItem extends Item = Item> = DowncastEvent<'insert', TItem>;
 
+/**
+ * Fired for removed nodes.
+ *
+ * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
+ * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~Text a text node} has been removed,
+ * or the {@link module:engine/model/element~Element#name name} of removed element.
+ *
+ * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
+ *
+ * @eventName remove
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
+ * @param {Number} data.length Offset size of the removed node.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
 export type DowncastRemoveEvent = DowncastEvent<'remove'>;
 
+/**
+ * Fired in the following cases:
+ *
+ * * when an attribute has been added, changed, or removed from a node,
+ * * when a node with an attribute is inserted,
+ * * when a collapsed model selection attribute is converted.
+ *
+ * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
+ * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
+ * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
+ * or the {@link module:engine/model/element~Element#name name} of element which attribute has changed.
+ *
+ * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).
+ *
+ * @eventName attribute
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+ * or converted selection.
+ * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
+ * @param {String} data.attributeKey Attribute key.
+ * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
+ * @param {*} data.attributeNewValue New attribute value.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
 export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection> = DowncastEvent<'attribute', TItem>;
 
+/**
+ * Fired for {@link module:engine/model/selection~Selection selection} changes.
+ *
+ * @eventName selection
+ * @param {module:engine/model/selection~Selection} selection Selection that is converted.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
 export type DowncastSelectionEvent = DowncastEvent<'selection'>;
 
+/**
+ * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.
+ *
+ * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
+ * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
+ * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `addMarker:foo` or `addMarker:foo:abc` and
+ * `addMarker:foo:bar` events.
+ *
+ * If the marker range is not collapsed:
+ *
+ * * the event is fired for each item in the marker range one by one,
+ * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as the event name.
+ *
+ * If the marker range is collapsed:
+ *
+ * * there is only one event,
+ * * `conversionApi.consumable` includes marker range with the event name.
+ *
+ * If the selection inside a marker is converted:
+ *
+ * * there is only one event,
+ * * `conversionApi.consumable` includes the selection instance with the event name.
+ *
+ * @eventName addMarker
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} data.item Item inside the new marker or
+ * the selection that is being converted.
+ * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only in marker conversion, if
+ * the marker range was not collapsed.
+ * @param {module:engine/model/range~Range} data.markerRange Marker range.
+ * @param {String} data.markerName Marker name.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
 export type DowncastAddMarkerEvent = DowncastEvent<'addMarker'>;
 
+/**
+ * Fired when a marker is removed from the model.
+ *
+ * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
+ * `removeMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
+ * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `removeMarker:foo` or `removeMarker:foo:abc` and
+ * `removeMarker:foo:bar` events.
+ *
+ * @eventName removeMarker
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/model/range~Range} data.markerRange Marker range.
+ * @param {String} data.markerName Marker name.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
 export type DowncastRemoveMarkerEvent = DowncastEvent<'removeMarker'>;
 
 export interface DiffItemReinsert {
@@ -871,13 +849,10 @@ export interface DiffItemReinsert {
 	length: number;
 }
 
-// Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not
-// converted if they happen inside an element with custom conversion method.
-//
-// @param {module:engine/model/position~Position} modelPosition
-// @param {module:engine/model/markercollection~Marker} marker
-// @param {module:engine/conversion/mapper~Mapper} mapper
-// @returns {Boolean}
+/**
+ * Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not
+ * converted if they happen inside an element with custom conversion method.
+ */
 function shouldMarkerChangeBeConverted(
 	modelPosition: Position,
 	marker: Marker,
@@ -919,79 +894,62 @@ function walkerValueToEventData( value: TreeWalkerValue ) {
  * Conversion interface that is registered for given {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
  * and is passed as one of parameters when {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher dispatcher}
  * fires its events.
- *
- * @interface module:engine/conversion/downcastdispatcher~DowncastConversionApi
  */
-
 export interface DowncastConversionApi {
-	dispatcher: DowncastDispatcher;
-	consumable: Consumable;
-	mapper: Mapper;
-	schema: Schema;
-	writer: DowncastWriter;
-	options: unknown;
 
+	/**
+	 * The {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} instance.
+	 */
+	dispatcher: DowncastDispatcher;
+
+	/**
+	 * Stores the information about what parts of a processed model item are still waiting to be handled. After a piece of a model item was
+	 * converted, an appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume
+	 * consumed}.
+	 */
+	consumable: Consumable;
+
+	/**
+	 * The {@link module:engine/conversion/mapper~Mapper} instance.
+	 */
+	mapper: Mapper;
+
+	/**
+	 * The {@link module:engine/model/schema~Schema} instance set for the model that is downcast.
+	 */
+	schema: Schema;
+
+	/**
+	 * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.
+	 */
+	writer: DowncastWriter;
+
+	/**
+	 * An object with an additional configuration which can be used during the conversion process.
+	 * Available only for data downcast conversion.
+	 */
+	options: Record<string, unknown>;
+
+	/**
+	 * Triggers conversion of a specified item.
+	 * This conversion is triggered within (as a separate process of) the parent conversion.
+	 *
+	 * @param item The model item to trigger nested insert conversion on.
+	 */
 	convertItem( item: Item ): void;
+
+	/**
+	 * Triggers conversion of children of a specified element.
+	 *
+	 * @param element The model element to trigger children insert conversion on.
+	 */
 	convertChildren( element: Element ): void;
+
+	/**
+	 * Triggers conversion of attributes of a specified item.
+	 *
+	 * @param item The model item to trigger attribute conversion on.
+	 */
 	convertAttributes( item: Item ): void;
 	canReuseView( element: ViewElement ): boolean;
 }
-
-/**
- * The {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} instance.
- *
- * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #dispatcher
- */
-
-/**
- * Stores the information about what parts of a processed model item are still waiting to be handled. After a piece of a model item was
- * converted, an appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
- *
- * @member {module:engine/conversion/modelconsumable~ModelConsumable} #consumable
- */
-
-/**
- * The {@link module:engine/conversion/mapper~Mapper} instance.
- *
- * @member {module:engine/conversion/mapper~Mapper} #mapper
- */
-
-/**
- * The {@link module:engine/model/schema~Schema} instance set for the model that is downcast.
- *
- * @member {module:engine/model/schema~Schema} #schema
- */
-
-/**
- * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.
- *
- * @member {module:engine/view/downcastwriter~DowncastWriter} #writer
- */
-
-/**
- * Triggers conversion of a specified item.
- * This conversion is triggered within (as a separate process of) the parent conversion.
- *
- * @method #convertItem
- * @param {module:engine/model/item~Item} item The model item to trigger nested insert conversion on.
- */
-
-/**
- * Triggers conversion of children of a specified element.
- *
- * @method #convertChildren
- * @param {module:engine/model/element~Element} element The model element to trigger children insert conversion on.
- */
-
-/**
- * Triggers conversion of attributes of a specified item.
- *
- * @method #convertAttributes
- * @param {module:engine/model/item~Item} item The model item to trigger attribute conversion on.
- */
-
-/**
- * An object with an additional configuration which can be used during the conversion process. Available only for data downcast conversion.
- *
- * @member {Object} #options
- */

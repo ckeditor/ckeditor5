@@ -104,7 +104,7 @@ export function transform( a: Operation, b: Operation, context: TransformationCo
 		a = a.clone();
 
 		return transformationFunction( a, b, context );
-	} catch ( e ) {
+	} catch ( e: any ) {
 		// @if CK_DEBUG // console.warn( 'Error during operation transformation!', e.message );
 		// @if CK_DEBUG // console.warn( 'Transformed operation', a );
 		// @if CK_DEBUG // console.warn( 'Operation transformed by', b );
