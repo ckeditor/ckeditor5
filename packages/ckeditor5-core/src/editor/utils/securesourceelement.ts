@@ -19,15 +19,9 @@ import type { ElementApi } from './elementapimixin';
  * crucial this helper is called as soon as the source element is known to prevent collisions.
  *
  * @param editor Editor instance.
+ * @param sourceElement Element to bind with the editor instance.
  */
-export default function secureSourceElement( editor: Editor & ElementApi ): void {
-	const sourceElement: any = editor.sourceElement;
-
-	// If the editor was initialized without specifying an element, we don't need to secure anything.
-	if ( !sourceElement ) {
-		return;
-	}
-
+export default function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
 	if ( sourceElement.ckeditorInstance ) {
 		/**
 		 * A DOM element used to create the editor (e.g.

@@ -54,16 +54,43 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+ClassicEditor.create(
+	document.querySelector( '#editor' ),
+    {
 		placeholder: 'Type the content here!'
-	} )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
+	}
+).then( editor => {
+    console.log( editor );
+} ).catch( error => {
+    console.error( error );
+} );
+```
+
+If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
+
+```js
+MultiRootEditor.create(
+	// Roots for the editor:
+	{
+		header: document.querySelector( '#header' ),
+		content: document.querySelector( '#content' ),
+		leftSide: document.querySelector( '#left-side' ),
+		rightSide: document.querySelector( '#right-side' )
+	},
+	// Config:
+	{
+		placeholder: {
+			header: 'Type header...',
+			content: 'Type content...',
+			leftSide: 'Type left-side...',
+			rightSide: 'Type right-side...'
+		}
+	}
+).then( editor => {
+    console.log( editor );
+} ).catch( error => {
+    console.error( error );
+} );
 ```
 
 ## Styling the placeholder
@@ -72,8 +99,8 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 ```css
 .ck.ck-editor__editable > .ck-placeholder::before {
-    color: #d21714;
-    font-family: Georgia;
+	color: #d21714;
+	font-family: Georgia;
 }
 ```
 
