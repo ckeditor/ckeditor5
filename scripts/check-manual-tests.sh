@@ -5,12 +5,13 @@
 
 # `set -e` cannot be used because if the web crawler will fail, the HTTP server will not be closed.
 
-while getopts f:r:i: flag
+while getopts f:r:i:t: flag
 do
   case "${flag}" in
     f) FILES=${OPTARG};;
     r) REPOSITORY=${OPTARG};;
     i) IDENTITY_FILE=${OPTARG};;
+    t) TS_CONFIG=${OPTARG};;
   esac
 done
 
@@ -24,6 +25,11 @@ fi
 if [ ! -z "$IDENTITY_FILE" ]
 then
   MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -i $IDENTITY_FILE"
+fi
+
+if [ ! -z "$TS_CONFIG" ]
+then
+  MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS --tsconfig $TS_CONFIG"
 fi
 
 echo "Starting the manual test server..."

@@ -49,7 +49,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.release.json",
+    "build": "tsc -p ./tsconfig.json",
     "postversion": "npm run build"
   }
 }
