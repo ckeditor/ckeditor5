@@ -5,22 +5,14 @@ modified_at: 2022-10-05
 badges: [ premium ]
 ---
 
-# Spelling, grammar and punctuation checking
+# Spelling, grammar, and punctuation checking
 
-[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. It offers handy as-you-type and in-dialog proofreading options in a modern, distraction-free UI. Spelling, grammar and punctuation suggestions are available on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
-
-You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with just a click.
-
-After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
+[WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. Spelling, grammar, and punctuation suggestions appear on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
 
 <info-box>
 	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
 
 	You can report any issues in the WebSpellChecker [GitHub repository](https://github.com/WebSpellChecker/wproofreader).
-</info-box>
-
-<info-box info>
-	The spell and grammar check feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -40,6 +32,12 @@ You can access the WProofreader settings from the toolbar, too. Set the primary 
 <info-box><!-- Consider deprecation time for this info box -->
 	The toolbar button has been introduced in version 2.x of WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options can be accessed through the bottom-right corner badge instead.
 </info-box>
+
+## Additional feature information
+
+You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, you can easily disable the spell checker and enable it again with one click.
+
+After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
 ## Multi-language support
 
@@ -83,7 +81,9 @@ The spell and grammar check is compliant with WCAG 2.1 and Section 508 accessibi
 
 ## Installation
 
-<info-box>
+<info-box info>
+	The spell and grammar check feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+
 	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
 </info-box>
 
