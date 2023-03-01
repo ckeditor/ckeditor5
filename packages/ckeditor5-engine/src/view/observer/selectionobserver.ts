@@ -202,7 +202,7 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
-	// @if CK_DEBUG //	private _reportInfiniteLoop(): void {
+	// @if CK_DEBUG //	_reportInfiniteLoop() {
 	// @if CK_DEBUG //		console.warn( 'Selection change observer detected an infinite rendering loop.\n\n' +
 	// @if CK_DEBUG //	 		'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.' );
 	// @if CK_DEBUG //		throw new Error(
