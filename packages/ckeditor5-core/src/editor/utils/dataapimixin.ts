@@ -16,7 +16,7 @@ import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
  */
 export default function DataApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, DataApi> {
 	abstract class Mixin extends base implements DataApi {
-		public setData( data: string ): void {
+		public setData( data: string | Record<string, string> ): void {
 			this.data.set( data );
 		}
 
@@ -53,16 +53,23 @@ export interface DataApi {
 	 * editor.setData( '<p>This is editor!</p>' );
 	 * ```
 	 *
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding
+	 * to the editor root names and values equal to the data that should be set in each root:
+	 *
+	 * ```ts
+	 * editor.setData( {
+	 *     header: '<p>Content for header part.</p>',
+	 *     content: '<p>Content for main part.</p>',
+	 *     footer: '<p>Content for footer part.</p>'
+	 * } );
+	 * ```
+	 *
 	 * By default the editor accepts HTML. This can be controlled by injecting a different data processor.
 	 * See the {@glink features/markdown Markdown output} guide for more details.
 	 *
-	 * Note: Not only is the format of the data configurable, but the type of the `setData()`'s parameter does not
-	 * have to be a string either. You can e.g. accept an object or a DOM `DocumentFragment` if you consider this
-	 * the right format for you.
-	 *
 	 * @param data Input data.
 	 */
-	setData( data: string ): void;
+	setData( data: string | Record<string, string> ): void;
 
 	/**
 	 * Gets the data from the editor.
@@ -71,12 +78,14 @@ export interface DataApi {
 	 * editor.getData(); // -> '<p>This is editor!</p>'
 	 * ```
 	 *
+	 * If your editor implementation uses multiple roots, you should pass root name as one of the options:
+	 *
+	 * ```ts
+	 * editor.getData( { rootName: 'header' } ); // -> '<p>Content for header part.</p>'
+	 * ```
+	 *
 	 * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
 	 * See the {@glink features/markdown Markdown output} guide for more details.
-	 *
-	 * Note: Not only is the format of the data configurable, but the type of the `getData()`'s return value does not
-	 * have to be a string either. You can e.g. return an object or a DOM `DocumentFragment` if you consider this
-	 * the right format for you.
 	 *
 	 * @param options Additional configuration for the retrieved data.
 	 * Editor features may introduce more configuration options that can be set through this parameter.

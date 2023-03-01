@@ -81,7 +81,7 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
+			secureSourceElement( this, sourceElementOrData );
 		}
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );

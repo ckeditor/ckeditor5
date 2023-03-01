@@ -150,11 +150,26 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
-			it( 'sets placeholder from editor.config.placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return VirtualClassicTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
 						placeholder: 'placeholder-text'
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets placeholder from editor.config.placeholder - object', () => {
+				return VirtualClassicTestEditor
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
+						placeholder: { main: 'placeholder-text' }
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );

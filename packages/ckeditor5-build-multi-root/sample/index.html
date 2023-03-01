@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – multi-root editor build – development sample</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.editor {
+			border: #ccced1 1px solid;
+			margin-top: 10px;
+		}
+
+		.boxes {
+			margin-top: 10px;
+			display: flex;
+		}
+
+		.box {
+			margin-top: 0px;
+			width: 50%;
+		}
+
+		/*
+			Make the editable "fill" the whole box.
+			The box will grow if the other box grows too.
+			This makes the whole box "clickable".
+		 */
+		.box .ck-editor__editable {
+			height: 100%;
+		}
+
+		.box-left {
+			margin-right: 10px;
+		}
+
+		/*
+			When toolbar receives this class, it becomes sticky.
+			If the toolbar would be scrolled outside of the visible area,
+			instead it is kept at the top edge of the window.
+		 */
+		#toolbar.sticky {
+			position: sticky;
+			top: 0px;
+			z-index: 10;
+		}
+	</style>
+</head>
+<body>
+
+<h1>CKEditor 5 – multi-root editor build – development sample</h1>
+
+<div id="toolbar"></div>
+<!--
+    Wrapping the structure inside a pair of
+    contenteditable="true" + contenteditable="false" elements
+    is required to provide proper caret handling when
+    using arrow keys at the start and end of an editable area.
+
+    You can skip them if you don't want to move the
+    caret between editable areas using arrow keys.
+!-->
+<div contenteditable="true">
+	<div contenteditable="false">
+		<div class="editor">
+			<div id="header">
+				<h2>Gone traveling</h2>
+				<h3>Monthly travel news and inspiration</h3>
+			</div>
+		</div>
+		<div class="editor">
+			<div id="content">
+				<h3>Destination of the Month</h3>
+
+				<figure class="image image-style-side">
+					<img alt="Picture of a sunlit facade of a Maltan building." src="./malta.jpg">
+					<figcaption>It's siesta time in Valletta.</figcaption>
+				</figure>
+
+				<h4>Valletta</h4>
+
+				<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy and many more.</p>
+			</div>
+		</div>
+		<div class="boxes">
+			<div class="box box-left editor">
+				<div id="left-side">
+					<h3>The three greatest things you learn from traveling</h3>
+					<p><a href="#">Find out more</a></p>
+				</div>
+			</div>
+			<div class="box box-right editor">
+				<div id="right-side">
+					<h3>Walking the capitals of Europe: Warsaw</h3>
+					<p><a href="#">Find out more</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="../build/ckeditor.js"></script>
+<script>
+	MultiRootEditor
+		.create( {
+			// Define roots / editable areas:
+			header: document.getElementById( 'header' ),
+			content: document.getElementById( 'content' ),
+			leftSide: document.getElementById( 'left-side' ),
+			rightSide: document.getElementById( 'right-side' )
+		} )
+		.then( editor => {
+			window.editor = editor;
+
+			// Append toolbar to a proper container.
+			const toolbarContainer = document.getElementById( 'toolbar' );
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+			// Make toolbar sticky when the editor is focused.
+			editor.ui.focusTracker.on( 'change:isFocused', () => {
+				if ( editor.ui.focusTracker.isFocused ) {
+					toolbarContainer.classList.add( 'sticky' );
+				} else {
+					toolbarContainer.classList.remove( 'sticky' );
+				}
+			} );
+		} )
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
+		} );
+</script>
+
+</body>
+</html>
