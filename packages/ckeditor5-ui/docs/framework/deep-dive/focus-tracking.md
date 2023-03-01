@@ -28,8 +28,8 @@ And when many places accept focus, there must be some systems out there to disco
 
 In the following chapters of this guide, we will explain how these systems work, what makes CKEditor "focusable", and how to develop new editor features so they fit into the existing focus management systems and patterns:
 
-- [**The first section**](#focus-in-the-editor-engine) explains how the editor {@link framework/guides/architecture/editing-engine engine} manages focus and what tools exist there to help you out when developing new features.
-- In [**the second section**](#focus-in-the-editor-ui), we will show you how the {@link framework/guides/architecture/ui-library user interface} of the editor tracks focus and how various UI components take advantage of that, for instance, to provide accessibility.
+- [**The first section**](#focus-in-the-editor-engine) explains how the editor {@link framework/architecture/editing-engine engine} manages focus and what tools exist there to help you out when developing new features.
+- In [**the second section**](#focus-in-the-editor-ui), we will show you how the {@link framework/architecture/ui-library user interface} of the editor tracks focus and how various UI components take advantage of that, for instance, to provide accessibility.
 - In [**the last part**](#focus-state-analysis), we will use the knowledge from previous sections in a real–life scenario and analyze how all these tools and systems work together.
 
 ## Focus in the editor engine
@@ -40,15 +40,15 @@ In the following chapters of this guide, we will explain how these systems work,
 
 The main editable area of CKEditor 5 WYSIWYG editor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
 
-Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/guides/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
+Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
-	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor 5 are.
+	Already confused? Take a look at our {@link framework/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor 5 are.
 </info-box>
 
 ### Checking if the view document is focused
 
-You can check if the view document is focused using its {@link framework/guides/deep-dive/observables observable} {@link module:engine/view/document~Document#isFocused} property. Create an editor instance and execute the following code:
+You can check if the view document is focused using its {@link framework/deep-dive/observables observable} {@link module:engine/view/document~Document#isFocused} property. Create an editor instance and execute the following code:
 
 ```js
 console.log( editor.editing.view.document.isFocused );
@@ -66,7 +66,7 @@ editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) =>
 
 Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link examples/builds/multi-root-editor **multiple editing roots**} and navigate across them.
 
-To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/guides/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
+To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
 
 ### How to focus the editor?
 
@@ -81,17 +81,17 @@ editor.editing.view.focus();
 This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the very first editable. If an editor has multiple editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
-	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/guides/architecture/editing-engine#model model writer} to change the selection.
+	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
 </info-box>
 
 ## Focus in the editor UI
 
-If you read the [previous section](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus implemented in the {@link framework/guides/architecture/editing-engine editor engine}. But because the {@link framework/guides/architecture/intro editor framework is modular}, this layer is only concerned by the focus in editable roots of the editor and it knows nothing of the user interface. This granularity makes it possible, for instance, to create a fully–functioning editor without the UI.
+If you read the [previous section](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus implemented in the {@link framework/architecture/editing-engine editor engine}. But because the {@link framework/architecture/intro editor framework is modular}, this layer is only concerned by the focus in editable roots of the editor and it knows nothing of the user interface. This granularity makes it possible, for instance, to create a fully–functioning editor without the UI.
 
-As for the user interface of CKEditor 5, it is a composition of multiple components {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
+As for the user interface of CKEditor 5, it is a composition of multiple components {@link framework/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
 
 <info-box>
-	Feeling overwhelmed? Take a look at the {@link framework/guides/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
+	Feeling overwhelmed? Take a look at the {@link framework/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
 </info-box>
 
 To sum up, there are two main reasons why focus is being tracked separately on the UI level:
@@ -103,7 +103,7 @@ These users not only write text using the keyboard but also use it to navigate a
 
 ### Tools and architecture
 
-Focus management lives next to the {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree user interface element tree} and its architecture is also based on components that respond to user actions within its boundaries and their children. Take a look at a common keyboard navigation scenario in a {@link examples/builds/classic-editor classic editor} instance:
+Focus management lives next to the {@link framework/architecture/ui-library#view-collections-and-the-ui-tree user interface element tree} and its architecture is also based on components that respond to user actions within its boundaries and their children. Take a look at a common keyboard navigation scenario in a {@link examples/builds/classic-editor classic editor} instance:
 
 {@img assets/img/framework-deep-dive-focus-toolbar-nav.gif 950 The animation showing the focus moving as the user navigates to the heading drop–down in the toolbar.}
 
@@ -181,7 +181,7 @@ Most components have [focus trackers](#using-the-focustracker-class) to keep up 
 
 ### Implementing focusable UI components
 
-Any UI {@link framework/guides/architecture/ui-library#views view} can be focusable. To become one, a view must implement the `focus()` method that focuses the DOM {@link module:ui/view~View#element  element} and the `tabindex="-1"` attribute set on the element that prevents the native navigation using the keyboard (which should be handled by the [focus cycler](#using-the-focuscycler-class) on the parent–level):
+Any UI {@link framework/architecture/ui-library#views view} can be focusable. To become one, a view must implement the `focus()` method that focuses the DOM {@link module:ui/view~View#element  element} and the `tabindex="-1"` attribute set on the element that prevents the native navigation using the keyboard (which should be handled by the [focus cycler](#using-the-focuscycler-class) on the parent–level):
 
 <info-box>
 	The [`tabindex="-1"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) is a native DOM attribute that controls whether a DOM element can be focused (and in which order). Setting its value to `"-1"` tells the web browser that it should exclude it from the native keyboard navigation and allow it only to be focused using JavaScript. Because your component will belong to the editor focus management system, you should do that if you want to avoid collisions with the web browser.
@@ -257,7 +257,7 @@ One of the key focus management helpers in the CKEditor 5 UI is the {@link modul
 - An observable {@link module:utils/focustracker~FocusTracker#isFocused `isFocused`} property telling the world that one of the tracked elements has focus in the DOM.
 - An observable {@link module:utils/focustracker~FocusTracker#focusedElement `focusedElement`} property that precisely says which DOM element is focused.
 
-Focus trackers listen to DOM `focus` and `blur` events coming from elements they track and they determine if any is currently focused. As a rule of thumb, a {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree parent} to more than one focusable element should have a focus tracker.
+Focus trackers listen to DOM `focus` and `blur` events coming from elements they track and they determine if any is currently focused. As a rule of thumb, a {@link framework/architecture/ui-library#view-collections-and-the-ui-tree parent} to more than one focusable element should have a focus tracker.
 
 <info-box>
 	Keep in mind that simple components that have no focusable children or just a single focusable child may not need a focus tracker.
