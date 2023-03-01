@@ -7,15 +7,25 @@ order: 10
 
 # Editor toolbar
 
-The toolbar is the most basic user interface element of the WYSIWYG editor that gives convenient access to all its features. It contains various items like buttons or dropdowns that you can use to format, manage, insert and alter elements of the content.
+The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
+
+## Demo
+
+This is how a simplified toolbar from the snippet above looks in the CKEditor 5 WYSIWYG editor user interface. Toolbar items can be easily added or removed thanks to this configuration.
+
+{@snippet features/toolbar-basic}
+
+<info-box info>
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Basic toolbar configuration
 
 <info-box hint>
 	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link installation/getting-started/configuration#removing-features removing features} for more information.
 </info-box>
 
-## Basic toolbar configuration
-
-In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
+In the builds that contain toolbars, an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
 
 Each editor may have a different toolbar configuration scheme, so it is recommended to check its documentation. In any case, the following example may give you a general idea:
 
@@ -28,16 +38,6 @@ ClassicEditor
 		console.log( error );
 	} );
 ```
-
-## Demo
-
-This is how a simplified toolbar from the snippet above looks in the CKEditor 5 WYSIWYG editor user interface. Toolbar items can be easily added or removed thanks to this configuration.
-
-{@snippet features/toolbar-basic}
-
-<info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
-</info-box>
 
 ## Separating toolbar items
 
@@ -276,7 +276,7 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/guides/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 
