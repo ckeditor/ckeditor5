@@ -205,7 +205,7 @@
  * you need to define the list of
  * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
  * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
- * source in the {@glink installation/advanced/alternative-setups/integrating-from-source dedicated} guide.
+ * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated} guide.
  *
  * @param {Object} sourceElementsOrData The DOM elements that will be the source for the created editor
  * or the editor's initial data. The editor will initialize multiple roots with names according to the keys in the passed object.
