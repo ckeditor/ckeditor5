@@ -45,7 +45,7 @@ export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
- * @eventName mousemove
+ * @eventName module:engine/view/document~Document#mousemove
  * @param data Event data.
  */
 export type ViewDocumentMouseMoveEvent = {
@@ -63,7 +63,7 @@ export type ViewDocumentMouseMoveEvent = {
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
- * @eventName mouseleave
+ * @eventName module:engine/view/document~Document#mouseleave
  * @param data Event data.
  */
 export type ViewDocumentMouseLeaveEvent = {

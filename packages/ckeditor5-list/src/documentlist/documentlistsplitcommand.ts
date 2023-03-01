@@ -106,7 +106,7 @@ export default class DocumentListSplitCommand extends Command {
  * method, for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListSplitCommand#afterExecute
  */
 export type DocumentListSplitCommandAfterExecuteEvent = {
 	name: 'afterExecute';

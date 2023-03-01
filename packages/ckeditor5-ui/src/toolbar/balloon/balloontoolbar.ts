@@ -410,7 +410,7 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
 /**
  * This event is fired just before the toolbar shows up. Stopping this event will prevent this.
  *
- * @eventName show
+ * @eventName ~BaloonToolbar#show
  */
 export type BaloonToolbarShowEvent = {
 	name: 'show';

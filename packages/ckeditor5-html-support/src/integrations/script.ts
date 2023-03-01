@@ -14,7 +14,7 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
 
 /**
@@ -41,7 +41,7 @@ export default class ScriptElementSupport extends Plugin {
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register:script', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:script', ( evt, definition ) => {
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;

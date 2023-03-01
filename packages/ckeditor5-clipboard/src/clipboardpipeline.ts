@@ -259,7 +259,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
 
-			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer,
 				content,
 				method: evt.name
@@ -277,7 +277,7 @@ export default class ClipboardPipeline extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		this.listenTo<ClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
@@ -305,7 +305,7 @@ export default class ClipboardPipeline extends Plugin {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  *
- * @eventName inputTransformation
+ * @eventName ~ClipboardPipeline#inputTransformation
  * @param data The event data.
  */
 export type ClipboardInputTransformationEvent = {
@@ -359,7 +359,7 @@ export interface ClipboardInputTransformationData {
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
  *
- * @eventName contentInsertion
+ * @eventName ~ClipboardPipeline#contentInsertion
  * @param data The event data.
  */
 export type ClipboardContentInsertionEvent = {
@@ -410,18 +410,18 @@ export interface ClipboardContentInsertionData {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  *
- * @eventName clipboardOutput
+ * @eventName module:engine/view/document~Document#clipboardOutput
  * @param data The event data.
  */
-export type ClipboardOutputEvent = {
+export type ViewDocumentClipboardOutputEvent = {
 	name: 'clipboardOutput';
-	args: [ data: ClipboardOutputEventData ];
+	args: [ data: ViewDocumentClipboardOutputEventData ];
 };
 
 /**
  * The value of the 'clipboardOutput' event.
  */
-export interface ClipboardOutputEventData {
+export interface ViewDocumentClipboardOutputEventData {
 
 	/**
 	 * The data transfer instance.

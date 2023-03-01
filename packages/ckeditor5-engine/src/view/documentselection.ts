@@ -393,6 +393,6 @@ DocumentSelection.prototype.is = function( type: string ): boolean {
 /**
  * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
  *
- * @eventName change
+ * @eventName ~DocumentSelection#change
  */
 export type ViewDocumentSelectionChangeEvent = ViewSelectionChangeEvent;

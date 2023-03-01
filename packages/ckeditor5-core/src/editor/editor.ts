@@ -576,7 +576,7 @@ export default abstract class Editor extends ObservableMixin() {
  *
  * See also the {@link ~Editor#state `editor.state`} property.
  *
- * @eventName ready
+ * @eventName ~Editor#ready
  */
 export type EditorReadyEvent = {
 	name: 'ready';
@@ -589,7 +589,7 @@ export type EditorReadyEvent = {
  *
  * See also the {@link ~Editor#state `editor.state`} property.
  *
- * @eventName destroy
+ * @eventName ~Editor#destroy
  */
 export type EditorDestroyEvent = {
 	name: 'destroy';

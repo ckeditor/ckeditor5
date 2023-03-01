@@ -210,7 +210,7 @@ export default class DocumentListCommand extends Command {
  * for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListCommand#afterExecute
  */
 export type DocumentListCommandAfterExecuteEvent = {
 	name: 'afterExecute';

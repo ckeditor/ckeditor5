@@ -21,7 +21,7 @@ export default interface DropdownButton extends Button {
  * Fired when the dropdown should be opened.
  * It will not be fired when the button {@link ~DropdownButton#isEnabled is disabled}.
  *
- * @eventName open
+ * @eventName ~DropdownButton#open
  */
 export type DropdownButtonOpenEvent = {
 	name: 'open';

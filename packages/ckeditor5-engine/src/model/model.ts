@@ -1126,7 +1126,7 @@ function normalizeSelectable(
  * {@link module:engine/model/model~Model#change} block.
  *
  * @internal
- * @eventName _beforeChanges
+ * @eventName ~Model#_beforeChanges
  */
 export type BeforeChangesEvent = {
 	name: '_beforeChanges';
@@ -1138,7 +1138,7 @@ export type BeforeChangesEvent = {
  * {@link module:engine/model/model~Model#change} block.
  *
  * @internal
- * @eventName _afterChanges
+ * @eventName ~Model#_afterChanges
  */
 export type AfterChangesEvent = {
 	name: '_afterChanges';
@@ -1161,7 +1161,7 @@ export type AfterChangesEvent = {
  * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
  * update themselves.
  *
- * @eventName applyOperation
+ * @eventName ~Model#applyOperation
  * @param args Arguments of the `applyOperation` which is an array with a single element - applied
  * {@link module:engine/model/operation/operation~Operation operation}.
  */
@@ -1176,7 +1176,7 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
  * **Note** The `selectable` parameter for the {@link ~Model#insertContent} is optional. When `undefined` value is passed the method uses
  * {@link module:engine/model/document~Document#selection document selection}.
  *
- * @eventName insertContent
+ * @eventName ~Model#insertContent
  * @param args The arguments passed to the original method.
  */
 export type ModelInsertContentEvent = {
@@ -1198,7 +1198,7 @@ export type ModelInsertContentEvent = {
  * **Note** The `selectable` parameter for the {@link ~Model#insertObject} is optional. When `undefined` value is passed the method uses
  * {@link module:engine/model/document~Document#selection document selection}.
  *
- * @eventName insertObject
+ * @eventName ~Model#insertObject
  * @param args The arguments passed to the original method.
  */
 export type ModelInsertObjectEvent = {
@@ -1221,7 +1221,7 @@ export type ModelInsertObjectEvent = {
  * The {@link ~Model#deleteContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName deleteContent
+ * @eventName ~Model#deleteContent
  * @param args The arguments passed to the original method.
  */
 export type ModelDeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent'>;
@@ -1232,7 +1232,7 @@ export type ModelDeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent
  * The {@link ~Model#modifySelection default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName modifySelection
+ * @eventName ~Model#modifySelection
  * @param args The arguments passed to the original method.
  */
 export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelection'>;
@@ -1243,7 +1243,7 @@ export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelec
  * The {@link ~Model#getSelectedContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName getSelectedContent
+ * @eventName ~Model#getSelectedContent
  * @param args The arguments passed to the original method.
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;

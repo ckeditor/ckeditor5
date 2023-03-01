@@ -529,7 +529,7 @@ export default class DataController extends EmitterMixin() {
 /**
  * Event fired once the data initialization has finished.
  *
- * @eventName ready
+ * @eventName ~DataController#ready
  */
 export type DataControllerReadyEvent = {
 	name: 'ready';
@@ -544,7 +544,7 @@ export type DataControllerReadyEvent = {
  * The `init` event is fired by the decorated {@link ~DataController#init} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName init
+ * @eventName ~DataController#init
  */
 export type DataControllerInitEvent = {
 	name: 'init';
@@ -558,7 +558,7 @@ export type DataControllerInitEvent = {
  * The `set` event is fired by the decorated {@link ~DataController#set} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName set
+ * @eventName ~DataController#set
  */
 export type DataControllerSetEvent = {
 	name: 'set';
@@ -572,7 +572,7 @@ export type DataControllerSetEvent = {
  * The `get` event is fired by the decorated {@link ~DataController#get} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName get
+ * @eventName ~DataController#get
  */
 export type DataControllerGetEvent = {
 	name: 'get';
@@ -586,7 +586,7 @@ export type DataControllerGetEvent = {
  * The `toView` event is fired by the decorated {@link ~DataController#toView} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName toView
+ * @eventName ~DataController#toView
  */
 export type DataControllerToViewEvent = {
 	name: 'toView';
@@ -600,7 +600,7 @@ export type DataControllerToViewEvent = {
  * The `toModel` event is fired by the decorated {@link ~DataController#toModel} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName toModel
+ * @eventName ~DataController#toModel
  */
 export type DataControllerToModelEvent = {
 	name: 'toModel';

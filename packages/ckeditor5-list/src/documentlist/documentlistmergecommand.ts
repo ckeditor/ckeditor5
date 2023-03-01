@@ -236,7 +236,7 @@ export default class DocumentListMergeCommand extends Command {
  * method, for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListMergeCommand#afterExecute
  */
 export type DocumentListMergeCommandAfterExecuteEvent = {
 	name: 'afterExecute';

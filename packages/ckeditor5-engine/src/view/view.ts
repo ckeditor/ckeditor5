@@ -738,7 +738,7 @@ export default class View extends ObservableMixin() {
  * balloon panel. If you wants to change view structure use
  * {@link module:engine/view/document~Document#registerPostFixer post-fixers}.
  *
- * @eventName render
+ * @eventName ~View#render
  */
 export type ViewRenderEvent = {
 	name: 'render';

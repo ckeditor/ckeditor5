@@ -9,7 +9,7 @@
 
 import type {
 	ClipboardEventData,
-	ClipboardOutputEvent,
+	ViewDocumentClipboardOutputEvent,
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
 } from 'ckeditor5/src/clipboard';
@@ -108,7 +108,7 @@ export default class TableClipboard extends Plugin {
 
 		const content = dataController.toView( tableSelection.getSelectionAsFragment()! );
 
-		viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+		viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,
 			content,
 			method: evt.name

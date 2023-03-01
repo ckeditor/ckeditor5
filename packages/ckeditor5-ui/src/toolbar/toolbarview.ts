@@ -561,7 +561,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
  * **Note**: This event is fired only if the items grouping functionality was enabled in
  * the first place (see {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}).
  *
- * @eventName groupedItemsUpdate
+ * @eventName ~ToolbarView#groupedItemsUpdate
  */
 export type ToolbarViewGroupedItemsUpdateEvent = {
 	name: 'groupedItemsUpdate';

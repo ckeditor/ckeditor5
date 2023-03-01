@@ -753,7 +753,7 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 /**
  * Fired when an item is added to the collection.
  *
- * @eventName add
+ * @eventName ~Collection#add
  * @param item The added item.
  * @param index An index where the addition occurred.
  */
@@ -765,7 +765,7 @@ export type CollectionAddEvent<T = any> = {
 /**
  * Fired when the collection was changed due to adding or removing items.
  *
- * @eventName change
+ * @eventName ~Collection#change
  * @param data Changed items.
  */
 export type CollectionChangeEvent<T = any> = {
@@ -797,7 +797,7 @@ export type CollectionChangeEventData<T = any> = {
 /**
  * Fired when an item is removed from the collection.
  *
- * @eventName remove
+ * @eventName ~Collection#remove
  * @param item The removed item.
  * @param index Index from which item was removed.
  */

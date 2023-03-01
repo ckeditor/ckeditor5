@@ -72,7 +72,7 @@ export default class EnterObserver extends Observer {
  * (usually registered by the {@link module:enter/enter~Enter Enter feature} and
  * {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature}).
  *
- * @eventName enter
+ * @eventName module:engine/view/document~Document#enter
  */
 export type ViewDocumentEnterEvent = BubblingEvent<{
 	name: 'enter';

@@ -236,7 +236,7 @@ export interface ColorDefinition {
 /**
  * Fired when the `ColorTileView` for the picked item is executed.
  *
- * @eventName execute
+ * @eventName ~ColorGridView#execute
  * @param data Additional information about the event.
 */
 export type ColorGridViewExecuteEvent = {

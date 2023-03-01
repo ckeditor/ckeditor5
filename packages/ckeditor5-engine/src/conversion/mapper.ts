@@ -734,7 +734,7 @@ export default class Mapper extends EmitterMixin() {
  * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
  * Also, the condition that checks if a special case scenario happened should be as simple as possible.
  *
- * @eventName modelToViewPosition
+ * @eventName ~Mapper#modelToViewPosition
  */
 export type MapperModelToViewPositionEvent = {
 	name: 'modelToViewPosition';
@@ -799,7 +799,7 @@ export type MapperModelToViewPositionEventData = {
  * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
  * Also, the condition that checks if special case scenario happened should be as simple as possible.
  *
- * @eventName viewToModelPosition
+ * @eventName ~Mapper#viewToModelPosition
  */
 export type MapperViewToModelPositionEvent = {
 	name: 'viewToModelPosition';

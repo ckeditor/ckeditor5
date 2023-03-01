@@ -526,6 +526,6 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
  *
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName render
+ * @eventName ~View#render
  */
 export type UIViewRenderEvent = DecoratedMethodEvent<View, 'render'>;

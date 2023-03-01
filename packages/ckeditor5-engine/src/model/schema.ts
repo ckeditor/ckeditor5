@@ -1073,7 +1073,7 @@ export default class Schema extends ObservableMixin() {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName checkChild
+ * @eventName ~Schema#checkChild
  * @param args The `checkChild()`'s arguments.
  */
 export type SchemaCheckChildEvent = {
@@ -1141,7 +1141,7 @@ export type SchemaCheckChildEvent = {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName checkAttribute
+ * @eventName ~Schema#checkAttribute
  * @param args The `checkAttribute()`'s arguments.
  */
 export type SchemaCheckAttributeEvent = {

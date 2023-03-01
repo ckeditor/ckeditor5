@@ -179,7 +179,7 @@ function getSelectedListBlocks( selection: DocumentSelection ) {
  * method, for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListIndentCommand#afterExecute
  */
 export type DocumentListIndentCommandAfterExecuteEvent = {
 	name: 'afterExecute';

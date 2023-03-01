@@ -497,7 +497,7 @@ export default abstract class EditorUI extends ObservableMixin() {
  *
  * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
  *
- * @eventName ready
+ * @eventName ~EditorUI#ready
  */
 export type EditorUIReadyEvent = {
 	name: 'ready';
@@ -510,7 +510,7 @@ export type EditorUIReadyEvent = {
  * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
  * It can also be fired manually via the {@link module:ui/editorui/editorui~EditorUI#update} method.
  *
- * @eventName update
+ * @eventName ~EditorUI#update
  */
 export type EditorUIUpdateEvent = {
 	name: 'update';
