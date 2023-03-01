@@ -9,17 +9,17 @@ The basic styles feature lets you apply the most essential formatting such as bo
 
 ## Demo
 
+You may apply basic formatting options with toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one of these to format the text:
+* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`
+* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`
+* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
+* Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
+
 {@snippet features/basic-styles}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
-
-Basic formatting options may be applied with the toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one of these to format the text:
-* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`
-* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`
-* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
-* Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
 ## Available text styles
 

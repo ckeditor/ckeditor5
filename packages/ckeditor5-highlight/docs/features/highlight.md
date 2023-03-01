@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-highlight-source}
 
-The highlight feature lets you mark fragments of text with different colors. You can use it both as a marker (to change the background color) and as a pen (to change the text color).
+The highlight feature lets you mark text fragments with different colors. You can use it both as a marker (to change the background color) and as a pen (to change the text color).
 
 ## Demo
 

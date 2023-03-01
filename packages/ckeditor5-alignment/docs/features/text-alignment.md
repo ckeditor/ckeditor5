@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The alignment feature lets you align your content to the left, right, and center or justify it.
+The alignment feature lets you align your content to the left or right as well as center or justify it.
 
 ## Demo
 

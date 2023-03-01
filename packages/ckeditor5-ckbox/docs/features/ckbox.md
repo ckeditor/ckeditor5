@@ -44,7 +44,7 @@ CKBox is a file manager and a file uploader that acts as a convenient interface 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
 </info-box>
 
 To use this feature in your application, you must first load the CKBox library and then enable CKBox integration in your rich-text editor instance.
