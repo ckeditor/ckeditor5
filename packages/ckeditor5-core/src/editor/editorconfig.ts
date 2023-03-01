@@ -76,7 +76,33 @@ export interface EditorConfig {
 	 * This configuration option lets you override this behavior and pass different initial data.
 	 * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
 	 *
-	 * See also {@link module:core/editor/editor~Editor.create Editor.create()}.
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
+	 * roots names and values equal to the data that should be set in each root:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create(
+	 * 	// Roots for the editor:
+	 * 	{
+	 * 		header: document.querySelector( '#header' ),
+	 * 		content: document.querySelector( '#content' ),
+	 * 		leftSide: document.querySelector( '#left-side' ),
+	 * 		rightSide: document.querySelector( '#right-side' )
+	 * 	},
+	 * 	// Config:
+	 * 	{
+	 * 		initialData: {
+	 * 			header: '<p>Content for header part.</p>',
+	 * 			content: '<p>Content for main part.</p>',
+	 * 			leftSide: '<p>Content for left-side box.</p>',
+	 * 			rightSide: '<p>Content for right-side box.</p>'
+	 * 		}
+	 * 	}
+	 * )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
 	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
 	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
@@ -85,7 +111,7 @@ export interface EditorConfig {
 	 * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
 	 * plugins can read and/or modify it during initialization.
 	 */
-	initialData?: string;
+	initialData?: string | Record<string, string>;
 
 	/**
 	 * The language of the editor UI and its content.
@@ -160,9 +186,38 @@ export interface EditorConfig {
 	 * used by inputs.
 	 *
 	 * ```ts
-	 * const config = {
-	 * 	placeholder: 'Type some text...'
-	 * };
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		placeholder: 'Type some text...'
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor
+	 * roots names and values equal to the placeholder that should be set in each root:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create(
+	 * 	// Roots for the editor:
+	 * 	{
+	 * 		header: document.querySelector( '#header' ),
+	 * 		content: document.querySelector( '#content' ),
+	 * 		leftSide: document.querySelector( '#left-side' ),
+	 * 		rightSide: document.querySelector( '#right-side' )
+	 * 	},
+	 * 	// Config:
+	 * 	{
+	 * 		placeholder: {
+	 * 			header: 'Type header...',
+	 * 			content: 'Type content...',
+	 * 			leftSide: 'Type left-side...',
+	 * 			rightSide: 'Type right-side...'
+	 * 		}
+	 * 	}
+	 * )
+	 * .then( ... )
+	 * .catch( ... );
 	 * ```
 	 *
 	 * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
@@ -182,7 +237,7 @@ export interface EditorConfig {
 	 *
 	 * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
 	 */
-	placeholder?: string;
+	placeholder?: string | Record<string, string>;
 
 	/**
 	 * The list of plugins to load.
@@ -429,8 +484,8 @@ export interface EditorConfig {
 	 * in the output.
 	 *
 	 * Be careful, especially while using
-	 * {@glink features/markdown Markdown}, {@glink features/general-html-support General HTML Support} or
-	 * {@glink features/html-embed HTML embed} features.
+	 * {@glink features/markdown Markdown}, {@glink features/html/general-html-support General HTML Support} or
+	 * {@glink features/html/html-embed HTML embed} features.
 	 */
 	updateSourceElementOnDestroy?: boolean;
 }
