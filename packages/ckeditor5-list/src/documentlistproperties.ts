@@ -11,6 +11,8 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting';
 import ListPropertiesUI from './listproperties/listpropertiesui';
 
+import './listconfig';
+
 /**
  * The document list properties feature.
  *
