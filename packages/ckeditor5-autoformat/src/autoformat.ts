@@ -225,9 +225,3 @@ function getCallbackFunctionForInlineAutoformat( editor: Editor, attributeKey: s
 		writer.removeSelectionAttribute( attributeKey );
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Autoformat.pluginName ]: Autoformat;
-	}
-}

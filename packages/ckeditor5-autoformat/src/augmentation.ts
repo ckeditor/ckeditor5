@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module autoformat
- */
+import type Autoformat from './autoformat';
 
-export { default as Autoformat } from './autoformat';
-
-import './augmentation';
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Autoformat.pluginName ]: Autoformat;
+	}
+}
