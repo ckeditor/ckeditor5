@@ -13,13 +13,13 @@
  */
 export default interface DropdownPanelFocusable {
 
-    /**
-     * Focuses the view element or first item in view collection on opening dropdown's panel.
-     */
-    focus(): void;
+	/**
+	 * Focuses the view element or first item in view collection on opening dropdown's panel.
+	 */
+	focus(): void;
 
-    /**
-     * Focuses the view element or last item in view collection on opening dropdown's panel.
-     */
-    focusLast(): void;
+	/**
+	 * Focuses the view element or last item in view collection on opening dropdown's panel.
+	 */
+	focusLast(): void;
 }

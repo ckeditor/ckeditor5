@@ -492,7 +492,7 @@ DocumentSelection.prototype.is = function( type: string ): boolean {
 /**
  * Fired when selection range(s) changed.
  *
- * @eventName change:range
+ * @eventName ~DocumentSelection#change:range
  * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
@@ -506,7 +506,7 @@ export type DocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
 /**
  * Fired when selection attribute changed.
  *
- * @eventName change:attribute
+ * @eventName ~DocumentSelection#change:attribute
  * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
@@ -521,7 +521,7 @@ export type DocumentSelectionChangeAttributeEvent = SelectionChangeAttributeEven
 /**
  * Fired when selection marker(s) changed.
  *
- * @eventName change:marker
+ * @eventName ~DocumentSelection#change:marker
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
  * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
  * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
@@ -539,7 +539,7 @@ export type DocumentSelectionChangeMarkerEvent = {
 /**
  * Fired when selection range(s), attribute(s) or marker(s) changed.
  *
- * @eventName change
+ * @eventName ~DocumentSelection#change
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
  * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
  * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and

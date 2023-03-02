@@ -79,7 +79,7 @@ export default class Schema extends ObservableMixin() {
 			 *
 			 * This situation may happen when:
 			 *
-			 * * Two or more plugins called {@link #register `register()`} with the same name. This will usually mean that
+			 * * Two or more plugins called {@link ~Schema#register `register()`} with the same name. This will usually mean that
 			 * there is a collision between plugins which try to use the same element in the model. Unfortunately,
 			 * the only way to solve this is by modifying one of these plugins to use a unique model element name.
 			 * * A single plugin was loaded twice. This happens when it is installed by npm/yarn in two versions
@@ -138,7 +138,7 @@ export default class Schema extends ObservableMixin() {
 			 * Cannot extend an item which was not registered yet.
 			 *
 			 * This error happens when a plugin tries to extend the schema definition of an item which was not
-			 * {@link #register registered} yet.
+			 * {@link ~Schema#register registered} yet.
 			 *
 			 * @param itemName The name of the model element which is being extended.
 			 * @error schema-cannot-extend-missing-item
@@ -1011,16 +1011,16 @@ export default class Schema extends ObservableMixin() {
 }
 
 /**
- * Event fired when the {@link #checkChild} method is called. It allows plugging in
+ * Event fired when the {@link ~Schema#checkChild} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
  *
- * **Note:** The {@link #addChildCheck} method is a more handy way to register callbacks. Internally,
+ * **Note:** The {@link ~Schema#addChildCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
  * in most of the cases.
  *
- * The {@link #checkChild} method fires an event because it is
- * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
+ * The {@link ~Schema#checkChild} method fires an event because it is
+ * {@link module:utils/observablemixin~Observable#decorate decorated} with it. Thanks to that you can
  * use this event in various ways, but the most important use case is overriding standard behavior of the
  * `checkChild()` method. Let's see a typical listener template:
  *
@@ -1073,7 +1073,7 @@ export default class Schema extends ObservableMixin() {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName checkChild
+ * @eventName ~Schema#checkChild
  * @param args The `checkChild()`'s arguments.
  */
 export type SchemaCheckChildEvent = {
@@ -1082,16 +1082,16 @@ export type SchemaCheckChildEvent = {
 };
 
 /**
- * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
+ * Event fired when the {@link ~Schema#checkAttribute} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
  *
- * **Note:** The {@link #addAttributeCheck} method is a more handy way to register callbacks. Internally,
+ * **Note:** The {@link ~Schema#addAttributeCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
  * in most of the cases.
  *
- * The {@link #checkAttribute} method fires an event because it is
- * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
+ * The {@link ~Schema#checkAttribute} method fires an event because it is
+ * {@link module:utils/observablemixin~Observable#decorate decorated} with it. Thanks to that you can
  * use this event in various ways, but the most important use case is overriding the standard behavior of the
  * `checkAttribute()` method. Let's see a typical listener template:
  *
@@ -1141,7 +1141,7 @@ export type SchemaCheckChildEvent = {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName checkAttribute
+ * @eventName ~Schema#checkAttribute
  * @param args The `checkAttribute()`'s arguments.
  */
 export type SchemaCheckAttributeEvent = {

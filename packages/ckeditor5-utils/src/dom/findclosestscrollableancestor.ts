@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/dom/findClosestScrollableAncestor
+ * @module utils/dom/findclosestscrollableancestor
  */
 
 /**

@@ -326,7 +326,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 /**
  * Fired after the watchdog restarts the error in case of a crash.
  *
- * @eventName restart
+ * @eventName ~EditorWatchdog#restart
  */
 export type EditorWatchdogRestartEvent = {
 	name: 'restart';

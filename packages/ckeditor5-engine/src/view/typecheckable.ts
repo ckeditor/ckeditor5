@@ -52,6 +52,7 @@ export default abstract class TypeCheckable {
 	 * imgElement.is( 'element', 'img' ); // -> true
 	 * imgElement.is( 'view:element', 'img' ); // -> same as above, but more precise
 	 * ```
+	 * @label NODE
 	 */
 	public is( type: 'node' | 'view:node' ): this is (
 		Node |
@@ -86,6 +87,8 @@ export default abstract class TypeCheckable {
 	 * element.is( 'element', 'img' ); // -> true if this is an <img> element
 	 * text.is( 'element', 'img' ); -> false
 	 * ```
+	 *
+	 * @label ELEMENT
 	 */
 	public is( type: 'element' | 'view:element' ): this is (
 		Element |
@@ -121,6 +124,8 @@ export default abstract class TypeCheckable {
 	 * attributeElement.is( 'attributeElement', 'b' ); // -> same as above
 	 * text.is( 'element', 'b' ); -> false
 	 * ```
+	 *
+	 * @label ATTRIBUTE_ELEMENT
 	 */
 	public is( type: 'attributeElement' | 'view:attributeElement' ): this is AttributeElement;
 
@@ -147,6 +152,8 @@ export default abstract class TypeCheckable {
 	 * containerElement.is( 'contaienrElement', 'div' ); // -> same as above
 	 * text.is( 'element', 'div' ); -> false
 	 * ```
+	 *
+	 * @label CONTAINER_ELEMENT
 	 */
 	public is( type: 'containerElement' | 'view:containerElement' ): this is ContainerElement | EditableElement | RootEditableElement;
 
@@ -173,6 +180,8 @@ export default abstract class TypeCheckable {
 	 * editableElement.is( 'editableElement', 'div' ); // -> same as above
 	 * text.is( 'element', 'div' ); -> false
 	 * ```
+	 *
+	 * @label EDITABLE_ELEMENT
 	 */
 	public is( type: 'editableElement' | 'view:editableElement' ): this is EditableElement | RootEditableElement;
 
@@ -199,6 +208,8 @@ export default abstract class TypeCheckable {
 	 * emptyElement.is( 'emptyElement', 'img' ); // -> same as above
 	 * text.is( 'element', 'img' ); -> false
 	 * ```
+	 *
+	 * @label EMPTY_ELEMENT
 	 */
 	public is( type: 'emptyElement' | 'view:emptyElement' ): this is EmptyElement;
 
@@ -225,6 +236,8 @@ export default abstract class TypeCheckable {
 	 * rawElement.is( 'rawElement', 'img' ); // -> same as above
 	 * text.is( 'img' ); -> false
 	 * ```
+	 *
+	 * @label RAW_ELEMENT
 	 */
 	public is( type: 'rawElement' | 'view:rawElement' ): this is RawElement;
 
@@ -252,6 +265,8 @@ export default abstract class TypeCheckable {
 	 * rootEditableElement.is( 'rootElement', 'div' ); // -> same as above
 	 * text.is( 'element', 'div' ); -> false
 	 * ```
+	 *
+	 * @label ROOT_ELEMENT
 	 */
 	public is( type: 'rootElement' | 'view:rootElement' ): this is RootEditableElement;
 
@@ -278,6 +293,8 @@ export default abstract class TypeCheckable {
 	 * uiElement.is( 'uiElement', 'span' ); // -> same as above
 	 * text.is( 'element', 'span' ); -> false
 	 * ```
+	 *
+	 * @label UI_ELEMENT
 	 */
 	public is( type: 'uiElement' | 'view:uiElement' ): this is UIElement;
 
@@ -294,6 +311,8 @@ export default abstract class TypeCheckable {
 	 * text.is( 'element' ); // -> false
 	 * text.is( 'range' ); // -> false
 	 * ```
+	 *
+	 * @label TEXT
 	 */
 	public is( type: '$text' | 'view:$text' ): this is Text;
 
@@ -308,6 +327,8 @@ export default abstract class TypeCheckable {
 	 * docFrag.is( 'element' ); // -> false
 	 * docFrag.is( 'node' ); // -> false
 	 * ```
+	 *
+	 * @label DOCUMENT_FRAGMENT
 	 */
 	public is( type: 'documentFragment' | 'view:documentFragment' ): this is DocumentFragment;
 
@@ -325,6 +346,8 @@ export default abstract class TypeCheckable {
 	 *
 	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxy'` type is still
 	 * accepted for backward compatibility.
+	 *
+	 * @label TEXT_PROXY
 	 */
 	public is( type: '$textProxy' | 'view:$textProxy' ): this is TextProxy;
 
@@ -339,6 +362,8 @@ export default abstract class TypeCheckable {
 	 * position.is( 'element' ); // -> false
 	 * position.is( 'range' ); // -> false
 	 * ```
+	 *
+	 * @label POSITION
 	 */
 	public is( type: 'position' | 'view:position' ): this is Position;
 
@@ -353,6 +378,8 @@ export default abstract class TypeCheckable {
 	 * range.is( 'element' ); // -> false
 	 * range.is( 'selection' ); // -> false
 	 * ```
+	 *
+	 * @label RANGE
 	 */
 	public is( type: 'range' | 'view:range' ): this is Range;
 
@@ -368,6 +395,8 @@ export default abstract class TypeCheckable {
 	 * selection.is( 'element' ); // -> false
 	 * selection.is( 'range' ); // -> false
 	 * ```
+	 *
+	 * @label SELECTION
 	 */
 	public is( type: 'selection' | 'view:selection' ): this is Selection | DocumentSelection;
 
@@ -384,11 +413,15 @@ export default abstract class TypeCheckable {
 	 * docSelection.is( 'element' ); // -> false
 	 * docSelection.is( 'node' ); // -> false
 	 * ```
+	 *
+	 * @label DOCUMENT_SELECTION
 	 */
 	public is( type: 'documentSelection' | 'view:documentSelection' ): this is DocumentSelection;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/element~Element} or its subclass and has the specified `name`.
+	 *
+	 * @label ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'element' | 'view:element', name: N ): this is (
 		Element |
@@ -403,12 +436,16 @@ export default abstract class TypeCheckable {
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/attributeelement~AttributeElement} and has the specified `name`.
+	 *
+	 * @label ATTRIBUTE_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'attributeElement' | 'view:attributeElement', name: N ): this is AttributeElement & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/containerElement~ContainerElement}
+	 * Checks whether the object is of type {@link module:engine/view/containerelement~ContainerElement}
 	 * or its subclass and has the specified `name`.
+	 *
+	 * @label CONTAINER_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'containerElement' | 'view:containerElement', name: N ): this is (
 		ContainerElement |
@@ -417,8 +454,10 @@ export default abstract class TypeCheckable {
 	) & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/editableElement~EditableElement}
+	 * Checks whether the object is of type {@link module:engine/view/editableelement~EditableElement}
 	 * or its subclass and has the specified `name`.
+	 *
+	 * @label EDITABLE_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'editableElement' | 'view:editableElement', name: N ): this is (
 		EditableElement |
@@ -427,21 +466,29 @@ export default abstract class TypeCheckable {
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/emptyelement~EmptyElement} has the specified `name`.
+	 *
+	 * @label EMPTY_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'emptyElement' | 'view:emptyElement', name: N ): this is EmptyElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/rawelement~RawElement} and has the specified `name`.
+	 *
+	 * @label RAW_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'rawElement' | 'view:rawElement', name: N ): this is RawElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/rooteditableelement~RootEditableElement} and has the specified `name`.
+	 *
+	 * @label ROOT_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'rootElement' | 'view:rootElement', name: N ): this is RootEditableElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/uielement~UIElement} and has the specified `name`.
+	 *
+	 * @label UI_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'uiElement' | 'view:uiElement', name: N ): this is UIElement & { name: N };
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/ui/collapsibleview
+ * @module list/listproperties/ui/collapsibleview
  */
 
 import type { Locale } from 'ckeditor5/src/utils';

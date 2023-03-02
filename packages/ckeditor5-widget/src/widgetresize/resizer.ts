@@ -477,22 +477,22 @@ export default class Resizer extends ObservableMixin() {
 }
 
 /**
- * @eventName begin
+ * @eventName ~Resizer#begin
  */
 export type ResizerBeginEvent = DecoratedMethodEvent<Resizer, 'begin'>;
 
 /**
- * @eventName cancel
+ * @eventName ~Resizer#cancel
  */
 export type ResizerCancelEvent = DecoratedMethodEvent<Resizer, 'cancel'>;
 
 /**
- * @eventName commit
+ * @eventName ~Resizer#commit
  */
 export type ResizerCommitEvent = DecoratedMethodEvent<Resizer, 'commit'>;
 
 /**
- * @eventName updateSize
+ * @eventName ~Resizer#updateSize
  */
 export type ResizerUpdateSizeEvent = DecoratedMethodEvent<Resizer, 'updateSize'>;
 

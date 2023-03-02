@@ -26,7 +26,7 @@ import type InlineEditorUIView from './inlineeditoruiview';
 /**
  * The inline editor UI class.
  *
- * @extends module:core/editor/editorui~EditorUI
+ * @extends module:ui/editorui/editorui~EditorUI
  */
 export default class InlineEditorUI extends EditorUI {
 	/**

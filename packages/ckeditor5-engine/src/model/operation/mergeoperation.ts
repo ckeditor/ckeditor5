@@ -28,7 +28,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  */
 export default class MergeOperation extends Operation {
 	/**
-	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link ~#targetPosition}.
+	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link #targetPosition}.
 	 */
 	public sourcePosition: Position;
 
@@ -51,7 +51,7 @@ export default class MergeOperation extends Operation {
 	 * Creates a merge operation.
 	 *
 	 * @param sourcePosition Position inside the merged element. All nodes from that
-	 * element after that position will be moved to {@link ~#targetPosition}.
+	 * element after that position will be moved to {@link #targetPosition}.
 	 * @param howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param graveyardPosition Position in graveyard to which the merged element will be moved.

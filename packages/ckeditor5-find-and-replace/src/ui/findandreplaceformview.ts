@@ -769,7 +769,7 @@ export default class FindAndReplaceFormView extends View {
 /**
  * Fired when the find next button is triggered.
  *
- * @eventName findNext
+ * @eventName ~FindAndReplaceFormView#findNext
  * @param data The event data.
  */
 export type FindNextEvent = {
@@ -785,7 +785,7 @@ export type FindNextEventData = FindEventBaseData & {
 /**
  * Fired when the find previous button is triggered.
  *
- * @eventName findPrevious
+ * @eventName ~FindAndReplaceFormView#findPrevious
  * @param data The event data.
  */
 export type FindPreviousEvent = {
@@ -803,7 +803,7 @@ export type FindEventBaseData = {
 /**
  * Fired when the replace button is triggered.
  *
- * @eventName replace
+ * @eventName ~FindAndReplaceFormView#replace
  * @param data The event data.
  */
 export type ReplaceEvent = {
@@ -818,7 +818,7 @@ export type ReplaceEventData = FindEventBaseData & {
 /**
  * Fired when the replaceAll button is triggered.
  *
- * @eventName replaceAll
+ * @eventName ~FindAndReplaceFormView#replaceAll
  * @param data The event data.
  */
 export type ReplaceAllEvent = {

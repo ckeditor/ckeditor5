@@ -84,7 +84,7 @@ export interface CompositionEventData extends DomEventData<CompositionEvent> {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionstart
+ * @eventName module:engine/view/document~Document#compositionstart
  * @param data Event data.
  */
 export type ViewDocumentCompositionStartEvent = {
@@ -101,7 +101,7 @@ export type ViewDocumentCompositionStartEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionupdate
+ * @eventName module:engine/view/document~Document#compositionupdate
  * @param data Event data.
  */
 export type ViewDocumentCompositionUpdateEvent = {
@@ -118,7 +118,7 @@ export type ViewDocumentCompositionUpdateEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName compositionend
+ * @eventName module:engine/view/document~Document#compositionend
  * @param data Event data.
  */
 export type ViewDocumentCompositionEndEvent = {

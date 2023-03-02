@@ -521,9 +521,9 @@ export type { Marker };
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
  * @see module:engine/model/liverange~LiveRange#event:change:range
- * @eventName change:range
+ * @eventName ~Marker#change:range
  */
-export type MarkerCollectionChangeRangeEvent = LiveRangeChangeRangeEvent;
+export type MarkerChangeRangeEvent = LiveRangeChangeRangeEvent;
 
 /**
  * Fired whenever change on {@link module:engine/model/document~Document} is done inside {@link ~Marker#_liveRange marker range}.
@@ -534,19 +534,19 @@ export type MarkerCollectionChangeRangeEvent = LiveRangeChangeRangeEvent;
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
  * @see module:engine/model/liverange~LiveRange#event:change:content
- * @eventName change:content
+ * @eventName ~Marker#change:content
  */
 export type MarkerCollectionChangeContentEvent = LiveRangeChangeContentEvent;
 
 /**
  * Describes `change:range` or `change:content` event.
  */
-export type MarkerCollectionChangeEvent = LiveRangeChangeEvent;
+export type MarkerChangeEvent = LiveRangeChangeEvent;
 
 /**
  * Fired whenever marker is added, updated or removed from `MarkerCollection`.
  *
- * @eventName update
+ * @eventName ~MarkerCollection#update
  * @param marker Updated Marker.
  * @param oldRange Marker range before the update. When is not defined it
  * means that marker is just added.

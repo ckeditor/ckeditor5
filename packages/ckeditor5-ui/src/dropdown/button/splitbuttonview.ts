@@ -239,7 +239,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	}
 
 	/**
-	 * Focuses the {@link #actionView#element} of the action part of split button.
+	 * Focuses the {@link module:ui/button/buttonview~ButtonView#element} of the action part of split button.
 	 */
 	public focus(): void {
 		this.actionView.focus();

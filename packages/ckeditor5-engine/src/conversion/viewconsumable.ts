@@ -51,17 +51,25 @@ export default class ViewConsumable {
 	 */
 	private _consumables = new Map<Node | DocumentFragment, ViewElementConsumables | boolean>();
 
+	/**
+	 * Adds {@link module:engine/view/text~Text text node} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
+	 *
+	 * ```ts
+	 * viewConsumable.add( textNode ); // Adds text node to consume.
+	 * viewConsumable.add( docFragment ); // Adds document fragment to consume.
+	 * ```
+	 *
+	 * See also: {@link #add:ELEMENT `add( element, consumables )`}.
+	 *
+	 * @label TEXT_OR_FRAGMENT
+	 */
 	public add(
-		element: Text | DocumentFragment
-	): void;
-	public add(
-		element: Element,
-		consumables: Consumables
+		textOrDocumentFragment: Text | DocumentFragment
 	): void;
 
 	/**
-	 * Adds {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
+	 * Adds {@link module:engine/view/element~Element view element} as ready to be consumed.
 	 *
 	 * ```ts
 	 * viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
@@ -70,8 +78,6 @@ export default class ViewConsumable {
 	 * viewConsumable.add( p, { styles: 'color' } ); // Adds element's style
 	 * viewConsumable.add( p, { attributes: 'name', styles: 'color' } ); // Adds attribute and style.
 	 * viewConsumable.add( p, { classes: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
-	 * viewConsumable.add( textNode ); // Adds text node to consume.
-	 * viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 * ```
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
@@ -82,12 +88,20 @@ export default class ViewConsumable {
 	 * viewConsumable.add( p, { styles: 'color' } ); // This is properly handled style.
 	 * ```
 	 *
+	 * See also: {@link #add:TEXT_OR_FRAGMENT `add( textOrDocumentFragment )`}.
+	 *
+	 * @label ELEMENT
 	 * @param consumables Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param consumables.name If set to true element's name will be included.
 	 * @param consumables.attributes Attribute name or array of attribute names.
 	 * @param consumables.classes Class name or array of class names.
 	 * @param consumables.styles Style name or array of style names.
 	 */
+	public add(
+		element: Element,
+		consumables: Consumables
+	): void;
+
 	public add(
 		element: Node | DocumentFragment,
 		consumables?: Consumables
@@ -359,7 +373,7 @@ type ConsumableType = ( typeof CONSUMABLE_TYPES )[ number ];
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
  */
-class ViewElementConsumables {
+export class ViewElementConsumables {
 	public readonly element: Node | DocumentFragment;
 
 	/**
