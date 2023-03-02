@@ -10,3 +10,5 @@
 export { default as Alignment } from './alignment';
 export { default as AlignmentEditing } from './alignmentediting';
 export { default as AlignmentUI } from './alignmentui';
+
+import './augmentation';
