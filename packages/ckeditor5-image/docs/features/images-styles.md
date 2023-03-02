@@ -6,6 +6,8 @@ modified_at: 2021-06-17
 ---
 {@snippet features/build-image-source}
 
+The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
+
 # Image styles
 
 ## Overview
