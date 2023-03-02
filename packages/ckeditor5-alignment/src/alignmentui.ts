@@ -152,9 +152,3 @@ export default class AlignmentUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AlignmentUI.pluginName ]: AlignmentUI;
-	}
-}
