@@ -6,17 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The code block feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
-
-Code blocks is a perfect feature to present programming- or software-related issues in an accessible, attractive form that is easily readable. A great tool for education, support documents or training content, it visually presents code listings, snippets or software elements.
-
-<info-box>
-	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
-</info-box>
-
-<info-box info>
-	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The code block feature lets you insert and edit blocks of pre-formatted code. It is perfect for presenting programming-related content in an attractive, easy-to-read form.
 
 ## Demo
 
@@ -28,13 +18,7 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/ic
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-Here are some CKEditor 5 features that you may find helpfully similar:
-* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 ## Configuring code block languages
 
@@ -137,6 +121,10 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 
 ## Installation
 
+<info-box info>
+	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
 To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
 
 ```
@@ -159,6 +147,18 @@ ClassicEditor
 
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+</info-box>
+
+## Related features
+
+Here are some CKEditor 5 features that you may find helpfully similar:
+* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+
+<info-box>
+	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
 ## Common API
@@ -217,4 +217,4 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block).
