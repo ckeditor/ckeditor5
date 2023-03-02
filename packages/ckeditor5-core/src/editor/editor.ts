@@ -547,6 +547,7 @@ export default abstract class Editor extends ObservableMixin() {
 		this.editing.view.focus();
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * Creates and initializes a new editor instance.
 	 *
