@@ -7,16 +7,7 @@ order: 30
 
 # Image captions
 
-The {@link module:image/imagecaption~ImageCaption} plugin adds support for image captions:
-
-```html
-<figure class="image">
-	<img src="..." alt="...">
-	<figcaption>A caption goes here...</figcaption>
-</figure>
-```
-
-By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one. See the demo below.
+The {@link module:image/imagecaption~ImageCaption} plugin lets you add captions to images by adding support for the `<figcaption>` element.
 
 ## Demo
 
@@ -32,9 +23,22 @@ Click on an image and use the contextual image toolbar {@icon @ckeditor/ckeditor
 	You can change the placement of the image caption by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link installation/advanced/content-styles content styles} for the `.ck-content .image > figcaption` style. Changing it to `caption-side: top` will display the caption above the image.
 </info-box>
 
+## Additional feature information
+
+The {@link module:image/imagecaption~ImageCaption} plugin adds support for the `<figcaption>` element:
+
+```html
+<figure class="image">
+	<img src="..." alt="...">
+	<figcaption>A caption goes here...</figcaption>
+</figure>
+```
+
+By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one.
+
 ## Installation
 
-This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
+This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integration uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 
@@ -49,4 +53,4 @@ The {@link module:image/imagecaption~ImageCaption} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
