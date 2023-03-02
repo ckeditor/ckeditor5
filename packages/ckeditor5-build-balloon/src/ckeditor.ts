@@ -8,7 +8,7 @@ import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/balloonedi
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
