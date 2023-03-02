@@ -35,9 +35,3 @@ export default class Underline extends Plugin {
 		return 'Underline';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Underline.pluginName ]: Underline;
-	}
-}
