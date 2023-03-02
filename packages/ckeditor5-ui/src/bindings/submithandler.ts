@@ -56,7 +56,7 @@ export default function submitHandler( { view }: { view: View } ): void {
 /**
  * Fired by {@link ~submitHandler} helper.
  *
- * @eventName submit
+ * @eventName ~submitHandler#submit
  */
 export type SubmitHandlerEvent = {
 	name: 'submit';
