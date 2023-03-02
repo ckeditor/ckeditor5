@@ -5,33 +5,13 @@ order: 10
 modified_at: 2022-05-12
 ---
 
-# Lists
+# Ordered and unordered lists
 
-The list feature lets you create ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
-
-Lists are useful when you want to emphasize selected information, highlight a series of steps, enumerate items of a collection. They draw the reader's attention and, just like {@link features/block-quote block quotes} or {@link features/indent indentation}, give the text a structure and breathing room. They help visually separate passages for a better reading experience and make skimming for information easier.
-
-You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
-
-<info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
-
-	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-
-	If you wish to switch to the document list feature, you need to {@link features/document-lists#installation install it} first.
-</info-box>
+The list feature lets you create ordered (numbered) and unordered (bulleted) lists. You can use ordered lists where the order of the items matters (as in instructions) and unordered lists where it is not that important (as in a list of ingredients).
 
 {@snippet features/lists-source}
 
-## Ordered and unordered lists
-
-The {@link module:list/list~List list} feature lets you create ordered (numbered) and unordered (bulleted) lists.
-
-An unordered (bulleted) list can represent items where the order is not important, for example, a list of ingredients required for preparing a dish or a drink.
-
-An ordered (numbered) list can be used if the order of the items matters, for example, when creating an instruction. Here, the sequence of steps that must be done is important.
-
-### Demo
+## Demo
 
 Use the editor below to see the CKEditor 5 list feature in action. Toolbar buttons can be used to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
 
@@ -46,9 +26,11 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
+After reading this guide, check out the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
+
 ## List properties
 
-Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
+In addition to the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
@@ -82,7 +64,7 @@ In the editor below, notice how the ordering is continued in the second list. Yo
 
 ### Reversed list
 
-The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in a disassembling instruction in an owners manual).
+The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
 When this feature is {@link module:list/listproperties~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
 
@@ -100,14 +82,15 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/t
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
-## Related features
-
-These features also provide similar functionality:
-* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
-
 ## Installation
+
+<info-box info>
+	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
+
+	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+
+	If you wish to switch to the document list feature, you need to {@link features/document-lists#installation install it} first.
+</info-box>
 
 ### List feature
 
@@ -178,6 +161,13 @@ ClassicEditor
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
+## Related features
+
+These features provide similar functionality:
+* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
+
 ## Common API
 
 The {@link module:list/list~List} plugin registers:
@@ -197,8 +187,8 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
     ```
     The available types are:
 
-    * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
-    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
+    * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
+    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
 * The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
@@ -216,4 +206,4 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).
