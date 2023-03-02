@@ -8,11 +8,11 @@ modified_at: 2021-06-17
 
 # Images in CKEditor 5 (overview)
 
-CKEditor 5 comes with various tools to work with images. The editor allows inserting (uploading), resizing, styling, captioning and linking images. All these features work both with block, inline, and responsive images out-of-the-box.
-
-To see the all image features in action, check out the [**demo**](#demo) below. To learn more about individual plugins (sub-features) in the image ecosystem, see the [**Image features**](#image-features) section.
+CKEditor 5 comes with various tools to insert (upload), resize, style, caption, and link images. All these features work out of the box with block, inline, and responsive images alike.
 
 ## Demo
+
+To see all the image features in action, check out the demo below. To learn more about individual plugins (sub-features) in the image ecosystem, see the [**Image features**](#image-features) section.
 
 {@snippet features/image-full}
 
@@ -27,12 +27,12 @@ The base image feature does not support any user interface for inserting or mana
 
 ## Image features
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor capabilities:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor's capabilities:
 
 * The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
 * {@link features/images-captions Image captions} allow adding descriptive text under the image.
-* The {@link features/images-styles image styles} help control the placement, size and other characteristics with predefined styles.
-* The {@link features/images-text-alternative text alternative} tag aids accessibility and SEO, provides additional image description and supports better navigation.
+* The {@link features/images-styles image styles} help control the placement, size, and other characteristics with predefined styles.
+* The {@link features/images-text-alternative text alternative} tag aids accessibility and SEO, provides additional image description, and supports better navigation.
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting an image via URL} and even {@link features/images-inserting#inserting-images-via-source-url via pasting a URL into the editor} along with custom integrations.
@@ -207,4 +207,4 @@ You can also use the **Insert paragraph** handles on the bottom or top edge of t
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
