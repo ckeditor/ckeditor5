@@ -264,7 +264,7 @@ CKEditor 5 implements its custom data model, which does not map to the DOM 1:1. 
 We can do it by defining the model's schema. We will just extend the text node's schema to accept our abbreviation attribute.
 
 <info-box>
-	Read more about the {@link framework/guides/architecture/editing-engine#schema schema}.
+	Read more about the {@link framework/architecture/editing-engine#schema schema}.
 </info-box>
 
 Update the `AbbreviationEditing` plugin with this definition.
@@ -296,7 +296,7 @@ export default class AbbreviationEditing extends Plugin {
 Converters tell the editor how to convert the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
-	Read more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
+	Read more about the {@link framework/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
 We will need to convert the model abbreviation attribute into an HTML element in the view (downcast) and vice versa (upcast) with the use of our conversion helpers(`attributeToElement()` and `elementToAttribute()`). We just need to define what the model and the view is supposed to look like in both conversions.
@@ -384,7 +384,7 @@ Thanks to the upcast conversion, our abbreviation added in the `index.html` shou
 We will create a simple command to insert a text with our abbreviation attribute into the model.
 
 <info-box>
-	Read more about {@link framework/guides/architecture/core-editor-architecture#commands commands}.
+	Read more about {@link framework/architecture/core-editor-architecture#commands commands}.
 </info-box>
 
 We will pass an object with the title value and the abbreviation value into the command. We will use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We will also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we will remove that and replace it with our abbreviation.
@@ -463,7 +463,7 @@ The UI for this plugin will consist of a dialog box with a form, which will use 
 
 We now need to create a dialog box with a form, which will include two input fields (for the abbreviation and the title), and the 'submit' and 'cancel' buttons. We will do it in a separate view. Create a new file `abbreviationview.js` in the `abbreviation/` directory.
 
-We need to import a couple of things from our UI library, most importantly the {@link framework/guides/architecture/ui-library#view view} class. We will also get the `ButtonView` and `LabeledInputView`, as well as useful helper functions - `createLabeledInputText()` and `submitHandler()`.
+We need to import a couple of things from our UI library, most importantly the {@link framework/architecture/ui-library#view view} class. We will also get the `ButtonView` and `LabeledInputView`, as well as useful helper functions - `createLabeledInputText()` and `submitHandler()`.
 We will use 'check' and 'cancel' icons for our buttons.
 
 Let's create our `FromView` class, where we will set a template for our abbreviation form.

@@ -18,7 +18,7 @@ import HtmlEmbedUI from './htmlembedui';
  *
  * It allows inserting HTML snippets directly into the editor.
  *
- * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
+ * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -62,8 +62,8 @@ export default class HtmlEmbed extends Plugin {
  * The function responsible for sanitizing the HTML needs to be specified in
  * {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
  *
- * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
- * the {@glink features/html-embed HTML embed} feature guide.
+ * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+ * the {@glink features/html/html-embed HTML embed} feature guide.
  *
  * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews=false]
  */
@@ -73,8 +73,8 @@ export default class HtmlEmbed extends Plugin {
  *
  * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
  *
- * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
- * the {@glink features/html-embed HTML embed} feature guide.
+ * Read more about the security aspect of this feature in the {@glink features/html/html-embed#security "Security"} section of
+ * the {@glink features/html/html-embed HTML embed} feature guide.
  *
  * The function receives the input HTML (as a string), and should return an object
  * that matches the {@link module:html-embed/htmlembed~HtmlEmbedSanitizeOutput} interface.
@@ -112,7 +112,7 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
- * An output (safe) HTML that will be inserted into the {@glink framework/guides/architecture/editing-engine editing view}.
+ * An output (safe) HTML that will be inserted into the {@glink framework/architecture/editing-engine editing view}.
  *
  * @member {String} module:html-embed/htmlembed~HtmlEmbedSanitizeOutput#html
  */

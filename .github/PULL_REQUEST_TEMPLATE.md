@@ -1,4 +1,4 @@
-### Suggested merge commit message ([convention](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/git-commit-message-convention.html))
+### Suggested merge commit message ([convention](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/git-commit-message-convention.html))
 
 Type: Message. Closes #000.
 

@@ -22,7 +22,7 @@ Listed below are the most important changes that require your attention when upg
 
 Prior to version 27.1.0 inserting a table into another table was not allowed.
 
-If you wish to bring back this restriction, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
+If you wish to bring back this restriction, see the {@link features/tables#disallow-nesting-tables#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
 
 ### Disallowing nesting block quotes
 
@@ -50,13 +50,13 @@ From v27.0.0, the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `C
 
 The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired nor stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
 
-You can read about the whole input pipeline in details in the {@link framework/guides/deep-dive/clipboard#input-pipeline Clipboard deep-dive guide}.
+You can read about the whole input pipeline in details in the {@link framework/deep-dive/clipboard#input-pipeline Clipboard deep-dive guide}.
 
 ### The `view.Document` event bubbling
 
 CKEditor v27.0.0 introduces bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. This allowed us to re-prioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). These listeners should be reviewed in terms of when they should be executed (in what context/element/phase).
 
-Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#view-events-bubbling Event system guide}.
+Read more about bubbling events in the {@link framework/deep-dive/event-system#view-events-bubbling Event system guide}.
 
 #### The `delete` event
 
@@ -72,7 +72,7 @@ Take a look at the list of `delete` listeners across the core editor features an
 | Widget             | High                    | `$root` @ Normal           |
 | Delete             | Normal                  | `$document` @ Low          |
 
-Looking at this table, even if your listener was listening on the `highest` priority, it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the {@link framework/guides/deep-dive/event-system#listening-to-bubbling-events default context} for registering listeners.
+Looking at this table, even if your listener was listening on the `highest` priority, it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the {@link framework/deep-dive/event-system#listening-to-bubbling-events default context} for registering listeners.
 
 Here is an example of changes you may need for proper integration with the block quote feature:
 

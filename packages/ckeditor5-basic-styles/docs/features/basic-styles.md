@@ -23,7 +23,7 @@ You may apply basic formatting options with toolbar buttons (pictured below) or 
 
 ## Available text styles
 
-| Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
+| Style feature | {@link framework/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
 |-----|---|-----|-----|
 | {@link module:basic-styles/bold~Bold} | `'bold'` | `'bold'` | `<strong>bold</strong>` |
 | {@link module:basic-styles/italic~Italic} | `'italic'` | `'italic'` | `<i>italic</i>` |
@@ -127,7 +127,7 @@ editor.execute( 'bold' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

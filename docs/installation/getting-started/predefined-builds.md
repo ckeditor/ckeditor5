@@ -411,7 +411,7 @@ Then bundle it together with your app.
 Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 
 <info-box>
-	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
 </info-box>
 
 ```html
@@ -1019,7 +1019,7 @@ The table below presents the list of all plugins included in various builds.
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table.html">Table, TableToolbar</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html">Table, TableToolbar</a></td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>

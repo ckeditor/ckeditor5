@@ -22,7 +22,7 @@ Use the editor below to see the source editing plugin in action. Toggle the sour
 
 The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in the toolbar are high-level ones.
 
-Changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
+Changes made to the document source will be applied to the editor's {@link framework/architecture/editing-engine data model} only if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
 ## Markdown source view
 
@@ -91,7 +91,7 @@ The {@link module:source-editing/sourceediting~SourceEditing} plugin registers:
 * The `'sourceEditing'` UI button component.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

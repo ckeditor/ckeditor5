@@ -12,7 +12,7 @@ Together with the {@link api/engine editing engine} and the {@link api/core core
 
 ## Documentation
 
-See the introduction to the {@link framework/guides/architecture/ui-library UI library's architecture}.
+See the introduction to the {@link framework/architecture/ui-library UI library's architecture}.
 
 You can also browse the API documentation of this package by using the module tree on the left.
 

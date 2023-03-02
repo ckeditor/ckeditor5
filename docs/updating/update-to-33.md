@@ -137,7 +137,7 @@ From now on, additional plugins will be required when the following CKEditor 5 c
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/guides/architecture/editing-engine#model model} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
 
@@ -180,7 +180,7 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 	Please note that the new syntax is available both in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers.
 </info-box>
 
-### New downcast converters for the {@link features/table table feature}
+### New downcast converters for the {@link features/tables table feature}
 
 The conversion brought by the {@link module:table/tableediting~TableEditing} plugin has been refined in this version and now relies heavily on the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} downcast conversion helper.
 
@@ -266,7 +266,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 The new {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper was introduced to streamline downcast conversion to complex view structures. Unlike {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement}, it allows placing children of an element in configurable slots in the view structure without the need to develop complex converters using low–level event–driven API.
 
-To learn more about this new helper, please refer to the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API documentation} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official conversion guide} with plenty of examples and details.
+To learn more about this new helper, please refer to the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API documentation} or check out the {@link framework/deep-dive/conversion/downcast#converting-element-to-structure official conversion guide} with plenty of examples and details.
 
 ### New API to trigger downcast (re)conversion
 

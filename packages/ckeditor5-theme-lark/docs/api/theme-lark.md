@@ -10,7 +10,7 @@ This package implements Lark theme &mdash; the default CKEditor 5 theme.
 
 ## Documentation
 
-See the {@link framework/guides/theme-customization theme customization guide} and the {@link examples/theme-customization example of Lark theme customization}.
+See the {@link framework/theme-customization theme customization guide} and the {@link examples/theme-customization example of Lark theme customization}.
 
 ## Installation
 
