@@ -14,8 +14,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-/* global console */
-
 describe( 'insertObject()', () => {
 	let model, doc, root, schema;
 	let insertContentSpy;
@@ -355,8 +353,6 @@ describe( 'insertObject()', () => {
 
 	describe( 'returned affected range of insert operation', () => {
 		it( 'should return collapsed range when object could not be inserted', () => {
-			const stub = testUtils.sinon.stub( console, 'warn' );
-
 			schema.register( 'disallowedBlockWidget', {
 				isObject: true
 			} );
@@ -367,8 +363,6 @@ describe( 'insertObject()', () => {
 
 			expect( affectedRange.isCollapsed ).to.be.true;
 			expect( getData( model ) ).to.equalMarkup( '[]' );
-
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should return affected range when inserting block object', () => {
@@ -479,7 +473,6 @@ describe( 'insertObject()', () => {
 				isObject: true
 			} );
 
-			const stub = testUtils.sinon.stub( console, 'warn' );
 			const widget = new Element( 'anotherBlockWidget', [], [] );
 
 			model.insertObject( widget );
@@ -488,7 +481,6 @@ describe( 'insertObject()', () => {
 
 			sinon.assert.calledOnce( insertContentSpy );
 			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should insert an object in an empty document', () => {

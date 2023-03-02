@@ -202,12 +202,13 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
-	// @if CK_DEBUG //	_reportInfiniteLoop() {
+	/* istanbul ignore next */
+	private _reportInfiniteLoop() {
 	// @if CK_DEBUG //		throw new Error(
 	// @if CK_DEBUG //			'Selection change observer detected an infinite rendering loop.\n\n' +
 	// @if CK_DEBUG //	 		'⚠️⚠️ Report this error on https://github.com/ckeditor/ckeditor5/issues/11658.'
 	// @if CK_DEBUG //		);
-	// @if CK_DEBUG //	}
+	}
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
@@ -257,8 +258,7 @@ export default class SelectionObserver extends Observer {
 			// Most probably you try to put the selection in the position which is not allowed
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
 			// which a loopback through a model tries to re-render the wrong selection and again.
-			//
-			// @if CK_DEBUG // this._reportInfiniteLoop();
+			this._reportInfiniteLoop();
 
 			return;
 		}

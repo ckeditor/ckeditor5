@@ -12,9 +12,6 @@ import Position from '../../../src/model/position';
 
 import { setData, getData, parse, stringify } from '../../../src/dev-utils/model';
 import Range from '../../../src/model/range';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-/* global console */
 
 describe( 'DataController utils', () => {
 	let model, doc, root;
@@ -2637,7 +2634,6 @@ describe( 'DataController utils', () => {
 				// <paragraph>{Ba}r</paragraph>
 				//
 				// <paragraph>{Ba}rfoo</paragraph>
-				const stub = testUtils.sinon.stub( console, 'warn' );
 
 				model.schema.getNearestSelectionRange = () => null;
 				setData( model, '<paragraph>[]foo</paragraph>' );
@@ -2653,8 +2649,6 @@ describe( 'DataController utils', () => {
 				expect( expectedMarker ).to.exist;
 				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
-
-				sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 			} );
 
 			describe( 'affected range', () => {
