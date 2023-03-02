@@ -5,13 +5,7 @@ category: features
 
 {@snippet features/build-link-source}
 
-The link feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
-
-Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses automatically turn into working links.
 
 ## Demo
 
@@ -25,7 +19,7 @@ Use the Link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 
 ## Typing around links
 
-CKEditor 5 allows for typing both at inner and outer boundaries of links to make the editing easier for the users.
+CKEditor 5 allows for typing both at the inner and outer boundaries of links to make editing easier for the users.
 
 **To type inside a link**, move the caret to its (start or end) boundary. As long as the link remains highlighted (by default: blue), typing and applying formatting will be done within its boundaries:
 
@@ -41,7 +35,7 @@ By default, all links created in the editor have the `href="..."` attribute in t
 
 There are two types of link decorators you can use:
 
-* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against pre–defined rules and manage their attributes based on the results.
+* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against pre-defined rules and manage their attributes based on the results.
 * [**Manual**](#adding-attributes-to-links-using-the-ui-manual-decorators) &ndash; They allow users to control link attributes individually using the editor UI.
 
 <info-box>
@@ -90,7 +84,7 @@ ClassicEditor
 
 Decorators are configured through definitions provided in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration option.
 
-Each decorator definition must have its own unique name. In case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/architecture/editing-engine#text-attributes document model}.
+Each decorator definition must have a unique name. In the case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/architecture/editing-engine#text-attributes document model}.
 
 <info-box warning>
 	Link decorators work independently of one another and no conflict resolution mechanism exists. For example, configuring the `target` attribute using both an automatic and a manual decorator at the same time could end up with quirky results. The same applies if multiple manual or automatic decorators were defined for the same attribute.
@@ -188,7 +182,7 @@ ClassicEditor
 	When enabled, this feature also provides the **email address auto-detection** feature. When you submit `hello@example.com` in your content, the plugin will automatically change it to `mailto:hello@example.com`.
 </info-box>
 
-#### Adding attributes to links based on pre–defined rules (automatic decorators)
+#### Adding attributes to links based on pre-defined rules (automatic decorators)
 
 Automatic link decorators match all links in the editor content against a {@link module:link/link~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/architecture/editing-engine#conversion data downcast} only.
 
@@ -221,7 +215,7 @@ ClassicEditor
 
 #### Adding attributes to links using the UI (manual decorators)
 
-Manual link decorators are represented in the link editing balloon as switch buttons that the users can use to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/link~LinkDecoratorManualDefinition definition} contains a human–readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
+Manual link decorators are represented in the link editing balloon as switch buttons that the users can use to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/link~LinkDecoratorManualDefinition definition} contains a human-readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
 
 To configure a "Downloadable" switch button in the link editing balloon that adds the `download="file"` attribute to the link when turned on, add the following definition to {@link module:link/link~LinkConfig#decorators `config.link.decorators`}:
 
@@ -259,7 +253,7 @@ ClassicEditor
 
 Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
 
-To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
+To use the autolink function, simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
 	Autolink action can always be reverted by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
@@ -270,7 +264,7 @@ To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or 
 ## Installation
 
 <info-box info>
-	Both the base link feature and autolink feature are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	Both the base link feature and autolink feature are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
@@ -329,4 +323,4 @@ Links are represented in the {@link module:engine/model/model~Model model} using
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
