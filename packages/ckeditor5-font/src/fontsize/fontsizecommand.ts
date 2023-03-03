@@ -29,9 +29,3 @@ export default class FontSizeCommand extends FontCommand {
 		super( editor, FONT_SIZE );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		[ FONT_SIZE ]: FontSizeCommand;
-	}
-}

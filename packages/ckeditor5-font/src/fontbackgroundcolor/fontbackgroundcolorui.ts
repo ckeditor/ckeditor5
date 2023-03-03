@@ -38,9 +38,3 @@ export default class FontBackgroundColorUI extends ColorUI {
 		return 'FontBackgroundColorUI';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontBackgroundColorUI.pluginName ]: FontBackgroundColorUI;
-	}
-}

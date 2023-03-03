@@ -144,9 +144,3 @@ export default class FontColorEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontColorEditing.pluginName ]: FontColorEditing;
-	}
-}
