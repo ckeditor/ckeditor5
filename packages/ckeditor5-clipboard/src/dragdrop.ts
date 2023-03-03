@@ -864,9 +864,3 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 
 	return null;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DragDrop.pluginName ]: DragDrop;
-	}
-}
