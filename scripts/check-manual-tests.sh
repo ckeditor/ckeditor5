@@ -5,13 +5,12 @@
 
 # `set -e` cannot be used because if the web crawler will fail, the HTTP server will not be closed.
 
-while getopts f:r:i:t: flag
+while getopts f:r:i: flag
 do
   case "${flag}" in
     f) FILES=${OPTARG};;
     r) REPOSITORY=${OPTARG};;
     i) IDENTITY_FILE=${OPTARG};;
-    t) TS_CONFIG=${OPTARG};;
   esac
 done
 
@@ -27,15 +26,10 @@ then
   MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -i $IDENTITY_FILE"
 fi
 
-if [ ! -z "$TS_CONFIG" ]
-then
-  MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS --tsconfig $TS_CONFIG"
-fi
-
 echo "Starting the manual test server..."
 
 # `yarn run` does not forward SIGTERM to process, so we need to use the command directly.
-node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js $MANUAL_TEST_SERVER_OPTIONS &
+node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js --tsconfig ./tsconfig.test.json $MANUAL_TEST_SERVER_OPTIONS &
 
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
