@@ -395,9 +395,3 @@ export default class TableSelection extends Plugin {
 		};
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableSelection.pluginName ]: TableSelection;
-	}
-}

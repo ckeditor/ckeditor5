@@ -77,13 +77,6 @@ export default class RemoveRowCommand extends Command {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		removeTableRow: RemoveRowCommand;
-	}
-}
-
 /**
  * Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
  * - If the row was not the last one, the cell to focus will be in the row that followed it (before removal).

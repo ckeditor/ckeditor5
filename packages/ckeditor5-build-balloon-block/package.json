@@ -80,7 +80,7 @@
   },
   "scripts": {
     "build": "webpack --mode production",
-    "postbuild": "tsc -p ./tsconfig.release.json",
+    "postbuild": "tsc -p ./tsconfig.json",
     "preversion": "npm run build"
   }
 }

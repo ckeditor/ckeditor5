@@ -1,7 +1,10 @@
 {
-  "extends": "ckeditor5/tsconfig.json",
+  "extends": "../../tsconfig.release.json",
   "include": [
-    "src",
-    "../../typings"
+    "./src/",
+    "../../typings/"
+  ],
+  "exclude": [
+    "./tests/"
   ]
 }

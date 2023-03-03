@@ -59,10 +59,3 @@ export default class TableHeightCommand extends TablePropertyCommand {
 		return value;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableHeight: TableHeightCommand;
-	}
-}
