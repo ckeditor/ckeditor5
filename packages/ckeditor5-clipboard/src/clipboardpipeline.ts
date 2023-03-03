@@ -441,9 +441,3 @@ export interface ViewDocumentClipboardOutputEventData {
 	 */
 	method: 'copy' | 'cut' | 'dragstart';
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ClipboardPipeline.pluginName ]: ClipboardPipeline;
-	}
-}

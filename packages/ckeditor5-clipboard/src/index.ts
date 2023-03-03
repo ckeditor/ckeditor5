@@ -27,3 +27,5 @@ export type {
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
 } from './clipboardobserver';
+
+import './augmentation';
