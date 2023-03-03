@@ -222,9 +222,9 @@ export default class LinkActionsView extends View {
 }
 
 /**
- * Fired when the {@link #editButtonView} is clicked.
+ * Fired when the {@link ~LinkActionsView#editButtonView} is clicked.
  *
- * @eventName edit
+ * @eventName ~LinkActionsView#edit
  */
 export type EditEvent = {
 	name: 'edit';
@@ -232,9 +232,9 @@ export type EditEvent = {
 };
 
 /**
- * Fired when the {@link #unlinkButtonView} is clicked.
+ * Fired when the {@link ~LinkActionsView#unlinkButtonView} is clicked.
  *
- * @eventName unlink
+ * @eventName ~LinkActionsView#unlink
  */
 export type UnlinkEvent = {
 	name: 'unlink';

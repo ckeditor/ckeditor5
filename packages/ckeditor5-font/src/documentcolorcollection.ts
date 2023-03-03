@@ -35,7 +35,7 @@ export default class DocumentColorCollection extends ObservableMixin( Collection
 	 * Adds a color to the document color collection.
 	 *
 	 * This method ensures that no color duplicates are inserted (compared using
-	 * the color value of the {@link module:ui/colorgrid/colorgrid~ColorDefinition}).
+	 * the color value of the {@link module:ui/colorgrid/colorgridview~ColorDefinition}).
 	 *
 	 * If the item does not have an ID, it will be automatically generated and set on the item.
 	 *

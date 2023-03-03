@@ -16,7 +16,7 @@ import type {
 	ViewElement } from 'ckeditor5/src/engine';
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { setViewAttributes, type GHSViewAttributes } from '../conversionutils';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
 
 /**
@@ -51,11 +51,11 @@ export default class TableElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register:figure', ( ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
-		dataFilter.on<RegisterEvent>( 'register:table', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:table', ( evt, definition ) => {
 			if ( definition.model !== 'table' ) {
 				return;
 			}

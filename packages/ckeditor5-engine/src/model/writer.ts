@@ -281,6 +281,7 @@ export default class Writer {
 	 *
 	 * These parameters work in the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
+	 * @label WITHOUT_ATTRIBUTES
 	 * @param text Text data.
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
@@ -311,6 +312,7 @@ export default class Writer {
 	 *
 	 * These parameters work in the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
+	 * @label WITH_ATTRIBUTES
 	 * @param text Text data.
 	 * @param attributes Text attributes.
 	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
@@ -319,7 +321,7 @@ export default class Writer {
 		text: string,
 		attributes?: NodeAttributes,
 		itemOrPosition?: Item | Position,
-		offset?: number | 'end' | 'before' | 'after'
+		offset?: PositionOffset
 	): void;
 
 	public insertText(
@@ -356,13 +358,14 @@ export default class Writer {
 	 *
 	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
+	 * @label WITHOUT_ATTRIBUTES
 	 * @param name Name of the element.
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public insertElement(
 		name: string,
 		itemOrPosition: Item | DocumentFragment | Position,
-		offset?: number | 'end' | 'before' | 'after'
+		offset?: PositionOffset
 	): void;
 
 	/**
@@ -386,6 +389,7 @@ export default class Writer {
 	 *
 	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
+	 * @label WITH_ATTRIBUTES
 	 * @param name Name of the element.
 	 * @param attributes Elements attributes.
 	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
@@ -394,7 +398,7 @@ export default class Writer {
 		name: string,
 		attributes: NodeAttributes,
 		itemOrPosition: Item | DocumentFragment | Position,
-		offset?: number | 'end' | 'before' | 'after'
+		offset?: PositionOffset
 	): void;
 
 	public insertElement(
@@ -436,6 +440,7 @@ export default class Writer {
 	 * writer.appendText( 'foo', paragraph );
 	 * ```
 	 *
+	 * @label WITHOUT_ATTRIBUTES
 	 * @param text Text data.
 	 */
 	public appendText(
@@ -450,6 +455,7 @@ export default class Writer {
 	 * writer.appendText( 'foo', { bold: true }, paragraph );
 	 * ```
 	 *
+	 * @label WITH_ATTRIBUTES
 	 * @param text Text data.
 	 * @param attributes Text attributes.
 	 */
@@ -478,6 +484,7 @@ export default class Writer {
 	 * writer.appendElement( 'paragraph', root );
 	 * ```
 	 *
+	 * @label WITHOUT_ATTRIBUTES
 	 * @param name Name of the element.
 	 */
 	public appendElement(
@@ -492,6 +499,7 @@ export default class Writer {
 	 * writer.appendElement( 'paragraph', { alignment: 'center' }, root );
 	 * ```
 	 *
+	 * @label WITH_ATTRIBUTES
 	 * @param name Name of the element.
 	 * @param attributes Elements attributes.
 	 */
@@ -817,12 +825,20 @@ export default class Writer {
 		return this.model.createRangeOn( element );
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createSelection:NODE_OFFSET `Model#createSelection()`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
+	 * Shortcut for {@link module:engine/model/model~Model#createSelection:SELECTABLE `Model#createSelection()`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
+
 	public createSelection( ...args: [ any?, any?, any? ] ): Selection {
 		return this.model.createSelection( ...args );
 	}
@@ -1305,8 +1321,42 @@ export default class Writer {
 		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
 	}
 
+	/**
+	 * Sets the document's selection (ranges and direction) to the specified location based on the given
+	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
+	 *
+	 * ```ts
+	 * // Sets collapsed selection at the position of the given node and an offset.
+	 * writer.setSelection( paragraph, offset );
+	 * ```
+	 *
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * ```ts
+	 * writer.setSelection( paragraph, 'in' );
+	 * ```
+	 *
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 * ```ts
+	 * writer.setSelection( paragraph, 'on' );
+	 * ```
+	 *
+	 * `Writer#setSelection()` allow passing additional options (`backward`) as the last argument.
+	 *
+	 * ```ts
+	 * // Sets selection as backward.
+	 * writer.setSelection( element, 'in', { backward: true } );
+	 * ```
+	 *
+	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
+	 *
+	 * See also: {@link #setSelection:SELECTABLE `setSelection( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
@@ -1333,22 +1383,6 @@ export default class Writer {
 	 * const position = writer.createPosition( root, path );
 	 * writer.setSelection( position );
 	 *
-	 * // Sets collapsed selection at the position of the given node and an offset.
-	 * writer.setSelection( paragraph, offset );
-	 * ```
-	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
- 	 * that element and ends after the last child of that element.
-	 *
-	 * ```ts
-	 * writer.setSelection( paragraph, 'in' );
-	 * ```
-	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
-	 *
-	 * ```ts
-	 * writer.setSelection( paragraph, 'on' );
-	 *
 	 * // Removes all selection's ranges.
 	 * writer.setSelection( null );
 	 * ```
@@ -1361,7 +1395,13 @@ export default class Writer {
 	 * ```
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
+	 *
+	 * See also: {@link #setSelection:NODE_OFFSET `setSelection( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
+
 	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
 		this._assertWriterUsedCorrectly();
 
@@ -1393,6 +1433,7 @@ export default class Writer {
 	 * writer.setSelectionAttribute( 'italic', true );
 	 * ```
 	 *
+	 * @label KEY_VALUE
 	 * @param key Key of the attribute to set.
 	 * @param value Attribute value.
 	 */
@@ -1413,6 +1454,7 @@ export default class Writer {
 	 * writer.setSelectionAttribute( new Map( [ [ 'italic', true ] ] ) );
 	 * ```
 	 *
+	 * @label OBJECT
 	 * @param objectOrIterable Object / iterable of key => value attribute pairs.
 	 */
 	public setSelectionAttribute( objectOrIterable: NodeAttributes ): void;

@@ -112,7 +112,7 @@ export default class EnterCommand extends Command {
 /**
  * Fired after the the {@link module:enter/entercommand~EnterCommand} is finished executing.
  *
- * @eventName afterExecute
+ * @eventName ~EnterCommand#afterExecute
  */
 export type EnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';

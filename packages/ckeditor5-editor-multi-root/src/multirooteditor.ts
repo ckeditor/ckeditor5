@@ -307,7 +307,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create(
+	public static override create(
 		sourceElementsOrData: Record<string, HTMLElement> | Record<string, string>,
 		config: EditorConfig = {}
 	): Promise<MultiRootEditor> {

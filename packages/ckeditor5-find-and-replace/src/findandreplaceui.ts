@@ -179,7 +179,7 @@ export default class FindAndReplaceUI extends Plugin {
  * for instance, because the user changed the searched phrase (or options) but didn't hit
  * the "Find" button yet.
  *
- * @eventName searchReseted
+ * @eventName ~FindAndReplaceUI#searchReseted
  */
 export type SearchResetedEvent = {
 	name: 'searchReseted';

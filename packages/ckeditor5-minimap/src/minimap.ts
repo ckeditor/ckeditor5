@@ -41,13 +41,13 @@ export default class Minimap extends Plugin {
 
 	/**
 	 * The DOM element closest to the editable element of the editor as returned
-	 * by {@link module:core/editor/editorui~EditorUI#getEditableElement}.
+	 * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
 	 */
 	private _scrollableRootAncestor!: HTMLElement | null;
 
 	/**
 	 * The DOM element closest to the editable element of the editor as returned
-	 * by {@link module:core/editor/editorui~EditorUI#getEditableElement}.
+	 * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
 	 */
 	private _editingRootElement?: HTMLElement;
 

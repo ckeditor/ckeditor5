@@ -86,12 +86,12 @@ function isSafeUrl( url: string ): boolean {
 }
 
 /**
- * Returns the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration processed
- * to respect the locale of the editor, i.e. to display the {@link module:link/link~LinkDecoratorManualDefinition label}
+ * Returns the {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} configuration processed
+ * to respect the locale of the editor, i.e. to display the {@link module:link/linkconfig~LinkDecoratorManualDefinition label}
  * in the correct language.
  *
  * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
- * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
+ * translated in the {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} configuration.
  *
  * @param t Shorthand for {@link module:utils/locale~Locale#t Locale#t}.
  * @param decorators The decorator reference where the label values should be localized.
@@ -159,7 +159,7 @@ export function isEmail( value: string ): boolean {
 /**
  * Adds the protocol prefix to the specified `link` when:
  *
- * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * * it does not contain it already, and there is a {@link module:link/linkconfig~LinkConfig#defaultProtocol `defaultProtocol` }
  * configuration value provided,
  * * or the link is an email address.
  */

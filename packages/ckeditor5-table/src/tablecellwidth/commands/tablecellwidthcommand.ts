@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecellproperties/commands/tablecellwidthcommand
+ * @module table/tablecellwidth/commands/tablecellwidthcommand
  */
 
 import type { Editor } from 'ckeditor5/src/core';

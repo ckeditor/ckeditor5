@@ -183,7 +183,7 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
 /**
  * Fired whenever the text watcher found a match for data changes.
  *
- * @eventName matched:data
+ * @eventName ~TextWatcher#matched:data
  * @param data Event data.
  * @param data.testResult The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
@@ -210,7 +210,7 @@ export interface TextWatcherMatchedDataEventData {
 /**
  * Fired whenever the text watcher found a match for selection changes.
  *
- * @eventName matched:selection
+ * @eventName ~TextWatcher#matched:selection
  * @param data Event data.
  * @param data.testResult The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
@@ -235,7 +235,7 @@ export interface TextWatcherMatchedSelectionEventData {
 /**
  * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
  *
- * @eventName unmatched
+ * @eventName ~TextWatcher#unmatched
  */
 export type TextWatcherUnmatchedEvent = {
 	name: 'unmatched';

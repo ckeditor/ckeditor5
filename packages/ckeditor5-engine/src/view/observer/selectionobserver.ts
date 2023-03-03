@@ -334,7 +334,7 @@ export type ViewDocumentSelectionEventData = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName selectionChange
+ * @eventName module:engine/view/document~Document#selectionChange
  */
 export type ViewDocumentSelectionChangeEvent = {
 	name: 'selectionChange';
@@ -350,7 +350,7 @@ export type ViewDocumentSelectionChangeEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName selectionChangeDone
+ * @eventName module:engine/view/document~Document#selectionChangeDone
  */
 export type ViewDocumentSelectionChangeDoneEvent = {
 	name: 'selectionChangeDone';

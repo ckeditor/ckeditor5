@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/verticalnavigationhandler
+ * @module widget/verticalnavigation
  */
 
 import {

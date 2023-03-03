@@ -211,7 +211,7 @@ export default class FileUploader extends EmitterMixin() {
 /**
  * Fired when error occurs.
  *
- * @eventName error
+ * @eventName ~FileUploader#error
  * @param error Error message
  */
 export type FileUploaderErrorEvent = {
@@ -222,7 +222,7 @@ export type FileUploaderErrorEvent = {
 /**
  * Fired on upload progress.
  *
- * @eventName progress
+ * @eventName ~FileUploader#progress
  * @param status Total and uploaded status
  */
 export type FileUploaderProgressErrorEvent = {

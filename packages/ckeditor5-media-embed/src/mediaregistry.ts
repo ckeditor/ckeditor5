@@ -32,7 +32,7 @@ export default class MediaRegistry {
 
 	/**
 	 * The media provider definitions available for the registry. Usually corresponding with the
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig media configuration}.
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig media configuration}.
 	 */
 	public providerDefinitions: Array<MediaEmbedProvider>;
 

@@ -51,7 +51,7 @@ export default class ShiftEnterCommand extends Command {
 /**
  * Fired after the the {@link module:enter/shiftentercommand~ShiftEnterCommand} is finished executing.
  *
- * @eventName afterExecute
+ * @eventName ~ShiftEnterCommand#afterExecute
  */
 export type ShiftEnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
