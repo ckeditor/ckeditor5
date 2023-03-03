@@ -561,8 +561,8 @@ describe( 'upcastTable()', () => {
 		} );
 	} );
 
-	describe( 'heading', () => {
-		it( 'test1', () => {
+	describe( 'headingRows', () => {
+		it( 'should be able to detect heding row in 2x2 table', () => {
 			editor.setData(
 				'<table>' +
 					'<tr>' +
@@ -590,7 +590,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'test2', () => {
+		it( 'should be able to detect heding row in table with caption', () => {
 			editor.setData(
 				'<table>' +
 					'<caption>Concerts</caption>' +
@@ -645,7 +645,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'test3', () => {
+		it( 'should be able to detect heding row in 2x1 table', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -671,7 +671,7 @@ describe( 'upcastTable()', () => {
 			);
 		} );
 
-		it( 'test4', () => {
+		it( 'should be able to detect heding row that has colspan', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
