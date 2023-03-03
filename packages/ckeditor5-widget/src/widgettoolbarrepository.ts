@@ -362,9 +362,3 @@ interface WidgetRepositoryToolbarDefinition {
 
 	initialized: boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ WidgetToolbarRepository.pluginName ]: WidgetToolbarRepository;
-	}
-}
