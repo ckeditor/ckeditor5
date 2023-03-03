@@ -479,9 +479,3 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 
 	return Array.from( element.getAncestors() ).includes( parent );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Widget.pluginName ]: Widget;
-	}
-}
