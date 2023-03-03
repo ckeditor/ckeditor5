@@ -56,9 +56,3 @@ export default class CKFinderEditing extends Plugin {
 		editor.commands.add( 'ckfinder', new CKFinderCommand( editor ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CKFinderEditing.pluginName ]: CKFinderEditing;
-	}
-}
