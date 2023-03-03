@@ -3,11 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type BalloonToolbar from './toolbar/balloon/balloontoolbar';
-import type BlockToolbar from './toolbar/block/blocktoolbar';
-import type ContextualBalloon from './panel/balloon/contextualballoon';
-import type Notification from './notification/notification';
-import type { ToolbarConfig } from '@ckeditor/ckeditor5-core';
+import type {
+	BalloonToolbar,
+	BlockToolbar,
+	ContextualBalloon,
+	Notification
+} from './index';
+
+import type {
+	ToolbarConfig
+} from '@ckeditor/ckeditor5-core';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

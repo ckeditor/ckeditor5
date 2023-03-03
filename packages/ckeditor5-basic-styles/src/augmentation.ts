@@ -3,27 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Superscript from './superscript';
-import type Subscript from './subscript';
-import type Bold from './bold';
-import type Code from './code';
-import type AttributeCommand from './attributecommand';
-import type BoldUI from './bold/boldui';
-import type CodeEditing from './code/codeediting';
-import type CodeUI from './code/codeui';
-import type Italic from './italic';
-import type ItalicEditing from './italic/italicediting';
-import type ItalicUI from './italic/italicui';
-import type Strikethrough from './strikethrough';
-import type StrikethroughEditing from './strikethrough/strikethroughediting';
-import type StrikethroughUI from './strikethrough/strikethroughui';
-import type SubscriptEditing from './subscript/subscriptediting';
-import type SubscriptUI from './subscript/subscriptui';
-import type SuperscriptEditing from './superscript/superscriptediting';
-import type SuperscriptUI from './superscript/superscriptui';
-import type Underline from './underline';
-import type UnderlineEditing from './underline/underlineediting';
-import type UnderlineUI from './underline/underlineui';
+import type {
+	Superscript,
+	Subscript,
+	Bold,
+	Code,
+	AttributeCommand,
+	BoldUI,
+	CodeEditing,
+	CodeUI,
+	Italic,
+	ItalicEditing,
+	ItalicUI,
+	Strikethrough,
+	StrikethroughEditing,
+	StrikethroughUI,
+	SubscriptEditing,
+	SubscriptUI,
+	SuperscriptEditing,
+	SuperscriptUI,
+	Underline,
+	UnderlineEditing,
+	UnderlineUI
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

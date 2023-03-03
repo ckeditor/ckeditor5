@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Delete from './delete';
-import type DeleteCommand from './deletecommand';
-import type Input from './input';
-import type InsertTextCommand from './inserttextcommand';
-import type TextTransformation from './texttransformation';
-import type TwoStepCaretMovement from './twostepcaretmovement';
-import type Typing from './typing';
-import type { TypingConfig } from './typingconfig';
+import type {
+	Delete,
+	DeleteCommand,
+	Input,
+	InsertTextCommand,
+	TextTransformation,
+	TwoStepCaretMovement,
+	Typing,
+	TypingConfig
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

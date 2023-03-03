@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Clipboard from './clipboard';
-import type ClipboardPipeline from './clipboardpipeline';
-import type DragDrop from './dragdrop';
-import type PastePlainText from './pasteplaintext';
+import type {
+	Clipboard,
+	ClipboardPipeline,
+	DragDrop,
+	PastePlainText
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Alignment from './alignment';
-import type AlignmentCommand from './alignmentcommand';
-import type AlignmentEditing from './alignmentediting';
-import type AlignmentUI from './alignmentui';
-import type { AlignmentConfig } from './alignmentconfig';
+import type {
+	Alignment,
+	AlignmentEditing,
+	AlignmentUI,
+	AlignmentCommand,
+	AlignmentConfig
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

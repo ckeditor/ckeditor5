@@ -10,5 +10,6 @@
 export { default as Paragraph } from './paragraph';
 export { default as ParagraphButtonUI } from './paragraphbuttonui';
 export type { default as ParagraphCommand } from './paragraphcommand';
+export type { default as InsertParagraphCommand } from './insertparagraphcommand';
 
 import './augmentation';

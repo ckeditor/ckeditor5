@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Widget from './widget';
-import type WidgetResize from './widgetresize';
-import type WidgetToolbarRepository from './widgettoolbarrepository';
-import type WidgetTypeAround from './widgettypearound/widgettypearound';
+import type {
+	Widget,
+	WidgetResize,
+	WidgetToolbarRepository,
+	WidgetTypeAround
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

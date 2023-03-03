@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type InsertParagraphCommand from './insertparagraphcommand';
-import type Paragraph from './paragraph';
-import type ParagraphCommand from './paragraphcommand';
+import type {
+	Paragraph,
+	ParagraphCommand,
+	InsertParagraphCommand
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {

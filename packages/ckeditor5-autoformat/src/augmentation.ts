@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Autoformat from './autoformat';
+import type { Autoformat } from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

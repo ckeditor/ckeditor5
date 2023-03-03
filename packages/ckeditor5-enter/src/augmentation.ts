@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Enter from './enter';
-import type EnterCommand from './entercommand';
-import type ShiftEnter from './shiftenter';
-import type ShiftEnterCommand from './shiftentercommand';
+import type {
+	Enter,
+	ShiftEnter,
+	EnterCommand,
+	ShiftEnterCommand
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type BlockQuote from './blockquote';
-import type BlockQuoteCommand from './blockquotecommand';
-import type BlockQuoteEditing from './blockquoteediting';
-import type BlockQuoteUI from './blockquoteui';
+import type {
+	BlockQuote,
+	BlockQuoteCommand,
+	BlockQuoteEditing,
+	BlockQuoteUI
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

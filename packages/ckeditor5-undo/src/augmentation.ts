@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type RedoCommand from './redocommand';
-import type Undo from './undo';
-import type UndoCommand from './undocommand';
-import type UndoEditing from './undoediting';
-import type UndoUI from './undoui';
+import type {
+	Undo,
+	UndoEditing,
+	UndoUI,
+	UndoCommand,
+	RedoCommand
+} from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
-		redo: RedoCommand;
 		undo: UndoCommand;
+		redo: RedoCommand;
 	}
 
 	interface PluginsMap {
