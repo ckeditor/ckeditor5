@@ -59,9 +59,3 @@ export default class BlockQuoteUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BlockQuoteUI.pluginName ]: BlockQuoteUI;
-	}
-}

@@ -11,7 +11,7 @@ import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
