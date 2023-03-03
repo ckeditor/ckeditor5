@@ -185,9 +185,3 @@ export type SearchResetedEvent = {
 	name: 'searchReseted';
 	args: [];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FindAndReplaceUI.pluginName ]: FindAndReplaceUI;
-	}
-}

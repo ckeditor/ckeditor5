@@ -27,9 +27,3 @@ export default class FindPreviousCommand extends FindNextCommand {
 		this._state.highlightedResult = this._state.results.get( previousIndex );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'findPrevious': FindPreviousCommand;
-	}
-}
