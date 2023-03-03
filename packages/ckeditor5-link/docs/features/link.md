@@ -35,7 +35,7 @@ By default, all links created in the editor have the `href="..."` attribute in t
 
 There are two types of link decorators you can use:
 
-* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against pre-defined rules and manage their attributes based on the results.
+* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against predefined rules and manage their attributes based on the results.
 * [**Manual**](#adding-attributes-to-links-using-the-ui-manual-decorators) &ndash; They allow users to control link attributes individually using the editor UI.
 
 <info-box>
@@ -182,7 +182,7 @@ ClassicEditor
 	When enabled, this feature also provides the **email address auto-detection** feature. When you submit `hello@example.com` in your content, the plugin will automatically change it to `mailto:hello@example.com`.
 </info-box>
 
-#### Adding attributes to links based on pre-defined rules (automatic decorators)
+#### Adding attributes to links based on predefined rules (automatic decorators)
 
 Automatic link decorators match all links in the editor content against a {@link module:link/link~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/architecture/editing-engine#conversion data downcast} only.
 
