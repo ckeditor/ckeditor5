@@ -127,9 +127,3 @@ type HighlightConverterDefinition = {
 	model: { key: string; values: Array<string> };
 	view: Record<string, { name: string; classes: string }>;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HighlightEditing.pluginName ]: HighlightEditing;
-	}
-}
