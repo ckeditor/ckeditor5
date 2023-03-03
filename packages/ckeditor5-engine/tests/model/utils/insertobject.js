@@ -488,6 +488,8 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should insert an object in an empty document', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
 			const widget = new Element( 'blockWidget', [], [] );
 
 			model.insertObject( widget );
