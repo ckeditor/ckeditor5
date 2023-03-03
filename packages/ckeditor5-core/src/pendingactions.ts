@@ -167,9 +167,3 @@ export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
  * @param action The removed action.
  */
 export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PendingActions.pluginName ]: PendingActions;
-	}
-}
