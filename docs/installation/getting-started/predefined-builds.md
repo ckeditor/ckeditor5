@@ -567,7 +567,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">Balloon</td>
 				<td style="text-align:center; width:70px">Balloon block</td>
 				<td style="text-align:center; width:70px">Document</td>
-				<td style="text-align:center; width:70px">Multiroot</td>
+				<td style="text-align:center; width:70px">Multi-root</td>
 				<td style="text-align:center; width:70px">Superbuild</td>
 			</tr>
 			<tr>

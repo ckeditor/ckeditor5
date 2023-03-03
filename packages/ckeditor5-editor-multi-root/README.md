@@ -6,7 +6,7 @@ CKEditor 5 multi-root editor implementation
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 ![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-editor-multi-root)
 
-The multi-root editor implementation for CKEditor 5.
+The multi-root editor build for CKEditor 5. Read more about the [multi-root editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#multi-root-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html).
 
 This package contains the [`MultiRootEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-multi-root_multirooteditor-MultiRootEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
