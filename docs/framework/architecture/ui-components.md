@@ -416,7 +416,7 @@ Dropdowns use buttons. Because of that, states and properties remain the same.
 
 #### Enabled
 
-Buttons are enabled and clickable by default. You can also set the state explicitly by adding the `isEnabled` property with a `true` value.
+Buttons in dropdowns are enabled and clickable by default. You can also set the state explicitly by adding the `isEnabled` property with a `true` value.
 
 ```js
 import { createDropdown } from '@ckeditor/ckeditor5-ui';
