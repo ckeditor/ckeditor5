@@ -19,6 +19,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'DataController utils', () => {
 	let model, doc, root;
 
+	testUtils.createSinonSandbox();
+
 	describe( 'insertContent', () => {
 		beforeEach( () => {
 			model = new Model();
