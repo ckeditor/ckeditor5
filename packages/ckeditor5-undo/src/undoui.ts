@@ -72,9 +72,3 @@ export default class UndoUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ UndoUI.pluginName ]: UndoUI;
-	}
-}
