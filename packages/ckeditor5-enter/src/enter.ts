@@ -53,9 +53,3 @@ export default class Enter extends Plugin {
 		}, { priority: 'low' } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Enter.pluginName ]: Enter;
-	}
-}
