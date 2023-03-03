@@ -63,13 +63,13 @@ const balloon = new BalloonPanelView();
 balloon.render();
 balloon.content.add( balloonButton );
 
+document.querySelector( '.ui-balloon' ).append( balloon.element );
+
 const positions = BalloonPanelView.defaultPositions;
 balloon.pin( {
 	target: document.querySelector( '.ui-balloon' ),
 	positions: [ positions.northArrowSouth ]
 } );
-
-document.querySelector( '.ui-balloon' ).append( balloon.element );
 
 document.body.classList.add( 'ck' );
 document.body.setAttribute( 'dir', 'ltr' );
