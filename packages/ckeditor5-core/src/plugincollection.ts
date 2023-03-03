@@ -81,6 +81,9 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 	}
 
+	public get<TConstructor extends PluginClassConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
+	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
+
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
@@ -101,8 +104,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 *
 	 * @param key The plugin constructor or {@link module:core/plugin~PluginStaticMembers#pluginName name}.
 	 */
-	public get<TConstructor extends PluginClassConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
-	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
 	public get( key: PluginConstructor<TContext> | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 
@@ -578,7 +579,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 
 		if ( this._plugins.has( pluginName ) ) {
 			/**
-			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
+			 * Two plugins with the same {@link module:core/plugin~PluginStaticMembers#pluginName} were loaded.
 			 * This will lead to runtime conflicts between these plugins.
 			 *
 			 * In practice, this warning usually means that new plugins were added to an existing CKEditor 5 build.

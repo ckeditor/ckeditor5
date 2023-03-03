@@ -288,7 +288,7 @@ export default abstract class Watchdog {
  * } );
  * ```
  *
- * @eventName error
+ * @eventName ~Watchdog#error
  */
 export type WatchdogErrorEvent = {
 	name: 'error';
@@ -306,7 +306,7 @@ export type WatchdogErrorEventData = {
 /**
  * Fired when the watchdog state changed.
  *
- * @eventName stateChange
+ * @eventName ~Watchdog#stateChange
  */
 export type WatchdogStateChangeEvent = {
 	name: 'stateChange';

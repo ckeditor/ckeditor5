@@ -101,7 +101,7 @@ export default class SplitOperation extends Operation {
 
 	/**
 	 * Artificial range that contains all the nodes from the split element that will be moved to the new element.
-	 * The range starts at {@link ~#splitPosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
+	 * The range starts at {@link #splitPosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
 	 */
 	public get movedRange(): Range {
 		const end = this.splitPosition.getShiftedBy( Number.POSITIVE_INFINITY );

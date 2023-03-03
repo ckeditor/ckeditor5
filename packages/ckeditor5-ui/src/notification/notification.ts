@@ -215,7 +215,7 @@ export type NotificationEventType = 'success' | 'info' | 'warning';
 /**
  * Fired when one of the `showSuccess()`, `showInfo()`, `showWarning()` methods is called.
  *
- * @eventName show
+ * @eventName ~Notification#show
  * @param data The notification data.
  */
 export type NotificationShowEvent = {
@@ -226,7 +226,7 @@ export type NotificationShowEvent = {
 /**
  * Fired when the `showSuccess()` method is called.
  *
- * @eventName show:success
+ * @eventName ~Notification#show:success
  * @param data The notification data.
  */
 export type NotificationShowSuccessEvent = NotificationShowTypeEvent<'success'>;
@@ -234,7 +234,7 @@ export type NotificationShowSuccessEvent = NotificationShowTypeEvent<'success'>;
 /**
  * Fired when the `showInfo()` method is called.
  *
- * @eventName show:info
+ * @eventName ~Notification#show:info
  * @param data The notification data.
  */
 export type NotificationShowInfoEvent = NotificationShowTypeEvent<'info'>;
@@ -245,7 +245,7 @@ export type NotificationShowInfoEvent = NotificationShowTypeEvent<'info'>;
  * When this event is not handled or stopped by `event.stop()`, the `data.message` of this event will
  * be automatically displayed as a system alert.
  *
- * @eventName show:warning
+ * @eventName ~Notification#show:warning
  * @param data The notification data.
  */
 export type NotificationShowWarningEvent = NotificationShowTypeEvent<'warning'>;

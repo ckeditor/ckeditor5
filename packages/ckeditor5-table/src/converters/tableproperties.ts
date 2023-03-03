@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/tableproperites
+ * @module table/converters/tableproperties
  */
 
 import type { Conversion, ViewElement } from 'ckeditor5/src/engine';

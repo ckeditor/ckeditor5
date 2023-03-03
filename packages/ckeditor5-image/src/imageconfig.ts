@@ -34,7 +34,7 @@ export interface ImageConfig {
 	 * Each option should have at least these two properties:
 	 *
 	 * * name: The name of the UI component registered in the global
-	 * {@link module:core/editor/editorui~EditorUI#componentFactory component factory} of the editor,
+	 * {@link module:ui/editorui/editorui~EditorUI#componentFactory component factory} of the editor,
 	 * representing the button a user can click to change the size of an image,
 	 * * value: An actual image width applied when a user clicks the mentioned button
 	 * ({@link module:image/imageresize/resizeimagecommand~ResizeImageCommand} gets executed).

@@ -49,7 +49,7 @@ import type { EditorConfig } from './editorconfig';
  * This API should be sufficient in order to implement the "editing" part of your feature
  * (schema definition, conversion, commands, keystrokes, etc.).
  * It does not define the editor UI, which is available only if
- * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
+ * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
 export default abstract class Editor extends ObservableMixin() {
@@ -266,12 +266,7 @@ export default abstract class Editor extends ObservableMixin() {
 	/**
 	 * Creates a new instance of the editor class.
 	 *
-	 * Usually, not to be used directly. See the `create()` methods of the existing editor types to learn how to use them:
-	 *
-	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
-	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
-	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
-	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
+	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
 	 * @param config The editor configuration.
 	 */
@@ -351,9 +346,9 @@ export default abstract class Editor extends ObservableMixin() {
 
 	public set isReadOnly( value: boolean ) {
 		/**
-		 * The {@link #isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
-		 * {@link #enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
-		 * {@link #disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
+		 * The {@link ~Editor#isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
+		 * {@link ~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
+		 * {@link ~Editor#disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
 		 *
 		 * Usage before version `34.0.0`:
 		 *
@@ -551,6 +546,23 @@ export default abstract class Editor extends ObservableMixin() {
 	public focus(): void {
 		this.editing.view.focus();
 	}
+
+	/* istanbul ignore next */
+	/**
+	 * Creates and initializes a new editor instance.
+	 *
+	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
+	 *
+	 * See the `create()` methods of the existing editor types to learn how to use them:
+	 *
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
+	 */
+	public static create( ...args: Array<unknown> ): void {
+		throw new Error( 'This is an abstract method.' );
+	}
 }
 
 /**
@@ -565,7 +577,7 @@ export default abstract class Editor extends ObservableMixin() {
  *
  * See also the {@link ~Editor#state `editor.state`} property.
  *
- * @eventName ready
+ * @eventName ~Editor#ready
  */
 export type EditorReadyEvent = {
 	name: 'ready';
@@ -578,7 +590,7 @@ export type EditorReadyEvent = {
  *
  * See also the {@link ~Editor#state `editor.state`} property.
  *
- * @eventName destroy
+ * @eventName ~Editor#destroy
  */
 export type EditorDestroyEvent = {
 	name: 'destroy';

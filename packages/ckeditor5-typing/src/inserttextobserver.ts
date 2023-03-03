@@ -137,7 +137,7 @@ export default class InsertTextObserver extends Observer {
  *
  * **Note**: This event is fired by the {@link module:typing/inserttextobserver~InsertTextObserver input feature}.
  *
- * @eventName module:engine/view/document~Document#event:insertText
+ * @eventName module:engine/view/document~Document#insertText
  * @param data The event data.
  */
 export type ViewDocumentInsertTextEvent = {

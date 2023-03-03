@@ -74,7 +74,7 @@ export default class IframeView extends View<HTMLIFrameElement> {
 /**
  * Fired when the DOM iframe's `contentDocument` finished loading.
  *
- * @eventName loaded
+ * @eventName ~IframeView#loaded
  */
 export type IframeViewLoadedEvent = {
 	name: 'loaded';

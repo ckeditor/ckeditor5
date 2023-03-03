@@ -26,7 +26,7 @@ import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils';
 import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
 import type {
 	ClipboardContentInsertionEvent,
-	ClipboardOutputEvent,
+	ViewDocumentClipboardOutputEvent,
 	ClipboardPipeline
 } from 'ckeditor5/src/clipboard';
 
@@ -246,7 +246,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} );
 
 		// Block clipboard outside exception marker on cut.
-		this.listenTo<ClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
 				evt.stop();
 			}

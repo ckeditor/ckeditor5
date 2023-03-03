@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckfinder/ckfinder
+ * @module ckfinder/ckfinderconfig
  */
 
 /**
@@ -84,7 +84,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature}.
 		 *
-		 * Read more in {@link module:ckfinder/ckfinder~CKFinderConfig}.
+		 * Read more in {@link module:ckfinder/ckfinderconfig~CKFinderConfig}.
 		 */
 		ckfinder?: CKFinderConfig;
 	}

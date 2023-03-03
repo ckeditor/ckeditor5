@@ -499,7 +499,7 @@ export default class BlockToolbar extends Plugin {
 	}
 }
 
- declare module '@ckeditor/ckeditor5-core' {
+declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ BlockToolbar.pluginName ]: BlockToolbar;
 	}

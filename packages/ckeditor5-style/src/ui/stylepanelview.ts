@@ -138,12 +138,6 @@ export default class StylePanelView extends View<HTMLDivElement> {
 
 			children: this.children
 		} );
-
-		/**
-		 * Fired when a style was selected (clicked) by the user.
-		 *
-		 * @event execute
-		 */
 	}
 
 	/**
@@ -177,3 +171,13 @@ export default class StylePanelView extends View<HTMLDivElement> {
 		this._focusCycler.focusLast();
 	}
 }
+
+/**
+ * Fired when a style was selected (clicked) by the user.
+ *
+ * @eventName ~StylePanelView#execute
+ */
+export type StylePanelViewExecuteEvent = {
+	name: 'execute';
+	args: [];
+};

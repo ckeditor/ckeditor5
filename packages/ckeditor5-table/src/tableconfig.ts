@@ -360,7 +360,6 @@ export interface TableCellPropertiesOptions {
 }
 
 declare module '@ckeditor/ckeditor5-core' {
-
 	interface EditorConfig {
 
 		/**

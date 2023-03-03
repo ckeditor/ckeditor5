@@ -18,7 +18,7 @@ import type {
 import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 
 /**
  * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.
@@ -48,7 +48,7 @@ export default class CodeBlockElementSupport extends Plugin {
 
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register:pre', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:pre', ( evt, definition ) => {
 			if ( definition.model !== 'codeBlock' ) {
 				return;
 			}

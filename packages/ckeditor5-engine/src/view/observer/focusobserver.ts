@@ -117,7 +117,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName focus
+ * @eventName module:engine/view/document~Document#focus
  * @param data Event data.
  */
 export type ViewDocumentFocusEvent = {
@@ -134,7 +134,7 @@ export type ViewDocumentFocusEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName blur
+ * @eventName module:engine/view/document~Document#blur
  * @param data Event data.
  */
 export type ViewDocumentBlurEvent = {

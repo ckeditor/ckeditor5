@@ -393,7 +393,7 @@ export default class Template extends EmitterMixin() {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
 			 * the {@link module:ui/template~Template.extend extending} works for an element,
-			 * make sure it happens before {@link #render} is called.
+			 * make sure it happens before {@link ~Template#render} is called.
 			 *
 			 * @error template-extend-render
 			 */
@@ -1818,8 +1818,8 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 declare const AttributeBindingSymbol: unique symbol;
 declare const ListenerBindingSymbol: unique symbol;
 
-export interface AttributeBinding { [ AttributeBindingSymbol ]: 'AttributeBinding' }
-export interface ListenerBinding { [ ListenerBindingSymbol ]: 'ListenerBinding' }
+export interface AttributeBinding { _opaqueAttributeBinding: typeof AttributeBindingSymbol }
+export interface ListenerBinding { _opaqueListenerBinding: typeof ListenerBindingSymbol }
 
 /**
  * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`
@@ -1868,6 +1868,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label ATTRIBUTE
 	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
 	 */
 	to<TAttribute extends keyof TObservable & string>(
@@ -1915,6 +1916,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label ATTRIBUTE_CALLBACK
 	 * @param attribute An attribute name of {@link module:utils/observablemixin~Observable}.
 	 * @param callback Allows for processing of the value. Accepts `Node` and `value` as arguments.
 	 */
@@ -1964,6 +1966,7 @@ export interface BindChain<TObservable> {
 	 * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
 	 * {@link module:ui/template~TemplateListenerSchema}.
 	 *
+	 * @label EVENT
 	 * @param eventNameOrCallback A DOM event name or an event callback.
 	 */
 	to( eventNameOrCallback: string | ( ( domEvent: Event ) => void ) ): ListenerBinding;
@@ -2012,7 +2015,7 @@ export interface BindChain<TObservable> {
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
  */
-interface RenderData {
+export interface RenderData {
 
 	/**
 	 * A node which is being rendered.
@@ -2027,15 +2030,14 @@ interface RenderData {
 	intoFragment: boolean;
 
 	/**
-	 * Indicates whether the {@module:ui/template~RenderNodeOptions#node} has
-	 * been provided by {@module:ui/template~Template#apply}.
+	 * Indicates whether the {@link #node} has been provided by {@link module:ui/template~Template#apply}.
 	 */
 	isApplying: boolean;
 
 	/**
-	 * An object storing the data that helps {@module:ui/template~Template#revert}
+	 * An object storing the data that helps {@link module:ui/template~Template#revert}
 	 * bringing back an element to its initial state, i.e. before
-	 * {@module:ui/template~Template#apply} was called.
+	 * {@link module:ui/template~Template#apply} was called.
 	 */
 	revertData?: RevertData;
 }

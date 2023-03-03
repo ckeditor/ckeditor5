@@ -252,6 +252,6 @@ function forceDisable( evt: EventInfo<string, boolean> ) {
  * **Note:** This event is fired even if command is disabled. However, it is automatically blocked
  * by a high priority listener in order to prevent command execution.
  *
- * @eventName execute
+ * @eventName ~Command#execute
  */
 export type CommandExecuteEvent = DecoratedMethodEvent<Command, 'execute'>;

@@ -703,7 +703,7 @@ export type PlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
 /**
  * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
  *
- * @eventName change
+ * @eventName ~Selection#change
  */
 export type ViewSelectionChangeEvent = {
 	name: 'change';

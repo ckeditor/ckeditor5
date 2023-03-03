@@ -58,7 +58,7 @@ export default class ImageLoadObserver extends Observer {
  *
  * @see module:image/image/imageloadobserver~ImageLoadObserver
  *
- * @eventName imageLoaded
+ * @eventName module:engine/view/document~Document#imageLoaded
  * @param data Event data.
  */
 export type ImageLoadedEvent = {

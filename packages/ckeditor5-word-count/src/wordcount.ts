@@ -287,9 +287,9 @@ export default class WordCount extends Plugin {
 }
 
 /**
- * An event fired after {@link #words} and {@link #characters} are updated.
+ * An event fired after {@link ~WordCount#words} and {@link ~WordCount#characters} are updated.
  *
- * @eventName update
+ * @eventName ~WordCount#update
  */
 export type WordCountUpdateEvent = {
 	name: 'update';

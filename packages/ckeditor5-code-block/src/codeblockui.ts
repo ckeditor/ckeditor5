@@ -117,4 +117,4 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CodeBlockUI.pluginName ]: CodeBlockUI;
 	}
- }
+}

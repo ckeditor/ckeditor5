@@ -21,7 +21,7 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * Normalizes {@link module:style/style~StyleConfig#definitions} in the configuration of the styles feature.
+	 * Normalizes {@link module:style/styleconfig~StyleConfig#definitions} in the configuration of the styles feature.
 	 * The structure of normalized styles looks as follows:
 	 *
 	 * ```ts
