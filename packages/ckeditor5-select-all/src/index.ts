@@ -10,3 +10,5 @@
 export { default as SelectAll } from './selectall';
 export { default as SelectAllEditing } from './selectallediting';
 export { default as SelectAllUI } from './selectallui';
+
+import './augmentation';
