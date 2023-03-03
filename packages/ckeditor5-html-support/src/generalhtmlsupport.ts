@@ -327,9 +327,3 @@ function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ GeneralHtmlSupport.pluginName ]: GeneralHtmlSupport;
-	}
-}
