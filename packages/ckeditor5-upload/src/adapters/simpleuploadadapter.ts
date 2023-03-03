@@ -218,9 +218,3 @@ class Adapter implements UploadAdapter {
 		this.xhr!.send( data );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ SimpleUploadAdapter.pluginName ]: SimpleUploadAdapter;
-	}
-}
