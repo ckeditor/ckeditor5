@@ -26,3 +26,5 @@ export type { ViewDocumentDeleteEvent } from './deleteobserver';
 export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver';
 export type { TextWatcherMatchedEvent } from './textwatcher';
 export type { TextWatcherMatchedDataEvent } from './textwatcher';
+
+import './augmentation';

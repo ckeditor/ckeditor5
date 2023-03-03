@@ -15,9 +15,6 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
-// Import config.typing declaration.
-import './typingconfig';
-
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
@@ -148,12 +145,6 @@ export default class Input extends Plugin {
 				deleteSelectionContent( model, insertTextCommand );
 			} );
 		}
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Input.pluginName ]: Input;
 	}
 }
 

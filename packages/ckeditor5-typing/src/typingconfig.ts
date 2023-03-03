@@ -213,15 +213,3 @@ export interface TextTransformationDescription {
 	 */
 	to: string | Array<string | null> | ( ( matches: Array<string> ) => Array<string | null> );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the typing features. Used by the features from the `@ckeditor/ckeditor5-typing` package.
-		 *
-		 * Read more in {@link module:typing/typingconfig~TypingConfig}.
-		 */
-		typing?: TypingConfig;
-	}
-}
