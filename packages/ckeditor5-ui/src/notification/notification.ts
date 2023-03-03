@@ -272,9 +272,3 @@ export type NotificationShowEventData<NotificationType extends NotificationEvent
 	 */
 	type: NotificationType;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Notification.pluginName ]: Notification;
-	}
-}

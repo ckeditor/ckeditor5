@@ -39,8 +39,6 @@ import type {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import '../../uiconfig';
-
 const toPx = toUnit( 'px' );
 
 /**
@@ -416,10 +414,3 @@ export type BaloonToolbarShowEvent = {
 	name: 'show';
 	args: [];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BalloonToolbar.pluginName ]: BalloonToolbar;
-	}
-}
-

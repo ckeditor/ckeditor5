@@ -70,3 +70,5 @@ export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
 export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';
+
+import './augmentation';
