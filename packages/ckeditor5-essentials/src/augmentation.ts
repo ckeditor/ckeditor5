@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module essentials
- */
+import type Essentials from './essentials';
 
-export { default as Essentials } from './essentials';
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Essentials.pluginName ]: Essentials;
+	}
+}
 
-import './augmentation';

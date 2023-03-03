@@ -6,7 +6,7 @@
 // The editor creator to use.
 import MultiRootEditorBase from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
