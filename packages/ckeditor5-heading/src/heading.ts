@@ -40,9 +40,3 @@ export default class Heading extends Plugin {
 		return 'Heading';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Heading.pluginName ]: Heading;
-	}
-}

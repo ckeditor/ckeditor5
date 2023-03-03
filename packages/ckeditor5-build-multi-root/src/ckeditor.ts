@@ -15,7 +15,7 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';

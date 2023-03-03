@@ -129,9 +129,3 @@ export default class HeadingUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HeadingUI.pluginName ]: HeadingUI;
-	}
-}

@@ -12,5 +12,8 @@ export type { HeadingOption } from './headingconfig';
 export { default as HeadingEditing } from './headingediting';
 export { default as HeadingUI } from './headingui';
 export { default as HeadingButtonsUI } from './headingbuttonsui';
-export { default as Title } from './title';
+export { default as Title, type TitleConfig } from './title';
+export type { HeadingConfig } from './headingconfig';
 export type { default as HeadingCommand } from './headingcommand';
+
+import './augmentation';
