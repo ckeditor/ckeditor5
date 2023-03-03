@@ -230,6 +230,10 @@ describe( 'SelectionObserver', () => {
 		sinon.stub( selectionObserver, '_reportInfiniteLoop' ).callsFake( () => {
 			wasInfiniteLoopDetected = true;
 		} );
+
+		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
+
 		const selectionChangeSpy = sinon.spy();
 
 		selectionObserver._clearInfiniteLoop();
@@ -251,6 +255,9 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
+		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
+
 		expect( () => {
 			selectionObserver._reportInfiniteLoop();
 		} ).to.throw( Error,
