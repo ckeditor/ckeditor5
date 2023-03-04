@@ -62,7 +62,11 @@ TurndownService.prototype.escape = function( string: string ): string {
 const turndownService = new TurndownService( {
 	codeBlockStyle: 'fenced',
 	hr: '---',
-	headingStyle: 'atx'
+	headingStyle: 'atx',
+	bulletListMarker: '-',
+	codeBlockStyle: 'fenced',
+	emDelimiter: '*',
+	br: '\n'
 } );
 
 turndownService.use( [
