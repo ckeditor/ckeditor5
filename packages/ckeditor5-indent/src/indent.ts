@@ -47,9 +47,3 @@ export default class Indent extends Plugin {
 		return [ IndentEditing, IndentUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Indent.pluginName ]: Indent;
-	}
-}

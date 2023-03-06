@@ -99,10 +99,3 @@ function getBlocksToChange( model: Model ): Array<Element> {
 
 	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		indentBlock: IndentBlockCommand;
-		outdentBlock: IndentBlockCommand;
-	}
-}
