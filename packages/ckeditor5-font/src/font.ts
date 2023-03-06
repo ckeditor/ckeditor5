@@ -40,9 +40,3 @@ export default class Font extends Plugin {
 		return 'Font';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Font.pluginName ]: Font;
-	}
-}

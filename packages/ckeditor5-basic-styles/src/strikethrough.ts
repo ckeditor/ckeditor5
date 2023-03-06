@@ -35,9 +35,3 @@ export default class Strikethrough extends Plugin {
 		return 'Strikethrough';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Strikethrough.pluginName ]: Strikethrough;
-	}
-}

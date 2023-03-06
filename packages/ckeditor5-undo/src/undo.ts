@@ -123,9 +123,3 @@ export default class Undo extends Plugin {
 		return 'Undo';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Undo.pluginName ]: Undo;
-	}
-}

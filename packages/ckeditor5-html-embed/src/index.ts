@@ -10,3 +10,7 @@
 export { default as HtmlEmbed } from './htmlembed';
 export { default as HtmlEmbedEditing } from './htmlembedediting';
 export { default as HtmlEmbedUI } from './htmlembedui';
+export type { default as HtmlEmbedCommand } from './htmlembedcommand';
+export type { HtmlEmbedConfig } from './htmlembedconfig';
+
+import './augmentation';

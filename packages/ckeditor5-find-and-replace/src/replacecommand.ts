@@ -25,9 +25,3 @@ export default class ReplaceCommand extends ReplaceCommandBase {
 		this._replace( replacementText, result );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'replace': ReplaceCommand;
-	}
-}

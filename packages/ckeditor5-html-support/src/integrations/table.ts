@@ -162,9 +162,3 @@ function modelToViewTableAttributeConverter() {
 		}
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TableElementSupport.pluginName ]: TableElementSupport;
-	}
-}

@@ -189,9 +189,3 @@ function getLanguage(
 
 	return defaultLanguage;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		codeBlock: CodeBlockCommand;
-	}
-}

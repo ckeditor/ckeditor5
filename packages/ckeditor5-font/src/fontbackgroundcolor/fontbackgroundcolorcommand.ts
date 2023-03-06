@@ -30,9 +30,3 @@ export default class FontBackgroundColorCommand extends FontCommand {
 		super( editor, FONT_BACKGROUND_COLOR );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		[ FONT_BACKGROUND_COLOR ]: FontBackgroundColorCommand;
-	}
-}

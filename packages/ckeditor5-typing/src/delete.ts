@@ -104,9 +104,3 @@ export default class Delete extends Plugin {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Delete.pluginName ]: Delete;
-	}
-}

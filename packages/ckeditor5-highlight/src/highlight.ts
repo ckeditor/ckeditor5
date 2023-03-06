@@ -35,9 +35,3 @@ export default class Highlight extends Plugin {
 		return 'Highlight';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Highlight.pluginName ]: Highlight;
-	}
-}

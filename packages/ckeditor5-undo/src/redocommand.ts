@@ -44,9 +44,3 @@ export default class RedoCommand extends BaseCommand {
 		this.refresh();
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		redo: RedoCommand;
-	}
-}

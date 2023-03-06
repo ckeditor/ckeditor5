@@ -54,9 +54,3 @@ export default class HorizontalLineUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HorizontalLineUI.pluginName ]: HorizontalLineUI;
-	}
-}

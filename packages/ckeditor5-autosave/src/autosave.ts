@@ -423,19 +423,3 @@ export interface AutosaveConfig {
 	 */
 	waitingTime?: number;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Autosave.pluginName ]: Autosave;
-	}
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
-		 *
-		 * Read more in {@link module:autosave/autosave~AutosaveConfig}.
-		 */
-		autosave?: AutosaveConfig;
-	}
-}

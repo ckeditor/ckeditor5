@@ -179,9 +179,3 @@ function buildClassDefinition( options: Array<AlignmentFormat> ) {
 
 	return definition;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AlignmentEditing.pluginName ]: AlignmentEditing;
-	}
-}

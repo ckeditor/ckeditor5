@@ -32,9 +32,3 @@ export default class Superscript extends Plugin {
 		return 'Superscript';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Superscript.pluginName ]: Superscript;
-	}
-}

@@ -97,9 +97,3 @@ export default class FindCommand extends Command {
 		};
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'find': FindCommand;
-	}
-}

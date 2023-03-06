@@ -46,10 +46,3 @@ export default class Essentials extends Plugin {
 		return 'Essentials';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Essentials.pluginName ]: Essentials;
-	}
-}
-

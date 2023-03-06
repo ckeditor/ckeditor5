@@ -37,9 +37,3 @@ export default class Code extends Plugin {
 		return 'Code';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Code.pluginName ]: Code;
-	}
-}

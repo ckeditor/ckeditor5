@@ -143,9 +143,3 @@ function modelToViewCodeBlockAttributeConverter() {
 		} );
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CodeBlockElementSupport.pluginName ]: CodeBlockElementSupport;
-	}
-}

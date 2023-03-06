@@ -267,9 +267,3 @@ export default class FindAndReplaceEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FindAndReplaceEditing.pluginName ]: FindAndReplaceEditing;
-	}
-}

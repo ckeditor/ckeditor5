@@ -56,9 +56,3 @@ export default class SubscriptEditing extends Plugin {
 		editor.commands.add( SUBSCRIPT, new AttributeCommand( editor, SUBSCRIPT ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ SubscriptEditing.pluginName ]: SubscriptEditing;
-	}
-}

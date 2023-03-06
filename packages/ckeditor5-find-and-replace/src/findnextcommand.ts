@@ -61,9 +61,3 @@ export default class FindNextCommand extends Command {
 		this._state.highlightedResult = this._state.results.get( nextIndex );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'findNext': FindNextCommand;
-	}
-}
