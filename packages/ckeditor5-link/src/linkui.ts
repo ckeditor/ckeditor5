@@ -706,9 +706,3 @@ export default class LinkUI extends Plugin {
 function findLinkElementAncestor( position: ViewPosition ): ViewAttributeElement | null {
 	return position.getAncestors().find( ( ancestor ): ancestor is ViewAttributeElement => isLinkElement( ancestor ) ) || null;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkUI.pluginName ]: LinkUI;
-	}
-}

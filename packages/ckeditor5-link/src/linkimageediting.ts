@@ -310,9 +310,3 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: ManualDecora
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkImageEditing.pluginName ]: LinkImageEditing;
-	}
-}

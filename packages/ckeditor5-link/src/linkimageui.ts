@@ -120,9 +120,3 @@ export default class LinkImageUI extends Plugin {
 		return imageUtils.isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkImageUI.pluginName ]: LinkImageUI;
-	}
-}
