@@ -281,10 +281,3 @@ function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleD
 function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
 	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		style: StyleCommand;
-	}
-}

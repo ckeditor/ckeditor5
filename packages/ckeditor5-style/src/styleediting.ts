@@ -66,12 +66,6 @@ export default class StyleEditing extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StyleEditing.pluginName ]: StyleEditing;
-	}
-}
-
 /**
  * Translates a normalized style definition to a view matcher pattern.
  */
