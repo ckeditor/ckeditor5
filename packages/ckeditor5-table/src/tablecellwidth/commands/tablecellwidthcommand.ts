@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecellproperties/commands/tablecellwidthcommand
+ * @module table/tablecellwidth/commands/tablecellwidthcommand
  */
 
 import type { Editor } from 'ckeditor5/src/core';
@@ -58,12 +58,5 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 		}
 
 		return value;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableCellWidth: TableCellWidthCommand;
 	}
 }

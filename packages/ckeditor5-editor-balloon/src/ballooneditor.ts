@@ -82,7 +82,7 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
+			secureSourceElement( this, sourceElementOrData );
 		}
 
 		const plugins = this.config.get( 'plugins' )!;
@@ -218,7 +218,7 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<BalloonEditor> {
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<BalloonEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js

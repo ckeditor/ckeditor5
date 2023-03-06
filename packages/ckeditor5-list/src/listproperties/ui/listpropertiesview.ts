@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/ui/listpropertiesview
+ * @module list/listproperties/ui/listpropertiesview
  */
 
 import {
@@ -413,9 +413,9 @@ export type StylesView = View & {
 };
 
 /**
- * Fired when the list start index value has changed via {@link #startIndexFieldView}.
+ * Fired when the list start index value has changed via {@link ~ListPropertiesView#startIndexFieldView}.
  *
- * @eventName listStart
+ * @eventName ~ListPropertiesView#listStart
  */
 export type ListPropertiesViewListStartEvent = {
 	name: 'listStart';
@@ -423,9 +423,9 @@ export type ListPropertiesViewListStartEvent = {
 };
 
 /**
- * Fired when the list order has changed (reversed) via {@link #reversedSwitchButtonView}.
+ * Fired when the list order has changed (reversed) via {@link ~ListPropertiesView#reversedSwitchButtonView}.
  *
- * @eventName listReversed
+ * @eventName ~ListPropertiesView#listReversed
  */
 export type ListPropertiesViewListReversedEvent = {
 	name: 'listReversed';

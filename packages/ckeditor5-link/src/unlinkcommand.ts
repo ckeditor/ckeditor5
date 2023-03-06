@@ -42,7 +42,7 @@ export default class UnlinkCommand extends Command {
 	 *
 	 * # Decorators
 	 *
-	 * If {@link module:link/link~LinkConfig#decorators `config.link.decorators`} is specified,
+	 * If {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} is specified,
 	 * all configured decorators are removed together with the `linkHref` attribute.
 	 *
 	 * @fires execute

@@ -18,7 +18,7 @@ import './mediaembedconfig';
  * The media embed toolbar plugin. It creates a toolbar for media embed that shows up when the media element is selected.
  *
  * Instances of toolbar components (e.g. buttons) are created based on the
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
  */
 export default class MediaEmbedToolbar extends Plugin {
 	/**

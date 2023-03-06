@@ -71,7 +71,7 @@ export default class LinkImageEditing extends Plugin {
 	}
 
 	/**
-	 * Processes {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators} definitions and
+	 * Processes {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators} definitions and
 	 * attaches proper converters that will work when linking an image.`
 	 */
 	private _enableAutomaticDecorators(): void {
@@ -85,7 +85,7 @@ export default class LinkImageEditing extends Plugin {
 	}
 
 	/**
-	 * Processes transformed {@link module:link/utils~ManualDecorator} instances and attaches proper converters
+	 * Processes transformed {@link module:link/utils/manualdecorator~ManualDecorator} instances and attaches proper converters
 	 * that will work when linking an image.
 	 */
 	private _enableManualDecorators(): void {

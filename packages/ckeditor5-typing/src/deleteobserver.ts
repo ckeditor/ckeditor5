@@ -215,7 +215,7 @@ export default class DeleteObserver extends Observer {
  * Note: This event is fired by the {@link module:typing/deleteobserver~DeleteObserver delete observer}
  * (usually registered by the {@link module:typing/delete~Delete delete feature}).
  *
- * @eventName delete
+ * @eventName module:engine/view/document~Document#delete
  * @param data The event data.
  */
 export type ViewDocumentDeleteEvent = BubblingEvent<{

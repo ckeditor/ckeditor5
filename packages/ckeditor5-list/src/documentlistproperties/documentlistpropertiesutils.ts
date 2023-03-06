@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlist/documentlistpropertiesutils
+ * @module list/documentlistproperties/documentlistpropertiesutils
  */
 
 import { Plugin } from 'ckeditor5/src/core';

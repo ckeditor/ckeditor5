@@ -358,16 +358,3 @@ export interface TableCellPropertiesOptions {
 	 */
 	verticalAlignment?: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:table/table~Table} feature.
-		 *
-		 * Read more in {@link module:table/tableconfig~TableConfig}.
-		 */
-		table?: TableConfig;
-	}
-}

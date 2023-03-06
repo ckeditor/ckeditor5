@@ -101,10 +101,3 @@ export default class SetHeaderRowCommand extends Command {
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		setTableRowHeader: SetHeaderRowCommand;
-	}
-}

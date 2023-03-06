@@ -355,7 +355,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'returned affected range of insert operation', () => {
 		it( 'should return collapsed range when object could not be inserted', () => {
-			const stub = testUtils.sinon.stub( console, 'warn' );
+			testUtils.sinon.stub( console, 'warn' );
 
 			schema.register( 'disallowedBlockWidget', {
 				isObject: true
@@ -367,8 +367,6 @@ describe( 'insertObject()', () => {
 
 			expect( affectedRange.isCollapsed ).to.be.true;
 			expect( getData( model ) ).to.equalMarkup( '[]' );
-
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should return affected range when inserting block object', () => {
@@ -479,7 +477,8 @@ describe( 'insertObject()', () => {
 				isObject: true
 			} );
 
-			const stub = testUtils.sinon.stub( console, 'warn' );
+			testUtils.sinon.stub( console, 'warn' );
+
 			const widget = new Element( 'anotherBlockWidget', [], [] );
 
 			model.insertObject( widget );
@@ -488,7 +487,6 @@ describe( 'insertObject()', () => {
 
 			sinon.assert.calledOnce( insertContentSpy );
 			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should insert an object in an empty document', () => {

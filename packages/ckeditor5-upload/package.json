@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-upload",
-  "version": "37.0.0-alpha.0",
+  "version": "36.0.1",
   "description": "Upload feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,9 +11,9 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^37.0.0-alpha.0",
-    "@ckeditor/ckeditor5-utils": "^37.0.0-alpha.0",
-    "@ckeditor/ckeditor5-ui": "^37.0.0-alpha.0"
+    "@ckeditor/ckeditor5-core": "^36.0.1",
+    "@ckeditor/ckeditor5-utils": "^36.0.1",
+    "@ckeditor/ckeditor5-ui": "^36.0.1"
   },
   "devDependencies": {
     "typescript": "^4.8.4",
@@ -42,7 +42,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.release.json",
+    "build": "tsc -p ./tsconfig.json",
     "postversion": "npm run build"
   }
 }

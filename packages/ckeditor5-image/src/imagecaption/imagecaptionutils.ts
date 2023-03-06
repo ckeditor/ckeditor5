@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaptionutils/utils
+ * @module image/imagecaption/imagecaptionutils
  */
 
 import type { DocumentSelection, Element, Selection, ViewElement, Match } from 'ckeditor5/src/engine';

@@ -6,11 +6,7 @@ category: features
 
 # Editor placeholder
 
-CKEditor 5 can display a configurable placeholder text when the content is empty. The placeholder helps users locate the editor in the application and prompts to input the content. It works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
 
 ## Demo
 
@@ -23,6 +19,10 @@ See the demo of the placeholder feature:
 </info-box>
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+</info-box>
 
 The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:
 
@@ -54,16 +54,43 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 * to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+ClassicEditor.create(
+	document.querySelector( '#editor' ),
+    {
 		placeholder: 'Type the content here!'
-	} )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
+	}
+).then( editor => {
+    console.log( editor );
+} ).catch( error => {
+    console.error( error );
+} );
+```
+
+If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
+
+```js
+MultiRootEditor.create(
+	// Roots for the editor:
+	{
+		header: document.querySelector( '#header' ),
+		content: document.querySelector( '#content' ),
+		leftSide: document.querySelector( '#left-side' ),
+		rightSide: document.querySelector( '#right-side' )
+	},
+	// Config:
+	{
+		placeholder: {
+			header: 'Type header...',
+			content: 'Type content...',
+			leftSide: 'Type left-side...',
+			rightSide: 'Type right-side...'
+		}
+	}
+).then( editor => {
+    console.log( editor );
+} ).catch( error => {
+    console.error( error );
+} );
 ```
 
 ## Styling the placeholder
@@ -72,8 +99,8 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 ```css
 .ck.ck-editor__editable > .ck-placeholder::before {
-    color: #d21714;
-    font-family: Georgia;
+	color: #d21714;
+	font-family: Georgia;
 }
 ```
 
@@ -83,4 +110,4 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core).

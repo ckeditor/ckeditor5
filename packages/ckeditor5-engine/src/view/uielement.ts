@@ -101,7 +101,7 @@ export default class UIElement extends Element {
 	 * ```
 	 *
 	 * If changes in your UI element should trigger some editor UI update you should call
-	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
+	 * the {@link module:ui/editorui/editorui~EditorUI#update `editor.ui.update()`} method
 	 * after rendering your UI element.
 	 *
 	 * @param domConverter Instance of the DomConverter used to optimize the output.

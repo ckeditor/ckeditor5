@@ -19,7 +19,7 @@ import type {
 } from '@ckeditor/ckeditor5-list';
 
 import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 
 /**
  * Provides the General HTML Support integration with the {@link module:list/documentlist~DocumentList Document List} feature.
@@ -74,7 +74,7 @@ export default class DocumentListElementSupport extends Plugin {
 			}
 		} );
 
-		dataFilter.on<RegisterEvent>( 'register', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
 			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view! ) ) {
 				return;
 			}

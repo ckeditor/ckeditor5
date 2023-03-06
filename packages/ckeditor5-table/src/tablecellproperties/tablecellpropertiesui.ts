@@ -35,7 +35,6 @@ import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
 
-import '../tableconfig';
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
 
 const ERROR_TEXT_TIMEOUT = 500;
@@ -458,11 +457,5 @@ export default class TableCellPropertiesUI extends Plugin {
 				setErrorTextDebounced();
 			}
 		};
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableCellPropertiesUI.pluginName]: TableCellPropertiesUI;
 	}
 }

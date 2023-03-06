@@ -42,7 +42,9 @@ const ASSET_INSERTION_WAIT_TIMEOUT = 1000;
  * The CKBox command. It is used by the {@link module:ckbox/ckboxediting~CKBoxEditing CKBox editing feature} to open the CKBox file manager.
  * The file manager allows inserting an image or a link to a file into the editor content.
  *
- *		editor.execute( 'ckbox' );
+ * ```ts
+ * editor.execute( 'ckbox' );
+ * ```
  *
  * **Note:** This command uses other features to perform the following tasks:
  * - To insert images it uses the {@link module:image/image/insertimagecommand~InsertImageCommand 'insertImage'} command from the
@@ -417,7 +419,7 @@ function getAssetUrl(
 /**
  * Fired when the command is executed, the dialog is closed or the assets are chosen.
  *
- * @eventName ckbox
+ * @eventName ~CKBoxCommand#ckbox
  */
 type CKBoxEvent<Name extends '' | 'choose' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckbox' : `ckbox:${ Name }`;

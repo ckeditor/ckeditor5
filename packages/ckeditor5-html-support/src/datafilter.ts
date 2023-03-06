@@ -327,7 +327,7 @@ export default class DataFilter extends Plugin {
 	 * Registers default element handlers.
 	 */
 	private _registerElementHandlers() {
-		this.on<RegisterEvent>( 'register', ( evt, definition ) => {
+		this.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
 			const schema = this.editor.model.schema;
 
 			// Object element should be only registered for new features.
@@ -454,7 +454,7 @@ export default class DataFilter extends Plugin {
 			return;
 		}
 
-		this.fire<RegisterEvent>( definition.view ? `register:${ definition.view }` : 'register', definition );
+		this.fire<DataFilterRegisterEvent>( definition.view ? `register:${ definition.view }` : 'register', definition );
 	}
 
 	/**
@@ -606,9 +606,9 @@ export default class DataFilter extends Plugin {
  * }, { priority: 'high' } )
  * ```
  *
- * @eventName register
+ * @eventName ~DataFilter#register
  */
-export interface RegisterEvent {
+export interface DataFilterRegisterEvent {
 	name: 'register' | `register:${ string }`;
 	args: [ data: DataSchemaDefinition ];
 }

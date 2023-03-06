@@ -14,7 +14,7 @@ import RootElement from './rootelement';
 
 import type { SelectionChangeEvent } from './selection';
 import type { default as Model, ModelApplyOperationEvent } from './model';
-import type { MarkerCollectionUpdateEvent, MarkerCollectionChangeEvent } from './markercollection';
+import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection';
 import type Batch from './batch';
 import type Position from './position';
 import type Range from './range';
@@ -141,7 +141,7 @@ export default class Document extends EmitterMixin() {
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
-				marker.on<MarkerCollectionChangeEvent>( 'change', ( evt, oldRange ) => {
+				marker.on<MarkerChangeEvent>( 'change', ( evt, oldRange ) => {
 					const markerData = marker.getData();
 
 					this.differ.bufferMarkerChange(
@@ -437,7 +437,7 @@ export default class Document extends EmitterMixin() {
  * } );
  * ```
  *
- * @eventName change
+ * @eventName ~Document#change
  * @param batch The batch that was used in the executed changes block.
  */
 export type DocumentChangeEvent = {

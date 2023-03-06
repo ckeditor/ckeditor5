@@ -155,7 +155,7 @@ export interface PendingAction extends Observable {
 /**
  * Fired when an action is added to the list.
  *
- * @eventName add
+ * @eventName ~PendingActions#add
  * @param action The added action.
  */
 export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
@@ -163,7 +163,7 @@ export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
 /**
  * Fired when an action is removed from the list.
  *
- * @eventName remove
+ * @eventName ~PendingActions#remove
  * @param action The removed action.
  */
 export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;

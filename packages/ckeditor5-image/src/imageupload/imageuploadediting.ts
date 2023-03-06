@@ -445,7 +445,7 @@ function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
  *
  * **Note**: This event is fired by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin.
  *
- * @eventName uploadComplete
+ * @eventName ~ImageUploadEditing#uploadComplete
  * @param data The `uploadComplete` event data.
  */
 export type ImageUploadCompleteEvent = {

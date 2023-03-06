@@ -100,12 +100,6 @@ export default class StyleGridView extends View<HTMLDivElement> {
 
 			children: this.children
 		} );
-
-		/**
-		 * Fired when a {@link module:style/ui/stylegridbuttonview~StyleGridButtonView style} was selected (clicked) by the user.
-		 *
-		 * @event execute
-		 */
 	}
 
 	/**
@@ -147,3 +141,13 @@ export default class StyleGridView extends View<HTMLDivElement> {
 		this.keystrokes.destroy();
 	}
 }
+
+/**
+ * Fired when a {@link module:style/ui/stylegridbuttonview~StyleGridButtonView style} was selected (clicked) by the user.
+ *
+ * @eventName ~StyleGridView#execute
+ */
+export type StyleGridViewExecuteEvent = {
+	name: 'execute';
+	args: [];
+};

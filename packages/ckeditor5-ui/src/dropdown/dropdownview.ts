@@ -544,7 +544,7 @@ export default class DropdownView extends View<HTMLDivElement> {
  * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}
  * or {@link module:ui/dropdown/utils~addToolbarToDropdown}.
  *
- * @eventName execute
+ * @eventName ~DropdownView#execute
  */
 export type DropdownViewEvent = {
 	name: 'execute';
