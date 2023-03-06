@@ -24,10 +24,10 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface CommandsMap {
-		'find': FindCommand;
-		'findNext': FindNextCommand;
-		'findPrevious': FindPreviousCommand;
-		'replace': ReplaceCommand;
-		'replaceAll': ReplaceAllCommand;
+		find: FindCommand;
+		findNext: FindNextCommand;
+		findPrevious: FindPreviousCommand;
+		replace: ReplaceCommand;
+		replaceAll: ReplaceAllCommand;
 	}
 }
