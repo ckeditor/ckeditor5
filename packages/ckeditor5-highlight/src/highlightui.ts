@@ -275,9 +275,3 @@ type HighlightSplitButtonView = SplitButtonView & {
 	commandValue: string;
 	color: string;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HighlightUI.pluginName ]: HighlightUI;
-	}
-}

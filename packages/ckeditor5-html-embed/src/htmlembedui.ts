@@ -61,9 +61,3 @@ export default class HtmlEmbedUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PLuginsMap {
-		[ HtmlEmbedUI.pluginName ]: HtmlEmbedUI;
-	}
-}

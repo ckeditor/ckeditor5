@@ -77,15 +77,3 @@ export interface CKFinderOptions extends Record<string, unknown> {
 	onInit?: ( finder: any ) => void;
 	language?: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature}.
-		 *
-		 * Read more in {@link module:ckfinder/ckfinderconfig~CKFinderConfig}.
-		 */
-		ckfinder?: CKFinderConfig;
-	}
-}

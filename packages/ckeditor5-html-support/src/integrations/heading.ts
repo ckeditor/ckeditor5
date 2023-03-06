@@ -65,8 +65,3 @@ export default class HeadingElementSupport extends Plugin {
 		} );
 	}
 }
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HeadingElementSupport.pluginName ]: HeadingElementSupport;
-	}
-}

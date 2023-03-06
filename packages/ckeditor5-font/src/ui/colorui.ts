@@ -20,8 +20,6 @@ import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
 
-import '../fontconfig';
-
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
  *

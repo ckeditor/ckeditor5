@@ -116,18 +116,6 @@ export interface CKBoxConfig {
 	language?: string;
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
-		 *
-		 * Read more in {@link module:ckbox/ckboxconfig~CKBoxConfig}.
-		 */
-		ckbox?: CKBoxConfig;
-	}
-}
-
 /**
  * Asset definition.
  *

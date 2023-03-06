@@ -45,9 +45,3 @@ export default class CloudServicesCore extends ContextPlugin {
 		return new UploadGateway( token, apiAddress );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CloudServicesCore.pluginName ]: CloudServicesCore;
-	}
-}

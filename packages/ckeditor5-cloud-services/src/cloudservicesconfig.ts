@@ -126,15 +126,3 @@ export interface CloudServicesConfig {
 	 */
 	bundleVersion?: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloud-services/cloudservices~CloudServices} plugin.
-		 *
-		 * Read more in {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig}.
-		 */
-		cloudServices?: CloudServicesConfig;
-	}
-}

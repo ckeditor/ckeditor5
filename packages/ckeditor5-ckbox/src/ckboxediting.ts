@@ -335,12 +335,6 @@ export default class CKBoxEditing extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CKBoxEditing.pluginName ]: CKBoxEditing;
-	}
-}
-
 /**
  * A post-fixer that synchronizes the asset ID with the model element.
  */

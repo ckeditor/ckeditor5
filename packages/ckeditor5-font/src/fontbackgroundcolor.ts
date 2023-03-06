@@ -36,10 +36,3 @@ export default class FontBackgroundColor extends Plugin {
 		return 'FontBackgroundColor';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontBackgroundColor.pluginName ]: FontBackgroundColor;
-	}
-}
-

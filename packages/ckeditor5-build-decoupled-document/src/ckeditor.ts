@@ -8,18 +8,15 @@ import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decoup
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
@@ -37,7 +34,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 

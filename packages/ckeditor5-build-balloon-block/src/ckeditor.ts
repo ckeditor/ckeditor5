@@ -12,10 +12,10 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -30,7 +30,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 /**
  * @internal

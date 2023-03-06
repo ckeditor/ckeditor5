@@ -177,9 +177,3 @@ function isValidElementName( name: string ): boolean {
 
 	return true;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CustomElementSupport.pluginName ]: CustomElementSupport;
-	}
-}

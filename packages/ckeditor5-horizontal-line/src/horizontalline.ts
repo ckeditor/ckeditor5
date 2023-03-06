@@ -34,10 +34,3 @@ export default class HorizontalLine extends Plugin {
 		return 'HorizontalLine';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HorizontalLine.pluginName ]: HorizontalLine;
-	}
-}
-

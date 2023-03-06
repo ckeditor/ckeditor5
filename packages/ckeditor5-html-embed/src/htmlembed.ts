@@ -35,9 +35,3 @@ export default class HtmlEmbed extends Plugin {
 		return 'HtmlEmbed';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HtmlEmbed.pluginName ]: HtmlEmbed;
-	}
-}

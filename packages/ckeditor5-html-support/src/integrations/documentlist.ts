@@ -216,11 +216,6 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 			conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
 		}
 	};
-	return callback;
-}
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListElementSupport.pluginName ]: DocumentListElementSupport;
-	}
+	return callback;
 }
