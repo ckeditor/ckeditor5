@@ -24,7 +24,7 @@ ClassicEditor
 		] ),
 		toolbar: {
 			items: [
-				'undo', 'redo', 'heading',
+				'undo', '|', 'redo', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
 				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
