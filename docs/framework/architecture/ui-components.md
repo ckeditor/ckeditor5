@@ -1,6 +1,7 @@
 ---
 category: framework-architecture
 order: 50
+modified_at: 2023-03-06
 ---
 
 # UI components
@@ -75,13 +76,9 @@ Two positions describe the placement of the ballon. The first one describes the 
 
 {@snippet framework/ui/ui-button}
 
-There are two basic buttons in CKEditor 5 UI library: a standard button and a switch.
+There are two basic buttons in CKEditor 5 UI library: a standard button and a switch. You can instantiate the standard button with the `ButtonView` class. By modifying the passed config, you can get different button variants and states.
 
-### Standard
-
-You can instantiate the standard button with the `ButtonView` class. By modifying the passed config, you can get different button variants and states.
-
-#### Action
+### Action
 
 To get an action button, add the `ck-button-action` class.
 
@@ -100,7 +97,7 @@ actionButton.render();
 document.getElementById( 'button-action' ).append( actionButton.element );
 ```
 
-#### Rounded
+### Rounded
 
 To get a rounded button, add the `ck-rounded-corners` class.
 
@@ -119,7 +116,7 @@ roundedButton.render();
 document.getElementById( 'button-rounded' ).append( roundedButton.element );
 ```
 
-#### Bold
+### Bold
 
 To get a bold button, add the `ck-button-bold` class.
 
@@ -138,7 +135,7 @@ boldButton.render();
 document.getElementById( 'button-bold' ).append( boldButton.element );
 ```
 
-#### Icon
+### Icon
 
 To get a button with an icon, import it first, then set the icon property on the button. There are also classes you can use to style icons appropriately.
 
@@ -159,7 +156,7 @@ saveButton.render();
 document.getElementById( 'button-icon' ).append( saveButton.element );
 ```
 
-#### Keystrokes
+### Keystrokes
 
 To get a button with a shortcut, add the keystroke property. To display the shortcut on the button, set the `withKeystroke` property to `true`. If you also add a label, it will display next to the shortcut. You don't need to worry about different shortcuts for different OSes - the shortcut is relative to the OS. For example, "CTRL+I" shortcut, Mac OS will display as "⌘+I".
 
@@ -179,7 +176,7 @@ keystrokeButton.render();
 document.getElementById( 'button-keystroke' ).append( keystrokeButton.element );
 ```
 
-#### Tooltip
+### Tooltip
 
 To get a button with a tooltip, add the tooltip property. You can use it to display additional information on button hover.
 
@@ -193,7 +190,7 @@ tooltipButton.set( {
     withText: true,
     tooltip: 'The content of the tooltip',
     tooltipPosition: 's'
-} )
+} );
 tooltipButton.render();
 
 document.getElementById( 'button-tooltip' ).append( tooltipButton.element );
@@ -207,28 +204,6 @@ By default, the tooltip will appear to the south of the button. However, you can
 - `e` &ndash; East
 - `se` &ndash; South-east
 - `sw` &ndash; South-west
-
-### Switch
-
-{@snippet framework/ui/ui-switch}
-
-You need a different class to instantiate a switch button - `SwitchButtonView`. To make it work properly, you also need to add an event listener with the `on()` method. Every click triggers the flip of the `isOn` property - it's responsible for turning the button on and off.
-
-```js
-import { SwitchButtonView } from '@ckeditor/ckeditor5-ui';
-
-const switchButton = new SwitchButtonView();
-
-switchButton.set( {
-    label: 'Switch button',
-    withText: true,
-    isOn: false
-} );
-switchButton.render();
-switchButton.on( 'execute', () => { switchButton.isOn = !switchButton.isOn } );
-
-document.getElementById( 'button-switch' ).append( switchButton.element );
-```
 
 ### States
 
@@ -249,7 +224,7 @@ enabledButton.set( {
     label: 'Enabled state',
     withText: true,
     isEnabled: true
-} )
+} );
 enabledButton.render();
 
 document.getElementById( 'button-enabled' ).append( enabledButton.element );
@@ -283,10 +258,32 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 const onButton = new ButtonView();
 
-onButton.set( { label: 'On state', withText: true, isOn: true } )
+onButton.set( { label: 'On state', withText: true, isOn: true } );
 onButton.render();
 
 document.getElementById( 'button-on' ).append( onButton.element );
+```
+
+## Switch
+
+{@snippet framework/ui/ui-switch}
+
+You need a different class to instantiate a switch button - `SwitchButtonView`. To make it work properly, you also need to add an event listener with the `on()` method. Every click triggers the flip of the `isOn` property - it's responsible for turning the button on and off.
+
+```js
+import { SwitchButtonView } from '@ckeditor/ckeditor5-ui';
+
+const switchButton = new SwitchButtonView();
+
+switchButton.set( {
+    label: 'Switch button',
+    withText: true,
+    isOn: false
+} );
+switchButton.render();
+switchButton.on( 'execute', () => { switchButton.isOn = !switchButton.isOn } );
+
+document.getElementById( 'button-switch' ).append( switchButton.element );
 ```
 
 ## Dropdown
@@ -402,7 +399,7 @@ addToolbarToDropdown( splitButtonDropdown, buttons);
 splitButtonDropdown.buttonView.set ( {
     label: 'Split button dropdown',
     withText: true
-} )
+} );
 splitButtonDropdown.render();
 
 document.getElementById( 'dropdown-split-button' ).append( buttonDropdown.element );
