@@ -121,9 +121,3 @@ function getFormValidators( t: LocaleTranslate, registry: MediaRegistry ): Array
 		}
 	];
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ MediaEmbedUI.pluginName ]: MediaEmbedUI;
-	}
-}
