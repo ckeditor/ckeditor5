@@ -329,9 +329,3 @@ export interface ResizerOptions {
 
 	isCentered?: ( resizer: Resizer ) => boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ WidgetResize.pluginName ]: WidgetResize;
-	}
-}

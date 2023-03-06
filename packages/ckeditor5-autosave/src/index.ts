@@ -7,4 +7,4 @@
  * @module autosave
  */
 
-export { default as Autosave } from './autosave';
+export { default as Autosave, type AutosaveConfig } from './autosave';

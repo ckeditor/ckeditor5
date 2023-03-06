@@ -38,9 +38,3 @@ export default class Clipboard extends Plugin {
 		return [ ClipboardPipeline, DragDrop, PastePlainText ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Clipboard.pluginName ]: Clipboard;
-	}
-}

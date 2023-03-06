@@ -8,3 +8,5 @@
  */
 
 export { default as Autoformat } from './autoformat';
+
+import './augmentation';

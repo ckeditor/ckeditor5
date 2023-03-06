@@ -13,9 +13,6 @@ import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ck
 
 import ChangeBuffer from './utils/changebuffer';
 
-// Import config.typing declaration.
-import './typingconfig';
-
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
@@ -255,12 +252,5 @@ export default class DeleteCommand extends Command {
 		}
 
 		return true;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		deleteForward: DeleteCommand;
-		delete: DeleteCommand;
 	}
 }

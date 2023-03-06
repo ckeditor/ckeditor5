@@ -34,9 +34,3 @@ export default class SelectAll extends Plugin {
 		return 'SelectAll';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ SelectAll.pluginName ]: SelectAll;
-	}
-}

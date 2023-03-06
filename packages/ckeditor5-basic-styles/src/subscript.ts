@@ -32,9 +32,3 @@ export default class Subscript extends Plugin {
 		return 'Subscript';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Subscript.pluginName ]: Subscript;
-	}
-}

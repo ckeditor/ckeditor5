@@ -8,3 +8,5 @@
  */
 
 export { default as UploadAdapter } from './uploadadapter';
+
+import './augmentation';

@@ -9,18 +9,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-findandreplace' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'link',
-				'insertTable',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'findAndReplace'
+				'undo', '|', 'redo', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

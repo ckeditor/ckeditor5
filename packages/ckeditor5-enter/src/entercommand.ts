@@ -123,9 +123,3 @@ function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		enter: EnterCommand;
-	}
-}
