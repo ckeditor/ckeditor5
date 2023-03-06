@@ -518,7 +518,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 /**
  * Fired before the first conversion event, at the beginning of the upcast (view-to-model conversion) process.
  *
- * @eventName viewCleanup
+ * @eventName ~UpcastDispatcher#viewCleanup
  * @param viewItem A part of the view to be converted.
  */
 export type UpcastViewCleanupEvent = {
@@ -537,7 +537,7 @@ type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFrag
  * **Note:** Keep in mind that this object is shared by reference between all conversion callbacks that will be called.
  * This means that callbacks can override values if needed, and these values will be available in other callbacks.
  */
-export type UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment = ViewItem | ViewDocumentFragment> = {
+export interface UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment = ViewItem | ViewDocumentFragment> {
 
 	/**
 	 * The converted item.
@@ -555,7 +555,7 @@ export type UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment =
 	 * the converted element should be reflected by setting or modifying this property.
 	 */
 	modelRange: ModelRange | null;
-};
+}
 
 /**
  * Fired when an {@link module:engine/view/element~Element} is converted.
@@ -564,7 +564,7 @@ export type UpcastConversionData<TItem extends ViewItem | ViewDocumentFragment =
  * `element:<elementName>` where `elementName` is the name of the converted element. This way listeners may listen to
  * a conversion of all or just specific elements.
  *
- * @eventName element
+ * @eventName ~UpcastDispatcher#element
  * @param data The conversion data. Keep in mind that this object is shared by reference between all callbacks
  * that will be called. This means that callbacks can override values if needed, and these values
  * will be available in other callbacks.
@@ -575,7 +575,7 @@ export type UpcastElementEvent = UpcastEvent<'element', ViewElement>;
 /**
  * Fired when a {@link module:engine/view/text~Text} is converted.
  *
- * @eventName text
+ * @eventName ~UpcastDispatcher#text
  * @see #event:element
  */
 export type UpcastTextEvent = UpcastEvent<'text', ViewText>;
@@ -583,7 +583,7 @@ export type UpcastTextEvent = UpcastEvent<'text', ViewText>;
 /**
  * Fired when a {@link module:engine/view/documentfragment~DocumentFragment} is converted.
  *
- * @eventName documentFragment
+ * @eventName ~UpcastDispatcher#documentFragment
  * @see #event:element
  */
 export type UpcastDocumentFragmentEvent = UpcastEvent<'documentFragment', ViewDocumentFragment>;

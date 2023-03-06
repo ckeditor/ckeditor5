@@ -39,6 +39,8 @@ import { isElement as _isElement } from 'lodash-es';
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
  *
+ * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
+ *
  * # Decoupled editor and document editor build
  *
  * The decoupled editor can be used directly from source (if you installed the
@@ -88,7 +90,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
+			secureSourceElement( this, sourceElementOrData );
 		}
 
 		this.model.document.createRoot();
@@ -143,8 +145,8 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	/**
 	 * Creates a new decoupled editor instance.
 	 *
-	 * Remember that `DecoupledEditor` does not append the toolbar element to your web page so you have to do it manually after the editor
-	 * has been initialized.
+	 * **Note:** remember that `DecoupledEditor` does not append the toolbar element to your web page, so you have to do it manually
+	 * after the editor has been initialized.
 	 *
 	 * There are two ways how the editor can be initialized.
 	 *
@@ -250,7 +252,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js

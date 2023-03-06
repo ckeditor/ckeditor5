@@ -15,7 +15,7 @@ import {
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter
 } from '../converters';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
 
 /**
@@ -56,7 +56,7 @@ export default class DualContentModelElementSupport extends Plugin {
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
 			const blockDefinition = definition as DataSchemaBlockElementDefinition;
 			const editor = this.editor;
 			const schema = editor.model.schema;

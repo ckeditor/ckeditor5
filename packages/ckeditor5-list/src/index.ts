@@ -40,4 +40,4 @@ export type { default as ListStartCommand } from './listproperties/liststartcomm
 export type { default as ListStyleCommand } from './listproperties/liststylecommand';
 export type { default as CheckTodoListCommand } from './todolist/checktodolistcommand';
 
-import '../plugin';
+import './augmentation';

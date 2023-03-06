@@ -33,9 +33,3 @@ export default class TableColumnResize extends Plugin {
 		return 'TableColumnResize';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableColumnResize.pluginName ]: TableColumnResize;
-	}
-}

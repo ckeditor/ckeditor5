@@ -212,7 +212,7 @@ function isInputElementEmpty( domElement: HTMLInputElement ) {
  * Fired when the user types in the input. Corresponds to the native
  * DOM `input` event.
  *
- * @eventName input
+ * @eventName ~InputView#input
  */
 export type InputViewInputEvent = {
 	name: 'input';

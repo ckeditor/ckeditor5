@@ -202,13 +202,13 @@ export default class DocumentListCommand extends Command {
 }
 
 /**
- * Event fired by the {@link #execute} method.
+ * Event fired by the {@link ~DocumentListCommand#execute} method.
  *
  * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
  * for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListCommand#afterExecute
  */
 export type DocumentListCommandAfterExecuteEvent = {
 	name: 'afterExecute';

@@ -35,7 +35,6 @@ import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from
 import type { Batch } from 'ckeditor5/src/engine';
 import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils';
 
-import '../tableconfig';
 import type TableBorderStyleCommand from './commands/tableborderstylecommand';
 
 const ERROR_TEXT_TIMEOUT = 500;
@@ -436,11 +435,5 @@ export default class TablePropertiesUI extends Plugin {
 				setErrorTextDebounced();
 			}
 		};
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TablePropertiesUI.pluginName ]: TablePropertiesUI;
 	}
 }

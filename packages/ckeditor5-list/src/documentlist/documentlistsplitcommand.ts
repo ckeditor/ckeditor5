@@ -98,13 +98,13 @@ export default class DocumentListSplitCommand extends Command {
 }
 
 /**
- * Event fired by the {@link #execute} method.
+ * Event fired by the {@link ~DocumentListSplitCommand#execute} method.
  *
- * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
- * for example adjusting attributes of changed list items.
+ * It allows to execute an action after executing the {@link module:list/documentlist/documentlistcommand~DocumentListCommand#execute}
+ * method, for example adjusting attributes of changed list items.
  *
  * @internal
- * @eventName afterExecute
+ * @eventName ~DocumentListSplitCommand#afterExecute
  */
 export type DocumentListSplitCommandAfterExecuteEvent = {
 	name: 'afterExecute';

@@ -118,10 +118,3 @@ export default class ToggleTableCaptionCommand extends Command {
 		model.deleteContent( writer.createSelection( captionElement, 'on' ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		toggleTableCaption: ToggleTableCaptionCommand;
-	}
-}

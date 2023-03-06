@@ -91,7 +91,7 @@ function findAllPackages( repositoryRoot ) {
  */
 function isTypeScriptPackage( pkg ) {
 	return new Promise( resolve => {
-		fs.access( `packages/${ pkg }/tsconfig.release.json`, fs.constants.F_OK, err => {
+		fs.access( `packages/${ pkg }/tsconfig.json`, fs.constants.F_OK, err => {
 			resolve( !err );
 		} );
 	} );

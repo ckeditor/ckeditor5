@@ -437,7 +437,7 @@ declare module '../documentlist/documentlistediting' {
 }
 
 declare module '../documentlist/utils/model' {
-	interface ListElement extends Element {
+	interface ListElement {
 		getAttribute( key: 'listStyle' ): string;
 		getAttribute( key: 'listStart' ): number;
 		getAttribute( key: 'listReversed' ): boolean;

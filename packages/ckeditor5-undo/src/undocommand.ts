@@ -52,7 +52,7 @@ export default class UndoCommand extends BaseCommand {
 /**
  * Fired when execution of the command reverts some batch.
  *
- * @eventName revert
+ * @eventName ~UndoCommand#revert
  */
 export type UndoCommandRevertEvent = {
 	name: 'revert';

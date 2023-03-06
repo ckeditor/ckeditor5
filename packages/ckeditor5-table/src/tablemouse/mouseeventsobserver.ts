@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tableselection/mouseeventsobserver
+ * @module table/tablemouse/mouseeventsobserver
  */
 
 import { DomEventObserver, type DomEventData, type View } from 'ckeditor5/src/engine';
@@ -38,14 +38,14 @@ export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 
 /**
  * Fired when the mouse is moved over one of the editables.
  *
- * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
+ * Introduced by {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver}.
  *
  * Note that this event is not available by default. To make it available,
- * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
+ * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
- * @eventName mousemove
+ * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
+ * @eventName module:engine/view/document~Document#mousemove
  * @param data Event data.
  */
 export type ViewDocumentMouseMoveEvent = {
@@ -56,14 +56,14 @@ export type ViewDocumentMouseMoveEvent = {
 /**
  * Fired when the mouse is moved out of one of the editables.
  *
- * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
+ * Introduced by {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver}.
  *
  * Note that this event is not available by default. To make it available,
- * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
+ * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
- * @eventName mouseleave
+ * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
+ * @eventName module:engine/view/document~Document#mouseleave
  * @param data Event data.
  */
 export type ViewDocumentMouseLeaveEvent = {

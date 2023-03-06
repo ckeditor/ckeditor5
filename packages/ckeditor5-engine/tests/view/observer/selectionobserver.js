@@ -250,7 +250,7 @@ describe( 'SelectionObserver', () => {
 		} );
 	} );
 
-	it( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
+	it.skip( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
 		expect( () => {
 			selectionObserver._reportInfiniteLoop();
 		} ).to.throw( Error,

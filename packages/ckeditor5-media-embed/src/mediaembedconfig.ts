@@ -46,14 +46,14 @@ export interface MediaEmbedConfig {
 	 * * "flickr",
 	 * * "facebook"
 	 *
-	 * See the {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax} to learn more about
+	 * See the {@link module:media-embed/mediaembedconfig~MediaEmbedProvider provider syntax} to learn more about
 	 * different kinds of media and media providers.
 	 *
 	 * **Note**: The default media provider configuration may not support all possible media URLs,
 	 * only the most common are included.
 	 *
 	 * Media without rendering functions are always represented in the data using the "semantic" markup. See
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} to
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} to
 	 * learn more about possible data outputs.
 	 *
 	 * The priority of media providers corresponds to the order of configuration. The first provider
@@ -61,7 +61,7 @@ export interface MediaEmbedConfig {
 	 * The URL is never matched against the remaining providers.
 	 *
 	 * To discard **all** default media providers, simply override this configuration with your own
-	 * {@link module:media-embed/mediaembed~MediaEmbedProvider definitions}:
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedProvider definitions}:
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -86,16 +86,16 @@ export interface MediaEmbedConfig {
 	 * https://github.com/ckeditor/ckeditor5-media-embed/blob/master/src/mediaembedediting.js
 	 *
 	 * To **extend** the list of default providers, use
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
 	 *
 	 * To **remove** certain providers, use
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
 	 */
 	providers?: Array<MediaEmbedProvider>;
 
 	/**
 	 * The additional media providers supported by the editor. This configuration helps extend the default
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers}.
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers}.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -116,14 +116,14 @@ export interface MediaEmbedConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * See the {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax} to learn more.
+	 * See the {@link module:media-embed/mediaembedconfig~MediaEmbedProvider provider syntax} to learn more.
 	 */
 	extraProviders?: Array<MediaEmbedProvider>;
 
 	/**
 	 * The list of media providers that should not be used despite being available in
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}
 	 *
 	 * ```ts
 	 * mediaEmbed: {
@@ -136,8 +136,8 @@ export interface MediaEmbedConfig {
 	/**
 	 * Overrides the element name used for "semantic" data.
 	 *
-	 * This is not relevant if {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
-	 * is set to `true`.
+	 * This is not relevant if
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} is set to `true`.
 	 *
 	 * When not set, the feature produces the `<oembed>` tag:
 	 *
@@ -192,7 +192,7 @@ export interface MediaEmbedConfig {
 	 *
 	 * **Note:** Media without preview are always represented in the data using the "semantic" markup
 	 * regardless of the value of the `previewsInData`. Learn more about different kinds of media
-	 * in the {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
+	 * in the {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
 	 * configuration description.
 	 *
 	 * @defualt false
@@ -210,10 +210,10 @@ export interface MediaEmbedConfig {
 
 /**
  * The media embed provider descriptor. Used in
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
  *
- * See {@link module:media-embed/mediaembed~MediaEmbedConfig} to learn more.
+ * See {@link module:media-embed/mediaembedconfig~MediaEmbedConfig} to learn more.
  *
  * ```ts
  * {
@@ -264,7 +264,7 @@ export interface MediaEmbedProvider {
 
 	/**
 	 * The name of the provider. Used e.g. when
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders removing providers}.
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#removeProviders removing providers}.
 	 */
 	name: string;
 
@@ -284,7 +284,7 @@ export interface MediaEmbedProvider {
 	 * preview of the media identified by a certain ID or a hash. When not defined, the media embed feature
 	 * will use a generic media representation in the view and output data.
 	 * Note that when
-	 * {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
 	 * is `true`, the rendering function **will always** be used for the media in the editor data output.
 	 */
 	html?: ( match: RegExpMatchArray ) => string;
@@ -296,7 +296,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:media-embed/mediaembed~MediaEmbed} feature.
 		 *
-		 * Read more in {@link module:media-embed/mediaembed~MediaEmbedConfig}.
+		 * Read more in {@link module:media-embed/mediaembedconfig~MediaEmbedConfig}.
 		 */
 		mediaEmbed?: MediaEmbedConfig;
 	}

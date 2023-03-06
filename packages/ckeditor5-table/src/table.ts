@@ -48,9 +48,3 @@ export default class Table extends Plugin {
 		return 'Table';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ Table.pluginName ]: Table;
-	}
-}

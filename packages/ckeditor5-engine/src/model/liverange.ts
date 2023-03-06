@@ -97,7 +97,7 @@ LiveRange.prototype.is = function( type: string ): boolean {
  * Fired when `LiveRange` instance boundaries have changed due to changes in the
  * {@link module:engine/model/document~Document document}.
  *
- * @eventName change:range
+ * @eventName ~LiveRange#change:range
  * @param oldRange Range with start and end position equal to start and end position of this live
  * range before it got changed.
  * @param data Object with additional information about the change.
@@ -113,7 +113,7 @@ export type LiveRangeChangeRangeEvent = {
  * Fired when `LiveRange` instance boundaries have not changed after a change in {@link module:engine/model/document~Document document}
  * but the change took place inside the range, effectively changing its content.
  *
- * @eventName change:content
+ * @eventName ~LiveRange#change:content
  * @param range Range with start and end position equal to start and end position of
  * change range.
  * @param data Object with additional information about the change.

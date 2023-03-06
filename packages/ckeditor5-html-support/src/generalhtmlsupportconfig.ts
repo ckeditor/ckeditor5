@@ -13,12 +13,14 @@ import type { MatcherPattern } from 'ckeditor5/src/engine';
  * The configuration of the General HTML Support feature.
  * The option is used by the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} feature.
  *
- *		ClassicEditor
- *			.create( {
- * 				htmlSupport: ... // General HTML Support feature config.
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ * 	.create( {
+ * 		htmlSupport: ... // General HTML Support feature config.
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */

@@ -41,7 +41,7 @@ export default class ClickObserver extends DomEventObserver<'click'> {
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/clickobserver~ClickObserver
- * @eventName click
+ * @eventName module:engine/view/document~Document#click
  * @param data Event data.
  */
 export type ViewDocumentClickEvent = BubblingEvent<{

@@ -208,9 +208,9 @@ export interface MentionFeed {
 export type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
 
 /**
- * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedItem} as HTMLElement.
+ * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedObjectItem} as HTMLElement.
  */
-export type ItemRenderer = ( item: MentionFeedItem ) => HTMLElement;
+export type ItemRenderer = ( item: MentionFeedObjectItem ) => HTMLElement | string;
 
 /**
  * The mention feed item. It may be defined as a string or a plain object.

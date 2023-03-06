@@ -37,9 +37,3 @@ export default class TableCellProperties extends Plugin {
 		return [ TableCellPropertiesEditing, TableCellPropertiesUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableCellProperties.pluginName ]: TableCellProperties;
-	}
-}

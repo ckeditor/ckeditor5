@@ -65,11 +65,3 @@ export default class SplitCellCommand extends Command {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		splitTableCellVertically: SplitCellCommand;
-		splitTableCellHorizontally: SplitCellCommand;
-	}
-}

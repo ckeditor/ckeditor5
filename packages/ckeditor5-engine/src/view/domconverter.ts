@@ -974,9 +974,17 @@ export default class DomConverter {
 		return null;
 	}
 
+	/**
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * use {@link #findCorrespondingDomText}.
+	 *
+	 * @label ELEMENT
+	 * @param element View element or document fragment.
+	 * @returns Corresponding DOM node or document fragment.
+	 */
 	public mapViewToDom( element: ViewElement ): DomElement | undefined;
-	public mapViewToDom( documentFragment: ViewDocumentFragment ): DomDocumentFragment | undefined;
-	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomElement | DomDocumentFragment | undefined;
 
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
@@ -984,9 +992,24 @@ export default class DomConverter {
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
+	 * @label DOCUMENT_FRAGMENT
+	 * @param documentFragment View element or document fragment.
+	 * @returns Corresponding DOM node or document fragment.
+	 */
+	public mapViewToDom( documentFragment: ViewDocumentFragment ): DomDocumentFragment | undefined;
+
+	/**
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * use {@link #findCorrespondingDomText}.
+	 *
+	 * @label DOCUMENT_FRAGMENT_OR_ELEMENT
 	 * @param documentFragmentOrElement View element or document fragment.
 	 * @returns Corresponding DOM node or document fragment.
 	 */
+	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomElement | DomDocumentFragment | undefined;
+
 	public mapViewToDom( documentFragmentOrElement: ViewElement | ViewDocumentFragment ): DomElement | DomDocumentFragment | undefined {
 		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}

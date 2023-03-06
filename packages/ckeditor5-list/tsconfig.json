@@ -1,8 +1,10 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "plugin.d.ts",
-    "../../typings"
-  ]
+	"extends": "../../tsconfig.release.json",
+	"include": [
+		"src",
+		"../../typings"
+	],
+	"exclude": [
+		"tests"
+	]
 }

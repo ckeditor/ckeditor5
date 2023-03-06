@@ -31,8 +31,10 @@ export default abstract class BaseCommand extends Command {
 
 	/**
 	 * Stores all batches that were created by this command.
+	 *
+	 * @internal
 	 */
-	protected _createdBatches = new WeakSet<Batch>();
+	public _createdBatches = new WeakSet<Batch>();
 
 	/**
 	 * @inheritDoc

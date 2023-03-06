@@ -303,6 +303,7 @@ export default class UpcastWriter {
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/element~Element#_setStyle
+	 * @label KEY_VALUE
 	 * @param property Property name.
 	 * @param value Value to set.
 	 * @param element Element for which style will be added.
@@ -324,6 +325,7 @@ export default class UpcastWriter {
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/element~Element#_setStyle
+	 * @label OBJECT
 	 * @param properties Object with key - value pairs.
 	 * @param element Element for which style will be added.
 	 */
@@ -448,8 +450,47 @@ export default class UpcastWriter {
 		return Range._createIn( element );
 	}
 
+	/**
+	 * Creates a new {@link module:engine/view/selection~Selection} instance.
+	 *
+	 * ```ts
+	 * // Creates collapsed selection at the position of given item and offset.
+	 * const paragraph = writer.createContainerElement( 'paragraph' );
+	 * const selection = writer.createSelection( paragraph, offset );
+	 *
+	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = writer.createSelection( paragraph, 'on' );
+	 * ```
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 * ```ts
+	 * // Creates backward selection.
+	 * const selection = writer.createSelection( element, 'in', { backward: true } );
+	 * ```
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 * ```ts
+	 * // Creates fake selection with label.
+	 * const selection = writer.createSelection( element, 'in', { fake: true, label: 'foo' } );
+	 * ```
+	 *
+	 * See also: {@link #createSelection:SELECTABLE `createSelection( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
 
 	/**
 	 * Creates a new {@link module:engine/view/selection~Selection} instance.
@@ -476,18 +517,6 @@ export default class UpcastWriter {
 	 * // Creates selection at the given position.
 	 * const position = writer.createPositionFromPath( root, path );
 	 * const selection = writer.createSelection( position );
-	 *
-	 * // Creates collapsed selection at the position of given item and offset.
-	 * const paragraph = writer.createContainerElement( 'paragraph' );
-	 * const selection = writer.createSelection( paragraph, offset );
-	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = writer.createSelection( paragraph, 'in' );
-	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
@@ -508,7 +537,13 @@ export default class UpcastWriter {
 	 * // Creates fake selection with label.
 	 * const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
 	 * ```
+	 *
+	 * See also: {@link #createSelection:NODE_OFFSET `createSelection( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );
 	}
