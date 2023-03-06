@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.release.json",
   "include": [
     "src",
-    "plugin.d.ts",
-    "../../typings/"
+    "../../typings"
   ],
   "exclude": [
     "tests"
