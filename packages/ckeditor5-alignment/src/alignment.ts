@@ -36,9 +36,3 @@ export default class Alignment extends Plugin {
 		return 'Alignment';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Alignment.pluginName ]: Alignment;
-	}
-}

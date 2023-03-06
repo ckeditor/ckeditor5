@@ -131,15 +131,3 @@ export default class AttributeCommand extends Command {
 		return false;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		bold: AttributeCommand;
-		code: AttributeCommand;
-		italic: AttributeCommand;
-		strikethrough: AttributeCommand;
-		subscript: AttributeCommand;
-		superscript: AttributeCommand;
-		underline: AttributeCommand;
-	}
-}

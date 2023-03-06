@@ -58,9 +58,3 @@ export type UndoCommandRevertEvent = {
 	name: 'revert';
 	args: [ batch: Batch, undoingBatch: Batch ];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		undo: UndoCommand;
-	}
-}

@@ -10,3 +10,7 @@
 export { default as Alignment } from './alignment';
 export { default as AlignmentEditing } from './alignmentediting';
 export { default as AlignmentUI } from './alignmentui';
+export type { default as AlignmentCommand } from './alignmentcommand';
+export type { AlignmentConfig } from './alignmentconfig';
+
+import './augmentation';

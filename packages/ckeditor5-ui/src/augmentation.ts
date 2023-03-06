@@ -3,11 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { ToolbarConfig } from '@ckeditor/ckeditor5-core';
+import type {
+	BalloonToolbar,
+	BlockToolbar,
+	ContextualBalloon,
+	Notification
+} from './index';
 
-/**
- * @module ui/uiconfig
- */
+import type {
+	ToolbarConfig
+} from '@ckeditor/ckeditor5-core';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -83,5 +88,12 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 		 */
 		blockToolbar?: ToolbarConfig;
+	}
+
+	interface PluginsMap {
+		[ BalloonToolbar.pluginName ]: BalloonToolbar;
+		[ BlockToolbar.pluginName ]: BlockToolbar;
+		[ ContextualBalloon.pluginName ]: ContextualBalloon;
+		[ Notification.pluginName ]: Notification;
 	}
 }

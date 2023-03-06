@@ -116,9 +116,3 @@ export default class Paragraph extends Plugin {
 		'th'
 	] );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Paragraph.pluginName ]: Paragraph;
-	}
-}
