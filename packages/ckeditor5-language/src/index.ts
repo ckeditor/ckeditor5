@@ -10,3 +10,8 @@
 export { default as TextPartLanguage } from './textpartlanguage';
 export { default as TextPartLanguageEditing } from './textpartlanguageediting';
 export { default as TextPartLanguageUI } from './textpartlanguageui';
+
+export type { TextPartLanguageOption } from './textpartlanguageconfig';
+export type { default as TextPartLanguageCommand } from './textpartlanguagecommand';
+
+import './augmentation';
