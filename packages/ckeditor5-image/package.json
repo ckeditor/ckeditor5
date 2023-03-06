@@ -67,7 +67,6 @@
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
-    "plugin.d.ts",
     "theme",
     "build",
     "ckeditor5-metadata.json",

@@ -48,4 +48,4 @@ export type { default as ImageStyleCommand } from './imagestyle/imagestylecomman
 export type { default as ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand';
 export type { default as UploadImageCommand } from './imageupload/uploadimagecommand';
 
-import '../plugin';
+import './augmentation';

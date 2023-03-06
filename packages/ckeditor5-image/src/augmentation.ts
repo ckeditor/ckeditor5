@@ -42,7 +42,7 @@ import type {
 	ImageStyleCommand,
 	ImageTextAlternativeCommand,
 	UploadImageCommand
-} from './src';
+} from '.';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {
