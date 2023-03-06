@@ -78,6 +78,40 @@ describe( 'ResizerState', () => {
 		} );
 	} );
 
+	describe( 'width percents calculations ', () => {
+		const domContentWrapper = document.createElement( 'span' );
+
+		before( () => {
+			const htmlMockup = `<div class="dom-element">
+				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
+					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
+				</div>
+			</div>`;
+
+			domContentWrapper.style.width = 'auto';
+			domContentWrapper.innerHTML = htmlMockup;
+			document.body.append( domContentWrapper );
+		} );
+
+		after( () => {
+			domContentWrapper.remove();
+		} );
+
+		it( 'should not return NaN if resizer is inside a <span>', () => {
+			expect( true ).to.be.true;
+
+			const domResizeHandle = domContentWrapper.querySelector( '.ck-widget__resizer__handle' );
+			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
+			const domResizeHost = domHandleHost;
+
+			const state = new ResizerState();
+			state.begin( domResizeHandle, domHandleHost, domResizeHost );
+
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 100 );
+		} );
+	} );
+
 	describe( 'update()', () => {
 		it( 'changes the properties', () => {
 			const state = new ResizerState();
