@@ -28,7 +28,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 export default class MultiRootEditor extends MultiRootEditorBase {}
