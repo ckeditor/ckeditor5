@@ -95,7 +95,7 @@ CKEditor 5 provides an open API that allows you to develop your own upload adapt
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop your own upload adapter for CKEditor 5**}.
 
-## Inserting images via URL
+## Inserting images via a URL
 
 CKEditor 5 supports inserting images into the document via pasting URLs. These may be pasted both into the image insertion dialog or, thanks to the `AutoImage` function, directly into the content.
 
