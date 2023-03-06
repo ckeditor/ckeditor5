@@ -17,7 +17,7 @@ ClassicEditor
 				'|',
 				'|', 'bold', 'italic',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent'
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},

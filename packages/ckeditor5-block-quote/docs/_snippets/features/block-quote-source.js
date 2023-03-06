@@ -16,7 +16,7 @@ ClassicEditor.defaultConfig = {
 			'undo', 'redo', 'heading',
 			'|', 'bold', 'italic',
 			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-			'|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent'
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
 	ui: {
