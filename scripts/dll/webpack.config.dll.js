@@ -143,7 +143,14 @@ const webpackConfig = {
 			},
 			{
 				test: /\.ts$/,
-				use: [ 'ts-loader' ]
+				use: [
+					{
+						loader: 'ts-loader',
+						options: {
+							configFile: path.resolve( process.cwd(), 'tsconfig.test.json' )
+						}
+					}
+				]
 			}
 		]
 	}

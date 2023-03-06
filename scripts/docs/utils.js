@@ -11,7 +11,12 @@ const path = require( 'path' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
-module.exports = { getCkeditor5Plugins, writeFile, normalizePath };
+module.exports = {
+	getCkeditor5Plugins,
+	writeFile,
+	normalizePath,
+	addTypeScriptLoader
+};
 
 /**
  * Returns array with plugin paths.
@@ -138,4 +143,29 @@ function writeFile( filePath, data ) {
  */
 function normalizePath( modulePath ) {
 	return modulePath.split( path.sep ).join( path.posix.sep );
+}
+
+/**
+ * Adds ts-loader with proper configuration to the passed configuration object
+ * only if the `tsconfig.test.json` file exists.
+ *
+ * @param {Object} webpackConfig
+ * @returns {Void}
+ */
+function addTypeScriptLoader( webpackConfig ) {
+	const tsconfigPath = path.resolve( process.cwd(), 'tsconfig.test.json' );
+
+	if ( fs.existsSync( tsconfigPath ) ) {
+		webpackConfig.module.rules.push( {
+			test: /\.ts$/,
+			use: [
+				{
+					loader: 'ts-loader',
+					options: {
+						configFile: tsconfigPath
+					}
+				}
+			]
+		} );
+	}
 }
