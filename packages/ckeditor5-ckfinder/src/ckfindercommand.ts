@@ -13,8 +13,6 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
 import type { Notification } from 'ckeditor5/src/ui';
 
-import './ckfinderconfig';
-
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing CKFinder editing feature}
  * to open the CKFinder file manager to insert an image or a link to a file into the editor content.
@@ -157,10 +155,4 @@ function insertImages( editor: Editor, urls: Array<string> ): void {
 	}
 
 	editor.execute( 'insertImage', { source: urls } );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		ckfinder: CKFinderCommand;
-	}
 }

@@ -178,15 +178,3 @@ export interface HighlightConfig {
 	 */
 	options: Array<HighlightOption>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:highlight/highlight~Highlight} feature.
-		 *
-		 * Read more in {@link module:highlight/highlightconfig~HighlightConfig}.
-		 */
-		highlight?: HighlightConfig;
-	}
-}

@@ -20,3 +20,22 @@ export { default as FontFamilyEditing } from './fontfamily/fontfamilyediting';
 export { default as FontFamilyUI } from './fontfamily/fontfamilyui';
 export { default as FontSizeEditing } from './fontsize/fontsizeediting';
 export { default as FontSizeUI } from './fontsize/fontsizeui';
+export type { default as FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand';
+export type { default as FontColorCommand } from './fontcolor/fontcolorcommand';
+export type { default as FontFamilyCommand } from './fontfamily/fontfamilycommand';
+export type { default as FontSizeCommand } from './fontsize/fontsizecommand';
+
+export type {
+	FONT_BACKGROUND_COLOR,
+	FONT_COLOR,
+	FONT_FAMILY,
+	FONT_SIZE
+} from './utils';
+
+export type {
+	FontColorConfig,
+	FontFamilyConfig,
+	FontSizeConfig
+} from './fontconfig';
+
+import './augmentation';

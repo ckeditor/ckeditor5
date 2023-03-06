@@ -152,9 +152,3 @@ export default class CloudServices extends ContextPlugin implements CloudService
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CloudServices.pluginName ]: CloudServices;
-	}
-}

@@ -112,9 +112,3 @@ export default class CodeBlockUI extends Plugin {
 		return itemDefinitions;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CodeBlockUI.pluginName ]: CodeBlockUI;
-	}
-}

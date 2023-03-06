@@ -124,15 +124,3 @@ export interface HeadingParagraphOption {
 	 */
 	icon?: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the heading feature. Introduced by the {@link module:heading/headingediting~HeadingEditing} feature.
-		 *
-		 * Read more in {@link module:heading/headingconfig~HeadingConfig}.
-		 */
-		heading?: HeadingConfig;
-	}
-}

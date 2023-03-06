@@ -574,18 +574,3 @@ export interface TitleConfig {
 	placeholder?: string;
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Title.pluginName ]: Title;
-	}
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:heading/title~Title title feature}.
-		 *
-		 * Read more in {@link module:heading/title~TitleConfig}.
-		 */
-		title?: TitleConfig;
-	}
-}

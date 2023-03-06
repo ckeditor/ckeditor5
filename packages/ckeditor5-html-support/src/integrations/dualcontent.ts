@@ -146,8 +146,3 @@ export default class DualContentModelElementSupport extends Plugin {
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 }
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DualContentModelElementSupport.pluginName ]: DualContentModelElementSupport;
-	}
-}

@@ -12,3 +12,5 @@ export { default as WidgetToolbarRepository } from './widgettoolbarrepository';
 export { default as WidgetResize } from './widgetresize';
 export { default as WidgetTypeAround } from './widgettypearound/widgettypearound';
 export * from './utils';
+
+import './augmentation';

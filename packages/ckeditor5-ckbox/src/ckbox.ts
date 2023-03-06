@@ -40,10 +40,3 @@ export default class CKBox extends Plugin {
 		return [ CKBoxEditing, CKBoxUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface PluginsMap {
-		[ CKBox.pluginName ]: CKBox;
-	}
-}

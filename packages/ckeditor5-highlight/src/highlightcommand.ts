@@ -111,9 +111,3 @@ export default class HighlightCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		highlight: HighlightCommand;
-	}
-}

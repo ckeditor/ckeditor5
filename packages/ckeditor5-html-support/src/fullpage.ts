@@ -97,9 +97,3 @@ export default class FullPage extends Plugin {
 		}, { priority: 'high' } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FullPage.pluginName ]: FullPage;
-	}
-}

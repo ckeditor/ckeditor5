@@ -243,9 +243,3 @@ export interface HtmlCommentData {
 	position: Position;
 	content: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HtmlComment.pluginName ]: HtmlComment;
-	}
-}

@@ -120,9 +120,3 @@ export default class HeadingEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HeadingEditing.pluginName ]: HeadingEditing;
-	}
-}

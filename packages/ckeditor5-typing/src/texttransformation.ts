@@ -291,9 +291,3 @@ type NormalizedTransformationConfig = {
 	from: RegExp;
 	to: ( matches: Array<string> ) => Array<string | null>;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TextTransformation.pluginName ]: TextTransformation;
-	}
-}

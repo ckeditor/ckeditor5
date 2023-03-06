@@ -964,9 +964,3 @@ function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 
 	return deepestEmptyAncestor;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ WidgetTypeAround.pluginName ]: WidgetTypeAround;
-	}
-}

@@ -8,3 +8,5 @@
  */
 
 export { default as Essentials } from './essentials';
+
+import './augmentation';

@@ -56,9 +56,3 @@ export default class BoldUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BoldUI.pluginName ]: BoldUI;
-	}
-}

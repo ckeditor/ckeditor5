@@ -144,9 +144,3 @@ export default class BlockQuoteEditing extends Plugin {
 		}, { context: 'blockquote' } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BlockQuoteEditing.pluginName ]: BlockQuoteEditing;
-	}
-}

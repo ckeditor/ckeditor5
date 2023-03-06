@@ -80,8 +80,3 @@ export default class StyleElementSupport extends Plugin {
 		} );
 	}
 }
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StyleElementSupport.pluginName ]: StyleElementSupport;
-	}
-}
