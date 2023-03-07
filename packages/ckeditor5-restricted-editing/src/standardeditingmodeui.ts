@@ -57,9 +57,3 @@ export default class StandardEditingModeUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StandardEditingModeUI.pluginName ]: StandardEditingModeUI;
-	}
-}

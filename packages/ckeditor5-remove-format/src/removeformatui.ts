@@ -57,9 +57,3 @@ export default class RemoveFormatUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RemoveFormatUI.pluginName ]: RemoveFormatUI;
-	}
-}

@@ -13,3 +13,9 @@ export { default as RestrictedEditingModeUI } from './restrictededitingmodeui';
 export { default as StandardEditingMode } from './standardeditingmode';
 export { default as StandardEditingModeEditing } from './standardeditingmodeediting';
 export { default as StandardEditingModeUI } from './standardeditingmodeui';
+
+export type { RestrictedEditingConfig } from './restrictededitingconfig';
+export type { default as RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand';
+export type { default as RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand';
+
+import './augmentation';

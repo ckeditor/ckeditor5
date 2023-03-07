@@ -48,9 +48,3 @@ export default class SpecialCharactersEssentials extends Plugin {
 		];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersEssentials.pluginName]: SpecialCharactersEssentials;
-	}
-}
