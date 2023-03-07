@@ -22,7 +22,6 @@ import SpecialCharactersView from './ui/specialcharactersview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
-import './specialcharactersconfig';
 import '../theme/specialcharacters.css';
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
@@ -297,12 +296,6 @@ export interface SpecialCharacterDefinition {
 interface Group {
 	label: string;
 	items: Set<string>;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharacters.pluginName]: SpecialCharacters;
-	}
 }
 
 interface DropdownPanelContent {

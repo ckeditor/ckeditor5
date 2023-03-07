@@ -428,12 +428,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	return strategies;
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
-	}
-}
-
 declare module '../documentlist/documentlistediting' {
 	interface ListItemAttributesMap {
 		listStyle?: string;

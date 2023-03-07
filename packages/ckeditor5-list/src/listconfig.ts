@@ -129,15 +129,3 @@ export interface ListPropertiesStyleConfig {
 	 */
 	useAttribute?: boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/documentlist~DocumentList} feature.
-		 *
-		 * Read more in {@link module:list/listconfig~ListConfig}.
-		 */
-		list?: ListConfig;
-	}
-}

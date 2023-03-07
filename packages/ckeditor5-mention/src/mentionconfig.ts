@@ -280,15 +280,3 @@ export type MentionFeedObjectItem = {
 	 */
 	text?: string;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:mention/mention~Mention} feature.
-		 *
-		 * Read more in {@link module:mention/mentionconfig~MentionConfig}.
-		 */
-		mention?: MentionConfig;
-	}
-}

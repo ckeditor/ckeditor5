@@ -62,6 +62,9 @@ export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor'
 // Model / Operation.
 export type { default as Operation } from './model/operation/operation';
 export { default as InsertOperation } from './model/operation/insertoperation';
+export { default as MoveOperation } from './model/operation/moveoperation';
+export { default as MergeOperation } from './model/operation/mergeoperation';
+export { default as SplitOperation } from './model/operation/splitoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
 export type { default as AttributeOperation } from './model/operation/attributeoperation';

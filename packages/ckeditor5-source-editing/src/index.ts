@@ -8,3 +8,5 @@
  */
 
 export { default as SourceEditing } from './sourceediting';
+
+import './augmentation';

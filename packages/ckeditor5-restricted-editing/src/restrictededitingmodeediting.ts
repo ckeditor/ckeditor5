@@ -334,12 +334,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RestrictedEditingModeEditing.pluginName ]: RestrictedEditingModeEditing;
-	}
-}
-
 /**
  * Helper method for executing enabled commands only.
  */

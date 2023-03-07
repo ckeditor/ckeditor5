@@ -26,8 +26,6 @@ import {
 
 import { ButtonView, type ButtonExecuteEvent } from 'ckeditor5/src/ui';
 
-import '../listcommands';
-
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
  *

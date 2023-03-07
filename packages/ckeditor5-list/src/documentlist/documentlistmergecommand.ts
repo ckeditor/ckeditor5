@@ -23,8 +23,6 @@ import {
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
-import '../listcommands';
-
 /**
  * The document list merge command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
  */

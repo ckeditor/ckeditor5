@@ -85,9 +85,3 @@ export default class ImageEditing extends Plugin {
 		editor.commands.add( 'imageInsert', insertImageCommand );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageEditing.pluginName ]: ImageEditing;
-	}
-}

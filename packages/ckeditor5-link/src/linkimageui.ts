@@ -15,7 +15,7 @@ import type {
 	ViewDocumentClickEvent
 } from 'ckeditor5/src/engine';
 
-import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
@@ -118,11 +118,5 @@ export default class LinkImageUI extends Plugin {
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		return imageUtils.isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkImageUI.pluginName ]: LinkImageUI;
 	}
 }

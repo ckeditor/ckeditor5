@@ -9,3 +9,4 @@
 
 export { default as Markdown } from './markdown';
 
+import './augmentation';

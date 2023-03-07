@@ -34,9 +34,3 @@ export default class LinkImage extends Plugin {
 		return 'LinkImage';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkImage.pluginName ]: LinkImage;
-	}
-}

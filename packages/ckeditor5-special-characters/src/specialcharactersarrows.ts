@@ -64,9 +64,3 @@ export default class SpecialCharactersArrows extends Plugin {
 		], { label: t( 'Arrows' ) } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersArrows.pluginName]: SpecialCharactersArrows;
-	}
-}

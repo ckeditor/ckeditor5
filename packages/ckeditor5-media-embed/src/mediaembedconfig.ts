@@ -289,15 +289,3 @@ export interface MediaEmbedProvider {
 	 */
 	html?: ( match: RegExpMatchArray ) => string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:media-embed/mediaembed~MediaEmbed} feature.
-		 *
-		 * Read more in {@link module:media-embed/mediaembedconfig~MediaEmbedConfig}.
-		 */
-		mediaEmbed?: MediaEmbedConfig;
-	}
-}

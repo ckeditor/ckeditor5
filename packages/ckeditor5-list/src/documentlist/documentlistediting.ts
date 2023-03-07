@@ -793,9 +793,3 @@ export type DocumentListEditingCheckAttributesEvent = {
 	} ];
 	return: boolean;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListEditing.pluginName ]: DocumentListEditing;
-	}
-}

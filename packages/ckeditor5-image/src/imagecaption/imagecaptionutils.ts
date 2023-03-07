@@ -78,9 +78,3 @@ export default class ImageCaptionUtils extends Plugin {
 		return null;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
-	}
-}

@@ -177,9 +177,3 @@ export default class AutoMediaEmbed extends Plugin {
 		}, 100 );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AutoMediaEmbed.pluginName ]: AutoMediaEmbed;
-	}
-}

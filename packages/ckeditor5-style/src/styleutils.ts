@@ -85,9 +85,3 @@ export interface BlockStyleDefinition extends StyleDefinition {
 export interface InlineStyleDefinition extends StyleDefinition {
 	ghsAttributes: Array<string>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StyleUtils.pluginName ]: StyleUtils;
-	}
-}

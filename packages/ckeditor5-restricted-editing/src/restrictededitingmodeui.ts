@@ -104,9 +104,3 @@ export default class RestrictedEditingModeUI extends Plugin {
 		return definition;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RestrictedEditingModeUI.pluginName ]: RestrictedEditingModeUI;
-	}
-}

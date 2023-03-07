@@ -177,9 +177,3 @@ export default class AutoImage extends Plugin {
 		}, 100 );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AutoImage.pluginName ]: AutoImage;
-	}
-}

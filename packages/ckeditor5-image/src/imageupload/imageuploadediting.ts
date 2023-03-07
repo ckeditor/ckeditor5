@@ -20,7 +20,6 @@ import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
-import '../imageconfig';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -418,12 +417,6 @@ function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
 	return Array.from( editor.model.createRangeOn( item ) )
 		.filter( value => imageUtils.isImage( value.item as Element ) )
 		.map( value => value.item );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageUploadEditing.pluginName ]: ImageUploadEditing;
-	}
 }
 
 /**

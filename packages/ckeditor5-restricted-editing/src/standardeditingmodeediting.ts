@@ -61,9 +61,3 @@ export default class StandardEditingModeEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StandardEditingModeEditing.pluginName ]: StandardEditingModeEditing;
-	}
-}

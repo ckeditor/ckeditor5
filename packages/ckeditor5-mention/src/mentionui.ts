@@ -888,9 +888,3 @@ type MarkerDefinition = {
 	pattern: RegExp;
 	position: number;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ MentionUI.pluginName ]: MentionUI;
-	}
-}

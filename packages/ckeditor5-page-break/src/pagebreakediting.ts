@@ -128,9 +128,3 @@ function toPageBreakWidget( viewElement: ViewElement, writer: DowncastWriter, la
 
 	return toWidget( viewElement, writer, { label } );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PageBreakEditing.pluginName ]: PageBreakEditing;
-	}
-}
