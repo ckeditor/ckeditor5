@@ -52,8 +52,6 @@ import {
 	type NormalizedLinkDecoratorManualDefinition
 } from './utils';
 
-import './linkconfig';
-
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -701,10 +699,4 @@ function getLinkAttributesAllowedOnText( schema: Schema ): Array<string> {
 	const textAttributes = schema.getDefinition( '$text' )!.allowAttributes;
 
 	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkEditing.pluginName ]: LinkEditing;
-	}
 }

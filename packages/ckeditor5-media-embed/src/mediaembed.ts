@@ -43,8 +43,3 @@ export default class MediaEmbed extends Plugin {
 		return 'MediaEmbed';
 	}
 }
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ MediaEmbed.pluginName ]: MediaEmbed;
-	}
-}

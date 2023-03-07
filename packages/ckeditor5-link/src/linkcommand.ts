@@ -278,9 +278,3 @@ export default class LinkCommand extends Command {
 		return true;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		link: LinkCommand;
-	}
-}

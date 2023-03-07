@@ -11,8 +11,8 @@ export { default as Style } from './style';
 export { default as StyleEditing } from './styleediting';
 export { default as StyleUI } from './styleui';
 export { default as StyleUtils } from './styleutils';
-export { default as StyleCommand } from './stylecommand';
 
 export type { StyleConfig } from './styleconfig';
+export type { default as StyleCommand } from './stylecommand';
 
 import './augmentation';

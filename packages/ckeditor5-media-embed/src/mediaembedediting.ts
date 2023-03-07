@@ -281,9 +281,3 @@ export default class MediaEmbedEditing extends Plugin {
 			} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ MediaEmbedEditing.pluginName ]: MediaEmbedEditing;
-	}
-}

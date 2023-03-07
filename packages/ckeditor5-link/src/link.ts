@@ -11,7 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import LinkEditing from './linkediting';
 import LinkUI from './linkui';
 import AutoLink from './autolink';
-import './linkconfig';
 
 /**
  * The link plugin.
@@ -32,11 +31,5 @@ export default class Link extends Plugin {
 	 */
 	public static get pluginName(): 'Link' {
 		return 'Link';
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Link.pluginName ]: Link;
 	}
 }

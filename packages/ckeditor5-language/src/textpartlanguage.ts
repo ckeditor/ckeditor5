@@ -42,9 +42,3 @@ export default class TextPartLanguage extends Plugin {
 		return 'TextPartLanguage';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TextPartLanguage.pluginName ]: TextPartLanguage;
-	}
-}

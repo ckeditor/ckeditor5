@@ -71,9 +71,3 @@ export default class IndentUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ IndentUI.pluginName ]: IndentUI;
-	}
-}
