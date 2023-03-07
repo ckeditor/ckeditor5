@@ -178,7 +178,7 @@ document.getElementById( 'button-keystroke' ).append( keystrokeButton.element );
 
 ### Tooltip
 
-To get a button with a tooltip, add the tooltip property. You can use it to display additional information on button hover.
+To get a button with a tooltip, add the tooltip property. You can use it to display additional information on button hover. If you set it to true, a label value is displayed.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -204,6 +204,23 @@ By default, the tooltip will appear to the south of the button. However, you can
 - `e` &ndash; East
 - `se` &ndash; South-east
 - `sw` &ndash; South-west
+
+A tooltip needs the `TooltipManager` to work correctly. You need to add it during CKEditor creation.
+
+```js
+ClassicEditor
+    .create( document.getElementById( 'ui-editor' ), {
+        // Editor config.
+        //
+    } )
+    .then( editor => {
+		this.tooltipManager = new TooltipManager( editor );
+    } )
+    .catch( error => {
+        // Error handling.
+        //
+    } );
+```
 
 ### States
 

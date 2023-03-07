@@ -22,7 +22,8 @@ import {
 	ToolbarView,
 	ToolbarSeparatorView,
 	SplitButtonView,
-	IconView
+	IconView,
+	TooltipManager
 } from '@ckeditor/ckeditor5-ui';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview';
@@ -30,6 +31,9 @@ import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarline
 import { icons as coreIcons } from 'ckeditor5/src/core';
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 window.Locale = Locale;
 window.ButtonView = ButtonView;
@@ -54,6 +58,9 @@ window.ToolbarSeparatorView = ToolbarSeparatorView;
 window.ToolbarLineBreakView = ToolbarLineBreakView;
 window.View = View;
 window.IconView = IconView;
+window.ClassicEditor = ClassicEditor;
+window.TooltipManager = TooltipManager;
+window.Essentials = Essentials;
 
 const balloonButton = new ButtonView();
 balloonButton.set( { label: 'Balloon button', withText: true } );

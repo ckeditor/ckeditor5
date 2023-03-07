@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Locale, ButtonView, checkIcon, ToolbarView */
+/* globals document, console, Locale, ButtonView, checkIcon, ToolbarView, ClassicEditor, TooltipManager, Essentials */
 
 const locale = new Locale();
 
@@ -65,3 +65,14 @@ buttons.forEach( button => toolbarButtons.items.add( button ) );
 toolbarButtons.render();
 
 document.querySelector( '.ui-button' ).append( toolbarButtons.element );
+
+ClassicEditor
+	.create( document.querySelector( '.ui-editor' ), {
+		plugins: [ Essentials ]
+	} )
+	.then( editor => {
+		this.tooltipManager = new TooltipManager( editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
