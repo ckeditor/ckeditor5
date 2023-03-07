@@ -113,7 +113,7 @@ DecoupledEditor
 			text: 'Use the minimap for quick navigation',
 			editor,
 			tippyOptions: {
-				placement: 'bottom'
+				placement: 'bottom-end'
 			}
 		} );
 	} );
