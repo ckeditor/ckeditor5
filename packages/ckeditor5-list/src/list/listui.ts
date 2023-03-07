@@ -37,9 +37,3 @@ export default class ListUI extends Plugin {
 		createUIComponent( this.editor, 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListUI.pluginName ]: ListUI;
-	}
-}

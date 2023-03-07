@@ -831,9 +831,3 @@ function getItemFromChange( change: DiffItem ) {
 
 	return null;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
-	}
-}

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting';
 import ListPropertiesUI from './listproperties/listpropertiesui';
 
-import './listconfig';
-
 /**
  * The document list properties feature.
  *
@@ -33,11 +31,5 @@ export default class DocumentListProperties extends Plugin {
 	 */
 	public static get pluginName(): 'DocumentListProperties' {
 		return 'DocumentListProperties';
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
 	}
 }

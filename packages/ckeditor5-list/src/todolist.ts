@@ -33,9 +33,3 @@ export default class TodoList extends Plugin {
 		return 'TodoList';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TodoList.pluginName ]: TodoList;
-	}
-}
