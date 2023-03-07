@@ -6,7 +6,7 @@ order: 50
 
 # Base64 image upload adapter
 
-The Base64 image upload adapter converts images inserted into your content into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
+The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
 
 <info-box warning>
     Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.

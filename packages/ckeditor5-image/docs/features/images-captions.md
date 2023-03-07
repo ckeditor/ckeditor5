@@ -7,7 +7,7 @@ order: 30
 
 # Image captions
 
-The {@link module:image/imagecaption~ImageCaption} plugin lets you add captions to images by adding support for the `<figcaption>` element.
+The {@link module:image/imagecaption~ImageCaption} plugin lets you add captions to images by providing support for the `<figcaption>` element.
 
 ## Demo
 

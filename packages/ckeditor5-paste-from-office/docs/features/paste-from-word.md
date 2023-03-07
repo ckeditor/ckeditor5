@@ -8,7 +8,7 @@ order: 10
 
 # Pasting content from Microsoft Word
 
-The paste from Word feature lets you paste content from Microsoft Word and preserve the original structure and formatting.
+The paste from Word feature lets you paste content from Microsoft Word and preserve its original structure and formatting.
 
 <info-box info>
 	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor 5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.

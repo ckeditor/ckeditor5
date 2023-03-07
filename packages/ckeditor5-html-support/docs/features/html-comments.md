@@ -8,7 +8,7 @@ modified_at: 2021-10-25
 
 {@snippet features/general-html-support-source}
 
-By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep the comments in the document without displaying them in editable content.
+By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature lets developers keep HTML comments in the document without displaying them to the user.
 
 <info-box warning>
 	The HTML comments feature is **experimental and not yet production-ready**.
@@ -61,7 +61,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 ## Related features
 
-There are other HTML editing related CKEditor 5 features you may want to check:
+CKEditor 5 has other features related to HTML editing you may want to check:
 
 * {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.

@@ -7,7 +7,7 @@ order: 20
 
 # Image text alternative
 
-Image text alternative (the `alt` attribute) helps screen reader users navigate and understand the document and provides meaningful image descriptions to search engine crawlers.
+Image text alternative (the `alt` attribute) helps screen reader users navigate and understand the document. It also provides meaningful image descriptions to search engine crawlers.
 
 ## Demo
 

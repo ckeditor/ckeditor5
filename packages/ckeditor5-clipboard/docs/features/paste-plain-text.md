@@ -8,7 +8,7 @@ order: 30
 
 # Pasting plain text
 
-With the plain text pasting feature, text pasted using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke will match the formatting of the content it is pasted into.
+With the plain text pasting feature, text pasted using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke will match the formatting of the content you paste it into.
 
 ## Demo
 
