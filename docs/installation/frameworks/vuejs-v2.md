@@ -320,7 +320,7 @@ module.exports = {
 		/ckeditor5-[^/\\]+[/\\]src[/\\].+\.js$/,
 	],
 
-	configurewebpack: {
+	configureWebpack: {
 		plugins: [
 			// CKEditor needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
@@ -336,7 +336,7 @@ module.exports = {
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
 	//	1. The icons used by CKEditor must be loaded using raw-loader,
 	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
-	chainwebpack: config => {
+	chainWebpack: config => {
 		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
@@ -564,7 +564,7 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 module.exports = {
 	// ...
 
-	configurewebpack: {
+	configureWebpack: {
 		plugins: [
 			// CKEditor needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
