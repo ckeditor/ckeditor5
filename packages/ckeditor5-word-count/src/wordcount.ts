@@ -13,6 +13,7 @@ import { Template, View } from 'ckeditor5/src/ui';
 import { env } from 'ckeditor5/src/utils';
 
 import { modelElementToPlainText } from './utils';
+import type { WordCountConfig } from './wordcountconfig';
 
 import { throttle, isElement } from 'lodash-es';
 
