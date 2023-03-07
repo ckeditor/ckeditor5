@@ -33,9 +33,3 @@ export default class RemoveFormatEditing extends Plugin {
 		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RemoveFormatEditing.pluginName ]: RemoveFormatEditing;
-	}
-}

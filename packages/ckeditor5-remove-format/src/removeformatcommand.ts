@@ -110,9 +110,3 @@ export default class RemoveFormatCommand extends Command {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		removeFormat: RemoveFormatCommand;
-	}
-}

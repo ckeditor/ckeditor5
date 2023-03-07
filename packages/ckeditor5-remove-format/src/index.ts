@@ -10,3 +10,7 @@
 export { default as RemoveFormat } from './removeformat';
 export { default as RemoveFormatEditing } from './removeformatediting';
 export { default as RemoveFormatUI } from './removeformatui';
+
+export type { default as RemoveFormatCommand } from './removeformatcommand';
+
+import './augmentation';
