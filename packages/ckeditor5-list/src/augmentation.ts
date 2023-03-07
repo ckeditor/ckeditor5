@@ -51,22 +51,22 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface PluginsMap {
 		[ DocumentList.pluginName ]: DocumentList;
-    [ DocumentListEditing.pluginName ]: DocumentListEditing;
-    [ DocumentListProperties.pluginName ]: DocumentListProperties;
-    [ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
-    [ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
-    [ DocumentListUtils.pluginName ]: DocumentListUtils;
-    [ List.pluginName ]: List;
-    [ ListEditing.pluginName ]: ListEditing;
-    [ ListProperties.pluginName ]: ListProperties;
-    [ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
-    [ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-    [ ListStyle.pluginName ]: ListStyle;
-    [ ListUI.pluginName ]: ListUI;
-    [ ListUtils.pluginName ]: ListUtils;
-    [ TodoList.pluginName ]: TodoList;
-    [ TodoListEditing.pluginName ]: TodoListEditing;
-    [ TodoListUI.pluginName ]: TodoListUI;
+		[ DocumentListEditing.pluginName ]: DocumentListEditing;
+		[ DocumentListProperties.pluginName ]: DocumentListProperties;
+		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
+		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
+		[ DocumentListUtils.pluginName ]: DocumentListUtils;
+		[ List.pluginName ]: List;
+		[ ListEditing.pluginName ]: ListEditing;
+		[ ListProperties.pluginName ]: ListProperties;
+		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
+		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
+		[ ListStyle.pluginName ]: ListStyle;
+		[ ListUI.pluginName ]: ListUI;
+		[ ListUtils.pluginName ]: ListUtils;
+		[ TodoList.pluginName ]: TodoList;
+		[ TodoListEditing.pluginName ]: TodoListEditing;
+		[ TodoListUI.pluginName ]: TodoListUI;
 	}
 
   interface CommandsMap {
