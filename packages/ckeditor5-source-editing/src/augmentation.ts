@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module source-editing
- */
+import type { SourceEditing } from './index';
 
-export { default as SourceEditing } from './sourceediting';
-
-import './augmentation';
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ SourceEditing.pluginName ]: SourceEditing;
+	}
+}
