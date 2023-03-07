@@ -112,9 +112,3 @@ export default class UploadImageCommand extends Command {
 		imageUtils.insertImage( { ...attributes, uploadId: loader.id }, position );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		uploadImage: UploadImageCommand;
-	}
-}

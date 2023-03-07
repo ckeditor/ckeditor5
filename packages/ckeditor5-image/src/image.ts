@@ -12,7 +12,6 @@ import ImageBlock from './imageblock';
 import ImageInline from './imageinline';
 
 import '../theme/image.css';
-import './imageconfig';
 
 /**
  * The image plugin.
@@ -42,10 +41,3 @@ export default class Image extends Plugin {
 		return 'Image';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Image.pluginName ]: Image;
-	}
-}
-

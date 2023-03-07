@@ -13,7 +13,7 @@ ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
-			'undo', '|', 'redo', 'heading',
+			'undo', 'redo', '|', 'heading',
 			'|', 'bold', 'italic',
 			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'

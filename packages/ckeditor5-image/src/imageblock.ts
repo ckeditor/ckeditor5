@@ -41,10 +41,3 @@ export default class ImageBlock extends Plugin {
 		return 'ImageBlock';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageBlock.pluginName ]: ImageBlock;
-	}
-}
-

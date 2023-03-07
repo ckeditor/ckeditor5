@@ -242,9 +242,3 @@ function getUIComponentName( name: string ): string {
 function getDropdownButtonTitle( dropdownTitle: string | undefined, buttonTitle: string ): string {
 	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageStyleUI.pluginName ]: ImageStyleUI;
-	}
-}

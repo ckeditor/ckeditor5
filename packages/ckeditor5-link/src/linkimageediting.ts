@@ -28,7 +28,7 @@ import LinkEditing from './linkediting';
 import type ManualDecorator from './utils/manualdecorator';
 import type LinkCommand from './linkcommand';
 
-import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The link image engine feature.

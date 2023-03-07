@@ -272,9 +272,3 @@ export default class ImageCaptionEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageCaptionEditing.pluginName ]: ImageCaptionEditing;
-	}
-}

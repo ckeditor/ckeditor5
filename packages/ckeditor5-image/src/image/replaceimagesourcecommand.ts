@@ -50,9 +50,3 @@ export default class ReplaceImageSourceCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		replaceImageSource: ReplaceImageSourceCommand;
-	}
-}

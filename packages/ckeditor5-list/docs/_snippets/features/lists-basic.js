@@ -12,23 +12,10 @@ ClassicEditor
 		extraPlugins: [ ImageResize ],
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'|',
-				'numberedList',
-				'bulletedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'link',
-				'uploadImage',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

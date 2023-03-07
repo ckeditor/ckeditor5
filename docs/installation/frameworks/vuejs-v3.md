@@ -235,7 +235,7 @@ Finally, import the build in your application:
 
 ## Using CKEditor from source
 
-Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor 5 Framework}. You have two options regarding building your application: Vite or Webpack.
+Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor 5 Framework}. You have two options regarding building your application: Vite or webpack.
 
 ### Vite
 
@@ -294,7 +294,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-Now, your setup with Vite and Vue is complete. You can also check how to configure Webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+Now, your setup with Vite and Vue is complete. You can also check how to configure webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
 
 ### Webpack
 

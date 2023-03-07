@@ -38,9 +38,3 @@ export default class ImageStyle extends Plugin {
 		return 'ImageStyle';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageStyle.pluginName ]: ImageStyle;
-	}
-}
