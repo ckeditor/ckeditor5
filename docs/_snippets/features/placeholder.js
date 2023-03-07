@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-placeholder' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: [
-			'undo', '|', 'redo', 'heading',
+			'undo', 'redo', '|', 'heading',
 			'|', 'bold', 'italic',
 			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'

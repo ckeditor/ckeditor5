@@ -50,7 +50,7 @@ const config = {
 		EasyImage
 	],
 	toolbar: [
-		'undo', '|', 'redo', 'heading',
+		'undo', 'redo', '|', 'heading',
 		'|', 'bold', 'italic',
 		'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 		'|', 'bulletedList', 'numberedList', 'outdent', 'indent'

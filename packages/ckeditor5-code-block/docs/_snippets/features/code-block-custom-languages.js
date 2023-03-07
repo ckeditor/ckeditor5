@@ -12,7 +12,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'undo', '|', 'redo', 'heading',
+				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic', 'code',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'

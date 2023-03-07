@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-basic-styles' ), {
 		toolbar: {
 			items: [
-				'undo', '|', 'redo', 'heading',
+				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'removeFormat',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
