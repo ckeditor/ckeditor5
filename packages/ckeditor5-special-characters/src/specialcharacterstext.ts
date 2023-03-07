@@ -69,9 +69,3 @@ export default class SpecialCharactersText extends Plugin {
 		], { label: t( 'Text' ) } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersText.pluginName]: SpecialCharactersText;
-	}
-}

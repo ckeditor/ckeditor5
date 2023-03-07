@@ -78,9 +78,3 @@ export default class SpecialCharactersCurrency extends Plugin {
 		], { label: t( 'Currency' ) } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersCurrency.pluginName]: SpecialCharactersCurrency;
-	}
-}
