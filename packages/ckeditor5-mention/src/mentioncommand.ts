@@ -154,9 +154,3 @@ export default class MentionCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		mention: MentionCommand;
-	}
-}
