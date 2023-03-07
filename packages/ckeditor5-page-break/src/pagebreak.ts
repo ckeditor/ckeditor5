@@ -35,9 +35,3 @@ export default class PageBreak extends Plugin {
 		return 'PageBreak';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PageBreak.pluginName ]: PageBreak;
-	}
-}

@@ -19,9 +19,9 @@ import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEdit
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
