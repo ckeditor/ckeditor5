@@ -41,10 +41,3 @@ export default class ImageInline extends Plugin {
 		return 'ImageInline';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageInline.pluginName ]: ImageInline;
-	}
-}
-

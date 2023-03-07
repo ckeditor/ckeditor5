@@ -743,16 +743,3 @@ export interface ImageUploadConfig {
 	 */
 	types: Array<string>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
-		 *
-		 * Read more in {@link module:image/imageconfig~ImageConfig}.
-		 */
-		image?: ImageConfig;
-	}
-
-}

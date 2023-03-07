@@ -39,10 +39,3 @@ export default class ImageInsert extends Plugin {
 		return [ ImageUpload, ImageInsertViaUrl, ImageInsertUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageInsert.pluginName ]: ImageInsert;
-	}
-}
-

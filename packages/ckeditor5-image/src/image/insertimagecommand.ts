@@ -11,8 +11,6 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
 
-import '../imageconfig';
-
 /**
  * Insert image command.
  *
@@ -132,11 +130,5 @@ export default class InsertImageCommand extends Command {
 				imageUtils.insertImage( { ...sourceDefinition, ...selectionAttributes } );
 			}
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		insertImage: InsertImageCommand;
 	}
 }

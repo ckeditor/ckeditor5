@@ -33,9 +33,3 @@ export default class ImageCaption extends Plugin {
 		return 'ImageCaption';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageCaption.pluginName ]: ImageCaption;
-	}
-}
