@@ -15,6 +15,6 @@ export { default as SpecialCharactersLatin } from './specialcharacterslatin';
 export { default as SpecialCharactersEssentials } from './specialcharactersessentials';
 export { default as SpecialCharactersCurrency } from './specialcharacterscurrency';
 
-export { SpecialCharactersConfig } from './specialcharactersconfig';
+export type { SpecialCharactersConfig } from './specialcharactersconfig';
 
 import './augmentation';
