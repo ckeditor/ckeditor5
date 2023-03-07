@@ -37,9 +37,3 @@ export default class RestrictedEditingMode extends Plugin {
 		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RestrictedEditingMode.pluginName ]: RestrictedEditingMode;
-	}
-}
