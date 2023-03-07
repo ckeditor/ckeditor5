@@ -92,8 +92,8 @@ yarn run dll:build
 
 This task accepts the following arguments:
 
-* `--verbose` &ndash; Displays the full output of the scripts, including the Webpack output. *Errors are displayed even if this argument is not used.*
-* `--dev` &ndash; Enables `development` mode in Webpack and disables the code minimization which makes it easier to read the output.
+* `--verbose` &ndash; Displays the full output of the scripts, including the webpack output. *Errors are displayed even if this argument is not used.*
+* `--dev` &ndash; Enables `development` mode in webpack and disables the code minimization which makes it easier to read the output.
 
 ## Generating documentation
 
