@@ -147,13 +147,13 @@ function normalizePath( modulePath ) {
 
 /**
  * Adds ts-loader with proper configuration to the passed configuration object
- * only if the `tsconfig.test.json` file exists.
+ * only if the `tsconfig.dev.json` file exists.
  *
  * @param {Object} webpackConfig
  * @returns {Void}
  */
 function addTypeScriptLoader( webpackConfig ) {
-	const tsconfigPath = path.resolve( process.cwd(), 'tsconfig.test.json' );
+	const tsconfigPath = path.resolve( process.cwd(), 'tsconfig.dev.json' );
 
 	if ( fs.existsSync( tsconfigPath ) ) {
 		webpackConfig.module.rules.push( {
