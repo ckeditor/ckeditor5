@@ -57,43 +57,43 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface PluginsMap {
 		[ AutoImage.pluginName ]: AutoImage;
-    [ Image.pluginName ]: Image;
-    [ ImageBlock.pluginName ]: ImageBlock;
-    [ ImageCaption.pluginName ]: ImageCaption;
-    [ ImageInline.pluginName ]: ImageInline;
-    [ ImageInsert.pluginName ]: ImageInsert;
-    [ ImageInsertViaUrl.pluginName ]: ImageInsertViaUrl;
-    [ ImageResize.pluginName ]: ImageResize;
-    [ ImageStyle.pluginName ]: ImageStyle;
-    [ ImageTextAlternative.pluginName ]: ImageTextAlternative;
-    [ ImageToolbar.pluginName ]: ImageToolbar;
-    [ ImageUpload.pluginName ]: ImageUpload;
-    [ ImageUtils.pluginName ]: ImageUtils;
-    [ ImageBlockEditing.pluginName ]: ImageBlockEditing;
+		[ Image.pluginName ]: Image;
+		[ ImageBlock.pluginName ]: ImageBlock;
+		[ ImageCaption.pluginName ]: ImageCaption;
+		[ ImageInline.pluginName ]: ImageInline;
+		[ ImageInsert.pluginName ]: ImageInsert;
+		[ ImageInsertViaUrl.pluginName ]: ImageInsertViaUrl;
+		[ ImageResize.pluginName ]: ImageResize;
+		[ ImageStyle.pluginName ]: ImageStyle;
+		[ ImageTextAlternative.pluginName ]: ImageTextAlternative;
+		[ ImageToolbar.pluginName ]: ImageToolbar;
+		[ ImageUpload.pluginName ]: ImageUpload;
+		[ ImageUtils.pluginName ]: ImageUtils;
+		[ ImageBlockEditing.pluginName ]: ImageBlockEditing;
 		[ ImageEditing.pluginName ]: ImageEditing;
-    [ ImageCaptionEditing.pluginName ]: ImageCaptionEditing;
-    [ ImageCaptionUI.pluginName ]: ImageCaptionUI;
-    [ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
-    [ ImageInsertUI.pluginName ]: ImageInsertUI;
-    [ ImageResizeEditing.pluginName ]: ImageResizeEditing;
-    [ ImageStyleEditing.pluginName ]: ImageStyleEditing;
-    [ ImageStyleUI.pluginName ]: ImageStyleUI;
-    [ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;
-    [ ImageTextAlternativeUI.pluginName ]: ImageTextAlternativeUI;
-    [ ImageUploadEditing.pluginName ]: ImageUploadEditing;
-    [ ImageUploadProgress.pluginName ]: ImageUploadProgress;
-    [ ImageUploadUI.pluginName ]: ImageUploadUI;
+		[ ImageCaptionEditing.pluginName ]: ImageCaptionEditing;
+		[ ImageCaptionUI.pluginName ]: ImageCaptionUI;
+		[ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
+		[ ImageInsertUI.pluginName ]: ImageInsertUI;
+		[ ImageResizeEditing.pluginName ]: ImageResizeEditing;
+		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
+		[ ImageStyleUI.pluginName ]: ImageStyleUI;
+		[ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;
+		[ ImageTextAlternativeUI.pluginName ]: ImageTextAlternativeUI;
+		[ ImageUploadEditing.pluginName ]: ImageUploadEditing;
+		[ ImageUploadProgress.pluginName ]: ImageUploadProgress;
+		[ ImageUploadUI.pluginName ]: ImageUploadUI;
 	}
 
   interface CommandsMap {
 		imageTypeBlock: ImageTypeCommand;
 		imageTypeInline: ImageTypeCommand;
-    insertImage: InsertImageCommand;
-    replaceImageSource: ReplaceImageSourceCommand;
-    toggleImageCaption: ToggleImageCaptionCommand;
-    resizeImage: ResizeImageCommand;
-    imageStyle: ImageStyleCommand;
-    imageTextAlternative: ImageTextAlternativeCommand;
-    uploadImage: UploadImageCommand;
+		insertImage: InsertImageCommand;
+		replaceImageSource: ReplaceImageSourceCommand;
+		toggleImageCaption: ToggleImageCaptionCommand;
+		resizeImage: ResizeImageCommand;
+		imageStyle: ImageStyleCommand;
+		imageTextAlternative: ImageTextAlternativeCommand;
+		uploadImage: UploadImageCommand;
 	}
 }
