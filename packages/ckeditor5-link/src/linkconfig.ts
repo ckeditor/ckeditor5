@@ -269,15 +269,3 @@ export interface LinkDecoratorManualDefinition {
 	 */
 	defaultValue?: boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:link/link~Link} feature.
-		 *
-		 * Read more in {@link module:link/linkconfig~LinkConfig}.
-		 */
-		link?: LinkConfig;
-	}
-}

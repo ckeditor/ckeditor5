@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module markdown-gfm
- */
+import type { Markdown } from './index';
 
-export { default as Markdown } from './markdown';
-
-import './augmentation';
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ Markdown.pluginName ]: Markdown;
+	}
+}

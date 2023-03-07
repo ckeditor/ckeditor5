@@ -77,9 +77,3 @@ export default class UnlinkCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		unlink: UnlinkCommand;
-	}
-}

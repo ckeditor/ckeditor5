@@ -12,3 +12,8 @@ export { default as MediaEmbedEditing } from './mediaembedediting';
 export { default as MediaEmbedUI } from './mediaembedui';
 export { default as AutoMediaEmbed } from './automediaembed';
 export { default as MediaEmbedToolbar } from './mediaembedtoolbar';
+
+export type { MediaEmbedConfig } from './mediaembedconfig';
+export type { default as MediaEmbedCommand } from './mediaembedcommand';
+
+import './augmentation';

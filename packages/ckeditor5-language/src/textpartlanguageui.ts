@@ -13,8 +13,6 @@ import { Collection } from 'ckeditor5/src/utils';
 import { stringifyLanguageAttribute } from './utils';
 import type TextPartLanguageCommand from './textpartlanguagecommand';
 
-import './textpartlanguageconfig';
-
 import '../theme/language.css';
 
 /**
@@ -116,11 +114,5 @@ export default class TextPartLanguageUI extends Plugin {
 
 			return dropdownView;
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TextPartLanguageUI.pluginName ]: TextPartLanguageUI;
 	}
 }
