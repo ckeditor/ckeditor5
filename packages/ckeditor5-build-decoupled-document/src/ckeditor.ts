@@ -24,7 +24,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';

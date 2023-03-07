@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module paste-from-office
- */
+import type { PasteFromOffice } from './index';
 
-export { default as PasteFromOffice } from './pastefromoffice';
-
-import './augmentation';
+declare module '@ckeditor/ckeditor5-core' {
+	interface PluginsMap {
+		[ PasteFromOffice.pluginName ]: PasteFromOffice;
+	}
+}
