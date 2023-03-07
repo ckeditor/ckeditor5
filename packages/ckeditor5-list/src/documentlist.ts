@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import DocumentListEditing from './documentlist/documentlistediting';
 import ListUI from './list/listui';
 
-import './listconfig';
-
 /**
  * The document list feature.
  *
@@ -32,11 +30,5 @@ export default class DocumentList extends Plugin {
 	 */
 	public static get pluginName(): 'DocumentList' {
 		return 'DocumentList';
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentList.pluginName ]: DocumentList;
 	}
 }

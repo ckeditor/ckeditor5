@@ -21,8 +21,7 @@ import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
