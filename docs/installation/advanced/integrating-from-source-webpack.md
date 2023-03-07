@@ -2,7 +2,7 @@
 category: alternative-setups
 order: 10
 ---
-# Integrating from source using Webpack
+# Integrating from source using webpack
 
 <info-box>
 	CKEditor 5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor 5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
@@ -124,7 +124,7 @@ module.exports = {
 
 #### Webpack Encore
 
-If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
+If you use [webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
 
 ```js
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
@@ -337,7 +337,7 @@ Finally, you can build your application. Run webpack on your project and the ric
 
 ## Option: Minifying JavaScript
 
-Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes: `development` and `production`. The latter automatically enables [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which takes care of JavaScript minification. Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js` to optimize the build.
+webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes: `development` and `production`. The latter automatically enables [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which takes care of JavaScript minification. Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js` to optimize the build.
 
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
@@ -400,7 +400,7 @@ module.exports = {
 };
 ```
 
-Webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).
+webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).
 
 ## Option: Building to ES5 target
 
