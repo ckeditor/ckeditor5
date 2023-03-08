@@ -147,7 +147,7 @@ const webpackConfig = {
 					{
 						loader: 'ts-loader',
 						options: {
-							configFile: path.resolve( process.cwd(), 'tsconfig.dev.json' )
+							configFile: path.resolve( __dirname, '../../tsconfig.json' )
 						}
 					}
 				]

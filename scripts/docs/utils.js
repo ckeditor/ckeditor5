@@ -153,7 +153,7 @@ function normalizePath( modulePath ) {
  * @returns {Void}
  */
 function addTypeScriptLoader( webpackConfig ) {
-	const tsconfigPath = path.resolve( process.cwd(), 'tsconfig.dev.json' );
+	const tsconfigPath = path.resolve( __dirname, '../../tsconfig.dev.json' );
 
 	if ( fs.existsSync( tsconfigPath ) ) {
 		webpackConfig.module.rules.push( {
