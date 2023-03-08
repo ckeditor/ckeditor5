@@ -191,8 +191,8 @@ Since the appearance of the image in the document depends on the image type (blo
 
 * Several changes have been also made to the {@link module:image/imagestyle~ImageStyle} plugin API:
 	* In the {@link module:image/imagestyle/utils image style utilities} module:
-		* The `defaultIcons` were renamed to {@link module:image/imagestyle/utils#DEFAULT_ICONS}.
-		* The `defaultStyles` were renamed to {@link module:image/imagestyle/utils#DEFAULT_OPTIONS}.
+		* The `defaultIcons` were renamed to {@link module:image/imagestyle/utils~DEFAULT_ICONS}.
+		* The `defaultStyles` were renamed to {@link module:image/imagestyle/utils~DEFAULT_OPTIONS}.
 		* The `normalizeImageStyles()` function was removed from the public API.
 	* The `ImageStyleCommand#defaultStyle` and `ImageStyleCommand#styles` were removed from the public API.
 

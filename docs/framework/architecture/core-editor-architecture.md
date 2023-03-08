@@ -200,7 +200,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-The second listener to `'execute'` shows one of the very common practices in CKEditor 5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~Observable#decorate `ObservableMixin#decorate()`} function:
+The second listener to `'execute'` shows one of the very common practices in CKEditor 5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~ObservableMixin#decorate `ObservableMixin#decorate()`} function:
 
 ```js
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -223,7 +223,7 @@ mix( Command, ObservableMixin );
 	Check out the {@link framework/deep-dive/event-system event system deep dive guide} and the {@link framework/deep-dive/observables observables deep dive guide} to learn more about the advanced usage of events and observables with some additional examples.
 </info-box>
 
-Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~Observable#set `set()`}:
+Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
 
 ```js
 class Command {

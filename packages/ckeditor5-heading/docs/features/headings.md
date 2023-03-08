@@ -42,7 +42,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 
 ### Configuring heading levels
 
-You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option to do so.
+You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
 
 For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
@@ -73,7 +73,7 @@ ClassicEditor
 
 ### Configuring custom heading elements
 
-It is also possible to define fully custom elements for headings by using the {@link module:engine/conversion/conversion~ConverterDefinition advanced format} of the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
+It is also possible to define fully custom elements for headings by using the {@link module:engine/conversion/conversion~ConverterDefinition advanced format} of the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 For example, the following editor will support the following two heading options at the same time: `<h2 class="fancy">` and `<h2>`:
 
@@ -203,7 +203,7 @@ There are more CKEditor 5 features that can help you format your content:
 The {@link module:heading/heading~Heading} plugin registers:
 
 * The `'heading'` dropdown.
-* The `'heading'` command that accepts a value based on the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
+* The `'heading'` command that accepts a value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 
