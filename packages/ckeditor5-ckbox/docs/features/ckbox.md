@@ -15,7 +15,7 @@ The CKBox feature lets you easily insert images and links to other files into yo
 <info-box>
 	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open-source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
 	* CKEditor commercial license is needed for your application.
-	* You need on-premises (self-hosted) version of the service.
+	* You need the **on-premises (self-hosted)** version of the service.
 	* You have other licensing questions.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
@@ -37,9 +37,17 @@ Non-embeddable files (like PDFs) are inserted as links. To test it, open the CKB
 
 The CKBox feature also supports uploading images. Drag any image into the editor content and it will be uploaded into the CKBox cloud storage. The uploaded file will be then automatically inserted into the content. If you want to upload a non-image file type (such as a PDF or a text file) to the cloud storage, just open the CKBox dialog and use the Upload button.
 
-## Additional feature information
+## How CKBox enhances CKEditor 5
 
-CKBox is a file manager and a file uploader that acts as a convenient interface for the cloud storage service. The CKBox feature provides a simple integration with this service for the CKEditor 5 WYSIWYG editor. To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
+CKBox replaces the basic CKEditor 5 image upload feature. It provides the image and file upload and management capabilities:
+
+* Enables drag & drop uploads of images and other files.
+* Transforms the image toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
+* Adds a separate dedicated toolbar button to open the CKBox UI to manage and reause uploaded files.
+
+With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
+
+To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
 ## Installation
 
