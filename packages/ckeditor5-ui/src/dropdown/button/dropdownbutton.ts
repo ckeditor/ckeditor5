@@ -19,7 +19,7 @@ export default interface DropdownButton extends Button {
 
 /**
  * Fired when the dropdown should be opened.
- * It will not be fired when the button {@link ~DropdownButton#isEnabled is disabled}.
+ * It will not be fired when the button {@link module:ui/dropdown/button/dropdownbutton~DropdownButton#isEnabled is disabled}.
  *
  * @eventName ~DropdownButton#open
  */

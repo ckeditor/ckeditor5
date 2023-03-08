@@ -161,7 +161,7 @@ export default interface Button {
 }
 
 /**
- * Fired when the button view is clicked. It won't be fired when the button {@link ~Button#isEnabled}
+ * Fired when the button view is clicked. It won't be fired when the button {@link module:ui/button/button~Button#isEnabled}
  * is `false`.
  *
  * @eventName ~Button#execute

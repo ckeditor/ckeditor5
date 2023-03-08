@@ -576,7 +576,7 @@ export type UpcastElementEvent = UpcastEvent<'element', ViewElement>;
  * Fired when a {@link module:engine/view/text~Text} is converted.
  *
  * @eventName ~UpcastDispatcher#text
- * @see #event:element
+ * @see ~UpcastDispatcher#event:element
  */
 export type UpcastTextEvent = UpcastEvent<'text', ViewText>;
 
@@ -584,7 +584,7 @@ export type UpcastTextEvent = UpcastEvent<'text', ViewText>;
  * Fired when a {@link module:engine/view/documentfragment~DocumentFragment} is converted.
  *
  * @eventName ~UpcastDispatcher#documentFragment
- * @see #event:element
+ * @see ~UpcastDispatcher#event:element
  */
 export type UpcastDocumentFragmentEvent = UpcastEvent<'documentFragment', ViewDocumentFragment>;
 

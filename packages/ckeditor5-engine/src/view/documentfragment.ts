@@ -214,7 +214,6 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) impl
 	 * @internal
 	 * @param type Type of the change.
 	 * @param node Changed node.
-	 * @fires change
 	 */
 	public _fireChange( type: ChangeType, node: Node | DocumentFragment ): void {
 		this.fire( 'change:' + type, node );

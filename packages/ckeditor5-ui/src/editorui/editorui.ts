@@ -266,8 +266,9 @@ export default abstract class EditorUI extends ObservableMixin() {
 	protected get _editableElements(): unknown {
 		/**
 		 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
-		 * deprecated and will be removed in the near future. Please use {@link ~EditorUI#setEditableElement `setEditableElement()`} and
-		 * {@link ~EditorUI#getEditableElement `getEditableElement()`} methods instead.
+		 * deprecated and will be removed in the near future. Please use
+		 * {@link module:ui/editorui/editorui~EditorUI#setEditableElement `setEditableElement()`} and
+		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
 		 * @param editorUI Editor UI instance the deprecated property belongs to.

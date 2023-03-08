@@ -438,6 +438,7 @@ export default class Document extends EmitterMixin() {
  * ```
  *
  * @eventName ~Document#change
+ * @eventName ~Document#change:data
  * @param batch The batch that was used in the executed changes block.
  */
 export type DocumentChangeEvent = {
