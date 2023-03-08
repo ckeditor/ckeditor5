@@ -208,7 +208,7 @@ function normalizeStyles( config: {
  *
  * @returns
  * It returns an object with the lists of the image style options and groups defined as strings related to the
- * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
+ * {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default options}
  */
 function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePluginLoaded: boolean ): ImageStyleConfig {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {

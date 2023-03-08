@@ -521,7 +521,7 @@ export default class View<TElement extends HTMLElement = HTMLElement> extends Do
 }
 
 /**
- * Event fired by the {@link ~View#render} method. Actual rendering is executed as a listener to
+ * Event fired by the {@link module:ui/view~View#render} method. Actual rendering is executed as a listener to
  * this event with the default priority.
  *
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.

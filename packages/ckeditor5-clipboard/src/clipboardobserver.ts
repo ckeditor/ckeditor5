@@ -139,7 +139,8 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
 }
 
 /**
- * Fired as a continuation of the {@link #event:paste} and {@link #event:drop} events.
+ * Fired as a continuation of the {@link module:engine/view/document~Document#event:paste} and
+ * {@link module:engine/view/document~Document#event:drop} events.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -299,7 +300,7 @@ export type ViewDocumentCutEvent = {
 };
 
 /**
- * Fired as a continuation of the {@link #event:dragover} event.
+ * Fired as a continuation of the {@link module:engine/view/document~Document#event:dragover} event.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
