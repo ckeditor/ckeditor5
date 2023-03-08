@@ -11,20 +11,14 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-wrapping' ), {
 		toolbar: {
 			items: [
-				'heading', '|',
-				'fontfamily', 'fontsize', '|',
-				'alignment', '|',
-				'fontColor', 'fontBackgroundColor', '|',
-				'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
-				'link', '|',
-				'outdent', 'indent', '|',
-				'bulletedList', 'numberedList', 'todoList', '|',
-				'code', 'codeBlock', '|',
-				'insertTable', '|',
-				'uploadImage', 'blockQuote', '|',
-				'undo', 'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+				'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
-			shouldNotGroupWhenFull: true
+			shouldNotGroupWhenFull: false
 		},
 		ui: {
 			viewportOffset: {
