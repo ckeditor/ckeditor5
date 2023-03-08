@@ -612,7 +612,7 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 
 ## Defining advanced rules in `checkChild()` callbacks
 
-The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~Observable#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
+The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 
