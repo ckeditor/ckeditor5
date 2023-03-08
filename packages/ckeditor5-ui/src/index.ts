@@ -65,7 +65,7 @@ export { default as Template, type TemplateDefinition } from './template';
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig';
-export { default as BalloonToolbar, type BaloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
+export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
 export { default as View, type UIViewRenderEvent } from './view';

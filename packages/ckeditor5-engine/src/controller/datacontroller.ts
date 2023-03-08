@@ -193,9 +193,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
-			 * Cannot get data from a non-existing root. This error is thrown when {@link ~DataController#get DataController#get() method}
+			 * Cannot get data from a non-existing root. This error is thrown when
+			 * {@link module:engine/controller/datacontroller~DataController#get `DataController#get()` method}
 			 * is called with a non-existent root name. For example, if there is an editor instance with only `main` root,
-			 * calling {@link ~DataController#get} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#get} like:
 			 *
 			 * ```ts
 			 * data.get( { rootName: 'root2' } );
@@ -326,9 +327,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( Object.keys( initialData ) ) ) {
 			/**
-			 * Cannot init data on a non-existent root. This error is thrown when {@link ~DataController#init DataController#init() method}
+			 * Cannot init data on a non-existent root. This error is thrown when
+			 * {@link module:engine/controller/datacontroller~DataController#init DataController#init() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
-			 * calling {@link ~DataController#init} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#init} like:
 			 *
 			 * ```ts
 			 * data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
@@ -399,9 +401,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( Object.keys( newData ) ) ) {
 			/**
-			 * Cannot set data on a non-existent root. This error is thrown when the {@link ~DataController#set DataController#set() method}
+			 * Cannot set data on a non-existent root. This error is thrown when the
+			 * {@link module:engine/controller/datacontroller~DataController#set DataController#set() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only the default `main` root,
-			 * calling {@link ~DataController#set} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#set} like:
 			 *
 			 * ```ts
 			 * data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
@@ -537,9 +540,9 @@ export type DataControllerReadyEvent = {
 };
 
 /**
- * An event fired after the {@link ~DataController#init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust
- * or modify the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
- * should be fired manually.
+ * An event fired after the {@link ~DataController#init `init()` method} was run. It can be {@link ~DataController#listenTo listened to} in
+ * order to adjust or modify the initialization flow. However, if the `init` event is stopped or prevented,
+ * the {@link ~DataController#event:ready `ready` event} should be fired manually.
  *
  * The `init` event is fired by the decorated {@link ~DataController#init} method.
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.

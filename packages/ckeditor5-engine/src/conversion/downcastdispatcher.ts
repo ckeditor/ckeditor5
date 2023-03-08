@@ -152,7 +152,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * @fires remove
 	 * @fires attribute
 	 * @fires addMarker
- 	 * @fires removeMarker
+	 * @fires removeMarker
 	 * @fires reduceChanges
 	 * @param differ The differ object with buffered changes.
 	 * @param markers Markers related to the model fragment to convert.

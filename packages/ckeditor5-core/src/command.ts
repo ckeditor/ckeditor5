@@ -244,7 +244,7 @@ function forceDisable( evt: EventInfo<string, boolean> ) {
 }
 
 /**
- * Event fired by the {@link ~Command#execute} method. The command action is a listener to this event so it's
+ * Event fired by the {@link module:core/command~Command#execute} method. The command action is a listener to this event so it's
  * possible to change/cancel the behavior of the command by listening to this event.
  *
  * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.

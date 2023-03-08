@@ -304,10 +304,6 @@ export default class MentionUI extends Plugin {
 
 	/**
 	 * Requests a feed from a configured callbacks.
-	 *
-	 * @fires response
-	 * @fires discarded
-	 * @fires error
 	 */
 	private _requestFeed( marker: string, feedText: string ): void {
 		// @if CK_DEBUG_MENTION // console.log( '%c[Feed]%c Requesting for', 'color: blue', 'color: black', `"${ feedText }"` );

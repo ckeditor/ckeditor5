@@ -79,9 +79,9 @@ export default class Schema extends ObservableMixin() {
 			 *
 			 * This situation may happen when:
 			 *
-			 * * Two or more plugins called {@link ~Schema#register `register()`} with the same name. This will usually mean that
-			 * there is a collision between plugins which try to use the same element in the model. Unfortunately,
-			 * the only way to solve this is by modifying one of these plugins to use a unique model element name.
+			 * * Two or more plugins called {@link module:engine/model/schema~Schema#register `register()`} with the same name.
+			 * This will usually mean that there is a collision between plugins which try to use the same element in the model.
+			 * Unfortunately, the only way to solve this is by modifying one of these plugins to use a unique model element name.
 			 * * A single plugin was loaded twice. This happens when it is installed by npm/yarn in two versions
 			 * and usually means one or more of the following issues:
 			 *     * a version mismatch (two of your dependencies require two different versions of this plugin),
@@ -138,7 +138,7 @@ export default class Schema extends ObservableMixin() {
 			 * Cannot extend an item which was not registered yet.
 			 *
 			 * This error happens when a plugin tries to extend the schema definition of an item which was not
-			 * {@link ~Schema#register registered} yet.
+			 * {@link module:engine/model/schema~Schema#register registered} yet.
 			 *
 			 * @param itemName The name of the model element which is being extended.
 			 * @error schema-cannot-extend-missing-item

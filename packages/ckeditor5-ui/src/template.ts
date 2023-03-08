@@ -393,7 +393,7 @@ export default class Template extends EmitterMixin() {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
 			 * the {@link module:ui/template~Template.extend extending} works for an element,
-			 * make sure it happens before {@link ~Template#render} is called.
+			 * make sure it happens before {@link module:ui/template~Template#render} is called.
 			 *
 			 * @error template-extend-render
 			 */

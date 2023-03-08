@@ -299,13 +299,13 @@ export interface ImageConfig {
 	 * };
 	 * ```
 	 *
-	 * Read more about the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}.
+	 * Read more about the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options}.
 	 *
 	 * # **Custom configuration**
 	 *
 	 * The image styles configuration can be customized in several ways:
 	 *
-	 * * Any of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}
+	 * * Any of the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options}
 	 * can be loaded by the reference to its name as follows:
 	 *
 	 * ```ts
@@ -319,9 +319,9 @@ export interface ImageConfig {
 	 * 	} );
 	 * ```
 	 *
-	 * * Each of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} can be customized,
+	 * * Each of the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default image style options} can be customized,
 	 * e.g. to change the `icon`, `title` or CSS `className` of the style. The feature also provides several
-	 * {@link module:image/imagestyle/utils~DEFAULT_ICONS default icons} to choose from.
+	 * {@link module:image/imagestyle/utils#DEFAULT_ICONS default icons} to choose from.
 	 *
 	 * ```ts
 	 * import customIcon from 'custom-icon.svg';
@@ -350,7 +350,7 @@ export interface ImageConfig {
 	 * } );
 	 * ```
 	 *
-	 * * If none of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options}
+	 * * If none of the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default image style options}
 	 * works for the integration, it is possible to define independent custom styles, too.
 	 *
 	 * See the documentation about the image style {@link module:image/imageconfig~ImageStyleOptionDefinition options}
@@ -406,7 +406,7 @@ export interface ImageConfig {
 	 * * `'imageTextAlternative'`,
 	 * * `'toggleImageCaption'`,
 	 * * {@link module:image/imageconfig~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
-	 * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
+	 * * {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
 	 *
 	 * so you can configure the toolbar like this:
 	 *
@@ -612,7 +612,7 @@ export interface ImageStyleConfig {
  *
  * This definition should be implemented in the `Image` plugin {@link module:image/imageconfig~ImageConfig#styles configuration} for:
  *
- * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} by providing the proper name
+ * * customizing one of the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} by providing the proper name
  * of the default style and the properties that should be overridden,
  * * or defining a completely custom styling option by providing a custom name and implementing the following properties.
  *
@@ -637,7 +637,7 @@ export interface ImageStyleOptionDefinition {
 	/**
 	 * The unique name of the styling option. It will be used to:
 	 *
-	 * * refer to one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or define the custom style,
+	 * * refer to one of the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} or define the custom style,
 	 * * store the chosen style in the model by setting the `imageStyle` attribute of the model image element,
 	 * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
 	 * * when registering a button for the style in the following manner: (`'imageStyle:{name}'`).
@@ -649,7 +649,7 @@ export interface ImageStyleOptionDefinition {
 	 * listed in the `modelElements` property. A default style does not apply any CSS class to the view element.
 	 *
 	 * If this property is not defined, its value is inherited
-	 * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
+	 * from the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} addressed in the name property.
 	 */
 	isDefault?: boolean;
 
@@ -657,10 +657,10 @@ export interface ImageStyleOptionDefinition {
 	 * One of the following to be used when creating the styles's button:
 	 *
 	 * * an SVG icon source (as an XML string),
-	 * * one of the keys in {@link module:image/imagestyle/utils~DEFAULT_ICONS} to use one of default icons provided by the plugin.
+	 * * one of the keys in {@link module:image/imagestyle/utils#DEFAULT_ICONS} to use one of default icons provided by the plugin.
 	 *
 	 * If this property is not defined, its value is inherited
-	 * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
+	 * from the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} addressed in the name property.
 	 */
 	icon: string;
 
@@ -670,7 +670,7 @@ export interface ImageStyleOptionDefinition {
 	 * will automatically translate it to the language of the editor.
 	 *
 	 * If this property is not defined, its value is inherited
-	 * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
+	 * from the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} addressed in the name property.
 	 */
 	title: string;
 
@@ -679,7 +679,7 @@ export interface ImageStyleOptionDefinition {
 	 * It should be used only for the non-default styles.
 	 *
 	 * If this property is not defined, its value is inherited
-	 * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
+	 * from the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} addressed in the name property.
 	 */
 	className?: string;
 
@@ -698,7 +698,7 @@ export interface ImageStyleOptionDefinition {
 	 * will automatically change.
 	 *
 	 * If this property is not defined, its value is inherited
-	 * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
+	 * from the {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default styling options} addressed in the name property.
 	 */
 	modelElements: Array<string>;
 }

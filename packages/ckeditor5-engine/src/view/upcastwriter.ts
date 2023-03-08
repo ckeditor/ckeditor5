@@ -121,7 +121,6 @@ export default class UpcastWriter {
 	 * @see module:engine/view/element~Element#_appendChild
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be appended.
-	 * @fires change
 	 * @returns Number of appended nodes.
 	 */
 	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | DocumentFragment ): number {
@@ -136,7 +135,6 @@ export default class UpcastWriter {
 	 * @param index Offset at which nodes should be inserted.
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be inserted.
-	 * @fires change
 	 * @returns Number of inserted nodes.
 	 */
 	public insertChild( index: number, items: Item | Iterable<Item>, element: Element | DocumentFragment ): number {
@@ -150,7 +148,6 @@ export default class UpcastWriter {
 	 * @param index Offset from which nodes will be removed.
 	 * @param howMany Number of nodes to remove.
 	 * @param element Element which children will be removed.
-	 * @fires change
 	 * @returns The array containing removed nodes.
 	 */
 	public removeChildren( index: number, howMany: number, element: Element | DocumentFragment ): Array<Node> {
