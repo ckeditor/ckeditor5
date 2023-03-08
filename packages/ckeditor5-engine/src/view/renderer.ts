@@ -663,17 +663,9 @@ export default class Renderer extends ObservableMixin() {
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 
-		// The rendering is not disabled on Android in the composition mode.
-		// Composition events are not cancellable and browser will modify the DOM tree.
-		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
-		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
-		// Since the composition is fragile and often breaks if the composed text node is replaced while composing
-		// we need to make sure that we update the existing text node and not replace it with another one.
-		// We don't want to change the behavior on other browsers for safety, but maybe one day cause it seems to make sense.
-		// https://github.com/ckeditor/ckeditor5/issues/12455.
-		const actions = env.isAndroid ?
-			this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } ) :
-			diff;
+		// We need to make sure that we update the existing text node and not replace it with another one.
+		// The composition and different "language" browser extensions are fragile to text node being completely replaced.
+		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } );
 
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
