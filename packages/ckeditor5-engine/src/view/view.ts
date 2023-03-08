@@ -386,14 +386,19 @@ export default class View extends ObservableMixin() {
 	/**
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
 	 * caret, if not already visible to the user.
+	 *
+	 * @param options TODO
+	 * @param options.alignToTop TODO
 	 */
-	public scrollToTheSelection(): void {
+	public scrollToTheSelection( { alignToTop }: { alignToTop?: boolean } = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
 		if ( range ) {
 			scrollViewportToShowTarget( {
 				target: this.domConverter.viewRangeToDom( range ),
-				viewportOffset: 20
+				viewportOffset: 20,
+				ancestorOffset: 20,
+				alignToTop
 			} );
 		}
 	}

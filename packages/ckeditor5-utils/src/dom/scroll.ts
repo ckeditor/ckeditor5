@@ -19,12 +19,49 @@ import isText from './istext';
  * @param options
  * @param options.target A target, which supposed to become visible to the user.
  * @param options.viewportOffset An offset from the edge of the viewport (in pixels)
- * the `target` will be moved by when the viewport is scrolled. It enhances the user experience
+ * the `target` will be moved by if the viewport is scrolled. It enhances the user experience
  * by keeping the `target` some distance from the edge of the viewport and thus making it easier to
  * read or edit by the user.
+ * @param options.ancestorOffset An offset from the closest scrollable ancestor (if any)
+ * the `target` will be moved by if the viewport is scrolled. It enhances the user experience
+ * by keeping the `target` some distance from the edge of the ancestor and thus making it easier to
+ * read or edit by the user.
+ * @param options.alignToTop When set `true`, the helper will make sure the `target` is scrolled up
+ * to the top boundary of the viewport and/or scrollable ancestors if scrolled up. When set
+ * `false` (default), the `target` will be revealed by scrolling as little as possible. This option will
+ * not affect `targets` that must be scrolled down because they will appear at the top of the boundary
+ * anyway.
+ *
+ * ```
+ *          Initial state                        alignToTop = false (default)                     alignToTop = true
+ *
+ * ┌────────────────────────────────┬─┐       ┌────────────────────────────────┬─┐        ┌────────────────────────────────┬─┐
+ * │                                │▲│       │                                │▲│        │   [ Target to be revealed ]    │▲│
+ * │                                │ │       │                                │ │        │                                │ │
+ * │                                │█│       │                                │ │        │                                │ │
+ * │                                │█│       │                                │ │        │                                │ │
+ * │                                │ │       │                                │█│        │                                │ │
+ * │                                │ │       │                                │█│        │                                │█│
+ * │                                │ │       │                                │ │        │                                │█│
+ * │                                │▼│       │   [ Target to be revealed ]    │▼│        │                                │▼│
+ * └────────────────────────────────┴─┘       └────────────────────────────────┴─┘        └────────────────────────────────┴─┘
+ *
+ *
+ *     [ Target to be revealed ]
+ *```
  */
 export function scrollViewportToShowTarget(
-	{ target, viewportOffset = 0 }: { readonly target: HTMLElement | Range; readonly viewportOffset?: number }
+	{
+		target,
+		viewportOffset = 0,
+		ancestorOffset = 0,
+		alignToTop
+	}: {
+		readonly target: HTMLElement | Range;
+		readonly viewportOffset?: number;
+		readonly ancestorOffset?: number;
+		readonly alignToTop?: boolean;
+	}
 ): void {
 	const targetWindow = getWindow( target );
 	let currentWindow: Window | null = targetWindow;
@@ -54,13 +91,13 @@ export function scrollViewportToShowTarget(
 			// relative to the current window's viewport. To make it work in a parent window,
 			// it must be shifted.
 			return getRectRelativeToWindow( target, currentWindow! );
-		} );
+		}, { alignToTop, ancestorOffset } );
 
 		// Obtain the rect of the target after it has been scrolled within its ancestors.
 		// It's time to scroll the viewport.
 		const targetRect = getRectRelativeToWindow( target, currentWindow );
 
-		scrollWindowToShowRect( currentWindow, targetRect, viewportOffset );
+		scrollWindowToShowRect( currentWindow, targetRect, viewportOffset, alignToTop );
 
 		if ( currentWindow.parent != currentWindow ) {
 			// Keep the reference to the <iframe> element the "previous current window" was
@@ -146,8 +183,9 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
  * @param window A window which is scrolled to reveal the rect.
  * @param rect A rect which is to be revealed.
  * @param viewportOffset See scrollViewportToShowTarget.
+ * @param alignToTop See scrollViewportToShowTarget.
  */
-function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: number ): void {
+function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: number, alignToTop: boolean = false ): void {
 	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
 	const viewportRect = new Rect( window ).excludeScrollbarsAndBorders();
@@ -160,7 +198,11 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 		if ( isAbove( targetShiftedUpRect, viewportRect ) ) {
 			scrollY -= viewportRect.top - rect.top + viewportOffset;
 		} else if ( isBelow( targetShiftedDownRect, viewportRect ) ) {
-			scrollY += rect.bottom - viewportRect.bottom + viewportOffset;
+			if ( alignToTop ) {
+				scrollY += rect.top - viewportRect.top - viewportOffset;
+			} else {
+				scrollY += rect.bottom - viewportRect.bottom + viewportOffset;
+			}
 		}
 
 		// TODO: Web browsers scroll natively to place the target in the middle
@@ -178,10 +220,23 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 /**
  * Recursively scrolls element ancestors to visually reveal a rect.
  *
- * @param parent A parent The first ancestors to start scrolling.
+ * @param parent The first parent ancestor to start scrolling.
  * @param getRect A function which returns the Rect, which is to be revealed.
+ * @param options TODO
+ * @param options.alignToTop TODO
+ * @param options.ancestorOffset TODO
  */
-function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): void {
+function scrollAncestorsToShowRect(
+	parent: HTMLElement,
+	getRect: () => Rect,
+	{
+		alignToTop = false,
+		ancestorOffset = 0
+	}: {
+		readonly alignToTop?: boolean;
+		readonly ancestorOffset?: number;
+	} = {}
+): void {
 	const parentWindow = getWindow( parent );
 	let parentRect: Rect, targetRect: Rect;
 
@@ -191,15 +246,19 @@ function scrollAncestorsToShowRect( parent: HTMLElement, getRect: () => Rect ): 
 
 		if ( !parentRect.contains( targetRect ) ) {
 			if ( isAbove( targetRect, parentRect ) ) {
-				parent.scrollTop -= parentRect.top - targetRect.top;
+				parent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
 			} else if ( isBelow( targetRect, parentRect ) ) {
-				parent.scrollTop += targetRect.bottom - parentRect.bottom;
+				if ( alignToTop ) {
+					parent.scrollTop += targetRect.top - parentRect.top - ancestorOffset;
+				} else {
+					parent.scrollTop += targetRect.bottom - parentRect.bottom + ancestorOffset;
+				}
 			}
 
 			if ( isLeftOf( targetRect, parentRect ) ) {
-				parent.scrollLeft -= parentRect.left - targetRect.left;
+				parent.scrollLeft -= parentRect.left - targetRect.left - ancestorOffset;
 			} else if ( isRightOf( targetRect, parentRect ) ) {
-				parent.scrollLeft += targetRect.right - parentRect.right;
+				parent.scrollLeft += targetRect.right - parentRect.right + ancestorOffset;
 			}
 		}
 
