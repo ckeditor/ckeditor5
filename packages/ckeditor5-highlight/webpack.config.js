@@ -7,7 +7,6 @@
 
 /* eslint-env node */
 
-const path = require( 'path' );
 const { builds } = require( '@ckeditor/ckeditor5-dev-utils' );
 const webpack = require( 'webpack' );
 
@@ -16,5 +15,5 @@ module.exports = builds.getDllPluginWebpackConfig( webpack, {
 	packagePath: __dirname,
 	manifestPath: require.resolve( 'ckeditor5/build/ckeditor5-dll.manifest.json' ),
 	isDevelopmentMode: process.argv.includes( '--mode=development' ),
-	tsconfigPath: path.resolve( __dirname, '..', '..', 'tsconfig.dll.json' )
+	tsconfigPath: require.resolve( 'ckeditor5/tsconfig.dll.json' )
 } );
