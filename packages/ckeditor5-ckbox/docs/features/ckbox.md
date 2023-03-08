@@ -28,7 +28,7 @@ The CKBox feature lets you easily insert images and links to other files into yo
 CKBox replaces the basic CKEditor 5 image upload feature. It provides the image and file upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
-* Transforms the image toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
+* Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
 * Adds a separate dedicated toolbar button to open the CKBox UI to manage and reause uploaded files.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
