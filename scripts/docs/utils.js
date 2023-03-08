@@ -146,8 +146,16 @@ function normalizePath( modulePath ) {
 }
 
 /**
- * Adds ts-loader with proper configuration to the passed configuration object
- * only if the `tsconfig.test.json` file exists.
+ * Adds the `ts-loader` with the proper configuration to the passed webpack configuration object
+ * only when CKEditor 5 sources are in TypeScript.
+ *
+ * The snippet adapter is used in different environments
+ *   * Production: processing JavaScript installed from npm.
+ *   * Nightly: processing JavaScript created from compiling TypeScript from the `#master` branches. It simulates
+ *   installing packages from `npm`.
+ *   * Locally: processing TypeScript directly from the `#master` branches.
+ *
+ * Hence, the `ts-loader` must be included only when processing `*.ts` files.
  *
  * @param {Object} webpackConfig
  * @param {String} configFile
@@ -155,8 +163,10 @@ function normalizePath( modulePath ) {
  */
 function addTypeScriptLoader( webpackConfig, configFile ) {
 	const tsconfigPath = path.join( __dirname, '..', '..', configFile );
+	const coreIndexFile = require.resolve( '@ckeditor/ckeditor5-core' );
 
-	if ( fs.existsSync( tsconfigPath ) ) {
+	// Do not include the `ts-loader` when processing CKEditor 5 installed as the JavaScript code.
+	if ( coreIndexFile.endsWith( '.ts' ) ) {
 		webpackConfig.module.rules.push( {
 			test: /\.ts$/,
 			use: [
