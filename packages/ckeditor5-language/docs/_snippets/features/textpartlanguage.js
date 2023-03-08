@@ -23,23 +23,12 @@ ClassicEditor
 		},
 		toolbar: {
 			items: [
-				'textPartLanguage',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'blockQuote',
-				'outdent',
-				'indent',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'textPartLanguage',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

@@ -11,17 +11,11 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ckbox' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'insertTable',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'ckbox'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'ckbox', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		image: {

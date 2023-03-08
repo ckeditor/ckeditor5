@@ -26,20 +26,12 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'style',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'strikethrough',
-				'link',
-				'|',
-				'highlight',
-				'code',
-				'codeBlock',
-				'blockQuote',
-				'horizontalLine'
+				'undo', 'redo',
+				'|', 'style', '|', 'heading',
+				'|', 'bold', 'italic', 'strikethrough', 'code',
+				'-', 'link', 'uploadImage', 'insertTable', 'highlight', 'codeBlock',
+				'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},
