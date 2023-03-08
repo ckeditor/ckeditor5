@@ -10,7 +10,7 @@ const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { writeFile, getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
+const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
@@ -161,7 +161,7 @@ function getWebpackConfig() {
 
 	postCssConfig.plugins.push( postCssContentStylesPlugin( contentRules ) );
 
-	const webpackConfig = {
+	return {
 		mode: 'development',
 		devtool: 'source-map',
 		entry: {
@@ -196,14 +196,14 @@ function getWebpackConfig() {
 							}
 						}
 					]
+				},
+				{
+					test: /\.ts$/,
+					use: [ 'ts-loader' ]
 				}
 			]
 		}
 	};
-
-	addTypeScriptLoader( webpackConfig );
-
-	return webpackConfig;
 }
 
 /**
