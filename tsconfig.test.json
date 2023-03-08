@@ -1,3 +1,6 @@
+/*
+ * The configuration is used when executing automated and manual tests.
+ */
 {
   "extends": "./tsconfig.json",
   "include": [
