@@ -3687,9 +3687,7 @@ describe( 'Renderer', () => {
 				] );
 			} );
 
-			it( 'should update existing text node (on Android)', () => {
-				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
-
+			it( 'should update existing text node', () => {
 				viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -3703,6 +3701,7 @@ describe( 'Renderer', () => {
 					childList: true,
 					attributes: false,
 					characterData: true,
+					characterDataOldValue: true,
 					subtree: true
 				} );
 
@@ -3714,7 +3713,42 @@ describe( 'Renderer', () => {
 				expect( mutationRecords.length ).to.equal( 1 );
 				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
 				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
-					'added: 0, removed: 0'
+					'updated: "foo" to "foobar"'
+				] );
+			} );
+
+			it( 'should update existing text node on split by an inline element', () => {
+				viewRoot._appendChild( parse( '<container:p>foobar</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot.getChild( 0 ).getChild( 0 )._textData = 'foo';
+				viewRoot.getChild( 0 )._insertChild( 1, parse( '<attribute:strong>123</attribute:strong>bar' ) );
+
+				observer.disconnect();
+				observer.observe( domRoot, {
+					childList: true,
+					attributes: false,
+					characterData: true,
+					characterDataOldValue: true,
+					subtree: true
+				} );
+
+				renderer.markToSync( 'children', viewRoot.getChild( 0 ) );
+				renderer.render();
+
+				const mutationRecords = observer.takeRecords();
+
+				expect( mutationRecords.length ).to.equal( 3 );
+				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
+				expect( mutationRecords[ 1 ].type ).to.equal( 'childList' );
+				expect( mutationRecords[ 2 ].type ).to.equal( 'childList' );
+				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
+					'updated: "foobar" to "foo"',
+					'added: 1, removed: 0',
+					'added: 1, removed: 0'
 				] );
 			} );
 
@@ -3753,9 +3787,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.firstChild.firstChild.data ).to.equal( 'xfoo' );
 			} );
 
-			it( 'should update existing text node (mixed content, on Android)', () => {
-				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
-
+			it( 'should update existing text node (mixed content)', () => {
 				viewRoot._appendChild( parse( '<container:p>foo<container:b>123</container:b>456</container:p>' ) );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -3769,6 +3801,7 @@ describe( 'Renderer', () => {
 					childList: true,
 					attributes: false,
 					characterData: true,
+					characterDataOldValue: true,
 					subtree: true
 				} );
 
@@ -3780,7 +3813,7 @@ describe( 'Renderer', () => {
 				expect( mutationRecords.length ).to.equal( 1 );
 				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
 				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
-					'added: 0, removed: 0'
+					'updated: "foo" to "foobar"'
 				] );
 			} );
 
@@ -3954,16 +3987,6 @@ describe( 'Renderer', () => {
 					] );
 				} );
 			} );
-
-			function getMutationStats( mutationList ) {
-				return mutationList.map( mutation => {
-					return `added: ${ mutation.addedNodes.length }, removed: ${ mutation.removedNodes.length }`;
-				} );
-			}
-
-			function cleanObserver( observer ) {
-				observer.takeRecords();
-			}
 
 			function makeContainers( howMany ) {
 				const containers = [];
@@ -4347,8 +4370,9 @@ describe( 'Renderer', () => {
 		} );
 	} );
 
-	describe( '#922', () => {
-		let view, viewDoc, viewRoot, domRoot, converter;
+	// https://github.com/ckeditor/ckeditor5-engine/pull/989.
+	describe( 'Prevent unbinding reused DOM elements while rendering', () => {
+		let view, viewDoc, viewRoot, domRoot, converter, observer;
 
 		beforeEach( () => {
 			view = new View( new StylesProcessor() );
@@ -4358,9 +4382,20 @@ describe( 'Renderer', () => {
 			viewRoot = createViewRoot( viewDoc );
 			view.attachDomRoot( domRoot );
 			converter = view.domConverter;
+
+			observer = new MutationObserver( () => {} );
+
+			observer.observe( domRoot, {
+				childList: true,
+				attributes: false,
+				characterData: true,
+				subtree: true,
+				characterDataOldValue: true
+			} );
 		} );
 
 		afterEach( () => {
+			observer.disconnect();
 			view.destroy();
 			domRoot.remove();
 		} );
@@ -4470,6 +4505,78 @@ describe( 'Renderer', () => {
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
 			expect( checkMappings() ).to.be.true;
+		} );
+
+		it( 'should properly render if text is changed and text and element is inserted into same node', () => {
+			setViewData( view,
+				'<container:p>foo<attribute:strong>123</attribute:strong>456</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			view.forceRender();
+			cleanObserver( observer );
+
+			// Modify the view.
+			view.change( writer => {
+				writer.insert(
+					writer.createPositionAfter( viewRoot.getChild( 0 ).getChild( 0 ) ),
+					parse( 'bar<attribute:strong>abc</attribute:strong>' )
+				);
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p>foobar<strong>abc123</strong>456</p>' );
+
+			// Re-render changes in view to DOM.
+			view.forceRender();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<strong>abc123</strong>456</p>' );
+			expect( checkMappings() ).to.be.true;
+
+			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+				'updated: "foo" to "foobar"',
+				'updated: "123" to "abc123"'
+			] );
+		} );
+
+		it( 'should properly render if text is replaced by an element and following text', () => {
+			setViewData( view,
+				'<container:p>foo<attribute:strong>123</attribute:strong>456</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			view.forceRender();
+			cleanObserver( observer );
+
+			// Modify the view.
+			view.change( writer => {
+				writer.remove( viewRoot.getChild( 0 ).getChild( 0 ) );
+				writer.insert(
+					writer.createPositionAt( viewRoot.getChild( 0 ), 0 ),
+					parse(
+						'<attribute:strong>abc</attribute:strong>' +
+						'bar' +
+						'<attribute:strong>xyz</attribute:strong>'
+					)
+				);
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>abc</strong>bar<strong>xyz123</strong>456</p>' );
+
+			// Re-render changes in view to DOM.
+			view.forceRender();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>abc</strong>bar<strong>xyz123</strong>456</p>' );
+			expect( checkMappings() ).to.be.true;
+
+			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+				'added: 0, removed: 1',
+				'added: 1, removed: 0',
+				'added: 1, removed: 0',
+				'updated: "123" to "abc"',
+				'updated: "abc123" to "abc"'
+			] );
 		} );
 
 		it( 'should not unbind elements that are removed and reinserted to DOM', () => {
@@ -5901,6 +6008,20 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
 		} );
 	} );
+
+	function getMutationStats( mutationList ) {
+		return mutationList.map( mutation => {
+			if ( mutation.type == 'characterData' ) {
+				return `updated: ${ JSON.stringify( mutation.oldValue ) } to ${ JSON.stringify( mutation.target.data ) }`;
+			} else {
+				return `added: ${ mutation.addedNodes.length }, removed: ${ mutation.removedNodes.length }`;
+			}
+		} );
+	}
+
+	function cleanObserver( observer ) {
+		observer.takeRecords();
+	}
 } );
 
 function renderAndExpectNoChanges( renderer, domRoot ) {
