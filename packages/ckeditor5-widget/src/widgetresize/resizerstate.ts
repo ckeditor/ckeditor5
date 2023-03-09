@@ -203,24 +203,18 @@ function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRec
 	const ancestorLevelLimit = 5;
 	let currentLevel = 0;
 
-	try {
-		let checkedElement = domResizeHostParent!;
+	let checkedElement = domResizeHostParent!;
 
-		while ( isNaN( parentWidth ) ) {
-			checkedElement = checkedElement.parentElement!;
+	while ( isNaN( parentWidth ) ) {
+		checkedElement = checkedElement.parentElement!;
 
-			if ( ++currentLevel > ancestorLevelLimit ) {
-				return 0;
-			}
-
-			parentWidth = parseFloat(
-				domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( checkedElement ).width
-			);
+		if ( ++currentLevel > ancestorLevelLimit ) {
+			return 0;
 		}
-	}
 
-	catch {
-		return 0;
+		parentWidth = parseFloat(
+				domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( checkedElement ).width
+		);
 	}
 
 	return resizeHostRect.width / parentWidth * 100;

@@ -90,15 +90,10 @@ describe( 'ResizerState', () => {
 
 			domContentWrapper.style.width = 'auto';
 			domContentWrapper.innerHTML = htmlMockup;
-			document.body.append( domContentWrapper );
-		} );
-
-		after( () => {
-			domContentWrapper.remove();
 		} );
 
 		it( 'should not return NaN if resizer is inside a <span>', () => {
-			expect( true ).to.be.true;
+			document.body.append( domContentWrapper );
 
 			const domResizeHandle = domContentWrapper.querySelector( '.ck-widget__resizer__handle' );
 			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
@@ -109,6 +104,28 @@ describe( 'ResizerState', () => {
 
 			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
 			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 100 );
+			domContentWrapper.remove();
+		} );
+
+		it( 'should return 0 if cannot calculate width from 5 ancestors', () => {
+			let elem = domContentWrapper;
+			for ( let i = 0; i < 5; i++ ) {
+				const e = document.createElement( 'span' );
+				e.appendChild( elem );
+				elem = e;
+			}
+			document.body.append( elem );
+
+			const domResizeHandle = domContentWrapper.querySelector( '.ck-widget__resizer__handle' );
+			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
+			const domResizeHost = domHandleHost;
+
+			const state = new ResizerState();
+			state.begin( domResizeHandle, domHandleHost, domResizeHost );
+
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 0 );
+			elem.remove();
 		} );
 	} );
 
