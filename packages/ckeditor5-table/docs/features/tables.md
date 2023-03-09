@@ -175,7 +175,7 @@ You can test this feature in the demo below by adding a table in the *"abandoned
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Known issues
+### Known issues
 
 While the table nesting functionality is fully functional, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables ([#9475](https://github.com/ckeditor/ckeditor5/issues/9475)). Feel free to upvote 👍&nbsp; this issue on GitHub if it is important for you.
 
