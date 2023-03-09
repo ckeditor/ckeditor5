@@ -37,7 +37,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * The configuration of the restricted editing mode feature. Introduced by the
 		 * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} feature.
 		 *
-		 * Read more in {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig}.
+		 * Read more in {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig}.
 		 */
 		restrictedEditing?: RestrictedEditingConfig;
 	}

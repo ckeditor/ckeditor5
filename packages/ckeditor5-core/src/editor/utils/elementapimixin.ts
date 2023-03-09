@@ -28,8 +28,8 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
 				/**
 				 * Cannot update the source element of a detached editor.
 				 *
-				 * The {@link ~ElementApi#updateSourceElement `updateSourceElement()`} method cannot be called if you did not
-				 * pass an element to `Editor.create()`.
+				 * The {@link module:core/editor/utils/elementapimixin~ElementApi#updateSourceElement `updateSourceElement()`}
+				 * method cannot be called if you did not pass an element to `Editor.create()`.
 				 *
 				 * @error editor-missing-sourceelement
 				 */

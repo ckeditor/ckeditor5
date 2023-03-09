@@ -83,9 +83,6 @@ export default class FakeSelectionObserver extends Observer {
 	 * This method fires {@link module:engine/view/document~Document#event:selectionChange} and
 	 * {@link module:engine/view/document~Document#event:selectionChangeDone} events imitating behaviour of
 	 * {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
-	 *
-	 * @fires selectionChange
-	 * @fires selectionChangeDone
 	 */
 	private _handleSelectionMove( keyCode: number ): void {
 		const selection = this.document.selection;

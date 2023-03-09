@@ -168,7 +168,7 @@ export default class CharacterGridView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #tiles}.
+	 * Focuses the first focusable in {@link ~CharacterGridView#tiles}.
 	 */
 	public focus(): void {
 		this.tiles.first!.focus();
@@ -176,7 +176,7 @@ export default class CharacterGridView extends View<HTMLDivElement> {
 }
 
 /**
- * Fired when any of {@link #tiles grid tiles} is clicked.
+ * Fired when any of {@link ~CharacterGridView#tiles grid tiles} is clicked.
  *
  * @eventName ~CharacterGridView#execute
  * @param data Additional information about the event.
@@ -187,7 +187,7 @@ export type CharacterGridViewExecuteEvent = {
 };
 
 /**
- * Fired when a mouse or another pointing device caused the cursor to move onto any {@link #tiles grid tile}
+ * Fired when a mouse or another pointing device caused the cursor to move onto any {@link ~CharacterGridView#tiles grid tile}
  * (similar to the native `mouseover` DOM event).
  *
  * @eventName ~CharacterGridView#tileHover
@@ -199,7 +199,7 @@ export type CharacterGridViewTileHoverEvent = {
 };
 
 /**
- * Fired when {@link #tiles grid tile} is focused (e.g. by navigating with arrow keys).
+ * Fired when {@link ~CharacterGridView#tiles grid tile} is focused (e.g. by navigating with arrow keys).
  *
  * @eventName ~CharacterGridView#tileFocus
  * @param data Additional information about the event.

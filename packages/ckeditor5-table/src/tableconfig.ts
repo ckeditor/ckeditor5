@@ -142,7 +142,7 @@ export interface TableConfig {
 	 * Default values will not be kept in the editor model.
 	 *
 	 * The default color palettes for the table background and the table border are the same
-	 * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
+	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
 	 *
 	 * Both color palette configurations must follow the
 	 * {@link module:table/tableconfig~TableColorConfig table color configuration format}.
@@ -200,7 +200,7 @@ export interface TableConfig {
 	 * Default values will not be kept in the editor model.
 	 *
 	 * The default color palettes for the cell background and the cell border are the same
-	 * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
+	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
 	 *
 	 * Both color palette configurations must follow the
 	 * {@link module:table/tableconfig~TableColorConfig table color configuration format}.
