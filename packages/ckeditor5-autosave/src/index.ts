@@ -8,3 +8,5 @@
  */
 
 export { default as Autosave, type AutosaveConfig } from './autosave';
+
+import './augmentation';
