@@ -64,7 +64,6 @@ const turndownService = new TurndownService( {
 	hr: '---',
 	headingStyle: 'atx',
 	bulletListMarker: '-',
-	codeBlockStyle: 'fenced',
 	emDelimiter: '*',
 	br: '\n'
 } );
