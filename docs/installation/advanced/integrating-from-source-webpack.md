@@ -75,7 +75,7 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	plugins: [
-		// More plugins
+		// More plugins.
 		// ...
 
 		new CKEditorTranslationsPlugin( {
@@ -365,7 +365,7 @@ And add it to your webpack configuration:
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 module.exports = {
-	// More congiguration. 
+	// More configuration. 
 	// ...
 
 	plugins: [
