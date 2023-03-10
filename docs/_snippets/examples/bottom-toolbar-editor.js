@@ -174,6 +174,9 @@ DecoupledEditor
 			FormattingOptions
 		],
 		toolbar: [
+			'undo',
+			'redo',
+			'|',
 			'formattingOptions',
 			'|',
 			'link',
@@ -187,10 +190,7 @@ DecoupledEditor
 				label: 'Lists',
 				icon: false,
 				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
-			},
-			'|',
-			'undo',
-			'redo'
+			}
 		],
 
 		// Configuration of the formatting dropdown.
