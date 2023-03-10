@@ -26,6 +26,15 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		cloudServices: {
 			// All predefined builds include the Easy Image feature.
 			// Provide correct configuration values to use it.
