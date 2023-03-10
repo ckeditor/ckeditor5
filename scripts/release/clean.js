@@ -34,12 +34,21 @@ cleanReleaseArtifacts( options ).then(
  */
 async function cleanReleaseArtifacts( options ) {
 	const typeScriptPackages = await findTypeScriptPackages( options.cwd );
-	const typeScriptPatterns = typeScriptPackages.map( pkg => `packages/${ pkg }/src/**/*.@(js|js.map|d.ts)` );
 
-	const removePatterns = [
-		...typeScriptPatterns,
-		'src/**/*.@(js|js.map|d.ts)'
-	];
+	// CKEditor 5 packages.
+	const typeScriptPatterns = typeScriptPackages.map( pkg => {
+		return [
+			// Ignore the `lib/` directory in each package.
+			`packages/${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
+			// Remove files from in the `src/` directory.
+			`packages/${ pkg }/src/*.@(js|js.map|d.ts)`
+		];
+	} );
+
+	// The root directory.
+	typeScriptPatterns.push( 'src/*.@(js|js.map|d.ts)' );
+
+	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
 	for ( const pattern of removePatterns ) {
 		await removeFiles( pattern );
