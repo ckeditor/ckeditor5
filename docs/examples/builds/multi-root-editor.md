@@ -7,7 +7,7 @@ classes: main__content--no-toc
 
 # Multi-root editor
 
-Multi-root editor is an editor type that features multiple, separate editable areas.
+{@link installation/getting-started/predefined-builds#multi-root-editor Multi-root editor} is an editor type that features multiple, separate editable areas.
 
 The main difference between using a multi-root editor and using multiple separate editors (like in the {@link examples/builds/inline-editor inline editor demo}) is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
 
@@ -41,6 +41,15 @@ MultiRootEditor
 				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 				// Read more about Easy Image - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/easy-image.html.
 				// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
+			},
+			toolbar: {
+				items: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'bold', 'italic',
+					'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				]
 			}
 		}
 	)

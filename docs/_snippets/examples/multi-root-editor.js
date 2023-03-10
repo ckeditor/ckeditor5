@@ -19,7 +19,16 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
-			cloudServices: CS_CONFIG
+			cloudServices: CS_CONFIG,
+			toolbar: {
+				items: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'bold', 'italic',
+					'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				]
+			}
 		}
 	)
 	.then( editor => {
