@@ -3614,7 +3614,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 1, removed: 0'
+					'added: [ <p> ], removed: []'
 				] );
 			} );
 
@@ -3631,7 +3631,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 1, removed: 0'
+					'added: [ <p> ], removed: []'
 				] );
 			} );
 
@@ -3648,7 +3648,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 1, removed: 0'
+					'added: [ <p> ], removed: []'
 				] );
 			} );
 
@@ -3682,8 +3682,8 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 0, removed: 1',
-					'added: 1, removed: 0'
+					'added: [], removed: [ <p> ]',
+					'added: [ <h1> ], removed: []'
 				] );
 			} );
 
@@ -3713,7 +3713,7 @@ describe( 'Renderer', () => {
 				expect( mutationRecords.length ).to.equal( 1 );
 				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
 				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
-					'updated: "foo" to "foobar"'
+					'updated text: "foo" to "foobar"'
 				] );
 			} );
 
@@ -3746,9 +3746,9 @@ describe( 'Renderer', () => {
 				expect( mutationRecords[ 1 ].type ).to.equal( 'childList' );
 				expect( mutationRecords[ 2 ].type ).to.equal( 'childList' );
 				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
-					'updated: "foobar" to "foo"',
-					'added: 1, removed: 0',
-					'added: 1, removed: 0'
+					'updated text: "foobar" to "foo"',
+					'added: [ <strong> ], removed: []',
+					'added: [ text: "bar" ], removed: []'
 				] );
 			} );
 
@@ -3813,7 +3813,7 @@ describe( 'Renderer', () => {
 				expect( mutationRecords.length ).to.equal( 1 );
 				expect( mutationRecords[ 0 ].type ).to.equal( 'characterData' );
 				expect( getMutationStats( mutationRecords ) ).to.deep.equal( [
-					'updated: "foo" to "foobar"'
+					'updated text: "foo" to "foobar"'
 				] );
 			} );
 
@@ -3836,7 +3836,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 0, removed: 1'
+					'added: [], removed: [ <p> ]'
 				] );
 			} );
 
@@ -3871,7 +3871,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 0, removed: 1'
+					'added: [], removed: [ <p> ]'
 				] );
 
 				observer.disconnect();
@@ -3891,7 +3891,7 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 1, removed: 0'
+						'added: [ <p> ], removed: []'
 					] );
 				} );
 
@@ -3908,7 +3908,7 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 1, removed: 0'
+						'added: [ <p> ], removed: []'
 					] );
 				} );
 
@@ -3925,7 +3925,7 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 1, removed: 0'
+						'added: [ <p> ], removed: []'
 					] );
 				} );
 
@@ -3959,8 +3959,8 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 0, removed: 1',
-						'added: 1, removed: 0'
+						'added: [], removed: [ <p> ]',
+						'added: [ <h1> ], removed: []'
 					] );
 				} );
 
@@ -3983,7 +3983,7 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 0, removed: 1'
+						'added: [], removed: [ <p> ]'
 					] );
 				} );
 			} );
@@ -4534,8 +4534,8 @@ describe( 'Renderer', () => {
 			expect( checkMappings() ).to.be.true;
 
 			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-				'updated: "foo" to "foobar"',
-				'updated: "123" to "abc123"'
+				'updated text: "foo" to "foobar"',
+				'updated text: "123" to "abc123"'
 			] );
 		} );
 
@@ -4571,11 +4571,11 @@ describe( 'Renderer', () => {
 			expect( checkMappings() ).to.be.true;
 
 			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-				'added: 0, removed: 1',
-				'added: 1, removed: 0',
-				'added: 1, removed: 0',
-				'updated: "123" to "abc"',
-				'updated: "abc123" to "abc"'
+				'added: [], removed: [ text: "foo" ]',
+				'added: [ text: "bar" ], removed: []',
+				'added: [ <strong> ], removed: []',
+				'updated text: "123" to "abc"',
+				'updated text: "abc123" to "abc"'
 			] );
 		} );
 
@@ -6012,11 +6012,28 @@ describe( 'Renderer', () => {
 	function getMutationStats( mutationList ) {
 		return mutationList.map( mutation => {
 			if ( mutation.type == 'characterData' ) {
-				return `updated: ${ JSON.stringify( mutation.oldValue ) } to ${ JSON.stringify( mutation.target.data ) }`;
+				return `updated text: ${ JSON.stringify( mutation.oldValue ) } to ${ JSON.stringify( mutation.target.data ) }`;
 			} else {
-				return `added: ${ mutation.addedNodes.length }, removed: ${ mutation.removedNodes.length }`;
+				return `added: ${ stringifyNodeList( mutation.addedNodes ) }, removed: ${ stringifyNodeList( mutation.removedNodes ) }`;
 			}
 		} );
+
+		function stringifyNode( node ) {
+			if ( node.nodeType == 1 ) {
+				return `<${ node.nodeName.toLowerCase() }>`;
+			} else if ( node.nodeType == 3 ) {
+				return `text: ${ JSON.stringify( node.data ) }`;
+			} else {
+				return 'node';
+			}
+		}
+
+		function stringifyNodeList( nodeList ) {
+			const nodeArray = Array.from( nodeList );
+			const stringified = nodeArray.map( node => stringifyNode( node ) ).join( ', ' );
+
+			return stringified ? `[ ${ stringified } ]` : '[]';
+		}
 	}
 
 	function cleanObserver( observer ) {
