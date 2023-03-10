@@ -192,6 +192,9 @@ DecoupledEditor
 			FormattingOptions
 		],
 		toolbar: [
+			'undo',
+			'redo',
+			'|',
 			'formattingOptions',
 			'|',
 			'link',
@@ -199,9 +202,14 @@ DecoupledEditor
 			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
-			'horizontalLine'
+			'horizontalLine',
+			'|',
+			{
+				label: 'Lists',
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', '|', 'outdent', 'indent' ]
+			}
 		],
-
 		// Configuration of the formatting dropdown.
 		formattingOptions: [
 			'undo',
