@@ -11,19 +11,14 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'heading',
+				'undo', 'redo', '|', 'heading',
+				'|', 'fontFamily',
 				'|',
-				'fontFamily',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'undo',
-				'redo'
-			]
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			],
+			shouldNotGroupWhenFull: true
 		},
 		ui: {
 			viewportOffset: {

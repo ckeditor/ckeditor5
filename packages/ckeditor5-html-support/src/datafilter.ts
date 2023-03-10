@@ -804,9 +804,3 @@ function isValidAttributeName( name: string ): boolean {
 
 	return true;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DataFilter.pluginName ]: DataFilter;
-	}
-}

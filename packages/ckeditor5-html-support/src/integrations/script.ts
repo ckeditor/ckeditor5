@@ -80,8 +80,3 @@ export default class ScriptElementSupport extends Plugin {
 		} );
 	}
 }
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ScriptElementSupport.pluginName ]: ScriptElementSupport;
-	}
-}

@@ -2,7 +2,7 @@
 category: alternative-setups
 order: 10
 ---
-# Integrating from source using Webpack
+# Integrating from source using webpack
 
 <info-box>
 	CKEditor 5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor 5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
@@ -22,6 +22,7 @@ Copy these dependencies to your `package.json` and call `npm install` to install
 
 ```js
 "dependencies": {
+	// More dependencies.
 	// ...
 
     "@ckeditor/ckeditor5-adapter-ckfinder": "^x.y.z",
@@ -39,7 +40,8 @@ Copy these dependencies to your `package.json` and call `npm install` to install
     "@ckeditor/ckeditor5-theme-lark": "^x.y.z",
     "@ckeditor/ckeditor5-upload": "^x.y.z"
 
-    // ...
+    // More dependencies.
+	// ...
 }
 ```
 
@@ -73,6 +75,7 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	plugins: [
+		// More plugins.
 		// ...
 
 		new CKEditorTranslationsPlugin( {
@@ -131,7 +134,8 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 Encore.
-	// ... your configuration ...
+	// Your configuration.
+	// ...
 
 	.addPlugin( new CKEditorTranslationsPlugin( {
 		// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
@@ -361,9 +365,11 @@ And add it to your webpack configuration:
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 module.exports = {
+	// More configuration. 
 	// ...
 
 	plugins: [
+		// More plugins.
 		// ...
 
 		new MiniCssExtractPlugin( {
@@ -431,7 +437,8 @@ module: {
 				}
 			]
 		},
-		...
+		// More rules.
+		// ...
 	]
 }
 ```
@@ -442,7 +449,8 @@ And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runti
 entry: [
 	require.resolve( 'regenerator-runtime/runtime.js' ),
 
-	// Your entries...
+	// Your entries.
+	// ...
 ]
 ```
 

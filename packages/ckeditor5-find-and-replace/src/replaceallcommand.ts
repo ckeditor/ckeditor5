@@ -57,9 +57,3 @@ export default class ReplaceAllCommand extends ReplaceCommandBase {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		'replaceAll': ReplaceAllCommand;
-	}
-}

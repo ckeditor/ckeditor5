@@ -35,7 +35,7 @@ By default, all links created in the editor have the `href="..."` attribute in t
 
 There are two types of link decorators you can use:
 
-* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against pre-defined rules and manage their attributes based on the results.
+* [**Automatic**](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) &ndash; They match links against predefined rules and manage their attributes based on the results.
 * [**Manual**](#adding-attributes-to-links-using-the-ui-manual-decorators) &ndash; They allow users to control link attributes individually using the editor UI.
 
 <info-box>

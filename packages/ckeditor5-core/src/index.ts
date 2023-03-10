@@ -112,3 +112,5 @@ export const icons = {
 	quote,
 	threeVerticalDots
 };
+
+import './augmentation';

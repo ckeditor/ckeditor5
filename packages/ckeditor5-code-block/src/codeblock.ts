@@ -36,10 +36,3 @@ export default class CodeBlock extends Plugin {
 		return 'CodeBlock';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CodeBlock.pluginName ]: CodeBlock;
-	}
-}
-

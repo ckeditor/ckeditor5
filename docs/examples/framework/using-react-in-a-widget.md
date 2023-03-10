@@ -436,15 +436,12 @@ class App extends React.Component {
 			],
 			toolbar: {
 				items: [
-					'heading',
-					'|',
-					'bold', 'italic', 'underline',
-					'|',
-					'link', 'insertTable',
-					'|',
-					'undo', 'redo'
-				]
-			},
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
 			ui: {
 				viewportOffset: {
 					top: window.getViewportTopOffsetConfig()

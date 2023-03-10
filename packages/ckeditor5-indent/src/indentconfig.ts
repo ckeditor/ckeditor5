@@ -75,15 +75,3 @@ export interface IndentBlockConfig {
 	 */
 	classes?: Array<string>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:indent/indentblock~IndentBlock block indentation feature}.
-		 *
-		 * Read more in {@link module:indent/indentconfig~IndentBlockConfig}.
-		 */
-		indentBlock?: IndentBlockConfig;
-	}
-}

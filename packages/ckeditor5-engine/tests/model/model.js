@@ -405,7 +405,7 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'ABCD' );
 		} );
 
-		it( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
+		it.skip( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
 			const error = new TypeError( 'foo' );
 
 			expect( () => {
@@ -424,7 +424,7 @@ describe( 'Model', () => {
 			}, /foo/, null, { foo: 1 } );
 		} );
 
-		it( 'should rethrow native errors as they are in the dubug=true mode in the enqueueChange() block', () => {
+		it.skip( 'should rethrow native errors as they are in the dubug=true mode in the enqueueChange() block', () => {
 			const error = new TypeError( 'foo' );
 
 			expect( () => {

@@ -11,8 +11,6 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget';
 
-import './tableconfig';
-
 /**
  * The table toolbar class. It creates toolbars for the table feature and its content (for now only for the table cell content).
  *
@@ -64,11 +62,5 @@ export default class TableToolbar extends Plugin {
 				getRelatedElement: getSelectedTableWidget
 			} );
 		}
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableToolbar.pluginName ]: TableToolbar;
 	}
 }

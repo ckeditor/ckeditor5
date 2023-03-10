@@ -39,8 +39,6 @@ import type {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import '../../uiconfig';
-
 const toPx = toUnit( 'px' );
 
 /**
@@ -410,16 +408,9 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
 /**
  * This event is fired just before the toolbar shows up. Stopping this event will prevent this.
  *
- * @eventName ~BaloonToolbar#show
+ * @eventName ~BalloonToolbar#show
  */
-export type BaloonToolbarShowEvent = {
+export type BalloonToolbarShowEvent = {
 	name: 'show';
 	args: [];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BalloonToolbar.pluginName ]: BalloonToolbar;
-	}
-}
-

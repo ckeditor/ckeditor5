@@ -81,9 +81,3 @@ export type MentionAttribute = {
 	 */
 	_text?: string;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Mention.pluginName ]: Mention;
-	}
-}

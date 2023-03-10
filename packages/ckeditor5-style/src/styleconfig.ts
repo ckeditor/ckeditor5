@@ -89,15 +89,3 @@ export interface StyleDefinition {
 	element: string;
 	classes: Array<string>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:style/style~Style} feature.
-		 *
-		 * Read more in {@link module:style/styleconfig~StyleConfig}.
-		 */
-		style?: StyleConfig;
-	}
-}

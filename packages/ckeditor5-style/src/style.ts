@@ -33,9 +33,3 @@ export default class Style extends Plugin {
 		return [ StyleEditing, StyleUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Style.pluginName ]: Style;
-	}
-}

@@ -73,10 +73,3 @@ export default class SelectColumnCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		selectTableColumn: SelectColumnCommand;
-	}
-}

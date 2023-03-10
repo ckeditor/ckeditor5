@@ -35,9 +35,3 @@ export default class Italic extends Plugin {
 		return 'Italic';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Italic.pluginName ]: Italic;
-	}
-}

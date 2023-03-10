@@ -1050,12 +1050,6 @@ export default class TableUtils extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableUtils.pluginName]: TableUtils;
-	}
-}
-
 /**
  * Creates empty rows at the given index in an existing table.
  *

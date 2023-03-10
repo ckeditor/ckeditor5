@@ -37,9 +37,3 @@ export default class BlockQuote extends Plugin {
 		return 'BlockQuote';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BlockQuote.pluginName ]: BlockQuote;
-	}
-}

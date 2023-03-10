@@ -155,9 +155,3 @@ function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 		}
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ MediaEmbedElementSupport.pluginName ]: MediaEmbedElementSupport;
-	}
-}

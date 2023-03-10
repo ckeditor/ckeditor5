@@ -278,10 +278,3 @@ function _displayLocalImage( imageUtils: ImageUtils, viewFigure: ViewElement, wr
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageUploadProgress.pluginName ]: ImageUploadProgress;
-	}
-}
-

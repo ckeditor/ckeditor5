@@ -21,24 +21,11 @@ BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'link',
-				'|',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

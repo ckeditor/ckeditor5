@@ -58,9 +58,3 @@ export default class StrikethroughUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StrikethroughUI.pluginName ]: StrikethroughUI;
-	}
-}

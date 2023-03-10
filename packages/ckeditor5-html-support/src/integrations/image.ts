@@ -223,9 +223,3 @@ function modelToViewImageAttributeConverter() {
 		}
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageElementSupport.pluginName ]: ImageElementSupport;
-	}
-}

@@ -58,9 +58,3 @@ export default class ItalicUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ItalicUI.pluginName ]: ItalicUI;
-	}
-}

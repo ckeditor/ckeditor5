@@ -111,9 +111,3 @@ export default class UndoEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ UndoEditing.pluginName ]: UndoEditing;
-	}
-}

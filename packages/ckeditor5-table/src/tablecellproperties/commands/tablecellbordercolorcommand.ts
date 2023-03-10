@@ -55,10 +55,3 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 		return value;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableCellBorderColor: TableCellBorderColorCommand;
-	}
-}

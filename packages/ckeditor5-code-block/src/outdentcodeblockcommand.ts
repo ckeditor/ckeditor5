@@ -16,8 +16,6 @@ import {
 	isModelSelectionInCodeBlock
 } from './utils';
 
-import './codeblockconfig';
-
 /**
  * The code block indentation decrease command plugin.
  */
@@ -188,10 +186,4 @@ function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
 	}
 
 	return nodeAtPosition as Text;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		outdentCodeBlock: OutdentCodeBlockCommand;
-	}
 }

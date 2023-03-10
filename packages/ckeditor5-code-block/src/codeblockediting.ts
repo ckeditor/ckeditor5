@@ -499,9 +499,3 @@ function isEmptyishTextNode( node: Node | null ) {
 function isSoftBreakNode( node: Node | null ) {
 	return node && node.is( 'element', 'softBreak' );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CodeBlockEditing.pluginName ]: CodeBlockEditing;
-	}
-}

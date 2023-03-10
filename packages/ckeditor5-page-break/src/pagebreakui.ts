@@ -53,9 +53,3 @@ export default class PageBreakUI extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PageBreakUI.pluginName ]: PageBreakUI;
-	}
-}

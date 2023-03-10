@@ -17,7 +17,10 @@ ClassicEditor
 		extraPlugins: [ Mention, MentionLinks, Underline, Strikethrough ],
 		toolbar: {
 			items: [
-				'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic', 'underline', 'strikethrough',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

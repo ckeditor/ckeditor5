@@ -24,27 +24,10 @@ ClassicEditor
 		] ),
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'strikethrough',
-				'code',
-				'link',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'todolist',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'codeBlock',
-				'horizontalLine',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
 			]
 		},
 		ui: {

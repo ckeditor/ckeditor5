@@ -237,21 +237,10 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'alignment',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'|',
-				'link',
-				'uploadImage',
-				'insertTable',
-				'horizontalLine',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

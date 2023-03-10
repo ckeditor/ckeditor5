@@ -157,16 +157,6 @@ export default class MergeCellCommand extends Command {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		mergeTableCellRight: MergeCellCommand;
-		mergeTableCellLeft: MergeCellCommand;
-		mergeTableCellDown: MergeCellCommand;
-		mergeTableCellUp: MergeCellCommand;
-	}
-}
-
 /**
  * Returns the cell that can be merged horizontally.
  */

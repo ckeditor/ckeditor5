@@ -201,10 +201,8 @@ function getViewTableFromFigure( figureView: ViewElement ) {
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
  */
 function scanTable( viewTable: ViewElement ) {
-	const tableMeta = {
-		headingRows: 0,
-		headingColumns: 0
-	};
+	let headingRows = 0;
+	let headingColumns: number | undefined = undefined;
 
 	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
 	// of them.
@@ -228,39 +226,49 @@ function scanTable( viewTable: ViewElement ) {
 	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ) ) {
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
 		// The else is for future purposes (mainly `<caption>`).
-		if ( tableChild.name === 'tbody' || tableChild.name === 'thead' || tableChild.name === 'tfoot' ) {
-			// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
-			if ( tableChild.name === 'thead' && !firstTheadElement ) {
-				firstTheadElement = tableChild;
-			}
+		if ( tableChild.name !== 'tbody' && tableChild.name !== 'thead' && tableChild.name !== 'tfoot' ) {
+			continue;
+		}
 
-			// There might be some extra empty text nodes between the `<tr>`s.
-			// Make sure further code operates on `tr`s only. (#145)
-			const trs = Array.from( tableChild.getChildren() ).filter(
-				( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
-			);
+		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
+		if ( tableChild.name === 'thead' && !firstTheadElement ) {
+			firstTheadElement = tableChild;
+		}
 
-			for ( const tr of trs ) {
-				// This <tr> is a child of a first <thead> element.
-				if ( ( tr.parent as ViewElement ).name === 'thead' && tr.parent === firstTheadElement ) {
-					tableMeta.headingRows++;
-					headRows.push( tr );
-				} else {
-					bodyRows.push( tr );
-					// For other rows check how many column headings this row has.
+		// There might be some extra empty text nodes between the `<tr>`s.
+		// Make sure further code operates on `tr`s only. (#145)
+		const trs = Array.from( tableChild.getChildren() ).filter(
+			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
+		);
 
-					const headingCols = scanRowForHeadingColumns( tr );
+		for ( const tr of trs ) {
+			// This <tr> is a child of a first <thead> element.
+			if (
+				( firstTheadElement && tableChild === firstTheadElement ) ||
+				(
+					tableChild.name === 'tbody' &&
+					Array.from( tr.getChildren() ).length &&
+					Array.from( tr.getChildren() ).every( e => e.is( 'element', 'th' ) )
+				)
+			) {
+				headingRows++;
+				headRows.push( tr );
+			} else {
+				bodyRows.push( tr );
+				// For other rows check how many column headings this row has.
 
-					if ( headingCols > tableMeta.headingColumns ) {
-						tableMeta.headingColumns = headingCols;
-					}
+				const headingCols = scanRowForHeadingColumns( tr );
+
+				if ( !headingColumns || headingCols < headingColumns ) {
+					headingColumns = headingCols;
 				}
 			}
 		}
 	}
 
 	return {
-		...tableMeta,
+		headingRows,
+		headingColumns: headingColumns ?? 0,
 		rows: [ ...headRows, ...bodyRows ]
 	};
 }

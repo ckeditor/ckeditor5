@@ -11,7 +11,6 @@ import type { ViewElement } from 'ckeditor5/src/engine';
 import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
-import '../imageconfig';
 
 /**
  * The image resize editing feature.
@@ -132,11 +131,5 @@ export default class ImageResizeEditing extends Plugin {
 					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
 				}
 			} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageResizeEditing.pluginName ]: ImageResizeEditing;
 	}
 }

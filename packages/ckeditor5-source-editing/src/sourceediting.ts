@@ -391,9 +391,3 @@ function formatSource( input: string ): string {
 function isHtml( input: string ): boolean {
 	return input.startsWith( '<' );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ SourceEditing.pluginName ]: SourceEditing;
-	}
-}

@@ -89,10 +89,3 @@ function isMediaSelected( selection: Selection | DocumentSelection ): boolean {
 	const element = selection.getSelectedElement();
 	return !!element && element.name === 'media';
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-
-		mediaEmbed: MediaEmbedCommand;
-	}
-}

@@ -21,7 +21,7 @@ import {
 	ContextualBalloon,
 	ToolbarView,
 	type BalloonToolbar,
-	type BaloonToolbarShowEvent,
+	type BalloonToolbarShowEvent,
 	type EditorUIUpdateEvent
 } from '@ckeditor/ckeditor5-ui';
 
@@ -92,7 +92,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		if ( editor.plugins.has( 'BalloonToolbar' ) ) {
 			const balloonToolbar: BalloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-			this.listenTo<BaloonToolbarShowEvent>( balloonToolbar, 'show', evt => {
+			this.listenTo<BalloonToolbarShowEvent>( balloonToolbar, 'show', evt => {
 				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
 					evt.stop();
 				}
@@ -149,8 +149,8 @@ export default class WidgetToolbarRepository extends Plugin {
 		// Trying to register a toolbar without any item.
 		if ( !items.length ) {
 			/**
-			 * When {@link ~WidgetToolbarRepository#register registering} a new widget toolbar, you need to provide a non-empty array with
-			 * the items that will be inserted into the toolbar.
+			 * When {@link module:widget/widgettoolbarrepository~WidgetToolbarRepository#register registering} a new widget toolbar, you
+			 * need to provide a non-empty array with the items that will be inserted into the toolbar.
 			 *
 			 * If you see this error when integrating the editor, you likely forgot to configure one of the widget toolbars.
 			 *
@@ -361,10 +361,4 @@ interface WidgetRepositoryToolbarDefinition {
 	itemsConfig: Array<ToolbarConfigItem>;
 
 	initialized: boolean;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ WidgetToolbarRepository.pluginName ]: WidgetToolbarRepository;
-	}
 }

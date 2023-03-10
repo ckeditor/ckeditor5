@@ -28,7 +28,7 @@ import LinkEditing from './linkediting';
 import type ManualDecorator from './utils/manualdecorator';
 import type LinkCommand from './linkcommand';
 
-import type ImageUtils from '@ckeditor/ckeditor5-image/src/imageutils';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The link image engine feature.
@@ -309,10 +309,4 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: ManualDecora
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkImageEditing.pluginName ]: LinkImageEditing;
-	}
 }

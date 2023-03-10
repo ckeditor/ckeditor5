@@ -13,8 +13,6 @@ import { FileDialogButtonView } from 'ckeditor5/src/upload';
 import { createImageTypeRegExp } from './utils';
 import type UploadImageCommand from './uploadimagecommand';
 
-import '../imageconfig';
-
 /**
  * The image upload button plugin.
  *
@@ -72,11 +70,5 @@ export default class ImageUploadUI extends Plugin {
 		// Setup `uploadImage` button and add `imageUpload` button as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'uploadImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageUpload', componentCreator );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageUploadUI.pluginName ]: ImageUploadUI;
 	}
 }

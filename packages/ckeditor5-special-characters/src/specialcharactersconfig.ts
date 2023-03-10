@@ -52,15 +52,3 @@ export interface SpecialCharactersConfig {
 	 */
 	order?: Array<string>;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:special-characters/specialcharacters~SpecialCharacters} feature.
-		 *
-		 * Read more in {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig}.
-		 */
-		specialCharacters?: SpecialCharactersConfig;
-	}
-}

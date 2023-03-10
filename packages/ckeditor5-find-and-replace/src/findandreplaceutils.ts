@@ -188,9 +188,3 @@ function regexpMatchToFindResult( matchResult: RegExpMatchArray ): ResultType {
 		end: startOffset + matchResult[ lastGroupIndex ].length
 	};
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FindAndReplaceUtils.pluginName ]: FindAndReplaceUtils;
-	}
-}

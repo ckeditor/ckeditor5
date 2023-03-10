@@ -88,9 +88,3 @@ class Adapter implements UploadAdapter {
 		this.fileUploader?.abort();
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CloudServicesUploadAdapter.pluginName ]: CloudServicesUploadAdapter;
-	}
-}

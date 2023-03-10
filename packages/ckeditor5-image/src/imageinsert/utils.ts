@@ -13,8 +13,6 @@ import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } 
 
 import type ImageInsertUI from './imageinsertui';
 
-import '../imageconfig';
-
 /**
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.

@@ -170,9 +170,3 @@ export default class SpecialCharactersLatin extends Plugin {
 		], { label: t( 'Latin' ) } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersLatin.pluginName]: SpecialCharactersLatin;
-	}
-}

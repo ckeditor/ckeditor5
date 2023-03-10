@@ -272,9 +272,3 @@ function linkIsAlreadySet( range: Range ): boolean {
 	const item = range.start.nodeAfter;
 	return !!item && item.hasAttribute( 'linkHref' );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AutoLink.pluginName ]: AutoLink;
-	}
-}

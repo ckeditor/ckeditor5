@@ -346,9 +346,9 @@ export default abstract class Editor extends ObservableMixin() {
 
 	public set isReadOnly( value: boolean ) {
 		/**
-		 * The {@link ~Editor#isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0` and can be set only using
-		 * {@link ~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
-		 * {@link ~Editor#disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
+		 * The {@link module:core/editor/editor~Editor#isReadOnly Editor#isReadOnly} property is read-only since version `34.0.0`
+		 * and can be set only using {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( lockId )`} and
+		 * {@link module:core/editor/editor~Editor#disableReadOnlyMode `Editor#disableReadOnlyMode( lockId )`}.
 		 *
 		 * Usage before version `34.0.0`:
 		 *

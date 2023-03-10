@@ -453,9 +453,3 @@ export interface RawHtmlApi {
 	save( newValue: string ): void;
 	cancel(): void;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PLuginsMap {
-		[HtmlEmbedEditing.pluginName]: HtmlEmbedEditing;
-	}
-}

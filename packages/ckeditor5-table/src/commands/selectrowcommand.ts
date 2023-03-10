@@ -66,10 +66,3 @@ export default class SelectRowCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		selectTableRow: SelectRowCommand;
-	}
-}

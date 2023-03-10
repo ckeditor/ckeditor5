@@ -74,9 +74,3 @@ export default class EasyImage extends Plugin {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ EasyImage.pluginName ]: EasyImage;
-	}
-}
