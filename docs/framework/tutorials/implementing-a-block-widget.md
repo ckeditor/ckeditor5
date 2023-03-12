@@ -733,7 +733,7 @@ You should observe that:
 
 In other words, the simple box instance became much more responsive.
 
-Additionally, if you call `editor.getData()` you will get the same HTML as before "widgetizing" the simple box. This is thanks to using `toWidget()` and `toNestedEditable()` only in the `editingDowncast` pipeline.
+Additionally, if you call `editor.getData()` you will get the same HTML as before "widgetizing" the simple box. This is thanks to using `toWidget()` and `toWidgetEditable()` only in the `editingDowncast` pipeline.
 
 This is all that you need from the model and the view layers for now. In terms of "editability" and data input/output it is fully functional. Now find a way to insert new simple boxes into the document!
 
