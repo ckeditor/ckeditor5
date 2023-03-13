@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-multi-root",
-  "version": "36.0.1",
+  "version": "0.0.1",
   "description": "The multi-root editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-build",
@@ -36,7 +36,7 @@
     "@ckeditor/ckeditor5-ckfinder": "^36.0.1",
     "@ckeditor/ckeditor5-cloud-services": "^36.0.1",
     "@ckeditor/ckeditor5-easy-image": "^36.0.1",
-    "@ckeditor/ckeditor5-editor-multi-root": "^36.0.1",
+    "@ckeditor/ckeditor5-editor-multi-root": "^0.0.1",
     "@ckeditor/ckeditor5-essentials": "^36.0.1",
     "@ckeditor/ckeditor5-heading": "^36.0.1",
     "@ckeditor/ckeditor5-image": "^36.0.1",
