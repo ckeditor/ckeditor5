@@ -117,7 +117,7 @@ export default abstract class Operation {
 	}
 
 	/**
-	 * Creates Operation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `Operation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param doc Document on which this operation will be applied.

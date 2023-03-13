@@ -152,7 +152,7 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * Creates `InsertOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `InsertOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.

@@ -131,7 +131,7 @@ export default class RootAttributeOperation extends Operation {
 
 		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
 			/**
-			 * The attribute which should be removed does not exists for the given node.
+			 * The attribute which should be removed does not exist for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
 			 * @param root
@@ -192,7 +192,7 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * Creates RootAttributeOperation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `RootAttributeOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
