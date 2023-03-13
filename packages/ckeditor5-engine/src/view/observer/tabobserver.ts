@@ -53,6 +53,11 @@ export default class TabObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public override observe(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving(): void {}
 }
 
 /**

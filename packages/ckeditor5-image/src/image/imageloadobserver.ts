@@ -37,6 +37,13 @@ export default class ImageLoadObserver extends Observer {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving( domRoot: HTMLElement ) {
+		this.stopListening( domRoot );
+	}
+
+	/**
 	 * Fires {@link module:engine/view/document~Document#event:layoutChanged} and
 	 * {@link module:engine/view/document~Document#event:imageLoaded}
 	 * if observer {@link #isEnabled is enabled}.

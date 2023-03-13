@@ -310,6 +310,10 @@ export default class View extends ObservableMixin() {
 
 		this.domRoots.delete( name );
 		this.domConverter.unbindDomElement( domRoot );
+
+		for ( const observer of this._observers.values() ) {
+			observer.stopObserving( domRoot );
+		}
 	}
 
 	/**

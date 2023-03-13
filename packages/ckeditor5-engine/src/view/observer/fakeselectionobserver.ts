@@ -70,6 +70,11 @@ export default class FakeSelectionObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
+	public override stopObserving(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override destroy(): void {
 		super.destroy();
 

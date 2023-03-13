@@ -50,7 +50,7 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Observed DOM elements.
 	 */
-	private readonly _domElements: Array<HTMLElement>;
+	private readonly _domElements: Set<HTMLElement>;
 
 	/**
 	 * Native mutation observer.
@@ -72,7 +72,7 @@ export default class MutationObserver extends Observer {
 		this.domConverter = view.domConverter;
 		this.renderer = view._renderer;
 
-		this._domElements = [];
+		this._domElements = new Set();
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
@@ -87,10 +87,27 @@ export default class MutationObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public observe( domElement: HTMLElement ): void {
-		this._domElements.push( domElement );
+		this._domElements.add( domElement );
 
 		if ( this.isEnabled ) {
 			this._mutationObserver.observe( domElement, this._config );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving( domElement: HTMLElement ) {
+		this._domElements.delete( domElement );
+
+		if ( this.isEnabled ) {
+			// Unfortunately, it is not possible to stop observing particular DOM element.
+			// In order to stop observing one of multiple DOM elements, we need to re-connect the mutation observer.
+			this._mutationObserver.disconnect();
+
+			for ( const domElement of this._domElements ) {
+				this._mutationObserver.observe( domElement, this._config );
+			}
 		}
 	}
 

@@ -125,6 +125,11 @@ export default class InsertTextObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public observe(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
+	public stopObserving(): void {}
 }
 
 /**
