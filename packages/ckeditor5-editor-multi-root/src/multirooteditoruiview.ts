@@ -69,11 +69,16 @@ export default class MultiRootEditorUIView extends EditorUIView {
 
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
-			const editable = new InlineEditableUIView( locale, editingView, options.editableElements?.[ editableName ], {
-				label: editable => {
-					return t( 'Rich Text Editor. Editing area: %0', editable.name! );
+			const editable = new InlineEditableUIView(
+				locale,
+				editingView,
+				options.editableElements ? options.editableElements[ editableName ] : undefined,
+				{
+					label: editable => {
+						return t( 'Rich Text Editor. Editing area: %0', editable.name! );
+					}
 				}
-			} );
+			);
 
 			this.editables[ editableName ] = editable;
 		}
