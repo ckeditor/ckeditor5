@@ -9,6 +9,7 @@ import RenameOperation from './renameoperation';
 import MarkerOperation from './markeroperation';
 import MoveOperation from './moveoperation';
 import RootAttributeOperation from './rootattributeoperation';
+import RootOperation from './rootoperation';
 import MergeOperation from './mergeoperation';
 import SplitOperation from './splitoperation';
 import NoOperation from './nooperation';
@@ -1969,6 +1970,16 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 		} else {
 			a.oldValue = b.newValue;
 		}
+	}
+
+	return [ a ];
+} );
+
+// -----------------------
+
+setTransformation( RootOperation, RootOperation, ( a, b, context ) => {
+	if ( a.rootName === b.rootName && a.isAdd === b.isAdd && !context.bWasUndone ) {
+		return [ new NoOperation( 0 ) ];
 	}
 
 	return [ a ];

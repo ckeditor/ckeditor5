@@ -22,6 +22,7 @@ import type Node from './node';
 import type Operation from './operation/operation';
 import type RenameOperation from './operation/renameoperation';
 import type SplitOperation from './operation/splitoperation';
+import type RootOperation from './operation/rootoperation';
 
 /**
  * Calculates the difference between two model states.
@@ -62,6 +63,13 @@ export default class Differ {
 	 * - `newMarkerData`.
 	 */
 	private readonly _changedMarkers: Map<string, { newMarkerData: MarkerData; oldMarkerData: MarkerData }> = new Map();
+
+	/**
+	 * A map that stores all roots that have been added or detached.
+	 *
+	 * The keys are the names of the roots while value represents whether the root was added (`true`) or removed (`false`).
+	 */
+	private readonly _changedRoots: Map<string, boolean> = new Map();
 
 	/**
 	 * Stores the number of changes that were processed. Used to order the changes chronologically. It is important
@@ -105,14 +113,11 @@ export default class Differ {
 	 * Informs whether there are any changes buffered in `Differ`.
 	 */
 	public get isEmpty(): boolean {
-		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
+		return this._changesInElement.size == 0 && this._changedMarkers.size == 0 && this._changedRoots.size == 0;
 	}
 
 	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
-	 *
-	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
-	 * in the state before the operation is executed.
 	 *
 	 * @param operationToBuffer An operation to buffer.
 	 */
@@ -127,7 +132,8 @@ export default class Differ {
 			MoveOperation |
 			RenameOperation |
 			SplitOperation |
-			MergeOperation
+			MergeOperation |
+			RootOperation
 		);
 
 		switch ( operation.type ) {
@@ -238,6 +244,12 @@ export default class Differ {
 
 				break;
 			}
+			case 'removeRoot':
+			case 'addRoot': {
+				this._bufferRootChange( operation.rootName, operation.isAdd );
+
+				break;
+			}
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.
@@ -332,11 +344,16 @@ export default class Differ {
 	 *
 	 * * model structure changes,
 	 * * attribute changes,
+	 * * a root is added or detached,
 	 * * changes of markers which were defined as `affectsData`,
 	 * * changes of markers' `affectsData` property.
 	 */
 	public hasDataChanges(): boolean {
 		if ( this._changesInElement.size > 0 ) {
+			return true;
+		}
+
+		if ( this._changedRoots.size > 0 ) {
 			return true;
 		}
 
@@ -544,6 +561,15 @@ export default class Differ {
 	}
 
 	/**
+	 * Returns all roots that have been added or detached.
+	 *
+	 * @returns The changed roots. Keys are root names, while values represent whether the root was added (`true`) or removed (`false`).
+	 */
+	public getChangedRoots(): Map<string, boolean> {
+		return new Map( this._changedRoots );
+	}
+
+	/**
 	 * Returns a set of model items that were marked to get refreshed.
 	 */
 	public getRefreshedItems(): Set<Item> {
@@ -557,8 +583,26 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._changedRoots.clear();
 		this._refreshedItems = new Set();
 		this._cachedChanges = null;
+	}
+
+	/**
+	 * Buffers the root change.
+	 *
+	 * @param rootName Changed root name.
+	 * @param isAttached Whether the root got added (`true`) or detached (`false`).
+	 */
+	private _bufferRootChange( rootName: string, isAttached: boolean ): void {
+		if ( this._changedRoots.has( rootName ) ) {
+			// Root `isAttached` can only toggle between `true` and `false`, it cannot be differently, otherwise the operation would
+			// be invalid and the error would be thrown. So, if there is already a record about the root, if another operation regarding
+			// this root comes, it is enough to delete the previous record, as the operation must toggle the state back.
+			this._changedRoots.delete( rootName );
+		} else {
+			this._changedRoots.set( rootName, isAttached );
+		}
 	}
 
 	/**
@@ -1228,7 +1272,7 @@ export interface DiffItemInsert {
 	position: Position;
 
 	/**
-	 * The length of an inserted text node. For elements it is always 1 as each inserted element is counted as a one.
+	 * The length of an inserted text node. For elements, it is always 1 as each inserted element is counted as a one.
 	 */
 	length: number;
 }
@@ -1259,7 +1303,7 @@ export interface DiffItemRemove {
 	position: Position;
 
 	/**
-	 * The length of a removed text node. For elements it is always 1 as each removed element is counted as a one.
+	 * The length of a removed text node. For elements, it is always 1, as each removed element is counted as a one.
 	 */
 	length: number;
 }

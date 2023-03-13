@@ -67,8 +67,8 @@ export default class Document extends EmitterMixin() {
 	public readonly selection: DocumentSelection;
 
 	/**
-	 * A list of roots that are owned and managed by this document. Use {@link #createRoot} and
-	 * {@link #getRoot} to manipulate it.
+	 * A list of roots that are owned and managed by this document. Use {@link #createRoot}, {@link #getRoot} and
+	 * {@link #getRootNames} to manipulate it.
 	 */
 	public readonly roots: Collection<RootElement>;
 
@@ -83,7 +83,7 @@ export default class Document extends EmitterMixin() {
 	private readonly _postFixers: Set<ModelPostFixer>;
 
 	/**
-	 * A boolean indicates whether the selection has changed until
+	 * A flag that indicates whether the selection has changed since last change block.
 	 */
 	private _hasSelectionChangedFromTheLastChangeBlock: boolean;
 
@@ -152,6 +152,37 @@ export default class Document extends EmitterMixin() {
 				} );
 			}
 		} );
+
+		// This is a solution for a problem that may occur during real-time editing. If one client detached a root and another added
+		// something there at the same moment, the OT does not solve this problem currently. In such situation, the added elements would
+		// stay in the detached root.
+		//
+		// This is incorrect, a detached root should be empty and all elements from it should be removed. To solve this, the post-fixer will
+		// remove any element that is left in a detached root.
+		//
+		// Similarly, markers that are created at the beginning or at the end of the detached root will not be removed as well.
+		//
+		// The drawback of this solution over the OT solution is that the elements removed by the post-fixer will never be brought back.
+		// If the root detachment gets undone (and the root is brought back), the removed elements will not be there.
+		this.registerPostFixer( writer => {
+			let result = false;
+
+			for ( const root of this.roots ) {
+				if ( !root.isAttached() && !root.isEmpty ) {
+					writer.remove( writer.createRangeIn( root ) );
+
+					result = true;
+				}
+			}
+
+			for ( const marker of this.model.markers ) {
+				if ( !marker.getRange().root.isAttached() ) {
+					writer.removeMarker( marker );
+				}
+			}
+
+			return result;
+		} );
 	}
 
 	/**
@@ -181,8 +212,11 @@ export default class Document extends EmitterMixin() {
 	/**
 	 * Creates a new root.
 	 *
+	 * **Note:** do not use this method after the editor has been initialized! If you want to dynamically add a root, use
+	 * {@link module:engine/model/writer~Writer#addRoot `model.Writer#addRoot`} instead.
+	 *
 	 * @param elementName The element name. Defaults to `'$root'` which also has some basic schema defined
-	 * (`$block`s are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
+	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
 	 * @param rootName A unique root name.
 	 * @returns The created root.
 	 */
@@ -213,7 +247,10 @@ export default class Document extends EmitterMixin() {
 	/**
 	 * Returns a root by its name.
 	 *
-	 * @param name A unique root name.
+	 * Detached roots are returned by this method. This is to be able to operate on the detached root (for example, to be able to create
+	 * a position inside such a root for undo feature purposes).
+	 *
+	 * @param name The root name of the root to return.
 	 * @returns The root registered under a given name or `null` when there is no root with the given name.
 	 */
 	public getRoot( name: string = 'main' ): RootElement | null {
@@ -221,12 +258,18 @@ export default class Document extends EmitterMixin() {
 	}
 
 	/**
-	 * Returns an array with names of all roots (without the {@link #graveyard}) added to the document.
+	 * Returns an array with names of all roots added to the document (except the {@link #graveyard graveyard root}).
 	 *
+	 * Detached roots **are not** returned by this method by default. This is to make sure that all features or algorithms that operate
+	 * on the document data know which roots are still a part of the document and should be processed.
+	 *
+	 * @param includeDetached Specified whether detached roots should be returned as well.
 	 * @returns Roots names.
 	 */
-	public getRootNames(): Array<string> {
-		return Array.from( this.roots, root => root.rootName ).filter( name => name != graveyardName );
+	public getRootNames( includeDetached = false ): Array<string> {
+		return Array.from( this.roots )
+			.filter( root => root.rootName != graveyardName && ( includeDetached || root.isAttached() ) )
+			.map( root => root.rootName );
 	}
 
 	/**

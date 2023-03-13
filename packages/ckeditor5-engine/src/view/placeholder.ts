@@ -80,11 +80,11 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 export function disablePlaceholder( view: View, element: Element ): void {
 	const doc = element.document;
 
-	view.change( writer => {
-		if ( !documentPlaceholders.has( doc ) ) {
-			return;
-		}
+	if ( !documentPlaceholders.has( doc ) ) {
+		return;
+	}
 
+	view.change( writer => {
 		const placeholders = documentPlaceholders.get( doc )!;
 		const config = placeholders.get( element )!;
 

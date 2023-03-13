@@ -15,6 +15,7 @@ import MergeOperation from './operation/mergeoperation';
 import MoveOperation from './operation/moveoperation';
 import RenameOperation from './operation/renameoperation';
 import RootAttributeOperation from './operation/rootattributeoperation';
+import RootOperation from './operation/rootoperation';
 import SplitOperation from './operation/splitoperation';
 
 import DocumentFragment from './documentfragment';
@@ -1319,6 +1320,83 @@ export default class Writer {
 		const oldRange = marker.getRange();
 
 		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
+	}
+
+	/**
+	 * Adds a new root to the document (or re-attaches a {@link #detachRoot detached root}).
+	 *
+	 * Throws an error, if trying to add a root that is already added and attached.
+	 *
+	 * @param rootName Name of the added root.
+	 * @param elementName The element name. Defaults to `'$root'` which also has some basic schema defined
+	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
+	 * @returns The added root element.
+	 */
+	public addRoot( rootName: string, elementName = '$root' ): RootElement {
+		const root = this.model.document.getRoot( rootName );
+
+		if ( root && root.isAttached() ) {
+			/**
+			 * Root with provided name already exists and is attached.
+			 *
+			 * @error writer-addroot-root-exists
+			 */
+			throw new CKEditorError( 'writer-addroot-root-exists', this );
+		}
+
+		const document = this.model.document;
+		const operation = new RootOperation( rootName, elementName, true, document, document.version );
+
+		this.batch.addOperation( operation );
+		this.model.applyOperation( operation );
+
+		return this.model.document.getRoot( rootName )!;
+	}
+
+	/**
+	 * Detaches the root from the document.
+	 *
+	 * All content and markers are removed from the root upon detaching. New content and new markers cannot be added to the root, as long
+	 * as it is detached.
+	 *
+	 * A root cannot be fully removed from the document, it can be only detached. A root is permanently removed only after you
+	 * re-initialize the editor and do not specify the root in the initial data.
+	 *
+	 * A detached root can be re-attached using {@link #addRoot}.
+	 *
+	 * Throws an error if the root does not exist or the root is already detached.
+	 *
+	 * @param rootName Name of the detached root.
+	 */
+	public detachRoot( rootName: string ): void {
+		const root = this.model.document.getRoot( rootName );
+
+		if ( !root || !root.isAttached() ) {
+			/**
+			 * Root with provided name does not exist or is already detached.
+			 *
+			 * @error writer-detachroot-no-root
+			 */
+			throw new CKEditorError( 'writer-detachroot-no-root', this );
+		}
+
+		// First, remove all markers from the root. It is better to do it before removing stuff for undo purposes.
+		// However, looking through all the markers may not be the best performance wise. But there's no better solution for now.
+		for ( const marker of this.model.markers ) {
+			if ( marker.getRange().root === root ) {
+				this.removeMarker( marker );
+			}
+		}
+
+		// Remove all contents of the root.
+		this.remove( this.createRangeIn( root ) );
+
+		// Finally, detach the root.
+		const document = this.model.document;
+		const operation = new RootOperation( rootName, root.name, false, document, document.version );
+
+		this.batch.addOperation( operation );
+		this.model.applyOperation( operation );
 	}
 
 	/**

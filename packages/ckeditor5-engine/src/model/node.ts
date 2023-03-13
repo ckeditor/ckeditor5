@@ -184,10 +184,10 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
+	 * Returns `true` if the node is inside a document root that is attached to the document.
 	 */
 	public isAttached(): boolean {
-		return this.root.is( 'rootElement' );
+		return this.root.isAttached();
 	}
 
 	/**

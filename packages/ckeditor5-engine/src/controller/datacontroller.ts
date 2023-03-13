@@ -45,6 +45,8 @@ import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
 import type DataProcessor from '../dataprocessor/dataprocessor';
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
  * and set inside it. Hence, the controller features two methods which allow to {@link ~DataController#get get}
@@ -173,6 +175,9 @@ export default class DataController extends EmitterMixin() {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
+	 * A warning is logged when you try to retrieve data for a detached root, as most probably this is a mistake. A detached root should
+	 * be treated like it is removed, and you should not save its data. Note, that the detached root data is always an empty string.
+	 *
 	 * @fires get
 	 * @param options Additional configuration for the retrieved data. `DataController` provides two optional
 	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
@@ -210,6 +215,18 @@ export default class DataController extends EmitterMixin() {
 		}
 
 		const root = this.model.document.getRoot( rootName )!;
+
+		if ( !root.isAttached() ) {
+			/**
+			 * Retrieving document data for a detached root.
+			 *
+			 * This usually indicates an error as a detached root should be considered "removed" and should not be included in the
+			 * document data.
+			 *
+			 * @error datacontroller-get-detached-root
+			 */
+			logWarning( 'datacontroller-get-detached-root', this );
+		}
 
 		if ( trim === 'empty' && !this.model.hasContent( root, { ignoreWhitespaces: true } ) ) {
 			return '';

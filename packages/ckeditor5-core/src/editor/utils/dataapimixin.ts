@@ -87,6 +87,9 @@ export interface DataApi {
 	 * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
 	 * See the {@glink features/markdown Markdown output} guide for more details.
 	 *
+	 * A warning is logged when you try to retrieve data for a detached root, as most probably this is a mistake. A detached root should
+	 * be treated like it is removed, and you should not save its data. Note, that the detached root data is always an empty string.
+	 *
 	 * @param options Additional configuration for the retrieved data.
 	 * Editor features may introduce more configuration options that can be set through this parameter.
 	 * @param options.rootName Root name. Default to `'main'`.
