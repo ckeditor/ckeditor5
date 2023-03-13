@@ -53,7 +53,7 @@ export default abstract class OperationFactory {
 		// TODO: Temporary solution to be able to pass `RootOperation` data to remote clients.
 		// TODO: The `RootOperation` is currently not handled by operations compressor, so it is compressed as a `RootAttributeOperation`.
 		if ( json.__className === 'RootAttributeOperation' && json.key.startsWith( '$$' ) ) {
-			return operations[ 'RootOperation' ].fromJSON( json, document );
+			return operations.RootOperation.fromJSON( json, document );
 		}
 
 		return operations[ json.__className ].fromJSON( json, document );

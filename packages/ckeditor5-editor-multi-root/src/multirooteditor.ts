@@ -539,8 +539,8 @@ function isElement( value: any ): value is Element {
 /**
  * Fired whenever a root is {@link ~MultiRootEditor#addRoot added or re-added} to the editor model.
  *
- * Use this event to {@link ~MultiRootEditor#createEditable create a DOM editable} for the added root and append the DOM element in a desired place
- * in your application.
+ * Use this event to {@link ~MultiRootEditor#createEditable create a DOM editable} for the added root and append the DOM element
+ * in a desired place in your application.
  *
  * The event is fired after all changes from a given batch are applied. The event is not fired, if the root was added and detached
  * in the same batch.

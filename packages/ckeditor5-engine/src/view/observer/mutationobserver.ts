@@ -97,7 +97,7 @@ export default class MutationObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	public override stopObserving( domElement: HTMLElement ) {
+	public override stopObserving( domElement: HTMLElement ): void {
 		this._domElements.delete( domElement );
 
 		if ( this.isEnabled ) {

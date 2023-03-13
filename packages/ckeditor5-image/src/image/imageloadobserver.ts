@@ -39,7 +39,7 @@ export default class ImageLoadObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	public override stopObserving( domRoot: HTMLElement ) {
+	public override stopObserving( domRoot: HTMLElement ): void {
 		this.stopListening( domRoot );
 	}
 
