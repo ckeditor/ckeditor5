@@ -79,9 +79,3 @@ export default class RestrictedEditingExceptionCommand extends Command {
 export interface RestrictedEditingExceptionCommandParams {
 	forceValue?: unknown;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		restrictedEditingException: RestrictedEditingExceptionCommand;
-	}
-}

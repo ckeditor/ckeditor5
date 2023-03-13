@@ -9,3 +9,5 @@
 
 export { default as EasyImage } from './easyimage';
 export { default as CloudServicesUploadAdapter } from './cloudservicesuploadadapter';
+
+import './augmentation';

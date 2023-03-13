@@ -15,7 +15,7 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
 
 /**
@@ -42,7 +42,7 @@ export default class StyleElementSupport extends Plugin {
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register:style', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:style', ( evt, definition ) => {
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
@@ -78,10 +78,5 @@ export default class StyleElementSupport extends Plugin {
 
 			evt.stop();
 		} );
-	}
-}
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StyleElementSupport.pluginName ]: StyleElementSupport;
 	}
 }

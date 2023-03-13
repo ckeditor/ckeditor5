@@ -473,7 +473,7 @@ export default class ContextWatchdog<TContext extends Context = Context> extends
  * } );
  * ```
  *
- * @eventName restart
+ * @eventName ~ContextWatchdog#restart
  */
 export type ContextWatchdogRestartEvent = {
 	name: 'restart';
@@ -490,7 +490,7 @@ export type ContextWatchdogRestartEvent = {
  * } );
  * ```
  *
- * @eventName itemError
+ * @eventName ~ContextWatchdog#itemError
  */
 export type ContextWatchdogItemErrorEvent = {
 	name: 'itemError';
@@ -515,7 +515,7 @@ export type ContextWatchdogItemErrorEventData = {
  * 	} );
  * ```
  *
- * @eventName itemRestart
+ * @eventName ~ContextWatchdog#itemRestart
  */
 export type ContextWatchdogItemRestartEvent = {
 	name: 'itemRestart';

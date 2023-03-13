@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-cell-refresh-post-fixer
+ * @module table/converters/table-cell-refresh-handler
  */
 
 import type {

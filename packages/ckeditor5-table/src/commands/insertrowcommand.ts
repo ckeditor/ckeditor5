@@ -80,11 +80,3 @@ export default class InsertRowCommand extends Command {
 		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		insertTableRowAbove: InsertRowCommand;
-		insertTableRowBelow: InsertRowCommand;
-	}
-}

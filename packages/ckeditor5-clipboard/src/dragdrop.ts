@@ -28,7 +28,7 @@ import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckedit
 
 import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
-import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ClipboardOutputEvent } from './clipboardpipeline';
+import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, {
 	type ViewDocumentDragEndEvent,
 	type ViewDocumentDragEnterEvent,
@@ -294,7 +294,7 @@ export default class DragDrop extends Plugin {
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
 			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
-			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
 				content,
 				method: 'dragstart'
@@ -863,10 +863,4 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DragDrop.pluginName ]: DragDrop;
-	}
 }

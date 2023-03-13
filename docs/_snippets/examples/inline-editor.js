@@ -17,7 +17,15 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-		toolbar: {},
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		cloudServices: CS_CONFIG
 	};
 

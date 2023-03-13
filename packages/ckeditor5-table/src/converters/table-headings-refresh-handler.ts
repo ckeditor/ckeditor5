@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-heading-rows-refresh-post-fixer
+ * @module table/converters/table-headings-refresh-handler
  */
 
 import type {

@@ -20,7 +20,6 @@ import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
-import '../imageconfig';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -420,12 +419,6 @@ function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
 		.map( value => value.item );
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageUploadEditing.pluginName ]: ImageUploadEditing;
-	}
-}
-
 /**
  * An event fired when an image is uploaded. You can hook into this event to provide
  * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
@@ -452,7 +445,7 @@ declare module '@ckeditor/ckeditor5-core' {
  *
  * **Note**: This event is fired by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin.
  *
- * @eventName uploadComplete
+ * @eventName ~ImageUploadEditing#uploadComplete
  * @param data The `uploadComplete` event data.
  */
 export type ImageUploadCompleteEvent = {

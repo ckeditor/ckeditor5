@@ -43,9 +43,3 @@ export default class CKFinder extends Plugin {
 		return [ 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CKFinder.pluginName ]: CKFinder;
-	}
-}

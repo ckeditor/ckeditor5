@@ -50,6 +50,8 @@ export default abstract class TypeCheckable {
 	 * imageElement.is( 'element', 'imageBlock' ); // -> same as above
 	 * imageElement.is( 'model:element', 'imageBlock' ); // -> same as above, but more precise
 	 * ```
+	 *
+	 * @label NODE
 	 */
 	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
 
@@ -73,6 +75,8 @@ export default abstract class TypeCheckable {
 	 * element.is( 'element', 'imageBlock' ); // -> true if this is an <imageBlock> element
 	 * text.is( 'element', 'imageBlock' ); -> false
 	 * ```
+	 *
+	 * @label ELEMENT
 	 */
 	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
 
@@ -97,6 +101,8 @@ export default abstract class TypeCheckable {
 	 * ```ts
 	 * rootElement.is( 'rootElement', '$root' ); // -> same as above
 	 * ```
+	 *
+	 * @label ROOT_ELEMENT
 	 */
 	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
 
@@ -115,6 +121,8 @@ export default abstract class TypeCheckable {
 	 *
 	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
 	 * accepted for backward compatibility.
+	 *
+	 * @label TEXT
 	 */
 	public is( type: '$text' | 'model:$text' ): this is Text;
 
@@ -128,6 +136,8 @@ export default abstract class TypeCheckable {
 	 * position.is( 'view:position' ); // -> false
 	 * position.is( 'documentSelection' ); // -> false
 	 * ```
+	 *
+	 * @label POSITION
 	 */
 	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
 
@@ -143,6 +153,8 @@ export default abstract class TypeCheckable {
 	 * livePosition.is( 'view:position' ); // -> false
 	 * livePosition.is( 'documentSelection' ); // -> false
 	 * ```
+	 *
+	 * @label LIVE_POSITION
 	 */
 	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
 
@@ -156,6 +168,8 @@ export default abstract class TypeCheckable {
 	 * range.is( 'view:range' ); // -> false
 	 * range.is( 'documentSelection' ); // -> false
 	 * ```
+	 *
+	 * @label RANGE
 	 */
 	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
 
@@ -171,6 +185,8 @@ export default abstract class TypeCheckable {
 	 * liveRange.is( 'view:range' ); // -> false
 	 * liveRange.is( 'documentSelection' ); // -> false
 	 * ```
+	 *
+	 * @label LIVE_RANGE
 	 */
 	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
 
@@ -185,6 +201,8 @@ export default abstract class TypeCheckable {
 	 * docFrag.is( 'element' ); // -> false
 	 * docFrag.is( 'node' ); // -> false
 	 * ```
+	 *
+	 * @label DOCUMENT_FRAGMENT
 	 */
 	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
 
@@ -199,6 +217,8 @@ export default abstract class TypeCheckable {
 	 * selection.is( 'view:selection' ); // -> false
 	 * selection.is( 'range' ); // -> false
 	 * ```
+	 *
+	 * @label SELECTION
 	 */
 	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
 
@@ -215,11 +235,13 @@ export default abstract class TypeCheckable {
 	 * selection.is( 'element' ); // -> false
 	 * selection.is( 'node' ); // -> false
 	 * ```
+	 *
+	 * @label DOCUMENT_SELECTION
 	 */
 	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/marker~Marker}.
+	 * Checks whether the object is of type {@link module:engine/model/markercollection~Marker}.
 	 *
 	 * ```ts
 	 * marker.is( 'marker' ); // -> true
@@ -228,6 +250,8 @@ export default abstract class TypeCheckable {
 	 * marker.is( 'view:element' ); // -> false
 	 * marker.is( 'documentSelection' ); // -> false
 	 * ```
+	 *
+	 * @label MARKER
 	 */
 	public is( type: 'marker' | 'model:marker' ): this is Marker;
 
@@ -244,6 +268,8 @@ export default abstract class TypeCheckable {
 	 *
 	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxt'` type is still
 	 * accepted for backward compatibility.
+	 *
+	 * @label TEXT_PROXY
 	 */
 	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
 
@@ -254,6 +280,8 @@ export default abstract class TypeCheckable {
 	 * element.is( 'element', 'imageBlock' ); // -> true if this is an <imageBlock> element
 	 * text.is( 'element', 'imageBlock' ); -> false
 	 * ```
+	 *
+	 * @label ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
 
@@ -263,6 +291,8 @@ export default abstract class TypeCheckable {
 	 * ```ts
 	 * rootElement.is( 'rootElement', '$root' );
 	 * ```
+	 *
+	 * @label ROOT_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
 

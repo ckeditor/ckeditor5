@@ -457,8 +457,9 @@ export default class View extends ObservableMixin() {
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link #change} or {@link #forceRender} during rendering process,
-			 * * calling {@link #change} or {@link #forceRender} inside of
+			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} during rendering
+			 * process,
+			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} inside of
 			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
@@ -595,11 +596,50 @@ export default class View extends ObservableMixin() {
 		return Range._createIn( element );
 	}
 
+	/**
+	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 *
+	 * ```ts
+	 * // Creates collapsed selection at the position of given item and offset.
+	 * const paragraph = view.createContainerElement( 'paragraph' );
+	 * const selection = view.createSelection( paragraph, offset );
+	 *
+	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = view.createSelection( paragraph, 'in' );
+	 *
+	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = view.createSelection( paragraph, 'on' );
+	 * ```
+	 *
+	 * `Selection`'s factory method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 * ```ts
+	 * // Creates backward selection.
+	 * const selection = view.createSelection( paragraph, 'in', { backward: true } );
+	 * ```
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 * ```ts
+	 * // Creates fake selection with label.
+	 * const selection = view.createSelection( element, 'in', { fake: true, label: 'foo' } );
+	 * ```
+	 *
+	 * See also: {@link #createSelection:SELECTABLE `createSelection( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
 
 	/**
-	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~Selection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -623,18 +663,6 @@ export default class View extends ObservableMixin() {
 	 * // Creates selection at the given position.
 	 * const position = view.createPositionFromPath( root, path );
 	 * const selection = view.createSelection( position );
-	 *
-	 * // Creates collapsed selection at the position of given item and offset.
-	 * const paragraph = view.createContainerElement( 'paragraph' );
-	 * const selection = view.createSelection( paragraph, offset );
-	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = view.createSelection( paragraph, 'in' );
-	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = view.createSelection( paragraph, 'on' );
 	 * ```
 	 *
 	 * `Selection`'s factory method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
@@ -655,7 +683,13 @@ export default class View extends ObservableMixin() {
 	 * // Creates fake selection with label.
 	 * const selection = view.createSelection( range, { fake: true, label: 'foo' } );
 	 * ```
+	 *
+	 * See also: {@link #createSelection:NODE_OFFSET `createSelection( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );
 	}
@@ -705,7 +739,7 @@ export default class View extends ObservableMixin() {
  * balloon panel. If you wants to change view structure use
  * {@link module:engine/view/document~Document#registerPostFixer post-fixers}.
  *
- * @eventName render
+ * @eventName ~View#render
  */
 export type ViewRenderEvent = {
 	name: 'render';

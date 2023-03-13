@@ -34,9 +34,3 @@ export default class ImageResize extends Plugin {
 		return 'ImageResize';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageResize.pluginName ]: ImageResize;
-	}
-}

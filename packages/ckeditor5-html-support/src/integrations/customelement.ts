@@ -13,7 +13,7 @@ import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
 import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine';
 
 import DataSchema from '../dataschema';
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
 
 /**
@@ -41,7 +41,7 @@ export default class CustomElementSupport extends Plugin {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );
 
-		dataFilter.on<RegisterEvent>( 'register:$customElement', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:$customElement', ( evt, definition ) => {
 			evt.stop();
 
 			const editor = this.editor;
@@ -176,10 +176,4 @@ function isValidElementName( name: string ): boolean {
 	}
 
 	return true;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CustomElementSupport.pluginName ]: CustomElementSupport;
-	}
 }

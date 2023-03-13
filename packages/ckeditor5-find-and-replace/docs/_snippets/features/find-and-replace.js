@@ -9,18 +9,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-findandreplace' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'link',
-				'insertTable',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'findAndReplace'
+				'undo', 'redo', '|', 'findAndReplace', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {
@@ -36,7 +28,10 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label === 'Find and replace' ),
 			text: 'Click here to search.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {

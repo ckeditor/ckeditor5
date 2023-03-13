@@ -333,12 +333,6 @@ export default class TableUI extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[TableUI.pluginName]: TableUI;
-	}
-}
-
 /**
  * Adds an option to a list view.
  *

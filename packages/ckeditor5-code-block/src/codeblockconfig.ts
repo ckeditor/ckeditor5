@@ -7,18 +7,6 @@
  * @module code-block/codeblockconfig
  */
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:code-block/codeblock~CodeBlock} feature.
-		 *
-		 * Read more in {@link module:code-block/codeblockconfig~CodeBlockConfig}.
-		 */
-		codeBlock?: CodeBlockConfig;
-	}
-}
-
 /**
  * The configuration of the {@link module:code-block/codeblock~CodeBlock code block feature}.
  *

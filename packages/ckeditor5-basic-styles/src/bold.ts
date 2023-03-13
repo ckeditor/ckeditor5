@@ -35,9 +35,3 @@ export default class Bold extends Plugin {
 		return 'Bold';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Bold.pluginName ]: Bold;
-	}
-}

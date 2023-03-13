@@ -193,9 +193,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
-			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
+			 * Cannot get data from a non-existing root. This error is thrown when
+			 * {@link module:engine/controller/datacontroller~DataController#get `DataController#get()` method}
 			 * is called with a non-existent root name. For example, if there is an editor instance with only `main` root,
-			 * calling {@link #get} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#get} like:
 			 *
 			 * ```ts
 			 * data.get( { rootName: 'root2' } );
@@ -284,7 +285,7 @@ export default class DataController extends EmitterMixin() {
 	 * converted by the {@link #upcastDispatcher view-to-model converters}.
 	 * Initial data can be only set to a document whose {@link module:engine/model/document~Document#version} is equal 0.
 	 *
-	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
+	 * **Note** This method is {@link module:utils/observablemixin~Observable#decorate decorated} which is
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
 	 *
 	 * When data is passed as a string, it is initialized on the default `main` root:
@@ -326,9 +327,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( Object.keys( initialData ) ) ) {
 			/**
-			 * Cannot init data on a non-existent root. This error is thrown when {@link #init DataController#init() method}
+			 * Cannot init data on a non-existent root. This error is thrown when
+			 * {@link module:engine/controller/datacontroller~DataController#init DataController#init() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
-			 * calling {@link #init} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#init} like:
 			 *
 			 * ```ts
 			 * data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
@@ -399,9 +401,10 @@ export default class DataController extends EmitterMixin() {
 
 		if ( !this._checkIfRootsExists( Object.keys( newData ) ) ) {
 			/**
-			 * Cannot set data on a non-existent root. This error is thrown when the {@link #set DataController#set() method}
+			 * Cannot set data on a non-existent root. This error is thrown when the
+			 * {@link module:engine/controller/datacontroller~DataController#set DataController#set() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only the default `main` root,
-			 * calling {@link #set} like:
+			 * calling {@link module:engine/controller/datacontroller~DataController#set} like:
 			 *
 			 * ```ts
 			 * data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
@@ -529,7 +532,7 @@ export default class DataController extends EmitterMixin() {
 /**
  * Event fired once the data initialization has finished.
  *
- * @eventName ready
+ * @eventName ~DataController#ready
  */
 export type DataControllerReadyEvent = {
 	name: 'ready';
@@ -537,14 +540,14 @@ export type DataControllerReadyEvent = {
 };
 
 /**
- * An event fired after the {@link #init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust or modify
- * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
- * should be fired manually.
+ * An event fired after the {@link ~DataController#init `init()` method} was run. It can be {@link ~DataController#listenTo listened to} in
+ * order to adjust or modify the initialization flow. However, if the `init` event is stopped or prevented,
+ * the {@link ~DataController#event:ready `ready` event} should be fired manually.
  *
- * The `init` event is fired by the decorated {@link #init} method.
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * The `init` event is fired by the decorated {@link ~DataController#init} method.
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName init
+ * @eventName ~DataController#init
  */
 export type DataControllerInitEvent = {
 	name: 'init';
@@ -553,12 +556,12 @@ export type DataControllerInitEvent = {
 };
 
 /**
- * An event fired after {@link #set set() method} has been run.
+ * An event fired after {@link ~DataController#set set() method} has been run.
  *
- * The `set` event is fired by the decorated {@link #set} method.
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * The `set` event is fired by the decorated {@link ~DataController#set} method.
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName set
+ * @eventName ~DataController#set
  */
 export type DataControllerSetEvent = {
 	name: 'set';
@@ -567,12 +570,12 @@ export type DataControllerSetEvent = {
 };
 
 /**
- * Event fired after the {@link #get get() method} has been run.
+ * Event fired after the {@link ~DataController#get get() method} has been run.
  *
- * The `get` event is fired by the decorated {@link #get} method.
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * The `get` event is fired by the decorated {@link ~DataController#get} method.
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName get
+ * @eventName ~DataController#get
  */
 export type DataControllerGetEvent = {
 	name: 'get';
@@ -581,12 +584,12 @@ export type DataControllerGetEvent = {
 };
 
 /**
- * Event fired after the {@link #toView toView() method} has been run.
+ * Event fired after the {@link ~DataController#toView toView() method} has been run.
  *
- * The `toView` event is fired by the decorated {@link #toView} method.
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * The `toView` event is fired by the decorated {@link ~DataController#toView} method.
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName toView
+ * @eventName ~DataController#toView
  */
 export type DataControllerToViewEvent = {
 	name: 'toView';
@@ -595,12 +598,12 @@ export type DataControllerToViewEvent = {
 };
 
 /**
- * Event fired after the {@link #toModel toModel() method} has been run.
+ * Event fired after the {@link ~DataController#toModel toModel() method} has been run.
  *
- * The `toModel` event is fired by the decorated {@link #toModel} method.
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * The `toModel` event is fired by the decorated {@link ~DataController#toModel} method.
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
  *
- * @eventName toModel
+ * @eventName ~DataController#toModel
  */
 export type DataControllerToModelEvent = {
 	name: 'toModel';

@@ -112,7 +112,7 @@ export default class EnterCommand extends Command {
 /**
  * Fired after the the {@link module:enter/entercommand~EnterCommand} is finished executing.
  *
- * @eventName afterExecute
+ * @eventName ~EnterCommand#afterExecute
  */
 export type EnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
@@ -122,10 +122,4 @@ export type EnterCommandAfterExecuteEvent = {
 function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		enter: EnterCommand;
-	}
 }

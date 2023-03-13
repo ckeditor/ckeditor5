@@ -12,13 +12,16 @@ import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
 import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
-import CharacterGridView from './ui/charactergridview';
+import CharacterGridView, {
+	type CharacterGridViewExecuteEvent,
+	type CharacterGridViewTileFocusEvent,
+	type CharacterGridViewTileHoverEvent
+} from './ui/charactergridview';
 import CharacterInfoView from './ui/characterinfoview';
 import SpecialCharactersView from './ui/specialcharactersview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
-import './specialcharactersconfig';
 import '../theme/specialcharacters.css';
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
@@ -94,7 +97,7 @@ export default class SpecialCharacters extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( inputCommand );
 
 			// Insert a special character when a tile was clicked.
-			dropdownView.on( 'execute', ( evt, data ) => {
+			dropdownView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
 				editor.execute( 'insertText', { text: data.character } );
 				editor.editing.view.focus();
 			} );
@@ -257,11 +260,11 @@ export default class SpecialCharacters extends Plugin {
 
 		gridView.delegate( 'execute' ).to( dropdownView );
 
-		gridView.on( 'tileHover', ( evt, data ) => {
+		gridView.on<CharacterGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
-		gridView.on( 'tileFocus', ( evt, data ) => {
+		gridView.on<CharacterGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
@@ -293,12 +296,6 @@ export interface SpecialCharacterDefinition {
 interface Group {
 	label: string;
 	items: Set<string>;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharacters.pluginName]: SpecialCharacters;
-	}
 }
 
 interface DropdownPanelContent {

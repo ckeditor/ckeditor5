@@ -8,6 +8,12 @@ feedback-widget: false
 
 The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. Premium features, which require an additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
+<span class="navigation-hint_mobile">
+<info-box>
+	Use the **main menu button in the upper-left corner** to navigate through the documentation.
+</info-box>
+</span>
+
 ## Using CKEditor 5 features
 
 Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
@@ -16,10 +22,6 @@ Most of the features are easily accessible from a {@link features/toolbar highly
 ## CKEditor 5 WYSIWYG editor features and functions
 
 CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
-
-<info-box>
-	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through a full selection of CKEditor 5 features.
-</info-box>
 
 ### Collaboration
 
@@ -61,7 +63,7 @@ Rich text would not be rich without images. You can upload them, caption them, s
 
 An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 
-Provide clear and accessible data using {@link features/table tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
+Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
 
 Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 

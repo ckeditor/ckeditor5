@@ -150,9 +150,3 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 
 	return itemDefinitions;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontSizeUI.pluginName ]: FontSizeUI;
-	}
-}

@@ -23,51 +23,51 @@
  */
 export interface StyleConfig {
 
-  /**
-   * The available style definitions.
-   *
-   * Style definitions are displayed in the `'style'` UI dropdown and get applied by the
-   * {@link module:style/stylecommand~StyleCommand style command} to the content of the document.
-   *
-   * In the `'style'` UI dropdown, definitions are automatically grouped into two categories based on the of the `element` property:
-   *
-   * * **Block styles**: Can be applied to entire {@link module:html-support/dataschema~DataSchema#registerBlockElement block elements}
-   * only (e.g. headings, paragraphs, divs).
-   * * **Text styles**: Can by applied to any {@link module:html-support/dataschema~DataSchema#registerInlineElement text} in any element
-   * in the document.
-   *
-   * An example configuration:
-   *
-   * ```ts
-   * [
-   *   // Definitions of block styles.
-   *   {
-   *     name: 'Red heading',
-   *     element: 'h2',
-   *     classes: [ 'red-heading' ]
-   *   },
-   *   {
-   *     name: 'Vibrant code',
-   *     element: 'pre',
-   *     classes: [ 'vibrant-code' ]
-   *   },
-   *
-   *   // Definitions of text (inline) styles.
-   *   {
-   *     name: 'Marker',
-   *     element: 'span',
-   *     classes: [ 'marker' ]
-   *   },
-   *
-   *   // ...
-   * ]
-   * ```
-   *
-   * **Note**: Configuring style definitions will automatically configure the
-   * {@glink features/general-html-support General HTML Support feature}. **You do not need to repeat the configuration in
-   * {@link module:html-support/generalhtmlsupportconfig~GeneralHtmlSupportConfig}**.
-   */
-  definitions?: Array<StyleDefinition>;
+	/**
+	 * The available style definitions.
+	 *
+	 * Style definitions are displayed in the `'style'` UI dropdown and get applied by the
+	 * {@link module:style/stylecommand~StyleCommand style command} to the content of the document.
+	 *
+	 * In the `'style'` UI dropdown, definitions are automatically grouped into two categories based on the of the `element` property:
+	 *
+	 * * **Block styles**: Can be applied to entire {@link module:html-support/dataschema~DataSchema#registerBlockElement block elements}
+	 * only (e.g. headings, paragraphs, divs).
+	 * * **Text styles**: Can by applied to any {@link module:html-support/dataschema~DataSchema#registerInlineElement text} in any element
+	 * in the document.
+	 *
+	 * An example configuration:
+	 *
+	 * ```ts
+	 * [
+	 *   // Definitions of block styles.
+	 *   {
+	 *     name: 'Red heading',
+	 *     element: 'h2',
+	 *     classes: [ 'red-heading' ]
+	 *   },
+	 *   {
+	 *     name: 'Vibrant code',
+	 *     element: 'pre',
+	 *     classes: [ 'vibrant-code' ]
+	 *   },
+	 *
+	 *   // Definitions of text (inline) styles.
+	 *   {
+	 *     name: 'Marker',
+	 *     element: 'span',
+	 *     classes: [ 'marker' ]
+	 *   },
+	 *
+	 *   // ...
+	 * ]
+	 * ```
+	 *
+	 * **Note**: Configuring style definitions will automatically configure the
+	 * {@glink features/general-html-support General HTML Support feature}. **You do not need to repeat the configuration in
+	 * {@link module:html-support/generalhtmlsupportconfig~GeneralHtmlSupportConfig}**.
+	 */
+	definitions?: Array<StyleDefinition>;
 }
 
 /**
@@ -85,20 +85,7 @@ export interface StyleConfig {
  * ```
  */
 export interface StyleDefinition {
-  name: string;
-  element: string;
-  classes: Array<string>;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-
-  interface EditorConfig {
-
-    /**
-     * The configuration of the {@link module:style/style~Style} feature.
-     *
-     * Read more in {@link module:style/styleconfig~StyleConfig}.
-     */
-    style?: StyleConfig;
-  }
+	name: string;
+	element: string;
+	classes: Array<string>;
 }

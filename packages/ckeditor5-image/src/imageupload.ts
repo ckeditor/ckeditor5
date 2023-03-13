@@ -38,9 +38,3 @@ export default class ImageUpload extends Plugin {
 		return [ ImageUploadEditing, ImageUploadUI, ImageUploadProgress ];
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageUpload.pluginName ]: ImageUpload;
-	}
-}

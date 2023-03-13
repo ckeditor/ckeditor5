@@ -91,15 +91,3 @@ export interface HtmlEmbedSanitizeOutput {
 	 */
 	hasChanged: boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	/**
-	 * The configuration of the HTML embed feature. Introduced by the {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} feature.
-	 *
-	 * Read more in {@link module:core/editor/editorconfig~EditorConfig all editor options}.
-	 */
-	interface EditorConfig {
-		htmlEmbed?: HtmlEmbedConfig;
-	}
-}

@@ -6,7 +6,7 @@
 /* global DOMParser */
 
 /**
- * @module widget/widgettypearound
+ * @module widget/widgettypearound/widgettypearound
  */
 
 import {
@@ -186,7 +186,7 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * A wrapper for the {@link module:utils/emittermixin~EmitterMixin#listenTo} method that executes the callbacks only
+	 * A wrapper for the {@link module:utils/emittermixin~Emitter#listenTo} method that executes the callbacks only
 	 * when the plugin {@link #isEnabled is enabled}.
 	 *
 	 * @param emitter The object that fires the event.
@@ -963,10 +963,4 @@ function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 	}
 
 	return deepestEmptyAncestor;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ WidgetTypeAround.pluginName ]: WidgetTypeAround;
-	}
 }

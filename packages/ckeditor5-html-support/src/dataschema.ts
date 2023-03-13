@@ -278,9 +278,3 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 */
 	coupledAttribute?: string;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DataSchema.pluginName ]: DataSchema;
-	}
-}

@@ -11,3 +11,8 @@ export { default as Indent } from './indent';
 export { default as IndentEditing } from './indentediting';
 export { default as IndentUI } from './indentui';
 export { default as IndentBlock } from './indentblock';
+
+export type { IndentBlockConfig } from './indentconfig';
+export type { default as IndentBlockCommand } from './indentblockcommand';
+
+import './augmentation';

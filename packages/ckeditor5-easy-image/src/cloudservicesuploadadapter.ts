@@ -17,7 +17,7 @@ import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } fr
  * It is mainly used by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * After enabling this adapter you need to configure the CKEditor Cloud Services integration through
- * {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
+ * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudServices`}.
  */
 export default class CloudServicesUploadAdapter extends Plugin {
 	private _uploadGateway?: UploadGateway;
@@ -86,11 +86,5 @@ class Adapter implements UploadAdapter {
 
 	public abort() {
 		this.fileUploader?.abort();
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CloudServicesUploadAdapter.pluginName ]: CloudServicesUploadAdapter;
 	}
 }

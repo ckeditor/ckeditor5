@@ -73,9 +73,3 @@ export default class ShiftEnter extends Plugin {
 		}, { priority: 'low' } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ShiftEnter.pluginName ]: ShiftEnter;
-	}
-}

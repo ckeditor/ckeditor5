@@ -36,7 +36,7 @@ const {
  * * **`'block'`** is a block image without any CSS class,
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
  */
-const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
+export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 	// This style represents an image placed in the line of text.
 	get inline() {
 		return {
@@ -134,7 +134,7 @@ const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
-const DEFAULT_ICONS: Record<string, string> = {
+export const DEFAULT_ICONS: Record<string, string> = {
 	full: objectFullWidth,
 	left: objectBlockLeft,
 	right: objectBlockRight,
@@ -155,7 +155,7 @@ const DEFAULT_ICONS: Record<string, string> = {
  * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
  * those that breaks the text around the image.
  */
-const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
+export const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 	name: 'imageStyle:wrapText',
 	title: 'Wrap text',
 	defaultItem: 'imageStyle:alignLeft',
@@ -208,7 +208,7 @@ function normalizeStyles( config: {
  *
  * @returns
  * It returns an object with the lists of the image style options and groups defined as strings related to the
- * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
+ * {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default options}
  */
 function getDefaultStylesConfiguration( isBlockPluginLoaded: boolean, isInlinePluginLoaded: boolean ): ImageStyleConfig {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {

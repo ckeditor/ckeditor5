@@ -12,7 +12,7 @@ import type { MatcherPattern, MatcherObjectPattern } from 'ckeditor5/src/engine'
 import type { NormalizedLinkDecoratorManualDefinition } from '../utils';
 
 /**
- * Helper class that stores manual decorators with observable {@link module:link/utils~ManualDecorator#value}
+ * Helper class that stores manual decorators with observable {@link module:link/utils/manualdecorator~ManualDecorator#value}
  * to support integration with the UI state. An instance of this class is a model with the state of individual manual decorators.
  * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecorators}.
  */
@@ -58,7 +58,7 @@ export default class ManualDecorator extends ObservableMixin() {
 	public styles?: Record<string, string>;
 
 	/**
-	 * Creates a new instance of {@link module:link/utils~ManualDecorator}.
+	 * Creates a new instance of {@link module:link/utils/manualdecorator~ManualDecorator}.
 	 *
 	 * @param config.id The name of the attribute used in the model that represents a given manual decorator.
 	 * For example: `'linkIsExternal'`.

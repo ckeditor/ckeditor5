@@ -311,7 +311,10 @@ Node.prototype.is = function( type: string ): boolean {
  *
  * Change event is bubbled – it is fired on all ancestors.
  *
- * @eventName change
+ * @eventName ~Node#change
+ * @eventName ~Node#change:children
+ * @eventName ~Node#change:attributes
+ * @eventName ~Node#change:text
  */
 export type ViewNodeChangeEvent = {
 	name: 'change' | `change:${ ChangeType }`;

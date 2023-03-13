@@ -35,8 +35,6 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
-import '../../uiconfig';
-
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;
 
@@ -496,11 +494,5 @@ export default class BlockToolbar extends Plugin {
 		const offset = isRTL ? ( buttonRect.left - editableRect.right ) + buttonRect.width : editableRect.left - buttonRect.left;
 
 		return toPx( editableRect.width + offset );
-	}
-}
-
- declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BlockToolbar.pluginName ]: BlockToolbar;
 	}
 }

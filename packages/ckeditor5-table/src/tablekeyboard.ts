@@ -375,9 +375,3 @@ export default class TableKeyboard extends Plugin {
 		}
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableKeyboard.pluginName ]: TableKeyboard;
-	}
-}

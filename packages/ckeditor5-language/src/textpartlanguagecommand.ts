@@ -124,9 +124,3 @@ export default class TextPartLanguageCommand extends Command {
 		return false;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		textPartLanguage: TextPartLanguageCommand;
-	}
-}

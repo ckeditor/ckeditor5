@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlist/documentlistpropertiesutils
+ * @module list/documentlistproperties/documentlistpropertiesutils
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -52,11 +52,5 @@ export default class DocumentListPropertiesUtils extends Plugin {
 	 */
 	public getTypeAttributeFromListStyleType( value: string ): string | null {
 		return getTypeAttributeFromListStyleType( value );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
 	}
 }

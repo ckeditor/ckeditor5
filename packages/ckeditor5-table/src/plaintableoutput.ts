@@ -63,12 +63,6 @@ export default class PlainTableOutput extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[PlainTableOutput.pluginName]: PlainTableOutput;
-	}
-}
-
 /**
  * The plain table downcast converter callback.
  *

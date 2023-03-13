@@ -36,10 +36,3 @@ export default class TableCellHorizontalAlignmentCommand extends TableCellProper
 		super( editor, 'tableCellHorizontalAlignment', defaultValue );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		tableCellHorizontalAlignment: TableCellHorizontalAlignmentCommand;
-	}
-}

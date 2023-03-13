@@ -81,11 +81,3 @@ export default class InsertColumnCommand extends Command {
 		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		insertTableColumnLeft: InsertColumnCommand;
-		insertTableColumnRight: InsertColumnCommand;
-	}
-}

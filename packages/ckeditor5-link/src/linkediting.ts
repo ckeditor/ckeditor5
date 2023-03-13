@@ -52,8 +52,6 @@ import {
 	type NormalizedLinkDecoratorManualDefinition
 } from './utils';
 
-import './linkconfig';
-
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -163,13 +161,13 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Processes an array of configured {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}
+	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}
 	 * and registers a {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}
 	 * for each one of them. Downcast dispatchers are obtained using the
-	 * {@link module:link/utils~AutomaticDecorators#getDispatcher} method.
+	 * {@link module:link/utils/automaticdecorators~AutomaticDecorators#getDispatcher} method.
 	 *
 	 * **Note**: This method also activates the automatic external link decorator if enabled with
-	 * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.
+	 * {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.
 	 */
 	private _enableAutomaticDecorators( automaticDecoratorDefinitions: Array<NormalizedLinkDecoratorAutomaticDefinition> ): void {
 		const editor = this.editor;
@@ -199,8 +197,8 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualDefinition manual decorators},
-	 * transforms them into {@link module:link/utils~ManualDecorator} instances and stores them in the
+	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorators},
+	 * transforms them into {@link module:link/utils/manualdecorator~ManualDecorator} instances and stores them in the
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attribute-to-element}
@@ -701,10 +699,4 @@ function getLinkAttributesAllowedOnText( schema: Schema ): Array<string> {
 	const textAttributes = schema.getDefinition( '$text' )!.allowAttributes;
 
 	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ LinkEditing.pluginName ]: LinkEditing;
-	}
 }

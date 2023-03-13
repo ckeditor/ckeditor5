@@ -54,7 +54,7 @@ export default class ArrowKeysObserver extends Observer {
  * Note that because {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver} is attached by the
  * {@link module:engine/view/view~View} this event is available by default.
  *
- * @eventName arrowKey
+ * @eventName module:engine/view/document~Document#arrowKey
  * @param data
  */
 

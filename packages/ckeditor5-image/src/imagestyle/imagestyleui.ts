@@ -21,7 +21,7 @@ import '../../theme/imagestyle.css';
  * The image style UI plugin.
  *
  * It registers buttons corresponding to the {@link module:image/imageconfig~ImageConfig#styles} configuration.
- * It also registers the {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} and the
+ * It also registers the {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} and the
  * custom drop-downs defined by the developer in the {@link module:image/imageconfig~ImageConfig#toolbar} configuration.
  */
 export default class ImageStyleUI extends Plugin {
@@ -43,7 +43,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS} are available:
+	 * {@link module:image/imagestyle/utils#DEFAULT_OPTIONS} are available:
 	 *
 	 * * `'Wrap text'`,
 	 * * `'Break text'`,
@@ -241,10 +241,4 @@ function getUIComponentName( name: string ): string {
  */
 function getDropdownButtonTitle( dropdownTitle: string | undefined, buttonTitle: string ): string {
 	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageStyleUI.pluginName ]: ImageStyleUI;
-	}
 }

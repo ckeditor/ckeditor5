@@ -757,7 +757,7 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
  * It allows triggering a re-wrapping of a list item.
  *
  * @internal
- * @eventName postFixer
+ * @eventName ~DocumentListEditing#postFixer
  * @param listHead The head element of a list.
  * @param writer The writer to do changes with.
  * @param seenIds The set of already known IDs.
@@ -783,7 +783,7 @@ export type DocumentListEditingPostFixerEvent = {
  * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
  *
  * @internal
- * @eventName checkAttributes
+ * @eventName ~DocumentListEditing#checkAttributes
  */
 export type DocumentListEditingCheckAttributesEvent = {
 	name: 'checkAttributes' | 'checkAttributes:list' | 'checkAttributes:item';
@@ -793,9 +793,3 @@ export type DocumentListEditingCheckAttributesEvent = {
 	} ];
 	return: boolean;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListEditing.pluginName ]: DocumentListEditing;
-	}
-}

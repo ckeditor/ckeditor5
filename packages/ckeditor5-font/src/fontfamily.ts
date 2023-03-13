@@ -36,9 +36,3 @@ export default class FontFamily extends Plugin {
 		return 'FontFamily';
 	}
 }
-
- declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontFamily.pluginName ]: FontFamily;
-	}
-}

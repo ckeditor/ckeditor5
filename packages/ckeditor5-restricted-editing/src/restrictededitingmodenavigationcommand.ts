@@ -122,11 +122,3 @@ function getNearestExceptionRange( model: Model, direction: RestrictedEditingMod
  * {@link module:restricted-editing/restrictededitingmodenavigationcommand~RestrictedEditingModeNavigationCommand} can work.
  */
 export type RestrictedEditingModeNavigationDirection = 'forward' | 'backward';
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		goToPreviousRestrictedEditingException: RestrictedEditingModeNavigationCommand;
-		goToNextRestrictedEditingException: RestrictedEditingModeNavigationCommand;
-	}
-}

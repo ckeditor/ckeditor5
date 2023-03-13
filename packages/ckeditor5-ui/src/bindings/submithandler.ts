@@ -13,7 +13,7 @@ import type View from '../view';
  * A handler useful for {@link module:ui/view~View views} working as HTML forms. It intercepts a native DOM
  * `submit` event, prevents the default web browser behavior (navigation and page reload) and
  * fires the `submit` event on a view instead. Such a custom event can be then used by any
- * {@link module:utils/dom/emittermixin~Emitter emitter}, e.g. to serialize the form data.
+ * {@link module:utils/dom/emittermixin~DomEmitter emitter}, e.g. to serialize the form data.
  *
  * ```ts
  * import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
@@ -54,9 +54,9 @@ export default function submitHandler( { view }: { view: View } ): void {
 }
 
 /**
- * Fired by {@link ~submitHandler} helper.
+ * Fired by {@link module:ui/bindings/submithandler~submitHandler} helper.
  *
- * @eventName submit
+ * @eventName module:ui/view~View#submit
  */
 export type SubmitHandlerEvent = {
 	name: 'submit';

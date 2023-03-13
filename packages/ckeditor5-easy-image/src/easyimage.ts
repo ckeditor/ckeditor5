@@ -34,7 +34,7 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
  *
  * **Note**: After enabling the Easy Image plugin you need to configure the
  * [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/)
- * integration through {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
+ * integration through {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudServices`}.
  */
 export default class EasyImage extends Plugin {
 	/**
@@ -72,11 +72,5 @@ export default class EasyImage extends Plugin {
 			 */
 			logWarning( 'easy-image-image-feature-missing', editor );
 		}
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ EasyImage.pluginName ]: EasyImage;
 	}
 }

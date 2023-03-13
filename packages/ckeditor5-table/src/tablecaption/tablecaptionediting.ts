@@ -147,9 +147,3 @@ export default class TableCaptionEditing extends Plugin {
 		this._savedCaptionsMap.set( tableModelElement, caption.toJSON() );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-			[ TableCaptionEditing.pluginName ]: TableCaptionEditing;
-	}
-}

@@ -51,7 +51,7 @@ export default class ShiftEnterCommand extends Command {
 /**
  * Fired after the the {@link module:enter/shiftentercommand~ShiftEnterCommand} is finished executing.
  *
- * @eventName afterExecute
+ * @eventName ~ShiftEnterCommand#afterExecute
  */
 export type ShiftEnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
@@ -155,10 +155,4 @@ function isInsideLimitElement( element: Element, schema: Schema ): boolean {
 	}
 
 	return schema.isLimit( element ) || isInsideLimitElement( element.parent as Element, schema );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		shiftEnter: ShiftEnterCommand;
-	}
 }

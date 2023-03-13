@@ -93,15 +93,3 @@ export interface SimpleUploadConfig {
 	 */
 	withCredentials?: boolean;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
-		 *
-		 * Read more in {@link module:upload/uploadconfig~SimpleUploadConfig}.
-		 */
-		simpleUpload?: SimpleUploadConfig;
-	}
-}

@@ -29,15 +29,15 @@ export default class LinkCommand extends Command {
 	declare public value: string | undefined;
 
 	/**
-	 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
-	 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
+	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
+	 * corresponding to the {@link module:link/linkconfig~LinkConfig#decorators decorator configuration}.
 	 *
 	 * You can consider it a model with states of manual decorators added to the currently selected link.
 	 */
 	public readonly manualDecorators = new Collection<ManualDecorator>();
 
 	/**
-	 * An instance of the helper that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition}
+	 * An instance of the helper that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition}
 	 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
 	 */
 	public readonly automaticDecorators = new AutomaticDecorators();
@@ -91,13 +91,14 @@ export default class LinkCommand extends Command {
 	 *
 	 * There is an optional argument to this command that applies or removes model
 	 * {@glink framework/guides/architecture/editing-engine#text-attributes text attributes} brought by
-	 * {@link module:link/utils~ManualDecorator manual link decorators}.
+	 * {@link module:link/utils/manualdecorator~ManualDecorator manual link decorators}.
 	 *
-	 * Text attribute names in the model correspond to the entries in the {@link module:link/link~LinkConfig#decorators configuration}.
+	 * Text attribute names in the model correspond to the entries in the {@link module:link/linkconfig~LinkConfig#decorators
+	 * configuration}.
 	 * For every decorator configured, a model text attribute exists with the "link" prefix. For example, a `'linkMyDecorator'` attribute
 	 * corresponds to `'myDecorator'` in the configuration.
 	 *
-	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
+	 * To learn more about link decorators, check out the {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.
 	 *
 	 * Here is how to manage decorator attributes with the link command:
@@ -275,11 +276,5 @@ export default class LinkCommand extends Command {
 		}
 
 		return true;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		link: LinkCommand;
 	}
 }

@@ -147,7 +147,7 @@ export default class Position extends TypeCheckable {
 	 * getLastMatchingPosition( value => false ); // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~type TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
 	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 * @returns The position after the last item which matches the `skip` callback test.

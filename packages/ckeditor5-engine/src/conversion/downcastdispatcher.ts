@@ -152,7 +152,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * @fires remove
 	 * @fires attribute
 	 * @fires addMarker
- 	 * @fires removeMarker
+	 * @fires removeMarker
 	 * @fires reduceChanges
 	 * @param differ The differ object with buffered changes.
 	 * @param markers Markers related to the model fragment to convert.
@@ -656,7 +656,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 
 /**
  * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
- * {@link #convertChanges `convertChanges()`} will fire any conversion events.
+ * {@link ~DowncastDispatcher#convertChanges `convertChanges()`} will fire any conversion events.
  *
  * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
  * to trigger reconversion of an element when e.g. its attribute has changes.
@@ -664,7 +664,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
  * its attributes or direct children changed.
  *
- * @eventName reduceChanges
+ * @eventName ~DowncastDispatcher#reduceChanges
  */
 export type DowncastReduceChangesEvent = {
 	name: 'reduceChanges';
@@ -725,7 +725,7 @@ export type DowncastEvent<TName extends keyof EventMap<TItem>, TItem = Item> = {
  *
  * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
  *
- * @eventName insert
+ * @eventName ~DowncastDispatcher#insert
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~Item} data.item The inserted item.
  * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
@@ -743,7 +743,7 @@ export type DowncastInsertEvent<TItem extends Item = Item> = DowncastEvent<'inse
  *
  * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
  *
- * @eventName remove
+ * @eventName ~DowncastDispatcher#remove
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
  * @param {Number} data.length Offset size of the removed node.
@@ -766,7 +766,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  *
  * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).
  *
- * @eventName attribute
+ * @eventName ~DowncastDispatcher#attribute
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
  * or converted selection.
@@ -782,7 +782,7 @@ export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection>
 /**
  * Fired for {@link module:engine/model/selection~Selection selection} changes.
  *
- * @eventName selection
+ * @eventName ~DowncastDispatcher#selection
  * @param {module:engine/model/selection~Selection} selection Selection that is converted.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
@@ -812,7 +812,7 @@ export type DowncastSelectionEvent = DowncastEvent<'selection'>;
  * * there is only one event,
  * * `conversionApi.consumable` includes the selection instance with the event name.
  *
- * @eventName addMarker
+ * @eventName ~DowncastDispatcher#addMarker
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} data.item Item inside the new marker or
  * the selection that is being converted.
@@ -833,7 +833,7 @@ export type DowncastAddMarkerEvent = DowncastEvent<'addMarker'>;
  * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `removeMarker:foo` or `removeMarker:foo:abc` and
  * `removeMarker:foo:bar` events.
  *
- * @eventName removeMarker
+ * @eventName ~DowncastDispatcher#removeMarker
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/range~Range} data.markerRange Marker range.
  * @param {String} data.markerName Marker name.

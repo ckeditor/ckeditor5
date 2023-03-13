@@ -35,9 +35,3 @@ export default class RemoveFormat extends Plugin {
 		return 'RemoveFormat';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ RemoveFormat.pluginName ]: RemoveFormat;
-	}
-}

@@ -78,12 +78,6 @@ export default class HtmlEmbedCommand extends Command {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		htmlEmbed: HtmlEmbedCommand;
-	}
-}
-
 /**
  * Checks if an HTML embed is allowed by the schema in the optimal insertion parent.
  */

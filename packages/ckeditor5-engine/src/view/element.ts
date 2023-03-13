@@ -740,6 +740,7 @@ export default class Element extends Node {
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
+	 * @label KEY_VALUE
 	 * @internal
 	 * @param property Property name.
 	 * @param value Value to set.
@@ -762,6 +763,7 @@ export default class Element extends Node {
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
+	 * @label OBJECT
 	 * @internal
 	 * @param properties Object with key - value pairs.
 	 * @fires change

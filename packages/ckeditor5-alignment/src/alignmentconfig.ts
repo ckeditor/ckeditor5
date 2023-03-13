@@ -23,9 +23,9 @@
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  */
-export type AlignmentConfig = {
+export interface AlignmentConfig {
 	options?: Array<SupportedOption | AlignmentFormat>;
-};
+}
 
 /**
  * Available alignment options.
@@ -74,16 +74,3 @@ export type AlignmentFormat = {
 };
 
 export type SupportedOption = 'left' | 'right' | 'center' | 'justify';
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
-		 *
-		 * Read more in {@link module:alignment/alignmentconfig~AlignmentConfig}.
-		 */
-		alignment?: AlignmentConfig;
-	}
-}

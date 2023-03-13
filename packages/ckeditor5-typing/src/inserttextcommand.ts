@@ -134,9 +134,3 @@ export interface InsertTextCommandExecuteEvent {
 		data: [ options: InsertTextCommandOptions ]
 	];
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		insertText: InsertTextCommand;
-	}
-}

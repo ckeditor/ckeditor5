@@ -149,9 +149,3 @@ export default class ImageStyleEditing extends Plugin {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
-	}
-}

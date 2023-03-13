@@ -16,7 +16,6 @@ import StyleUtils from './styleutils';
 import type StyleCommand from './stylecommand';
 
 import '../theme/style.css';
-import './styleconfig';
 
 /**
  * The UI plugin of the style feature .
@@ -111,11 +110,5 @@ export default class StyleUI extends Plugin {
 
 			return dropdown;
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ StyleUI.pluginName ]: StyleUI;
 	}
 }

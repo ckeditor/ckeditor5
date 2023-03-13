@@ -63,7 +63,7 @@ export default class TabObserver extends Observer {
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
  * {@link module:engine/view/view~View}, this event is available by default.
  *
- * @eventName tab
+ * @eventName module:engine/view/document~Document#tab
  * @param data
  */
 export type ViewDocumentTabEvent = BubblingEvent<{

@@ -35,6 +35,7 @@ type ChildrenElements = Node | string | Iterable<Node | string>;
  * createElement( document, 'p', null, [ createElement(...) ] ); // <p><...></p>
  * ```
  *
+ * @label HTML_ELEMENT
  * @param doc Document used to create the element.
  * @param name Name of the HTML element.
  * @param attributes Object where keys represent attribute keys and values represent attribute values.
@@ -58,6 +59,7 @@ export default function createElement<T extends keyof HTMLElementTagNameMap>(
  * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg' }, [ createElement(...) ] ); // <mask><...></mask>
  * ```
  *
+ * @label SVG_ELEMENT
  * @param doc Document used to create the element.
  * @param name Name of the SVG element.
  * @param attributes Object where keys represent attribute keys and values represent attribute values.

@@ -55,9 +55,3 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 		return value;
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		tableBorderColor: TableBorderColorCommand;
-	}
-}

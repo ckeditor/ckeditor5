@@ -1023,20 +1023,20 @@ export type StyleValue = string | Array<string> | Styles | BoxSides;
 /**
  * A normalizer method for a style property.
  *
- * @see module:engine/view/stylesmap~StylesMap#setNormalizer
+ * @see ~StylesProcessor#setNormalizer
  */
 export type Normalizer = ( name: string ) => { path: string; value: StyleValue };
 
 /**
  * An extractor callback for a style property or path string for single values.
  *
- * @see module:engine/view/stylesmap~StylesMap#setExtractor
+ * @see ~StylesProcessor#setExtractor
  */
 export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
 
 /**
  * A reducer callback for a style property.
  *
- * @see module:engine/view/stylesmap~StylesMap#setReducer
+ * @see ~StylesProcessor#setReducer
  */
 export type Reducer = ( value: StyleValue ) => Array<PropertyDescriptor>;

@@ -139,7 +139,8 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
 }
 
 /**
- * Fired as a continuation of the {@link #event:paste} and {@link #event:drop} events.
+ * Fired as a continuation of the {@link module:engine/view/document~Document#event:paste} and
+ * {@link module:engine/view/document~Document#event:drop} events.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -154,7 +155,7 @@ function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Nod
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  *
- * @eventName clipboardInput
+ * @eventName module:engine/view/document~Document#clipboardInput
  * @param data The event data.
  */
 export type ViewDocumentClipboardInputEvent = {
@@ -210,7 +211,7 @@ export interface ClipboardInputEventData {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName dragover
+ * @eventName module:engine/view/document~Document#dragover
  * @param data The event data.
  */
 export type ViewDocumentDragOverEvent = {
@@ -230,7 +231,7 @@ export type ViewDocumentDragOverEvent = {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName drop
+ * @eventName module:engine/view/document~Document#drop
  * @param data The event data.
  */
 export type ViewDocumentDropEvent = {
@@ -250,7 +251,7 @@ export type ViewDocumentDropEvent = {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName paste
+ * @eventName module:engine/view/document~Document#paste
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 export type ViewDocumentPasteEvent = {
@@ -270,7 +271,7 @@ export type ViewDocumentPasteEvent = {
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  *
- * @eventName copy
+ * @eventName module:engine/view/document~Document#copy
  * @param data The event data.
  */
 export type ViewDocumentCopyEvent = {
@@ -290,7 +291,7 @@ export type ViewDocumentCopyEvent = {
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  *
- * @eventName cut
+ * @eventName module:engine/view/document~Document#cut
  * @param data The event data.
  */
 export type ViewDocumentCutEvent = {
@@ -299,7 +300,7 @@ export type ViewDocumentCutEvent = {
 };
 
 /**
- * Fired as a continuation of the {@link #event:dragover} event.
+ * Fired as a continuation of the {@link module:engine/view/document~Document#event:dragover} event.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -314,7 +315,7 @@ export type ViewDocumentCutEvent = {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  *
- * @eventName dragging
+ * @eventName module:engine/view/document~Document#dragging
  * @param data The event data.
  */
 export type ViewDocumentDraggingEvent = {
@@ -358,7 +359,7 @@ export interface DraggingEventData {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName dragstart
+ * @eventName module:engine/view/document~Document#dragstart
  * @param data The event data.
  */
 export type ViewDocumentDragStartEvent = {
@@ -378,7 +379,7 @@ export type ViewDocumentDragStartEvent = {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName dragend
+ * @eventName module:engine/view/document~Document#dragend
  * @param data The event data.
  */
 export type ViewDocumentDragEndEvent = {
@@ -398,7 +399,7 @@ export type ViewDocumentDragEndEvent = {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName dragenter
+ * @eventName module:engine/view/document~Document#dragenter
  * @param data The event data.
  */
 export type ViewDocumentDragEnterEvent = {
@@ -418,7 +419,7 @@ export type ViewDocumentDragEnterEvent = {
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  *
- * @eventName dragleave
+ * @eventName module:engine/view/document~Document#dragleave
  * @param data The event data.
  */
 export type ViewDocumentDragLeaveEvent = {

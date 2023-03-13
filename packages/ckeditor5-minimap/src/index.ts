@@ -8,3 +8,7 @@
  */
 
 export { default as Minimap } from './minimap';
+
+export type { MinimapConfig } from './minimapconfig';
+
+import './augmentation';

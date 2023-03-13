@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/editor/editorui
+ * @module ui/editorui/editorui
  */
 
 /* globals console */
@@ -24,8 +24,6 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
-
-import '../uiconfig';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -152,7 +150,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	}
 
 	/**
-	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update `update`} event.
+	 * Fires the {@link module:ui/editorui/editorui~EditorUI#event:update `update`} event.
 	 *
 	 * This method should be called when the editor UI (e.g. positions of its balloons) needs to be updated due to
 	 * some environmental change which CKEditor 5 is not aware of (e.g. resize of a container in which it is used).
@@ -267,9 +265,10 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 */
 	protected get _editableElements(): unknown {
 		/**
-		 * The {@link module:core/editor/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
-		 * deprecated and will be removed in the near future. Please use {@link #setEditableElement `setEditableElement()`} and
-		 * {@link #getEditableElement `getEditableElement()`} methods instead.
+		 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
+		 * deprecated and will be removed in the near future. Please use
+		 * {@link module:ui/editorui/editorui~EditorUI#setEditableElement `setEditableElement()`} and
+		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
 		 * @param editorUI Editor UI instance the deprecated property belongs to.
@@ -429,7 +428,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 *
 	 * Focusable toolbars candidates are either:
 	 * * already visible,
-	 * * have `beforeFocus()` set in their {@link module:core/editor/editorui~FocusableToolbarDefinition definition} that suggests that
+	 * * have `beforeFocus()` set in their {@link module:ui/editorui/editorui~FocusableToolbarDefinition definition} that suggests that
 	 * they might show up when called. Keep in mind that determining whether a toolbar will show up (and become focusable) is impossible
 	 * at this stage because it depends on its implementation, that in turn depends on the editing context (selection).
 	 *
@@ -497,7 +496,7 @@ export default abstract class EditorUI extends ObservableMixin() {
  *
  * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
  *
- * @eventName ready
+ * @eventName ~EditorUI#ready
  */
 export type EditorUIReadyEvent = {
 	name: 'ready';
@@ -508,9 +507,9 @@ export type EditorUIReadyEvent = {
  * Fired whenever the UI (all related components) should be refreshed.
  *
  * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
- * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
+ * It can also be fired manually via the {@link module:ui/editorui/editorui~EditorUI#update} method.
  *
- * @eventName update
+ * @eventName ~EditorUI#update
  */
 export type EditorUIUpdateEvent = {
 	name: 'update';
@@ -518,7 +517,7 @@ export type EditorUIUpdateEvent = {
 };
 
 /**
- * A definition of a focusable toolbar. Used by {@link module:core/editor/editorui~EditorUI#addToolbar}.
+ * A definition of a focusable toolbar. Used by {@link module:ui/editorui/editorui~EditorUI#addToolbar}.
  */
 export interface FocusableToolbarDefinition {
 
@@ -555,7 +554,7 @@ export interface FocusableToolbarOptions {
 
 	/**
 	 * Specify a callback executed after the toolbar instance DOM element loses focus upon
-	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link #setEditableElement editable element}.
+	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link ~EditorUI#setEditableElement editable element}.
 	 */
 	afterBlur?: () => void;
 }

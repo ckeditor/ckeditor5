@@ -24,10 +24,10 @@ export default class CloudServicesCore extends ContextPlugin {
 	}
 
 	/**
-	 * Creates the {@link module:cloud-services/token~Token} instance.
+	 * Creates the {@link module:cloud-services/token/token~Token} instance.
 	 *
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
-	 * value is a function it has to match the {@link module:cloud-services/token~refreshToken} interface.
+	 * value is a function it has to match the {@link module:cloud-services/token/token~Token#refreshToken} interface.
 	 * @param options.initValue Initial value of the token.
 	 * @param options.autoRefresh Specifies whether to start the refresh automatically.
 	 */
@@ -43,11 +43,5 @@ export default class CloudServicesCore extends ContextPlugin {
 	 */
 	public createUploadGateway( token: InitializedToken, apiAddress: string ): UploadGateway {
 		return new UploadGateway( token, apiAddress );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CloudServicesCore.pluginName ]: CloudServicesCore;
 	}
 }

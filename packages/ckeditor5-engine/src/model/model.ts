@@ -259,10 +259,9 @@ export default class Model extends ObservableMixin() {
 	 *
 	 * By default, a new batch with the default {@link module:engine/model/batch~Batch#constructor batch type} is created.
 	 * To define the {@link module:engine/model/batch~Batch} into which you want to add your changes,
-	 * use {@link #enqueueChange#CUSTOM_BATCH}.
+	 * use {@link #enqueueChange:CUSTOM_BATCH `enqueueChange( batchOrType, callback )`}.
 	 *
 	 * @label DEFAULT_BATCH
-	 * If not defined, a new batch with the default type will be created.
 	 * @param callback Callback function which may modify the model.
 	 */
 	public enqueueChange(
@@ -292,7 +291,8 @@ export default class Model extends ObservableMixin() {
 	 * done in the outer `change()` block.
 	 *
 	 * Second, it lets you define the {@link module:engine/model/batch~Batch} into which you want to add your changes.
-	 * If you want to use default {@link module:engine/model/batch~Batch#constructor batch type}, use {@link #enqueueChange#DEFAULT_BATCH}.
+	 * If you want to use default {@link module:engine/model/batch~Batch#constructor batch type}, use
+	 * {@link #enqueueChange:DEFAULT_BATCH `enqueueChange( callback )`}.
 	 *
 	 * ```ts
 	 * model.enqueueChange( { isUndoable: false }, writer => {
@@ -949,8 +949,37 @@ export default class Model extends ObservableMixin() {
 		return ModelRange._createOn( item );
 	}
 
+	/**
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * or creates an empty selection if no arguments were passed.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 *
+	 * ```ts
+	 * // Creates selection at the given offset in the given element.
+	 * const paragraph = writer.createElement( 'paragraph' );
+	 * const selection = writer.createSelection( paragraph, offset );
+	 *
+	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // first child of that element and ends after the last child of that element.
+	 * const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // just after the item.
+	 * const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 * // Additional options (`'backward'`) can be specified as the last argument.
+	 *
+	 * // Creates backward selection.
+	 * const selection = writer.createSelection( element, 'in', { backward: true } );
+	 * ```
+	 *
+	 * See also: {@link #createSelection:SELECTABLE `createSelection( selectable, options )`}.
+	 *
+	 * @label NODE_OFFSET
+	 */
 	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -985,24 +1014,18 @@ export default class Model extends ObservableMixin() {
 	 * const position = writer.createPositionFromPath( root, path );
 	 * const selection = writer.createSelection( position );
 	 *
-	 * // Creates selection at the given offset in the given element.
-	 * const paragraph = writer.createElement( 'paragraph' );
-	 * const selection = writer.createSelection( paragraph, offset );
-	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
-	 * // first child of that element and ends after the last child of that element.
-	 * const selection = writer.createSelection( paragraph, 'in' );
-	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
-	 * // just after the item.
-	 * const selection = writer.createSelection( paragraph, 'on' );
-	 *
 	 * // Additional options (`'backward'`) can be specified as the last argument.
 	 *
 	 * // Creates backward selection.
 	 * const selection = writer.createSelection( range, { backward: true } );
 	 * ```
+	 *
+	 * See also: {@link #createSelection:NODE_OFFSET `createSelection( node, placeOrOffset, options )`}.
+	 *
+	 * @label SELECTABLE
 	 */
+	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
+
 	public createSelection( ...args: ConstructorParameters<typeof ModelSelection> ): ModelSelection {
 		return new ModelSelection( ...args );
 	}
@@ -1103,7 +1126,7 @@ function normalizeSelectable(
  * {@link module:engine/model/model~Model#change} block.
  *
  * @internal
- * @eventName _beforeChanges
+ * @eventName ~Model#_beforeChanges
  */
 export type BeforeChangesEvent = {
 	name: '_beforeChanges';
@@ -1115,7 +1138,7 @@ export type BeforeChangesEvent = {
  * {@link module:engine/model/model~Model#change} block.
  *
  * @internal
- * @eventName _afterChanges
+ * @eventName ~Model#_afterChanges
  */
 export type AfterChangesEvent = {
 	name: '_afterChanges';
@@ -1124,7 +1147,7 @@ export type AfterChangesEvent = {
 
 /**
  * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
- * using {@link #applyOperation}.
+ * using {@link ~Model#applyOperation}.
  *
  * Note that this event is suitable only for very specific use-cases. Use it if you need to listen to every single operation
  * applied on the document. However, in most cases {@link module:engine/model/document~Document#event:change} should
@@ -1138,22 +1161,22 @@ export type AfterChangesEvent = {
  * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
  * update themselves.
  *
- * @eventName applyOperation
+ * @eventName ~Model#applyOperation
  * @param args Arguments of the `applyOperation` which is an array with a single element - applied
  * {@link module:engine/model/operation/operation~Operation operation}.
  */
 export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperation'>;
 
 /**
- * Event fired when {@link #insertContent} method is called.
+ * Event fired when {@link ~Model#insertContent} method is called.
  *
- * The {@link #insertContent default action of that method} is implemented as a
+ * The {@link ~Model#insertContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * **Note** The `selectable` parameter for the {@link #insertContent} is optional. When `undefined` value is passed the method uses
+ * **Note** The `selectable` parameter for the {@link ~Model#insertContent} is optional. When `undefined` value is passed the method uses
  * {@link module:engine/model/document~Document#selection document selection}.
  *
- * @eventName insertContent
+ * @eventName ~Model#insertContent
  * @param args The arguments passed to the original method.
  */
 export type ModelInsertContentEvent = {
@@ -1167,15 +1190,15 @@ export type ModelInsertContentEvent = {
 };
 
 /**
- * Event fired when the {@link #insertObject} method is called.
+ * Event fired when the {@link ~Model#insertObject} method is called.
  *
- * The {@link #insertObject default action of that method} is implemented as a
+ * The {@link ~Model#insertObject default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * **Note** The `selectable` parameter for the {@link #insertObject} is optional. When `undefined` value is passed the method uses
+ * **Note** The `selectable` parameter for the {@link ~Model#insertObject} is optional. When `undefined` value is passed the method uses
  * {@link module:engine/model/document~Document#selection document selection}.
  *
- * @eventName insertObject
+ * @eventName ~Model#insertObject
  * @param args The arguments passed to the original method.
  */
 export type ModelInsertObjectEvent = {
@@ -1193,34 +1216,34 @@ export type ModelInsertObjectEvent = {
 };
 
 /**
- * Event fired when {@link #deleteContent} method is called.
+ * Event fired when {@link ~Model#deleteContent} method is called.
  *
- * The {@link #deleteContent default action of that method} is implemented as a
+ * The {@link ~Model#deleteContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName deleteContent
+ * @eventName ~Model#deleteContent
  * @param args The arguments passed to the original method.
  */
 export type ModelDeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent'>;
 
 /**
- * Event fired when {@link #modifySelection} method is called.
+ * Event fired when {@link ~Model#modifySelection} method is called.
  *
- * The {@link #modifySelection default action of that method} is implemented as a
+ * The {@link ~Model#modifySelection default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName modifySelection
+ * @eventName ~Model#modifySelection
  * @param args The arguments passed to the original method.
  */
 export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelection'>;
 
 /**
- * Event fired when {@link #getSelectedContent} method is called.
+ * Event fired when {@link ~Model#getSelectedContent} method is called.
  *
- * The {@link #getSelectedContent default action of that method} is implemented as a
+ * The {@link ~Model#getSelectedContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @eventName getSelectedContent
+ * @eventName ~Model#getSelectedContent
  * @param args The arguments passed to the original method.
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;

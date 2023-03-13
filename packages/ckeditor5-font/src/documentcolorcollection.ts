@@ -8,7 +8,13 @@
  */
 
 import type { ColorDefinition } from 'ckeditor5/src/ui';
-import { Collection, ObservableMixin } from 'ckeditor5/src/utils';
+import {
+	Collection,
+	ObservableMixin,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type CollectionChangeEvent
+} from 'ckeditor5/src/utils';
 
 /**
  * A collection to store document colors. It enforces colors to be unique.
@@ -35,7 +41,7 @@ export default class DocumentColorCollection extends ObservableMixin( Collection
 	 * Adds a color to the document color collection.
 	 *
 	 * This method ensures that no color duplicates are inserted (compared using
-	 * the color value of the {@link module:ui/colorgrid/colorgrid~ColorDefinition}).
+	 * the color value of the {@link module:ui/colorgrid/colorgridview~ColorDefinition}).
 	 *
 	 * If the item does not have an ID, it will be automatically generated and set on the item.
 	 *
@@ -59,3 +65,29 @@ export default class DocumentColorCollection extends ObservableMixin( Collection
 		return !!this.find( item => item.color === color );
 	}
 }
+
+/**
+ * Fired when the collection was changed due to adding or removing items.
+ *
+ * @eventName ~DocumentColorCollection#change
+ * @param data Changed items.
+ */
+export type DocumentColorCollectionChangeEvent = CollectionChangeEvent;
+
+/**
+ * Fired when an item is added to the collection.
+ *
+ * @eventName ~DocumentColorCollection#add
+ * @param item The added item.
+ * @param index An index where the addition occurred.
+ */
+export type DocumentColorCollectionAddEvent = CollectionAddEvent;
+
+/**
+ * Fired when an item is removed from the collection.
+ *
+ * @eventName ~DocumentColorCollection#remove
+ * @param item The removed item.
+ * @param index Index from which item was removed.
+ */
+export type DocumentColorCollectionRemoveEvent = CollectionRemoveEvent;

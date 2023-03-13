@@ -185,7 +185,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
  * by default in all editor instances (attached by {@link module:engine/view/view~View}).
  *
  * @see module:engine/view/observer/inputobserver~InputObserver
- * @eventName beforeinput
+ * @eventName module:engine/view/document~Document#beforeinput
  * @param data Event data containing detailed information about the event.
  */
 export type ViewDocumentInputEvent = {
@@ -194,7 +194,7 @@ export type ViewDocumentInputEvent = {
 };
 
 /**
- * The value of the {@link module:engine/view/document~ViewDocumentInputEvent} event.
+ * The value of the {@link ~ViewDocumentInputEvent} event.
  */
 export interface InputEventData extends DomEventData<InputEvent> {
 

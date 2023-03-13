@@ -93,10 +93,3 @@ export default class SetHeaderColumnCommand extends Command {
 		} );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-
-	interface CommandsMap {
-		setTableColumnHeader: SetHeaderColumnCommand;
-	}
-}

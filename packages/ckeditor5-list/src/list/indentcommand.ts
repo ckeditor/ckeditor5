@@ -11,8 +11,6 @@ import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 
-import '../listcommands';
-
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
  */
@@ -45,7 +43,6 @@ export default class IndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
-	 * @fires _executeCleanup
 	 */
 	public override execute(): void {
 		const model = this.editor.model;
@@ -93,15 +90,8 @@ export default class IndentCommand extends Command {
 				}
 			}
 
-			/**
-			 * Event fired by the {@link #execute} method.
-			 *
-			 * It allows to execute an action after executing the {@link ~IndentCommand#execute} method, for example adjusting
-			 * attributes of changed list items.
-			 *
-			 * @protected
-			 * @event _executeCleanup
-			 */
+			// It allows to execute an action after executing the `~IndentCommand#execute` method, for example adjusting
+			// attributes of changed list items.
 			this.fire( '_executeCleanup', itemsToChange );
 		} );
 	}

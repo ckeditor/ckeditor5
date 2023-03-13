@@ -15,7 +15,7 @@ import type {
 	UpcastDispatcher,
 	ViewElement } from 'ckeditor5/src/engine';
 
-import DataFilter, { type RegisterEvent } from '../datafilter';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../conversionutils';
 import { getDescendantElement } from './integrationutils';
 
@@ -52,11 +52,11 @@ export default class ImageElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on<RegisterEvent>( 'register:figure', () => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', () => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
-		dataFilter.on<RegisterEvent>( 'register:img', ( evt, definition ) => {
+		dataFilter.on<DataFilterRegisterEvent>( 'register:img', ( evt, definition ) => {
 			if ( definition.model !== 'imageBlock' && definition.model !== 'imageInline' ) {
 				return;
 			}
@@ -222,10 +222,4 @@ function modelToViewImageAttributeConverter() {
 			}
 		}
 	};
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageElementSupport.pluginName ]: ImageElementSupport;
-	}
 }

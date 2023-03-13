@@ -20,7 +20,6 @@ import {
 
 // @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
-import './minimapconfig';
 import '../theme/minimap.css';
 
 /**
@@ -41,13 +40,13 @@ export default class Minimap extends Plugin {
 
 	/**
 	 * The DOM element closest to the editable element of the editor as returned
-	 * by {@link module:core/editor/editorui~EditorUI#getEditableElement}.
+	 * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
 	 */
 	private _scrollableRootAncestor!: HTMLElement | null;
 
 	/**
 	 * The DOM element closest to the editable element of the editor as returned
-	 * by {@link module:core/editor/editorui~EditorUI#getEditableElement}.
+	 * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
 	 */
 	private _editingRootElement?: HTMLElement;
 
@@ -208,11 +207,5 @@ export default class Minimap extends Plugin {
 		// Note: It is **essential** that the height is set first because the progress depends on the correct tracker height.
 		minimapView.setPositionTrackerHeight( scrollableRootAncestorRect.getIntersection( editingRootRect )!.height );
 		minimapView.setScrollProgress( scrollProgress );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Minimap.pluginName ]: Minimap;
 	}
 }

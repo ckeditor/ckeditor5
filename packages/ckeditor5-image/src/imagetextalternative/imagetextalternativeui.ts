@@ -227,10 +227,3 @@ export default class ImageTextAlternativeUI extends Plugin {
 		return !!this._balloon && this._balloon.hasView( this._form! );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageTextAlternativeUI.pluginName ]: ImageTextAlternativeUI;
-
-	}
-}

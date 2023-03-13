@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaptionutils/utils
+ * @module image/imagecaption/imagecaptionutils
  */
 
 import type { DocumentSelection, Element, Selection, ViewElement, Match } from 'ckeditor5/src/engine';
@@ -76,11 +76,5 @@ export default class ImageCaptionUtils extends Plugin {
 		}
 
 		return null;
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
 	}
 }

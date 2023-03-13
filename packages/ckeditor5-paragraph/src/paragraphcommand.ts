@@ -72,9 +72,3 @@ export default class ParagraphCommand extends Command {
 function checkCanBecomeParagraph( block: Element, schema: Schema ): boolean {
 	return schema.checkChild( block.parent as Element, 'paragraph' ) && !schema.isObject( block );
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		paragraph: ParagraphCommand;
-	}
-}

@@ -48,9 +48,9 @@ const keyCodeNames = Object.fromEntries(
 /**
  * Converts a key name or {@link module:utils/keyboard~KeystrokeInfo keystroke info} into a key code.
  *
- * Note: Key names are matched with {@link module:utils/keyboard~keyCodes} in a case-insensitive way.
+ * Note: Key names are matched with {@link module:utils/keyboard#keyCodes} in a case-insensitive way.
  *
- * @param key A key name (see {@link module:utils/keyboard~keyCodes}) or a keystroke data object.
+ * @param key A key name (see {@link module:utils/keyboard#keyCodes}) or a keystroke data object.
  * @returns Key or keystroke code.
  */
 export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
@@ -61,7 +61,7 @@ export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
 
 		if ( !keyCode ) {
 			/**
-			 * Unknown key name. Only key names included in the {@link module:utils/keyboard~keyCodes} can be used.
+			 * Unknown key name. Only key names included in the {@link module:utils/keyboard#keyCodes} can be used.
 			 *
 			 * @error keyboard-unknown-key
 			 * @param {String} key
@@ -90,7 +90,7 @@ export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
  *   * `[ 'ctrl', 32 ]` (ctrl + space),
  *   * `[ 'ctrl', 'a' ]` (ctrl + A).
  *
- * Note: Key names are matched with {@link module:utils/keyboard~keyCodes} in a case-insensitive way.
+ * Note: Key names are matched with {@link module:utils/keyboard#keyCodes} in a case-insensitive way.
  *
  * Note: Only keystrokes with a single non-modifier key are supported (e.g. `ctrl+A` is OK, but `ctrl+A+B` is not).
  *
@@ -191,7 +191,7 @@ export function getLocalizedArrowKeyCodeDirection(
  *
  * See: {@link module:utils/keyboard~getCode}.
  *
- * @param key The key name (see {@link module:utils/keyboard~keyCodes}).
+ * @param key The key name (see {@link module:utils/keyboard#keyCodes}).
  * @returns Key code.
  */
 function getEnvKeyCode( key: string ): number {

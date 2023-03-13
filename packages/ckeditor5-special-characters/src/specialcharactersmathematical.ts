@@ -86,9 +86,3 @@ export default class SpecialCharactersMathematical extends Plugin {
 		], { label: t( 'Mathematical' ) } );
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[SpecialCharactersMathematical.pluginName]: SpecialCharactersMathematical;
-	}
-}

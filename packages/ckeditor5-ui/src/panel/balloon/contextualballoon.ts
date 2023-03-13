@@ -581,7 +581,7 @@ type Stack = Map<View, ViewConfiguration>;
  * It is used for displaying the last view from the current stack and providing navigation buttons for switching stacks.
  * See the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
  */
-class RotatorView extends View {
+export class RotatorView extends View {
 	/**
 	 * Used for checking if a view is focused or not.
 	 */
@@ -858,11 +858,5 @@ class FakePanelsView extends View {
 
 			Object.assign( this, { top, left, width, height } );
 		}
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ContextualBalloon.pluginName ]: ContextualBalloon;
 	}
 }

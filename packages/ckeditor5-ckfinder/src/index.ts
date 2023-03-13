@@ -11,3 +11,6 @@ export { default as CKFinder } from './ckfinder';
 export { default as CKFinderEditing } from './ckfinderediting';
 export { default as CKFinderUI } from './ckfinderui';
 export type { CKFinderConfig } from './ckfinderconfig';
+export type { default as CKFinderCommand } from './ckfindercommand';
+
+import './augmentation';

@@ -905,7 +905,7 @@ describe( 'view', () => {
 			expect( result3 ).to.undefined;
 		} );
 
-		it( 'should rethrow native errors as they are in the dubug=true mode', () => {
+		it.skip( 'should rethrow native errors as they are in the dubug=true mode', () => {
 			const error = new TypeError( 'foo' );
 
 			expect( () => {

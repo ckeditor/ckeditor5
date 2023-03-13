@@ -39,8 +39,6 @@ import type {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import '../../uiconfig';
-
 const toPx = toUnit( 'px' );
 
 /**
@@ -55,7 +53,7 @@ export default class BalloonToolbar extends Plugin {
 	public readonly toolbarView: ToolbarView;
 
 	/**
-	 * Tracks the focus of the {@link module:core/editor/editorui~EditorUI#getEditableElement editable element}
+	 * Tracks the focus of the {@link module:ui/editorui/editorui~EditorUI#getEditableElement editable element}
 	 * and the {@link #toolbarView}. When both are blurred then the toolbar should hide.
 	 */
 	public readonly focusTracker: FocusTracker;
@@ -410,16 +408,9 @@ function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection,
 /**
  * This event is fired just before the toolbar shows up. Stopping this event will prevent this.
  *
- * @eventName show
+ * @eventName ~BalloonToolbar#show
  */
-export type BaloonToolbarShowEvent = {
+export type BalloonToolbarShowEvent = {
 	name: 'show';
 	args: [];
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ BalloonToolbar.pluginName ]: BalloonToolbar;
-	}
-}
-

@@ -208,9 +208,9 @@ export interface MentionFeed {
 export type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
 
 /**
- * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedItem} as HTMLElement.
+ * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedObjectItem} as HTMLElement.
  */
-export type ItemRenderer = ( item: MentionFeedItem ) => HTMLElement;
+export type ItemRenderer = ( item: MentionFeedObjectItem ) => HTMLElement | string;
 
 /**
  * The mention feed item. It may be defined as a string or a plain object.
@@ -278,17 +278,5 @@ export type MentionFeedObjectItem = {
 	/**
 	 * Text inserted into the editor when creating a mention.
 	 */
-	text: string;
+	text?: string;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:mention/mention~Mention} feature.
-		 *
-		 * Read more in {@link module:mention/mentionconfig~MentionConfig}.
-		 */
-		mention?: MentionConfig;
-	}
-}

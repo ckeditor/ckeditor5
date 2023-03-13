@@ -50,15 +50,10 @@ const config = {
 		EasyImage
 	],
 	toolbar: [
-		'heading', '|',
-		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-		'bold', 'italic', 'blockQuote', '|',
-		'codeBlock',
-		'alignment', '|',
-		'indent', 'outdent', '|',
-		'subscript', 'superscript', '|',
-		'insertTable', 'imageUpload', 'pageBreak', '|',
-		'undo', 'redo'
+		'undo', 'redo', '|', 'heading',
+		'|', 'bold', 'italic',
+		'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+		'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 	],
 	image: {
 		toolbar: [
@@ -118,7 +113,7 @@ DecoupledEditor
 			text: 'Use the minimap for quick navigation',
 			editor,
 			tippyOptions: {
-				placement: 'bottom'
+				placement: 'bottom-end'
 			}
 		} );
 	} );

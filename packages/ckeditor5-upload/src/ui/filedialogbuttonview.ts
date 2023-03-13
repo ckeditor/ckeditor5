@@ -180,8 +180,6 @@ class FileInputView extends View<HTMLInputElement> {
  * 	}
  * }
  * ```
- *
- * @eventName done
  */
 export type FileInputViewDoneEvent = {
 	name: 'done';

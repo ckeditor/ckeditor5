@@ -136,9 +136,3 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 	}
 	return itemDefinitions;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontFamilyUI.pluginName ]: FontFamilyUI;
-	}
-}

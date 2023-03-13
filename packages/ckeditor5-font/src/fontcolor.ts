@@ -36,9 +36,3 @@ export default class FontColor extends Plugin {
 		return 'FontColor';
 	}
 }
-
- declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ FontColor.pluginName ]: FontColor;
-	}
-}
