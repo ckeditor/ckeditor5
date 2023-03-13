@@ -78,6 +78,57 @@ describe( 'ResizerState', () => {
 		} );
 	} );
 
+	describe( 'width percents calculations ', () => {
+		const domContentWrapper = document.createElement( 'span' );
+
+		before( () => {
+			const htmlMockup = `<div class="dom-element">
+				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
+					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
+				</div>
+			</div>`;
+
+			domContentWrapper.style.width = 'auto';
+			domContentWrapper.innerHTML = htmlMockup;
+		} );
+
+		it( 'should not return NaN if resizer is inside a <span>', () => {
+			document.body.append( domContentWrapper );
+
+			const domResizeHandle = domContentWrapper.querySelector( '.ck-widget__resizer__handle' );
+			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
+			const domResizeHost = domHandleHost;
+
+			const state = new ResizerState();
+			state.begin( domResizeHandle, domHandleHost, domResizeHost );
+
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 100 );
+			domContentWrapper.remove();
+		} );
+
+		it( 'should return 0 if cannot calculate width from 5 ancestors', () => {
+			let elem = domContentWrapper;
+			for ( let i = 0; i < 5; i++ ) {
+				const e = document.createElement( 'span' );
+				e.appendChild( elem );
+				elem = e;
+			}
+			document.body.append( elem );
+
+			const domResizeHandle = domContentWrapper.querySelector( '.ck-widget__resizer__handle' );
+			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
+			const domResizeHost = domHandleHost;
+
+			const state = new ResizerState();
+			state.begin( domResizeHandle, domHandleHost, domResizeHost );
+
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 0 );
+			elem.remove();
+		} );
+	} );
+
 	describe( 'update()', () => {
 		it( 'changes the properties', () => {
 			const state = new ResizerState();
