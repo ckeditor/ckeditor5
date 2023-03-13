@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-html-support",
-  "version": "36.0.1",
+  "version": "37.0.0-alpha.1",
   "description": "HTML Support feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
