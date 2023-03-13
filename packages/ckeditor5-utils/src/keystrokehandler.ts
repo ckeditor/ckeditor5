@@ -129,9 +129,16 @@ export default class KeystrokeHandler {
 	}
 
 	/**
+	 * Stops listening to `keydown` events from the given emitter.
+	 */
+	public stopListening( emitter?: Emitter | HTMLElement | Window ): void {
+		this._listener.stopListening( emitter );
+	}
+
+	/**
 	 * Destroys the keystroke handler.
 	 */
 	public destroy(): void {
-		this._listener.stopListening();
+		this.stopListening();
 	}
 }
