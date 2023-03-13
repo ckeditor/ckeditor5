@@ -85,6 +85,6 @@ class Adapter implements UploadAdapter {
 	}
 
 	public abort() {
-		this.fileUploader?.abort();
+		this.fileUploader!.abort();
 	}
 }
