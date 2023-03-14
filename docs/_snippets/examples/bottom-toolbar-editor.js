@@ -19,7 +19,7 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { DropdownView, DropdownButtonView, DropdownPanelView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { DropdownView, DropdownButtonView, DropdownPanelView, ToolbarView, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -32,7 +32,6 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
