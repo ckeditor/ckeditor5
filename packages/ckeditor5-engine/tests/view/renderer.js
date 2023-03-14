@@ -4539,7 +4539,7 @@ describe( 'Renderer', () => {
 			] );
 		} );
 
-		it( 'should properly render if text is replaced by an element and following text', () => {
+		it( 'should properly render if text is replaced by similar element and following text', () => {
 			setViewData( view,
 				'<container:p>foo<attribute:strong>123</attribute:strong>456</container:p>'
 			);
@@ -4571,11 +4571,66 @@ describe( 'Renderer', () => {
 			expect( checkMappings() ).to.be.true;
 
 			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-				'added: [], removed: [ text: "foo" ]',
-				'added: [ text: "bar" ], removed: []',
-				'added: [ <strong> ], removed: []',
-				'updated text: "123" to "abc"',
-				'updated text: "abc123" to "abc"'
+				// Delete node "foo".
+				'added: [], removed: [ text: "foo" ]',	// <p><strong>123</strong>456</p>
+
+				// Insert "bar".
+				'added: [ text: "bar" ], removed: []',	// <p><strong>123</strong>bar456</p>
+
+				// Insert <strong>xyz123</strong>.
+				'added: [ <strong> ], removed: []',		// <p><strong>123</strong>bar<strong>xyz123</strong>456</p>
+
+				// Insert "abc". Note that "abc" is a final result of all changes in the mutation result.
+				'updated text: "123" to "abc"',			// <p><strong>abc123</strong>bar<strong>xyz123</strong>456</p>
+
+				// Delete "123". Note that "abc" is a final result of all changes in the mutation result.
+				'updated text: "abc123" to "abc"'		// <p><strong>abc</strong>bar<strong>xyz123</strong>456</p>
+			] );
+		} );
+
+		it( 'should properly render if text is replaced by an element and following text', () => {
+			setViewData( view,
+				'<container:p>foo<attribute:strong>123</attribute:strong>456</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			view.forceRender();
+			cleanObserver( observer );
+
+			// Modify the view.
+			view.change( writer => {
+				writer.remove( viewRoot.getChild( 0 ).getChild( 0 ) );
+				writer.insert(
+					writer.createPositionAt( viewRoot.getChild( 0 ), 0 ),
+					parse(
+						'<attribute:em>abc</attribute:em>' +
+						'bar' +
+						'<attribute:strong>xyz</attribute:strong>'
+					)
+				);
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p><em>abc</em>bar<strong>xyz123</strong>456</p>' );
+
+			// Re-render changes in view to DOM.
+			view.forceRender();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><em>abc</em>bar<strong>xyz123</strong>456</p>' );
+			expect( checkMappings() ).to.be.true;
+
+			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+				// Insert `<em>abc<em>`.
+				'added: [ <em> ], removed: []',		// <p><em>abc</em>foo<strong>123</strong>456</p>
+
+				// Insert "bar". Note that "bar" is a final result of all changes in the mutation result.
+				'updated text: "foo" to "bar"',		// <p><em>abc</em>barfoo<strong>123</strong>456</p>
+
+				// Delete "foo". Note that "bar" is a final result of all changes in the mutation result.
+				'updated text: "barfoo" to "bar"',	// <p><em>abc</em>bar<strong>123</strong>456</p>
+
+				// Insert "xyz".
+				'updated text: "123" to "xyz123"'	// <p><em>abc</em>bar<strong>xyz123</strong>456</p>
 			] );
 		} );
 
