@@ -5,45 +5,139 @@
 
 /* globals console, window, document */
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-import DropdownPanelView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownpanelview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Font from '@ckeditor/ckeditor5-font/src/font';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Font, FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
+import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { DropdownView, DropdownButtonView, DropdownPanelView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
+
+class DecoupledEditor extends DecoupledEditorBase {}
+
+DecoupledEditor.builtinPlugins = [
+	Essentials,
+	Alignment,
+	FontSize,
+	FontFamily,
+	FontColor,
+	FontBackgroundColor,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	Strikethrough,
+	Underline,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	CloudServices,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Indent,
+	IndentBlock,
+	Link,
+	List,
+	ListProperties,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	PictureEditing,
+	Table,
+	TableToolbar,
+	TextTransformation
+];
+
+DecoupledEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'fontfamily',
+			'fontsize',
+			'fontColor',
+			'fontBackgroundColor',
+			'|',
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+			'|',
+			'alignment',
+			'|',
+			'numberedList',
+			'bulletedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'link',
+			'blockquote',
+			'uploadImage',
+			'insertTable',
+			'mediaEmbed',
+			'|',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		resizeUnit: 'px',
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:wrapText',
+			'imageStyle:breakText',
+			'|',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
+};
 
 class FormattingOptions extends Plugin {
 	/**
