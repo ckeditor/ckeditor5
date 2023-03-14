@@ -48,7 +48,7 @@ module.exports = cwd => {
 /**
  * Checks whether all of the filePaths match at least one of the patterns.
  *
- * @param {String[]} filePaths
+ * @param {Array.<String>} filePaths
  * @returns {Boolean}
  */
 function doAllFilesMatchPattern( filePaths ) {

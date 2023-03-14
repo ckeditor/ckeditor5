@@ -29,7 +29,7 @@ const exec = execFactory( ROOT_DIRECTORY );
 // Tests + Code coverage.
 if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	if ( shortFlow ) {
-		console.log( green( 'Only documentation was modified, skipping unit tests.\n' ) );
+		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
 		const coverageExitCode = checkPackagesCodeCoverage();
 
@@ -57,7 +57,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 // Verifying the code style.
 if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	if ( shortFlow ) {
-		console.log( green( 'Only documentation was modified, only linters will be ran.\n' ) );
+		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
 
 	// Linters.
