@@ -7,7 +7,13 @@
  * @module typing/deleteobserver
  */
 
-import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	keyCodes,
+	isInsideCombinedSymbol,
+	isInsideEmojiSequence,
+	isInsideSurrogatePair
+} from '@ckeditor/ckeditor5-utils';
 import {
 	BubblingEventInfo,
 	DomEventData,
@@ -18,6 +24,7 @@ import {
 	type ViewDocumentKeyUpEvent,
 	type ViewDocumentSelection,
 	type ViewSelection,
+	type ViewRange,
 	type View
 } from '@ckeditor/ckeditor5-engine';
 
@@ -170,17 +177,14 @@ export default class DeleteObserver extends Observer {
 			// The default deletion unit for deleteContentBackward is a single code point
 			// but on Android it sometimes passes a wider target range, so we need to change
 			// the unit of deletion to include the whole range to be removed and not a single code point.
-			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
+			if ( inputType === 'deleteContentBackward' ) {
 				// On Android, deleteContentBackward has sequence 1 by default.
-				deleteData.sequence = 1;
+				if ( env.isAndroid ) {
+					deleteData.sequence = 1;
+				}
 
 				// IME wants more than a single character to be removed.
-				if (
-					targetRanges.length == 1 && (
-						targetRanges[ 0 ].start.parent != targetRanges[ 0 ].end.parent ||
-						targetRanges[ 0 ].start.offset + 1 != targetRanges[ 0 ].end.offset
-					)
-				) {
+				if ( shouldUseTargetRanges( targetRanges ) ) {
 					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.createSelection( targetRanges );
 				}
@@ -314,4 +318,48 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	function getDeleteDirection( keyCode: number | null ): 'backward' | 'forward' {
 		return keyCode == keyCodes.backspace ? DELETE_BACKWARD : DELETE_FORWARD;
 	}
+}
+
+/**
+ * TODO
+ */
+function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
+	// The collapsed target range could happen for example while deleting inside an inline filler
+	// (it's mapped to collapsed position before an inline filler).
+	if ( targetRanges.length != 1 || targetRanges[ 0 ].isCollapsed ) {
+		return false;
+	}
+
+	const walker = targetRanges[ 0 ].getWalker( {
+		direction: 'backward',
+		singleCharacters: true,
+		ignoreElementEnd: true
+	} );
+
+	let count = 0;
+
+	for ( const { nextPosition } of walker ) {
+		if ( !nextPosition.parent.is( '$text' ) ) {
+			count++;
+		} else {
+			const data = nextPosition.parent.data;
+			const offset = nextPosition.offset;
+
+			if (
+				isInsideSurrogatePair( data, offset ) ||
+				isInsideCombinedSymbol( data, offset ) ||
+				isInsideEmojiSequence( data, offset )
+			) {
+				continue;
+			}
+
+			count++;
+		}
+
+		if ( count > 1 ) {
+			return true;
+		}
+	}
+
+	return false;
 }
