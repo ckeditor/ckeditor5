@@ -8,7 +8,7 @@ modified_at: 2021-06-17
 
 # Images in CKEditor 5 (overview)
 
-CKEditor 5 comes with various tools to insert (upload), resize, style, caption, and link images. All these features work out of the box with block, inline, and responsive images alike.
+CKEditor 5 comes with various tools to insert, upload, resize, style, caption, and link images. All these features work out of the box with block, inline, and responsive images alike.
 
 ## Demo
 
