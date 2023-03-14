@@ -7,6 +7,9 @@
  * @module adapter-ckfinder
  */
 
+// eslint-disable-next-line no-console
+console.log( 'Yeah.' );
+
 export { default as UploadAdapter } from './uploadadapter';
 
 import './augmentation';
