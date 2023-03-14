@@ -1333,6 +1333,8 @@ export default class Writer {
 	 * @returns The added root element.
 	 */
 	public addRoot( rootName: string, elementName = '$root' ): RootElement {
+		this._assertWriterUsedCorrectly();
+
 		const root = this.model.document.getRoot( rootName );
 
 		if ( root && root.isAttached() ) {
@@ -1369,6 +1371,8 @@ export default class Writer {
 	 * @param rootName Name of the detached root.
 	 */
 	public detachRoot( rootName: string ): void {
+		this._assertWriterUsedCorrectly();
+
 		const root = this.model.document.getRoot( rootName );
 
 		if ( !root || !root.isAttached() ) {
