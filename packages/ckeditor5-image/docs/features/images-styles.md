@@ -8,6 +8,8 @@ modified_at: 2021-06-17
 
 # Image styles
 
+The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
+
 ## Overview
 This package allows for adjusting the image appearance by:
 * **Applying CSS classes** - adding a particular [predefined](#ready-to-use-styles) or [custom](#configuring-the-styles) CSS class or removing any style-related CSS class,
