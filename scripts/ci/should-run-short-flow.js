@@ -15,7 +15,7 @@ const {
 
 const filePatterns = [
 	'docs/**',
-	'packages/docs/**',
+	'packages/*/docs/**',
 	'*.md',
 	'packages/*/*.md'
 ];
@@ -52,13 +52,9 @@ module.exports = cwd => {
  * @returns {Boolean}
  */
 function doAllFilesMatchPattern( filePaths ) {
-	const filesMatchingNoPattern = filePaths.filter( filepath => {
-		const fileMatchesAnyPattern = filePatterns.some( pattern => {
+	return filePaths.every( filepath => {
+		return filePatterns.some( pattern => {
 			return minimatch.match( [ filepath ], pattern ).length;
 		} );
-
-		return !fileMatchesAnyPattern;
 	} );
-
-	return !filesMatchingNoPattern.length;
 }
