@@ -39,6 +39,8 @@ To find out more about CKBox, the brand-new file manager, visit the [CKBox websi
 
 Use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to open the CKBox dialog window. Then select an image and click the Choose button. The selected image will appear in the content. You can choose more than one file at a time. Play around, changing the alignment and size of the images. See more instructions below the demo.
 
+Please observe that the usual image icon {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images into the CKBox file manager and they will be accesible the same from the management panel.
+
 {@snippet features/ckbox}
 
 <info-box info>
