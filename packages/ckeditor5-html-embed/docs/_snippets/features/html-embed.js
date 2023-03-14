@@ -79,26 +79,10 @@ ClassicEditor
 		initialData,
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'htmlEmbed',
-				'codeBlock',
-				'blockQuote',
-				'link',
-				'uploadImage',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'htmlEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

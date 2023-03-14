@@ -28,7 +28,15 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
-		toolbar: {},
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		cloudServices: {
 			// All predefined builds include the Easy Image feature.
 			// Provide correct configuration values to use it.

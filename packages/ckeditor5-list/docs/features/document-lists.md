@@ -9,15 +9,7 @@ modified_at: 2022-09-20
 
 # Document list
 
-The document list feature is based on a completely different approach than the regular list. Unlike regular list, which is a content block in itself, the document list plugin will let any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, and others – can now be put inside a list item, ensuring the continuity of numbering and retaining indentation.
-
-Just like regular lists, the document list feature supports both ordered and unordered lists.
-
-<info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: the regular {@link features/lists lists feature} and this new **document lists feature**.
-
-	The document lists feature is not enabled in any builds, you need to [install it](#installation) by hand.
-</info-box>
+The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
 ## Demo
 
@@ -31,20 +23,19 @@ Use the demo below to add block elements like tables, images or nested lists and
 
 ## List styles
 
-Document lists offers additional formatting tools that allow controlling the lists, just like regular lists. The list style feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+Document lists offer additional formatting tools, just like regular lists. The list style feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ## List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
-## Related features
-
-These features also provide similar functionality:
-* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
-
 ## Installation
+
+<info-box info>
+	There are currently two plugins providing list support for CKEditor 5: the regular {@link features/lists lists feature} and this new **document lists feature**.
+
+	The document lists feature is not enabled in any builds, so you need to install it by hand.
+</info-box>
 
 ### Document list feature
 
@@ -105,6 +96,13 @@ ClassicEditor
 	The {@link module:list/documentlistproperties~DocumentListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
+## Related features
+
+These features also provide similar functionality:
+* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
+
 ## Common API
 
 The {@link module:list/documentlist~DocumentList} plugin registers:
@@ -143,4 +141,4 @@ The {@link module:list/documentlistproperties~DocumentListProperties} plugin reg
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).

@@ -24,26 +24,10 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'MathType',
-				'ChemType',
-				'|',
-				'blockQuote',
-				'link',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', '|', 'MathType', 'ChemType',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

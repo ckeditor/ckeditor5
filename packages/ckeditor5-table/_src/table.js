@@ -22,7 +22,7 @@ import '../theme/table.css';
 /**
  * The table plugin.
  *
- * For a detailed overview, check the {@glink features/table Table feature documentation}.
+ * For a detailed overview, check the {@glink features/tables/tables Table feature documentation}.
  *
  * This is a "glue" plugin that loads the following table features:
  *

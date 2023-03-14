@@ -5,40 +5,21 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The basic styles feature allows you to apply the most frequently used formatting indispensable for content creation. This package provides essential text styling features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
+The basic styles feature lets you apply the most essential formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
-<info-box info>
-	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
-</info-box>
+## Demo
 
-Basic formatting options may be applied with the toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one these to format the text:
+You may apply basic formatting options with toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one of these to format the text:
 * Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`
 * Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`
 * Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
-
-<info-box info>
-	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only
-</info-box>
-
-## Demo
 
 {@snippet features/basic-styles}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
-
-## Related features
-
-Check out also these CKEditor 5 features to gain better control over your content style and format:
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
-* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
-* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
-* {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
-* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Available text styles
 
@@ -60,7 +41,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 
 ### Supported input
 
-By default, each feature can upcast more than one type of the content. Here's the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
+By default, each feature can upcast more than one type of content. Here is the full list of elements supported by each feature, either when pasting from the clipboard, loading data on start, or using the {@link module:core/editor/utils/dataapimixin~DataApi#setData data API}.
 
 | Style feature | Supported input elements |
 |-----|---|
@@ -74,7 +55,7 @@ By default, each feature can upcast more than one type of the content. Here's th
 
 ## Typing around inline code
 
-CKEditor 5 allows for typing both at inner and outer boundaries of code to make the editing easier for the users.
+CKEditor 5 allows for typing both at the inner and outer boundaries of code to make editing easier for the users.
 
 **To type inside a code element**, move the caret to its (start or end) boundary. As long as the code remains highlighted (by default: less transparent gray), typing and applying formatting will be done within its boundaries:
 
@@ -87,7 +68,7 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 ## Installation
 
 <info-box info>
-	Selected styles are enabled in certain predefined builds, as enumerated at the beginning of this guide. These installation instructions are for developers interested in building their own, custom editor.
+	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. These installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:
@@ -122,6 +103,21 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+Check out also these CKEditor 5 features to gain better control over your content style and format:
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+* {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
+<info-box info>
+	You can remove all basic text styles with the {@link features/remove-format remove format} feature.
+</info-box>
+
 ## Common API
 
 Each style feature registers a [command](#available-text-styles) which can be executed from code. For example, the following snippet will apply the bold style to the current selection in the editor:
@@ -136,4 +132,4 @@ editor.execute( 'bold' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles).

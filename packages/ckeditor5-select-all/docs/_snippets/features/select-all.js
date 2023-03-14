@@ -9,18 +9,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'link',
-				'insertTable',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'selectAll'
+				'undo', 'redo', '|', 'selectAll', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {
@@ -35,7 +27,10 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Select all' ),
 			text: 'Click to select everything.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {

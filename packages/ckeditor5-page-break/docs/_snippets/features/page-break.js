@@ -17,27 +17,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-page-break' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'alignment',
-				'|',
-				'pageBreak',
-				'blockQuote',
-				'link',
-				'uploadImage',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'pageBreak',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

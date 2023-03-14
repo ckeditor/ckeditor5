@@ -1,11 +1,11 @@
 ---
-menu-title: Plugin list
+menu-title: Plugins and HTML output
 category: plugins
 order: 20
 modified_at: 2021-12-03
 ---
 
-# Features' HTML output overview
+# Plugins and HTML output
 
 Listed below are all official CKEditor 5 packages as well as some partner packages together with their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column.
 

@@ -17,27 +17,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-horizontal-line' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'alignment',
-				'|',
-				'horizontalLine',
-				'blockQuote',
-				'link',
-				'uploadImage',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

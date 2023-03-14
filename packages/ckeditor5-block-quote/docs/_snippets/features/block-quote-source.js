@@ -13,19 +13,10 @@ ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'blockQuote',
-			'|',
-			'undo',
-			'redo'
+			'undo', 'redo', '|', 'heading',
+			'|', 'bold', 'italic',
+			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
 	ui: {
