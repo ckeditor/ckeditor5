@@ -3,7 +3,14 @@ title: Markdown output
 category: features
 ---
 
-The Markdown plugin lets you switch the default output from HTML to Markdown. This way you can produce lightweight text documents with a simple formatting syntax that is popular among developers.
+The Markdown plugin allows switching the default CKEditor 5 output from HTML to Markdown. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature, it allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
+
+Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+
+<info-box info>
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 
 ## Demo
 
@@ -19,18 +26,21 @@ The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. 
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Additional feature information
-
- Coupled with the {@link features/autoformat autoformatting} feature, the Markdown plugin offers the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
-
-Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
-
 ## Extending formatting support
-If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor 5 plugins and extend the formatting capabilities.
+If you need a more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements and attributes, not yet supported by other CKEditor 5 plugins and extend the formatting capabilities.
+
+## Related features
+
+Some other ways to output the edited content include:
+
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
+* {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
+* {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
+* {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
 
 ## The Markdown data processor
 
-The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/utils/dataapimixin~DataApi#setData set} or {@link module:core/editor/utils/dataapimixin~DataApi#getData get} data from the editor in the Markdown format:
+The Markdown plugins uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/utils/dataapimixin~DataApi#setData set} or {@link module:core/editor/utils/dataapimixin~DataApi#getData get} data from the editor in the Markdown format:
 
 ```js
 editor.getData(); // -> 'This is [CKEditor 5](https://ckeditor.com).'
@@ -49,10 +59,6 @@ When converting the output produced by this data processor, make sure to use a c
 </info-box>
 
 ## Installation
-
-<info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
 
 To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
 
@@ -100,23 +106,14 @@ ClassicEditor
 <info-box info>
 	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting options.
 
-	This means that advanced formatting like list styles, table styles, or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
+	This means that advanced formatting like list styles, table styles or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
 
 While the Markdown plugin is stable and ready to use, some issues are still being worked on. Feel free to upvote 👍&nbsp; these on GitHub if you would like to see this introduced.
 
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
-* The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHub issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
-
-## Related features
-
-Some other ways to output the edited content include:
-
-* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
-* {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
-* {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
-* {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
+* The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHUb issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
 
 ## Contribute
 
-The source code of this feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm).
+The source code of this feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm).

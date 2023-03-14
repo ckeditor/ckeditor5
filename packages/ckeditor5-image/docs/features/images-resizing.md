@@ -8,7 +8,7 @@ modified_at: 2021-06-17
 
 # Resizing images
 
-The image resize feature lets you change the width of images in your content. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
+The {@link features/images-styles image styles} feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
 
 ## Enabling image resizing
 
@@ -324,4 +324,4 @@ The {@link module:image/imageresize~ImageResize} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).

@@ -8,10 +8,18 @@ order: 20
 
 # Pasting content from Google Docs
 
-The paste from Google Docs feature lets you paste content from Google Docs and preserve its original structure and formatting.
+The paste from Google Docs feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
+
+When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
+
+The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word pasting content from Microsoft Word guide} to learn more.
 
 <info-box info>
 	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor 5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+</info-box>
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ## Demo
@@ -24,13 +32,12 @@ To test how Paste from Office works, open the [sample Google Docs document](http
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Additional feature information
+## Related features
 
-Thanks to the paste from Google Docs feature, you can copy and paste a Google Docs document into CKEditor 5 and maintain basic text styling, heading levels, links, lists, tables, and images.
-
-When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
-
-The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word pasting content from Microsoft Word guide} to learn more.
+CKEditor 5 supports a wider range of paste features, including:
+* {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
+* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 
 ## Automatic content filtering
 
@@ -41,7 +48,7 @@ This means that if you did not enable, for instance, {@link features/font font f
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-paste-from-office`](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office) package:
@@ -83,13 +90,6 @@ If you think that support for any of the applications needs improvements, please
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
 
-## Related features
-
-CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
-* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
-* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
-
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-paste-from-office](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-paste-from-office).
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-paste-from-office](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-paste-from-office).

@@ -6,7 +6,7 @@ feedback-widget: false
 
 # CKEditor 5 features overview
 
-CKEditor 5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon. Premium features, which require an additional license to work, have a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
+The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. Premium features, which require an additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
 <span class="navigation-hint_mobile">
 <info-box>
@@ -29,13 +29,13 @@ The {@link framework/index CKEditor 5 Framework} was created with {@link feature
 
 The {@link features/users users API} is used by functions such as {@link features/track-changes track changes}, that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
 
-Where tracking changes is not enough, the {@link features/comments comments} come in, offering a perfect collaboration communication platform for writing and editing as a team.
+Where tracking changes is not enough, the {@link features/comments comments} come in, offering perfect collaboration communication platform for writing and editing as a team.
 
-Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected parts of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
+Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
 
 {@img assets/img/features-collaboration.png 800 CKEditor 5 collaboration features.}
 
-You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
@@ -59,13 +59,13 @@ Most of these formatting options can be applied from the {@link features/toolbar
 
 ### Advanced content editing
 
-Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} and create a responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
+Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} and create responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
 
 An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 
-Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw the reader's attention to it.
+Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
 
-Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that lets you produce code listing with a syntax highlight, too!
+Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 
 {@img assets/img/features-images.png 800 CKEditor 5 image feature.}
 
@@ -81,7 +81,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
+Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
 {@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 

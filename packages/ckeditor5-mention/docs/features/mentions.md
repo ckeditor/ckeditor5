@@ -8,7 +8,13 @@ modified_at: 2021-10-20
 
 # Mentions (autocompletion)
 
-The mention feature enables smart autocompletion based on user input. When you type a pre-configured marker, such as `@` or `#`, a panel displays with autocomplete suggestions.
+The mention feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
+
+You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
+
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
 
 ## Demo
 
@@ -22,7 +28,13 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 	You can also check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
 
-You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
+## Related productivity features
+
+In addition to enabling mentions, you may want to check the following productivity features:
+
+* {@link features/text-transformation Automatic text transformation} &ndash; Allows to automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/autoformat Autoformatting} &ndash; Allows to quickly apply formatting to the content you are writing.
 
 ## Configuration
 
@@ -223,7 +235,7 @@ The converters must be defined with a `'high'` priority to be executed before th
 
 To control how the mention element is wrapped by other attribute elements (like bold, italic, etc) set its {@link module:engine/view/attributeelement~AttributeElement#priority}. To replicate default plugin behavior and make mention to be wrapped by other elements set priority to `20`.
 
-By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this the model attribute value object expose a unique id of each inserted mention to the model as `uid`. To prevent merging subsequent mentions set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
+By default, attribute elements that are next to each other and have the same value will be rendered as single HTML element. To prevent this the model attribute value object expose a unique id of each inserted mention to the model as `uid`. To prevent merging subsequent mentions set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
 
 **Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:engine/conversion/conversion~ConverterDefinition `'highest'` priority} controls this behaviour; thus, we do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
@@ -469,10 +481,6 @@ It is possible to configure the Mentions feature to work with the {@link feature
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
 
 ```bash
@@ -500,14 +508,6 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
-## Related features
-
-In addition to enabling mentions, you may want to check the following productivity features:
-
-* {@link features/text-transformation Automatic text transformation} &ndash; Lets you automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
-* {@link features/autoformat Autoformatting} &ndash; Lets you quickly apply formatting to the content you are writing.
-
 ## Common API
 
 The {@link module:mention/mention~Mention} plugin registers:
@@ -525,4 +525,4 @@ The {@link module:mention/mention~Mention} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention).
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-mention).

@@ -6,7 +6,9 @@ order: 50
 
 # Base64 image upload adapter
 
-The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
+The Base64 image upload adapter converts images inserted into the rich-text editor into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}.
+
+This kind of image upload does not require any server-side processing &mdash; images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which has a negative impact on the performance.
 
 <info-box warning>
     Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
@@ -14,6 +16,10 @@ The Base64 image upload adapter converts inserted images into [Base64-encoded st
 This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions; the same applies e.g. to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
 
 Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor 5.
+</info-box>
+
+<info-box info>
+	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
 </info-box>
 
 ## Demo
@@ -27,10 +33,6 @@ Use the editor below to see the adapter in action. Open the web browser console 
 </info-box>
 
 ## Installation
-
-<info-box info>
-	This feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
@@ -85,4 +87,4 @@ See the {@link features/images-overview Image feature guide} to find out more ab
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload).
+The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload).
