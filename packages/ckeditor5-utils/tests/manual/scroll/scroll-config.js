@@ -23,10 +23,17 @@ document.getElementById( 'navigation' ).addEventListener( 'click', evt => {
 	}
 }, { useCapture: true } );
 
+document.getElementById( 'alignToTop' ).addEventListener( 'change', event => {
+	document.getElementById( 'forceScroll' ).disabled = !event.currentTarget.checked;
+} );
+
+document.getElementById( 'forceScroll' ).disabled = !document.getElementById( 'alignToTop' ).checked;
+
 function getConfig() {
 	return {
 		viewportOffset: parseInt( document.getElementById( 'viewportOffset' ).value ),
 		ancestorOffset: parseInt( document.getElementById( 'ancestorOffset' ).value ),
-		alignToTop: document.getElementById( 'alignToTop' ).checked
+		alignToTop: document.getElementById( 'alignToTop' ).checked,
+		forceScroll: document.getElementById( 'forceScroll' ).checked
 	};
 }

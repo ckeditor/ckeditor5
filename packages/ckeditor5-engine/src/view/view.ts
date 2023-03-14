@@ -389,8 +389,16 @@ export default class View extends ObservableMixin() {
 	 *
 	 * @param options TODO
 	 * @param options.alignToTop TODO
+	 * @param options.forceScroll TODO
 	 */
-	public scrollToTheSelection( { alignToTop }: { alignToTop?: boolean } = {} ): void {
+	public scrollToTheSelection<T extends boolean, U extends T extends true ? true : never>(
+		{
+			alignToTop,
+			forceScroll
+		}: {
+			readonly alignToTop: T;
+			readonly forceScroll: U;
+		} ): void {
 		const range = this.document.selection.getFirstRange();
 
 		if ( range ) {
@@ -398,7 +406,8 @@ export default class View extends ObservableMixin() {
 				target: this.domConverter.viewRangeToDom( range ),
 				viewportOffset: 20,
 				ancestorOffset: 20,
-				alignToTop
+				alignToTop,
+				forceScroll
 			} );
 		}
 	}

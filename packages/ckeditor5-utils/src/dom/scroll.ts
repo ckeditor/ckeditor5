@@ -31,6 +31,7 @@ import isText from './istext';
  * `false` (default), the `target` will be revealed by scrolling as little as possible. This option will
  * not affect `targets` that must be scrolled down because they will appear at the top of the boundary
  * anyway.
+ * @param options.forceScroll TODO
  *
  * ```
  *          Initial state                        alignToTop = false (default)                     alignToTop = true
@@ -50,17 +51,20 @@ import isText from './istext';
  *     [ Target to be revealed ]
  *```
  */
-export function scrollViewportToShowTarget(
+export function scrollViewportToShowTarget<T extends boolean, U extends T extends true ? true : never>(
 	{
 		target,
 		viewportOffset = 0,
 		ancestorOffset = 0,
-		alignToTop
-	}: {
+		alignToTop,
+		forceScroll
+	}:
+	{
 		readonly target: HTMLElement | Range;
 		readonly viewportOffset?: number;
 		readonly ancestorOffset?: number;
-		readonly alignToTop?: boolean;
+		readonly alignToTop: T;
+		readonly forceScroll: U;
 	}
 ): void {
 	const targetWindow = getWindow( target );
@@ -91,13 +95,13 @@ export function scrollViewportToShowTarget(
 			// relative to the current window's viewport. To make it work in a parent window,
 			// it must be shifted.
 			return getRectRelativeToWindow( target, currentWindow! );
-		}, { alignToTop, ancestorOffset } );
+		}, { alignToTop, ancestorOffset, forceScroll } );
 
 		// Obtain the rect of the target after it has been scrolled within its ancestors.
 		// It's time to scroll the viewport.
 		const targetRect = getRectRelativeToWindow( target, currentWindow );
 
-		scrollWindowToShowRect( currentWindow, targetRect, viewportOffset, alignToTop );
+		scrollWindowToShowRect( currentWindow, targetRect, { viewportOffset, alignToTop, forceScroll } );
 
 		if ( currentWindow.parent != currentWindow ) {
 			// Keep the reference to the <iframe> element the "previous current window" was
@@ -185,16 +189,34 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
  * @param viewportOffset See scrollViewportToShowTarget.
  * @param alignToTop See scrollViewportToShowTarget.
  */
-function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: number, alignToTop: boolean = false ): void {
+function scrollWindowToShowRect<T extends boolean, U extends T extends true ? true : never>(
+	window: Window,
+	rect: Rect,
+	{
+		alignToTop,
+		forceScroll,
+		viewportOffset = 0
+	}: {
+		readonly alignToTop?: T;
+		readonly forceScroll?: U;
+		readonly viewportOffset?: number;
+	} = {}
+): void {
 	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
 	const viewportRect = new Rect( window ).excludeScrollbarsAndBorders();
 
 	const rects = [ targetShiftedUpRect, targetShiftedDownRect ];
+	const forceScrollToTop = alignToTop && forceScroll;
+	const allRectsFitInViewport = rects.every( rect => viewportRect.contains( rect ) );
 
-	if ( !rects.every( rect => viewportRect.contains( rect ) ) ) {
-		let { scrollX, scrollY } = window;
+	let { scrollX, scrollY } = window;
+	const initialScrollX = scrollX;
+	const initialScrollY = scrollY;
 
+	if ( forceScrollToTop ) {
+		scrollY -= ( viewportRect.top - rect.top ) + viewportOffset;
+	} else if ( !allRectsFitInViewport ) {
 		if ( isAbove( targetShiftedUpRect, viewportRect ) ) {
 			scrollY -= viewportRect.top - rect.top + viewportOffset;
 		} else if ( isBelow( targetShiftedDownRect, viewportRect ) ) {
@@ -204,7 +226,9 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 				scrollY += rect.bottom - viewportRect.bottom + viewportOffset;
 			}
 		}
+	}
 
+	if ( !allRectsFitInViewport ) {
 		// TODO: Web browsers scroll natively to place the target in the middle
 		// of the viewport. It's not a very popular case, though.
 		if ( isLeftOf( rect, viewportRect ) ) {
@@ -212,7 +236,9 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
 		} else if ( isRightOf( rect, viewportRect ) ) {
 			scrollX += rect.right - viewportRect.right + viewportOffset;
 		}
+	}
 
+	if ( scrollX != initialScrollX || scrollY !== initialScrollY ) {
 		window.scrollTo( scrollX, scrollY );
 	}
 }
@@ -224,27 +250,34 @@ function scrollWindowToShowRect( window: Window, rect: Rect, viewportOffset: num
  * @param getRect A function which returns the Rect, which is to be revealed.
  * @param options TODO
  * @param options.alignToTop TODO
+ * @param options.forceScroll TODO
  * @param options.ancestorOffset TODO
  */
-function scrollAncestorsToShowRect(
+function scrollAncestorsToShowRect<T extends boolean, U extends T extends true ? true : never>(
 	parent: HTMLElement,
 	getRect: () => Rect,
 	{
-		alignToTop = false,
+		alignToTop,
+		forceScroll,
 		ancestorOffset = 0
 	}: {
-		readonly alignToTop?: boolean;
+		readonly alignToTop?: T;
+		readonly forceScroll?: U;
 		readonly ancestorOffset?: number;
 	} = {}
 ): void {
 	const parentWindow = getWindow( parent );
-	let parentRect: Rect, targetRect: Rect;
+	const forceScrollToTop = alignToTop && forceScroll;
+	let parentRect: Rect, targetRect: Rect, targetFitsInTarget: boolean;
 
 	while ( parent != parentWindow.document.body ) {
 		targetRect = getRect();
 		parentRect = new Rect( parent ).excludeScrollbarsAndBorders();
+		targetFitsInTarget = parentRect.contains( targetRect );
 
-		if ( !parentRect.contains( targetRect ) ) {
+		if ( forceScrollToTop ) {
+			parent.scrollTop -= ( parentRect.top - targetRect.top ) + ancestorOffset;
+		} else if ( !targetFitsInTarget ) {
 			if ( isAbove( targetRect, parentRect ) ) {
 				parent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
 			} else if ( isBelow( targetRect, parentRect ) ) {
@@ -254,9 +287,11 @@ function scrollAncestorsToShowRect(
 					parent.scrollTop += targetRect.bottom - parentRect.bottom + ancestorOffset;
 				}
 			}
+		}
 
+		if ( !targetFitsInTarget ) {
 			if ( isLeftOf( targetRect, parentRect ) ) {
-				parent.scrollLeft -= parentRect.left - targetRect.left - ancestorOffset;
+				parent.scrollLeft -= parentRect.left - targetRect.left + ancestorOffset;
 			} else if ( isRightOf( targetRect, parentRect ) ) {
 				parent.scrollLeft += targetRect.right - parentRect.right + ancestorOffset;
 			}

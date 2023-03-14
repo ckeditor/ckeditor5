@@ -10,6 +10,10 @@
 	<br />
 	<label for="alignToTop">alignToTop</label>
 	<input type="checkbox" id="alignToTop" />
+	<br />
+	<br />
+	<label for="forceScroll">forceScroll</label>
+	<input type="checkbox" id="forceScroll" />
 </form>
 
 <ul id="navigation">
@@ -41,7 +45,7 @@
 <style>
 	body {
 		height: 5000px;
-		width: 2000px;
+		width: 5000px;
 	}
 
 	#config {
@@ -66,7 +70,7 @@
 	#navigation {
 		margin: 0;
 		list-style-type: none;
-		top: 180px;
+		top: 220px;
 		right: 20px;
 	}
 
@@ -80,18 +84,19 @@
 		height: 550px;
 		background: #e5e5e5;
 		width: 800px;
-		margin-top: 500px;
-		margin-left: 500px;
+		margin-top: 2000px;
+		margin-left: 2000px;
 		box-shadow: inset 0 0 5px #676767;
 	}
 
 	#scrollable > div {
 		text-align: center;
-		margin: 300px 0;
+		margin: 300px 1000px;
 		padding: 20px;
 		outline: 3px solid red;
 		outline-offset: -3px;
 		transition: background .2s;
+		width: 600px;
 	}
 
 	#scrollable > div.highlight {
