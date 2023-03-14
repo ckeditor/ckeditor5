@@ -71,18 +71,30 @@ export default class RootOperation extends Operation {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override get type(): 'addRoot' | 'removeRoot' {
 		return this.isAdd ? 'addRoot' : 'removeRoot';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override clone(): RootOperation {
 		return new RootOperation( this.rootName, this.elementName, this.isAdd, this._document, this.baseVersion );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override getReversed(): RootOperation {
 		return new RootOperation( this.rootName, this.elementName, !this.isAdd, this._document, this.baseVersion! + 1 );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override _validate(): void {
 		const root = this._document.getRoot( this.rootName )!;
 
@@ -109,10 +121,16 @@ export default class RootOperation extends Operation {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override _execute(): void {
 		this._document.getRoot( this.rootName )!._isAttached = this.isAdd;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override toJSON(): unknown {
 		const json: any = super.toJSON();
 
@@ -129,6 +147,9 @@ export default class RootOperation extends Operation {
 		return json;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public static override get className(): string {
 		return 'RootOperation';
 	}
