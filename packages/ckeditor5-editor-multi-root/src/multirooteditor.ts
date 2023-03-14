@@ -251,11 +251,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * ```
 	 *
 	 * @param rootName Name of the root to add.
-	 * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
 	 * @param data Initial data for the root.
 	 * @param elementName Element name for the root element in the model. It can be used to set different schema rules for different roots.
+	 * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
 	 */
-	public addRoot( rootName: string, isUndoable = false, data = '', elementName = '$root' ): void {
+	public addRoot( { rootName, data, elementName }: RootData, isUndoable: boolean ): void {
 		const dataController = this.data;
 
 		if ( isUndoable ) {
@@ -267,7 +267,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		function _addRoot( writer: Writer ) {
 			const root = writer.addRoot( rootName, elementName );
 
-			if ( data !== '' ) {
+			if ( data ) {
 				writer.insert( dataController.parse( data, root ), root, 0 );
 			}
 		}
@@ -569,3 +569,9 @@ export type DetachRootEvent = {
 	name: 'detachRoot';
 	args: [ root: RootElement ];
 };
+
+interface RootData {
+	rootName: string;
+	data?: string;
+	elementName?: string;
+}
