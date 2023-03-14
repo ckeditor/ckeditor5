@@ -8,7 +8,7 @@
  */
 
 /**
- * The multi-root editor implementation.
+ * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
  *
  * The multi-root editor provides multiple inline editable elements and a toolbar. All editable areas are controlled by one editor
  * instance, which means that they share common configuration, document ID, or undo stack.
@@ -25,7 +25,8 @@
  *
  * The multi-root editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-multi-root`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root) package)
- * but it is also available in the multi-root editor build.
+ * but it is also available in the
+ * {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor build}.
  *
  * {@glink installation/getting-started/predefined-builds Builds} are ready-to-use editors with plugins bundled in.
  *

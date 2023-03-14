@@ -189,12 +189,33 @@ export default class ResizeState extends ObservableMixin() {
 }
 
 /**
- * Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
+ * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
  */
 function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
 	const domResizeHostParent = domResizeHost.parentElement;
+
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
-	const parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
+	let parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
+
+	// Sometimes parent width cannot be accessed. If that happens we should go up in the elements tree
+	// and try to get width from next ancestor.
+	// https://github.com/ckeditor/ckeditor5/issues/10776
+	const ancestorLevelLimit = 5;
+	let currentLevel = 0;
+
+	let checkedElement = domResizeHostParent!;
+
+	while ( isNaN( parentWidth ) ) {
+		checkedElement = checkedElement.parentElement!;
+
+		if ( ++currentLevel > ancestorLevelLimit ) {
+			return 0;
+		}
+
+		parentWidth = parseFloat(
+				domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( checkedElement ).width
+		);
+	}
 
 	return resizeHostRect.width / parentWidth * 100;
 }

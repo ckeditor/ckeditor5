@@ -29,6 +29,7 @@ Promise.resolve()
 		cwd: process.cwd(),
 		packages: 'packages',
 		releaseBranch: 'release',
+		from: 'v37.0.0-alpha.0',
 		highlightsPlaceholder: true,
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {

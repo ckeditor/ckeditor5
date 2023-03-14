@@ -13,7 +13,7 @@
     "noImplicitOverride": true,
     "strict": true,
     "module": "es6",
-    "target": "es2020",
+    "target": "es2019",
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",

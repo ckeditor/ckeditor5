@@ -56,7 +56,7 @@ export type { default as ModelConsumable } from './conversion/modelconsumable';
 export type { Consumables, default as ViewConsumable } from './conversion/viewconsumable';
 
 // DataProcessor.
-export { default as DataProcessor } from './dataprocessor/dataprocessor';
+export type { default as DataProcessor } from './dataprocessor/dataprocessor';
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
 // Model / Operation.
@@ -124,7 +124,7 @@ export { default as Renderer } from './view/renderer';
 export { default as View } from './view/view';
 export { default as ViewDocument } from './view/document';
 export { default as ViewText } from './view/text';
-export { default as ViewElement, ElementAttributes as ViewElementAttributes } from './view/element';
+export { default as ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element';
 export { default as ViewContainerElement } from './view/containerelement';
 export { default as ViewEditableElement } from './view/editableelement';
 export { default as ViewAttributeElement } from './view/attributeelement';
@@ -181,7 +181,7 @@ export type { ViewDocumentSelectionChangeEvent } from './view/observer/selection
 export type { ViewRenderEvent } from './view/view';
 
 // View / Styles.
-export { StylesProcessor, BoxSides } from './view/stylesmap';
+export { StylesProcessor, type BoxSides } from './view/stylesmap';
 export * from './view/styles/background';
 export * from './view/styles/border';
 export * from './view/styles/margin';
