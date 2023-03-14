@@ -11,7 +11,12 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-toolbar' ), {
 		toolbar: {
 			items: [
-				'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

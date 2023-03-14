@@ -19,7 +19,7 @@ The CKFinder feature lets you insert images and links to files into your content
 	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
-## Demo
+## Demos
 
 ### Image upload only
 
@@ -30,10 +30,6 @@ This demo shows the integration where the file manager's server connector handle
 
 {@snippet features/ckfinder-upload-only}
 
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
-</info-box>
-
 ### Full integration
 
 This demo shows the [full integration](#configuring-the-full-integration) with the CKFinder file uploader:
@@ -42,6 +38,10 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 * Use the insert image or file button in the toolbar to open the CKFinder file manager and insert an image or a link to any other file.
 
 {@snippet features/ckfinder}
+
+<info-box info>
+	These demos only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
 
 ## Additional feature information
 

@@ -88,6 +88,14 @@ There are more features that help control user permissions in the WYSIWYG editor
 * {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
 * {@link features/comments-only-mode Comments-only mode} &ndash; Users can add comments to any part of the content instead of editing it directly.
 
+## Common API
+
+The editor provides the following API to manage the read-only mode:
+
+* The {@link module:core/editor/editor~Editor#isReadOnly} property is a read-only, observable property that allows you to check the `isReadOnly` value and react to its changes,
+* The {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode( featureId )`} method turns on the read-only mode for the editor by creating a lock with given unique id.
+* The {@link module:core/editor/editor~Editor#disableReadOnlyMode `Editor#disableReadOnlyMode( featureId )`} method removes the read-only lock from the editor. The editor becomes editable when no lock is present on the editor anymore.
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core).

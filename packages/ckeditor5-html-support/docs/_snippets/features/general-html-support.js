@@ -17,26 +17,10 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'sourceEditing',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'code',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'link',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+				'|', 'bold', 'italic', 'code',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

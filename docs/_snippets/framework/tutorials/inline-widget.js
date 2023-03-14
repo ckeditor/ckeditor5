@@ -209,7 +209,16 @@ class PlaceholderEditing extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-inline-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ],
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'placeholder',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		placeholderConfig: {
 			types: [ 'date', 'color', 'first name', 'surname' ]
 		},

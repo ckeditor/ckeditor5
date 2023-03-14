@@ -24,21 +24,12 @@ ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
-			'insertTable',
-			'|',
-			'fontFamily', 'fontSize',
-			'|',
-			'bold', 'italic',
-			'|',
-			'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
-			'|',
-			'bulletedList', 'numberedList',
-			'|',
-			'outdent', 'indent',
-			'|',
-			'link', 'blockQuote',
-			'|',
-			'undo', 'redo'
+			'undo', 'redo',
+			'|', 'heading', '|', 'fontFamily', 'fontSize',
+			'|', 'bold', 'italic',
+			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+			'|', 'aligmnet',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
 	ui: {
