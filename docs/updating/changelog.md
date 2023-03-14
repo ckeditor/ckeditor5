@@ -16,3 +16,4 @@ You can find additional information about each release in the blog posts linked 
 This guide only provides the changelog information for the latest 3 releases of CKEditor 5. For older releases, refer to the [release notes on GitHub](https://github.com/ckeditor/ckeditor5/releases).
 
 {@exec ../scripts/docs/get-latest-changelogs.js}
+{@exec ../scripts/docs/get-latest-changelogs.js}
