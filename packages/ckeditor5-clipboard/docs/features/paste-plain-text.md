@@ -12,7 +12,7 @@ With the plain text pasting feature, text pasted using the <kbd>Ctrl</kbd>/<kbd>
 
 ## Demo
 
-Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> to test the style inheritance. Paste without the <kbd>Shift</kbd> modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
+Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> to paste it into another paragraph. See how the pasted text matches the paragraph's style. Next, compare what happens when you paste the text without pressing <kbd>Shift</kbd>.
 
 {@snippet features/paste-plain-text}
 
