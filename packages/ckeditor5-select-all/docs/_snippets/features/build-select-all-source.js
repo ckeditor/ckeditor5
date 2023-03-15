@@ -5,12 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
 
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( Bold, Italic, Underline );
+ClassicEditor.builtinPlugins.push( Underline );
 
 window.ClassicEditor = ClassicEditor;

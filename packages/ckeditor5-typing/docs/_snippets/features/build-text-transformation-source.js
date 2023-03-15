@@ -5,9 +5,10 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( TextTransformation );
 

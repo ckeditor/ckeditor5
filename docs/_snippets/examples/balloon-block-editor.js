@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block/src/ckeditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 

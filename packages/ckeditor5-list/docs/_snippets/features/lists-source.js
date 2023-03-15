@@ -5,11 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import { ImageResize } from '@ckeditor/ckeditor5-image';
+import { ListProperties, DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 window.ClassicEditor = ClassicEditor;
 window.ListProperties = ListProperties;

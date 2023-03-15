@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
+/*
+ * This is a JavaScript version of CKEditor 5 Classic build.
+ * It is used for all snippets used in the documentation to avoid importing a build source from the `src/` directory.
+ * See: https://github.com/ckeditor/ckeditor5/issues/13552 to learn why it is a problem.
+ */
 
+// The editor creator to use.
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
@@ -27,12 +31,10 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { WordCount } from '@ckeditor/ckeditor5-word-count';
 
-export class BalloonEditor extends BalloonEditorBase {
-}
+export default class ClassicEditor extends ClassicEditorBase {}
 
-const builtinPlugins = [
+ClassicEditor.builtinPlugins = [
 	Essentials,
 	UploadAdapter,
 	Autoformat,
@@ -60,56 +62,6 @@ const builtinPlugins = [
 	TableToolbar,
 	TextTransformation
 ];
-
-BalloonEditor.builtinPlugins = builtinPlugins.slice();
-
-BalloonEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'uploadImage',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed',
-			'undo',
-			'redo'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-};
-
-class ClassicEditor extends ClassicEditorBase {
-}
-
-ClassicEditor.builtinPlugins = builtinPlugins.slice();
 
 ClassicEditor.defaultConfig = {
 	toolbar: {
@@ -153,9 +105,3 @@ ClassicEditor.defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
-
-ClassicEditor.builtinPlugins.push( WordCount );
-BalloonEditor.builtinPlugins.push( WordCount );
-
-window.ClassicEditor = ClassicEditor;
-window.BalloonEditor = BalloonEditor;

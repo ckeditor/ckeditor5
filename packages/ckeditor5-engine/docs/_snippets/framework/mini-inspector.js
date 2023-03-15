@@ -5,10 +5,134 @@
 
 /* globals window */
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
+
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+
 import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
+
+export default class DecoupledEditor extends DecoupledEditorBase {}
+
+DecoupledEditor.builtinPlugins = [
+	Essentials,
+	Alignment,
+	FontSize,
+	FontFamily,
+	FontColor,
+	FontBackgroundColor,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	Strikethrough,
+	Underline,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	CloudServices,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Indent,
+	IndentBlock,
+	Link,
+	List,
+	ListProperties,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	PictureEditing,
+	Table,
+	TableToolbar,
+	TextTransformation
+];
+
+DecoupledEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'fontfamily',
+			'fontsize',
+			'fontColor',
+			'fontBackgroundColor',
+			'|',
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+			'|',
+			'alignment',
+			'|',
+			'numberedList',
+			'bulletedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'link',
+			'blockquote',
+			'uploadImage',
+			'insertTable',
+			'mediaEmbed',
+			'|',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		resizeUnit: 'px',
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:wrapText',
+			'imageStyle:breakText',
+			'|',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
+};
 
 window.DecoupledEditor = DecoupledEditor;
 window.Essentials = Essentials;
