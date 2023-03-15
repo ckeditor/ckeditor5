@@ -5,17 +5,10 @@
 
 /* globals console, window, document */
 
-import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { Font, FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { List, ListProperties } from '@ckeditor/ckeditor5-list';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { List } from '@ckeditor/ckeditor5-list';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -24,119 +17,18 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
-class DecoupledEditor extends DecoupledEditorBase {}
-
-DecoupledEditor.builtinPlugins = [
-	Essentials,
-	Alignment,
-	FontSize,
-	FontFamily,
-	FontColor,
-	FontBackgroundColor,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	Strikethrough,
-	Underline,
-	BlockQuote,
-	CKBox,
-	CKFinder,
-	CloudServices,
-	EasyImage,
-	Heading,
-	Image,
-	ImageCaption,
-	ImageResize,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	IndentBlock,
-	Link,
-	List,
-	ListProperties,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	PictureEditing,
-	Table,
-	TableToolbar,
-	TextTransformation
-];
-
-DecoupledEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'heading',
-			'|',
-			'fontfamily',
-			'fontsize',
-			'fontColor',
-			'fontBackgroundColor',
-			'|',
-			'bold',
-			'italic',
-			'underline',
-			'strikethrough',
-			'|',
-			'alignment',
-			'|',
-			'numberedList',
-			'bulletedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'link',
-			'blockquote',
-			'uploadImage',
-			'insertTable',
-			'mediaEmbed',
-			'|',
-			'undo',
-			'redo'
-		]
-	},
-	image: {
-		resizeUnit: 'px',
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:wrapText',
-			'imageStyle:breakText',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
-	list: {
-		properties: {
-			styles: true,
-			startIndex: true,
-			reversed: true
-		}
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-};
+import DecoupledEditor from '../build-decoupled-document';
 
 class FormattingOptions extends Plugin {
 	/**
