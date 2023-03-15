@@ -5,7 +5,7 @@ Changelog
 
 ### Release highlights
 
-This release addresses issues with TypeScript reporting some commands, plugins, and configurations as either unavailable or unknown, despite being correctly registered.
+This release addresses the issues with TypeScript reporting some commands, plugins, and configurations as either unavailable or unknown, despite them being correctly registered.
 
 This update also includes a breaking change from `alpha.0`. To ensure proper TypeScript support, update your imports to use the main package entry point instead of importing from package internals. See the example below:
 
@@ -23,7 +23,7 @@ We appreciate all of your feedback, as it helps us greatly to improve the final 
 
 ### Features
 
-* **[build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root)**: Introduced the new editor build featuring multi-root editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root)**: Introduced a new editor build featuring the multi-root editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
 * **[multi-root-editor](https://www.npmjs.com/package/@ckeditor/ckeditor5-multi-root-editor)**: Introduced the multi-root editor type that allows defining multiple editable areas handled by one editor instance. Closes [#11493](https://github.com/ckeditor/ckeditor5/issues/11493). ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
 
 ### Bug fixes
@@ -33,7 +33,7 @@ We appreciate all of your feedback, as it helps us greatly to improve the final 
 
 ### Other changes
 
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The `EditorConfig#initialData` and `EditorConfig#placeholder` options can now be set to `Record<string, string>` where keys are root names and values are settings for related roots. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The `EditorConfig#initialData` and `EditorConfig#placeholder` options can now be set to `Record<string, string>` where the keys are root names and the values are settings for the related roots. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
 * Improve augmentation in some packages. Related to [#13565](https://github.com/ckeditor/ckeditor5/issues/13565). ([commit](https://github.com/ckeditor/ckeditor5/commit/3869a1bdadc0aa9c83990ddbf20710b3eebb7e2b))
 
 ### Released packages

@@ -268,7 +268,7 @@ function scanTable( viewTable: ViewElement ) {
 
 	return {
 		headingRows,
-		headingColumns: headingColumns ?? 0,
+		headingColumns: headingColumns || 0,
 		rows: [ ...headRows, ...bodyRows ]
 	};
 }
