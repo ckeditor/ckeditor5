@@ -8,15 +8,7 @@ order: 30
 
 # Pasting plain text
 
-The plain text pasting feature is implemented by the `PastePlainText` plugin which is a part of the `Clipboard` plugin.
-
-It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
-
-Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+With the plain text pasting feature, text pasted using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke will match the formatting of the content you paste it into.
 
 ## Demo
 
@@ -28,17 +20,18 @@ Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
+## Additional feature information
 
-CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
-* {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
-* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
+The plain text pasting feature is implemented by the `PastePlainText` plugin which is a part of the `Clipboard` plugin.
+
+It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
+
+Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is required by the clipboard plugin and is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
@@ -74,6 +67,13 @@ If you think that support for any of the applications needs improvements, please
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
 
+## Related features
+
+CKEditor 5 supports a wider range of paste features, including:
+* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
+* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
+
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).

@@ -7,7 +7,21 @@ order: 70
 
 # Linking images
 
-The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this could be useful are:
+The {@link module:link/linkimage~LinkImage} plugin lets you use images as links.
+
+## Demo
+
+Click on the images to invoke the contextual toolbar. Use the link icon {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} to access the editing options for links on an image. Also notice the icon in the top-right corner of the image, indicating there is a link attached to the image.
+
+{@snippet features/image-link}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Additional feature information
+
+Here are some use cases where linking images can be useful:
 
 * Linking to a high-resolution version of an image.
 * Using images as thumbnails linking to an article or product page.
@@ -33,19 +47,10 @@ An inline image code would look more like this:
 	Some text <img src="..." alt="..." style="width: 20px">
 </a>
 ```
-## Demo
-
-Click on the images to invoke the contextual toolbar. Use the link icon {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} to access the editing options for links on an image. Also notice the icon in the top-right corner of the image, indicating there is a link attached to the image.
-
-{@snippet features/image-link}
-
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
-</info-box>
 
 ## Installation
 
-The image linking feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the {@link features/images-installation installation guide}.
+The image linking feature is not enabled by default in any of the editor builds. To enable it, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the {@link features/images-installation installation guide}.
 
 <info-box info>
 	The {@link module:link/linkimage~LinkImage} plugin is available in the {@link api/link `@ckeditor/ckeditor5-link`} package.
@@ -64,4 +69,4 @@ The {@link module:link/linkimage~LinkImage} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link).
