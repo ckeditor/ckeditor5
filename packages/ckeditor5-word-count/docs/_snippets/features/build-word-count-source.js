@@ -29,9 +29,10 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { WordCount } from '@ckeditor/ckeditor5-word-count';
 
-export class BalloonEditor extends BalloonEditorBase {}
+export class BalloonEditor extends BalloonEditorBase {
+}
 
-BalloonEditor.builtinPlugins = [
+const builtinPlugins = [
 	Essentials,
 	UploadAdapter,
 	Autoformat,
@@ -59,6 +60,8 @@ BalloonEditor.builtinPlugins = [
 	TableToolbar,
 	TextTransformation
 ];
+
+BalloonEditor.builtinPlugins = builtinPlugins.slice();
 
 BalloonEditor.defaultConfig = {
 	toolbar: {
@@ -103,36 +106,10 @@ BalloonEditor.defaultConfig = {
 	language: 'en'
 };
 
-class ClassicEditor extends ClassicEditorBase {}
+class ClassicEditor extends ClassicEditorBase {
+}
 
-ClassicEditor.builtinPlugins = [
-	Essentials,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	BlockQuote,
-	CKBox,
-	CKFinder,
-	CloudServices,
-	EasyImage,
-	Heading,
-	Image,
-	ImageCaption,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	Link,
-	List,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	PictureEditing,
-	Table,
-	TableToolbar,
-	TextTransformation
-];
+ClassicEditor.builtinPlugins = builtinPlugins.slice();
 
 ClassicEditor.defaultConfig = {
 	toolbar: {
