@@ -9,7 +9,7 @@ The title feature lets you add a single title field at the beginning of your doc
 
 ## Demo
 
-Use the editor to create a document with clearly separated title and body sections. You can check the content of the title and body elements in the console below.
+Use the editor below to create a document with distinct title and body sections. You can check the content of the title and body elements in the console below.
 
 {@snippet features/title}
 
