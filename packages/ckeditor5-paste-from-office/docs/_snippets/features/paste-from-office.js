@@ -69,7 +69,7 @@ ClassicEditor
 				reversed: false
 			}
 		},
-		placeholder: 'Paste some content here to test the feature.',
+		placeholder: 'Paste the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
