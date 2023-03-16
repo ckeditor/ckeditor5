@@ -37,7 +37,7 @@ To find out more about CKBox, the brand-new file manager, visit the [CKBox websi
 
 ## Demo
 
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can find more instructions in the demo below.
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. See detailed instructions in the demo below.
 
 Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images into the CKBox file manager. You can access them from the management panel.
 
@@ -46,6 +46,10 @@ Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/i
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
+
+Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDFs) are inserted as links.
+
+You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
 
 ## Installation
 
