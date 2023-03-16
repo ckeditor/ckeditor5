@@ -10,7 +10,8 @@ const minimatch = require( 'minimatch' );
 
 const {
 	TRAVIS_COMMIT_RANGE,
-	TRAVIS_PULL_REQUEST
+	TRAVIS_PULL_REQUEST,
+	TRAVIS_EVENT_TYPE
 } = process.env;
 
 const filePatterns = [
@@ -30,6 +31,12 @@ const filePatterns = [
 module.exports = cwd => {
 	// We target last commit content by default if we're not processing a pull request.
 	let diffTargets = 'HEAD HEAD~1';
+
+	console.log( {
+		TRAVIS_PULL_REQUEST,
+		TRAVIS_EVENT_TYPE,
+		TRAVIS_COMMIT_RANGE
+	} );
 
 	if ( TRAVIS_PULL_REQUEST ) {
 		// We have to find merge base in case the feature branch is not up to date with target branch.
