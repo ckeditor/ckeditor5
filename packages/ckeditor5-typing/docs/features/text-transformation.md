@@ -186,6 +186,18 @@ In addition to enabling automatic text transformations, you may want to check th
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 
+## Common API
+
+The {@link module:typing/texttransformation~TextTransformation} plugin provides the following API:
+
+* `TextTransformation` &ndash; main transformations module.
+* `TextTransformationConfig` &ndash; configuration interface.
+* `TextTransformationDescription` &ndash; the text transformation definition object which describes what should be replaced with what.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing).

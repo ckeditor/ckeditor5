@@ -106,9 +106,17 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 <listItem listType="todo" todoListChecked="true">Bar</listItem>
 ```
 
-## Ordered and unordered lists
+## Related features
 
-You can read more about these features in the {@link features/lists lists feature guide}.
+You can read more about the ordered and unordered list in the {@link features/lists lists feature guide}.
+
+## Common API
+
+The {@link module:list/todolist~TodoList} plugin registers:
+
+* The {@link module:list/todolist/todolistediting~TodoListEditing} &ndash; handles creating, editing and removing to-do lists and their items.
+* The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand} &ndash; the check to-do command.
+* The `'todoList'` &ndash; UI button that allows to convert elements to and from to-do list items and to indent or outdent them.
 
 ## Contribute
 

@@ -197,6 +197,8 @@ ClassicEditor
 	} );
 ```
 
+### Demo
+
 {@snippet features/ui-language-content}
 
 <info-box>

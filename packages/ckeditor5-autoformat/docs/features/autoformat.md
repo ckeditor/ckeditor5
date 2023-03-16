@@ -100,6 +100,18 @@ In addition to enabling automatic text formatting, you may want to check the fol
 
 Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
+## Common API
+
+The {@link module:autoformat/autoformat~Autoformat} plugin provides the following API:
+
+* `Autoformat` &ndash;  a class that enables a set of predefined autoformatting actions.
+* `blockAutoformatEditing` &ndash; allows to format various block patterns.
+* `inlineAutoformatEditing` &ndash; allows to format various inline patterns.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat).
