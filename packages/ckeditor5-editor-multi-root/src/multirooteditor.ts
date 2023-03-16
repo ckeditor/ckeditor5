@@ -197,7 +197,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * Adds a new root to the editor.
 	 *
 	 * ```ts
-	 * editor.addRoot( 'myRoot' );
+	 * editor.addRoot( 'myRoot', { data: '<p>Initial root data.</p>' } );
 	 * ```
 	 *
 	 * After a root is added, you will be able to modify and retrieve its data.
@@ -242,9 +242,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * let rowId = 0;
 	 *
 	 * editor.model.change( () => {
-	 * 	editor.addRoot( 'left-row-' + rowId, true );
-	 * 	editor.addRoot( 'center-row-' + rowId, true );
-	 * 	editor.addRoot( 'right-row-' + rowId, true );
+	 * 	editor.addRoot( 'left-row-' + rowId, { isUndoable: true } );
+	 * 	editor.addRoot( 'center-row-' + rowId, { isUndoable: true } );
+	 * 	editor.addRoot( 'right-row-' + rowId, { isUndoable: true } );
 	 *
 	 * 	rowId++;
 	 * } );
@@ -255,7 +255,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * @param elementName Element name for the root element in the model. It can be used to set different schema rules for different roots.
 	 * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
 	 */
-	public addRoot( { rootName, data, elementName }: RootData, isUndoable: boolean ): void {
+	public addRoot( rootName: string, { data = '', elementName = '$root', isUndoable = false } = {} ): void {
 		const dataController = this.data;
 
 		if ( isUndoable ) {
@@ -318,9 +318,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 *
 	 * ```ts
 	 * editor.model.change( () => {
-	 * 	editor.addRoot( 'left-row-3', true );
-	 * 	editor.addRoot( 'center-row-3', true );
-	 * 	editor.addRoot( 'right-row-3', true );
+	 * 	editor.detachRoot( 'left-row-3', true );
+	 * 	editor.detachRoot( 'center-row-3', true );
+	 * 	editor.detachRoot( 'right-row-3', true );
 	 * } );
 	 * ```
 	 *
@@ -569,9 +569,3 @@ export type DetachRootEvent = {
 	name: 'detachRoot';
 	args: [ root: RootElement ];
 };
-
-interface RootData {
-	rootName: string;
-	data?: string;
-	elementName?: string;
-}

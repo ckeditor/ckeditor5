@@ -178,6 +178,8 @@ export default class Document extends EmitterMixin() {
 			for ( const marker of this.model.markers ) {
 				if ( !marker.getRange().root.isAttached() ) {
 					writer.removeMarker( marker );
+
+					result = true;
 				}
 			}
 

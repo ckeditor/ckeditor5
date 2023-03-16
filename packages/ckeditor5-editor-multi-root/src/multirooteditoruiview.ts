@@ -118,8 +118,9 @@ export default class MultiRootEditorUIView extends EditorUIView {
 		this.editables[ editableName ] = editable;
 		editable.name = editableName;
 
-		// This will render `editable` as `this` is already rendered.
-		this.registerChild( editable );
+		if ( this.isRendered ) {
+			this.registerChild( editable );
+		}
 
 		return editable;
 	}
@@ -145,6 +146,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	public override render(): void {
 		super.render();
 
+		this.registerChild( Object.values( this.editables ) );
 		this.registerChild( this.toolbar );
 	}
 }

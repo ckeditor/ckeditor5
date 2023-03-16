@@ -187,7 +187,11 @@ export default abstract class Node extends TypeCheckable {
 	 * Returns `true` if the node is inside a document root that is attached to the document.
 	 */
 	public isAttached(): boolean {
-		return this.root.isAttached();
+		// If the node has no parent it means that it is a root.
+		// But this is not a `RootElement`, so it means that it is not attached.
+		//
+		// If this is not the root, check if this element's root is attached.
+		return this.parent === null ? false : this.root.isAttached();
 	}
 
 	/**

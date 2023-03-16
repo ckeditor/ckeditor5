@@ -57,7 +57,7 @@ describe( 'MultiRootEditorUIView', () => {
 
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
 					const editingView = new EditingView();
-					const editingViewRoot = createRoot( editingView.document, 'foo' );
+					const editingViewRoot = createRoot( editingView.document, 'div', 'foo' );
 					const view = new MultiRootEditorUIView( locale, editingView, [ 'foo' ], {
 						shouldToolbarGroupWhenFull: true
 					} );
