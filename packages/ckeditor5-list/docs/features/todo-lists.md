@@ -108,7 +108,9 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 
 ## Related features
 
-You can read more about the ordered and unordered list in the {@link features/lists lists feature guide}.
+These features provide similar functionality:
+* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered list with configurable markers.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Common API
 
@@ -116,7 +118,11 @@ The {@link module:list/todolist~TodoList} plugin registers:
 
 * The {@link module:list/todolist/todolistediting~TodoListEditing} &ndash; handles creating, editing and removing to-do lists and their items.
 * The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand} &ndash; the check to-do command.
-* The `'todoList'` &ndash; UI button that allows to convert elements to and from to-do list items and to indent or outdent them.
+* The `'todoList'` UI button &ndash; a UI button that allows to convert elements to and from to-do list items and to indent or outdent them.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
