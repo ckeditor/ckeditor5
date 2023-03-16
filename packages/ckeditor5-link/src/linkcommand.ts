@@ -28,6 +28,8 @@ export default class LinkCommand extends Command {
 	 */
 	declare public value: string | undefined;
 
+	declare private _isBind: boolean | null;
+
 	/**
 	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
 	 * corresponding to the {@link module:link/linkconfig~LinkConfig#decorators decorator configuration}.
@@ -58,7 +60,6 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
-
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
@@ -142,6 +143,15 @@ export default class LinkCommand extends Command {
 	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const range = selection.getFirstRange( );
+		const linkText = getTextFromRange( range );
+
+		if ( linkText === href && this._isBind === null ) {
+			this._isBind = true;
+		} else {
+			this._isBind = false;
+		}
+
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -277,4 +287,20 @@ export default class LinkCommand extends Command {
 
 		return true;
 	}
+}
+
+function getTextFromRange( range: Range | null ): string {
+	if ( !range ) {
+		return '';
+	}
+
+	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+		if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {
+			return '';
+		}
+
+		return rangeText + node.data;
+	}, '' );
+
+	return text;
 }
