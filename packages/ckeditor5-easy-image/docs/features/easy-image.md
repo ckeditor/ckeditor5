@@ -156,6 +156,16 @@ ClassicEditor
 	Please note that most integrations will also require the {@link module:image/image~Image} plugin to be loaded in the editor to make this feature work properly (or one of {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline}). Check out the comprehensive {@link features/images-installation guide to images} in CKEditor 5 to learn more.
 </info-box>
 
+## Common API
+
+The {@link module:easy-image/easyimage~EasyImage} plugin acts as a glue plugin. It loads the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} that handles the CKEditor Cloud Services integration.
+
+The plugin requires the {@link module:image/image~Image} and {@link module:image/imageupload~ImageUpload} plugins to operate properly.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## What's next?
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
