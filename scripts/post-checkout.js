@@ -17,7 +17,7 @@ const path = require( 'path' );
  * When package only exist on some branches, switching them can leave behind
  * some files which are not tracked by git, such as node_modules.
  *
- * See: https://github.com/ckeditor/ckeditor5/issues/13692.
+ * See: https://github.com/ckeditor/ckeditor5/issues/13695.
  */
 
 const branchChanged = process.argv[ 2 ] === '1';
