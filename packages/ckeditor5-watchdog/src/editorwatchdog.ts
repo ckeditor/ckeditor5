@@ -24,13 +24,18 @@ import Watchdog, { type WatchdogConfig } from './watchdog';
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 
+export type WatchdogData<TData> = TData extends HTMLElement ? TData : TData | Record<string, string>;
+
 /**
  * A watchdog for CKEditor 5 editors.
  *
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
-export default class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
+export default class EditorWatchdog<
+	TEditor extends Editor = Editor,
+	TData extends HTMLElement | string = HTMLElement | string
+> extends Watchdog {
 	/**
 	 * The current editor instance.
 	 */
@@ -45,7 +50,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.
 	 */
-	private _data?: Record<string, string>;
+	protected _data?: Record<string, string>;
 
 	/**
 	 * The last document version.
@@ -55,19 +60,19 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	/**
 	 * The editor source element or data.
 	 */
-	private _elementOrData?: HTMLElement | string | Record<string, string>;
+	protected _elementOrData?: WatchdogData<TData>;
 
 	/**
 	 * The editor configuration.
 	 */
-	private _config?: EditorConfig;
+	protected _config?: EditorConfig;
 
 	/**
 	 * The creation method.
 	 *
 	 * @see #setCreator
 	 */
-	declare protected _creator: EditorCreatorFunction<TEditor>;
+	declare protected _creator: EditorCreatorFunction<TEditor, WatchdogData<TData>>;
 
 	/**
 	 * The destruction method.
@@ -122,7 +127,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 * ```
 	 */
-	public setCreator( creator: EditorCreatorFunction<TEditor> ): void {
+	public setCreator( creator: EditorCreatorFunction<TEditor, WatchdogData<TData>> ): void {
 		this._creator = creator;
 	}
 
@@ -166,7 +171,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			} )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config, this._config!.context );
+					return this.create( this._data as any, this._config, this._config!.context );
 				} else {
 					const updatedConfig = Object.assign( {}, this._config, {
 						initialData: this._data
@@ -188,7 +193,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * @param context A context for the editor.
 	 */
 	public create(
-		elementOrData: HTMLElement | string | Record<string, string> = this._elementOrData!,
+		elementOrData: WatchdogData<TData> = this._elementOrData!,
 		config: EditorConfig = this._config!,
 		context?: Context
 	): Promise<unknown> {
@@ -236,7 +241,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			} );
 	}
 
-	private _destroy(): Promise<unknown> {
+	protected _destroy(): Promise<unknown> {
 		return Promise.resolve()
 			.then( () => {
 				this._stopErrorHandling();
@@ -334,7 +339,7 @@ export type EditorWatchdogRestartEvent = {
 	return: undefined;
 };
 
-export type EditorCreatorFunction<TEditor = Editor> = (
-	elementOrData: HTMLElement | string | Record<string, string>,
+export type EditorCreatorFunction<TEditor = Editor, TData = HTMLElement | string | Record<string, string>> = (
+	elementOrData: TData,
 	config: EditorConfig
 ) => Promise<TEditor>;
