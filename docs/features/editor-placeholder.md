@@ -6,7 +6,7 @@ category: features
 
 # Editor placeholder
 
-You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
+You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs. Not to be confused with {@link examples/framework/content-placeholder content placeholder}.
 
 ## Demo
 
@@ -80,6 +80,14 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 {@snippet features/placeholder-custom}
 
 **Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/images-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
+
+## Common API
+
+The {@link module:core/editor/editorconfig~EditorConfig} module registers the {@link module:core/editor/editorconfig~EditorConfig#placeholder} string that holds the placeholder text used when the editor is empty.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
