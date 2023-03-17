@@ -16,7 +16,7 @@ The content minimap feature shows a miniature overview of your content. It helps
 
 ## Demo
 
-Scroll the content and the minimap in the sidebar will show your current location. Drag the box marking the visible portion of the content to quickly navigate the document. You can also simply click anywhere on the minimap to move around instantly.
+Scroll the content, and the minimap in the sidebar will show your current location. To quickly navigate the document, drag the box marking the visible portion of the content. You can also click anywhere on the minimap to move around instantly.
 
 {@snippet features/minimap}
 
