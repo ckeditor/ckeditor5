@@ -12,7 +12,7 @@ The {@link module:table/tablecolumnresize~TableColumnResize} plugin lets you res
 
 ## Demo
 
-To resize a column, simply hover your pointer over the column edge until it gets highlighted. Just drag the column edge until you achieve the desired size and release.
+To resize a column, simply hover your pointer over the column edge until it gets highlighted. Drag the column edge until you achieve the desired size.
 
 {@snippet features/table-column-resize}
 
