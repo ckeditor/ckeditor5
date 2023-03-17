@@ -12,7 +12,7 @@ modified_at: 2022-11-09
 
 The following table presents CKEditor 4 configuration options and, if available, their equivalent in CKEditor 5.
 
-Note: In CKEditor 5, the number of options was reduced on purpose. Our experience showe that configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (over 240). Sometimes they were too low-level, other times they were so infrequently used that it did not justify rewriting them. This is why when designing CKEditor 5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
+Note: In CKEditor 5, the number of options was reduced on purpose. Configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (over 240). This is why when designing CKEditor 5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
 
 <style>
 /* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
@@ -50,7 +50,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Our experienc
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_onStartup">autoGrow_onStartup</a></td>
 			<td>
 				<p>These settings are no longer needed as CKEditor 5 automatically grows with content by default.</p>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> settings can be set with the following code:</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> options can be set with the following code:</p>
 				<pre><code class="language-css">.ck.ck-content:not(.ck-comment__input *) {
 	/* Note: You can use min-height and max-height instead here. */
 	height: 300px;
@@ -127,7 +127,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Our experienc
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_backStyle">colorButton_backStyle</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colors">colorButton_colors</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colorsPerRow">colorButton_colorsPerRow</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableAutomatic">colorButton_enableAutomatic</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableMore">colorButton_enableMore</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_foreStyle">colorButton_foreStyle</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_historyRowLimit">colorButton_historyRowLimit</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_normalizeBackground">colorButton_normalizeBackground</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_renderContentColors">config.colorButton_renderContentColors</a></td>
 			<td>
-				<p>Refer to the {@link features/font#configuring-the-font-color-and-font-background-color-features Font} feature guide to learn more about configuring font and background color in CKEditor 5.</p>
+				<p>Refer to the {@link features/font#configuring-the-font-color-and-font-background-color-features Font family, size, and color} feature guide to learn more about configuring font and background color in CKEditor 5.</p>
 				<p>CKEditor 5 also provides a new highlight plugin. It allows for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes that can be easily styled. See the {@link features/highlight Highlight} feature guide for more information.</p>
 			</td>
 		</tr>
@@ -261,11 +261,11 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Our experienc
 		</tr>
 		<tr>
 			<td><span id="emoji"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_emojiListUrl">emoji_emojiListUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_minChars">emoji_minChars</a></span></td>
-			<td>Emoji can be pasted into CKEditor 5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut (on macOS) or <kbd>Win</kbd>+<kbd>.</kbd> (on Windows) or the relevant emoji key on the touch keyboard of your device to open the picker. The {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes, too.</td>
+			<td>Emoji can be pasted into CKEditor 5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut (macOS) or <kbd>Win</kbd>+<kbd>.</kbd> (Windows) or the relevant emoji key on the touch keyboard of your device to open the picker. The {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes, too.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableContextMenu">enableContextMenu</a></td>
-			<td>N/A. CKEditor 5 does not come with a context menu. Contextual inline toolbar is preferred instead to offer contextual actions.</td>
+			<td>N/A. CKEditor 5 does not come with a context menu. A configurable contextual inline toolbar is preferred instead to offer contextual actions for features such as {@link features/tables#table-contextual-toolbar tables} or {@link features/images-overview#image-contextual-toolbar images}. See also {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableTabKeyTools">enableTabKeyTools</a></td>
@@ -324,7 +324,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Our experienc
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_defaultLabel">fontSize_defaultLabel</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_sizes">fontSize_sizes</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_style">fontSize_style</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_defaultLabel">font_defaultLabel</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_names">font_names</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_style">font_style</a></td>
-			<td>Refer to the {@link features/font Font} feature guide to learn more about font size, family and color support in CKEditor 5.</td>
+			<td>Refer to the {@link features/font Font family, size, and color} feature guide to learn more about font size, family, and color support in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceEnterMode">forceEnterMode</a></td>
