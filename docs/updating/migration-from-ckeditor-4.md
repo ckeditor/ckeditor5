@@ -22,7 +22,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with installing CKEditor 5.
 ## Differences between CKEditor 4 and CKEditor 5
 
-Here are the most important differences between the two editor versions:
+Here are key differences between the two editor versions:
 
 * CKEditor 5 is written in TypeScript/ES6.
 * CKEditor 5 has a custom data model and virtual DOM implementation. CKEditor 4 used to operate directly on HTML and DOM.
@@ -40,7 +40,7 @@ This new approach affects the {@link features/index available feature set}, how 
 * {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin compatibility}
 * {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 
-You can use them to check what equivalents some features or configurations from CKEditor 4 have in CKEditor 5. When there is no direct equivalent, the tables point you to a solution recommended in CKEditor 5. We strongly advise you to treat the migration to CKEditor 5 as an opportunity to modernize your app and rethink your editing solution.
+You can use them to check what are the CKEditor 5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor 5. We strongly advise you to treat the migration to CKEditor 5 as an opportunity to modernize your app and rethink your editing solutions.
 
 ## Before you migrate
 
@@ -49,7 +49,7 @@ CKEditor 4 and CKEditor 5 are two different products. Here are the most importan
 ### Migrating existing data
 
 <info-box warning>
-	Because of the difference in features, the **data produced with CKEditor 4 may not be compatible with CKEditor 5 which may lead to data loss**. Any data that is unsupported by features enabled in CKEditor 5 will be removed when loaded into the editor.
+	Because of the differences in features, the **data produced with CKEditor 4 may not be compatible with CKEditor 5 which may lead to data loss**. Any data that is not supported by features enabled in CKEditor 5 will be removed when loaded into the editor.
 </info-box>
 
 Extensive analysis, data verification, and tests should be performed on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor 5 features.
@@ -60,13 +60,13 @@ A relatively simple yet efficient strategy of adopting CKEditor 5 into existing 
 
 ### Installation and integration
 
-The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all options.
+The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation options.
 
-The API for integrating CKEditor with your pages also changed. It is worth checking {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} for an introduction.
+The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction of this topic.
 
 ### Custom plugins
 
-Any custom plugins you have developed for CKEditor 4 are not compatible with CKEditor 5. Although their concept may stay the same, their implementation will certainly be different and will require rewriting them from scratch.
+Any custom plugins you have developed for CKEditor 4 will not be compatible with CKEditor 5. Although their concept may stay the same, their implementation will certainly be different and will require rewriting them from scratch.
 
 The same may apply to third-party plugins which may not have been ported to CKEditor 5 yet.
 
@@ -103,6 +103,6 @@ CKEditor 5 is a great, modern editing framework so migrating is a fantastic oppo
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍&nbsp;. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
 [Contact the support team](https://ckeditor.com/contact/) if you want to learn more about licensing or the Extended Support Model.
