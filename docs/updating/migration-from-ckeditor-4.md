@@ -22,7 +22,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with installing CKEditor 5.
 ## Differences between CKEditor 4 and CKEditor 5
 
-Here are key differences between the two editor versions:
+Here are the key differences between the two editor versions:
 
 * CKEditor 5 is written in TypeScript/ES6.
 * CKEditor 5 has a custom data model and virtual DOM implementation. CKEditor 4 used to operate directly on HTML and DOM.
@@ -40,7 +40,7 @@ This new approach affects the {@link features/index available feature set}, how 
 * {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin compatibility}
 * {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 
-You can use them to check what are the CKEditor 5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor 5. We strongly advise you to treat the migration to CKEditor 5 as an opportunity to modernize your app and rethink your editing solutions.
+You can use them to check the CKEditor 5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor 5. We strongly advise you to treat the migration to CKEditor 5 as an opportunity to modernize your app and rethink your editing solutions.
 
 ## Before you migrate
 
@@ -60,9 +60,9 @@ A relatively simple yet efficient strategy of adopting CKEditor 5 into existing 
 
 ### Installation and integration
 
-The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation options.
+The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
 
-The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction of this topic.
+The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 
 ### Custom plugins
 
