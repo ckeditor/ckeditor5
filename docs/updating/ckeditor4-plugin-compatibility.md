@@ -5,7 +5,7 @@
 category: ckeditor4-migration
 menu-title: Plugin compatibility
 order: 40
-modified_at: 2022-11-09
+modified_at: 2023-03-17
 ---
 
 # CKEditor 4 plugin compatibility

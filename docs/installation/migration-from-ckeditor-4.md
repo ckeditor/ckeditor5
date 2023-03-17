@@ -6,7 +6,7 @@
 
 category: installation
 order: 40
-modified_at: 2022-04-15
+modified_at: 2023-03-17
 ---
 
 # Migration from CKEditor 4

@@ -4,7 +4,7 @@
 
 category: ckeditor4-migration
 order: 10
-modified_at: 2022-11-09
+modified_at: 2023-03-17
 ---
 
 # Migration from CKEditor 4
