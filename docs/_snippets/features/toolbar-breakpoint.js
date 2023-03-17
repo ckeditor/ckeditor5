@@ -11,17 +11,14 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-breakpoint' ), {
 		toolbar: {
 			items: [
-				'heading', '|',
-				'alignment', '|',
-				'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
-				'link', '|',
-				'bulletedList', 'numberedList', 'todoList', '-',
-				'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-				'code', 'codeBlock', '|',
-				'insertTable', '|',
-				'outdent', 'indent', '|',
-				'uploadImage', 'blockQuote', '|',
-				'undo', 'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+				'-', // break point
+				'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'alignment',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},
