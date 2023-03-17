@@ -166,10 +166,6 @@ export default class LinkCommand extends Command {
 
 					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
 						linkRange = this._updateLinkContent( model, writer, linkRange, href );
-						writer.setSelection( linkRange.end );
-					} else {
-						// Put the selection at the end of the updated link.
-						writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 					}
 
 					writer.setAttribute( 'linkHref', href, linkRange );
@@ -181,6 +177,9 @@ export default class LinkCommand extends Command {
 					falsyManualDecorators.forEach( item => {
 						writer.removeAttribute( item, linkRange );
 					} );
+
+					// Put the selection at the end of the updated link.
+					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
