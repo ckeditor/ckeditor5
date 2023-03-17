@@ -33,12 +33,10 @@ type IfTrue<T> = T extends true ? true : never;
  * (default), the `target` will be revealed by scrolling as little as possible. This option will
  * not affect `targets` that must be scrolled down because they will appear at the top of the boundary
  * anyway.
- * @param options.forceScroll When set `true`, the `target` will be aligned to the top of the viewport
- * and scrollable ancestors whether it is already visible or not. This option will only work when `alignToTop`
- * is `true`
  *
  * ```
- *          Initial state                        alignToTop = false (default)                     alignToTop = true
+ *                                             scrollViewportToShowTarget() with            scrollViewportToShowTarget() with
+ *          Initial state                        alignToTop unset (default)                        alignToTop = true
  *
  * ┌────────────────────────────────┬─┐       ┌────────────────────────────────┬─┐        ┌────────────────────────────────┬─┐
  * │                                │▲│       │                                │▲│        │   [ Target to be revealed ]    │▲│
@@ -54,6 +52,10 @@ type IfTrue<T> = T extends true ? true : never;
  *
  *     [ Target to be revealed ]
  *```
+ *
+ * @param options.forceScroll When set `true`, the `target` will be aligned to the top of the viewport
+ * and scrollable ancestors whether it is already visible or not. This option will only work when `alignToTop`
+ * is `true`
  */
 export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T>>(
 	{
