@@ -29,8 +29,8 @@ type IfTrue<T> = T extends true ? true : never;
  * by keeping the `target` some distance from the edge of the ancestors and thus making it easier to
  * read or edit by the user.
  * @param options.alignToTop When set `true`, the helper will make sure the `target` is scrolled up
- * to the top boundary of the viewport and/or scrollable ancestors if scrolled up. When set
- * `false` (default), the `target` will be revealed by scrolling as little as possible. This option will
+ * to the top boundary of the viewport and/or scrollable ancestors if scrolled up. When not set
+ * (default), the `target` will be revealed by scrolling as little as possible. This option will
  * not affect `targets` that must be scrolled down because they will appear at the top of the boundary
  * anyway.
  * @param options.forceScroll When set `true`, the `target` will be aligned to the top of the viewport
@@ -210,7 +210,7 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancest
  * @param options.viewportOffset An offset from the edge of the viewport (in pixels) the `rect` will be
  * moved by if the viewport is scrolled.
  * @param options.alignToTop When set `true`, the helper will make sure the `rect` is scrolled up
- * to the top boundary of the viewport if scrolled up. When set `false` (default), the `rect` will be
+ * to the top boundary of the viewport if scrolled up. When not set (default), the `rect` will be
  * revealed by scrolling as little as possible. This option will not affect rects that must be scrolled
  * down because they will appear at the top of the boundary anyway.
  * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of the viewport
@@ -281,7 +281,7 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
  * @param options.ancestorOffset An offset from the boundary of scrollable ancestors (if any)
  * the `Rect` instance will be moved by if the viewport is scrolled.
  * @param options.alignToTop When set `true`, the helper will make sure the `Rect` instance is scrolled up
- * to the top boundary of the scrollable ancestors if scrolled up. When set `false` (default), the `rect`
+ * to the top boundary of the scrollable ancestors if scrolled up. When not set (default), the `rect`
  * will be revealed by scrolling as little as possible. This option will not affect rects that must be
  * scrolled down because they will appear at the top of the boundary
  * anyway.
