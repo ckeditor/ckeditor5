@@ -703,6 +703,24 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
+
+			it( 'should update content if href is equal to content', () => {
+				setData( model, '<$text linkHref="url">ur[]l</$text>' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal( '<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>[]' );
+			} );
+
+			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
+				setData( model, '<$text linkHref="url">ur[]l</$text>' );
+
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to
+					.equal( '<$text linkHref="url2">url2</$text>[]' );
+			} );
 		} );
 
 		describe( 'range selection', () => {
@@ -751,6 +769,24 @@ describe( 'LinkCommand', () => {
 						'foo[<linkableInline linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true"></linkableInline>]bar' +
 					'</paragraph>'
 				);
+			} );
+
+			it( 'should update content if href is equal to content', () => {
+				setData( model, '[<$text linkHref="url">url</$text>]' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal( '[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>]' );
+			} );
+
+			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
+				setData( model, '[<$text linkHref="url">url</$text>]' );
+
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to
+					.equal( '[<$text linkHref="url2">url2</$text>]' );
 			} );
 		} );
 

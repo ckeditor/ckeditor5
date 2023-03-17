@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
 import { Collection, first, toMap } from 'ckeditor5/src/utils';
-import type { Range } from 'ckeditor5/src/engine';
+import type { Range, DocumentSelection, Model, Writer, Position } from 'ckeditor5/src/engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableElement } from './utils';
@@ -27,8 +27,6 @@ export default class LinkCommand extends Command {
 	 * @readonly
 	 */
 	declare public value: string | undefined;
-
-	declare private _isBind: boolean | null;
 
 	/**
 	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
@@ -143,15 +141,7 @@ export default class LinkCommand extends Command {
 	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const range = selection.getFirstRange( );
-		const linkText = getTextFromRange( range );
-
-		if ( linkText === href && this._isBind === null ) {
-			this._isBind = true;
-		} else {
-			this._isBind = false;
-		}
-
+		const linkText = extractTextFromSelection( selection );
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -172,7 +162,15 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					let linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+
+					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+						linkRange = this._updateLinkContent( model, writer, linkRange, href );
+						writer.setSelection( linkRange.end );
+					} else {
+						// Put the selection at the end of the updated link.
+						writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
+					}
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
@@ -183,9 +181,6 @@ export default class LinkCommand extends Command {
 					falsyManualDecorators.forEach( item => {
 						writer.removeAttribute( item, linkRange );
 					} );
-
-					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
@@ -237,14 +232,21 @@ export default class LinkCommand extends Command {
 				}
 
 				for ( const range of rangesToUpdate ) {
-					writer.setAttribute( 'linkHref', href, range );
+					let linkRange = range;
+
+					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+						linkRange = this._updateLinkContent( model, writer, range, href );
+						writer.setSelection( writer.createSelection( linkRange ) );
+					}
+
+					writer.setAttribute( 'linkHref', href, linkRange );
 
 					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, range );
+						writer.setAttribute( item, true, linkRange );
 					} );
 
 					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, range );
+						writer.removeAttribute( item, linkRange );
 					} );
 				}
 			}
@@ -287,20 +289,37 @@ export default class LinkCommand extends Command {
 
 		return true;
 	}
+
+	private _updateLinkContent( model: Model, writer: Writer, range: Range, href: string ): Range {
+		const attributes = toMap( {} );
+
+		attributes.set( 'linkHref', href );
+
+		const text = writer.createText( href, attributes );
+
+		return model.insertContent( text, range );
+	}
 }
 
 function getTextFromRange( range: Range | null ): string {
-	if ( !range ) {
+	if ( !range || range && !Array.from( range.getItems() ).length ) {
 		return '';
 	}
 
-	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
-		if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {
-			return '';
-		}
+	const firstNode = Array.from( range.getItems() )[ 0 ];
 
-		return rangeText + node.data;
-	}, '' );
+	if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
+		return firstNode.data;
+	}
 
-	return text;
+	return '';
+}
+
+function extractTextFromSelection( selection: DocumentSelection ): string | null {
+	const range = selection.getFirstRange( );
+	const firstPosition = selection.getFirstPosition();
+	const textFromPosition = firstPosition !== null && firstPosition.textNode && firstPosition.textNode.data || null;
+	const textFromRange = getTextFromRange( range );
+
+	return selection.isCollapsed ? textFromPosition : textFromRange;
 }
