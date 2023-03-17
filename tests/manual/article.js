@@ -8,10 +8,21 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+
+function RenderStyleElements( editor ) {
+	// Remove the 'style' name from the list of unsafe elements.
+	const unsafeElements = editor.editing.view.domConverter.unsafeElements;
+	const indexOfStyle = unsafeElements.indexOf( 'style' );
+
+	if ( indexOfStyle > -1 ) {
+		unsafeElements.splice( indexOfStyle, 1 );
+	}
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, GeneralHtmlSupport, RenderStyleElements ],
 		toolbar: [
 			'heading',
 			'|',
@@ -38,6 +49,11 @@ ClassicEditor
 				'tableColumn',
 				'tableRow',
 				'mergeTableCells'
+			]
+		},
+		htmlSupport: {
+			allow: [
+				{ name: 'style' }
 			]
 		}
 	} )
