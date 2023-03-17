@@ -11,6 +11,8 @@ import isRange from './isrange';
 import Rect from './rect';
 import isText from './istext';
 
+type IfTrue<T> = T extends true ? true : never;
+
 /**
  * Makes any page `HTMLElement` or `Range` (`target`) visible inside the browser viewport.
  * This helper will scroll all `target` ancestors and the web browser viewport to reveal the target to
@@ -51,7 +53,7 @@ import isText from './istext';
  *     [ Target to be revealed ]
  *```
  */
-export function scrollViewportToShowTarget<T extends boolean, U extends T extends true ? true : never>(
+export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T>>(
 	{
 		target,
 		viewportOffset = 0,
@@ -63,8 +65,8 @@ export function scrollViewportToShowTarget<T extends boolean, U extends T extend
 		readonly target: HTMLElement | Range;
 		readonly viewportOffset?: number;
 		readonly ancestorOffset?: number;
-		readonly alignToTop: T;
-		readonly forceScroll: U;
+		readonly alignToTop?: T;
+		readonly forceScroll?: U;
 	}
 ): void {
 	const targetWindow = getWindow( target );
@@ -88,20 +90,32 @@ export function scrollViewportToShowTarget<T extends boolean, U extends T extend
 		}
 
 		// Scroll the target's ancestors first. Once done, scrolling the viewport is easy.
-		scrollAncestorsToShowRect( firstAncestorToScroll, () => {
-			// Note: If the target does not belong to the current window **directly**,
-			// i.e. it resides in an iframe belonging to the window, obtain the target's rect
-			// in the coordinates of the current window. By default, a Rect returns geometry
-			// relative to the current window's viewport. To make it work in a parent window,
-			// it must be shifted.
-			return getRectRelativeToWindow( target, currentWindow! );
-		}, { alignToTop, ancestorOffset, forceScroll } );
+		scrollAncestorsToShowRect( {
+			parent: firstAncestorToScroll,
+			getRect: () => {
+				// Note: If the target does not belong to the current window **directly**,
+				// i.e. it resides in an iframe belonging to the window, obtain the target's rect
+				// in the coordinates of the current window. By default, a Rect returns geometry
+				// relative to the current window's viewport. To make it work in a parent window,
+				// it must be shifted.
+				return getRectRelativeToWindow( target, currentWindow! );
+			},
+			alignToTop,
+			ancestorOffset,
+			forceScroll
+		} );
 
 		// Obtain the rect of the target after it has been scrolled within its ancestors.
 		// It's time to scroll the viewport.
 		const targetRect = getRectRelativeToWindow( target, currentWindow );
 
-		scrollWindowToShowRect( currentWindow, targetRect, { viewportOffset, alignToTop, forceScroll } );
+		scrollWindowToShowRect( {
+			window: currentWindow,
+			rect: targetRect,
+			viewportOffset,
+			alignToTop,
+			forceScroll
+		} );
 
 		if ( currentWindow.parent != currentWindow ) {
 			// Keep the reference to the <iframe> element the "previous current window" was
@@ -129,12 +143,15 @@ export function scrollViewportToShowTarget<T extends boolean, U extends T extend
  * e.g. if they have `overflow: scroll` CSS style.
  *
  * @param target A target, which supposed to become visible to the user.
+ * @param ancestorOffset TODO
  */
-export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void {
+export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number ): void {
 	const targetParent = getParentElement( target );
 
-	scrollAncestorsToShowRect( targetParent, () => {
-		return new Rect( target );
+	scrollAncestorsToShowRect( {
+		parent: targetParent,
+		getRect: () => new Rect( target ),
+		ancestorOffset
 	} );
 }
 
@@ -184,23 +201,26 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range ): void
  * +---------------------------------...
  * ```
  *
- * @param window A window which is scrolled to reveal the rect.
- * @param rect A rect which is to be revealed.
- * @param viewportOffset See scrollViewportToShowTarget.
- * @param alignToTop See scrollViewportToShowTarget.
+ * @param options TODO
+ * @param options.window A window which is scrolled to reveal the rect.
+ * @param options.rect A rect which is to be revealed.
+ * @param options.viewportOffset See scrollViewportToShowTarget.
+ * @param options.alignToTop See scrollViewportToShowTarget.
  */
-function scrollWindowToShowRect<T extends boolean, U extends T extends true ? true : never>(
-	window: Window,
-	rect: Rect,
+function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
+		window,
+		rect,
 		alignToTop,
 		forceScroll,
-		viewportOffset = 0
+		viewportOffset
 	}: {
+		readonly window: Window;
+		readonly rect: Rect;
+		readonly viewportOffset: number;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
-		readonly viewportOffset?: number;
-	} = {}
+	}
 ): void {
 	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
@@ -246,25 +266,27 @@ function scrollWindowToShowRect<T extends boolean, U extends T extends true ? tr
 /**
  * Recursively scrolls element ancestors to visually reveal a rect.
  *
- * @param parent The first parent ancestor to start scrolling.
- * @param getRect A function which returns the Rect, which is to be revealed.
  * @param options TODO
+ * @param options.parent The first parent ancestor to start scrolling.
+ * @param options.getRect A function which returns the Rect, which is to be revealed.
  * @param options.alignToTop TODO
  * @param options.forceScroll TODO
  * @param options.ancestorOffset TODO
  */
-function scrollAncestorsToShowRect<T extends boolean, U extends T extends true ? true : never>(
-	parent: HTMLElement,
-	getRect: () => Rect,
+function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
+		parent,
+		getRect,
 		alignToTop,
 		forceScroll,
 		ancestorOffset = 0
 	}: {
+		readonly parent: HTMLElement;
+		readonly getRect: () => Rect;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 		readonly ancestorOffset?: number;
-	} = {}
+	}
 ): void {
 	const parentWindow = getWindow( parent );
 	const forceScrollToTop = alignToTop && forceScroll;
