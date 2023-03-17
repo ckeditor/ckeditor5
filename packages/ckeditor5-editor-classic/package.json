@@ -11,6 +11,7 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
+    "@ckeditor/ckeditor5-watchdog": "^36.0.1",
     "ckeditor5": "^36.0.1",
     "lodash-es": "^4.17.15"
   },

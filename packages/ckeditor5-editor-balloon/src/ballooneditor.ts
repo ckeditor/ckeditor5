@@ -9,6 +9,7 @@
 
 import {
 	Editor,
+	Context,
 	DataApiMixin,
 	ElementApiMixin,
 	attachToForm,
@@ -19,6 +20,8 @@ import {
 
 import { BalloonToolbar } from 'ckeditor5/src/ui';
 import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
+
+import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
@@ -237,6 +240,27 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 			);
 		} );
 	}
+
+	/**
+	 * The {@link module:core/context~Context} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static Context = Context;
+
+	/**
+	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+	 *
+	 *  Exposed as static editor field for easier access in editor builds.
+	 */
+	public static EditorWatchdog = EditorWatchdog;
+
+	/**
+	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+	 *
+	 *  Exposed as static editor field for easier access in editor builds.
+	 */
+	public static ContextWatchdog = ContextWatchdog;
 }
 
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {

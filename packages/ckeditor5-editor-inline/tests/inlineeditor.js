@@ -5,12 +5,15 @@
 
 /* globals document, console */
 
+import InlineEditor from '../src/inlineeditor';
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import InlineEditor from '../src/inlineeditor';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -398,6 +401,20 @@ describe( 'InlineEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => newEditor.destroy() );
+		} );
+	} );
+
+	describe( 'static fields', () => {
+		it( 'InlineEditor.Context', () => {
+			expect( InlineEditor.Context ).to.equal( Context );
+		} );
+
+		it( 'InlineEditor.EditorWatchdog', () => {
+			expect( InlineEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'InlineEditor.ContextWatchdog', () => {
+			expect( InlineEditor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
 	} );
 
