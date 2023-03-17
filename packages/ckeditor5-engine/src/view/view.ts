@@ -45,6 +45,8 @@ import {
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
+type IfTrue<T> = T extends true ? true : never;
+
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
  * abstraction over the DOM structure and events and hide all browsers quirks.
@@ -391,21 +393,24 @@ export default class View extends ObservableMixin() {
 	 * @param options.alignToTop TODO
 	 * @param options.forceScroll TODO
 	 */
-	public scrollToTheSelection<T extends boolean, U extends T extends true ? true : never>(
-		{
-			alignToTop,
-			forceScroll
-		}: {
-			readonly alignToTop: T;
-			readonly forceScroll: U;
-		} ): void {
+	public scrollToTheSelection<T extends boolean, U extends IfTrue<T>>( {
+		alignToTop,
+		forceScroll,
+		viewportOffset = 20,
+		ancestorOffset = 20
+	}: {
+		readonly viewportOffset?: number;
+		readonly ancestorOffset?: number;
+		readonly alignToTop?: T;
+		readonly forceScroll?: U;
+	} = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
 		if ( range ) {
 			scrollViewportToShowTarget( {
 				target: this.domConverter.viewRangeToDom( range ),
-				viewportOffset: 20,
-				ancestorOffset: 20,
+				viewportOffset,
+				ancestorOffset,
 				alignToTop,
 				forceScroll
 			} );

@@ -6,7 +6,7 @@
 /* global window, document, Text */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import isRange from '../../src/dom/isrange';
+import { stubGeometry, assertScrollPosition } from '../_utils/scroll';
 import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
@@ -33,19 +33,19 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			direction: 'ltr'
 		} );
 
-		stubRect( firstAncestor, {
+		stubGeometry( testUtils, firstAncestor, {
 			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
 		}, {
 			scrollLeft: 100, scrollTop: 100
 		} );
 
-		stubRect( secondAncestor, {
+		stubGeometry( testUtils, secondAncestor, {
 			top: -100, right: 0, bottom: 0, left: -100, width: 100, height: 100
 		}, {
 			scrollLeft: 100, scrollTop: 100
 		} );
 
-		stubRect( document.body, {
+		stubGeometry( testUtils, document.body, {
 			top: 1000, right: 2000, bottom: 1000, left: 1000, width: 1000, height: 1000
 		}, {
 			scrollLeft: 1000, scrollTop: 1000
@@ -91,7 +91,7 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			target.setStart( text, 1 );
 			target.setEnd( text, 2 );
 
-			stubRect( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
+			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 0, scrollLeft: 100 } );
@@ -102,49 +102,49 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 
 	function testWithoutAncestorOffset() {
 		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
-			stubRect( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 100 } );
 		} );
 
 		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
-			stubRect( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
-			stubRect( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
+			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 0, scrollLeft: 100 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
-			stubRect( target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
+			stubGeometry( testUtils, target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 300, scrollLeft: 100 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
-			stubRect( target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 0 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
@@ -158,49 +158,49 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 
 	function testWithAncestorOffset() {
 		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
-			stubRect( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 100 } );
 		} );
 
 		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
-			stubRect( target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
-			stubRect( target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
+			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
-			stubRect( target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
+			stubGeometry( testUtils, target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 310, scrollLeft: 100 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
-			stubRect( target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -10 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
 		} );
 
 		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollAncestorsToShowTarget( target, ancestorOffset );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
@@ -229,7 +229,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		document.body.appendChild( firstAncestor );
 		firstAncestor.appendChild( element );
 
-		stubRect( firstAncestor, {
+		stubGeometry( testUtils, firstAncestor, {
 			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
 		}, {
 			scrollLeft: 100, scrollTop: 100
@@ -378,14 +378,14 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target,
+			stubGeometry( testUtils, target,
 				{ top: 100, right: 200, bottom: 200, left: 100, width: 100, height: 100 } );
-			stubRect( targetAncestor,
+			stubGeometry( testUtils, targetAncestor,
 				{ top: 100, right: 300, bottom: 400, left: 0, width: 300, height: 300 },
 				{ scrollLeft: 200, scrollTop: -100 } );
-			stubRect( iframe,
+			stubGeometry( testUtils, iframe,
 				{ top: 200, right: 400, bottom: 400, left: 200, width: 200, height: 200 } );
-			stubRect( iframeAncestor,
+			stubGeometry( testUtils, iframeAncestor,
 				{ top: 0, right: 400, bottom: 400, left: 0, width: 400, height: 400 },
 				{ scrollLeft: 100, scrollTop: 100 } );
 
@@ -397,14 +397,14 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target,
+			stubGeometry( testUtils, target,
 				{ top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
-			stubRect( targetAncestor,
+			stubGeometry( testUtils, targetAncestor,
 				{ top: 200, right: 300, bottom: 400, left: 0, width: 300, height: 100 },
 				{ scrollLeft: 200, scrollTop: -100 } );
-			stubRect( iframe,
+			stubGeometry( testUtils, iframe,
 				{ top: 2000, right: 2000, bottom: 2500, left: 2500, width: 500, height: 500 } );
-			stubRect( iframeAncestor,
+			stubGeometry( testUtils, iframeAncestor,
 				{ top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 },
 				{ scrollLeft: 100, scrollTop: 100 } );
 
@@ -436,7 +436,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 	// initial geometry and scroll position they give the right, relative picture of what's going on.
 	function testNoConfig() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
@@ -444,7 +444,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
@@ -452,7 +452,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
@@ -460,7 +460,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
@@ -468,7 +468,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
@@ -476,7 +476,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
@@ -484,7 +484,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
@@ -492,7 +492,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
@@ -500,7 +500,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
@@ -510,7 +510,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithViewportOffset() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 150, scrollLeft: 200 } );
@@ -518,7 +518,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
@@ -526,7 +526,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
@@ -534,7 +534,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
@@ -542,7 +542,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
@@ -550,7 +550,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
@@ -558,7 +558,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
@@ -566,7 +566,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
@@ -574,7 +574,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
@@ -584,7 +584,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithAncestorOffset() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 160, scrollLeft: 210 } );
@@ -592,7 +592,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
@@ -600,7 +600,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
@@ -608,7 +608,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 710, scrollLeft: 210 } );
@@ -616,7 +616,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 560, scrollLeft: 210 } );
@@ -624,7 +624,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
@@ -632,7 +632,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
@@ -640,7 +640,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
@@ -648,7 +648,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
@@ -658,7 +658,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithViewportAndAncestorOffsets() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 160, scrollLeft: 210 } );
@@ -666,7 +666,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
@@ -674,7 +674,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
@@ -682,7 +682,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 710, scrollLeft: 210 } );
@@ -690,7 +690,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 560, scrollLeft: 210 } );
@@ -698,7 +698,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
@@ -706,7 +706,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
@@ -714,7 +714,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
@@ -722,7 +722,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
@@ -732,7 +732,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithAlignToTopAndNoOffsets() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
@@ -740,7 +740,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
@@ -748,7 +748,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
@@ -756,7 +756,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
@@ -764,7 +764,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
@@ -772,7 +772,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
@@ -780,7 +780,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
@@ -788,7 +788,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
@@ -796,7 +796,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
@@ -806,7 +806,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithAlignToTopAndOffsets() {
 		it( 'does not scroll the viewport when the target is fully visible', () => {
-			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 140, scrollLeft: 210 } );
@@ -814,7 +814,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
@@ -822,7 +822,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
@@ -830,7 +830,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 690, scrollLeft: 210 } );
@@ -838,7 +838,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 540, scrollLeft: 210 } );
@@ -846,7 +846,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
@@ -854,7 +854,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
@@ -862,7 +862,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
@@ -870,7 +870,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
@@ -880,7 +880,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	function testWithAlignToTopOffsetsAndForceScroll() {
 		it( 'should scroll the viewport despite the target being fully visible', () => {
-			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 140, scrollLeft: 210 } );
@@ -888,7 +888,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
@@ -896,7 +896,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
-			stubRect( target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: -50, right: 200, bottom: 50, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
@@ -904,7 +904,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
-			stubRect( target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 690, scrollLeft: 210 } );
@@ -912,7 +912,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
-			stubRect( target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 450, right: 200, bottom: 550, left: 100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 540, scrollLeft: 210 } );
@@ -920,7 +920,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
-			stubRect( target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: -100, bottom: 100, left: -200, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: -110 } );
@@ -928,7 +928,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
-			stubRect( target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 50, bottom: 100, left: -50, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 40 } );
@@ -936,7 +936,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
-			stubRect( target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1200, bottom: 100, left: 1100, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 1210 } );
@@ -944,7 +944,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
-			stubRect( target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
+			stubGeometry( testUtils, target, { top: 0, right: 1050, bottom: 100, left: 950, width: 100, height: 100 } );
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 1060 } );
@@ -954,59 +954,3 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 	/* eslint-enable mocha/no-identical-title */
 } );
-
-function stubRect( target, geometryStub, scrollStub ) {
-	if ( isRange( target ) ) {
-		testUtils.sinon.stub( target, 'getClientRects' ).returns( [ geometryStub ] );
-	} else {
-		testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( geometryStub );
-
-		// Make the element immune to the border-width-* styles in the test environment.
-		Object.defineProperties( target, {
-			offsetWidth: {
-				value: geometryStub.width
-			},
-			clientWidth: {
-				value: geometryStub.width
-			},
-			offsetHeight: {
-				value: geometryStub.height
-			},
-			clientHeight: {
-				value: geometryStub.height
-			}
-		} );
-	}
-
-	if ( scrollStub ) {
-		let { scrollLeft, scrollTop } = scrollStub;
-
-		// There's no way to stub scrollLeft|Top with Sinon. defineProperties
-		// must be used instead.
-		Object.defineProperties( target, {
-			scrollLeft: {
-				get() {
-					return scrollLeft;
-				},
-				set( value ) {
-					scrollLeft = value;
-				},
-				configurable: true
-			},
-			scrollTop: {
-				get() {
-					return scrollTop;
-				},
-				set( value ) {
-					scrollTop = value;
-				},
-				configurable: true
-			}
-		} );
-	}
-}
-
-function assertScrollPosition( element, expected ) {
-	expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
-	expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
-}
