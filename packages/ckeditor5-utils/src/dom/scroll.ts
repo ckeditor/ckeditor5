@@ -18,22 +18,24 @@ type IfTrue<T> = T extends true ? true : never;
  * This helper will scroll all `target` ancestors and the web browser viewport to reveal the target to
  * the user. If the `target` is already visible, nothing will happen.
  *
- * @param options
+ * @param options Additional configuration of the scrolling behavior.
  * @param options.target A target, which supposed to become visible to the user.
  * @param options.viewportOffset An offset from the edge of the viewport (in pixels)
  * the `target` will be moved by if the viewport is scrolled. It enhances the user experience
  * by keeping the `target` some distance from the edge of the viewport and thus making it easier to
  * read or edit by the user.
- * @param options.ancestorOffset An offset from the closest scrollable ancestor (if any)
+ * @param options.ancestorOffset An offset from the boundary of scrollable ancestors (if any)
  * the `target` will be moved by if the viewport is scrolled. It enhances the user experience
- * by keeping the `target` some distance from the edge of the ancestor and thus making it easier to
+ * by keeping the `target` some distance from the edge of the ancestors and thus making it easier to
  * read or edit by the user.
  * @param options.alignToTop When set `true`, the helper will make sure the `target` is scrolled up
  * to the top boundary of the viewport and/or scrollable ancestors if scrolled up. When set
  * `false` (default), the `target` will be revealed by scrolling as little as possible. This option will
  * not affect `targets` that must be scrolled down because they will appear at the top of the boundary
  * anyway.
- * @param options.forceScroll TODO
+ * @param options.forceScroll When set `true`, the `target` will be aligned to the top of the viewport
+ * and scrollable ancestors whether it is already visible or not. This option will only work when `alignToTop`
+ * is `true`
  *
  * ```
  *          Initial state                        alignToTop = false (default)                     alignToTop = true
@@ -143,7 +145,8 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
  * e.g. if they have `overflow: scroll` CSS style.
  *
  * @param target A target, which supposed to become visible to the user.
- * @param ancestorOffset TODO
+ * @param ancestorOffset An offset between the target and the boundary of scrollable ancestors
+ * to be maintained while scrolling.
  */
 export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number ): void {
 	const targetParent = getParentElement( target );
@@ -201,11 +204,17 @@ export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancest
  * +---------------------------------...
  * ```
  *
- * @param options TODO
+ * @param options Additional configuration of the scrolling behavior.
  * @param options.window A window which is scrolled to reveal the rect.
  * @param options.rect A rect which is to be revealed.
- * @param options.viewportOffset See scrollViewportToShowTarget.
- * @param options.alignToTop See scrollViewportToShowTarget.
+ * @param options.viewportOffset An offset from the edge of the viewport (in pixels) the `rect` will be
+ * moved by if the viewport is scrolled.
+ * @param options.alignToTop When set `true`, the helper will make sure the `rect` is scrolled up
+ * to the top boundary of the viewport if scrolled up. When set `false` (default), the `rect` will be
+ * revealed by scrolling as little as possible. This option will not affect rects that must be scrolled
+ * down because they will appear at the top of the boundary anyway.
+ * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of the viewport
+ * whether it is already visible or not. This option will only work when `alignToTop` is `true`
  */
 function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
@@ -266,12 +275,18 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 /**
  * Recursively scrolls element ancestors to visually reveal a rect.
  *
- * @param options TODO
+ * @param options Additional configuration of the scrolling behavior.
  * @param options.parent The first parent ancestor to start scrolling.
  * @param options.getRect A function which returns the Rect, which is to be revealed.
- * @param options.alignToTop TODO
- * @param options.forceScroll TODO
- * @param options.ancestorOffset TODO
+ * @param options.ancestorOffset An offset from the boundary of scrollable ancestors (if any)
+ * the `Rect` instance will be moved by if the viewport is scrolled.
+ * @param options.alignToTop When set `true`, the helper will make sure the `Rect` instance is scrolled up
+ * to the top boundary of the scrollable ancestors if scrolled up. When set `false` (default), the `rect`
+ * will be revealed by scrolling as little as possible. This option will not affect rects that must be
+ * scrolled down because they will appear at the top of the boundary
+ * anyway.
+ * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of scrollable ancestors
+ * whether it is already visible or not. This option will only work when `alignToTop` is `true`
  */
 function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{

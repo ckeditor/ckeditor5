@@ -387,11 +387,19 @@ export default class View extends ObservableMixin() {
 
 	/**
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
-	 * caret, if not already visible to the user.
+	 * caret, **if not already visible to the user**.
 	 *
-	 * @param options TODO
-	 * @param options.alignToTop TODO
-	 * @param options.forceScroll TODO
+	 * @param options Additional configuration of the scrolling behavior.
+	 * @param options.viewportOffset A distance between the DOM selection and the viewport boundary to be maintained
+	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
+	 * the viewport boundary.
+	 * @param options.ancestorOffset A distance between the DOM selection and scrollable DOM root ancestor(s) to be maintained
+	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
+	 * the scrollable ancestor(s) boundary.
+	 * @param options.alignToTop When set `true`, the DOM selection will be aligned to the top of the viewport if not already visible
+	 * (see `forceScroll` to learn more).
+	 * @param options.forceScroll When set `true`, the DOM selection will be aligned to the top of the viewport and scrollable ancestors
+	 * whether it is already visible or not. This option will only work when `alignToTop` is `true`.
 	 */
 	public scrollToTheSelection<T extends boolean, U extends IfTrue<T>>( {
 		alignToTop,
