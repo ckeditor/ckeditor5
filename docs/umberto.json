@@ -106,6 +106,7 @@
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
+		"features/images/image-upload/images-inserting.html": "features/images/images-inserting.html",
 		"features/lists.html": "features/lists/lists.html",
 		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/general-html-support.html": "features/html/general-html-support.html",

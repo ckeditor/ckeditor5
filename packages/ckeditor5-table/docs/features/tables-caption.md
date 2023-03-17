@@ -9,11 +9,7 @@ modified_at: 2022-05-19
 
 {@snippet features/build-table-source}
 
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessibility point of view as they would be read by screen readers.
-
-<info-box>
-	By default, the table caption feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The {@link module:table/tablecaption~TableCaption} plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
 
 ## Demo
 
@@ -26,6 +22,10 @@ Click on the table caption in the demo to edit it or use the table toolbar butto
 </info-box>
 
 ## Installation
+
+<info-box>
+	By default, the table caption feature is not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
+</info-box>
 
 To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
@@ -97,4 +97,4 @@ The {@link module:table/tablecaption~TableCaption} plugin registers the followin
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
