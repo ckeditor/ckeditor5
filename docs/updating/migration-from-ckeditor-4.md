@@ -105,4 +105,6 @@ CKEditor 5 is a great, modern editing framework so migrating is a fantastic oppo
 
 If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
+The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
+
 [Contact the support team](https://ckeditor.com/contact/) if you want to learn more about licensing or the Extended Support Model.
