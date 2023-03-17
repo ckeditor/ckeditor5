@@ -11,14 +11,12 @@ ClassicEditor
 	.create( document.querySelector( '#toolbar-grouping' ), {
 		toolbar: {
 			items: [
-				'heading', '|',
-				'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-				'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
-				'bulletedList', 'numberedList', 'todoList', '|',
-				'code', 'codeBlock', '|',
-				'outdent', 'indent', '|',
-				'uploadImage', 'blockQuote', '|',
-				'undo', 'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+				'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
 		ui: {
