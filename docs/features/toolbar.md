@@ -117,6 +117,7 @@ toolbar: {
 		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
 		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
 		'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+		'|', 'alignment',
 		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],
 	shouldNotGroupWhenFull: true
@@ -139,6 +140,7 @@ toolbar: {
 		'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
 		'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
 		'-', // break point
+		'|', 'alignment',
 		'link', 'uploadImage', 'blockQuote', 'codeBlock',
 		'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 	],

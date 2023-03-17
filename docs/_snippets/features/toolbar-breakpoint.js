@@ -17,6 +17,7 @@ ClassicEditor
 				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
 				'-', // break point
 				'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
