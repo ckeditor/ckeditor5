@@ -32,7 +32,8 @@ module.exports = {
 				'@typescript-eslint/explicit-module-boundary-types': [
 					'error',
 					{
-						'allowedNames': [ 'requires' ]
+						'allowedNames': [ 'requires' ],
+						'allowArgumentsExplicitlyTypedAsAny': true
 					}
 				]
 			}

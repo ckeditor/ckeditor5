@@ -45,6 +45,6 @@ export default class SpecialCharactersEssentials extends Plugin {
 			SpecialCharactersMathematical,
 			SpecialCharactersArrows,
 			SpecialCharactersLatin
-		];
+		] as const;
 	}
 }
