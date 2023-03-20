@@ -19,7 +19,7 @@ modified_at: 2023-03-17
 
 When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**. Every single aspect of it was redesigned &mdash; from installation, to integration, to features, to its data model, and finally to its API.
 
-There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with installing CKEditor 5.
+There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with moving to CKEditor 5.
 ## Differences between CKEditor 4 and CKEditor 5
 
 Here are the key differences between the two editor versions:
