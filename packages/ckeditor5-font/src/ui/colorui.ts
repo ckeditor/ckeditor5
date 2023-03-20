@@ -139,6 +139,10 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			dropdownView.on( 'colorChange', ( evt, data ) => {
+				editor.execute( this.commandName, data );
+			} );
+
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				// Grids rendering is deferred (#6192).
 				dropdownView.colorTableView!.appendGrids();
@@ -161,4 +165,3 @@ export default class ColorUI extends Plugin {
 		} );
 	}
 }
-

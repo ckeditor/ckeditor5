@@ -12,3 +12,20 @@
 label.ck.ck-color-grid__label {
 	font-weight: unset;
 }
+
+.ck.ck-color-picker {
+	& hex-color-picker {
+		height: 100px;
+
+		&::part(saturation),
+		&::part(hue) {
+			border-radius: 0;
+		}
+
+		&::part(saturation-pointer),
+		&::part(hue-pointer) {
+			width: 15px;
+			height: 15px;
+		}
+	}
+}

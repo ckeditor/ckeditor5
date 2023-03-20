@@ -17,6 +17,7 @@ import {
 	Template,
 	View,
 	ViewCollection,
+	ColorPickerView,
 	type ColorDefinition
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -92,6 +93,12 @@ export default class ColorTableView extends View {
 	 * @readonly
 	 */
 	protected _focusCycler: FocusCycler;
+
+	/**
+	 * Color picker.
+	 *
+	 */
+	protected _colorPickerView: ColorPickerView;
 
 	/**
 	 * Document color section's label.
@@ -189,6 +196,12 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._createRemoveColorButton() );
+
+		this._colorPickerView = new ColorPickerView( this.locale );
+		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
+		this._colorPickerView.render();
+
+		this.items.add( this._colorPickerView );
 	}
 
 	/**
@@ -237,6 +250,8 @@ export default class ColorTableView extends View {
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
+
+		this._colorPickerView.setColor( selectedColor );
 	}
 
 	/**
