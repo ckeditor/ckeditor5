@@ -14,8 +14,10 @@ const glob = require( 'glob' );
 const path = require( 'path' );
 
 /**
- * When package only exist on some branches, switching them can leave behind
- * some files which are not tracked by git, such as node_modules.
+ * When packages only exist on some branches, switching them can leave behind
+ * files ignored by git, such as the `node_modules/` directory containing binaries.
+ *
+ * The goal is to detect "empty" packages and remove them.
  *
  * See: https://github.com/ckeditor/ckeditor5/issues/13695.
  */
