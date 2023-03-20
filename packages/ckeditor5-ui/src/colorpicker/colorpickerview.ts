@@ -57,22 +57,17 @@ export default class ColorPickerView extends View {
 		}
 
 		this._picker.addEventListener( 'color-changed', event => {
-			const customEvent = event as CustomEvent;
-			this.fire( 'change', { value: customEvent.detail.value } );
+			const colorChangedEvent = event as CustomEvent;
+
+			this.fire( 'change', { value: colorChangedEvent.detail.value } );
 		} );
 
 		this._input.addEventListener( 'color-changed', event => {
-			const customEvent = event as CustomEvent;
-			const color = customEvent.detail.value || '#ffffff';
+			const colorChangedEvent = event as CustomEvent;
+			const color = colorChangedEvent.detail.value || '#ffffff';
 
 			this.setColor( color );
 			this.fire( 'change', { value: color } );
 		} );
 	}
 }
-
-type CustomEvent = Event & {
-	detail: {
-		value: string;
-	};
-};
