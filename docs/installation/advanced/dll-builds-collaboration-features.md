@@ -17,7 +17,7 @@ modified_at: 2022-02-21
 
 A DLL build of the editor consists of the following parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, `widget`, and `watchdog`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
 * **Base DLL build for CKEditor 5 Collaboration Features**. It is a single JavaScript file that includes all necessary files for the collaboration features packages and extends the base DLL for CKEditor 5. The build is available on NPM in `ckeditor5-collaboration` package.
 * **DLL-compatible package builds**. Every package that is not a part of the base DLL builds, is built into a DLL-compatible JavaScript file. The CKEditor 5 Collaboration Features DLL builds are available in this format as well. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
@@ -68,7 +68,6 @@ Below is an example of an integration:
 <script src="path/to/node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
 <script src="path/to/node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
 <script src="path/to/node_modules/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
-<script src="path/to/node_modules/@ckeditor/ckeditor5-watchdog/build/watchdog.js"></script>
 
 <!-- Base DLL build for Collaboration features -->
 <script src="path/to/node_modules/ckeditor5-collaboration/build/ckeditor5-collaboration-dll.js"></script>
