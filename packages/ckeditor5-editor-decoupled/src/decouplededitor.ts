@@ -21,7 +21,7 @@ import {
 	getDataFromElement
 } from 'ckeditor5/src/utils';
 
-import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';

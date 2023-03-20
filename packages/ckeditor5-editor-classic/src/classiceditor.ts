@@ -21,7 +21,7 @@ import {
 } from 'ckeditor5/src/core';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
 
-import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import { isElement as _isElement } from 'lodash-es';
 

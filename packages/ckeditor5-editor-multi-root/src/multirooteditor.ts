@@ -21,7 +21,7 @@ import {
 	setDataInElement
 } from 'ckeditor5/src/utils';
 
-import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import MultiRootEditorUI from './multirooteditorui';
 import MultiRootEditorUIView from './multirooteditoruiview';

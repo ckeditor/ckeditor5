@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/undo
+ * @module ckeditor5/undo
  */
 
 export * from '@ckeditor/ckeditor5-undo';

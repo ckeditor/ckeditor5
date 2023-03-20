@@ -21,7 +21,7 @@ import {
 import { BalloonToolbar } from 'ckeditor5/src/ui';
 import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils';
 
-import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
