@@ -11,7 +11,7 @@ import FontColor from '../../src/fontcolor';
 import FontBackgroundColor from '../../src/fontbackgroundcolor';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor-with-picker' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
@@ -34,6 +34,40 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-without-picker' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [
+			ArticlePluginSet,
+			FontColor,
+			FontBackgroundColor
+		],
+		toolbar: [
+			'heading',
+			'|',
+			'fontColor',
+			'fontBackgroundColor',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		],
+		fontColor: {
+			columns: 3,
+			colorPicker: false
 		}
 	} )
 	.then( editor => {
