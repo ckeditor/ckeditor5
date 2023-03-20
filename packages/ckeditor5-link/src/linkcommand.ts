@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
 import { Collection, first, toMap } from 'ckeditor5/src/utils';
-import type { Range, DocumentSelection, Model, Writer, Position } from 'ckeditor5/src/engine';
+import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableElement } from './utils';
@@ -141,7 +141,6 @@ export default class LinkCommand extends Command {
 	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const linkText = extractTextFromSelection( selection );
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -161,6 +160,7 @@ export default class LinkCommand extends Command {
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
+					const linkText = extractTextFromSelection( selection );
 					// Then update `linkHref` value.
 					let linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
@@ -230,10 +230,13 @@ export default class LinkCommand extends Command {
 					}
 				}
 
-				for ( const range of rangesToUpdate ) {
+				// Current text of the link in the document.
+				const linkText = extractTextFromSelection( selection );
+
+				for ( const [ index, range ] of rangesToUpdate.entries() ) {
 					let linkRange = range;
 
-					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+					if ( selection.getAttribute( 'linkHref' ) === linkText && index === 0 ) {
 						linkRange = this._updateLinkContent( model, writer, range, href );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}
@@ -289,18 +292,27 @@ export default class LinkCommand extends Command {
 		return true;
 	}
 
+	/**
+	 * Updates selected link with a new value as its content and as its href attribute.
+	 *
+	 * @param model Model is need to insert content.
+	 * @param writer Writer is need to create text element in model.
+	 * @param range A range where should be inserted content.
+	 * @param href A link value which should be in the href attribute and in the content.
+	 */
 	private _updateLinkContent( model: Model, writer: Writer, range: Range, href: string ): Range {
-		const attributes = toMap( {} );
-
-		attributes.set( 'linkHref', href );
-
-		const text = writer.createText( href, attributes );
+		const text = writer.createText( href, { linkHref: href } );
 
 		return model.insertContent( text, range );
 	}
 }
 
-function getTextFromRange( range: Range | null ): string {
+/**
+	 * Returns text from the given range.
+	 *
+	 * @param range A range which text is returns from.
+	 */
+function getTextFromRange( range: Range | null ): string | null {
 	if ( !range || range && !Array.from( range.getItems() ).length ) {
 		return '';
 	}
@@ -311,7 +323,7 @@ function getTextFromRange( range: Range | null ): string {
 		return firstNode.data;
 	}
 
-	return '';
+	return null;
 }
 
 function extractTextFromSelection( selection: DocumentSelection ): string | null {

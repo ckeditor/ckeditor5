@@ -788,6 +788,30 @@ describe( 'LinkCommand', () => {
 				expect( getData( model ) ).to
 					.equal( '[<$text linkHref="url2">url2</$text>]' );
 			} );
+
+			it( 'should properly handle multi range case', () => {
+				setData( model,
+					'<paragraph>' +
+						'<$text linkHref="foo">[foo</$text>' +
+					'</paragraph>' +
+					'<paragraph>bar</paragraph>' +
+					'<paragraph>baz]</paragraph>'
+				);
+
+				command.execute( 'foo' );
+
+				expect( getData( model ) ).to
+					.equal( '<paragraph>' +
+								'[<$text linkHref="foo">foo</$text>]' +
+							'</paragraph>' +
+							'<paragraph>' +
+								'<$text linkHref="foo">bar</$text>' +
+							'</paragraph>' +
+							'<paragraph>' +
+								'<$text linkHref="foo">baz</$text>' +
+							'</paragraph>'
+					);
+			} );
 		} );
 
 		describe( 'restoreManualDecoratorStates()', () => {
