@@ -346,14 +346,14 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
 	 *
-	 *  Exposed as static editor field for easier access in editor builds.
+	 * Exposed as static editor field for easier access in editor builds.
 	 */
 	public static EditorWatchdog = EditorWatchdog;
 
 	/**
 	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
 	 *
-	 *  Exposed as static editor field for easier access in editor builds.
+	 * Exposed as static editor field for easier access in editor builds.
 	 */
 	public static ContextWatchdog = ContextWatchdog;
 }
