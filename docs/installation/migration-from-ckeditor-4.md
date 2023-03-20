@@ -21,7 +21,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 **CKEditor 4 reaches its End of Life (EOL) in June 2023.** From then on, it will receive no more updates, new features, bug fixes, and most importantly, security patches.
 
-To support you in migration to CKEditor 4, we have created an entire documentation section that covers various aspects of the migration process.
+To support you in migration to CKEditor 5, we have created an entire documentation section that covers various aspects of the migration process.
 
 Read more about:
 * {@link updating/migration-from-ckeditor-4#differences-between-ckeditor-4-and-ckeditor-5 Differences between CKEditor 4 and CKEditor 5}
