@@ -233,10 +233,10 @@ export default class LinkCommand extends Command {
 				// Current text of the link in the document.
 				const linkText = extractTextFromSelection( selection );
 
-				for ( const [ index, range ] of rangesToUpdate.entries() ) {
+				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( selection.getAttribute( 'linkHref' ) === linkText && index === 0 ) {
+					if ( selection.getAttribute( 'linkHref' ) === linkText && rangesToUpdate.length === 1 ) {
 						linkRange = this._updateLinkContent( model, writer, range, href );
 						writer.setSelection( writer.createSelection( linkRange ) );
 					}

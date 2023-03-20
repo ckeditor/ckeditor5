@@ -789,7 +789,7 @@ describe( 'LinkCommand', () => {
 					.equal( '[<$text linkHref="url2">url2</$text>]' );
 			} );
 
-			it( 'should properly handle multi range case', () => {
+			it( 'should not update link which is equal its href if selection is on more than one element', () => {
 				setData( model,
 					'<paragraph>' +
 						'<$text linkHref="foo">[foo</$text>' +
@@ -798,17 +798,17 @@ describe( 'LinkCommand', () => {
 					'<paragraph>baz]</paragraph>'
 				);
 
-				command.execute( 'foo' );
+				command.execute( 'foooo' );
 
 				expect( getData( model ) ).to
 					.equal( '<paragraph>' +
-								'[<$text linkHref="foo">foo</$text>]' +
+								'[<$text linkHref="foooo">foo</$text>' +
 							'</paragraph>' +
 							'<paragraph>' +
-								'<$text linkHref="foo">bar</$text>' +
+								'<$text linkHref="foooo">bar</$text>' +
 							'</paragraph>' +
 							'<paragraph>' +
-								'<$text linkHref="foo">baz</$text>' +
+								'<$text linkHref="foooo">baz</$text>]' +
 							'</paragraph>'
 					);
 			} );
