@@ -21,7 +21,9 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 ## Migrating from CKEditor 4
 
 <info-box>
-	CKEditor 4's End-of-Life Ddate is coming fast! Take a look at the {@link updating/migration-from-ckeditor-4 Migration guide} now!
+	CKEditor 4 reaches its End of Life (EOL) in June 2023. From then on, it will receive no more updates, new features, bug fixes, and most importantly, security patches.
+	
+	Take a look at the {@link updating/migration-from-ckeditor-4 Migration guide} to switch to CKEditor 5 now!
 </info-box>
 
 <!-- If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too. -->
