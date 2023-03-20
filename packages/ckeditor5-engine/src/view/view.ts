@@ -45,6 +45,8 @@ import {
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
+type IfTrue<T> = T extends true ? true : never;
+
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
  * abstraction over the DOM structure and events and hide all browsers quirks.
@@ -385,15 +387,40 @@ export default class View extends ObservableMixin() {
 
 	/**
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
-	 * caret, if not already visible to the user.
+	 * caret, **if not already visible to the user**.
+	 *
+	 * @param options Additional configuration of the scrolling behavior.
+	 * @param options.viewportOffset A distance between the DOM selection and the viewport boundary to be maintained
+	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
+	 * the viewport boundary.
+	 * @param options.ancestorOffset A distance between the DOM selection and scrollable DOM root ancestor(s) to be maintained
+	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
+	 * the scrollable ancestor(s) boundary.
+	 * @param options.alignToTop When set `true`, the DOM selection will be aligned to the top of the viewport if not already visible
+	 * (see `forceScroll` to learn more).
+	 * @param options.forceScroll When set `true`, the DOM selection will be aligned to the top of the viewport and scrollable ancestors
+	 * whether it is already visible or not. This option will only work when `alignToTop` is `true`.
 	 */
-	public scrollToTheSelection(): void {
+	public scrollToTheSelection<T extends boolean, U extends IfTrue<T>>( {
+		alignToTop,
+		forceScroll,
+		viewportOffset = 20,
+		ancestorOffset = 20
+	}: {
+		readonly viewportOffset?: number;
+		readonly ancestorOffset?: number;
+		readonly alignToTop?: T;
+		readonly forceScroll?: U;
+	} = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
 		if ( range ) {
 			scrollViewportToShowTarget( {
 				target: this.domConverter.viewRangeToDom( range ),
-				viewportOffset: 20
+				viewportOffset,
+				ancestorOffset,
+				alignToTop,
+				forceScroll
 			} );
 		}
 	}
