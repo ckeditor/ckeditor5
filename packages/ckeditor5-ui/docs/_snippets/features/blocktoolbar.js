@@ -15,7 +15,7 @@ BalloonEditor
 	.create( document.querySelector( '#snippet-block-toolbar' ), {
 		plugins: BalloonEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
-			items: [ 'bold', 'italic', '|', 'link' ]
+			items: [ 'bold', 'italic', 'link', 'undo', 'redo' ]
 		},
 		ui: {
 			viewportOffset: {
@@ -23,15 +23,13 @@ BalloonEditor
 			}
 		},
 		blockToolbar: [
-			'undo', 'redo',
-			'|',
 			'paragraph', 'heading1', 'heading2', 'heading3',
-			'|',
-			'uploadImage', 'blockQuote',
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'outdent', 'indent'
+			'outdent', 'indent',
+			'|',
+			'blockQuote', 'uploadImage'
 		],
 		cloudServices: CS_CONFIG
 	} )
