@@ -11,7 +11,7 @@ The text transformation feature enables autocorrection. It automatically changes
 
 ## Demo
 
-Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
 
@@ -145,7 +145,7 @@ ClassicEditor
 
 You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
 
-You can test the custom rules defined above in the demo. Try the emojis and see the editor automatically capitalize words after a full stop, a quotation mark, and an exclamation mark.
+You can test the custom rules defined above in the demo. Try typing `:)` or `:+1:` and see how the text gets transformed into emojis. You can also write some sentences to test how the editor capitalizes words after a period, a quotation mark, or an exclamation mark.
 
 {@snippet features/text-transformation-extended}
 
