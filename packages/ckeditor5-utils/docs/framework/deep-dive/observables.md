@@ -27,12 +27,12 @@ Observables are useful when it comes to managing the state of the application, w
 Observables can also [decorate their methods](#decorating-object-methods) which makes it possible to control their execution using event listeners, giving external code some control over their behavior.
 
 <info-box>
-	Since the observables are just another layer on top of the event {@link module:utils/emittermixin~EmitterMixin emitters}, check out the {@link framework/deep-dive/event-system event system deep dive guide} to learn more about the advanced usage of events with some additional examples.
+	Since the observables are just another layer on top of the event {@link module:utils/emittermixin~Emitter emitters}, check out the {@link framework/deep-dive/event-system event system deep dive guide} to learn more about the advanced usage of events with some additional examples.
 </info-box>
 
 ## Making properties observable
 
-Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~ObservableMixin#set `set()` method}.
+Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~Observable#set `set()` method}.
 
 Let's create a simple UI view (component) named `Button` with a couple of properties and see what they look like:
 
@@ -155,7 +155,7 @@ button.isEnabled = false;  // <button class="ck-off ck-disabled" type="button">B
 
 ## Property bindings
 
-One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~ObservableMixin#bind `bind()`} method to create the binding.
+One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~Observable#bind `bind()`} method to create the binding.
 
 ### Simple bindings
 
@@ -280,7 +280,7 @@ This kind of binding can be useful e.g. when a button opens a dropdown containin
 
 ### Releasing the bindings
 
-If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~ObservableMixin#unbind `unbind()`} method.
+If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~Observable#unbind `unbind()`} method.
 
 You can specify the names of the properties to selectively unbind them
 
@@ -319,7 +319,7 @@ Decorating object methods transforms them into event–driven ones without chang
 
 When a method is decorated, an event of the same name is created and fired each time the method is executed. By listening to the event it is possible to cancel the execution, change the arguments or the value returned by the method. This offers an additional flexibility, e.g. giving a third–party code some way to interact with core classes that decorate their methods.
 
-Decorating is possible using the {@link module:utils/observablemixin~ObservableMixin#decorate `decorate()`} method. Let's decorate a `focus` method of a `Button` class we created in the [previous chapters](#making-properties-observable) and see what if offers:
+Decorating is possible using the {@link module:utils/observablemixin~Observable#decorate `decorate()`} method. Let's decorate a `focus` method of a `Button` class we created in the [previous chapters](#making-properties-observable) and see what if offers:
 
 ```js
 class Button extends View {

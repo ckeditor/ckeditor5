@@ -47,7 +47,7 @@ DecoupledEditor
 	} );
 ```
 
-You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
+You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:ui/editorui/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
 <info-box>
 	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
@@ -246,6 +246,6 @@ A finishing touch that makes the block quotes more sophisticated and the styling
 
 ## Summary
 
-The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlight~HighlightConfig highlight}, {@link module:font/fontsize~FontSizeConfig font size} or {@link module:font/fontfamily~FontFamilyConfig font family} for the best editing experience.
+The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlightconfig~HighlightConfig highlight}, {@link module:font/fontconfig~FontSizeConfig font size} or {@link module:font/fontconfig~FontFamilyConfig font family} for the best editing experience.
 
 Thanks to the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} used as a foundation, you can experiment and create custom user interface layouts quickly while preserving the feature set, accessibility support (e.g. {@link features/keyboard-support keyboard navigation} in the toolbar) and more.

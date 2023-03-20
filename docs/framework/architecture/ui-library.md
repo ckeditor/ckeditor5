@@ -285,7 +285,7 @@ The result should look like this:
 
 {@img assets/img/framework-architecture-toolbar.png 636 A simple toolbar created using existing components.}
 
-The toolbar renders correctly but it does not do much. To execute an action when the button is clicked, a listener must be defined. To shorten the code and instead of two listeners define just one, the buttons can {@link module:utils/emittermixin~EmitterMixin#delegate delegate} the {@link module:ui/button/buttonview~ButtonView#event:execute `execute`} event to their parent:
+The toolbar renders correctly but it does not do much. To execute an action when the button is clicked, a listener must be defined. To shorten the code and instead of two listeners define just one, the buttons can {@link module:utils/emittermixin~Emitter#delegate delegate} the {@link module:ui/button/buttonview~ButtonView#event:execute `execute`} event to their parent:
 
 ```js
 buttonFoo.delegate( 'execute' ).to( toolbar );

@@ -384,7 +384,7 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 /**
  * Emitter/listener interface.
  *
- * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
+ * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~Emitter} mixin.
  *
  * ```ts
  * class MyClass extends EmitterMixin() {

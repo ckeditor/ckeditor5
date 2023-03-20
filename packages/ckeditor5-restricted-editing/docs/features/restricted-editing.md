@@ -59,7 +59,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig `config.restrictedEditing`} documentation.
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
 ### Enabling commands in the restricted editing mode
 

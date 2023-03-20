@@ -20,7 +20,7 @@ The editor offers different ways to resize images either by using "resize handle
 
 The {@link module:image/imageresize~ImageResize} plugin enables the four resize handles displayed over the selected image. The user can freely resize the image by dragging them. The feature can be configured to use either percentage (default) or pixel values.
 
-The plugin also gives you an ability to change the size of the image through the on-click image toolbar. You can set an optional static configuration with {@link module:image/image~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or a set of standalone buttons.
+The plugin also gives you an ability to change the size of the image through the on-click image toolbar. You can set an optional static configuration with {@link module:image/imageconfig~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or a set of standalone buttons.
 
 ### Using resize handles
 
@@ -63,7 +63,7 @@ Both ways enable resize handles by default.
 
 In this case, the user is able to choose from a set of predefined options. These options can be displayed in form of a dropdown in the image toolbar available after the user clicks the image.
 
-To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}. Then add the dropdown to the image toolbar configuration.
+To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/imageconfig~ImageConfig#resizeOptions resize options}. Then add the dropdown to the image toolbar configuration.
 
 ```js
 const imageConfiguration = {
@@ -104,7 +104,7 @@ The example of CSS fixing the image aspect ratio is in the [last example](#aspec
 
 In this case, the resize options are displayed in the form of separate buttons. The benefit of this solution is the smoothest UX as the user needs just one click to resize an image.
 
-To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}. Then add appropriate buttons to the image toolbar configuration.
+To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/imageconfig~ImageConfig#resizeOptions resize options}. Then add appropriate buttons to the image toolbar configuration.
 
 ```js
 const imageConfiguration = {
@@ -236,7 +236,7 @@ Using percentage widths ensures that the content stays responsive when displayed
 
 If you configured the editor to use pixel values, the image could take up, for example, too much space after you introduced a new layout for your website.
 
-However, there are cases where pixel values may be preferred. You can thus configure the editor to use them by setting the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} option:
+However, there are cases where pixel values may be preferred. You can thus configure the editor to use them by setting the {@link module:image/imageconfig~ImageConfig#resizeUnit `config.image.resizeUnit`} option:
 
 ```js
 ClassicEditor

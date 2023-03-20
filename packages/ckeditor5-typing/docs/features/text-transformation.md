@@ -11,7 +11,7 @@ The text transformation feature enables autocorrection. It automatically changes
 
 ## Demo
 
-Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
 
@@ -62,13 +62,13 @@ You may find additional interesting details and usage examples in the [Automatic
 
 ## Configuring transformations
 
-This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
 
 By using the options defined below you can extend, limit or override this list:
 
-* {@link module:typing/texttransformation~TextTransformationConfig#include `typing.transformations.include`} &ndash; Overrides the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names that can be found in the {@link module:typing/texttransformation~TextTransformationConfig} documentation) and write your own transformations.
-* {@link module:typing/texttransformation~TextTransformationConfig#remove `typing.transformations.remove`} &ndash; Removes predefined transformations.
-* {@link module:typing/texttransformation~TextTransformationConfig#extra `typing.transformations.extra`} &ndash; Adds your custom transformations to the predefined ones.
+* {@link module:typing/typingconfig~TextTransformationConfig#include `typing.transformations.include`} &ndash; Overrides the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names that can be found in the {@link module:typing/typingconfig~TextTransformationConfig} documentation) and write your own transformations.
+* {@link module:typing/typingconfig~TextTransformationConfig#remove `typing.transformations.remove`} &ndash; Removes predefined transformations.
+* {@link module:typing/typingconfig~TextTransformationConfig#extra `typing.transformations.extra`} &ndash; Adds your custom transformations to the predefined ones.
 
 ### Example: Using `transformations.include`
 
@@ -143,7 +143,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
+You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTransformationDescription}.
 
 You can test the custom rules defined above in the demo. Try the emojis and see the editor automatically capitalize words after a full stop, a quotation mark, and an exclamation mark.
 

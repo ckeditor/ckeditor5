@@ -7,7 +7,7 @@ category: framework-deep-dive
 
 Emitters are heavily used throughout the entire editor architecture. They are the building blocks for mechanisms such as the {@link framework/deep-dive/observables observables}, {@link framework/architecture/editing-engine#observers engine's view observers}, and {@link framework/architecture/editing-engine#conversion conversion}.
 
-Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~EmitterMixin} into it:
+Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~Emitter} into it:
 
 ```js
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -82,7 +82,7 @@ Listeners are triggered in the order of these priorities (first `highest`, then 
 
 **Note**: If any listener {@link module:utils/eventinfo~EventInfo#stop stops} the event, no other listeners including those on lower priorities will be called.
 
-It is possible to use relative priorities {@link module:utils/priorities~priorities#get `priorities.get( 'high' ) + 10`} but this is strongly discouraged.
+It is possible to use relative priorities {@link module:utils/priorities~PrioritiesType#get `priorities.get( 'high' ) + 10`} but this is strongly discouraged.
 
 ### Stopping events and returned value
 
@@ -135,7 +135,7 @@ This mechanism is used for instance in the conversion, where thanks to events na
 
 ## Firing events
 
-Once you mix the {@link module:utils/emittermixin~EmitterMixin} into your class, you can fire events the following way:
+Once you mix the {@link module:utils/emittermixin~Emitter} into your class, you can fire events the following way:
 
 ```js
 this.fire( 'eventName', argA, argB, /* ... */ );

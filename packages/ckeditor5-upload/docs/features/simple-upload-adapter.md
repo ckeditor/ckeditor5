@@ -42,7 +42,7 @@ ClassicEditor
 
 ## Configuration
 
-The client side of this feature is configurable using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig `config.simpleUpload`} object.
+The client side of this feature is configurable using the {@link module:upload/uploadconfig~SimpleUploadConfig `config.simpleUpload`} object.
 
 ```js
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
@@ -78,7 +78,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 #### Client-side configuration
 
-Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
 
@@ -92,11 +92,11 @@ To use this upload adapter, you must provide a server-side application that will
 
 ### Communication protocol
 
-When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
+When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
 
-You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
+You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
 
-If you use the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials `config.simpleUpload.withCredentials`} configuration, you may need some [extra HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for the cross-site request to work properly.
+If you use the {@link module:upload/uploadconfig~SimpleUploadConfig#withCredentials `config.simpleUpload.withCredentials`} configuration, you may need some [extra HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for the cross-site request to work properly.
 
 The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the [Successful upload](#successful-upload) and [Error handling](#error-handling) sections to learn more.
 

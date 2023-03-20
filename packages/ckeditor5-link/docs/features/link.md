@@ -31,7 +31,7 @@ CKEditor 5 allows for typing both at the inner and outer boundaries of links to 
 
 ## Custom link attributes (decorators)
 
-By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/link~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
+By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
 
 There are two types of link decorators you can use:
 
@@ -56,7 +56,7 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'link',
-				// More toolbar items. 
+				// More toolbar items.
 				// ...
 			],
 		},
@@ -82,7 +82,7 @@ ClassicEditor
 
 ### Configuration
 
-Decorators are configured through definitions provided in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration option.
+Decorators are configured through definitions provided in the {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} configuration option.
 
 Each decorator definition must have a unique name. In the case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/architecture/editing-engine#text-attributes document model}.
 
@@ -92,7 +92,7 @@ Each decorator definition must have a unique name. In the case of [manual decora
 
 #### Adding `target` and `rel` attributes to external links
 
-A very common use case for (automatic) link decorators is adding `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When this option is set to `true`, all links starting with `http://`, `https://` or `//` are "decorated" with `target` and `rel` attributes.
+A very common use case for (automatic) link decorators is adding `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When this option is set to `true`, all links starting with `http://`, `https://` or `//` are "decorated" with `target` and `rel` attributes.
 
 ```js
 ClassicEditor
@@ -107,7 +107,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Internally, this configuration corresponds to an [automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) with the following {@link module:link/link~LinkDecoratorAutomaticDefinition definition}:
+Internally, this configuration corresponds to an [automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators) with the following {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition definition}:
 
 ```js
 ClassicEditor
@@ -159,7 +159,7 @@ ClassicEditor
 
 A default link protocol can be useful when the user forgets to type the full URL address to an external source or website. Sometimes copying the text, like for example `ckeditor.com`, and converting it to a link may cause some issues. As a result, the created link will direct you to `yourdomain.com/ckeditor.com` because of the missing protocol. This makes the link relative to the site where it appears.
 
-After you enable the {@link module:link/link~LinkConfig#defaultProtocol `config.link.defaultProtocol`} configuration option, the link feature will be able to handle this issue for you. By default it does not fix the passed link value, but when you set {@link module:link/link~LinkConfig#defaultProtocol `config.link.defaultProtocol`} to, for example, `http://`, the plugin will add the given protocol to every link that may need it (like `ckeditor.com`, `example.com`, etc. where `[protocol://]example.com` is missing).
+After you enable the {@link module:link/linkconfig~LinkConfig#defaultProtocol `config.link.defaultProtocol`} configuration option, the link feature will be able to handle this issue for you. By default it does not fix the passed link value, but when you set {@link module:link/linkconfig~LinkConfig#defaultProtocol `config.link.defaultProtocol`} to, for example, `http://`, the plugin will add the given protocol to every link that may need it (like `ckeditor.com`, `example.com`, etc. where `[protocol://]example.com` is missing).
 
 See a basic configuration example:
 
@@ -184,9 +184,9 @@ ClassicEditor
 
 #### Adding attributes to links based on predefined rules (automatic decorators)
 
-Automatic link decorators match all links in the editor content against a {@link module:link/link~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/architecture/editing-engine#conversion data downcast} only.
+Automatic link decorators match all links in the editor content against a {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition function} which decides whether the link should receive some set of attributes, considering the URL (`href`) of the link. These decorators work silently and are being applied during the {@link framework/architecture/editing-engine#conversion data downcast} only.
 
-For instance, to create an automatic decorator that adds the `download="file.pdf"` attribute to all links ending with the `".pdf"` extension, you should add the following {@link module:link/link~LinkDecoratorAutomaticDefinition definition} to {@link module:link/link~LinkConfig#decorators `config.link.decorators`}:
+For instance, to create an automatic decorator that adds the `download="file.pdf"` attribute to all links ending with the `".pdf"` extension, you should add the following {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition definition} to {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}:
 
 ```js
 ClassicEditor
@@ -215,9 +215,9 @@ ClassicEditor
 
 #### Adding attributes to links using the UI (manual decorators)
 
-Manual link decorators are represented in the link editing balloon as switch buttons that the users can use to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/link~LinkDecoratorManualDefinition definition} contains a human-readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
+Manual link decorators are represented in the link editing balloon as switch buttons that the users can use to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/linkconfig~LinkDecoratorManualDefinition definition} contains a human-readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
 
-To configure a "Downloadable" switch button in the link editing balloon that adds the `download="file"` attribute to the link when turned on, add the following definition to {@link module:link/link~LinkConfig#decorators `config.link.decorators`}:
+To configure a "Downloadable" switch button in the link editing balloon that adds the `download="file"` attribute to the link when turned on, add the following definition to {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}:
 
 ```js
 ClassicEditor
@@ -315,7 +315,7 @@ editor.execute( 'unlink' );
 
 The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/images-linking Linking images} section in the {@link features/images-overview feature guide}.
 
-Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}.
+Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

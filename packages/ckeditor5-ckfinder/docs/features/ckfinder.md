@@ -64,11 +64,11 @@ This feature can be used in the rich-text editor in two different ways:
 
 ## Configuration
 
-The feature is configurable by using the {@link module:ckfinder/ckfinder~CKFinderConfig `config.ckfinder`} object.
+The feature is configurable by using the {@link module:ckfinder/ckfinderconfig~CKFinderConfig `config.ckfinder`} object.
 
 ### Configuring the image upload only
 
-This feature can upload images automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
+This feature can upload images automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinderconfig~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 
 Assuming that the [CKFinder PHP server-side connector is installed](https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html#quickstart_installation_folders) (available) under `https://example.com/ckfinder/`, use the following [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload) command URL to enable the image upload:
 
@@ -106,9 +106,9 @@ The easiest way to load the CKFinder library is to include the `<script>` tag lo
 Then:
 
 * Make sure that the {@link module:ckfinder/ckfinder~CKFinder CKFinder plugin} for CKEditor 5 is enabled. See the [Installation](#installation) section.
-* In order to enable the automatic file upload to the server when an image is pasted or dropped into the editor content, remember to set the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
+* In order to enable the automatic file upload to the server when an image is pasted or dropped into the editor content, remember to set the correct {@link module:ckfinder/ckfinderconfig~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 * In order to display the toolbar button that opens the CKFinder file manager UI allowing the users to choose the files on the server, make sure that `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
-* Additionally, you can use {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} to define [CKFinder's options](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config). For example:
+* Additionally, you can use {@link module:ckfinder/ckfinderconfig~CKFinderConfig#options `config.ckfinder.options`} to define [CKFinder's options](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config). For example:
 	* You can define [`options.resourceType`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-resourceType) to tell CKFinder the specified resource type can be browsed when the user clicks the button.
 	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default, it will be set to the UI language of the editor.
 
@@ -140,7 +140,7 @@ See the **[demo of the full integration](#full-integration)**.
 
 #### Configuring the opener
 
-You can change the way CKFinder opens using the {@link module:ckfinder/ckfinder~CKFinderConfig#openerMethod `config.ckfinder.openerMethod`} option.
+You can change the way CKFinder opens using the {@link module:ckfinder/ckfinderconfig~CKFinderConfig#openerMethod `config.ckfinder.openerMethod`} option.
 
 By default, the file manager opens as a modal. To open it in a new "pop-up" window, set the configuration value to `popup`:
 
@@ -169,7 +169,7 @@ The allowed file types that can be uploaded should be configured in two places:
 
 #### Client-side configuration
 
-Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
 

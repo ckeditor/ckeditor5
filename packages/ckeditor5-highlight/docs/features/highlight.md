@@ -29,7 +29,7 @@ Note that the highlight feature uses inline `<mark>` elements in the view.
 ### Dropdown
 
 It is possible to configure which highlight options are supported by the editor.
-You can use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
+You can use the {@link module:highlight/highlightconfig~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
 
 For example, the following editor supports only two styles (a green marker and a red pen):
 
@@ -91,7 +91,7 @@ ClassicEditor
 ### Colors and styles
 
 <info-box info>
-	See the plugin {@link module:highlight/highlight~HighlightConfig#options options} to learn more about defaults.
+	See the plugin {@link module:highlight/highlightconfig~HighlightConfig#options options} to learn more about defaults.
 </info-box>
 
 #### Using CSS variables
@@ -115,7 +115,7 @@ The highlight feature is using the power of [CSS variables](https://developer.mo
 
 #### Inline color definitions
 
-It is possible to use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` property for each option:
+It is possible to use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlightconfig~HighlightConfig#options options} and define the `color` property for each option:
 
 ```js
 ClassicEditor
@@ -215,7 +215,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 * The `'highlight'` dropdown,
 * The {@link module:highlight/highlightcommand~HighlightCommand `'highlight'`} command.
 
-	The number of options and their names correspond to the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration option.
+	The number of options and their names correspond to the {@link module:highlight/highlightconfig~HighlightConfig#options `highlight.options`} configuration option.
 
 	You can change the highlight of the current selection by executing the command with a desired value:
 

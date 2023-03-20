@@ -54,9 +54,9 @@ new Matcher( {
 
 ### Link decorators API change
 
-{@link updating/update-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/link~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/link~LinkDecoratorManualDefinition manual decorator} and {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
+{@link updating/update-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/linkconfig~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorator} and {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
 
-Here is an example of changes you may need for proper integration with the {@link module:link/link~LinkDecoratorDefinition link decorators} API change:
+Here is an example of changes you may need for proper integration with the {@link module:link/linkconfig~LinkDecoratorDefinition link decorators} API change:
 
 ```js
 // Old code.
@@ -125,15 +125,15 @@ An image caption is no longer automatically shown when selecting the image widge
 
 Since the appearance of the image in the document depends on the image type (block/inline), the {@link module:image/imagestyle~ImageStyle} plugin is now in charge of switching between these types. Thus, the following changes have been introduced:
 
-* {@link module:image/image~ImageConfig#styles A new set of buttons} is available to manage the image type and appearance.
+* {@link module:image/imageconfig~ImageConfig#styles A new set of buttons} is available to manage the image type and appearance.
 
 * There is a possibility to group the buttons provided by the {@link module:image/imagestyle~ImageStyle} plugin into dropdowns.
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
-	* In the editor configuration, {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom dropdown} can be declared.
+	* In the editor configuration, {@link module:image/imageconfig~ImageStyleDropdownDefinition a custom dropdown} can be declared.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 
-* The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/image~ImageConfig#styles `image.styles` configuration}.
+* The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/imageconfig~ImageConfig#styles `image.styles` configuration}.
 
 	```js
 	// Before v29.0.0
@@ -155,7 +155,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	} );
 	```
 
-* The format of the `imageStyle` has changed. It must now provide information about the image types supporting a particular style. Read more about the {@link module:image/imagestyle~ImageStyleOptionDefinition}.
+* The format of the `imageStyle` has changed. It must now provide information about the image types supporting a particular style. Read more about the {@link module:image/imageconfig~ImageStyleOptionDefinition}.
 
 	```js
 	// Before v29.0.0
@@ -202,7 +202,7 @@ Until v29.0.0, custom editor builds without {@link module:image/imagestyle~Image
 
 Since v29.0.0, {@link features/images-styles image styles} and {@link features/images-overview#image-contextual-toolbar toolbar} allow users to choose the type of image (inline or block) and give them a way to add or remove captions from block images via configurable buttons.
 
-The user experience will degrade if either of these features is missing and this makes the {@link module:image/image~ImageConfig#toolbar image toolbar} configuration essential.
+The user experience will degrade if either of these features is missing and this makes the {@link module:image/imageconfig~ImageConfig#toolbar image toolbar} configuration essential.
 
 <info-box>
 	{@link installation/getting-started/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link installation/getting-started/quick-start-other#customizing-a-predefined-build custom editor builds} in their integrations.
@@ -250,7 +250,7 @@ See the {@link features/images-overview#image-contextual-toolbar image feature g
 
 ### Inserting images
 
-Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text will no longer split it if the {@link module:image/imageinline~ImageInline} plugin is loaded (default). If you prefer the old behavior in your integration, this can be specified in the {@link module:image/imageinsert~ImageInsertConfig `ImageInsert` plugin configuration}.
+Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text will no longer split it if the {@link module:image/imageinline~ImageInline} plugin is loaded (default). If you prefer the old behavior in your integration, this can be specified in the {@link module:image/imageconfig~ImageInsertConfig `ImageInsert` plugin configuration}.
 
 ### Image utilities
 

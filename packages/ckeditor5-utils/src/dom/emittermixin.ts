@@ -25,7 +25,7 @@ const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
- * compatible with {@link module:utils/emittermixin~EmitterMixin}.
+ * compatible with {@link module:utils/emittermixin~Emitter}.
  *
  * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
  *
@@ -51,7 +51,7 @@ export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
- * compatible with {@link module:utils/emittermixin~EmitterMixin}.
+ * compatible with {@link module:utils/emittermixin~Emitter}.
  *
  * This function creates a class that implements `Emitter` interface.
  *

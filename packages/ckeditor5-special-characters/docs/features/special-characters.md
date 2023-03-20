@@ -150,7 +150,7 @@ Below, you can see a demo based on the example shown above. After clicking the s
 
 The order of categories in the UI is determined by the order in which they were registered. However, depending on the context in which you use the editor, you might want to change this order, to make it easier to access frequently used characters.
 
-The categories order can be customized using the {@link module:special-characters/specialcharacters~SpecialCharactersConfig#order `order`} array.
+The categories order can be customized using the {@link module:special-characters/specialcharactersconfig~SpecialCharactersConfig#order `order`} array.
 
 ```js
 ClassicEditor

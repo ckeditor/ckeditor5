@@ -179,7 +179,7 @@ The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all edito
 
 {@img assets/img/toolbar-items.png 749 An extended contextual toolbar.}
 
-The image toolbar is configurable using the {@link module:image/image~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle and text alternative buttons, use the following configuration:
+The image toolbar is configurable using the {@link module:image/imageconfig~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle and text alternative buttons, use the following configuration:
 
 ```js
 ClassicEditor

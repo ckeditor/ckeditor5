@@ -44,7 +44,7 @@ All that with virtually zero server setup.
 To make enabling image upload in CKEditor 5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}. It integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
 1. Follow the [Easy Image &mdash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
-2. Configure CKEditor 5 (see {@link module:cloud-services/cloudservices~CloudServicesConfig `CloudServicesConfig`}):
+2. Configure CKEditor 5 (see {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `CloudServicesConfig`}):
 
 	```js
 	ClassicEditor
@@ -71,7 +71,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 #### Client-side configuration
 
-Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. This corresponds with file formats supported by Easy Image, but you can modify the list to limit the number of allowed image types.
 

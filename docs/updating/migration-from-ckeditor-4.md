@@ -1,6 +1,6 @@
 ---
 # Scope:
-# Make the migration guide more discoverable 
+# Make the migration guide more discoverable
 
 category: updating
 order: 10
@@ -198,11 +198,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_tokenUrl">cloudServices_tokenUrl</a></td>
-			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}.</td>
+			<td>See {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_uploadUrl">cloudServices_uploadUrl</a></td>
-			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#uploadUrl `config.cloudServices.uploadUrl`}. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</td>
+			<td>See {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#uploadUrl `config.cloudServices.uploadUrl`}. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_theme">codeSnippet_theme</a></td>
@@ -432,7 +432,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h1">format_h1</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h2">format_h2</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h3">format_h3</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h4">format_h4</a> <br>  <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h5">format_h5</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h6">format_h6</a></td>
-			<td>All headings are configurable via {@link module:heading/heading~HeadingConfig#options `config.heading.options`}. See also the {@link features/headings Headings feature guide}.</td>
+			<td>All headings are configurable via {@link module:heading/headingconfig~HeadingConfig#options `config.heading.options`}. See also the {@link features/headings Headings feature guide}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_tags">format_tags</a></td>
@@ -467,7 +467,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_alignClasses">image2_alignClasses</a></td>
-			<td>Available via more powerful {@link module:image/image~ImageConfig#styles `config.image.styles`}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
+			<td>Available via more powerful {@link module:image/imageconfig~ImageConfig#styles `config.image.styles`}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_maxSize">image2_maxSize</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_prefillDimensions">image2_prefillDimensions</a></td>
@@ -522,7 +522,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_color">magicline_color</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_everywhere">magicline_everywhere</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_holdDistance">magicline_holdDistance</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_keystrokeNext">magicline_keystrokeNext</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_keystrokePrevious">magicline_keystrokePrevious</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_tabuList">magicline_tabuList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_triggerOffset">magicline_triggerOffset</a></td>
-            <td>This functionality is covered by the {@link module:widget/widgettypearound~WidgetTypeAround <code>WidgetTypeAround</code>} plugin that allows users to type around widgets where normally it is impossible to place the caret due to limitations of web browsers.</td>
+            <td>This functionality is covered by the {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround <code>WidgetTypeAround</code>} plugin that allows users to type around widgets where normally it is impossible to place the caret due to limitations of web browsers.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxClass">mathJaxClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxLib">mathJaxLib</a></td>
@@ -702,7 +702,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-undoStackSize">undoStackSize</a></td>
-			<td>See {@link module:typing/typing~TypingConfig#undoStep `config.typing.undoStep`}.</td>
+			<td>See {@link module:typing/typingconfig~TypingConfig#undoStep `config.typing.undoStep`}.</td>
 		</tr>
 		<tr>
 			<td><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></td>

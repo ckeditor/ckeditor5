@@ -47,7 +47,7 @@ These are the rules based on which the official plugins were implemented. When i
 
 After this lengthy introduction (which is aimed at making it easier for you to digest the existing plugins), the plugin API can be explained.
 
-All plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginInterface.requires} property.
+All plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginStaticMembers.requires} property.
 
 ```js
 import MyDependency from 'some/other/plugin';
@@ -149,7 +149,7 @@ const enableBold = disableCommand( editor.commands.get( 'bold' ) );
 enableBold();
 ```
 
-The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+The command will now be disabled as long as you do not {@link module:utils/emittermixin~Emitter#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
 By default, editor commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
 
@@ -172,7 +172,7 @@ The {@link module:core/command~Command#affectsData `affectsData`} flag will also
 
 ## Event system and observables
 
-CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
+CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~Emitter} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
 
 Most of the classes that have already been mentioned are either emitters or observables (observable is an emitter, too). An emitter can emit (fire) events as well as listen to them.
 
@@ -200,7 +200,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-The second listener to `'execute'` shows one of the very common practices in CKEditor 5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~ObservableMixin#decorate `ObservableMixin#decorate()`} function:
+The second listener to `'execute'` shows one of the very common practices in CKEditor 5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~Observable#decorate `ObservableMixin#decorate()`} function:
 
 ```js
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -223,7 +223,7 @@ mix( Command, ObservableMixin );
 	Check out the {@link framework/deep-dive/event-system event system deep dive guide} and the {@link framework/deep-dive/observables observables deep dive guide} to learn more about the advanced usage of events and observables with some additional examples.
 </info-box>
 
-Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
+Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~Observable#set `set()`}:
 
 ```js
 class Command {

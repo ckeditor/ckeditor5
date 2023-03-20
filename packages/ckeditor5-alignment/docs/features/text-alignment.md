@@ -21,7 +21,7 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 
 ### Defining available options
 
-It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
+It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
 <info-box>
 	Note that the `'left'` option should always be included for the <abbr title="left–to–right">LTR</abbr> content. Similarly, the `'right'` option should always be included for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
@@ -50,7 +50,7 @@ ClassicEditor
 By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
 
 <info-box>
-	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
+	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignmentconfig~AlignmentConfig#options `config.alignment.options`}.
 </info-box>
 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
@@ -135,7 +135,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 * Dropdown: `'alignment'`.
 * Buttons: `'alignment:left'`, `'alignment:right'`, `'alignment:center'`, `'alignment:justify'`.
 
-	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
+	The number of options and their names are based on the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option).
 
 * Command: `'alignment'`:
 
