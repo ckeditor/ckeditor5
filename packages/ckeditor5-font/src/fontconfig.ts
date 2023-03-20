@@ -153,6 +153,14 @@ export interface FontColorConfig {
 	 * ```
 	 */
 	columns?: number;
+
+	/**
+	 * Color picker gives ability to choose custom color.
+	 *
+	 * By default color picker is set on true.
+	 *
+	 */
+	colorPicker?: boolean;
 }
 
 /**

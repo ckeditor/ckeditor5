@@ -147,6 +147,10 @@ export default class ColorUI extends Plugin {
 				// Grids rendering is deferred (#6192).
 				dropdownView.colorTableView!.appendGrids();
 
+				if ( editor.config.get( 'fontColor.colorPicker' )! !== false ) {
+					dropdownView.colorTableView!.appendColorPicker();
+				}
+
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );

@@ -73,6 +73,12 @@ export default class ColorTableView extends View {
 	public documentColors: DocumentColorCollection;
 
 	/**
+	 * Color picker.
+	 *
+	 */
+	public _colorPickerView?: ColorPickerView;
+
+	/**
 	 * The maximum number of colors in the document colors section.
 	 * If it equals 0, the document colors section is not added.
 	 *
@@ -93,12 +99,6 @@ export default class ColorTableView extends View {
 	 * @readonly
 	 */
 	protected _focusCycler: FocusCycler;
-
-	/**
-	 * Color picker.
-	 *
-	 */
-	protected _colorPickerView: ColorPickerView;
 
 	/**
 	 * Document color section's label.
@@ -196,12 +196,6 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._createRemoveColorButton() );
-
-		this._colorPickerView = new ColorPickerView( this.locale );
-		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
-		this._colorPickerView.render();
-
-		this.items.add( this._colorPickerView );
 	}
 
 	/**
@@ -251,7 +245,9 @@ export default class ColorTableView extends View {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
 
-		this._colorPickerView.setColor( selectedColor );
+		if ( this._colorPickerView ) {
+			this._colorPickerView.setColor( selectedColor );
+		}
 	}
 
 	/**
@@ -281,7 +277,6 @@ export default class ColorTableView extends View {
 		if ( this.staticColorsGrid ) {
 			return;
 		}
-
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
@@ -309,6 +304,18 @@ export default class ColorTableView extends View {
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
 		}
+	}
+
+	public appendColorPicker(): void {
+		if ( this._colorPickerView ) {
+			return;
+		}
+
+		this._colorPickerView = new ColorPickerView( this.locale );
+		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
+		this._colorPickerView.render();
+
+		this.items.add( this._colorPickerView );
 	}
 
 	/**

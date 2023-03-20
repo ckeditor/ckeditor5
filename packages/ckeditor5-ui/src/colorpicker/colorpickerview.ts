@@ -16,12 +16,12 @@ export default class ColorPickerView extends View {
 	/**
 	 * color picker
 	 */
-	declare public _picker: HTMLElement;
+	declare private _picker: HTMLElement;
 
 	/**
 	 * color picker input
 	 */
-	declare public _input: HTMLElement;
+	declare private _input: HTMLElement;
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
@@ -44,7 +44,7 @@ export default class ColorPickerView extends View {
 		this._picker.focus();
 	}
 
-	public render(): void {
+	public override render(): void {
 		super.render();
 
 		this._picker = global.document.createElement( 'hex-color-picker' );
@@ -57,14 +57,22 @@ export default class ColorPickerView extends View {
 		}
 
 		this._picker.addEventListener( 'color-changed', event => {
-			this.fire( 'change', { value: event.detail.value } );
+			const customEvent = event as CustomEvent;
+			this.fire( 'change', { value: customEvent.detail.value } );
 		} );
 
 		this._input.addEventListener( 'color-changed', event => {
-			const color = event.detail.value || '#ffffff';
+			const customEvent = event as CustomEvent;
+			const color = customEvent.detail.value || '#ffffff';
 
 			this.setColor( color );
 			this.fire( 'change', { value: color } );
 		} );
 	}
 }
+
+type CustomEvent = Event & {
+	detail: {
+		value: string;
+	};
+};
