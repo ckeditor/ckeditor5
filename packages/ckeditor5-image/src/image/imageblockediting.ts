@@ -7,7 +7,7 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
 import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine';
 
@@ -40,8 +40,8 @@ export default class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ];
+	public static get requires() {
+		return [ ImageEditing, ImageUtils, ClipboardPipeline ] as const;
 	}
 
 	/**

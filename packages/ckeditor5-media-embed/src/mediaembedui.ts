@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedui
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from 'ckeditor5/src/ui';
 
 import MediaFormView from './ui/mediaformview';
@@ -24,8 +24,8 @@ export default class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ MediaEmbedEditing ];
+	public static get requires() {
+		return [ MediaEmbedEditing ] as const;
 	}
 
 	/**

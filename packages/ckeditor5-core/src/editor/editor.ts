@@ -245,7 +245,7 @@ export default abstract class Editor extends ObservableMixin() {
 	 *
 	 * See also {@link module:core/editor/editor~Editor.defaultConfig}.
 	 */
-	public static builtinPlugins?: Array<PluginConstructor<Editor>>;
+	public static builtinPlugins?: ReadonlyArray<PluginConstructor<Editor>>;
 
 	/**
 	 * The editor UI instance.

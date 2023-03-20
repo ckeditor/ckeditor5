@@ -22,7 +22,7 @@ import type {
 	RenameOperation
 } from 'ckeditor5/src/engine';
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import {
 	getCode,
@@ -67,8 +67,8 @@ export default class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListEditing ];
+	public static get requires() {
+		return [ ListEditing ] as const;
 	}
 
 	/**

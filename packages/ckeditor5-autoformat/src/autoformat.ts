@@ -8,7 +8,7 @@
  */
 import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
-import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { Range, Writer } from 'ckeditor5/src/engine';
 import { Delete } from 'ckeditor5/src/typing';
 
@@ -25,8 +25,8 @@ export default class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Delete ];
+	public static get requires() {
+		return [ Delete ] as const;
 	}
 
 	/**

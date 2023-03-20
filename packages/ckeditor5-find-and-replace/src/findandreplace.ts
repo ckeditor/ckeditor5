@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplace
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui';
 import FindAndReplaceEditing from './findandreplaceediting';
 import type { Marker } from 'ckeditor5/src/engine';
@@ -35,8 +35,8 @@ export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FindAndReplaceEditing, FindAndReplaceUI ];
+	public static get requires() {
+		return [ FindAndReplaceEditing, FindAndReplaceUI ] as const;
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module media-embed/automediaembed
  */
 
-import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
 import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { Delete } from 'ckeditor5/src/typing';
@@ -28,8 +28,8 @@ export default class AutoMediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Clipboard, Delete, Undo ];
+	public static get requires() {
+		return [ Clipboard, Delete, Undo ] as const;
 	}
 
 	/**

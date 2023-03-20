@@ -10,7 +10,6 @@
 import {
 	Plugin,
 	PendingActions,
-	type PluginDependencies,
 	type Editor,
 	type PendingAction,
 	type EditorDestroyEvent,
@@ -136,8 +135,8 @@ export default class Autosave extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ PendingActions ];
+	public static get requires() {
+		return [ PendingActions ] as const;
 	}
 
 	/**

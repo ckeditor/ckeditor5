@@ -7,7 +7,7 @@
  * @module font/font
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import FontFamily from './fontfamily';
 import FontSize from './fontsize';
@@ -29,8 +29,8 @@ export default class Font extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FontFamily, FontSize, FontColor, FontBackgroundColor ];
+	public static get requires() {
+		return [ FontFamily, FontSize, FontColor, FontBackgroundColor ] as const;
 	}
 
 	/**

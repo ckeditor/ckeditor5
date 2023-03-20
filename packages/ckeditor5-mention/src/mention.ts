@@ -7,7 +7,7 @@
  * @module mention/mention
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 
 import MentionEditing, { _toMentionAttribute } from './mentionediting';
@@ -49,8 +49,8 @@ export default class Mention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ MentionEditing, MentionUI ];
+	public static get requires() {
+		return [ MentionEditing, MentionUI ] as const;
 	}
 }
 

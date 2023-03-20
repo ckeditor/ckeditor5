@@ -7,7 +7,7 @@
  * @module html-support/integrations/image
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -26,8 +26,8 @@ export default class ImageElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

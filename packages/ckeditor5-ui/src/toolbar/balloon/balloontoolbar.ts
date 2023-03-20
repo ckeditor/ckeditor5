@@ -17,8 +17,7 @@ import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/edi
 import {
 	Plugin,
 	type Editor,
-	type EditorReadyEvent,
-	type PluginDependencies
+	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -100,8 +99,8 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

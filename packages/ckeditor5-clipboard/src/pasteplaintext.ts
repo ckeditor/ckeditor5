@@ -7,7 +7,7 @@
  * @module clipboard/pasteplaintext
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import type { DocumentFragment, Schema, ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
@@ -30,8 +30,8 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline ];
+	public static get requires() {
+		return [ ClipboardPipeline ] as const;
 	}
 
 	/**

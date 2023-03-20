@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine';
 import type { Collection, GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -95,8 +95,8 @@ export default class FindAndReplaceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FindAndReplaceUtils ];
+	public static get requires() {
+		return [ FindAndReplaceUtils ] as const;
 	}
 
 	/**

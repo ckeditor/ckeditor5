@@ -7,7 +7,7 @@
  * @module link/link
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import LinkEditing from './linkediting';
 import LinkUI from './linkui';
 import AutoLink from './autolink';
@@ -22,8 +22,8 @@ export default class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ LinkEditing, LinkUI, AutoLink ];
+	public static get requires() {
+		return [ LinkEditing, LinkUI, AutoLink ] as const;
 	}
 
 	/**

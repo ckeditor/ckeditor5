@@ -7,7 +7,7 @@
  * @module table/tableproperties
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 import TablePropertiesUI from './tableproperties/tablepropertiesui';
@@ -33,7 +33,7 @@ export default class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TablePropertiesEditing, TablePropertiesUI ];
+	public static get requires() {
+		return [ TablePropertiesEditing, TablePropertiesUI ] as const;
 	}
 }

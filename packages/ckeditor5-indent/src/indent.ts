@@ -7,7 +7,7 @@
  * @module indent/indent
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import IndentEditing from './indentediting';
 import IndentUI from './indentui';
@@ -43,7 +43,7 @@ export default class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ IndentEditing, IndentUI ];
+	public static get requires() {
+		return [ IndentEditing, IndentUI ] as const;
 	}
 }

@@ -7,7 +7,7 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { type Editor, Plugin, type PluginDependencies, type CommandExecuteEvent } from 'ckeditor5/src/core';
+import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core';
 import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 import type { GetCallback } from 'ckeditor5/src/utils';
@@ -27,8 +27,8 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageUtils, ImageCaptionUtils ];
+	public static get requires() {
+		return [ ImageUtils, ImageCaptionUtils ] as const;
 	}
 
 	/**

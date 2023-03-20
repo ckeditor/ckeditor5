@@ -7,7 +7,7 @@
  * @module style/styleediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { MatcherPattern } from 'ckeditor5/src/engine';
 import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 
@@ -33,8 +33,8 @@ export default class StyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'GeneralHtmlSupport', StyleUtils ];
+	public static get requires() {
+		return [ 'GeneralHtmlSupport', StyleUtils ] as const;
 	}
 
 	/**
