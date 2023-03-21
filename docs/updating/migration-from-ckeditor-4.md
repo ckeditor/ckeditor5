@@ -4,7 +4,7 @@
 
 category: ckeditor4-migration
 order: 10
-modified_at: 2023-03-17
+modified_at: 2023-03-21
 ---
 
 # Migration from CKEditor 4
@@ -29,7 +29,7 @@ Here are the key differences between the two editor versions:
 Digital content editing paradigms have changed a lot between the times of CKEditor 4 and now. We designed and built CKEditor 5 from scratch, taking into account the possibilities of modern web apps, current web standards, and the needs of today's users.
 
 This new approach affects the {@link features/index available feature set}, how features were implemented, and what configuration options are available for them. To make it easier to compare both editor versions, we have created the following compatibility tables:
-* {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin compatibility}
+* {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}
 * {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 
 You can use them to check the CKEditor 5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor 5. We strongly advise you to treat the migration to CKEditor 5 as an opportunity to modernize your app and rethink your editing solutions.

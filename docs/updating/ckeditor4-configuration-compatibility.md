@@ -5,7 +5,7 @@
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
 order: 50
-modified_at: 2023-03-17
+modified_at: 2023-03-21
 ---
 
 # CKEditor 4 configuration options compatibility

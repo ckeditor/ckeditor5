@@ -6,7 +6,7 @@
 
 category: installation
 order: 40
-modified_at: 2023-03-17
+modified_at: 2023-03-21
 ---
 
 # Migration from CKEditor 4
@@ -19,15 +19,13 @@ In the other tutorials from this section you could learn about installing, confi
 
 When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**.
 
-**CKEditor 4 reaches its End of Life (EOL) in June 2023.** From then on, it will receive no more updates, new features, bug fixes, and most importantly, security patches.
-
 To support you in migration to CKEditor 5, we have created an entire documentation section that covers various aspects of the migration process.
 
 Read more about:
 * {@link updating/migration-from-ckeditor-4#differences-between-ckeditor-4-and-ckeditor-5 Differences between CKEditor 4 and CKEditor 5}
 * {@link updating/migration-from-ckeditor-4#before-you-migrate Key aspects to be considered before you migrate}
 * {@link updating/migration-from-ckeditor-4#recommended-migration-strategy Recommended migration strategy}
-* {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin compatibility}
+* {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}
 * {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 * {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4}
 

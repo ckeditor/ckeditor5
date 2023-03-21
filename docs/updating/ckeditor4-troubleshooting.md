@@ -5,7 +5,7 @@
 category: ckeditor4-migration
 menu-title: Troubleshooting
 order: 50
-modified_at: 2022-11-09
+modified_at: 2023-03-21
 ---
 
 # Troubleshooting migration from CKEditor 4
