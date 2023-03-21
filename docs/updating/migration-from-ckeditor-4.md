@@ -19,7 +19,7 @@ What differentiates CKEditor 5 from its predecessor the most is its core archite
 Here are the key differences between the two editor versions:
 
 <figure class="table" style="width:100%;">
-    <table class="ck-table-resized">
+    <table>
         <tbody>
             <tr>
                 <td>
