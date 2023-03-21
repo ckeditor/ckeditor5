@@ -127,8 +127,6 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 		this.ui = new MultiRootEditorUI( this, view );
 
-		// This can be improved if `$isVirtual` attribute for root is introduced.
-		// Multi-root editor will create (or not) the editable based on the attribute value. The events will be editable-related.
 		this.model.document.on( 'change:data', () => {
 			const changedRoots = this.model.document.differ.getChangedRoots();
 
@@ -341,13 +339,16 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
 	 * @param root Root for which the editable element should be created.
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: RootElement ): HTMLElement {
-		// After introducing `$isVirtual` root attribute, this method will be fired automatically by the multi-root editor instance.
+	public createEditable( root: RootElement, placeholder?: string ): HTMLElement {
 		const editable = this.ui.view.createEditable( root.rootName );
 
-		this.ui.addEditable( editable );
+		this.ui.addEditable( editable, placeholder );
+
+		this.editing.view.forceRender();
 
 		return editable.element!;
 	}

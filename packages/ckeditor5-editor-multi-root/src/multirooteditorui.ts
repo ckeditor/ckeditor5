@@ -96,8 +96,10 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * changing its content will be reflected in the editor model. Keystrokes, focus handling and placeholder are initialized.
 	 *
 	 * @param editable The editable instance to add.
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
 	 */
-	public addEditable( editable: InlineEditableUIView ): void {
+	public addEditable( editable: InlineEditableUIView, placeholder?: string ): void {
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to `MultiRootEditor.create()`.
 		const editableElement = editable.element!;
@@ -140,7 +142,7 @@ export default class MultiRootEditorUI extends EditorUI {
 				}
 			} );
 
-		this._initPlaceholder( editable );
+		this._initPlaceholder( editable, placeholder );
 	}
 
 	/**
@@ -190,17 +192,19 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * Enables the placeholder text on a given editable, if the placeholder was configured.
 	 *
 	 * @param editable Editable on which the placeholder should be set.
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
 	 */
-	private _initPlaceholder( editable: InlineEditableUIView ): void {
-		const placeholder = this.editor.config.get( 'placeholder' );
-
+	private _initPlaceholder( editable: InlineEditableUIView, placeholder?: string ): void {
 		if ( !placeholder ) {
-			return;
+			const configPlaceholder = this.editor.config.get( 'placeholder' );
+
+			if ( configPlaceholder ) {
+				placeholder = typeof configPlaceholder === 'string' ? configPlaceholder : configPlaceholder[ editable.name! ];
+			}
 		}
 
-		const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editable.name! ];
-
-		if ( !placeholderText ) {
+		if ( !placeholder ) {
 			return;
 		}
 
@@ -210,7 +214,7 @@ export default class MultiRootEditorUI extends EditorUI {
 		enablePlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			text: placeholderText,
+			text: placeholder,
 			isDirectHost: false,
 			keepOnFocus: true
 		} );
