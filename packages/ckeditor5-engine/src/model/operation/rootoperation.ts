@@ -13,45 +13,44 @@ import type Document from '../document';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Operation that creates or removes a root element.
+ * Operation that creates (or attaches) or detaches a root element.
  */
 export default class RootOperation extends Operation {
 	/**
-	 * Root name to create or remove.
+	 * Root name to create or detach.
 	 */
 	public readonly rootName: string;
 
 	/**
-	 * Root element to create or remove.
+	 * Root element name.
 	 */
 	public readonly elementName: string;
 
 	/**
-	 * Specifies whether the operation adds (`true`) or removes the root (`false`).
+	 * Specifies whether the operation adds (`true`) or detaches the root (`false`).
 	 */
 	public readonly isAdd: boolean;
 
 	/**
-	 * Document for which the root should be created.
+	 * Document which owns the root.
 	 */
 	private readonly _document: Document;
 
 	/**
 	 * Creates an operation that creates or removes a root element.
 	 *
-	 * @param rootName Root name.
+	 * @param rootName Root name to create or detach.
 	 * @param elementName Root element name.
-	 * @param isAdd Specifies whether the operation adds (`true`) or removes the root (`false`).
-	 * @param document Document for which the root should be created.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
-	 * can be applied or `null` if the operation operates on detached (non-document) tree.
+	 * @param isAdd Specifies whether the operation adds (`true`) or detaches the root (`false`).
+	 * @param document Document which owns the root.
+	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
 	constructor(
 		rootName: string,
 		elementName: string,
 		isAdd: boolean,
 		document: Document,
-		baseVersion: number | null
+		baseVersion: number
 	) {
 		super( baseVersion );
 
@@ -74,15 +73,15 @@ export default class RootOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public override get type(): 'addRoot' | 'removeRoot' {
-		return this.isAdd ? 'addRoot' : 'removeRoot';
+	public override get type(): 'addRoot' | 'detachRoot' {
+		return this.isAdd ? 'addRoot' : 'detachRoot';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public override clone(): RootOperation {
-		return new RootOperation( this.rootName, this.elementName, this.isAdd, this._document, this.baseVersion );
+		return new RootOperation( this.rootName, this.elementName, this.isAdd, this._document, this.baseVersion! );
 	}
 
 	/**
@@ -96,6 +95,7 @@ export default class RootOperation extends Operation {
 	 * @inheritDoc
 	 */
 	public override _validate(): void {
+		// Keep in mind that at this point the root will always exist as it was created in the `constructor()`, even for detach operation.
 		const root = this._document.getRoot( this.rootName )!;
 
 		if ( root.isAttached() && this.isAdd ) {
@@ -134,14 +134,6 @@ export default class RootOperation extends Operation {
 	public override toJSON(): unknown {
 		const json: any = super.toJSON();
 
-		// TODO: Temporary solution. To allow compressing `RootOperation`, it stored as `RootAttributeOperation` until changes are
-		// TODO: introduced in operations compressor.
-		json.__className = 'RootAttributeOperation';
-		json.root = this.rootName;
-		json.key = '$$' + this.type;
-		json.oldValue = null;
-		json.newValue = this.elementName;
-
 		delete json._document;
 
 		return json;
@@ -161,11 +153,7 @@ export default class RootOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: Document ): RootOperation {
-		// TODO: Temporary solution. To allow compressing `RootOperation`, it stored as `RootAttributeOperation` until changes are
-		// TODO: introduced in operations compressor.
-		const type = json.key.substring( 2 );
-
-		return new RootOperation( json.root, json.newValue, type === 'addRoot', document, json.baseVersion );
+		return new RootOperation( json.rootName, json.elementName, json.isAdd, document, json.baseVersion );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
