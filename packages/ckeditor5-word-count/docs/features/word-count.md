@@ -11,7 +11,7 @@ The word count feature lets you track the number of words and characters in the 
 
 ## Demo
 
-Type some more or edit the content and observe the counter below the main editor window react in real-time.
+Add or remove some content and see how the counter below the editor changes in real-time.
 
 {@snippet features/word-count}
 
@@ -94,7 +94,7 @@ ClassicEditor
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-Below you can play with a demo post editor with a soft 120 characters limit. The progress chart underneath it indicates how many characters there are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature in action. See the code used to create the demo listed below in this section.
+Below you can play with a demo post editor with a soft 120-character limit. The progress chart underneath it indicates the number of characters in the content. The chart changes its color as the number nears or exceeds the limit. Type in the editor to see the feature in action. See the code used to create the demo listed below in this section.
 
 {@snippet features/word-count-update}
 
