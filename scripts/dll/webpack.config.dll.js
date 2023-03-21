@@ -43,7 +43,8 @@ function loadCKEditor5modules( window ) {
 		'typing',
 		'undo',
 		'upload',
-		'widget'
+		'widget',
+		'watchdog'
 	];
 
 	for ( const item of dllPackages ) {
@@ -73,7 +74,8 @@ const webpackConfig = {
 
 		// Other, common packages:
 		'./src/upload.js',
-		'./src/widget.js'
+		'./src/widget.js',
+		'./src/watchdog.js'
 	],
 	optimization: {
 		minimize: false,

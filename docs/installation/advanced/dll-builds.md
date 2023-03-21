@@ -30,7 +30,7 @@ CKEditor 5 comes with ready-to-use DLL builds. These builds are added to the NPM
 
 A DLL build of the editor consists of two parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, `widget`, and `watchdog`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
 * **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
 In order to load an editor, you need to use the base DLL build plus several DLL-compatible package builds. You will see how to do that later on.
