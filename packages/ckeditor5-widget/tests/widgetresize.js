@@ -173,7 +173,7 @@ describe( 'WidgetResize', () => {
 
 			expect( () => {
 				widgetResizePlugin.redrawSelectedResizer();
-			} ).not.to.throw;
+			} ).not.to.throw();
 		} );
 	} );
 

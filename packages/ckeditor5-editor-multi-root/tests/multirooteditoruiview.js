@@ -115,6 +115,72 @@ describe( 'MultiRootEditorUIView', () => {
 		} );
 	} );
 
+	describe( 'createEditable()', () => {
+		it( 'adds editable', () => {
+			const editable = view.createEditable( 'new' );
+
+			expect( view.editables.new ).to.equal( editable );
+		} );
+
+		it( 'uses given HTML element inside editable', () => {
+			createRoot( editingView.document, 'div', 'new' );
+
+			const domElement = document.createElement( 'div' );
+			const editable = view.createEditable( 'new', domElement );
+			view.editables.new.name = 'new';
+
+			view.render();
+
+			expect( view.editables.new ).to.equal( editable );
+			expect( editable.element ).to.equal( domElement );
+
+			view.destroy();
+		} );
+
+		it( 'passed locale object to editable', () => {
+			view.createEditable( 'new' );
+
+			expect( view.editables.new.locale ).to.equal( locale );
+		} );
+
+		it( 'new editable is not rendered', () => {
+			view.createEditable( 'new' );
+
+			expect( view.editables.new.isRendered ).to.be.false;
+		} );
+
+		it( 'new editable is given an accessible aria label', () => {
+			const newViewRoot = createRoot( editingView.document, 'div', 'new' );
+
+			view.createEditable( 'new' );
+			view.editables.new.name = 'new';
+
+			view.render();
+
+			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: new' );
+
+			view.destroy();
+		} );
+	} );
+
+	describe( 'removeEditable()', () => {
+		it( 'removes the editable from the editables list (before view was rendered)', () => {
+			view.removeEditable( 'foo' );
+
+			expect( view.editables.foo ).to.be.undefined;
+		} );
+
+		it( 'removes the editable from the editables list (after view was rendered)', () => {
+			view.render();
+
+			view.removeEditable( 'foo' );
+
+			expect( view.editables.foo ).to.be.undefined;
+
+			view.destroy();
+		} );
+	} );
+
 	describe( 'render()', () => {
 		beforeEach( () => {
 			view.render();

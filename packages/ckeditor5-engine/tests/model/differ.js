@@ -1115,6 +1115,23 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'on a node inside an inserted element', () => {
+			const position = new Position( root, [ 0 ] );
+
+			model.change( () => {
+				const p = new Element( 'paragraph', null, new Text( 'xxx' ) );
+				insert( p, position );
+
+				const range = new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) );
+
+				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+				expectChanges( [
+					{ type: 'insert', name: 'paragraph', length: 1, position }
+				] );
+			} );
+		} );
+
 		it( 'on some inserted nodes and old nodes', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
@@ -1780,6 +1797,113 @@ describe( 'Differ', () => {
 		} );
 	} );
 
+	describe( 'roots', () => {
+		it( 'add root', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.get( 'new' ) ).to.be.true;
+				expect( rootChanges.size ).to.equal( 1 );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'detach root', () => {
+			model.change( writer => {
+				writer.detachRoot( 'main' );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.get( 'main' ) ).to.be.false;
+				expect( rootChanges.size ).to.equal( 1 );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'add root, then detach root, then add root', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+				writer.detachRoot( 'new' );
+
+				let rootChanges = differ.getChangedRoots();
+				expect( rootChanges.size ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
+
+				writer.addRoot( 'new' );
+
+				rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.get( 'new' ) ).to.be.true;
+				expect( rootChanges.size ).to.equal( 1 );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'correctly resets after change block', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+			} );
+
+			expect( differ.getChangedRoots().size ).to.equal( 0 );
+			expect( differ.hasDataChanges() ).to.be.false;
+			expect( differ.isEmpty ).to.be.true;
+		} );
+
+		it( 'detach root, then add root, then detach root', () => {
+			// Adding a new root, so we operate on a clean root.
+			// 'main' root contains a paragraph and changes results, which does not contain only root stuff anymore.
+			model.change( writer => {
+				writer.addRoot( 'main2', 'div' ); // Setting different element name to avoid autoparagraphing.
+			} );
+
+			model.change( writer => {
+				writer.detachRoot( 'main2' );
+				writer.addRoot( 'main2' );
+
+				let rootChanges = differ.getChangedRoots();
+				expect( rootChanges.size ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
+
+				writer.detachRoot( 'main2' );
+
+				rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.get( 'main2' ) ).to.be.false;
+				expect( rootChanges.size ).to.equal( 1 );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'multiple roots added and removed', () => {
+			// Add extra root to have more things to remove.
+			model.change( writer => {
+				writer.addRoot( 'main2' );
+			} );
+
+			model.change( writer => {
+				writer.addRoot( 'new' );
+				writer.detachRoot( 'main' );
+				writer.detachRoot( 'main2' );
+				writer.addRoot( 'new2' );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.size ).to.equal( 4 );
+				expect( rootChanges.get( 'main' ) ).to.be.false;
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+	} );
+
 	describe( 'other cases', () => {
 		// See https://github.com/ckeditor/ckeditor5/issues/4284.
 		it( 'multiple inserts and removes in one element', () => {
@@ -1903,6 +2027,9 @@ describe( 'Differ', () => {
 				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
 				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
 			], true );
+
+			const refreshedItems = Array.from( differ.getRefreshedItems() );
+			expect( refreshedItems ).to.deep.equal( [ p ] );
 		} );
 
 		it( 'should mark given text proxy to be removed and added again', () => {
@@ -1916,6 +2043,9 @@ describe( 'Differ', () => {
 				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
 				{ type: 'insert', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) }
 			], true );
+
+			const refreshedItems = Array.from( differ.getRefreshedItems() );
+			expect( refreshedItems ).to.deep.equal( [ textProxy ] );
 		} );
 
 		it( 'inside a new element', () => {
@@ -1928,6 +2058,9 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
 				] );
+
+				const refreshedItems = Array.from( differ.getRefreshedItems() );
+				expect( refreshedItems ).to.deep.equal( [] );
 			} );
 		} );
 

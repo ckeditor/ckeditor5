@@ -537,7 +537,7 @@ export default class DataController extends EmitterMixin() {
 	 */
 	private _checkIfRootsExists( rootNames: Array<string> ): boolean {
 		for ( const rootName of rootNames ) {
-			if ( !this.model.document.getRootNames().includes( rootName ) ) {
+			if ( !this.model.document.getRoot( rootName ) ) {
 				return false;
 			}
 		}

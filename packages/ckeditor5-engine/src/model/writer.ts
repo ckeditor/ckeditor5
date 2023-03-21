@@ -1368,12 +1368,12 @@ export default class Writer {
 	 *
 	 * Throws an error if the root does not exist or the root is already detached.
 	 *
-	 * @param rootName Name of the detached root.
+	 * @param rootOrName Name of the detached root.
 	 */
-	public detachRoot( rootName: string ): void {
+	public detachRoot( rootOrName: string | RootElement ): void {
 		this._assertWriterUsedCorrectly();
 
-		const root = this.model.document.getRoot( rootName );
+		const root = typeof rootOrName == 'string' ? this.model.document.getRoot( rootOrName ) : rootOrName;
 
 		if ( !root || !root.isAttached() ) {
 			/**
@@ -1397,7 +1397,7 @@ export default class Writer {
 
 		// Finally, detach the root.
 		const document = this.model.document;
-		const operation = new RootOperation( rootName, root.name, false, document, document.version );
+		const operation = new RootOperation( root.rootName, root.name, false, document, document.version );
 
 		this.batch.addOperation( operation );
 		this.model.applyOperation( operation );

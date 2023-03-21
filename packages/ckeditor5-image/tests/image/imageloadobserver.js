@@ -172,6 +172,20 @@ describe( 'ImageLoadObserver', () => {
 		} ).to.not.throw();
 	} );
 
+	it( 'should stop listening to events on given DOM element', () => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		setData( view, '<img src="/assets/sample.png" />' );
+
+		observer.stopObserving( domRoot );
+
+		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.notCalled( spy );
+	} );
+
 	it( 'should stop observing images on destroy', () => {
 		const spy = sinon.spy();
 

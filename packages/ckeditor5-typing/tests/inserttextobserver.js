@@ -13,6 +13,7 @@ import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/creater
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import DeleteObserver from '../src/deleteobserver';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;
@@ -242,5 +243,11 @@ describe( 'InsertTextObserver', () => {
 			expect( firstCallArgs.text ).to.equal( 'bar' );
 			expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 		} );
+	} );
+
+	it( 'should implement empty #stopOvserving() method', () => {
+		expect( () => {
+			view.getObserver( InsertTextObserver ).stopObserving();
+		} ).to.not.throw();
 	} );
 } );

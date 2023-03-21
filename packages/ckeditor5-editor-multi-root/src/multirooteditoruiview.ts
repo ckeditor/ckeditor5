@@ -133,7 +133,9 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	public removeEditable( editableName: string ): void {
 		const editable = this.editables[ editableName ];
 
-		this.deregisterChild( editable );
+		if ( this.isRendered ) {
+			this.deregisterChild( editable );
+		}
 
 		delete this.editables[ editableName ];
 

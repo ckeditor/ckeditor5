@@ -253,4 +253,23 @@ describe( 'DomEventObserver', () => {
 			expect( fireSpy.calledOnce ).to.be.true;
 		} );
 	} );
+
+	describe( 'stopListening()', () => {
+		it( 'should stop listening to events fired by DOM element', () => {
+			const domElement = document.createElement( 'p' );
+			const domEvent = new MouseEvent( 'click' );
+			const evtSpy = sinon.spy();
+
+			createViewRoot( viewDocument );
+			view.attachDomRoot( domElement );
+			view.addObserver( ClickObserver );
+			viewDocument.on( 'click', evtSpy );
+
+			view.getObserver( ClickObserver ).stopListening( domElement );
+
+			domElement.dispatchEvent( domEvent );
+
+			expect( evtSpy.called ).to.be.false;
+		} );
+	} );
 } );

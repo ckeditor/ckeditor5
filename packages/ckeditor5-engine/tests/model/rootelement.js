@@ -10,12 +10,13 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {
-		it( 'should create root element without attributes', () => {
+		it( 'should create attached root element without attributes', () => {
 			const model = new Model();
 			const doc = model.document;
 			const root = new RootElement( doc );
 
 			expect( root ).to.be.an.instanceof( Element );
+			expect( root.isAttached() ).to.be.true;
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
 			expect( count( root.getAttributes() ) ).to.equal( 0 );
 			expect( root.childCount ).to.equal( 0 );

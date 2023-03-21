@@ -426,6 +426,20 @@ describe( 'SelectionObserver', () => {
 		sel.collapse( domText, 3 );
 	} );
 
+	describe( 'stopListening()', () => {
+		it( 'should not fire selectionChange after stopped observing a DOM element', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'selectionChange', spy );
+
+			selectionObserver.stopListening( domMain );
+
+			changeDomSelection();
+
+			expect( spy.called ).to.be.false;
+		} );
+	} );
+
 	describe( 'Management of view Document#isSelecting', () => {
 		it( 'should not set #isSelecting to true upon the "selectstart" event outside the DOM root', () => {
 			const selectStartChangedSpy = sinon.spy();

@@ -107,6 +107,14 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'isAttached()', () => {
+		it( 'returns false', () => {
+			const frag = new DocumentFragment();
+
+			expect( frag.isAttached() ).to.be.false;
+		} );
+	} );
+
 	describe( 'offsetToIndex', () => {
 		let frag;
 

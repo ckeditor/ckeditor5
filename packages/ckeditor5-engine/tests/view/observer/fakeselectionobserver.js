@@ -148,6 +148,12 @@ describe( 'FakeSelectionObserver', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
+	it( 'should implement empty #stopOvserving() method', () => {
+		expect( () => {
+			observer.stopObserving();
+		} ).to.not.throw();
+	} );
+
 	// Checks if preventDefault method was called by FakeSelectionObserver for specified key code.
 	//
 	// @param {Number} keyCode

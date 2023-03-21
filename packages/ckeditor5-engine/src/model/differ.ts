@@ -244,7 +244,7 @@ export default class Differ {
 
 				break;
 			}
-			case 'removeRoot':
+			case 'detachRoot':
 			case 'addRoot': {
 				this._bufferRootChange( operation.rootName, operation.isAdd );
 

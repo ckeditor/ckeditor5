@@ -2595,6 +2595,132 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'addRoot()', () => {
+		it( 'should add an empty, attached root to the model and return it', () => {
+			model.change( writer => {
+				const root = writer.addRoot( 'new' );
+
+				expect( model.document.getRoot( 'new' ) ).to.equal( root );
+				expect( root.isAttached() ).to.be.true;
+			} );
+		} );
+
+		it( 'should add a root with specified element name', () => {
+			model.change( writer => {
+				const root = writer.addRoot( 'new', 'div' );
+
+				expect( root.name ).to.equal( 'div' );
+			} );
+		} );
+
+		it( 'should re-attach the root if it was previously detached', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+				writer.detachRoot( 'new' );
+			} );
+
+			model.change( writer => {
+				const root = writer.addRoot( 'new' );
+
+				expect( root.isAttached() ).to.be.true;
+			} );
+		} );
+
+		it( 'should throw when root with such name already exists and is attached', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+
+				expectToThrowCKEditorError( () => {
+					writer.addRoot( 'new' );
+				}, /^writer-addroot-root-exists/, model );
+			} );
+		} );
+
+		it( 'should use RootOperation to modify the model', () => {
+			model.change( writer => {
+				const version = model.document.version;
+
+				writer.addRoot( 'new', 'div' );
+
+				const op = model.document.history.getOperation( version );
+
+				expect( op.type ).to.equal( 'addRoot' );
+				expect( op.rootName ).to.equal( 'new' );
+				expect( op.elementName ).to.equal( 'div' );
+				expect( op.baseVersion ).to.equal( version );
+				expect( op.isAdd ).to.equal( true );
+			} );
+		} );
+	} );
+
+	describe( 'detachRoot()', () => {
+		it( 'should detach the root from the model and remove all children and markers from it', () => {
+			let root, p;
+
+			model.change( writer => {
+				root = writer.addRoot( 'new' );
+				p = writer.createElement( 'paragraph' );
+				writer.insert( p, root, 0 );
+				writer.addMarker( 'newMarker', { usingOperation: true, affectsData: true, range: writer.createRangeIn( root ) } );
+			} );
+
+			model.change( writer => {
+				writer.detachRoot( root );
+			} );
+
+			expect( root.isAttached() ).to.be.false;
+			expect( root.isEmpty );
+			expect( p.parent.rootName ).to.equal( '$graveyard' );
+			expect( model.markers.get( 'newMarker' ) ).to.be.null;
+		} );
+
+		it( 'should accept root name as a parameter', () => {
+			model.change( writer => {
+				writer.addRoot( 'new' );
+				writer.detachRoot( 'new' );
+			} );
+
+			expect( model.document.getRoot( 'new' ).isAttached() ).to.be.false;
+		} );
+
+		it( 'should throw when trying to detach a non-existing root', () => {
+			model.change( writer => {
+				expectToThrowCKEditorError( () => {
+					writer.detachRoot( 'foo' );
+				}, /^writer-detachroot-no-root/, model );
+			} );
+		} );
+
+		it( 'should throw when trying to detach an already detached root', () => {
+			model.change( writer => {
+				writer.addRoot( 'foo' );
+				writer.detachRoot( 'foo' );
+
+				expectToThrowCKEditorError( () => {
+					writer.detachRoot( 'foo' );
+				}, /^writer-detachroot-no-root/, model );
+			} );
+		} );
+
+		it( 'should use RootOperation to modify the model', () => {
+			model.change( writer => {
+				writer.addRoot( 'new', 'div' );
+
+				const version = model.document.version;
+
+				writer.detachRoot( 'new' );
+
+				const op = model.document.history.getOperation( version );
+
+				expect( op.type ).to.equal( 'detachRoot' );
+				expect( op.rootName ).to.equal( 'new' );
+				expect( op.elementName ).to.equal( 'div' );
+				expect( op.baseVersion ).to.equal( version );
+				expect( op.isAdd ).to.equal( false );
+			} );
+		} );
+	} );
+
 	describe( 'setSelection()', () => {
 		let root;
 

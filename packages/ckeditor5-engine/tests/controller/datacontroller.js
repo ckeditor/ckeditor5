@@ -571,6 +571,23 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>' );
 			data.get();
 		} );
+
+		it( 'should return empty string and log a warning when asked for data from a detached root', () => {
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			model.change( writer => {
+				writer.detachRoot( 'main' );
+			} );
+
+			const stub = sinon.stub( console, 'warn' );
+
+			const result = data.get( { rootName: 'main' } );
+
+			expect( result ).to.equal( '' );
+			sinon.assert.calledWithMatch( stub, 'datacontroller-get-detached-root' );
+
+			console.warn.restore();
+		} );
 	} );
 
 	describe( 'stringify()', () => {

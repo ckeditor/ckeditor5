@@ -233,6 +233,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 			return;
 		}
 
+		this._editableElementsMap.delete( rootName );
+
 		this.editor.keystrokes.stopListening( domElement );
 		this.focusTracker.remove( domElement );
 

@@ -54,6 +54,7 @@ describe( 'view', () => {
 				this.enable = sinon.spy();
 				this.disable = sinon.spy();
 				this.observe = sinon.spy();
+				this.stopObserving = sinon.spy();
 				this.destroy = sinon.spy();
 			}
 		};
@@ -256,6 +257,23 @@ describe( 'view', () => {
 			view.detachDomRoot( 'main' );
 
 			expect( domDiv.classList.contains( 'ck-read-only' ) ).to.be.false;
+
+			domDiv.remove();
+		} );
+
+		it( 'should detach observers from the DOM element', () => {
+			const observerMock = view.addObserver( ObserverMock );
+
+			const domDiv = document.createElement( 'div' );
+			createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+
+			expect( observerMock.stopObserving.calledOnce ).to.be.false;
+
+			view.detachDomRoot( 'main' );
+
+			expect( observerMock.stopObserving.calledOnce ).to.be.true;
 
 			domDiv.remove();
 		} );
