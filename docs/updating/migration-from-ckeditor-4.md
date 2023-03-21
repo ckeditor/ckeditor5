@@ -14,15 +14,126 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with moving to CKEditor 5.
 ## Differences between CKEditor 4 and CKEditor 5
 
+What differentiates CKEditor 5 from its predecessor the most is its core architecture. CKEditor 5 is a highly flexible and extensible editing framework with a powerful API. You can use it to create any WYSIWYG editor implementation, from a lightweight chat to a complex Google Docs-like solution. CKEditor 5 is also collaboration-ready and offers features such as real-time collaboration, comments, or track changes.
+
 Here are the key differences between the two editor versions:
 
-* CKEditor 5 is written in TypeScript/ES6.
-* CKEditor 5 has a custom data model and virtual DOM implementation. CKEditor 4 used to operate directly on HTML and DOM.
-* CKEditor 5 has an MVC architecture and the data is transformed between the model and the view in a process called conversion.
-* CKEditor 5 is collaboration-ready and offers features such as real-time collaboration, comments, or track changes.
-* CKEditor 5 is a highly flexible and extensible editing framework with a powerful API. You can use it to create any WYSIWYG editor implementation, from a lightweight chat to a complex Google Docs-like solution.
-* CKEditor 5 has a modern, lightweight UI. It does not use dialogs. Features are used through UI elements such as toolbar dropdowns or contextual feature toolbars.
-* CKEditor 5 is licensed under a GPL 2+ Open Source license while CKEditor 4 was available under GPL, MPL, and LGPL.
+<figure class="table" style="width:100%;">
+    <table class="ck-table-resized">
+        <tbody>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <strong>CKEditor 4</strong>
+                </td>
+                <td>
+                    <strong>CKEditor 5</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Programming language</strong>
+                </td>
+                <td>
+                    JavaScript
+                </td>
+                <td>
+                    TypeScript
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Data model</strong>
+                </td>
+                <td>
+                    HTML/DOM
+                </td>
+                <td>
+                    Custom data model and virtual DOM implementation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Architecture</strong>
+                </td>
+                <td>
+                    Plugin-based
+                </td>
+                <td>
+                    Plugin-based, MVC
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Collaboration-ready</strong>
+                </td>
+                <td>
+                    ❌
+                </td>
+                <td>
+                    ✅
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>File management and image upload</strong>
+                </td>
+                <td>
+                    CKFinder, Easy Image
+                </td>
+                <td>
+                    CKBox, CKFinder, Easy Image
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>UI</strong>
+                </td>
+                <td>
+                    Toolbar, dialogs, features manipulated through right-click context menu
+                </td>
+                <td>
+                    Toolbar, dropdowns, balloons, features manipulated through on-click feature toolbars
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>UI customization</strong>
+                </td>
+                <td>
+                    Skins, UI color change
+                </td>
+                <td>
+                    Themes, customization with CSS variables
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Ready-to-use packages</strong>
+                </td>
+                <td>
+                    Basic, Standard, Full presets
+                </td>
+                <td>
+                    Classic, Document, Inline, Balloon, Balloon Block editor builds
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>License</strong>
+                </td>
+                <td>
+                    GPL, MPL, LGPL, commercial license
+                </td>
+                <td>
+                    GPL 2+ or commercial license
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</figure>
 
 ## Feature comparison of CKEditor 4 and CKEditor 5
 
