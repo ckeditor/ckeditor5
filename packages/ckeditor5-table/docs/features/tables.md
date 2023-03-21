@@ -14,7 +14,7 @@ The table feature gives you tools to create and edit tables. Tables are great fo
 ## Demo
 Use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
-Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its border.
+Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
 
 {@snippet features/tables}
 

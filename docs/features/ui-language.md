@@ -11,7 +11,7 @@ You can change the language of the editor's UI. On top of 41 fully translated la
 
 ## Demo
 
-See a demo of the editor in Spanish:
+See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
@@ -29,7 +29,7 @@ CKEditor 5 supports right–to–left languages out–of–the–box. When one o
 
 ### Demo
 
-See a demo of the editor in Arabic:
+See the demo of the editor in Arabic:
 
 {@snippet features/ui-language-rtl}
 

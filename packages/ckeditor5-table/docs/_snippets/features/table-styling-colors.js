@@ -76,11 +76,11 @@ const customColorPalette = [
 	},
 	{
 		color: 'hsl(0, 0%, 62%)',
-		label: 'Grey'
+		label: 'Gray'
 	},
 	{
 		color: 'hsl(200, 18%, 46%)',
-		label: 'Blue Grey'
+		label: 'Blue Gray'
 	},
 	{
 		color: 'hsl(200, 18%, 100%)',

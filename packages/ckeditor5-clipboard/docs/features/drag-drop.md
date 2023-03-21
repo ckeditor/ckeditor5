@@ -10,7 +10,7 @@ The drag and drop feature lets you drag and drop text, images, tables, and other
 
 ## Demo
 
-The demo below lets you drag contacts from the list to the editor. They are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
+The demo below lets you drag contacts from the list to the editor. The contacts are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
 
 {@snippet features/drag-drop}
 

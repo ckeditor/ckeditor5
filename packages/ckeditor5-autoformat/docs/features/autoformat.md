@@ -7,7 +7,14 @@ The autoformat feature lets you quickly format your content with Markdown-like s
 
 ## Demo
 
-Test the autoformatting feature in the editor below. Try using Markdown shortcodes while typing.
+Test the autoformatting feature in the editor below. Try using Markdown shortcodes while typing. For example:
+
+1. Start a new line.
+2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
+
+The line will automatically turn into a heading.
+
+If needed, you can revert the automatic change by pressing <kbd>Backspace</kbd>.
 
 {@snippet features/autoformat}
 

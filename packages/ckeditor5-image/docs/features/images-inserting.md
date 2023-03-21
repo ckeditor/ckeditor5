@@ -12,7 +12,7 @@ You can insert images by uploading them directly from your disk, but you can als
 ## Inserting images via a source URL
 ### Demo
 
-To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in a dropdown panel. To update an existing image, select it and paste a new URL in a dropdown panel.
+To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in the dropdown panel. To update an existing image, select it and paste a new URL in the dropdown panel.
 
 {@snippet features/image-insert-via-url}
 

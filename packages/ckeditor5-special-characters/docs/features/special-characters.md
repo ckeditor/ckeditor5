@@ -104,7 +104,7 @@ ClassicEditor
 	The title of a special character must be unique across the entire special characters set.
 </info-box>
 
-Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} and then select "Mathematical" from the dropdown. You will see that the category now contains the additional greek letters introduced by the configuration above.
+Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} and then select "Mathematical" from the dropdown. You will see that the category now contains the additional Greek letters introduced by the configuration above.
 
 {@snippet features/special-characters-extended-category}
 
