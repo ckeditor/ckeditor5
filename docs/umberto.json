@@ -383,18 +383,18 @@
 							]
 						},
 						{
-							"name": "Real-time collaboration",
-							"id": "features-real-time-collaboration",
-							"slug": "real-time-collaboration",
+							"name": "Revision history",
+							"id": "features-revision-history",
+							"slug": "revision-history",
 							"order": 300,
 							"badges": [
 								"premium"
 							]
 						},
 						{
-							"name": "Revision history",
-							"id": "features-revision-history",
-							"slug": "revision-history",
+							"name": "Real-time collaboration",
+							"id": "features-real-time-collaboration",
+							"slug": "real-time-collaboration",
 							"order": 400,
 							"badges": [
 								"premium"
