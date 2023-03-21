@@ -230,15 +230,17 @@ export default class LinkCommand extends Command {
 					}
 				}
 
-				// Current text of the link in the document.
-				const linkText = extractTextFromSelection( selection );
-
 				for ( const range of rangesToUpdate ) {
 					let linkRange = range;
 
-					if ( selection.getAttribute( 'linkHref' ) === linkText && rangesToUpdate.length === 1 ) {
-						linkRange = this._updateLinkContent( model, writer, range, href );
-						writer.setSelection( writer.createSelection( linkRange ) );
+					if ( rangesToUpdate.length === 1 ) {
+						// Current text of the link in the document.
+						const linkText = extractTextFromSelection( selection );
+
+						if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+							linkRange = this._updateLinkContent( model, writer, range, href );
+							writer.setSelection( writer.createSelection( linkRange ) );
+						}
 					}
 
 					writer.setAttribute( 'linkHref', href, linkRange );
@@ -307,30 +309,25 @@ export default class LinkCommand extends Command {
 	}
 }
 
-/**
-	 * Returns text from the given range.
-	 *
-	 * @param range A range which text is returns from.
-	 */
-function getTextFromRange( range: Range | null ): string | null {
-	if ( !range || range && !Array.from( range.getItems() ).length ) {
-		return '';
-	}
-
-	const firstNode = Array.from( range.getItems() )[ 0 ];
-
-	if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
-		return firstNode.data;
-	}
-
-	return null;
-}
-
+// Returns a text of a link under the collapsed selection or a selection that contains the entire link.
 function extractTextFromSelection( selection: DocumentSelection ): string | null {
-	const range = selection.getFirstRange( );
-	const firstPosition = selection.getFirstPosition();
-	const textFromPosition = firstPosition !== null && firstPosition.textNode && firstPosition.textNode.data || null;
-	const textFromRange = getTextFromRange( range );
+	if ( selection.isCollapsed ) {
+		const firstPosition = selection.getFirstPosition();
 
-	return selection.isCollapsed ? textFromPosition : textFromRange;
+		return firstPosition!.textNode && firstPosition!.textNode.data;
+	} else {
+		const rangeItems = Array.from( selection.getFirstRange()!.getItems() );
+
+		if ( rangeItems.length > 1 ) {
+			return null;
+		}
+
+		const firstNode = rangeItems[ 0 ];
+
+		if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
+			return firstNode.data;
+		}
+
+		return null;
+	}
 }
