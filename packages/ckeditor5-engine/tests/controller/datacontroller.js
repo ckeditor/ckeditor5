@@ -23,6 +23,8 @@ import DowncastHelpers from '../../src/conversion/downcasthelpers';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
+/* global console */
+
 describe( 'DataController', () => {
 	let model, modelDocument, data, schema, upcastHelpers, downcastHelpers, viewDocument;
 

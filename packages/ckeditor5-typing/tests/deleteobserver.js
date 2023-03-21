@@ -16,7 +16,6 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { fireBeforeInputDomEvent } from './_utils/utils';
 import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import EnterObserver from '@ckeditor/ckeditor5-enter/src/enterobserver';
 
 describe( 'Delete', () => {
 	describe( 'DeleteObserver', () => {

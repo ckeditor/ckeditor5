@@ -4,8 +4,6 @@
  */
 
 import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
-import Element from '../../../src/model/element';
 import RootOperation from '../../../src/model/operation/rootoperation';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -34,6 +32,7 @@ describe( 'RootOperation', () => {
 	it( 'should create a detached root in the model as the operation is created, if the model does not have such root', () => {
 		expect( model.document.getRoot( 'new' ) ).to.be.null;
 
+		// eslint-disable-next-line
 		new RootOperation( 'new', '$root', true, doc, doc.version );
 
 		const root = model.document.getRoot( 'new' );
@@ -42,6 +41,7 @@ describe( 'RootOperation', () => {
 
 		expect( () => {
 			// Should not throw because the operation should not try to create the root again.
+			// eslint-disable-next-line
 			new RootOperation( 'new', '$root', true, doc, doc.version );
 		} ).not.to.throw();
 	} );

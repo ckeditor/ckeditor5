@@ -352,7 +352,7 @@ describe( 'MultiRootEditor', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-		} )
+		} );
 
 		it( 'should add a model root with given root name using operations', () => {
 			const document = editor.model.document;
@@ -360,7 +360,7 @@ describe( 'MultiRootEditor', () => {
 
 			editor.addRoot( 'bar' );
 
-			const root = document.getRoot( 'bar' )
+			const root = document.getRoot( 'bar' );
 
 			expect( root ).not.to.be.null;
 			expect( root.isAttached() ).to.be.true;
@@ -396,7 +396,7 @@ describe( 'MultiRootEditor', () => {
 
 			editor.execute( 'undo' );
 
-			const root = editor.model.document.getRoot( 'bar' )
+			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root ).not.to.be.null;
 			expect( root.isAttached() ).to.be.false;
@@ -410,14 +410,14 @@ describe( 'MultiRootEditor', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-		} )
+		} );
 
 		it( 'should detach given model root using operations', () => {
 			const document = editor.model.document;
 
 			editor.detachRoot( 'bar' );
 
-			const root = document.getRoot( 'bar' )
+			const root = document.getRoot( 'bar' );
 
 			expect( root ).not.to.be.null;
 			expect( root.isAttached() ).to.be.false;
@@ -462,7 +462,7 @@ describe( 'MultiRootEditor', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-		} )
+		} );
 
 		it( 'should return an HTMLElement which is updated with the downcasted model data', () => {
 			editor.addRoot( 'new' );
@@ -525,7 +525,7 @@ describe( 'MultiRootEditor', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-		} )
+		} );
 
 		it( 'should detach the editable element from the model root and return the editable DOM element', () => {
 			const editableElement = editor.ui.view.editables.foo.element;
