@@ -65,6 +65,17 @@ Here are the key differences between the two editor versions:
                     Plugin-based, MVC
                 </td>
             </tr>
+			<tr>
+                <td>
+                    <strong>Editor types</strong>
+                </td>
+                <td>
+                    Classic, inline
+                </td>
+                <td>
+                    Classic, inline, decoupled (document), balloon, balloon block, multi-root
+                </td>
+            </tr>
             <tr>
                 <td>
                     <strong>Collaboration-ready</strong>
@@ -107,17 +118,6 @@ Here are the key differences between the two editor versions:
                 </td>
                 <td>
                     Themes, customization with CSS variables
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Ready-to-use packages</strong>
-                </td>
-                <td>
-                    Basic, Standard, Full presets
-                </td>
-                <td>
-                    Classic, Document, Inline, Balloon, Balloon Block editor builds
                 </td>
             </tr>
             <tr>
@@ -180,6 +180,8 @@ Check the {@link installation/plugins/plugins#creating-plugins Creating plugins}
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
 
 If you have custom skins for CKEditor 4, they need to be recreated for CKEditor 5. Fortunately, custom theming in CKEditor 5 is much more powerful and simpler than before.
+
+What's new: CKEditor 5 can also be used as a {@link framework/external-ui headless editor integrated with an external UI}, for example, built in React. Many projects use the powerful editing engine of CKEditor 5 coupled with their own UI for seamless integration with their application.
 
 For more information, check how to {@link framework/theme-customization customize the themes} in the CKEditor 5 Framework documentation.
 
