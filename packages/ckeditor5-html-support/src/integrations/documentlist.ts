@@ -8,7 +8,7 @@
  */
 
 import { isEqual } from 'lodash-es';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { UpcastElementEvent } from 'ckeditor5/src/engine';
 import type { GetCallback } from 'ckeditor5/src/utils';
 import type {
@@ -28,8 +28,8 @@ export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module alignment/alignment
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import AlignmentEditing from './alignmentediting';
 import AlignmentUI from './alignmentui';
@@ -25,8 +25,8 @@ export default class Alignment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ AlignmentEditing, AlignmentUI ];
+	public static get requires() {
+		return [ AlignmentEditing, AlignmentUI ] as const;
 	}
 
 	/**

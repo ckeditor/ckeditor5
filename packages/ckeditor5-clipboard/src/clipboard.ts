@@ -7,7 +7,7 @@
  * @module clipboard/clipboard
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import ClipboardPipeline from './clipboardpipeline';
 import DragDrop from './dragdrop';
@@ -34,7 +34,7 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline, DragDrop, PastePlainText ];
+	public static get requires() {
+		return [ ClipboardPipeline, DragDrop, PastePlainText ] as const;
 	}
 }

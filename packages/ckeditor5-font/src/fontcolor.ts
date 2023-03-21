@@ -7,8 +7,7 @@
  * @module font/fontcolor
  */
 
-import type { ColorOption } from 'ckeditor5/src/ui';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import FontColorEditing from './fontcolor/fontcolorediting';
 import FontColorUI from './fontcolor/fontcolorui';
 
@@ -25,8 +24,8 @@ export default class FontColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FontColorEditing, FontColorUI ];
+	public static get requires() {
+		return [ FontColorEditing, FontColorUI ] as const;
 	}
 
 	/**

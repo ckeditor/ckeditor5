@@ -7,7 +7,7 @@
  * @module restricted-editing/restrictededitingmode
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import RestrictedEditingModeEditing from './restrictededitingmodeediting';
 import RestrictedEditingModeUI from './restrictededitingmodeui';
@@ -33,7 +33,7 @@ export default class RestrictedEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ];
+	public static get requires() {
+		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ] as const;
 	}
 }

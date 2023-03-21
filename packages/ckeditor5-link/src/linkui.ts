@@ -7,7 +7,7 @@
  * @module link/linkui
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -60,8 +60,8 @@ export default class LinkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

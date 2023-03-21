@@ -7,7 +7,7 @@
  * @module basic-styles/subscript
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import SubscriptEditing from './subscript/subscriptediting';
 import SubscriptUI from './subscript/subscriptui';
 
@@ -21,8 +21,8 @@ export default class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ SubscriptEditing, SubscriptUI ];
+	public static get requires() {
+		return [ SubscriptEditing, SubscriptUI ] as const;
 	}
 
 	/**

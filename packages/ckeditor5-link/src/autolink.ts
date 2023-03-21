@@ -7,7 +7,7 @@
  * @module link/autolink
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
@@ -72,8 +72,8 @@ export default class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Delete ];
+	public static get requires() {
+		return [ Delete ] as const;
 	}
 
 	/**

@@ -9,7 +9,7 @@
 
 import TodoListEditing from './todolist/todolistediting';
 import TodoListUI from './todolist/todolistui';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import '../theme/todolist.css';
 
 /**
@@ -22,8 +22,8 @@ export default class TodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TodoListEditing, TodoListUI ];
+	public static get requires() {
+		return [ TodoListEditing, TodoListUI ] as const;
 	}
 
 	/**

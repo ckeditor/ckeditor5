@@ -316,7 +316,7 @@ export interface PluginStaticMembers<TContext = Editor> {
 	readonly isContextPlugin?: boolean;
 }
 
-export type PluginDependencies<TContext = Editor> = Array<PluginConstructor<TContext> | string>;
+export type PluginDependencies<TContext = Editor> = ReadonlyArray<PluginConstructor<TContext> | string>;
 
 /**
  * An array of loaded plugins.

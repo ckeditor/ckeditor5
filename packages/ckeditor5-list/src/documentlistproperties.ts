@@ -7,7 +7,7 @@
  * @module list/documentlistproperties
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting';
 import ListPropertiesUI from './listproperties/listpropertiesui';
 
@@ -22,8 +22,8 @@ export default class DocumentListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DocumentListPropertiesEditing, ListPropertiesUI ];
+	public static get requires() {
+		return [ DocumentListPropertiesEditing, ListPropertiesUI ] as const;
 	}
 
 	/**

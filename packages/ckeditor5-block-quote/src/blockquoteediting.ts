@@ -7,7 +7,7 @@
  * @module block-quote/blockquoteediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
 
@@ -31,8 +31,8 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete ];
+	public static get requires() {
+		return [ Enter, Delete ] as const;
 	}
 
 	/**

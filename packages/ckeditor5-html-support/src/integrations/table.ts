@@ -14,7 +14,7 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement } from 'ckeditor5/src/engine';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
@@ -26,8 +26,8 @@ export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

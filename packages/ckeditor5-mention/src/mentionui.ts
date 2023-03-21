@@ -9,8 +9,7 @@
 
 import {
 	Plugin,
-	type Editor,
-	type PluginDependencies
+	type Editor
 } from 'ckeditor5/src/core';
 
 import type {
@@ -104,8 +103,8 @@ export default class MentionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

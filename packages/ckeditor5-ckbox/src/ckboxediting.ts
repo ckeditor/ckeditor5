@@ -10,7 +10,7 @@
  */
 
 import type { CloudServices, CloudServicesCore, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import {
 	Range,
 	type DocumentSelection,
@@ -50,8 +50,8 @@ export default class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'CloudServices', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ];
+	public static get requires() {
+		return [ 'CloudServices', 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter ] as const;
 	}
 
 	/**

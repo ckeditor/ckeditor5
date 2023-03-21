@@ -7,7 +7,7 @@
  * @module table/tablecaption
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import TableCaptionEditing from './tablecaption/tablecaptionediting';
 import TableCaptionUI from './tablecaption/tablecaptionui';
 
@@ -27,7 +27,7 @@ export default class TableCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableCaptionEditing, TableCaptionUI ];
+	public static get requires() {
+		return [ TableCaptionEditing, TableCaptionUI ] as const;
 	}
 }

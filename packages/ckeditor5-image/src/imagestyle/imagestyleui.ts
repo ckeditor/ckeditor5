@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import { isObject, identity } from 'lodash-es';
 import ImageStyleEditing from './imagestyleediting';
@@ -28,8 +28,8 @@ export default class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageStyleEditing ];
+	public static get requires() {
+		return [ ImageStyleEditing ] as const;
 	}
 
 	/**
