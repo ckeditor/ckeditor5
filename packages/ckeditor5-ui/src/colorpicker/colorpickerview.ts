@@ -16,12 +16,12 @@ export default class ColorPickerView extends View {
 	/**
 	 * color picker
 	 */
-	declare private picker: HTMLElement;
+	declare public picker: HTMLElement;
 
 	/**
 	 * color picker input
 	 */
-	declare private input: HTMLElement;
+	declare public input: HTMLElement;
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
@@ -39,6 +39,10 @@ export default class ColorPickerView extends View {
 		if ( color ) {
 			this.picker.setAttribute( 'color', color );
 		}
+	}
+
+	public getColor(): void {
+		return this.picker.color;
 	}
 
 	public focus(): void {
@@ -68,6 +72,8 @@ export default class ColorPickerView extends View {
 			this.setColor( color );
 			this.fire( 'change', { value: color } );
 		} );
+
+		this.focus();
 
 		console.log( 'picker', this.picker.color );
 		console.log( 'element', this.element );

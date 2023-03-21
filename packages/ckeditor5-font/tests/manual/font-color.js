@@ -68,6 +68,9 @@ ClassicEditor
 		fontColor: {
 			columns: 3,
 			colorPicker: false
+		},
+		fontBackgroundColor: {
+			colorPicker: false
 		}
 	} )
 	.then( editor => {
