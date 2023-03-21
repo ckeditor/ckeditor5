@@ -14,7 +14,7 @@ label.ck.ck-color-grid__label {
 }
 
 .ck.ck-color-picker {
-	& hex-color-picker {
+	& hsl-string-color-picker {
 		height: 100px;
 
 		&::part(saturation),
