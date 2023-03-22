@@ -14,6 +14,14 @@ import type ViewCollection from '../../viewcollection';
  * The dropdown button interface.
  */
 export default interface DropdownButton extends Button {
+
+	/**
+	 * The value of the `aria-haspopup` attribute of the button.
+	 *
+	 * @observable
+	 */
+	ariaHasPopup: string | boolean;
+
 	children: ViewCollection;
 }
 

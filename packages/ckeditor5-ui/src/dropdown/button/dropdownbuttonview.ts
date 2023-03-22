@@ -36,6 +36,11 @@ import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
  */
 export default class DropdownButtonView extends ButtonView implements DropdownButton {
 	/**
+	 * @inheritDoc
+	 */
+	declare public ariaHasPopup: string | boolean;
+
+	/**
 	 * An icon that displays arrow to indicate a dropdown button.
 	 */
 	public readonly arrowView: IconView;
@@ -46,11 +51,15 @@ export default class DropdownButtonView extends ButtonView implements DropdownBu
 	constructor( locale?: Locale ) {
 		super( locale );
 
+		const bind = this.bindTemplate;
+
+		this.set( 'ariaHasPopup', true );
+
 		this.arrowView = this._createArrowView();
 
 		this.extendTemplate( {
 			attributes: {
-				'aria-haspopup': true,
+				'aria-haspopup': bind.to( 'ariaHasPopup' ),
 				'aria-expanded': this.bindTemplate.to( 'isOn', value => String( value ) )
 			}
 		} );
