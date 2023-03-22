@@ -113,6 +113,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,
+				role: 'option',
 				withText: true
 			} )
 		};
