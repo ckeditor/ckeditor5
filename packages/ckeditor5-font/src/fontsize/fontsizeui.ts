@@ -56,6 +56,7 @@ export default class FontSizeUI extends Plugin {
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
 				icon: fontSizeIcon,
+				role: 'combobox',
 				tooltip: t( 'Font Size' )
 			} );
 
