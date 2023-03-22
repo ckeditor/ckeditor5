@@ -91,7 +91,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 					'ck-reset',
 					'ck-list'
 				],
-				'aria-label': bind.to( 'ariaLabel' )
+				'aria-label': bind.to( 'ariaLabel' ),
+				role: 'listbox'
 			},
 
 			children: this.items
