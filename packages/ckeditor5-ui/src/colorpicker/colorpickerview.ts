@@ -19,7 +19,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * Color picker component.
 	 */
-	declare public picker: PickerType;
+	declare public picker: ColorPickerType;
 
 	/**
 	 * Input to defining custom colors in HEX.
@@ -40,7 +40,6 @@ export default class ColorPickerView extends View {
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
-		this.picker = global.document.createElement( 'hex-color-picker' );
 		this.input = this._createInput();
 
 		const children = this.createCollection();
@@ -69,14 +68,14 @@ export default class ColorPickerView extends View {
 
 	// Sets color in the color picker.
 	public setColor( color: string | undefined ): void {
-		console.log( color );
-		if ( color ) {
+		if ( color && this.picker ) {
 			this.picker.setAttribute( 'color', color );
 		}
 	}
 
 	// Return current color from picker.
 	public getColor(): string {
+		console.log( this.picker );
 		return this.picker.color;
 	}
 
@@ -91,9 +90,9 @@ export default class ColorPickerView extends View {
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
+			console.log( 'color-changed', event );
 			const customEvent = event as CustomEvent;
 			const color = customEvent.detail.value;
-
 			this._debouncePickerEvent( color );
 		} );
 	}
@@ -112,7 +111,7 @@ export default class ColorPickerView extends View {
 		textInput.on( 'input', () => {
 			const inputValue = textInput.element!.value;
 
-			this._debouncePickerEvent( inputValue );
+			this._debounceInputEvent( inputValue );
 		} );
 
 		return textInput;
@@ -130,6 +129,6 @@ type CustomEvent = Event & {
 	};
 };
 
-type PickerType = HTMLElement & {
+type ColorPickerType = HTMLElement & {
 	color: string;
 };
