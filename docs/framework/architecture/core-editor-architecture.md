@@ -172,7 +172,7 @@ The {@link module:core/command~Command#affectsData `affectsData`} flag will also
 
 ## Event system and observables
 
-CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~Emitter} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
+CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~Emitter} and {@link module:utils/observablemixin~Observable} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
 
 Most of the classes that have already been mentioned are either emitters or observables (observable is an emitter, too). An emitter can emit (fire) events as well as listen to them.
 

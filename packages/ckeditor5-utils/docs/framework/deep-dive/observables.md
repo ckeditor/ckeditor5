@@ -8,7 +8,7 @@ category: framework-deep-dive
 
 Observables are common building blocks of the {@link framework/index CKEditor 5 Framework}. They are particularly popular in the UI, the {@link module:ui/view~View `View`} class and its subclasses  benefiting from the observable interface the most: it is the {@link framework/architecture/ui-library#interaction templates bound to the observables} what makes the user interface dynamic and interactive. Some of the basic classes like {@link module:core/editor/editor~Editor `Editor`} or {@link module:core/command~Command `Command`} are observables too.
 
-Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~ObservableMixin} into it:
+Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 
 ```js
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -32,7 +32,7 @@ Observables can also [decorate their methods](#decorating-object-methods) which 
 
 ## Making properties observable
 
-Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~Observable#set `set()` method}.
+Having mixed the {@link module:utils/observablemixin~Observable} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~Observable#set `set()` method}.
 
 Let's create a simple UI view (component) named `Button` with a couple of properties and see what they look like:
 
@@ -155,7 +155,7 @@ button.isEnabled = false;  // <button class="ck-off ck-disabled" type="button">B
 
 ## Property bindings
 
-One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~Observable#bind `bind()`} method to create the binding.
+One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~Observable}, then use the {@link module:utils/observablemixin~Observable#bind `bind()`} method to create the binding.
 
 ### Simple bindings
 
