@@ -48,6 +48,7 @@ export default class FontFamilyUI extends Plugin {
 			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ) );
 
 			dropdownView.buttonView.set( {
+				ariaHasPopup: 'listbox',
 				icon: fontFamilyIcon,
 				role: 'combobox',
 				tooltip: t( 'Font Family' )
