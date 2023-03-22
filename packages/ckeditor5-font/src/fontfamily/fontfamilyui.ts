@@ -49,6 +49,7 @@ export default class FontFamilyUI extends Plugin {
 
 			dropdownView.buttonView.set( {
 				icon: fontFamilyIcon,
+				role: 'combobox',
 				tooltip: t( 'Font Family' )
 			} );
 
