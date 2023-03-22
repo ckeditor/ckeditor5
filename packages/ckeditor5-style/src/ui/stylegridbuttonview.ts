@@ -47,13 +47,8 @@ export default class StyleGridButtonView extends ButtonView {
 		this.set( {
 			label: styleDefinition.name,
 			class: 'ck-style-grid__button',
+			role: 'option',
 			withText: true
-		} );
-
-		this.extendTemplate( {
-			attributes: {
-				role: 'option'
-			}
 		} );
 
 		this.children.add( this.previewView, 0 );
