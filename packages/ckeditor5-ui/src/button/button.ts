@@ -153,6 +153,13 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
+	 * (Optional) The value of the `aria-selected` attribute of the button.
+	 *
+	 * @observable
+	 */
+	ariaSelected: boolean | undefined;
+
+	/**
 	 * (Optional) The value of the `role` attribute of the button.
 	 *
 	 * @observable

@@ -155,6 +155,11 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaSelected: boolean | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public role: string | undefined;
 
 	/**
@@ -167,6 +172,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 
 		// Implement the Button interface.
 		this.set( 'ariaHasPopup', true );
+		this.set( 'ariaSelected', undefined );
 		this.set( 'class', undefined );
 		this.set( 'labelStyle', undefined );
 		this.set( 'icon', undefined );

@@ -68,6 +68,11 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaSelected: boolean | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public class: string | undefined;
 
 	/**
@@ -165,6 +170,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		const ariaLabelUid = uid();
 
 		// Implement the Button interface.
+		this.set( 'ariaSelected', undefined );
 		this.set( 'class', undefined );
 		this.set( 'labelStyle', undefined );
 		this.set( 'icon', undefined );
@@ -221,6 +227,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
+				'aria-selected': bind.to( 'ariaSelected' ),
 				'data-cke-tooltip-text': bind.to( '_tooltipString' ),
 				'data-cke-tooltip-position': bind.to( 'tooltipPosition' )
 			},
