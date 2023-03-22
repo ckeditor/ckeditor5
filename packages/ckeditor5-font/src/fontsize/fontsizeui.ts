@@ -132,6 +132,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 				commandParam: option.model,
 				label: option.title,
 				class: 'ck-fontsize-option',
+				role: 'option',
 				withText: true
 			} )
 		};
