@@ -113,6 +113,11 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
+	declare public role: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tabindex: number;
 
 	/**
@@ -169,6 +174,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'isToggleable', false );
 		this.set( 'keystroke', undefined );
 		this.set( 'label', undefined );
+		this.set( 'role', undefined );
 		this.set( 'tabindex', -1 );
 		this.set( 'tooltip', false );
 		this.set( 'tooltipPosition', 's' );
@@ -209,6 +215,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 					bind.if( 'withText', 'ck-button_with-text' ),
 					bind.if( 'withKeystroke', 'ck-button_with-keystroke' )
 				],
+				role: bind.to( 'role' ),
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
