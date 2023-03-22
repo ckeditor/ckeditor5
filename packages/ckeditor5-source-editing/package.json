@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-source-editing",
-  "version": "^36.0.1",
+  "version": "36.0.1",
   "description": "Source editing feature for CKEditor 5.",
   "keywords": [
     "ckeditor",

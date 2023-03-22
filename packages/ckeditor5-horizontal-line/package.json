@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-horizontal-line",
-  "version": "^36.0.1",
+  "version": "36.0.1",
   "description": "Horizontal line feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
