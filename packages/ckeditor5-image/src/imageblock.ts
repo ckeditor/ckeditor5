@@ -7,7 +7,7 @@
  * @module image/imageblock
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 
 import ImageTextAlternative from './imagetextalternative';
@@ -30,8 +30,8 @@ export default class ImageBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageBlockEditing, Widget, ImageTextAlternative ];
+	public static get requires() {
+		return [ ImageBlockEditing, Widget, ImageTextAlternative ] as const;
 	}
 
 	/**

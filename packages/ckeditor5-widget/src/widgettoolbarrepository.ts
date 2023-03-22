@@ -10,7 +10,6 @@
 import {
 	Plugin,
 	type Editor,
-	type PluginDependencies,
 	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
 
@@ -71,8 +70,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

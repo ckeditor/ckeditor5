@@ -7,7 +7,7 @@
  * @module widget/widget
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	MouseObserver,
@@ -66,8 +66,8 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ WidgetTypeAround, Delete ];
+	public static get requires() {
+		return [ WidgetTypeAround, Delete ] as const;
 	}
 
 	/**

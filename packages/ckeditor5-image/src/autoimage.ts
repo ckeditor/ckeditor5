@@ -7,7 +7,7 @@
  * @module image/autoimage
  */
 
-import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
 import { Undo } from 'ckeditor5/src/undo';
@@ -30,8 +30,8 @@ export default class AutoImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Clipboard, ImageUtils, Undo, Delete ];
+	public static get requires() {
+		return [ Clipboard, ImageUtils, Undo, Delete ] as const;
 	}
 
 	/**

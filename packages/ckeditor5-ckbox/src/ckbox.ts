@@ -7,7 +7,7 @@
  * @module ckbox/ckbox
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import CKBoxUI from './ckboxui';
 import CKBoxEditing from './ckboxediting';
@@ -36,7 +36,7 @@ export default class CKBox extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ CKBoxEditing, CKBoxUI ];
+	public static get requires() {
+		return [ CKBoxEditing, CKBoxUI ] as const;
 	}
 }

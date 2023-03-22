@@ -13,7 +13,7 @@ import type {
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
 } from 'ckeditor5/src/clipboard';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import type {
 	DocumentFragment,
@@ -60,8 +60,8 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableSelection, TableUtils ];
+	public static get requires() {
+		return [ TableSelection, TableUtils ] as const;
 	}
 
 	/**

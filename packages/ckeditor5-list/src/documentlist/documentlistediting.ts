@@ -9,8 +9,7 @@
 
 import {
 	Plugin,
-	type MultiCommand,
-	type PluginDependencies
+	type MultiCommand
 } from 'ckeditor5/src/core';
 
 import type {
@@ -104,8 +103,8 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete, DocumentListUtils ];
+	public static get requires() {
+		return [ Enter, Delete, DocumentListUtils ] as const;
 	}
 
 	/**

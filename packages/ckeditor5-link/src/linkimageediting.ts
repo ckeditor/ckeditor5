@@ -9,7 +9,6 @@
 
 import {
 	Plugin,
-	type PluginDependencies,
 	type Editor
 } from 'ckeditor5/src/core';
 import {
@@ -40,8 +39,8 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'ImageEditing', 'ImageUtils', LinkEditing ];
+	public static get requires() {
+		return [ 'ImageEditing', 'ImageUtils', LinkEditing ] as const;
 	}
 
 	/**

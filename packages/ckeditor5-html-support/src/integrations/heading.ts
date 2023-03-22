@@ -7,7 +7,7 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 import DataSchema from '../dataschema';
@@ -19,8 +19,8 @@ export default class HeadingElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataSchema ];
+	public static get requires() {
+		return [ DataSchema ] as const;
 	}
 
 	/**

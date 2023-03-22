@@ -9,7 +9,7 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions, type PluginDependencies } from 'ckeditor5/src/core';
+import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
@@ -38,8 +38,8 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ PendingActions ];
+	public static get requires() {
+		return [ PendingActions ] as const;
 	}
 
 	/**

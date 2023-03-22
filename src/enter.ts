@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/enter
+ * @module ckeditor5/enter
  */
 
 export * from '@ckeditor/ckeditor5-enter';

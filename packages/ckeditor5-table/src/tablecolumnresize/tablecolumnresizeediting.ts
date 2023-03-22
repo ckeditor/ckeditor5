@@ -17,7 +17,7 @@ import {
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils';
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import type {
 	Differ,
@@ -120,8 +120,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableEditing, TableUtils ];
+	public static get requires() {
+		return [ TableEditing, TableUtils ] as const;
 	}
 
 	/**

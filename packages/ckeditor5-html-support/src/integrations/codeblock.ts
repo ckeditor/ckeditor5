@@ -15,7 +15,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement
 } from 'ckeditor5/src/engine';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
@@ -27,8 +27,8 @@ export default class CodeBlockElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

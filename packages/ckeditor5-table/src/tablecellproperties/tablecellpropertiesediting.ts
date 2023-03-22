@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { addBorderRules, addPaddingRules, addBackgroundRules, type Schema, type Conversion, type ViewElement } from 'ckeditor5/src/engine';
 
 import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties';
@@ -57,8 +57,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableEditing, TableCellWidthEditing ];
+	public static get requires() {
+		return [ TableEditing, TableCellWidthEditing ] as const;
 	}
 
 	/**

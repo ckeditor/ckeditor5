@@ -9,11 +9,7 @@
  * @module widget/widgettypearound/widgettypearound
  */
 
-import {
-	Plugin,
-	type PluginDependencies,
-	type Editor
-} from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { Template } from '@ckeditor/ckeditor5-ui';
 
@@ -110,8 +106,8 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete ];
+	public static get requires() {
+		return [ Enter, Delete ] as const;
 	}
 
 	/**

@@ -7,8 +7,7 @@
  * @module font/fontfamily
  */
 
-import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import FontFamilyEditing from './fontfamily/fontfamilyediting';
 import FontFamilyUI from './fontfamily/fontfamilyui';
 
@@ -25,8 +24,8 @@ export default class FontFamily extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FontFamilyEditing, FontFamilyUI ];
+	public static get requires() {
+		return [ FontFamilyEditing, FontFamilyUI ] as const;
 	}
 
 	/**

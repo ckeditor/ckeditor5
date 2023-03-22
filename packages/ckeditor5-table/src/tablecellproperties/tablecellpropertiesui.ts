@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -89,8 +89,8 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

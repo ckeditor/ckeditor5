@@ -7,7 +7,7 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type PluginDependencies, type Editor, type MultiCommand } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 
 import {
@@ -56,8 +56,8 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ShiftEnter ];
+	public static get requires() {
+		return [ ShiftEnter ] as const;
 	}
 
 	/**

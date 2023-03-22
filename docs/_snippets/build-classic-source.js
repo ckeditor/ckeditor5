@@ -5,10 +5,10 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import { AutoImage, ImageInsert } from '@ckeditor/ckeditor5-image';
+import ClassicEditor from './build-classic';
 
 window.ClassicEditor = ClassicEditor;
+
 ClassicEditor.builtinPlugins.push( ImageInsert );
 ClassicEditor.builtinPlugins.push( AutoImage );
