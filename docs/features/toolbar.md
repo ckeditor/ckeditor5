@@ -11,7 +11,7 @@ The toolbar is the most basic user interface element of CKEditor 5 that gives yo
 
 ## Demo
 
-Below is a sample toolbar with a basic set of features. Toolbar items can be easily added or removed which will be presented further.
+Below is a sample toolbar with a basic set of features. Toolbar items can be easily added or removed. Read on to learn how to do that.
 
 {@snippet features/toolbar-basic}
 
@@ -41,7 +41,7 @@ ClassicEditor
 
 ## Separating toolbar items
 
-You can use `'|'` to create a separator between groups of toolbar items. It works in both the basic and extended configuration formats:
+You can use `'|'` to create a separator between groups of toolbar items. This works in both the basic and extended configuration formats.
 
 Below you can find an example of a simple toolbar with button grouping. The group separators (`'|'`) set in the configuration help organize the toolbar.
 
@@ -87,7 +87,7 @@ toolbar: {
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
 
-The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button.
+The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some of the items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
 
 {@snippet features/toolbar-grouping}
 
@@ -124,7 +124,7 @@ toolbar: {
 }
 ```
 
-See how it works in practice. You may play with the browser window width to see how the buttons behave when the toolbar gets wrapped into multiple lines.
+See how it works in practice. Play with the browser window width to see how the buttons behave when the toolbar gets wrapped into multiple lines.
 
 {@snippet features/toolbar-wrapping}
 
@@ -166,7 +166,7 @@ toolbar: [
 ]
 ```
 
-It will create a "Basic styles" dropdown with a "three vertical dots" icon containing the additional basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
+It will create a "Basic styles" dropdown with a three vertical dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} containing the additional basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
 
 {@snippet features/toolbar-nested-simple}
 
