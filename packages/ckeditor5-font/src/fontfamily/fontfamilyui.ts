@@ -138,6 +138,8 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 			def.model.set( 'labelStyle', `font-family: ${ option.view.styles[ 'font-family' ] }` );
 		}
 
+		def.model.bind( 'ariaSelected' ).to( command, 'value', value => value === option.model );
+
 		itemDefinitions.add( def );
 	}
 	return itemDefinitions;
