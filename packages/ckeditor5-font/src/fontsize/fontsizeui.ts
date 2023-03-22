@@ -149,6 +149,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 		}
 
 		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+		def.model.bind( 'ariaSelected' ).to( command, 'value', value => value === option.model );
 
 		// Add the option to the collection.
 		itemDefinitions.add( def );
