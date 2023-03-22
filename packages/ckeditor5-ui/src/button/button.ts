@@ -153,6 +153,13 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
+	 * (Optional) The value of the `role` attribute of the button.
+	 *
+	 * @observable
+	 */
+	role: string | undefined;
+
+	/**
 	 * (Optional) The value of the `style` attribute of the label.
 	 *
 	 * @observable
