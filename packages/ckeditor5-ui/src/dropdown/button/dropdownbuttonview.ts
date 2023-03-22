@@ -60,7 +60,7 @@ export default class DropdownButtonView extends ButtonView implements DropdownBu
 		this.extendTemplate( {
 			attributes: {
 				'aria-haspopup': bind.to( 'ariaHasPopup' ),
-				'aria-expanded': this.bindTemplate.to( 'isOn', value => String( value ) )
+				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
 		} );
 
