@@ -13,9 +13,9 @@ The list feature lets you create ordered (numbered) and unordered (bulleted) lis
 
 ## Demo
 
-Use the editor below to see the CKEditor 5 list feature in action. Toolbar buttons can be used to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
+Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
 
-A Markdown code provided by the {@link features/autoformat autoformatting feature} can also be utilized:
+You can also use Markdown code provided by the {@link features/autoformat autoformatting feature}:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
 * Start a line with `1.` or `1)` followed by a space for a numbered list.
@@ -46,7 +46,7 @@ The list style feature introduces some more styles for the list item markers. Wh
 
 #### Demo
 
-In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
+In the editor below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
 
 {@snippet features/lists-style}
 
@@ -58,7 +58,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#star
 
 #### Demo
 
-In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index to achieve continuous numbering of spaceships.
+In the editor below, notice how the ordering continues in the second list. For continuous numbering of spaceships, go to the first item of the last list. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
 
 {@snippet features/lists-index}
 
@@ -70,7 +70,7 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 
 #### Demo
 
-Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether it should be reversed.
+Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether the numbering order should be reversed.
 
 {@snippet features/lists-reversed}
 
