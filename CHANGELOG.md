@@ -5,11 +5,17 @@ Changelog
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+This release exposes `Context`, `EditorWatchdog`, and `ContextWatchdog` as static editor properties. This should simplify integrations and provide consistency with editor builds.
+
+This introduces a minor breaking change: the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package is no longer available as a standalone [DLL build](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html). It is now included in the main `ckeditor5-dll.js` build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
+
+Please keep in mind that the release is marked as alpha, which means it is an experimental version, and some unexpected results may occur when using these typings.
+
+We appreciate all of your feedback, as it helps us greatly to improve the final shape of the project. Please share it [here](https://github.com/ckeditor/ckeditor5/issues/11704).
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The Watchdog package is no longer available as a standalone DLL build. It is now included in the main ckeditor5-dll.js build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
+* The [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package is no longer available as a standalone DLL build. It is now included in the main `ckeditor5-dll.js` build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
 
 ### Bug fixes
 
@@ -17,8 +23,8 @@ Changelog
 
 ### Other changes
 
-* **[editor-*](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-*)**: Exposed Context, EditorWatchdog, and ContextWatchdog as static editor properties. Closes [#13707](https://github.com/ckeditor/ckeditor5/issues/13707). ([commit](https://github.com/ckeditor/ckeditor5/commit/8933c865f9e54e9dae5e94f1b8743ee169ab3456))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added configuration to the View#scrollToTheSelection() helper allowing to scroll to the top of the boundary. Closes [#13688](https://github.com/ckeditor/ckeditor5/issues/13688). ([commit](https://github.com/ckeditor/ckeditor5/commit/75a5b122690c775cf55d61f3d80519cb85952ebb))
+* **[editor-*](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-*)**: Exposed the `Context`, `EditorWatchdog`, and `ContextWatchdog` classes as static editor properties. Closes [#13707](https://github.com/ckeditor/ckeditor5/issues/13707). ([commit](https://github.com/ckeditor/ckeditor5/commit/8933c865f9e54e9dae5e94f1b8743ee169ab3456))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added configuration to the `View#scrollToTheSelection()` helper allowing to scroll to the top of the boundary. Closes [#13688](https://github.com/ckeditor/ckeditor5/issues/13688). ([commit](https://github.com/ckeditor/ckeditor5/commit/75a5b122690c775cf55d61f3d80519cb85952ebb))
 
 ### Released packages
 
@@ -29,7 +35,6 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 
 New packages:
 
-* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root): v37.0.0-alpha.3
 
 Other releases:
 
@@ -56,6 +61,7 @@ Other releases:
 * [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v37.0.0-alpha.2 => v37.0.0-alpha.3
 * [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v37.0.0-alpha.2 => v37.0.0-alpha.3
 * [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v37.0.0-alpha.2 => v37.0.0-alpha.3
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root): v37.0.0-alpha.2 => v37.0.0-alpha.3
 * [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v37.0.0-alpha.2 => v37.0.0-alpha.3
 * [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v37.0.0-alpha.2 => v37.0.0-alpha.3
 * [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v37.0.0-alpha.2 => v37.0.0-alpha.3
