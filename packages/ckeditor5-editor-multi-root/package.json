@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-multi-root",
-  "version": "^0.0.1",
+  "version": "0.0.1",
   "description": "Multi-root editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
