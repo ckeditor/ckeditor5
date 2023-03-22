@@ -177,6 +177,14 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
+		it( 'should execute command if color is changed', async () => {
+			const spy = sinon.spy( editor, 'execute' );
+
+			dropdown.fire( 'colorChange', { value: '#a37474' } );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
