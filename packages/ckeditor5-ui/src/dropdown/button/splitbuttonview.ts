@@ -150,12 +150,23 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaHasPopup: string | boolean;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public role: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale?: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
 		// Implement the Button interface.
+		this.set( 'ariaHasPopup', true );
 		this.set( 'class', undefined );
 		this.set( 'labelStyle', undefined );
 		this.set( 'icon', undefined );
@@ -166,6 +177,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 		this.set( 'keystroke', undefined );
 		this.set( 'withKeystroke', false );
 		this.set( 'label', undefined );
+		this.set( 'role', undefined );
 		this.set( 'tabindex', -1 );
 		this.set( 'tooltip', false );
 		this.set( 'tooltipPosition', 's' );
@@ -188,7 +200,8 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 					bind.to( 'class' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' )
-				]
+				],
+				'aria-haspopup': bind.to( 'ariaHasPopup' )
 			},
 
 			children: this.children
