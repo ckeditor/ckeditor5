@@ -125,6 +125,15 @@ describe( 'FontSizeUI', () => {
 				command.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
+
+			it( 'label', () => {
+				command.value = undefined;
+
+				expect( dropdown.buttonView.label ).to.equal( 'Font Size' );
+
+				command.value = 'tiny';
+				expect( dropdown.buttonView.label ).to.equal( 'Font Size, Tiny' );
+			} );
 		} );
 
 		describe( 'config', () => {
