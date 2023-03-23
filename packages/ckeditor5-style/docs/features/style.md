@@ -10,7 +10,7 @@ The style feature lets you apply pre-configured styles to elements in your conte
 
 ## Demo
 
-Use the demo below to test the styles feature. Select a passage or a header and try applying various styles to the content.
+Use the demo below to test the styles feature. Select a passage or a header and try applying various styles.
 
 {@snippet features/styles}
 
