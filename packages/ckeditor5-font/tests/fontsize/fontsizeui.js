@@ -77,6 +77,8 @@ describe( 'FontSizeUI', () => {
 			expect( button ).to.have.property( 'label', 'Font Size' );
 			expect( button ).to.have.property( 'tooltip', 'Font Size' );
 			expect( button ).to.have.property( 'icon', fontSizeIcon );
+			expect( button ).to.have.property( 'ariaHasPopup', 'listbox' );
+			expect( button ).to.have.property( 'role', 'combobox' );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {

@@ -70,6 +70,8 @@ describe( 'FontFamilyUI', () => {
 			expect( button ).to.have.property( 'label', 'Font Family' );
 			expect( button ).to.have.property( 'tooltip', 'Font Family' );
 			expect( button ).to.have.property( 'icon', fontFamilyIcon );
+			expect( button ).to.have.property( 'ariaHasPopup', 'listbox' );
+			expect( button ).to.have.property( 'role', 'combobox' );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
