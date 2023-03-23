@@ -218,6 +218,18 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
+		describe( 'role', () => {
+			it( 'is not initially set ', () => {
+				expect( view.element.attributes.role ).to.equal( undefined );
+			} );
+
+			it( 'reacts on view#role', () => {
+				view.role = 'option';
+
+				expect( view.element.attributes.role.value ).to.equal( 'option' );
+			} );
+		} );
+
 		describe( 'text', () => {
 			it( 'is not initially set ', () => {
 				expect( view.element.textContent ).to.equal( '' );
@@ -278,6 +290,14 @@ describe( 'ButtonView', () => {
 
 				view.isOn = false;
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+			} );
+
+			it( '-selected reacts on #ariaSelected', () => {
+				view.ariaSelected = undefined;
+				expect( view.element.hasAttribute( 'aria-selected' ) ).to.be.false;
+
+				view.ariaSelected = true;
+				expect( view.element.attributes[ 'aria-selected' ].value ).to.equal( 'true' );
 			} );
 		} );
 
