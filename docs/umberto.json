@@ -603,7 +603,7 @@
 			"id": "api-reference",
 			"sourceDir": "api",
 			"slug": "api",
-			"type": "jsdoc"
+			"type": "typedoc"
 		}
 	]
 }
