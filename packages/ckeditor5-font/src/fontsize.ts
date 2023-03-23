@@ -7,7 +7,7 @@
  * @module font/fontsize
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import FontSizeEditing from './fontsize/fontsizeediting';
 import FontSizeUI from './fontsize/fontsizeui';
 import { normalizeOptions } from './fontsize/utils';
@@ -26,8 +26,8 @@ export default class FontSize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FontSizeEditing, FontSizeUI ];
+	public static get requires() {
+		return [ FontSizeEditing, FontSizeUI ] as const;
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module basic-styles/code
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import CodeEditing from './code/codeediting';
 import CodeUI from './code/codeui';
 
@@ -26,8 +26,8 @@ export default class Code extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ CodeEditing, CodeUI ];
+	public static get requires() {
+		return [ CodeEditing, CodeUI ] as const;
 	}
 
 	/**

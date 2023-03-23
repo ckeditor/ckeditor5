@@ -9,7 +9,7 @@
 
 /* globals XMLHttpRequest, FormData */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
 import type { SimpleUploadConfig } from '../uploadconfig';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
@@ -43,8 +43,8 @@ export default class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FileRepository ];
+	public static get requires() {
+		return [ FileRepository ] as const;
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module table/plaintableoutput
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine';
 
 import Table from './table';
@@ -26,8 +26,8 @@ export default class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Table ];
+	public static get requires() {
+		return [ Table ] as const;
 	}
 
 	/**

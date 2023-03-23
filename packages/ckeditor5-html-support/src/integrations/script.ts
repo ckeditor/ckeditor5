@@ -7,7 +7,7 @@
  * @module html-support/integrations/script
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import {
 	createObjectView,
 	modelToViewBlockAttributeConverter,
@@ -24,8 +24,8 @@ export default class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

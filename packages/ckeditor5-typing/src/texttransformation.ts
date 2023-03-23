@@ -9,8 +9,7 @@
 
 import {
 	Plugin,
-	type Editor,
-	type PluginDependencies
+	type Editor
 } from '@ckeditor/ckeditor5-core';
 
 import type { Position } from '@ckeditor/ckeditor5-engine';
@@ -85,8 +84,8 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'Delete', 'Input' ];
+	public static get requires() {
+		return [ 'Delete', 'Input' ] as const;
 	}
 
 	/**

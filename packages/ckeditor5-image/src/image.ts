@@ -7,7 +7,7 @@
  * @module image/image
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageBlock from './imageblock';
 import ImageInline from './imageinline';
 
@@ -30,8 +30,8 @@ export default class Image extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageBlock, ImageInline ];
+	public static get requires() {
+		return [ ImageBlock, ImageInline ] as const;
 	}
 
 	/**

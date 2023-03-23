@@ -5,13 +5,16 @@
 
 /* globals document, console */
 
+import BalloonEditor from '../src/ballooneditor';
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import BalloonEditor from '../src/ballooneditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
@@ -389,6 +392,20 @@ describe( 'BalloonEditor', () => {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => newEditor.destroy() );
+		} );
+	} );
+
+	describe( 'static fields', () => {
+		it( 'BalloonEditor.Context', () => {
+			expect( BalloonEditor.Context ).to.equal( Context );
+		} );
+
+		it( 'BalloonEditor.EditorWatchdog', () => {
+			expect( BalloonEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'BalloonEditor.ContextWatchdog', () => {
+			expect( BalloonEditor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
 	} );
 

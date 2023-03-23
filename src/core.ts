@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/core
+ * @module ckeditor5/core
  */
 
 export * from '@ckeditor/ckeditor5-core';

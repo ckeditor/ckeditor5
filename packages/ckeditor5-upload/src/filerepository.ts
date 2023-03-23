@@ -10,8 +10,7 @@
 import {
 	Plugin,
 	PendingActions,
-	type PendingAction,
-	type PluginDependencies
+	type PendingAction
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -104,8 +103,8 @@ export default class FileRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ PendingActions ];
+	public static get requires() {
+		return [ PendingActions ] as const;
 	}
 
 	/**

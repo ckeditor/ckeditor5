@@ -170,9 +170,9 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * @returns A promise which gets resolved once all plugins are loaded and available in the collection.
 	 */
 	public init(
-		plugins: Array<PluginConstructor<TContext> | string>,
-		pluginsToRemove: Array<PluginConstructor<TContext> | string> = [],
-		pluginsSubstitutions: Array<PluginConstructor<TContext>> = []
+		plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
+		pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string> = [],
+		pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>> = []
 	): Promise<LoadedPlugins> {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
@@ -220,7 +220,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 
 		function isPluginRemoved(
 			plugin: PluginConstructor<TContext> | string,
-			pluginsToRemove: Array<PluginConstructor<TContext> | string>
+			pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string>
 		) {
 			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
@@ -246,7 +246,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function findAvailablePluginConstructors(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			processed = new Set<PluginConstructor<TContext>>()
 		) {
 			plugins.forEach( plugin => {
@@ -271,7 +271,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function getPluginConstructors(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			processed = new Set<PluginConstructor<TContext>>()
 		) {
 			return plugins
@@ -298,7 +298,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function validatePlugins(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			parentPluginConstructor: PluginConstructor<TContext> | null = null
 		) {
 			plugins
@@ -439,7 +439,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			);
 		}
 
-		function loadPlugins( pluginConstructors: Array<PluginConstructor<TContext>> ) {
+		function loadPlugins( pluginConstructors: ReadonlyArray<PluginConstructor<TContext>> ) {
 			return pluginConstructors.map( PluginConstructor => {
 				let pluginInstance = that._contextPlugins.get( PluginConstructor ) as ( PluginInterface | undefined );
 
@@ -451,7 +451,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			} );
 		}
 
-		function initPlugins( pluginInstances: Array<PluginInterface>, method: 'init' | 'afterInit' ) {
+		function initPlugins( pluginInstances: ReadonlyArray<PluginInterface>, method: 'init' | 'afterInit' ) {
 			return pluginInstances.reduce<Promise<unknown>>( ( promise, plugin ) => {
 				if ( !plugin[ method ] ) {
 					return promise;
@@ -470,7 +470,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		 */
 		function substitutePlugins(
 			pluginConstructors: Array<PluginConstructor<TContext>>,
-			pluginsSubstitutions: Array<PluginConstructor<TContext>>
+			pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>>
 		) {
 			for ( const pluginItem of pluginsSubstitutions ) {
 				if ( typeof pluginItem != 'function' ) {
