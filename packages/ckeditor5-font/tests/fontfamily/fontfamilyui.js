@@ -114,6 +114,28 @@ describe( 'FontFamilyUI', () => {
 				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
 		} );
 
+		it( 'should set ariaSelected to true for current option in dropdown', () => {
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+
+			const listView = dropdown.listView;
+
+			command.value = undefined;
+
+			// The first item is 'default' font family.
+			expect( listView.items.map( item => item.children.first.ariaSelected ) )
+				.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
+
+			command.value = 'Arial, Helvetica, sans-serif';
+
+			// The second item is 'Arial' font family.
+			expect( listView.items.map( item => item.children.first.ariaSelected ) )
+				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
+		} );
+
 		describe( 'with supportAllValues=true', () => {
 			let editor, element, command, dropdown;
 

@@ -116,6 +116,26 @@ describe( 'FontSizeUI', () => {
 			expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
 		} );
 
+		it( 'should set ariaSelected to true for current option in dropdown', () => {
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdown.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdown.isOpen = true;
+
+			const listView = dropdown.listView;
+
+			command.value = undefined;
+
+			// The third item is 'default' font size.
+			expect( listView.items.map( item => item.children.first.ariaSelected ) ).to.deep.equal( [ false, false, true, false, false ] );
+
+			command.value = 'tiny';
+
+			// The first item is 'tiny' font size.
+			expect( listView.items.map( item => item.children.first.ariaSelected ) ).to.deep.equal( [ true, false, false, false, false ] );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
