@@ -207,6 +207,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' )
 				],
+				role: bind.to( 'role' ),
 				'aria-haspopup': bind.to( 'ariaHasPopup' )
 			},
 
