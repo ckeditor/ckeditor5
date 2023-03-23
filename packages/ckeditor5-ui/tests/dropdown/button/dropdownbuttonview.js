@@ -24,6 +24,10 @@ describe( 'DropdownButtonView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
+		it( 'sets view#ariaHasPopup', () => {
+			expect( view.ariaHasPopup ).to.be.true;
+		} );
+
 		it( 'creates view#arrowView', () => {
 			expect( view.arrowView ).to.be.instanceOf( IconView );
 		} );
@@ -51,6 +55,14 @@ describe( 'DropdownButtonView', () => {
 
 			view.isOn = false;
 			expect( view.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+		} );
+
+		it( 'binds button\'s aria-haspopup attribute to #ariaHasPopup', () => {
+			view.ariaHasPopup = true;
+			expect( view.element.getAttribute( 'aria-haspopup' ) ).to.equal( 'true' );
+
+			view.ariaHasPopup = 'listbox';
+			expect( view.element.getAttribute( 'aria-haspopup' ) ).to.equal( 'listbox' );
 		} );
 	} );
 } );
