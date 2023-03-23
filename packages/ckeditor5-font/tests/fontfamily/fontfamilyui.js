@@ -68,7 +68,7 @@ describe( 'FontFamilyUI', () => {
 			const button = dropdown.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Font Family' );
-			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltip', 'Font Family' );
 			expect( button ).to.have.property( 'icon', fontFamilyIcon );
 		} );
 

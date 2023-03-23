@@ -75,7 +75,7 @@ describe( 'FontSizeUI', () => {
 			const button = dropdown.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Font Size' );
-			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'tooltip', 'Font Size' );
 			expect( button ).to.have.property( 'icon', fontSizeIcon );
 		} );
 
