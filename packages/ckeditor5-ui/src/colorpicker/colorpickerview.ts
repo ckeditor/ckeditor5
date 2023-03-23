@@ -83,6 +83,7 @@ export default class ColorPickerView extends View {
 		super.render();
 
 		this.picker = global.document.createElement( 'hex-color-picker' );
+		this.picker.setAttribute( 'class', 'hex-color-picker' );
 
 		if ( this.element ) {
 			this.element.insertBefore( this.picker, this.input.element );
