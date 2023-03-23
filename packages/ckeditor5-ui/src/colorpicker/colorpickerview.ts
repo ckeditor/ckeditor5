@@ -75,7 +75,6 @@ export default class ColorPickerView extends View {
 
 	// Return current color from picker.
 	public getColor(): string {
-		console.log( this.picker );
 		return this.picker.color;
 	}
 
