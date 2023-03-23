@@ -90,7 +90,6 @@ export default class ColorPickerView extends View {
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
-			console.log( 'color-changed', event );
 			const customEvent = event as CustomEvent;
 			const color = customEvent.detail.value;
 			this._debouncePickerEvent( color );
