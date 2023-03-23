@@ -218,10 +218,10 @@ import ClassicEditor from './ckeditor';
 ClassicEditor
     // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
     .create( document.querySelector<HTMLElement>( '#app' )! )
-    .then( ( editor: ClassicEditor ) => {
+    .then( editor => {
         console.log( 'Editor was initialized', editor );
     } )
-    .catch( ( error: Error ) => {
+    .catch( error => {
         console.error( error.stack );
     } );
 ```
@@ -245,7 +245,7 @@ import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 ClassicEditor
-    .create( document.querySelector( '#app'), {
+    .create( document.querySelector( '#app' ), {
         // The plugins are now passed directly to .create().
         plugins: [
             EssentialsPlugin,
@@ -325,10 +325,10 @@ ClassicEditor
             'redo'
         ]
     } )
-    .then( ( editor: ClassicEditor ) => {
+    .then( editor => {
         console.log( editor );
     } )
-    .catch( ( error: Error ) => {
+    .catch( error => {
         console.error( error );
     } );
     
