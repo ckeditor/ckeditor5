@@ -61,9 +61,15 @@ export default class FontSizeUI extends Plugin {
 				tooltip: t( 'Font Size' )
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => value ?
-				`${ t( 'Font Size' ) }, ${ options.find( opt => opt.model === value )!.title }` : t( 'Font Size' )
-			);
+			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => {
+				if ( !value ) {
+					return t( 'Font Size' );
+				}
+
+				const selectedOption = options.find( opt => opt.model === value );
+
+				return `${ t( 'Font Size' ) }, ${ selectedOption ? selectedOption.title : value }`;
+			} );
 
 			dropdownView.extendTemplate( {
 				attributes: {

@@ -154,6 +154,15 @@ describe( 'FontSizeUI', () => {
 				command.value = 'tiny';
 				expect( dropdown.buttonView.label ).to.equal( 'Font Size, Tiny' );
 			} );
+
+			it( 'label: value not defined in config options', () => {
+				command.value = undefined;
+
+				expect( dropdown.buttonView.label ).to.equal( 'Font Size' );
+
+				command.value = 'foo';
+				expect( dropdown.buttonView.label ).to.equal( 'Font Size, foo' );
+			} );
 		} );
 
 		describe( 'config', () => {
