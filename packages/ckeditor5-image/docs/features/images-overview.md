@@ -12,7 +12,7 @@ CKEditor 5 comes with various tools to insert, upload, resize, style, caption, a
 
 ## Demo
 
-To see all the image features in action, check out the demo below. To learn more about individual plugins (sub-features) in the image ecosystem, see the [**Image features**](#image-features) section.
+To see all the image features in action, check out the demo below. To learn more about individual plugins (sub-features) of the image ecosystem, see the [**Image features**](#image-features) section.
 
 {@snippet features/image-full}
 

@@ -10,7 +10,7 @@ The heading feature helps you structure your document by adding headings to part
 
 ## Demo
 
-Use the toolbar dropdown to style a heading, or type one or more `#` characters (depending on the heading level), followed by a space, to start a new heading with the {@link features/autoformat autoformatting feature}.
+Use the toolbar dropdown to style a heading. You can also type one or more `#` characters (depending on the heading level) followed by a space, and the {@link features/autoformat autoformatting feature} will create a new heading.
 
 {@snippet features/default-headings}
 
@@ -34,7 +34,7 @@ By default, when your editor build does not include the title plugin, an `<h1>` 
 
 ## Heading buttons
 
-The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
+The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable, and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
 
 {@snippet features/heading-buttons}
 

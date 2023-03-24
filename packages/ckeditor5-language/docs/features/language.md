@@ -9,7 +9,7 @@ The text part language feature lets you mark the language of text fragments. Thi
 
 ## Demo
 
-Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
+In the demo below, select a text fragment. Next, use the language toolbar dropdown to choose from predefined languages.
 
 {@snippet features/textpartlanguage}
 

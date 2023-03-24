@@ -31,7 +31,7 @@ The editor placeholder feature does not require a separate plugin installation. 
 Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
 
 ```html
-<textarea id="editor" placeholder="Type the content here!"></textarea>
+<textarea id="editor" placeholder="Type some content here!"></textarea>
 ```
 
 ```js
