@@ -7,7 +7,7 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
@@ -41,8 +41,8 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline ];
+	public static get requires() {
+		return [ ClipboardPipeline ] as const;
 	}
 
 	/**

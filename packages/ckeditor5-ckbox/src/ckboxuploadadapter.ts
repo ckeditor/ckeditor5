@@ -9,7 +9,7 @@
  * @module ckbox/ckboxuploadadapter
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import {
 	FileRepository,
 	type FileLoader,
@@ -37,8 +37,8 @@ export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ];
+	public static get requires() {
+		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ] as const;
 	}
 
 	/**

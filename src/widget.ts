@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/widget
+ * @module ckeditor5/widget
  */
 
 export * from '@ckeditor/ckeditor5-widget';

@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedtoolbar
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 
 import { getSelectedMediaViewWidget } from './utils';
@@ -24,8 +24,8 @@ export default class MediaEmbedToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ WidgetToolbarRepository ];
+	public static get requires() {
+		return [ WidgetToolbarRepository ] as const;
 	}
 
 	/**

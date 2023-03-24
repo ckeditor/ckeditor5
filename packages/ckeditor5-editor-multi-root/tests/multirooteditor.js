@@ -5,12 +5,15 @@
 
 /* globals document, console */
 
+import MultiRootEditor from '../src/multirooteditor';
 import MultiRootEditorUI from '../src/multirooteditorui';
 import MultiRootEditorUIView from '../src/multirooteditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import MultiRootEditor from '../src/multirooteditor';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -413,6 +416,20 @@ describe( 'MultiRootEditor', () => {
 					} );
 			} );
 		}
+	} );
+
+	describe( 'static fields', () => {
+		it( 'MultiRootEditor.Context', () => {
+			expect( MultiRootEditor.Context ).to.equal( Context );
+		} );
+
+		it( 'MultiRootEditor.EditorWatchdog', () => {
+			expect( MultiRootEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'MultiRootEditor.ContextWatchdog', () => {
+			expect( MultiRootEditor.ContextWatchdog ).to.equal( ContextWatchdog );
+		} );
 	} );
 
 	describeMemoryUsage( () => {

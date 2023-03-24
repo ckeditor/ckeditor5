@@ -9,6 +9,7 @@
 
 import {
 	Editor,
+	Context,
 	DataApiMixin,
 	ElementApiMixin,
 	attachToForm,
@@ -18,10 +19,12 @@ import {
 } from 'ckeditor5/src/core';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
 
-import { isElement as _isElement } from 'lodash-es';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
+
+import { isElement as _isElement } from 'lodash-es';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#inline-editor inline editor} implementation.
@@ -231,6 +234,27 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 			);
 		} );
 	}
+
+	/**
+	 * The {@link module:core/context~Context} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static Context = Context;
+
+	/**
+	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static EditorWatchdog = EditorWatchdog;
+
+	/**
+	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static ContextWatchdog = ContextWatchdog;
 }
 
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {

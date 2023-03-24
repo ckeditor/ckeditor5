@@ -7,7 +7,7 @@
  * @module table/table
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
@@ -37,8 +37,8 @@ export default class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ];
+	public static get requires() {
+		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ] as const;
 	}
 
 	/**

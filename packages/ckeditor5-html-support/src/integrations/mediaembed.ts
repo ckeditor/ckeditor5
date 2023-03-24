@@ -7,7 +7,7 @@
  * @module html-support/integrations/mediaembed
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
@@ -29,8 +29,8 @@ export default class MediaEmbedElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**

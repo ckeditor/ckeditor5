@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import type {
 	DiffItem,
@@ -45,8 +45,8 @@ export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListEditing ];
+	public static get requires() {
+		return [ ListEditing ] as const;
 	}
 
 	/**

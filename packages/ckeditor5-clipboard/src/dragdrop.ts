@@ -9,7 +9,7 @@
 
 /* globals setTimeout, clearTimeout */
 
-import { Plugin, type Editor, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	LiveRange,
@@ -168,8 +168,8 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline, Widget ];
+	public static get requires() {
+		return [ ClipboardPipeline, Widget ] as const;
 	}
 
 	/**

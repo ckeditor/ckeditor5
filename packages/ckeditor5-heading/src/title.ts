@@ -7,7 +7,7 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core';
 import { first, type GetCallback } from 'ckeditor5/src/utils';
 import {
 	DowncastWriter,
@@ -55,8 +55,8 @@ export default class Title extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'Paragraph' ];
+	public static get requires() {
+		return [ 'Paragraph' ] as const;
 	}
 
 	/**
