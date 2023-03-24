@@ -134,7 +134,7 @@ const imageConfiguration = {
 	]
 }
 ```
-Try out the live demo of the individual resize buttons available in the image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize}:
+Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons}
 

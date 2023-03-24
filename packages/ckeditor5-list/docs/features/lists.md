@@ -15,7 +15,7 @@ The list feature lets you create ordered (numbered) and unordered (bulleted) lis
 
 Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
 
-You can also use Markdown code provided by the {@link features/autoformat autoformatting feature}:
+You can also use Markdown code recognized by the {@link features/autoformat autoformatting feature}:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
 * Start a line with `1.` or `1)` followed by a space for a numbered list.

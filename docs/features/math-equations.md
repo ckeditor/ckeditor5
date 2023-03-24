@@ -16,11 +16,11 @@ badges: [ premium ]
 
 ## Demo
 
-To start creating math or chemical formulas in the editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog.
+To create math or chemical formulas in the editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog.
 
-Use the toolbar to write your equation or formula. At any time, you can also click the **Go to handwritten mode** button on the right side of the MathType editor to switch to handwriting.
+Use the toolbar to write your equation or formula. At any time, you can also click the "Go to handwritten mode" button on the right side of the MathType editor to switch to handwriting.
 
-When you are done creating your scientific content, click the **OK** button to insert your formula into the editor. You can also edit any existing formulas by double-clicking them in your document.
+When you are done creating your scientific content, click the "OK" button to insert your formula into the editor. You can also edit any existing formulas by double-clicking them in your document.
 
 {@snippet features/mathtype}
 

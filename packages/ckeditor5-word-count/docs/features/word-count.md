@@ -11,7 +11,7 @@ The word count feature lets you track the number of words and characters in the 
 
 ## Demo
 
-Add or remove some content and see how the counter below the editor changes in real-time.
+Add or remove some content and see how the counter below the editor changes in real time.
 
 {@snippet features/word-count}
 
