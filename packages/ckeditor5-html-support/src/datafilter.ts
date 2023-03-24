@@ -9,7 +9,7 @@
 
 /* globals document */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import {
 	Matcher,
 	type MatcherPattern,
@@ -149,8 +149,8 @@ export default class DataFilter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataSchema, Widget ];
+	public static get requires() {
+		return [ DataSchema, Widget ] as const;
 	}
 
 	/**

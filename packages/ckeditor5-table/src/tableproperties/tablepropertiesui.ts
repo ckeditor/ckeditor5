@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -87,8 +87,8 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ContextualBalloon ];
+	public static get requires() {
+		return [ ContextualBalloon ] as const;
 	}
 
 	/**

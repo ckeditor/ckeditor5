@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/select-all
+ * @module ckeditor5/select-all
  */
 
 export * from '@ckeditor/ckeditor5-select-all';

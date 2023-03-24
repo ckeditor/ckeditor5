@@ -5,22 +5,18 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Font from '@ckeditor/ckeditor5-font/src/font';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { ImageResize } from '@ckeditor/ckeditor5-image';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push(
 	PasteFromOffice,

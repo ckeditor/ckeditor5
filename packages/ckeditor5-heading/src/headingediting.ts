@@ -7,7 +7,7 @@
  * @module heading/headingediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
 import type { HeadingOption } from './headingconfig';
@@ -48,8 +48,8 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Paragraph ];
+	public static get requires() {
+		return [ Paragraph ] as const;
 	}
 
 	/**

@@ -7,9 +7,8 @@
  * @module media-embed/mediaembed
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 import MediaEmbedEditing from './mediaembedediting';
 import AutoMediaEmbed from './automediaembed';
@@ -32,8 +31,8 @@ export default class MediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ MediaEmbedEditing, MediaEmbedUI, AutoMediaEmbed, Widget ];
+	public static get requires() {
+		return [ MediaEmbedEditing, MediaEmbedUI, AutoMediaEmbed, Widget ] as const;
 	}
 
 	/**

@@ -9,7 +9,6 @@
 
 import {
 	Plugin,
-	type PluginDependencies,
 	type Editor
 } from 'ckeditor5/src/core';
 import {
@@ -76,9 +75,9 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
+	public static get requires() {
 		// Clipboard is required for handling cut and paste events while typing over the link.
-		return [ TwoStepCaretMovement, Input, ClipboardPipeline ];
+		return [ TwoStepCaretMovement, Input, ClipboardPipeline ] as const;
 	}
 
 	/**

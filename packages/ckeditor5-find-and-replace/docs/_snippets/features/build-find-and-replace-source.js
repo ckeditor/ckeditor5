@@ -5,9 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( FindAndReplace, Underline );
 

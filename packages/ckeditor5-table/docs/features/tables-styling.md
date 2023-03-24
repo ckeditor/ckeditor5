@@ -9,11 +9,7 @@ modified_at: 2022-05-19
 
 {@snippet features/build-table-source}
 
-CKEditor 5 comes with some additional tools that will help you modify **the look of tables and table cells**. For instance, you can control their border color and style, background color, padding, or text alignment. The table and cell properties are available from the table toolbar on click, just like basic table features.
-
-<info-box>
-	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately. See the [installation](#installation) section to learn how to enable them in your editor.
-</info-box>
+CKEditor 5 comes with some additional tools that help you modify the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
 ## Demo
 
@@ -29,6 +25,10 @@ Put the caret anywhere inside the table to invoke the table toolbar. Then click 
 </info-box>
 
 ## Installation
+
+<info-box>
+	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
+</info-box>
 
 To enable the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
@@ -75,7 +75,7 @@ ClassicEditor
 
 ## Configuring styling tools
 
-Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
+Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop-ups. To help users choose the right colors for the content, the color palettes can be pre-configured, like in the editor below:
 
 {@snippet features/table-styling-colors}
 
@@ -219,7 +219,7 @@ The table element should be aligned to the `left` side by default. Its size shou
 
 The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
 
-The same will be applied for new tables and cells if they are inserted into the editor.
+The same will be applied to new tables and cells if they are inserted into the editor.
 
 {@snippet features/table-default-properties}
 
@@ -342,4 +342,4 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).

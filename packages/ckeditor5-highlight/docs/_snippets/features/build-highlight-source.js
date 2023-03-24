@@ -5,9 +5,10 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
 
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( Highlight );
 

@@ -8,7 +8,7 @@
  */
 
 import type { ViewElement } from 'ckeditor5/src/engine';
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { priorities } from 'ckeditor5/src/utils';
 
 import {
@@ -39,8 +39,8 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter ];
+	public static get requires() {
+		return [ DataFilter ] as const;
 	}
 
 	/**
