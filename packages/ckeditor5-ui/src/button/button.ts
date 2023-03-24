@@ -157,21 +157,21 @@ export default interface Button {
 	 *
 	 * @observable
 	 */
-	ariaHasPopup: string | boolean;
+	ariaHasPopup?: string | boolean;
 
 	/**
 	 * (Optional) The value of the `aria-selected` attribute of the button.
 	 *
 	 * @observable
 	 */
-	ariaSelected: boolean | undefined;
+	ariaSelected?: boolean | undefined;
 
 	/**
 	 * (Optional) The value of the `role` attribute of the button.
 	 *
 	 * @observable
 	 */
-	role: string | undefined;
+	role?: string | undefined;
 
 	/**
 	 * (Optional) The value of the `style` attribute of the label.
