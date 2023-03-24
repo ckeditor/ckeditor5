@@ -5,7 +5,7 @@ classes: keyboard-shortcuts
 
 # Keyboard support
 
-CKEditor 5 offers plenty of features to help you create your content in the most productive way. Using keyboard shortcuts is one of the simplest yet most efficient and popular ways to improve interaction with the software.
+CKEditor 5 offers plenty of features to boost your productivity. One of them is support for keyboard shortcuts.
 
 <info-box info>
 	Keyboard support is enabled by default.

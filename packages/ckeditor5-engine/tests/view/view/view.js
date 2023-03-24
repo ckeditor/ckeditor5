@@ -29,12 +29,16 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
@@ -358,39 +362,126 @@ describe( 'view', () => {
 	} );
 
 	describe( 'scrollToTheSelection()', () => {
+		let domRootAncestor, viewRoot;
+
 		beforeEach( () => {
-			// Silence the Rect warnings.
-			sinon.stub( console, 'warn' );
-		} );
+			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
-		it( 'does nothing when there are no ranges in the selection', () => {
-			const stub = sinon.stub( global.window, 'scrollTo' );
-
-			view.scrollToTheSelection();
-			sinon.assert.notCalled( stub );
-		} );
-
-		it( 'scrolls to the first range in selection with an offset', () => {
-			const root = createViewRoot( viewDocument, 'div', 'main' );
-			const stub = sinon.stub( global.window, 'scrollTo' );
-			const range = ViewRange._createIn( root );
+			domRootAncestor = document.createElement( 'div' );
+			document.body.appendChild( domRootAncestor );
+			domRootAncestor.appendChild( domRoot );
 
 			view.attachDomRoot( domRoot );
 
-			view.change( writer => {
-				writer.setSelection( range );
+			stubGeometry( testUtils, domRootAncestor, {
+				top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+			}, {
+				scrollLeft: 100, scrollTop: 100
 			} );
 
-			// Make sure the window will have to scroll to the domRoot.
-			Object.assign( domRoot.style, {
-				position: 'absolute',
-				top: '-1000px',
-				left: '-1000px'
+			testUtils.sinon.stub( global.window, 'innerWidth' ).value( 1000 );
+			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( global.window, 'scrollX' ).value( 100 );
+			testUtils.sinon.stub( global.window, 'scrollY' ).value( 100 );
+			testUtils.sinon.stub( global.window, 'scrollTo' );
+			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+				borderTopWidth: '0px',
+				borderRightWidth: '0px',
+				borderBottomWidth: '0px',
+				borderLeftWidth: '0px',
+				direction: 'ltr'
 			} );
+
+			// Assuming 20px v- and h-scrollbars here.
+			testUtils.sinon.stub( global.window.document, 'documentElement' ).value( {
+				clientWidth: 980,
+				clientHeight: 480
+			} );
+		} );
+
+		afterEach( () => {
+			domRootAncestor.remove();
+		} );
+
+		it( 'does nothing when there are no ranges in the selection', () => {
+			stubSelectionRangeGeometry( { top: 25, right: 50, bottom: 50, left: 25, width: 25, height: 25 } );
 
 			view.scrollToTheSelection();
-			sinon.assert.calledWithMatch( stub, sinon.match.number, sinon.match.number );
+			assertScrollPosition( domRootAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			sinon.assert.notCalled( global.window.scrollTo );
 		} );
+
+		it( 'should scroll to the first range in the selection (default offsets)', () => {
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+
+			view.scrollToTheSelection();
+
+			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+		} );
+
+		it( 'should support configurable viewport offset', () => {
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+
+			view.scrollToTheSelection( {
+				viewportOffset: 50
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -150 );
+		} );
+
+		it( 'should support configurable ancestors offset', () => {
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+
+			view.scrollToTheSelection( {
+				ancestorOffset: 50
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: -150, scrollLeft: 250 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+		} );
+
+		it( 'should support scrolling to the top of the viewport', () => {
+			stubSelectionRangeGeometry( { top: 600, right: 200, bottom: 700, left: 100, width: 100, height: 100 } );
+
+			view.scrollToTheSelection( {
+				alignToTop: true,
+				viewportOffset: 30,
+				ancestorOffset: 50
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: 650, scrollLeft: 250 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, 670 );
+		} );
+
+		it( 'should support force-scrolling to the top of the viewport despite the selection being visible', () => {
+			stubSelectionRangeGeometry( { top: 25, right: 50, bottom: 50, left: 25, width: 25, height: 25 } );
+
+			view.scrollToTheSelection( {
+				alignToTop: true,
+				forceScroll: true,
+				viewportOffset: 30,
+				ancestorOffset: 50
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: 75, scrollLeft: 100 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, 95 );
+		} );
+
+		function stubSelectionRangeGeometry( geometry ) {
+			const domRange = global.document.createRange();
+			domRange.setStart( domRoot, 0 );
+			domRange.setEnd( domRoot, 0 );
+
+			stubGeometry( testUtils, domRange, geometry );
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( viewRoot ) );
+			} );
+
+			sinon.stub( view.domConverter, 'viewRangeToDom' ).returns( domRange );
+		}
 	} );
 
 	describe( 'disableObservers()', () => {

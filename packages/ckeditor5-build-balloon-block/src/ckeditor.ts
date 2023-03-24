@@ -32,82 +32,80 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
  */
 import '../theme/theme.css';
 
-export default class BalloonEditor extends BalloonEditorBase {}
+export default class BalloonEditor extends BalloonEditorBase {
+	public static override builtinPlugins = [
+		Essentials,
+		UploadAdapter,
+		Autoformat,
+		BlockToolbar,
+		Bold,
+		Italic,
+		BlockQuote,
+		CKBox,
+		CKFinder,
+		CloudServices,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation
+	];
 
-// Plugins to include in the build.
-BalloonEditor.builtinPlugins = [
-	Essentials,
-	UploadAdapter,
-	Autoformat,
-	BlockToolbar,
-	Bold,
-	Italic,
-	BlockQuote,
-	CKBox,
-	CKFinder,
-	CloudServices,
-	EasyImage,
-	Heading,
-	Image,
-	ImageCaption,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	Link,
-	List,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	PictureEditing,
-	Table,
-	TableToolbar,
-	TextTransformation
-];
-
-// Editor configuration.
-BalloonEditor.defaultConfig = {
-	blockToolbar: [
-		'heading',
-		'|',
-		'bulletedList',
-		'numberedList',
-		'|',
-		'outdent',
-		'indent',
-		'|',
-		'uploadImage',
-		'blockQuote',
-		'insertTable',
-		'mediaEmbed',
-		'|',
-		'undo',
-		'redo'
-	],
-	toolbar: {
-		items: [
-			'bold',
-			'italic',
-			'link'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
+	public static override defaultConfig = {
+		blockToolbar: [
+			'heading',
 			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-};
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'uploadImage',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'|',
+			'undo',
+			'redo'
+		],
+		toolbar: {
+			items: [
+				'bold',
+				'italic',
+				'link'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+		// This value must be kept in sync with the language defined in webpack.config.js.
+		language: 'en'
+	};
+}

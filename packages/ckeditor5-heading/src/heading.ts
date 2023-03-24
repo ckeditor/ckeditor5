@@ -7,7 +7,7 @@
  * @module heading/heading
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
@@ -29,8 +29,8 @@ export default class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ HeadingEditing, HeadingUI ];
+	public static get requires() {
+		return [ HeadingEditing, HeadingUI ] as const;
 	}
 
 	/**

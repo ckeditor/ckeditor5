@@ -9,6 +9,7 @@
 
 const chalk = require( 'chalk' );
 const childProcess = require( 'child_process' );
+const fs = require( 'fs' );
 const minimist = require( 'minimist' );
 const path = require( 'path' );
 
@@ -90,6 +91,11 @@ function isNotBaseDll( name ) {
  */
 function hasDLLBuildScript( name ) {
 	const packageJsonPath = path.join( ROOT_DIRECTORY, 'packages', name, 'package.json' );
+
+	if ( !fs.existsSync( packageJsonPath ) ) {
+		return false;
+	}
+
 	const scripts = require( packageJsonPath ).scripts;
 
 	return Boolean( scripts && scripts[ 'dll:build' ] );

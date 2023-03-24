@@ -7,7 +7,7 @@
  * @module image/imageinsertviaurl
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
 /**
@@ -32,7 +32,7 @@ export default class ImageInsertViaUrl extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageInsertUI ];
+	public static get requires() {
+		return [ ImageInsertUI ] as const;
 	}
 }

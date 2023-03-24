@@ -7,7 +7,7 @@
  * @module special-characters/specialcharacters
  */
 
-import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
 import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
@@ -50,8 +50,8 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Typing ];
+	public static get requires() {
+		return [ Typing ] as const;
 	}
 
 	/**

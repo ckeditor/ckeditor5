@@ -7,7 +7,7 @@
  * @module image/imagetextalternative/imagetextalternativeediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageTextAlternativeCommand from './imagetextalternativecommand';
 import ImageUtils from '../imageutils';
 
@@ -20,8 +20,8 @@ export default class ImageTextAlternativeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageUtils ];
+	public static get requires() {
+		return [ ImageUtils ] as const;
 	}
 
 	/**

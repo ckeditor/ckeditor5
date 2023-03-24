@@ -27,6 +27,18 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: [ '**/*.ts' ],
+			rules: {
+				'@typescript-eslint/explicit-module-boundary-types': [
+					'error',
+					{
+						'allowedNames': [ 'requires' ],
+						'allowArgumentsExplicitlyTypedAsAny': true
+					}
+				]
+			}
+		},
+		{
 			files: [ '**/tests/**/*.js' ],
 			rules: {
 				'no-unused-expressions': 'off',

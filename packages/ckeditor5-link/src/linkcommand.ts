@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
 import { Collection, first, toMap } from 'ckeditor5/src/utils';
-import type { Range } from 'ckeditor5/src/engine';
+import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableElement } from './utils';
@@ -161,8 +161,13 @@ export default class LinkCommand extends Command {
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
+					const linkText = extractTextFromSelection( selection );
 					// Then update `linkHref` value.
-					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					let linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+
+					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+						linkRange = this._updateLinkContent( model, writer, linkRange, href );
+					}
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
@@ -227,14 +232,26 @@ export default class LinkCommand extends Command {
 				}
 
 				for ( const range of rangesToUpdate ) {
-					writer.setAttribute( 'linkHref', href, range );
+					let linkRange = range;
+
+					if ( rangesToUpdate.length === 1 ) {
+						// Current text of the link in the document.
+						const linkText = extractTextFromSelection( selection );
+
+						if ( selection.getAttribute( 'linkHref' ) === linkText ) {
+							linkRange = this._updateLinkContent( model, writer, range, href );
+							writer.setSelection( writer.createSelection( linkRange ) );
+						}
+					}
+
+					writer.setAttribute( 'linkHref', href, linkRange );
 
 					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, range );
+						writer.setAttribute( item, true, linkRange );
 					} );
 
 					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, range );
+						writer.removeAttribute( item, linkRange );
 					} );
 				}
 			}
@@ -276,5 +293,42 @@ export default class LinkCommand extends Command {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Updates selected link with a new value as its content and as its href attribute.
+	 *
+	 * @param model Model is need to insert content.
+	 * @param writer Writer is need to create text element in model.
+	 * @param range A range where should be inserted content.
+	 * @param href A link value which should be in the href attribute and in the content.
+	 */
+	private _updateLinkContent( model: Model, writer: Writer, range: Range, href: string ): Range {
+		const text = writer.createText( href, { linkHref: href } );
+
+		return model.insertContent( text, range );
+	}
+}
+
+// Returns a text of a link under the collapsed selection or a selection that contains the entire link.
+function extractTextFromSelection( selection: DocumentSelection ): string | null {
+	if ( selection.isCollapsed ) {
+		const firstPosition = selection.getFirstPosition();
+
+		return firstPosition!.textNode && firstPosition!.textNode.data;
+	} else {
+		const rangeItems = Array.from( selection.getFirstRange()!.getItems() );
+
+		if ( rangeItems.length > 1 ) {
+			return null;
+		}
+
+		const firstNode = rangeItems[ 0 ];
+
+		if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
+			return firstNode.data;
+		}
+
+		return null;
 	}
 }

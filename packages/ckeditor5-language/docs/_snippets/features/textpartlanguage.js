@@ -5,9 +5,11 @@
 
 /* globals window, document, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
+import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript );
 

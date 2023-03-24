@@ -10,12 +10,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-label' ), {
 		toolbar: [
-			{
-				label: 'Basic styles',
-				withText: true,
-				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
-			},
-			'|',
+			'undo', 'redo', '|',
 			{
 				label: 'Fonts',
 				icon: 'text',
@@ -23,7 +18,11 @@ ClassicEditor
 				items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
 			},
 			'|',
-			'undo', 'redo'
+			{
+				label: 'Basic styles',
+				withText: true,
+				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+			}
 		],
 		cloudServices: CS_CONFIG,
 		ui: {

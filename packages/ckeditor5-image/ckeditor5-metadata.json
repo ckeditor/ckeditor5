@@ -4,7 +4,7 @@
 			"name": "Auto image",
 			"className": "AutoImage",
 			"description": "Allows for inserting images simply by pasting a URL of the image into the content. It turns the pasted URL into an image on the go.",
-			"docs": "features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor",
+			"docs": "features/images/images-inserting.html#inserting-images-via-pasting-a-url-into-the-editor",
 			"path": "src/autoimage.js",
 			"requires": [
 				[
@@ -227,7 +227,7 @@
 			"name": "Image insert",
 			"className": "ImageInsert",
 			"description": "Allows for inserting images via source URL",
-			"docs": "features/images/image-upload/images-inserting.html#inserting-images-via-source-url",
+			"docs": "features/images/images-inserting.html#inserting-images-via-a-source-url",
 			"path": "src/imageinsert.js",
 			"requires": [
 				"ImageUpload"
