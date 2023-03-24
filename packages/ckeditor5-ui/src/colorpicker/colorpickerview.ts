@@ -10,7 +10,9 @@
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
-import InputTextView from '../inputtext/inputtextview';
+import type InputTextView from '../inputtext/inputtextview';
+import LabeledFieldView from '../labeledfield/labeledfieldview';
+import { createLabeledInputText } from '../labeledfield/utils';
 
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
@@ -24,7 +26,12 @@ export default class ColorPickerView extends View {
 	/**
 	 * Input to defining custom colors in HEX.
 	 */
-	declare public input: InputTextView;
+	declare public input: LabeledFieldView<InputTextView>;
+
+	/**
+	 * Current color state in color picker.
+	 */
+	declare public color: string;
 
 	/**
 	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
@@ -40,6 +47,9 @@ export default class ColorPickerView extends View {
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
+
+		this.set( 'color', '' );
+
 		this.input = this._createInput();
 
 		const children = this.createCollection();
@@ -57,7 +67,7 @@ export default class ColorPickerView extends View {
 
 		this._debouncePickerEvent = debounce( ( color: string ) => {
 			this.fire( 'change', { value: color } );
-			this._setInputData( color );
+			this.color = color;
 		}, waitingTime );
 
 		this._debounceInputEvent = debounce( ( color: string ) => {
@@ -70,12 +80,8 @@ export default class ColorPickerView extends View {
 	public setColor( color: string | undefined ): void {
 		if ( color && this.picker ) {
 			this.picker.setAttribute( 'color', color );
+			this.color = color;
 		}
-	}
-
-	// Return current color from picker.
-	public getColor(): string {
-		return this.picker.color;
 	}
 
 	// Renders color picker in the view.
@@ -97,28 +103,25 @@ export default class ColorPickerView extends View {
 	}
 
 	// Creates input for defining custom colors in color picker.
-	private _createInput(): InputTextView {
-		const textInput = new InputTextView( this.locale );
+	private _createInput(): LabeledFieldView<InputTextView> {
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		textInput.extendTemplate( {
-			attributes: {
-				class: 'color-picker-hex-input',
-				placeholder: 'HEX'
+		labeledInput.set( {
+			label: this.t!( 'HEX' ),
+			class: 'color-picker-hex-input'
+		} );
+
+		labeledInput.fieldView.bind( 'value' ).to( this, 'color' );
+
+		labeledInput.fieldView.on( 'input', () => {
+			const inputValue = labeledInput.fieldView.element!.value;
+
+			if ( inputValue ) {
+				this._debounceInputEvent( inputValue );
 			}
 		} );
 
-		textInput.on( 'input', () => {
-			const inputValue = textInput.element!.value;
-
-			this._debounceInputEvent( inputValue );
-		} );
-
-		return textInput;
-	}
-
-	// Sets given value into input.
-	private _setInputData( value: string ): void {
-		this.input.element!.value = value;
+		return labeledInput;
 	}
 }
 

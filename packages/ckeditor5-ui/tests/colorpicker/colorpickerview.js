@@ -63,7 +63,7 @@ describe( 'ColorGridView', () => {
 
 			clock.tick( 200 );
 
-			expect( view.input.element.value ).to.equal( '#ff0000' );
+			expect( view.input.fieldView.value ).to.equal( '#ff0000' );
 
 			view.destroy();
 		} );
@@ -72,12 +72,12 @@ describe( 'ColorGridView', () => {
 			const view = new ColorPickerView( locale );
 			view.render();
 
-			view.input.element.value = '#ff0000';
-			view.input.fire( 'input' );
+			view.input.fieldView.value = '#ff0000';
+			view.input.fieldView.fire( 'input' );
 
 			clock.tick( 200 );
 
-			expect( view.getColor() ).to.equal( '#ff0000' );
+			expect( view.color ).to.equal( '#ff0000' );
 			view.destroy();
 		} );
 	} );
@@ -95,14 +95,14 @@ describe( 'ColorGridView', () => {
 		} );
 	} );
 
-	describe( 'getColor()', () => {
+	describe( '#color', () => {
 		it( 'should get current color from color picker component', () => {
 			const view = new ColorPickerView( locale );
 			view.render();
 
 			view.setColor( '#ff0000' );
 
-			expect( view.getColor() ).to.equal( '#ff0000' );
+			expect( view.color ).to.equal( '#ff0000' );
 
 			view.destroy();
 		} );
