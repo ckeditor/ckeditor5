@@ -1,11 +1,11 @@
 {
 	"plugins": [
 		{
-			"name": "Select all editing",
-			"className": "SelectAllEditing",
-			"description": "It registers the \"selectAll\" command and the Ctrl/⌘+A keystroke listener which executes it.",
+			"name": "Select all",
+			"className": "SelectAll",
+			"description": "The select all feature lets you select the entire content using the Ctrl/Cmd+A keystroke or a toolbar button. This way you can clear or copy all the content in one move.",
 			"docs": "features/select-all.html",
-			"path": "src/selectallediting.js",
+			"path": "src/selectall.js",
 			"uiComponents": [
 				{
 					"type": "Button",
