@@ -54,9 +54,15 @@ export default class FontFamilyUI extends Plugin {
 				tooltip: t( 'Font Family' )
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => value ?
-				`${ t( 'Font Family' ) }, ${ options.find( opt => opt.model === value )!.title }` : t( 'Font Family' )
-			);
+			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => {
+				if ( !value ) {
+					return t( 'Font Family' );
+				}
+
+				const selectedOption = options.find( opt => opt.model === value );
+
+				return `${ t( 'Font Family' ) }, ${ selectedOption ? selectedOption.title : value }`;
+			} );
 
 			dropdownView.extendTemplate( {
 				attributes: {

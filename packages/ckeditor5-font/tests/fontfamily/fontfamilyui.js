@@ -227,6 +227,15 @@ describe( 'FontFamilyUI', () => {
 				command.value = 'Arial, Helvetica, sans-serif';
 				expect( dropdown.buttonView.label ).to.equal( 'Font Family, Arial' );
 			} );
+
+			it( 'label: value not defined in config options', () => {
+				command.value = undefined;
+
+				expect( dropdown.buttonView.label ).to.equal( 'Font Family' );
+
+				command.value = 'foo';
+				expect( dropdown.buttonView.label ).to.equal( 'Font Family, foo' );
+			} );
 		} );
 
 		describe( 'localization', () => {
