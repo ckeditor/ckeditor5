@@ -10,23 +10,13 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#toolbar-nested-icon' ), {
 		toolbar: [
+			'undo', 'redo', '|',
 			{
 				// This drop-down uses a default icon because none was specified.
 				label: 'Fonts',
 				items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
 			},
-			{
-				// This drop-down has the icon disabled and a text label instead.
-				label: 'Lists',
-				icon: false,
-				items: [ 'bulletedList', 'numberedList', 'todoList' ]
-			},
-			{
-				// A "plus" sign icon works best for content insertion tools.
-				label: 'Insert',
-				icon: 'plus',
-				items: [ 'uploadImage', 'insertTable' ]
-			},
+			'|',
 			{
 				label: 'A drop-down with a custom icon',
 				// If you want your icon to change the color dynamically (e.g. when opened)
@@ -37,7 +27,19 @@ ClassicEditor
 				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
 			},
 			'|',
-			'undo', 'redo'
+			{
+				// A "plus" sign icon works best for content insertion tools.
+				label: 'Insert',
+				icon: 'plus',
+				items: [ 'uploadImage', 'insertTable' ]
+			},
+			'|',
+			{
+				// This drop-down has the icon disabled and a text label instead.
+				label: 'Lists',
+				icon: false,
+				items: [ 'bulletedList', 'numberedList', 'todoList' ]
+			}
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]

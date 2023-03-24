@@ -1,7 +1,7 @@
 ---
-category: features-image-upload
-menu-title: Inserting images via a URL
-order: 70
+category: features-images
+menu-title: Inserting images via URL
+order: 75
 ---
 {@snippet features/build-image-source}
 
