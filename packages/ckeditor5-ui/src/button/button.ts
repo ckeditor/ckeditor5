@@ -153,6 +153,13 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
+	 * The value of the `aria-haspopup` attribute of the button.
+	 *
+	 * @observable
+	 */
+	ariaHasPopup: string | boolean;
+
+	/**
 	 * (Optional) The value of the `aria-selected` attribute of the button.
 	 *
 	 * @observable
