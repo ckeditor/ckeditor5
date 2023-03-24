@@ -18,31 +18,19 @@ This scenario allows you to fully control the building process of CKEditor 5. Th
 
 First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
-Copy these dependencies to your `package.json` and call `npm install` to install them. The `dependencies` (or `devDependencies`) section of `package.json` should look more or less like this:
+Copy these dependencies to your `package.json` and call `npm install` to install them. You can also install them individually. An example list of plugins may look like this:
 
-```js
-"dependencies": {
-	// More dependencies.
-	// ...
-
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^x.y.z",
-    "@ckeditor/ckeditor5-autoformat": "^x.y.z",
-    "@ckeditor/ckeditor5-basic-styles": "^x.y.z",
-    "@ckeditor/ckeditor5-block-quote": "^x.y.z",
-    "@ckeditor/ckeditor5-easy-image": "^x.y.z",
-    "@ckeditor/ckeditor5-editor-classic": "^x.y.z",
-    "@ckeditor/ckeditor5-essentials": "^x.y.z",
-    "@ckeditor/ckeditor5-heading": "^x.y.z",
-    "@ckeditor/ckeditor5-image": "^x.y.z",
-    "@ckeditor/ckeditor5-link": "^x.y.z",
-    "@ckeditor/ckeditor5-list": "^x.y.z",
-    "@ckeditor/ckeditor5-paragraph": "^x.y.z",
-    "@ckeditor/ckeditor5-theme-lark": "^x.y.z",
-    "@ckeditor/ckeditor5-upload": "^x.y.z"
-
-    // More dependencies.
-	// ...
-}
+```bash
+npm install --save @ckeditor/ckeditor5-theme-lark \
+  @ckeditor/ckeditor5-autoformat \
+  @ckeditor/ckeditor5-basic-styles \
+  @ckeditor/ckeditor5-block-quote \
+  @ckeditor/ckeditor5-editor-classic \
+  @ckeditor/ckeditor5-essentials \
+  @ckeditor/ckeditor5-heading \
+  @ckeditor/ckeditor5-link \
+  @ckeditor/ckeditor5-list \
+  @ckeditor/ckeditor5-paragraph
 ```
 
 The second step is to install dependencies needed to build the editor. The list may differ if you want to customize the webpack configuration, but this is a typical setup:
@@ -59,21 +47,36 @@ npm install --save \
 	webpack-cli@4
 ```
 
+The list will differ if you want to use TypeScript in your project - additionally, you need to install `ts-loader`.
+
+```bash
+npm install --save ts-loader
+```
+
 ## Webpack configuration
 
 You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor 5:
 
 * Handling CSS files of the CKEditor theme. They are included in the CKEditor 5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
+* Optionally, you may need to handle `.ts` files to use TypeScript in your project. There is the [`ts-loader`](https://webpack.js.org/guides/typescript/#loader) for this purpose.
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) webpack plugin.
 
 The minimal configuration, assuming that you use the same methods of handling assets as CKEditor 5 builds, will look like this:
 
 ```js
+// webpack.config.js
+
+const path = require( 'path' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
+	entry: './main.js',
+    output: {
+        path: path.resolve( __dirname, 'dist' ),
+        filename: 'bundle.js'
+    },
 	plugins: [
 		// More plugins.
 		// ...
@@ -83,7 +86,6 @@ module.exports = {
 			language: 'pl'
 		} )
 	],
-
 	module: {
 		rules: [
 			{
@@ -124,6 +126,76 @@ module.exports = {
 <info-box>
     If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
 </info-box>
+
+Webpack configuration for TypeScript slightly differs - it must take into account `.ts` files.
+
+```js
+// webpack.config.js
+
+const path = require( 'path' );
+const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+module.exports = {
+    entry: './main.ts',
+    output: {
+        path: path.resolve( __dirname, 'dist' ),
+        filename: 'bundle.js'
+    },
+    plugins: [
+		// More plugins.
+		// ...
+
+		new CKEditorTranslationsPlugin( {
+			// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+			language: 'pl'
+		} )
+	],
+    resolve: {
+        extensions: [ '.js', '.ts' ]
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts/,
+                use: [ 'ts-loader' ]
+            },
+            {
+                test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+
+                use: [ 'raw-loader' ]
+            },
+            {
+                test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+
+                use: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            injectType: 'singletonStyleTag',
+                            attributes: {
+                                'data-cke': true
+                            }
+                        }
+                    },
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+};
+```
 
 #### Webpack Encore
 
@@ -168,25 +240,58 @@ Encore.
 	} )
 ```
 
+## TypeScript configuration
+
+TypeScript, similarly to webpack, needs configuration. If you want to use it, add the `tsconfig.json` file at the root of your project. You can copy the below example config or create your own.
+
+```json
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "dom"
+    ],
+    "outDir": "lib",
+    "removeComments": true,
+    "target": "ES6",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "paths": {},
+    "sourceMap": true,
+    "sourceRoot": "/",
+    "alwaysStrict": true,
+    "allowUnreachableCode": false,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": [
+    "node_modules/**/*"
+  ]
+}
+```
+
 ## Running the editor – method 1
 
 You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
 
 ```js
+// ckeditor.js
+
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -194,62 +299,97 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 export default class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.builtinPlugins = [
-	EssentialsPlugin,
-	UploadAdapterPlugin,
-	AutoformatPlugin,
-	BoldPlugin,
-	ItalicPlugin,
-	BlockQuotePlugin,
-	EasyImagePlugin,
-	HeadingPlugin,
-	ImagePlugin,
-	ImageCaptionPlugin,
-	ImageStylePlugin,
-	ImageToolbarPlugin,
-	ImageUploadPlugin,
-	LinkPlugin,
-	ListPlugin,
-	ParagraphPlugin
+    EssentialsPlugin,
+    AutoformatPlugin,
+    BoldPlugin,
+    ItalicPlugin,
+    BlockQuotePlugin,
+    HeadingPlugin,
+    LinkPlugin,
+    ListPlugin,
+    ParagraphPlugin
 ];
 
 ClassicEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'uploadImage',
-			'blockQuote',
-			'undo',
-			'redo'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:block',
-			'imageStyle:side',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	language: 'en'
+    toolbar: {
+        items: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    },
+    language: 'en'
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
+This module will export an editor creator class which has all the plugins and configuration that you need already built-in.
+
+If you want to use TypeScript, the `ckeditor` file looks very similar. However, don't forget about the `.ts` extension.
+
+```ts
+// ckeditor.ts
+
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+export default class ClassicEditor extends ClassicEditorBase {}
+
+ClassicEditor.builtinPlugins = [
+    EssentialsPlugin,
+    AutoformatPlugin,
+    BoldPlugin,
+    ItalicPlugin,
+    BlockQuotePlugin,
+    HeadingPlugin,
+    LinkPlugin,
+    ListPlugin,
+    ParagraphPlugin
+];
+
+ClassicEditor.defaultConfig = {
+    toolbar: {
+        items: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    },
+    language: 'en'
+};
+```
+
+To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
 
 ```js
+// main.js
+
 import ClassicEditor from './ckeditor';
 
 ClassicEditor
 	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-	.create( document.querySelector( '#editor' ) )
+	.create( document.querySelector( '#app' ) )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
 	} )
@@ -258,86 +398,146 @@ ClassicEditor
 	} );
 ```
 
+Copy the below snippet if you want to use TypeScript in your application.
+
+```ts
+// main.ts
+
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+    // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
+    .create( document.querySelector<HTMLElement>( '#app' )! )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
 ## Running the editor – method 2
 
 The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
 ```js
+// main.js
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor'), {
-		// The plugins are now passed directly to .create().
-		plugins: [
-			EssentialsPlugin,
-			AutoformatPlugin,
-			BoldPlugin,
-			ItalicPlugin,
-			BlockQuotePlugin,
-			HeadingPlugin,
-			ImagePlugin,
-			ImageCaptionPlugin,
-			ImageStylePlugin,
-			ImageToolbarPlugin,
-			EasyImagePlugin,
-			ImageUploadPlugin,
-			LinkPlugin,
-			ListPlugin,
-			ParagraphPlugin,
-			UploadAdapterPlugin
-		],
+    .create( document.querySelector( '#app'), {
+        // The plugins are now passed directly to .create().
+        plugins: [
+            EssentialsPlugin,
+            AutoformatPlugin,
+            BoldPlugin,
+            ItalicPlugin,
+            BlockQuotePlugin,
+            HeadingPlugin,
+            LinkPlugin,
+            ListPlugin,
+            ParagraphPlugin,
+        ],
 
-		// So is the rest of the default configuration.
-		toolbar: [
-			'heading',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'uploadImage',
-			'blockQuote',
-			'undo',
-			'redo'
-		],
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-			]
-		}
-	} )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
+        // So is the rest of the default configuration.
+        toolbar: [
+            'heading',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    } )
+    .then( editor => {
+        console.log( editor );
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+```
+
+You can also translate the above code using TypeScript.
+
+```ts
+// main.ts
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+ClassicEditor
+    .create( document.querySelector<HTMLElement>( '#app')!, {
+        // The plugins are now passed directly to .create().
+        plugins: [
+            EssentialsPlugin,
+            AutoformatPlugin,
+            BoldPlugin,
+            ItalicPlugin,
+            BlockQuotePlugin,
+            HeadingPlugin,
+            LinkPlugin,
+            ListPlugin,
+            ParagraphPlugin,
+        ],
+
+        // So is the rest of the default configuration.
+        toolbar: [
+            'heading',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    } )
+    .then( editor => {
+        console.log( editor );
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
 ```
 
 ## Building
 
-Finally, you can build your application. Run webpack on your project and the rich-text editor will be a part of it.
+Finally, you can build your application. Add the build command to the scripts of your `package.json`.
+
+```json
+// package.json
+
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  }
+}
+```
+
+Now you can type `npm run build` in the terminal to run webpack on your project. The rich-text editor will be a part of it.
 
 ## Option: Minifying JavaScript
 
