@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Select all editing",
+			"className": "SelectAllEditing",
+			"description": "It registers the \"selectAll\" command and the Ctrl/⌘+A keystroke listener which executes it.",
+			"docs": "features/select-all.html",
+			"path": "src/selectallediting.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "selectAll",
+					"iconPath": "theme/icons/select-all.svg"
+				}
+			]
+		}
+	]
+}
