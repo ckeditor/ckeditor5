@@ -766,7 +766,8 @@ export default class Renderer extends ObservableMixin() {
 	 * @param actions Actions array which is a result of the {@link module:utils/diff~diff} function.
 	 * @param actualDom Actual DOM children
 	 * @param expectedDom Expected DOM children.
-	 * @param comparator A comparator function that should return `true` if the given node is an update of the old one.
+	 * @param comparator A comparator function that should return `true` if the given node should be reused
+	 * (either by the update of a text node data or an element children list for similar elements).
 	 * @returns Actions array modified with the `update` actions.
 	 */
 	private _findUpdateActions(
