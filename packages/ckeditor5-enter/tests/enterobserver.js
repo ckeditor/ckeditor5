@@ -131,7 +131,7 @@ describe( 'EnterObserver', () => {
 		expect( interceptedEventInfo.stop.called ).to.be.undefined;
 	} );
 
-	it( 'should implement empty #stopOvserving() method', () => {
+	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			view.getObserver( EnterObserver ).stopObserving();
 		} ).to.not.throw();

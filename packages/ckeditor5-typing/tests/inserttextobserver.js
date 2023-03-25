@@ -244,7 +244,7 @@ describe( 'InsertTextObserver', () => {
 		} );
 	} );
 
-	it( 'should implement empty #stopOvserving() method', () => {
+	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			view.getObserver( InsertTextObserver ).stopObserving();
 		} ).to.not.throw();

@@ -533,7 +533,7 @@ describe( 'Delete', () => {
 			} );
 		} );
 
-		it( 'should implement empty #stopOvserving() method', () => {
+		it( 'should implement empty #stopObserving() method', () => {
 			expect( () => {
 				view.getObserver( DeleteObserver ).stopObserving();
 			} ).to.not.throw();

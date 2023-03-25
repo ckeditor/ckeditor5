@@ -97,7 +97,7 @@ describe( 'TabObserver', () => {
 		} );
 	} );
 
-	it( 'should implement empty #stopOvserving() method', () => {
+	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			view.getObserver( TabObserver ).stopObserving();
 		} ).to.not.throw();

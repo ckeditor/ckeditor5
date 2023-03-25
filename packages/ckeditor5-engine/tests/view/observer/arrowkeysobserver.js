@@ -97,7 +97,7 @@ describe( 'ArrowKeysObserver', () => {
 		} ).to.not.throw();
 	} );
 
-	it( 'should implement empty #stopOvserving() method', () => {
+	it( 'should implement empty #stopObserving() method', () => {
 		expect( () => {
 			observer.stopObserving();
 		} ).to.not.throw();
