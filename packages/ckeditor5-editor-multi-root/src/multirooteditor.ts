@@ -249,11 +249,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * ```
 	 *
 	 * @param rootName Name of the root to add.
-	 * @param data Initial data for the root.
-	 * @param elementName Element name for the root element in the model. It can be used to set different schema rules for different roots.
-	 * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
+	 * @param options Additional options for the added root.
 	 */
-	public addRoot( rootName: string, { data = '', elementName = '$root', isUndoable = false } = {} ): void {
+	public addRoot( rootName: string, { data = '', elementName = '$root', isUndoable = false }: AddRootOptions = {} ): void {
 		const dataController = this.data;
 
 		if ( isUndoable ) {
@@ -557,7 +555,7 @@ export type AddRootEvent = {
 /**
  * Fired whenever a root is {@link ~MultiRootEditor#detachRoot detached} from the editor model.
  *
- * Use this event to {@link ~MultiRootEditor#removeEditable destroy a DOM editable} for the detached root and remove the DOM element
+ * Use this event to {@link ~MultiRootEditor#detachEditable destroy a DOM editable} for the detached root and remove the DOM element
  * from your application.
  *
  * The event is fired after all changes from a given batch are applied. The event is not fired, if the root was detached and re-added
@@ -569,4 +567,17 @@ export type AddRootEvent = {
 export type DetachRootEvent = {
 	name: 'detachRoot';
 	args: [ root: RootElement ];
+};
+
+/**
+ * Additional options available when adding a root.
+ *
+ * @param data Initial data for the root.
+ * @param elementName Element name for the root element in the model. It can be used to set different schema rules for different roots.
+ * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
+ */
+export type AddRootOptions = {
+	data?: string;
+	elementName?: string;
+	isUndoable?: boolean;
 };
