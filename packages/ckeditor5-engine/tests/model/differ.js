@@ -1804,8 +1804,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.get( 'new' ) ).to.be.true;
-				expect( rootChanges.size ).to.equal( 1 );
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
 			} );
@@ -1817,8 +1817,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.get( 'main' ) ).to.be.false;
-				expect( rootChanges.size ).to.equal( 1 );
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', state: 'detached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
 			} );
@@ -1830,7 +1830,7 @@ describe( 'Differ', () => {
 				writer.detachRoot( 'new' );
 
 				let rootChanges = differ.getChangedRoots();
-				expect( rootChanges.size ).to.equal( 0 );
+				expect( rootChanges.length ).to.equal( 0 );
 				expect( differ.hasDataChanges() ).to.be.false;
 				expect( differ.isEmpty ).to.be.true;
 
@@ -1838,8 +1838,8 @@ describe( 'Differ', () => {
 
 				rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.get( 'new' ) ).to.be.true;
-				expect( rootChanges.size ).to.equal( 1 );
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
 			} );
@@ -1850,7 +1850,7 @@ describe( 'Differ', () => {
 				writer.addRoot( 'new' );
 			} );
 
-			expect( differ.getChangedRoots().size ).to.equal( 0 );
+			expect( differ.getChangedRoots().length ).to.equal( 0 );
 			expect( differ.hasDataChanges() ).to.be.false;
 			expect( differ.isEmpty ).to.be.true;
 		} );
@@ -1867,7 +1867,7 @@ describe( 'Differ', () => {
 				writer.addRoot( 'main2' );
 
 				let rootChanges = differ.getChangedRoots();
-				expect( rootChanges.size ).to.equal( 0 );
+				expect( rootChanges.length ).to.equal( 0 );
 				expect( differ.hasDataChanges() ).to.be.false;
 				expect( differ.isEmpty ).to.be.true;
 
@@ -1875,14 +1875,14 @@ describe( 'Differ', () => {
 
 				rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.get( 'main2' ) ).to.be.false;
-				expect( rootChanges.size ).to.equal( 1 );
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main2', state: 'detached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
 			} );
 		} );
 
-		it( 'multiple roots added and removed', () => {
+		it( 'multiple roots added and detached', () => {
 			// Add extra root to have more things to remove.
 			model.change( writer => {
 				writer.addRoot( 'main2' );
@@ -1896,10 +1896,282 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.size ).to.equal( 4 );
-				expect( rootChanges.get( 'main' ) ).to.be.false;
+				expect( rootChanges.length ).to.equal( 4 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
+				expect( rootChanges[ 1 ] ).to.deep.equal( { name: 'main', state: 'detached' } );
+				expect( rootChanges[ 2 ] ).to.deep.equal( { name: 'main2', state: 'detached' } );
+				expect( rootChanges[ 3 ] ).to.deep.equal( { name: 'new2', state: 'attached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'add attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: null, newValue: 'foo' } } } );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'remove attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.removeAttribute( 'key', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: null } } } );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'change attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'bar', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: 'bar' } } } );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'add then remove attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+				writer.removeAttribute( 'key', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
+			} );
+		} );
+
+		it( 'add then change attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+				writer.setAttribute( 'key', 'bar', root );
+				writer.setAttribute( 'key', 'baz', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: null, newValue: 'baz' } } } );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'change then change back attribute', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'bar', root );
+				writer.setAttribute( 'key', 'foo', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
+			} );
+		} );
+
+		it( 'change multiple attributes', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'bar', root );
+				writer.setAttribute( 'abc', 'xyz', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					attributes: {
+						abc: { oldValue: null, newValue: 'xyz' },
+						key: { oldValue: 'foo', newValue: 'bar' }
+					}
+				} );
+			} );
+		} );
+
+		it( 'change attributes on added root', () => {
+			model.change( writer => {
+				const root = writer.addRoot( 'root' );
+
+				writer.setAttribute( 'key', 'foo', root );
+				writer.setAttribute( 'abc', 'xyz', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'root',
+					state: 'attached'
+				} );
+			} );
+		} );
+
+		it( 'change attributes on detached root', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.detachRoot( root );
+
+				writer.removeAttribute( 'key', root );
+				writer.setAttribute( 'abc', 'xyz', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					state: 'detached'
+				} );
+			} );
+		} );
+
+		it( 'change attribute then attach root', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.detachRoot( root );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'foo', 'bar', root );
+				writer.addRoot( 'main' );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					state: 'attached'
+				} );
+			} );
+		} );
+
+		it( 'change attribute then detach root', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'foo', 'bar', root );
+				writer.detachRoot( root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					state: 'detached'
+				} );
+			} );
+		} );
+
+		it( 'change attributes on detached and then re-attached root', () => {
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+			} );
+
+			model.change( writer => {
+				writer.detachRoot( root );
+
+				writer.removeAttribute( 'key', root );
+				writer.setAttribute( 'abc', 'xyz', root );
+
+				writer.addRoot( 'main' );
+
+				writer.setAttribute( 'abc', 'abc', root );
+				writer.setAttribute( 'xxx', 'yyy', root );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					attributes: {
+						abc: { oldValue: null, newValue: 'abc' },
+						key: { oldValue: 'foo', newValue: null },
+						xxx: { oldValue: null, newValue: 'yyy' }
+					}
+				} );
+			} );
+		} );
+
+		it( 'change attributes on multiple roots', () => {
+			const root = model.document.getRoot();
+			let root2;
+
+			model.change( writer => {
+				writer.setAttribute( 'key', 'foo', root );
+				root2 = writer.addRoot( 'root' );
+			} );
+
+			model.change( writer => {
+				writer.removeAttribute( 'key', root );
+				writer.setAttribute( 'abc', 'xyz', root2 );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 2 );
+				expect( rootChanges[ 0 ] ).to.deep.equal( {
+					name: 'main',
+					attributes: {
+						key: { oldValue: 'foo', newValue: null }
+					}
+				} );
+				expect( rootChanges[ 1 ] ).to.deep.equal( {
+					name: 'root',
+					attributes: {
+						abc: { oldValue: null, newValue: 'xyz' }
+					}
+				} );
 			} );
 		} );
 	} );
