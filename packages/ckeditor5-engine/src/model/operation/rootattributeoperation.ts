@@ -27,17 +27,13 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export default class RootAttributeOperation extends Operation {
 	/**
 	 * Root element to change.
-	 *
-	 * @readonly
 	 */
-	public root: RootElement;
+	public readonly root: RootElement;
 
 	/**
 	 * Key of an attribute to change or remove.
-	 *
-	 * @readonly
 	 */
-	public key: string;
+	public readonly key: string;
 
 	/**
 	 * Old value of the attribute with given key or `null` if adding a new attribute.
