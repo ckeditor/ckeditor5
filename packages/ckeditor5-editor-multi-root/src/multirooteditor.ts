@@ -71,10 +71,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	public readonly sourceElements: Record<string, HTMLElement>;
 
 	/**
-	 * Holds root attribute keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes`}
+	 * Holds attributes keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
 	 * config property and should be returned by {@link #getRootsAttributes}.
 	 */
-	private readonly _registeredRootAttributes: Set<string> = new Set();
+	private readonly _registeredRootsAttributesKeys: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of the multi-root editor.
@@ -127,6 +127,39 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this.model.document.createRoot( '$root', rootName );
 		}
 
+		if ( this.config.get( 'rootsAttributes' ) ) {
+			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
+
+			for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
+				if ( !rootNames.includes( rootName ) ) {
+					/**
+					 * Trying to set attributes on a non-existing root.
+					 *
+					 * @error multi-root-editor-root-attributes-no-root
+					 */
+					throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
+				}
+
+				for ( const key of Object.keys( attributes ) ) {
+					this._registeredRootsAttributesKeys.add( key );
+				}
+			}
+
+			this.data.on( 'init', () => {
+				this.model.enqueueChange( { isUndoable: false }, writer => {
+					for ( const [ name, attributes ] of Object.entries( rootsAttributes ) ) {
+						const root = this.model.document.getRoot( name )!;
+
+						for ( const [ key, value ] of Object.entries( attributes ) ) {
+							if ( value !== null ) {
+								writer.setAttribute( key, value, root! );
+							}
+						}
+					}
+				} );
+			} );
+		}
+
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
 			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>
@@ -149,39 +182,6 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				}
 			}
 		} );
-
-		if ( this.config.get( 'rootsAttributes' ) ) {
-			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
-
-			for ( const attributes of Object.values( rootsAttributes ) ) {
-				for ( const key of Object.keys( attributes ) ) {
-					this._registeredRootAttributes.add( key );
-				}
-			}
-
-			this.data.on( 'init', () => {
-				this.model.enqueueChange( { isUndoable: false }, writer => {
-					for ( const [ name, attributes ] of Object.entries( rootsAttributes ) ) {
-						const root = this.model.document.getRoot( name );
-
-						if ( !root ) {
-							/**
-							 * Trying to set attributes on a non-existing root.
-							 *
-							 * @error multi-root-editor-root-attributes-no-root
-							 */
-							throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
-						}
-
-						for ( const [ key, value ] of Object.entries( attributes ) ) {
-							if ( value !== null ) {
-								writer.setAttribute( key, value, root! );
-							}
-						}
-					}
-				} );
-			} );
-		}
 	}
 
 	/**
@@ -447,15 +447,14 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	}
 
 	/**
-	 * Returns root attributes.
+	 * Returns currently set roots attributes for attributes specified in
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`} configuration option.
 	 *
-	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
-	 *
-	 * @returns Root attributes.
+	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
 	public getRootsAttributes(): Record<string, RootAttributes> {
 		const rootsAttributes: Record<string, RootAttributes> = {};
-		const keys = Array.from( this._registeredRootAttributes );
+		const keys = Array.from( this._registeredRootsAttributesKeys );
 
 		for ( const rootName of this.model.document.getRootNames() ) {
 			rootsAttributes[ rootName ] = {};
