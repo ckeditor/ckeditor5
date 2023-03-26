@@ -283,6 +283,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 *
 	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
 	 *
+	 * Note that attributes keys of attributes added in `attributes` option are also included in {@link #getRootsAttributes} return value.
+	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
 	 * Additionally, you can group adding multiple roots in one undo step. This can be useful if you add multiple roots that are
@@ -308,6 +310,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
 	): void {
 		const dataController = this.data;
+		const registeredKeys = this._registeredRootsAttributesKeys;
 
 		if ( isUndoable ) {
 			this.model.change( _addRoot );
@@ -323,6 +326,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			}
 
 			for ( const key of Object.keys( attributes ) ) {
+				registeredKeys.add( key );
 				writer.setAttribute( key, attributes[ key ], root );
 			}
 		}

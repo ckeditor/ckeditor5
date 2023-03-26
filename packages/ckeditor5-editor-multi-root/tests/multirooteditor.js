@@ -789,6 +789,31 @@ describe( 'MultiRootEditor', () => {
 
 			await editor.destroy();
 		} );
+
+		it( 'should return attributes added while adding roots', async () => {
+			// Empty multi-root, no roots, no roots attributes.
+			editor = await MultiRootEditor.create( {} );
+
+			editor.addRoot( 'foo', { attributes: { order: 10, isLocked: null } } );
+			editor.addRoot( 'bar', { attributes: { order: null, isLocked: true } } );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'order', 30, editor.model.document.getRoot( 'foo' ) );
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				bar: {
+					isLocked: true,
+					order: null
+				},
+				foo: {
+					isLocked: null,
+					order: 30
+				}
+			} );
+
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'destroy', () => {
