@@ -135,6 +135,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 					/**
 					 * Trying to set attributes on a non-existing root.
 					 *
+					 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
+					 * editor roots.
+					 *
 					 * @error multi-root-editor-root-attributes-no-root
 					 */
 					throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
