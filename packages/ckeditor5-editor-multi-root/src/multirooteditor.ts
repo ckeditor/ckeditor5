@@ -150,10 +150,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			}
 		} );
 
-		if ( this.config.get( 'rootAttributes' ) ) {
-			const rootAttributes = this.config.get( 'rootAttributes' )!;
+		if ( this.config.get( 'rootsAttributes' ) ) {
+			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
 
-			for ( const attributes of Object.values( rootAttributes ) ) {
+			for ( const attributes of Object.values( rootsAttributes ) ) {
 				for ( const key of Object.keys( attributes ) ) {
 					this._registeredRootAttributes.add( key );
 				}
@@ -161,7 +161,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 			this.data.on( 'init', () => {
 				this.model.enqueueChange( { isUndoable: false }, writer => {
-					for ( const [ name, attributes ] of Object.entries( rootAttributes ) ) {
+					for ( const [ name, attributes ] of Object.entries( rootsAttributes ) ) {
 						const root = this.model.document.getRoot( name );
 
 						if ( !root ) {
@@ -281,7 +281,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
 	 * ```
 	 *
-	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes` configuration option}.
+	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
@@ -449,7 +449,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Returns root attributes.
 	 *
-	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes` configuration option}.
+	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
 	 *
 	 * @returns Root attributes.
 	 */

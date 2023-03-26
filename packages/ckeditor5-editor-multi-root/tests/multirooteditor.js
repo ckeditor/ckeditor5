@@ -645,10 +645,10 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
-	describe( 'EditorConfig#rootAttributes', () => {
+	describe( 'EditorConfig#rootsAttributes', () => {
 		it( 'should load attributes from editor configuration', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					foo: { order: 10, isLocked: null },
 					bar: { order: null, isLocked: false }
 				}
@@ -668,7 +668,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should throw when trying to set an attribute on non-existing root', done => {
 			MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					abc: { order: 10, isLocked: null }
 				}
 			} ).then(
@@ -687,7 +687,7 @@ describe( 'MultiRootEditor', () => {
 	describe( '#getRootsAttributes()', () => {
 		it( 'should return current values of roots attributes', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
 					bar: { order: 20, isLocked: false }
 				}
@@ -714,7 +714,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should not return roots attributes that were not specified in config', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
 					bar: { order: 20, isLocked: false }
 				}
@@ -741,7 +741,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should properly handle null values', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					foo: { order: 10, isLocked: null },
 					bar: { order: null, isLocked: false }
 				}
@@ -767,7 +767,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should return attributes for all and only currently attached roots', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootAttributes: {
+				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
 					bar: { order: 20, isLocked: false }
 				}

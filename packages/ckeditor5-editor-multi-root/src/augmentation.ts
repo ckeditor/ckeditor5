@@ -9,7 +9,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
 
 		/**
-		 * Initial root attributes for the document roots.
+		 * Initial roots attributes for the document roots.
 		 *
 		 * **Note: This configuration option is supported only by the
 		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
@@ -37,7 +37,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * 	},
 		 * 	// Config:
 		 * 	{
-		 * 		rootAttributes: {
+		 * 		rootsAttributes: {
 		 * 			uid1: { order: 20, isLocked: false }, // Third, unlocked.
 		 * 			uid2: { order: 10, isLocked: true }, // Second, locked.
 		 * 			uid3: { order: 30, isLocked: true }, // Fourth, locked.
@@ -78,6 +78,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * } );
 		 * ```
 		 */
-		rootAttributes?: Record<string, RootAttributes>;
+		rootsAttributes?: Record<string, RootAttributes>;
 	}
 }
