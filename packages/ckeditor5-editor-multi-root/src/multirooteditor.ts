@@ -71,6 +71,12 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	public readonly sourceElements: Record<string, HTMLElement>;
 
 	/**
+	 * Holds root attribute keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes`}
+	 * config property and should be returned by {@link #getRootsAttributes}.
+	 */
+	private readonly _registeredRootAttributes: Set<string> = new Set();
+
+	/**
 	 * Creates an instance of the multi-root editor.
 	 *
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
@@ -133,16 +139,49 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		this.model.document.on( 'change:data', () => {
 			const changedRoots = this.model.document.differ.getChangedRoots();
 
-			for ( const [ rootName, isAttached ] of changedRoots ) {
-				const root = this.model.document.getRoot( rootName )!;
+			for ( const changes of changedRoots ) {
+				const root = this.model.document.getRoot( changes.name )!;
 
-				if ( isAttached ) {
+				if ( changes.state == 'attached' ) {
 					this.fire<AddRootEvent>( 'addRoot', root );
-				} else {
+				} else if ( changes.state == 'detached' ) {
 					this.fire<DetachRootEvent>( 'detachRoot', root );
 				}
 			}
 		} );
+
+		if ( this.config.get( 'rootAttributes' ) ) {
+			const rootAttributes = this.config.get( 'rootAttributes' )!;
+
+			for ( const attributes of Object.values( rootAttributes ) ) {
+				for ( const key of Object.keys( attributes ) ) {
+					this._registeredRootAttributes.add( key );
+				}
+			}
+
+			this.data.on( 'init', () => {
+				this.model.enqueueChange( { isUndoable: false }, writer => {
+					for ( const [ name, attributes ] of Object.entries( rootAttributes ) ) {
+						const root = this.model.document.getRoot( name );
+
+						if ( !root ) {
+							/**
+							 * Trying to set attributes on a non-existing root.
+							 *
+							 * @error multi-root-editor-root-attributes-no-root
+							 */
+							throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
+						}
+
+						for ( const [ key, value ] of Object.entries( attributes ) ) {
+							if ( value !== null ) {
+								writer.setAttribute( key, value, root! );
+							}
+						}
+					}
+				} );
+			} );
+		}
 	}
 
 	/**
@@ -234,6 +273,16 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * editor.addRoot( 'myRoot' ); // Will create a root, a DOM editable element and append it to `#editors` container element.
 	 * ```
 	 *
+	 * You can set root attributes on the new root while you add it:
+	 *
+	 * ```ts
+	 * // Add a collapsed root at fourth position from top.
+	 * // Keep in mind that these are just examples of attributes. You need to provide your own features that will handle the attributes.
+	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes` configuration option}.
+	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
 	 * Additionally, you can group adding multiple roots in one undo step. This can be useful if you add multiple roots that are
@@ -254,7 +303,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * @param rootName Name of the root to add.
 	 * @param options Additional options for the added root.
 	 */
-	public addRoot( rootName: string, { data = '', elementName = '$root', isUndoable = false }: AddRootOptions = {} ): void {
+	public addRoot(
+		rootName: string,
+		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
+	): void {
 		const dataController = this.data;
 
 		if ( isUndoable ) {
@@ -268,6 +320,10 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 			if ( data ) {
 				writer.insert( dataController.parse( data, root ), root, 0 );
+			}
+
+			for ( const key of Object.keys( attributes ) ) {
+				writer.setAttribute( key, attributes[ key ], root );
 			}
 		}
 	}
@@ -368,6 +424,50 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		this.ui.view.removeEditable( rootName );
 
 		return editable.element!;
+	}
+
+	/**
+	 * Returns the document data for all attached roots.
+	 *
+	 * @param options Additional configuration for the retrieved data.
+	 * Editor features may introduce more configuration options that can be set through this parameter.
+	 * @param options.trim Whether returned data should be trimmed. This option is set to `'empty'` by default,
+	 * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
+	 * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
+	 * @returns The full document data.
+	 */
+	public getFullData( options?: Record<string, unknown> ): Record<string, string> {
+		const data: Record<string, string> = {};
+
+		for ( const rootName of this.model.document.getRootNames() ) {
+			data[ rootName ] = this.data.get( { ...options, rootName } );
+		}
+
+		return data;
+	}
+
+	/**
+	 * Returns root attributes.
+	 *
+	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootAttributes `rootAttributes` configuration option}.
+	 *
+	 * @returns Root attributes.
+	 */
+	public getRootsAttributes(): Record<string, RootAttributes> {
+		const rootsAttributes: Record<string, RootAttributes> = {};
+		const keys = Array.from( this._registeredRootAttributes );
+
+		for ( const rootName of this.model.document.getRootNames() ) {
+			rootsAttributes[ rootName ] = {};
+
+			const root = this.model.document.getRoot( rootName )!;
+
+			for ( const key of keys ) {
+				rootsAttributes[ rootName ][ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
+			}
+		}
+
+		return rootsAttributes;
 	}
 
 	/**
@@ -602,6 +702,12 @@ export type DetachRootEvent = {
  */
 export type AddRootOptions = {
 	data?: string;
+	attributes?: RootAttributes;
 	elementName?: string;
 	isUndoable?: boolean;
 };
+
+/**
+ * Attributes set on a model root element.
+ */
+export type RootAttributes = Record<string, unknown>;

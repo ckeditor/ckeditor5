@@ -8,3 +8,5 @@
  */
 
 export { default as MultiRootEditor } from './multirooteditor';
+
+import './augmentation';
