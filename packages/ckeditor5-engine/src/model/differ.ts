@@ -577,7 +577,7 @@ export default class Differ {
 	 * @returns Diff between the old and the new roots state.
 	 */
 	public getChangedRoots(): Array<DiffItemRoot> {
-		return Array.from( this._changedRoots.values() ).map( ( diffItem ) => {
+		return Array.from( this._changedRoots.values() ).map( diffItem => {
 			const entry = { ...diffItem };
 
 			if ( entry.state !== undefined ) {
@@ -646,7 +646,7 @@ export default class Differ {
 	 */
 	private _bufferRootAttributeChange( rootName: string, key: string, oldValue: unknown, newValue: unknown ): void {
 		const diffItem: DiffItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
-		const attrs: Record<string, { oldValue: unknown, newValue: unknown }> = diffItem.attributes || {};
+		const attrs: Record<string, { oldValue: unknown; newValue: unknown }> = diffItem.attributes || {};
 
 		if ( attrs[ key ] ) {
 			// If this attribute or metadata was already changed earlier and is changed again, check to what value it is changed.
@@ -1438,7 +1438,7 @@ export interface DiffItemRoot {
 	 * Note, that if the root state changed (`state` is set), then `attributes` property will not be set. All attributes should be
 	 * handled together with the root being attached or detached.
 	 */
-	attributes?: Record<string, { oldValue: unknown, newValue: unknown }>;
+	attributes?: Record<string, { oldValue: unknown; newValue: unknown }>;
 }
 
 interface DiffItemInternal {

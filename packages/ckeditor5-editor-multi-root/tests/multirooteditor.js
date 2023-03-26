@@ -669,7 +669,7 @@ describe( 'MultiRootEditor', () => {
 		it( 'should throw when trying to set an attribute on non-existing root', done => {
 			MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootAttributes: {
-					abc: { order: 10, isLocked: null },
+					abc: { order: 10, isLocked: null }
 				}
 			} ).then(
 				() => {
