@@ -1392,6 +1392,11 @@ export default class Writer {
 			}
 		}
 
+		// Remove all attributes from the root.
+		for ( const key of root.getAttributeKeys() ) {
+			this.removeAttribute( key, root );
+		}
+
 		// Remove all contents of the root.
 		this.remove( this.createRangeIn( root ) );
 
