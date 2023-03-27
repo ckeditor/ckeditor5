@@ -181,7 +181,7 @@ A full, working demo with all possible customizations and its source code is ava
 
 #### List length
 
-The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mentionconfig~MentionConfig #dropdownLimit `dropdownLimit`} option.
+The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mentionconfig~MentionConfig#dropdownLimit `dropdownLimit`} option.
 
 ```js
 ClassicEditor
