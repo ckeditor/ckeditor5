@@ -197,6 +197,14 @@ export class Client {
 		this._processAction( 'split', pos );
 	}
 
+	addRoot( rootName ) {
+		this._processAction( 'addRoot', rootName );
+	}
+
+	detachRoot( rootName ) {
+		this._processAction( 'detachRoot', rootName );
+	}
+
 	undo() {
 		this._processExecute( 'undo' );
 	}

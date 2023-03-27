@@ -80,6 +80,13 @@ export default abstract class DomEventObserver<
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving( domElement: HTMLElement ): void {
+		this.stopListening( domElement );
+	}
+
+	/**
 	 * Calls `Document#fire()` if observer {@link #isEnabled is enabled}.
 	 *
 	 * @see module:utils/emittermixin~Emitter#fire

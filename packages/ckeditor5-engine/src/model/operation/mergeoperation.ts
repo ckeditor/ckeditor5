@@ -192,7 +192,7 @@ export default class MergeOperation extends Operation {
 	}
 
 	/**
-	 * Creates `MergeOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `MergeOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.

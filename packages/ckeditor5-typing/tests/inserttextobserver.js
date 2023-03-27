@@ -243,4 +243,10 @@ describe( 'InsertTextObserver', () => {
 			expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 		} );
 	} );
+
+	it( 'should implement empty #stopObserving() method', () => {
+		expect( () => {
+			view.getObserver( InsertTextObserver ).stopObserving();
+		} ).to.not.throw();
+	} );
 } );
