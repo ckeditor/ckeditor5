@@ -141,7 +141,7 @@ describe( 'Node', () => {
 		it( 'should throw if node does not have a parent', () => {
 			expect( () => {
 				node._remove();
-			} ).to.throw;
+			} ).to.throw();
 		} );
 	} );
 

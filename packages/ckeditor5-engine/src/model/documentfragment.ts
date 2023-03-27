@@ -133,6 +133,13 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 	}
 
 	/**
+	 * Returns `false` as `DocumentFragment` by definition is not attached to a document. Added for compatibility reasons.
+	 */
+	public isAttached(): false {
+		return false;
+	}
+
+	/**
 	 * Returns empty array. Added for compatibility reasons.
 	 */
 	public getAncestors(): Array<never> {

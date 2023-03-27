@@ -67,8 +67,8 @@ export { default as MergeOperation } from './model/operation/mergeoperation';
 export { default as SplitOperation } from './model/operation/splitoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
-export type { default as AttributeOperation } from './model/operation/attributeoperation';
-export type { default as RenameOperation } from './model/operation/renameoperation';
+export { default as AttributeOperation } from './model/operation/attributeoperation';
+export { default as RenameOperation } from './model/operation/renameoperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.

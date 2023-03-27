@@ -19,7 +19,7 @@ The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) is an
 
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor}. It is configured to use the Easy Image service provided by CKEditor Cloud Services.
 
 {@snippet build-classic-source}
 

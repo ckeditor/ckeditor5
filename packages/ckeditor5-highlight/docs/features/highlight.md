@@ -10,7 +10,7 @@ The highlight feature lets you mark text fragments with different colors. You ca
 
 ## Demo
 
-Select the text you want to highlight, then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
+Select the text you want to highlight. Then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
 
 {@snippet features/highlight}
 

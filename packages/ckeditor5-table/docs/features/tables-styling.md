@@ -13,10 +13,9 @@ CKEditor 5 comes with some additional tools that help you modify the look of tab
 
 ## Demo
 
-Put the caret anywhere inside the table to invoke the table toolbar. Then click the **"Table properties"** button {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}, a similar interface will appear with styling options for individual table cells.
+Put the caret anywhere inside the table to open the table toolbar. Click the table properties button {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} in the toolbar. A pop–up will open with options to shape the look of the entire table. On the other hand, the cell properties button {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} gives you access to styling options for individual table cells.
 
 [Learn more](#configuring-styling-tools) about configuring color palettes in the table styling pop–up interfaces.
-
 
 {@snippet features/table-styling}
 
@@ -75,11 +74,11 @@ ClassicEditor
 
 ## Configuring styling tools
 
-Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop-ups. To help users choose the right colors for the content, the color palettes can be pre-configured, like in the editor below:
+Table and cell styling tools let you create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the table properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} pop-ups. To help users choose the right colors for the content, you can pre-configure such color palettes, like in the editor below:
 
 {@snippet features/table-styling-colors}
 
-With the selection inside any table cell, use the **"Table properties"** and **"Cell properties"** buttons in the toolbar to inspect available styling and color options.
+With the selection inside any table cell, use the table properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} buttons in the toolbar to check available styling and color options.
 
 ### Customizing color palettes
 

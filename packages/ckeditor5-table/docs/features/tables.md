@@ -12,9 +12,9 @@ modified_at: 2023-02-22
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
 
 ## Demo
-Use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} to insert a new table into the content. Click a table of table cell to invoke the contextual toolbar and add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
+Use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
-Control the caption {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} and style table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and table cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} properties, as well as click and drag vertical column border to change its width.
+Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
 
 {@snippet features/tables}
 
@@ -167,7 +167,7 @@ CKEditor 5 allows nesting tables inside other table's cells. This may be used fo
 
 <!-- We may reconsider this demo, as the feature will still work in the first one -->
 
-You can test this feature in the demo below by adding a table in the *"abandoned"* section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+You can test this feature in the demo below by adding a new table in the blank "abandoned" section at the bottom of the existing table. Click inside a cell and use the insert table button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg Insert table}. A nested table will appear inside the cell.
 
 {@snippet features/table-nesting}
 
