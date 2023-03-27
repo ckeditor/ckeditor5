@@ -19,6 +19,7 @@ import { createLabeledInputText } from '../labeledfield/utils';
 // There no avaialble types for 'color-parse' module.
 // @ts-ignore
 import { default as parse } from 'color-parse';
+import * as convert from 'color-convert';
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
 
@@ -41,7 +42,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * @TODO
 	 */
-	declare public colorFormat: 'hsl' | 'hex' | undefined;
+	declare public colorFormat: 'hsl' | 'hex';
 
 	/**
 	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
@@ -59,7 +60,7 @@ export default class ColorPickerView extends View {
 		super( locale );
 
 		this.set( 'color', '' );
-		this.colorFormat = colorPickerFormat;
+		this.colorFormat = colorPickerFormat || 'hsl';
 
 		this.input = this._createInput();
 
@@ -77,8 +78,17 @@ export default class ColorPickerView extends View {
 		const waitingTime = 150;
 
 		this._debouncePickerEvent = debounce( ( color: string ) => {
-			this.fire( 'change', { value: color } );
-			this.color = color;
+			console.log( parse( color ) );
+			const parsedColor: { space: string; values: Array<number> } = parse( color );
+
+			// @ts-ignore
+			console.log( convert[ parsedColor.space ][ this.colorFormat ]( parsedColor.values ) );
+
+			// @ts-ignore
+			const convertedColor: Array<number> = convert[ parsedColor.space ][ this.colorFormat ]( parsedColor.values );
+			const output: string = formatColorOutput( this.colorFormat, convertedColor );
+			this.fire( 'change', { value: output } );
+			this.color = output;
 		}, waitingTime );
 
 		this._debounceInputEvent = debounce( ( color: string ) => {
@@ -145,3 +155,11 @@ type CustomEvent = Event & {
 type ColorPickerType = HTMLElement & {
 	color: string;
 };
+
+function formatColorOutput( format: string, values: Array<number> ): string {
+	if ( format === 'hsl' ) {
+		return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
+	}
+
+	return '';
+}
