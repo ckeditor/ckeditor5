@@ -42,7 +42,7 @@ In addition to the basic functionality of creating the ordered and unordered lis
 
 ### List styles
 
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 #### Demo
 
@@ -54,7 +54,7 @@ In the editor below use the ordered or unordered list dropdown to choose the des
 
 The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
 
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
+When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
 #### Demo
 
@@ -66,7 +66,7 @@ In the editor below, notice how the ordering is continued in the second list. Yo
 
 The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
+When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
 
 #### Demo
 

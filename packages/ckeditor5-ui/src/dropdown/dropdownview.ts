@@ -86,7 +86,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 
 	/**
 	 * Panel of the dropdown. It opens when the {@link #buttonView} is
-	 * {@link module:ui/button/buttonview~ButtonView#event:execute executed} (i.e. clicked).
+	 * {@link module:ui/button/button~Button#event:execute executed} (i.e. clicked).
 	 *
 	 * Child views can be added to the panel's `children` collection:
 	 *
@@ -539,7 +539,7 @@ export default class DropdownView extends View<HTMLDivElement> {
  * fired `execute`.
  *
  * For {@link ~DropdownView#toolbarView} It fires when one of the buttons has been
- * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
+ * {@link module:ui/button/button~Button#event:execute executed}.
  *
  * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}
  * or {@link module:ui/dropdown/utils~addToolbarToDropdown}.

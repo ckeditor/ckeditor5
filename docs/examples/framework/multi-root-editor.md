@@ -151,7 +151,7 @@ class MultirootEditor extends DataApiMixin( Editor ) {
 /**
  * The multiroot editor UI class.
  *
- * @extends module:core/editor/editorui~EditorUI
+ * @extends module:ui/editorui/editorui~EditorUI
  */
 class MultirootEditorUI extends EditorUI {
 	/**

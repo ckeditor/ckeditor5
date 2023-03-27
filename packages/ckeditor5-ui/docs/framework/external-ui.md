@@ -219,7 +219,7 @@ as different headings are selected. */
 
 ## Binding the UI with the editor
 
-At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:core/editor/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
+At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
 
 ```js
 this.ui = new BootstrapEditorUI( this );

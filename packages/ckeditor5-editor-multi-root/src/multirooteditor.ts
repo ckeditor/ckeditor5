@@ -294,11 +294,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * the root and it **does not** remove the DOM element from the DOM structure of your application.
 	 *
 	 * To properly remove a DOM editable element after a root was detached, listen to {@link #event:detachRoot `detachRoot` event}
-	 * and call {@link #removeEditable}. Then, remove the DOM element from your application.
+	 * and call {@link #detachEditable}. Then, remove the DOM element from your application.
 	 *
 	 * ```ts
 	 * editor.on( 'detachRoot', ( evt, root ) => {
-	 * 	const editableElement = editor.removeEditable( root );
+	 * 	const editableElement = editor.detachEditable( root );
 	 *
 	 * 	// You may want to do an additional DOM clean-up here.
 	 *

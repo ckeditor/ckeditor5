@@ -22,7 +22,7 @@
 		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
 	],
 	"path": "docs",
-	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
+	"observablesdocs": "module:utils/observablemixin~Observable",
 	"redirects": {
 		"api/module_adapter-ckfinder_uploadadapter-CKFinderAdapterConfig.html": "api/module_ckfinder_ckfinder-CKFinderConfig.html",
 		"api/easy-video.html": "api/media-embed.html",
@@ -603,7 +603,7 @@
 			"id": "api-reference",
 			"sourceDir": "api",
 			"slug": "api",
-			"type": "jsdoc"
+			"type": "typedoc"
 		}
 	]
 }
