@@ -73,18 +73,24 @@ export default class ColorTableView extends View {
 	public documentColors: DocumentColorCollection;
 
 	/**
-	 * Color picker.
-	 *
-	 */
-	public _colorPickerView?: ColorPickerView;
-
-	/**
 	 * The maximum number of colors in the document colors section.
 	 * If it equals 0, the document colors section is not added.
 	 *
-	 * @readonly
 	 */
 	public documentColorsCount?: number;
+
+	/**
+	 * If true, color picker should not be displayed.
+	 *
+	 * @readonly
+	 */
+	public isColorPickerDisabled?: boolean;
+
+	/**
+	 * Color picker allows to select custom colors.
+	 *
+	 */
+	public colorPickerView?: ColorPickerView;
 
 	/**
 	 * A collection of views that can be focused in the view.
@@ -144,13 +150,14 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, isColorPickerDisabled }: {
 
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
+			isColorPickerDisabled?: boolean;
 		}
 	) {
 		super( locale );
@@ -166,6 +173,9 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
+		this.isColorPickerDisabled = isColorPickerDisabled;
+
+		this.colorPickerView = new ColorPickerView( locale );
 
 		this._focusables = new ViewCollection();
 
@@ -245,8 +255,8 @@ export default class ColorTableView extends View {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
 
-		if ( this._colorPickerView ) {
-			this._colorPickerView.setColor( selectedColor );
+		if ( this.colorPickerView && selectedColor ) {
+			this.colorPickerView.set( 'color', selectedColor );
 		}
 	}
 
@@ -273,7 +283,7 @@ export default class ColorTableView extends View {
 	/**
 	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
 	 */
-	public appendGrids(): void {
+	public appendGrids( ): void {
 		if ( this.staticColorsGrid ) {
 			return;
 		}
@@ -303,19 +313,14 @@ export default class ColorTableView extends View {
 			this.items.add( this.documentColorsGrid );
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
+
+			if ( !this.isColorPickerDisabled && this.colorPickerView ) {
+				// Render a color picker
+				this.colorPickerView.render();
+
+				this.items.add( this.colorPickerView );
+			}
 		}
-	}
-
-	public appendColorPicker(): void {
-		if ( this._colorPickerView ) {
-			return;
-		}
-
-		this._colorPickerView = new ColorPickerView( this.locale );
-		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
-		this._colorPickerView.render();
-
-		this.items.add( this._colorPickerView );
 	}
 
 	/**

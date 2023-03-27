@@ -82,25 +82,12 @@ describe( 'ColorGridView', () => {
 		} );
 	} );
 
-	describe( 'setColor()', () => {
-		it( 'should set color on color picker', () => {
-			const view = new ColorPickerView( locale );
-			view.render();
-
-			view.setColor( '#ff0000' );
-
-			expect( view.picker.color ).to.equal( '#ff0000' );
-
-			view.destroy();
-		} );
-	} );
-
 	describe( '#color', () => {
 		it( 'should get current color from color picker component', () => {
 			const view = new ColorPickerView( locale );
 			view.render();
 
-			view.setColor( '#ff0000' );
+			view.set( 'color', '#ff0000' );
 
 			expect( view.color ).to.equal( '#ff0000' );
 

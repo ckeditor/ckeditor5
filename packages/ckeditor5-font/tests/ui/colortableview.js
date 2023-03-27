@@ -149,7 +149,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 4 );
+			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
 
@@ -330,7 +330,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.last;
+				documentColorsGridView = colorTableView.items.get( colorTableView.items.length - 2 );
 			} );
 
 			describe( 'model manipulation', () => {
@@ -394,7 +394,6 @@ describe( 'ColorTableView', () => {
 				it( 'should delegate execute to parent', () => {
 					const spy = sinon.spy();
 					colorTableView.on( 'execute', spy );
-
 					documentColors.add( Object.assign( {}, colorBlack ) );
 					documentColorsGridView.items.first.element.dispatchEvent( new Event( 'click' ) );
 

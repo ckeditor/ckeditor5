@@ -17,6 +17,8 @@ import { createLabeledInputText } from '../labeledfield/utils';
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
 
+const waitingTime = 150;
+
 export default class ColorPickerView extends View {
 	/**
 	 * Color picker component.
@@ -34,16 +36,10 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
-	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
-	* unless a new action happens in the meantime.
+	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
+	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
-	declare private _debouncePickerEvent: DebouncedFunc< ( arg: string ) => void >;
-
-	/**
-	* Debounced event method. The `inputEvent()` method is called the specified `waitingTime` after `debouncedInputEvent()` is called,
-	* unless a new action happens in the meantime.
-	*/
-	declare private _debounceInputEvent: DebouncedFunc< ( arg: string ) => void >;
+	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
@@ -63,25 +59,15 @@ export default class ColorPickerView extends View {
 			children
 		} );
 
-		const waitingTime = 150;
-
-		this._debouncePickerEvent = debounce( ( color: string ) => {
+		this._debounceColorPickerEvent = debounce( ( color: string ) => {
 			this.fire( 'change', { value: color } );
-			this.color = color;
+			this.set( 'color', color );
 		}, waitingTime );
 
-		this._debounceInputEvent = debounce( ( color: string ) => {
-			this.fire( 'change', { value: color } );
-			this.setColor( color );
-		}, waitingTime );
-	}
-
-	// Sets color in the color picker.
-	public setColor( color: string | undefined ): void {
-		if ( color && this.picker ) {
-			this.picker.setAttribute( 'color', color );
-			this.color = color;
-		}
+		// Sets color in the picker if color was updated.
+		this.on( 'change:color', ( ) => {
+			this.picker.setAttribute( 'color', this.color );
+		} );
 	}
 
 	// Renders color picker in the view.
@@ -98,16 +84,17 @@ export default class ColorPickerView extends View {
 		this.picker.addEventListener( 'color-changed', event => {
 			const customEvent = event as CustomEvent;
 			const color = customEvent.detail.value;
-			this._debouncePickerEvent( color );
+			this._debounceColorPickerEvent( color );
 		} );
 	}
 
 	// Creates input for defining custom colors in color picker.
 	private _createInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const locale = this.locale;
 
 		labeledInput.set( {
-			label: this.t!( 'HEX' ),
+			label: locale!.t( 'HEX' ),
 			class: 'color-picker-hex-input'
 		} );
 
@@ -117,7 +104,7 @@ export default class ColorPickerView extends View {
 			const inputValue = labeledInput.fieldView.element!.value;
 
 			if ( inputValue ) {
-				this._debounceInputEvent( inputValue );
+				this._debounceColorPickerEvent( inputValue );
 			}
 		} );
 
