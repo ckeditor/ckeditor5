@@ -7,6 +7,8 @@
  * @module ui/colorpicker/colorpickerview
  */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
@@ -14,6 +16,9 @@ import type InputTextView from '../inputtext/inputtextview';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
+// There no avaialble types for 'color-parse' module.
+// @ts-ignore
+import { default as parse } from 'color-parse';
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
 
@@ -34,21 +39,27 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
+	 * @TODO
+	 */
+	declare public colorFormat: 'hsl' | 'hex' | undefined;
+
+	/**
 	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
 	* unless a new action happens in the meantime.
 	*/
-	declare private _debouncePickerEvent: DebouncedFunc< ( arg: string ) => void >;
+	declare private _debouncePickerEvent: DebouncedFunc<( arg: string ) => void>;
 
 	/**
 	* Debounced event method. The `inputEvent()` method is called the specified `waitingTime` after `debouncedInputEvent()` is called,
 	* unless a new action happens in the meantime.
 	*/
-	declare private _debounceInputEvent: DebouncedFunc< ( arg: string ) => void >;
+	declare private _debounceInputEvent: DebouncedFunc<( arg: string ) => void>;
 
-	constructor( locale: Locale | undefined ) {
+	constructor( locale: Locale | undefined, colorPickerFormat: 'hsl' | 'hex' | undefined ) {
 		super( locale );
 
 		this.set( 'color', '' );
+		this.colorFormat = colorPickerFormat;
 
 		this.input = this._createInput();
 

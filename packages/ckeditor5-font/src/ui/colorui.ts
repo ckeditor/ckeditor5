@@ -148,7 +148,7 @@ export default class ColorUI extends Plugin {
 				dropdownView.colorTableView!.appendGrids();
 
 				if ( editor.config.get( this.componentName )!.colorPicker !== false ) {
-					dropdownView.colorTableView!.appendColorPicker();
+					dropdownView.colorTableView!.appendColorPicker( editor.config.get( this.componentName )!.colorPickerFormat );
 				}
 
 				if ( isVisible ) {

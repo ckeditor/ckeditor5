@@ -144,13 +144,14 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerFormat }: {
 
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
+			colorPickerFormat: 'hsl' | 'hex' | undefined;
 		}
 	) {
 		super( locale );
@@ -306,12 +307,12 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker(): void {
+	public appendColorPicker( colorPickerFormat: 'hsl' | 'hex' | undefined ): void {
 		if ( this._colorPickerView ) {
 			return;
 		}
 
-		this._colorPickerView = new ColorPickerView( this.locale );
+		this._colorPickerView = new ColorPickerView( this.locale, colorPickerFormat );
 		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
 		this._colorPickerView.render();
 

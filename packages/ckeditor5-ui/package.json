@@ -13,6 +13,8 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^36.0.1",
     "@ckeditor/ckeditor5-utils": "^36.0.1",
+    "color-convert": "2.0.1",
+    "color-parse": "1.4.2",
     "lodash-es": "^4.17.15",
     "vanilla-colorful": "^0.7.2"
   },

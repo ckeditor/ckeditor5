@@ -161,6 +161,11 @@ export interface FontColorConfig {
 	 *
 	 */
 	colorPicker?: boolean;
+
+	/**
+	 * @TODO
+	 */
+	colorPickerFormat?: 'hsl' | 'hex' | undefined;
 }
 
 /**

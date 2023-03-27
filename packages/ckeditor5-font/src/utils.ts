@@ -110,17 +110,20 @@ export function renderDowncastElement( styleAttr: string ) {
  * @returns The new color table view.
  */
 export function addColorTableToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerFormat }: {
 		dropdownView: ColorTableDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
 		removeButtonLabel: string;
 		documentColorsLabel?: string;
 		documentColorsCount?: number;
+		colorPickerFormat?: 'hsl' | 'hex' | undefined;
 	}
 ): ColorTableView {
 	const locale = dropdownView.locale!;
-	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } );
+	const colorTableView = new ColorTableView( locale,
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerFormat }
+	);
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );

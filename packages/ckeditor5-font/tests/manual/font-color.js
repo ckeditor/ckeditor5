@@ -33,7 +33,8 @@ ClassicEditor
 			'redo'
 		],
 		fontColor: {
-			columns: 3
+			columns: 3,
+			colorPickerFormat: 'hsl'
 		}
 	} )
 	.then( editor => {
@@ -74,7 +75,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
