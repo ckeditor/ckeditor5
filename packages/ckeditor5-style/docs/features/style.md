@@ -6,7 +6,7 @@ modified_at: 2022-07-22
 
 # Styles
 
-The style feature lets you apply pre-configured styles to elements in your content. It works by adding one or more HTML classes to an element to change its appearance or add semantic information.
+The style feature lets you apply pre-configured styles to elements in your content. It works by adding one or more CSS classes to an element to change its appearance or add semantic information.
 
 ## Demo
 
@@ -251,7 +251,7 @@ ClassicEditor
 		},
 		style: {
 			definitions: [
-				// Styles definitions. 
+				// Styles definitions.
 				// ...
 			]
 		}
