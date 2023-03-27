@@ -134,7 +134,6 @@ export function addColorTableToDropdown(
 	dropdownView.panelView.children.add( colorTableView );
 
 	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
-	colorTableView.delegate( 'colorChange' ).to( dropdownView, 'colorChange' );
 
 	return colorTableView;
 }

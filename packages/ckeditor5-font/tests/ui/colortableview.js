@@ -394,6 +394,7 @@ describe( 'ColorTableView', () => {
 				it( 'should delegate execute to parent', () => {
 					const spy = sinon.spy();
 					colorTableView.on( 'execute', spy );
+
 					documentColors.add( Object.assign( {}, colorBlack ) );
 					documentColorsGridView.items.first.element.dispatchEvent( new Event( 'click' ) );
 
