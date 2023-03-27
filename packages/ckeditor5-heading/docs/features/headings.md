@@ -73,7 +73,7 @@ ClassicEditor
 
 ### Configuring custom heading elements
 
-It is also possible to define fully custom elements for headings by using the {@link module:font/utils~FontConverterDefinition advanced format} of the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
+It is also possible to define fully custom elements for headings by using the {@link module:engine/conversion/conversion~Conversion#elementToElement advanced format} of the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
 
 For example, the following editor will support the following two heading options at the same time: `<h2 class="fancy">` and `<h2>`:
 
