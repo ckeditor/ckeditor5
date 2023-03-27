@@ -257,6 +257,10 @@ Be sure to check out the comprehensive {@link features/image-upload Image upload
 
 See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor 5 in general.
 
+<info-box warning>
+	Need more functionality? [Take a survey and help us develop CKBox to suit your needs better!](https://www.surveymonkey.com/r/MG97W8S)</button>
+</info-box>
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckbox](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ckbox).
