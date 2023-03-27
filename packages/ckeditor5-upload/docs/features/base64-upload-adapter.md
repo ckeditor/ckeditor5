@@ -18,7 +18,7 @@ Therefore using the `Base64` feature is a less efficient option to use than some
 
 ## Demo
 
-Use the editor below to see the adapter in action. Open the web browser console and click the button below to see the base64–encoded image in the editor output data.
+Use the editor below to see the adapter in action. Open the web browser console and click the button below the editor to see the base64–encoded image in the editor output data.
 
 {@snippet features/base64-upload}
 

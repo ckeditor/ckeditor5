@@ -16,7 +16,7 @@ The paste from Word feature lets you paste content from Microsoft Word and prese
 
 ## Demo
 
-To test how Paste from Office works, download the [sample Word document](../../assets/CKEditor5.PFO.Sample.Recognition_of_Achievement.docx), open it in Microsoft Word, copy the content, and paste it into CKEditor 5 below.
+To test pasting from Word, download the [sample Word document](../../assets/CKEditor5.PFO.Sample.Recognition_of_Achievement.docx) and open it in Microsoft Word. Then copy its content and paste it into the editor below.
 
 {@snippet features/paste-from-office}
 
