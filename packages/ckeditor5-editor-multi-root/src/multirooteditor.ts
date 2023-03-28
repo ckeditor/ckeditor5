@@ -74,7 +74,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * Holds attributes keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
 	 * config property and should be returned by {@link #getRootsAttributes}.
 	 */
-	private readonly _registeredRootsAttributesKeys: Set<string> = new Set();
+	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
 	 * Creates an instance of the multi-root editor.
@@ -701,15 +701,27 @@ export type DetachRootEvent = {
 
 /**
  * Additional options available when adding a root.
- *
- * @param data Initial data for the root.
- * @param elementName Element name for the root element in the model. It can be used to set different schema rules for different roots.
- * @param isUndoable Whether creating the root can be undone (using the undo feature) or not.
  */
 export type AddRootOptions = {
+
+	/**
+	 * Initial data for the root.
+	 */
 	data?: string;
+
+	/**
+	 * Initial attributes for the root.
+	 */
 	attributes?: RootAttributes;
+
+	/**
+	 * Element name for the root element in the model. It can be used to set different schema rules for different roots.
+	 */
 	elementName?: string;
+
+	/**
+	 * Whether creating the root can be undone (using the undo feature) or not.
+	 */
 	isUndoable?: boolean;
 };
 
