@@ -518,6 +518,7 @@ export default class Mapper extends EmitterMixin() {
 
 		// If the position is a text it is simple ("ba|r" -> 2).
 		if ( viewParent.is( '$text' ) ) {
+			// TODO throw if viewOffset is bigger than text node length? But this would explode in IME.
 			return viewOffset;
 		}
 

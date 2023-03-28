@@ -7,7 +7,11 @@
  * @module engine/controller/editingcontroller
  */
 
-import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import {
+	CKEditorError,
+	ObservableMixin,
+	type GetCallback
+} from '@ckeditor/ckeditor5-utils';
 
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
@@ -28,14 +32,18 @@ import {
 
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
+import { tryFixingRange } from '../model/utils/selection-post-fixer';
+
 import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model';
 import type ModelItem from '../model/item';
 import type ModelText from '../model/text';
 import type ModelTextProxy from '../model/textproxy';
+import type Schema from '../model/schema';
 import type { DocumentChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
 import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -113,6 +121,11 @@ export default class EditingController extends ObservableMixin() {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
+		);
+
+		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
+			fixTargetRanges( this.mapper, this.model.schema ),
+			{ priority: 'high' }
 		);
 
 		// Attach default model converters.
@@ -231,4 +244,27 @@ export default class EditingController extends ObservableMixin() {
 			this.model.document.differ._refreshItem( item );
 		} );
 	}
+}
+
+/**
+ * TODO
+ */
+function fixTargetRanges( mapper: Mapper, schema: Schema ): GetCallback<ViewDocumentInputEvent> {
+	return ( evt, data ) => {
+		if ( !data.targetRanges ) {
+			return;
+		}
+
+		for ( let i = 0; i < data.targetRanges.length; i++ ) {
+			const viewRange = data.targetRanges[ i ];
+			const modelRange = mapper.toModelRange( viewRange );
+			const correctedRange = tryFixingRange( modelRange, schema );
+
+			if ( !correctedRange || correctedRange.isEqual( modelRange ) ) {
+				continue;
+			}
+
+			data.targetRanges[ i ] = mapper.toViewRange( correctedRange );
+		}
+	};
 }

@@ -852,6 +852,7 @@ export default class DomConverter {
 				offset = offset < 0 ? 0 : offset;
 			}
 
+			// TODO throw or return null if offset is bigger than text node length? But this would explode in IME.
 			return new ViewPosition( viewParent, offset );
 		}
 		// domParent instanceof HTMLElement.
@@ -865,7 +866,8 @@ export default class DomConverter {
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
 
-				if ( isText( domBefore ) && isInlineFiller( domBefore ) ) {
+				// Jump over an inline filler (and also on Firefox jump over a block filler while pressing backspace in an empty paragraph).
+				if ( isText( domBefore ) && isInlineFiller( domBefore ) || this.isBlockFiller( domBefore ) ) {
 					return this.domPositionToView( domBefore.parentNode!, indexOf( domBefore ) );
 				}
 
