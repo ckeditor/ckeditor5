@@ -190,16 +190,21 @@ type ColorPickerType = HTMLElement & {
 	color: string;
 };
 
+/**
+ * @TODO
+ *
+ * @param format
+ * @param values
+ * @returns
+ */
 function formatColorOutput( format: string, values: Array<number> | string ): string {
-	if ( format === 'hsl' ) {
-		return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
-	} else if ( format === 'hex' ) {
-		return `#${ values }`;
-	} else if ( format === 'rgb' ) {
-		return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-	}
+	switch ( format ) {
+		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
+		case 'hex': return `#${ values }`;
+		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
 
-	return '';
+		default: return '';
+	}
 }
 
 /**
