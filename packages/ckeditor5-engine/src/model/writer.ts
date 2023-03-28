@@ -630,7 +630,7 @@ export default class Writer {
 	 * writer.move( sourceRange, image, 'after' );
 	 * ```
 	 *
-	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
+	 * These parameters work the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -1390,6 +1390,11 @@ export default class Writer {
 			if ( marker.getRange().root === root ) {
 				this.removeMarker( marker );
 			}
+		}
+
+		// Remove all attributes from the root.
+		for ( const key of root.getAttributeKeys() ) {
+			this.removeAttribute( key, root );
 		}
 
 		// Remove all contents of the root.
