@@ -16,7 +16,7 @@ This scenario allows you to fully control the building process of CKEditor 5. Th
 	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor 5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+First of all, you need to initialize a new project using `npm init`. Then, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. You can also install them individually. An example list of plugins may look like this:
 
@@ -47,7 +47,7 @@ npm install --save \
 	webpack-cli@4
 ```
 
-The list will differ if you want to use TypeScript in your project - additionally, you need to install `ts-loader`.
+The list will differ if you want to use **TypeScript** in your project - additionally, you need to install `ts-loader`.
 
 ```bash
 npm install --save ts-loader
@@ -59,8 +59,9 @@ You can now configure webpack. There are a couple of things that you need to tak
 
 * Handling CSS files of the CKEditor theme. They are included in the CKEditor 5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
-* Optionally, you may need to handle `.ts` files to use TypeScript in your project. There is the [`ts-loader`](https://webpack.js.org/guides/typescript/#loader) for this purpose.
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) webpack plugin.
+
+### JavaScript
 
 The minimal configuration, assuming that you use the same methods of handling assets as CKEditor 5 builds, will look like this:
 
@@ -127,7 +128,9 @@ module.exports = {
     If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
 </info-box>
 
-Webpack configuration for TypeScript slightly differs - it must take into account `.ts` files.
+### TypeScript
+
+Optionally, you may need to handle `.ts` files to use TypeScript in your project. There is the [`ts-loader`](https://webpack.js.org/guides/typescript/#loader) for this purpose. Webpack configuration must take into account these changes.
 
 ```js
 // webpack.config.js
@@ -197,7 +200,7 @@ module.exports = {
 };
 ```
 
-#### Webpack Encore
+### Webpack Encore
 
 If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
 
@@ -242,7 +245,7 @@ Encore.
 
 ## TypeScript configuration
 
-TypeScript, similarly to webpack, needs configuration. If you want to use it, add the `tsconfig.json` file at the root of your project. You can copy the below example config or create your own.
+If you want to use TypeScript, add the `tsconfig.json` file at the root of your project. You can copy the below example config or create your own.
 
 ```json
 // tsconfig.json
@@ -279,6 +282,8 @@ TypeScript, similarly to webpack, needs configuration. If you want to use it, ad
 ```
 
 ## Running the editor – method 1
+
+### JavaScript
 
 You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
 
@@ -329,7 +334,25 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration that you need already built-in.
+This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
+
+```js
+// main.js
+
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
+	.create( document.querySelector( '#app' ) )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+### TypeScript
 
 If you want to use TypeScript, the `ckeditor` file looks very similar. However, don't forget about the `.ts` extension.
 
@@ -380,25 +403,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
-
-```js
-// main.js
-
-import ClassicEditor from './ckeditor';
-
-ClassicEditor
-	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-	.create( document.querySelector( '#app' ) )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-Copy the below snippet if you want to use TypeScript in your application.
+Then, you can use the configured editor with TypeScript in your application.
 
 ```ts
 // main.ts
@@ -417,6 +422,8 @@ ClassicEditor
 ```
 
 ## Running the editor – method 2
+
+### JavaScript
 
 The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
@@ -469,6 +476,8 @@ ClassicEditor
         console.error( error );
     } );
 ```
+
+### TypeScript
 
 You can also translate the above code using TypeScript.
 
