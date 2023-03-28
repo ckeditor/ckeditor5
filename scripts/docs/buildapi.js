@@ -36,12 +36,21 @@ function getConfig() {
 		...commonConfig,
 		tsconfig: path.join( ROOT_DIRECTORY, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
+			// CKEditor 5 sources.
 			'packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
-			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
-			'!packages/ckeditor5-build-*/src/**/*.ts',
 			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
+
+			// Ignore libraries or generated files.
+			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
 			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
-			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.ts'
+
+			// Ignore builds.
+			'!packages/ckeditor5-build-*/src/**/*.ts',
+			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.ts',
+
+			// Ignore augmentation files.
+			'!packages/@(ckeditor|ckeditor5)-*/src/augmentation.ts',
+			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/augmentation.ts'
 		]
 	};
 }
