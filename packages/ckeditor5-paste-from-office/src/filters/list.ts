@@ -263,6 +263,10 @@ function findListMarkerNode( element: ViewElement ): ViewText | null {
 
 		const textNodeOrElement = childNode.getChild( 0 )!;
 
+		if ( !textNodeOrElement ) {
+			continue;
+		}
+
 		// If already found the marker element, use it.
 		if ( textNodeOrElement.is( '$text' ) ) {
 			return textNodeOrElement;
