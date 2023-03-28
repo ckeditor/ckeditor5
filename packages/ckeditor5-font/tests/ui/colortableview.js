@@ -149,7 +149,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 5 );
+			expect( colorTableView.items.length ).to.equal( 4 );
 		} );
 	} );
 
@@ -330,7 +330,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.get( colorTableView.items.length - 2 );
+				documentColorsGridView = colorTableView.items.last;
 			} );
 
 			describe( 'model manipulation', () => {

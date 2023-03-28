@@ -23,7 +23,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * Color picker component.
 	 */
-	declare public picker: ColorPickerType;
+	declare public picker: HTMLElement;
 
 	/**
 	 * Input to defining custom colors in HEX.
@@ -116,8 +116,4 @@ type CustomEvent = Event & {
 	detail: {
 		value: string;
 	};
-};
-
-type ColorPickerType = HTMLElement & {
-	color: string;
 };

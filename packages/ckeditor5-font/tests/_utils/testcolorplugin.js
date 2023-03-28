@@ -23,20 +23,3 @@ export default class TestColorPlugin extends ColorUI {
 		return 'TestColorPlugin';
 	}
 }
-
-export class FontColorPlugin extends ColorUI {
-	constructor( editor ) {
-		super( editor, {
-			commandName: 'fontColorCommand',
-			componentName: 'fontColor',
-			dropdownLabel: editor.locale.t( 'Font Color' )
-		} );
-
-		editor.commands.add( 'fontColorCommand', new FontColorCommand( editor ) );
-		editor.model.schema.extend( '$text', { allowAttributes: 'fontColor' } );
-	}
-
-	static get pluginName() {
-		return 'FontColorPlugin';
-	}
-}

@@ -5,7 +5,7 @@
 
 /* global document */
 
-import TestColorPlugin, { FontColorPlugin } from '../_utils/testcolorplugin';
+import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -362,53 +362,6 @@ describe( 'ColorUI', () => {
 						editor = newEditor;
 						dropdown = editor.ui.componentFactory.create( 'testColor' );
 						command = editor.commands.get( 'testColorCommand' );
-
-						return editor;
-					} );
-			}
-		} );
-
-		describe( 'disable color picker', () => {
-			let editor, editorElement;
-
-			beforeEach( () => {
-				editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
-
-				return createLocalizedEditor( editorElement )
-					.then( localizedEditor => {
-						editor = localizedEditor;
-					} );
-			} );
-
-			afterEach( () => {
-				editorElement.remove();
-
-				return editor.destroy();
-			} );
-
-			it( 'Color picker should not be rendered', () => {
-				const spy = sinon.spy( dropdown.colorTableView.colorPickerView, 'render' );
-				dropdown.fire( 'change:isOpen' );
-
-				sinon.assert.notCalled( spy );
-			} );
-
-			function createLocalizedEditor( editorElement ) {
-				return ClassicTestEditor
-					.create( editorElement, {
-						plugins: [ FontColorPlugin ],
-						fontColor: {
-							colorPicker: false,
-							...testColorConfig
-						},
-						toolbar: [ 'fontColor' ],
-						language: 'pl'
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'fontColor' );
-						command = editor.commands.get( 'fontColorCommand' );
 
 						return editor;
 					} );

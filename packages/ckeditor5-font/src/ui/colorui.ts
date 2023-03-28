@@ -98,7 +98,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
-		const isColorPickerDisabled = editor.config.get( `${ this.componentName }` )!.colorPicker === false ? true : false;
+		const hasColorPicker = editor.config.get( `${ this.componentName }` )!.colorPicker !== false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -117,7 +117,7 @@ export default class ColorUI extends Plugin {
 				removeButtonLabel: t( 'Remove color' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
 				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
-				isColorPickerDisabled
+				hasColorPicker
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );

@@ -110,14 +110,14 @@ export function renderDowncastElement( styleAttr: string ) {
  * @returns The new color table view.
  */
 export function addColorTableToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, isColorPickerDisabled }: {
+	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, hasColorPicker }: {
 		dropdownView: ColorTableDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
 		removeButtonLabel: string;
 		documentColorsLabel?: string;
 		documentColorsCount?: number;
-		isColorPickerDisabled?: boolean;
+		hasColorPicker: boolean;
 	}
 ): ColorTableView {
 	const locale = dropdownView.locale!;
@@ -127,7 +127,7 @@ export function addColorTableToDropdown(
 		removeButtonLabel,
 		documentColorsLabel,
 		documentColorsCount,
-		isColorPickerDisabled
+		hasColorPicker
 	} );
 
 	dropdownView.colorTableView = colorTableView;

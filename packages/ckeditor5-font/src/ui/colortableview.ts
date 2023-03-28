@@ -80,13 +80,6 @@ export default class ColorTableView extends View {
 	public documentColorsCount?: number;
 
 	/**
-	 * If true, color picker should not be displayed.
-	 *
-	 * @readonly
-	 */
-	public isColorPickerDisabled?: boolean;
-
-	/**
 	 * Color picker allows to select custom colors.
 	 *
 	 */
@@ -150,14 +143,14 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, isColorPickerDisabled }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, hasColorPicker }: {
 
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			isColorPickerDisabled?: boolean;
+			hasColorPicker: boolean;
 		}
 	) {
 		super( locale );
@@ -173,9 +166,10 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
-		this.isColorPickerDisabled = isColorPickerDisabled;
 
-		this.colorPickerView = new ColorPickerView( locale );
+		if ( hasColorPicker ) {
+			this.colorPickerView = new ColorPickerView( locale );
+		}
 
 		this._focusables = new ViewCollection();
 
@@ -314,8 +308,7 @@ export default class ColorTableView extends View {
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
 
-			if ( !this.isColorPickerDisabled && this.colorPickerView ) {
-				// Render a color picker
+			if ( this.colorPickerView ) {
 				this.colorPickerView.render();
 				this.items.add( this.colorPickerView );
 			}
