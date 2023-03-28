@@ -32,7 +32,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
 		const coverageExitCode = checkPackagesCodeCoverage( {
-			packagesDir: path.join( __dirname, '..', '..', 'packages' ),
+			packagesDir: path.join( ROOT_DIRECTORY, 'packages' ),
 			excludedPackages: [ 'ckeditor5-minimap' ],
 			runFrameworkTests: true,
 			uploadCoverage: true
