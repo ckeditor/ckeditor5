@@ -13,7 +13,7 @@ The {@link module:table/tablecaption~TableCaption} plugin lets you add captions 
 
 ## Demo
 
-Click on the table caption in the demo to edit it or use the table toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} to toggle the caption on and off.
+In the demo below, click the table caption to edit it. Once you click the caption, you can use the table toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} to toggle the caption on and off.
 
 {@snippet features/table-caption}
 
