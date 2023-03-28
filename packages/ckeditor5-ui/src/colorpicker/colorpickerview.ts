@@ -16,7 +16,7 @@ import type InputTextView from '../inputtext/inputtextview';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
-// There no avaialble types for 'color-parse' module.
+// There are no available types for 'color-parse' module.
 // @ts-ignore
 import { default as parse } from 'color-parse';
 import * as convert from 'color-convert';
@@ -87,9 +87,8 @@ export default class ColorPickerView extends View {
 
 				return;
 			}
-			// @ts-ignore
-			const convertedColorChannels: Array<number> = convert[ parsedColor.space ][ this.outputColorFormat ]( parsedColor.values );
-			const outputColor: string = formatColorOutput( this.outputColorFormat, convertedColorChannels );
+
+			const outputColor = convertColor( parsedColor );
 
 			this.fire( 'change', { value: outputColor } );
 		}, waitingTime );
@@ -104,9 +103,8 @@ export default class ColorPickerView extends View {
 				return;
 			}
 
-			// @ts-ignore
-			const convertedColorChannels: Array<number> = convert[ parsedColor.space ][ this.outputColorFormat ]( parsedColor.values );
-			const outputColor: string = formatColorOutput( this.outputColorFormat, convertedColorChannels );
+			const outputColor = convertColor( parsedColor );
+
 			this.fire( 'change', { value: outputColor } );
 
 			this.setColor( color );
@@ -130,9 +128,7 @@ export default class ColorPickerView extends View {
 			} else if ( parsedColor.space === 'hex' ) {
 				outputColor = color;
 			} else {
-				// @ts-ignore
-				const convertedColorChannels: Array<number> = convert[ parsedColor.space ].hex( parsedColor.values );
-				outputColor = formatColorOutput( 'hex', convertedColorChannels );
+				outputColor = convertColor( parsedColor );
 			}
 
 			this.picker.setAttribute( 'color', outputColor );
@@ -180,15 +176,18 @@ export default class ColorPickerView extends View {
 	}
 }
 
-type CustomEvent = Event & {
-	detail: {
-		value: string;
-	};
-};
+/**
+ * @TODO
+ *
+ * @param colorObject
+ * @returns
+ */
+function convertColor( colorObject: { space: string; values: Array<number> } ) {
+	// @ts-ignore
+	const convertedColorChannels: Array<number> = convert[ colorObject.space ].hex( colorObject.values );
 
-type ColorPickerType = HTMLElement & {
-	color: string;
-};
+	return formatColorOutput( 'hex', convertedColorChannels );
+}
 
 /**
  * @TODO
@@ -214,3 +213,13 @@ function formatColorOutput( format: string, values: Array<number> | string ): st
  * @TODO
  */
 export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+
+type CustomEvent = Event & {
+	detail: {
+		value: string;
+	};
+};
+
+type ColorPickerType = HTMLElement & {
+	color: string;
+};
