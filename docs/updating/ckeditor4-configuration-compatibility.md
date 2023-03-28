@@ -12,7 +12,7 @@ modified_at: 2023-03-21
 
 The following table presents CKEditor 4 configuration options and, if available, their equivalent in CKEditor 5.
 
-Note: In CKEditor 5, the number of options was reduced on purpose. Configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (over 240). This is why when designing CKEditor 5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
+Note: In CKEditor 5, the number of options was reduced on purpose. Configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (almost 300). This is why when designing CKEditor 5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
 
 <style>
 /* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
