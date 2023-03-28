@@ -89,7 +89,20 @@ export default class ColorPickerView extends View {
 		}, waitingTime );
 
 		this._debounceInputEvent = debounce( ( color: string ) => {
-			this.fire( 'change', { value: color } );
+			const parsedColor: { space: string; values: Array<number> } = parse( color );
+
+			if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+				this.fire( 'change', { value: color } );
+				this.setColor( color );
+
+				return;
+			}
+
+			// @ts-ignore
+			const convertedColorChannels: Array<number> = convert[ parsedColor.space ][ this.outputColorFormat ]( parsedColor.values );
+			const outputColor: string = formatColorOutput( this.outputColorFormat, convertedColorChannels );
+			this.fire( 'change', { value: outputColor } );
+
 			this.setColor( color );
 		}, waitingTime );
 	}
