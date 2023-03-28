@@ -88,7 +88,7 @@ export default class ColorPickerView extends View {
 				return;
 			}
 
-			const outputColor = convertColor( parsedColor );
+			const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
 			this.fire( 'change', { value: outputColor } );
 		}, waitingTime );
@@ -103,36 +103,47 @@ export default class ColorPickerView extends View {
 				return;
 			}
 
-			const outputColor = convertColor( parsedColor );
+			const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
 			this.fire( 'change', { value: outputColor } );
-
-			this.setColor( color );
 		}, waitingTime );
 	}
 
 	// Sets color in the color picker.
 	public setColor( color: string | undefined ): void {
+		// E.g. selection without color.
 		if ( !color ) {
 			this.color = '';
 
 			return;
 		}
 
-		if ( this.picker ) {
+		let newPickerColor: string;
+
+		// Color is already in hex format (e.g. coming from picker or selection), so don't convert it.
+		if ( color.startsWith( '#' ) ) {
+			newPickerColor = color;
+		} else {
 			const parsedColor: { space: string; values: Array<number> } = parse( color );
-			let outputColor: string;
 
+			// Color is invalid - reset it.
 			if ( parsedColor.space === undefined ) {
-				outputColor = '';
-			} else if ( parsedColor.space === 'hex' ) {
-				outputColor = color;
-			} else {
-				outputColor = convertColor( parsedColor );
+				newPickerColor = '';
 			}
-
-			this.picker.setAttribute( 'color', outputColor );
+			// Convert the color to the default internal picker's format - hex.
+			else {
+				newPickerColor = convertColor( parsedColor, 'hex' );
+			}
 		}
+
+		this.color = newPickerColor;
+
+		// If picker hasn't been rendered yet, don't try to set its attribute.
+		if ( !this.picker ) {
+			return;
+		}
+
+		this.picker.setAttribute( 'color', newPickerColor );
 	}
 
 	// Renders color picker in the view.
@@ -182,11 +193,11 @@ export default class ColorPickerView extends View {
  * @param colorObject
  * @returns
  */
-function convertColor( colorObject: { space: string; values: Array<number> } ) {
+function convertColor( colorObject: { space: string; values: Array<number> }, outputFormat: ColorPickerOutputFormat ) {
 	// @ts-ignore
 	const convertedColorChannels: Array<number> = convert[ colorObject.space ].hex( colorObject.values );
 
-	return formatColorOutput( 'hex', convertedColorChannels );
+	return formatColorOutput( outputFormat, convertedColorChannels );
 }
 
 /**
@@ -196,7 +207,7 @@ function convertColor( colorObject: { space: string; values: Array<number> } ) {
  * @param values
  * @returns
  */
-function formatColorOutput( format: string, values: Array<number> | string ): string {
+function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
 		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
