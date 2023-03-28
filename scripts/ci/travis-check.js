@@ -31,7 +31,13 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
-		const coverageExitCode = checkPackagesCodeCoverage();
+		const coverageExitCode = checkPackagesCodeCoverage( {
+			frameworkSrcDir: path.join( __dirname, '..', '..', 'src' ),
+			packagesDir: path.join( __dirname, '..', '..', 'packages' ),
+			excludedPackages: [ 'ckeditor5-minimap' ],
+			runFrameworkTests: true,
+			uploadCoverage: true
+		} );
 
 		if ( coverageExitCode ) {
 			process.exit( coverageExitCode );

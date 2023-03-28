@@ -22,10 +22,6 @@ const failedChecks = {
 
 const travisFolder = new TravisFolder();
 
-// Name of packages we do not want to check on CI.
-// They might lack tests. To avoid invalid builds, let's skip these packages.
-const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
-
 /**
  * This script should be used on Travis CI. It executes tests and prepares the code coverage report
  * for each package found in the `packages/` directory. Then, all reports are merged into a single
@@ -33,30 +29,35 @@ const EXCLUDED_PACKAGES = [ 'ckeditor5-minimap' ];
  *
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
-module.exports = function checkPackagesCodeCoverage() {
+module.exports = function checkPackagesCodeCoverage( options ) {
+	const excludedPackages = options.excludedPackages || [];
+
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'rm -r -f .out', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .out', { stdio: 'inherit' } );
 
-	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+	const frameworkPackages = fs.readdirSync( options.frameworkSrcDir )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
-	const featurePackages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8', stdio: [ null, 'pipe', 'inherit' ] } )
+	const featurePackages = childProcess
+		.execSync( `ls -1 ${ options.packagesDir }`, { encoding: 'utf8', stdio: [ null, 'pipe', 'inherit' ] } )
 		.toString()
 		.trim()
 		.split( '\n' )
-		.filter( fullPackageName => ![ ...EXCLUDED_PACKAGES, ...frameworkPackages ].includes( fullPackageName ) );
+		.filter( fullPackageName => ![ ...excludedPackages, ...frameworkPackages ].includes( fullPackageName ) );
 
-	console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
-	[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
+	if ( options.runFrameworkTests ) {
+		console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
+		[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName, options.packagesDir ) );
+	}
 
 	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
 
 	for ( const fullPackageName of frameworkPackages ) {
 		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
-		const cwd = path.join( 'packages', fullPackageName );
+		const cwd = path.join( options.packagesDir, fullPackageName );
 		const pkgJsonPath = path.join( cwd, 'package.json' );
 
 		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
@@ -81,9 +82,9 @@ module.exports = function checkPackagesCodeCoverage() {
 	travisFolder.end( 'typescript-compilation' );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
-	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--resolve-js-first', '--cache' ] ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, options.packagesDir, [ '--resolve-js-first', '--cache' ] ) );
 
-	if ( shouldUploadCoverageReport() ) {
+	if ( shouldUploadCoverageReport( options.uploadCoverage ) ) {
 		console.log( 'Uploading combined code coverage report…' );
 		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info', { stdio: 'inherit' } );
 		console.log( 'Done' );
@@ -113,7 +114,7 @@ module.exports = function checkPackagesCodeCoverage() {
  * @param {String} fullPackageName
  * @param {Array.<String>} testArgs additional arguments to pass into test script.
  */
-function checkPackage( fullPackageName, testArgs = [] ) {
+function checkPackage( fullPackageName, packagesDir, testArgs = [] ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
@@ -121,7 +122,7 @@ function checkPackage( fullPackageName, testArgs = [] ) {
 
 	runSubprocess( {
 		binaryName: 'npx',
-		cliArguments: [ 'ckeditor5-dev-dependency-checker', `packages/${ fullPackageName }` ],
+		cliArguments: [ 'ckeditor5-dev-dependency-checker', path.join( packagesDir, fullPackageName ) ],
 		packageName: simplePackageName,
 		checkName: 'dependency',
 		failMessage: 'have a dependency problem'
@@ -209,6 +210,10 @@ function appendCoverageReport() {
  *
  * @returns {Boolean}
  */
-function shouldUploadCoverageReport() {
+function shouldUploadCoverageReport( uploadCoverage ) {
+	if ( !uploadCoverage ) {
+		return false;
+	}
+
 	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }
