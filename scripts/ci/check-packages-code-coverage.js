@@ -37,7 +37,7 @@ module.exports = function checkPackagesCodeCoverage( options ) {
 	childProcess.execSync( 'rm -r -f .out', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .out', { stdio: 'inherit' } );
 
-	const frameworkPackages = fs.readdirSync( options.frameworkSrcDir )
+	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
 	const featurePackages = childProcess
@@ -57,7 +57,7 @@ module.exports = function checkPackagesCodeCoverage( options ) {
 	for ( const fullPackageName of frameworkPackages ) {
 		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
-		const cwd = path.join( options.packagesDir, fullPackageName );
+		const cwd = path.join( __dirname, '..', '..', 'packages', fullPackageName );
 		const pkgJsonPath = path.join( cwd, 'package.json' );
 
 		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
