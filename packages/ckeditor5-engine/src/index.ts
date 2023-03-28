@@ -70,6 +70,7 @@ export { default as OperationFactory } from './model/operation/operationfactory'
 export { default as AttributeOperation } from './model/operation/attributeoperation';
 export { default as RenameOperation } from './model/operation/renameoperation';
 export { default as RootAttributeOperation } from './model/operation/rootattributeoperation';
+export { default as RootOperation } from './model/operation/rootoperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
