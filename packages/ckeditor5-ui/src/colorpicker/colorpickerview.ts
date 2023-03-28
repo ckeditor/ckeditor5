@@ -125,7 +125,9 @@ export default class ColorPickerView extends View {
 			const parsedColor: { space: string; values: Array<number> } = parse( color );
 			let outputColor: string;
 
-			if ( parsedColor.space === 'hex' ) {
+			if ( parsedColor.space === undefined ) {
+				outputColor = '';
+			} else if ( parsedColor.space === 'hex' ) {
 				outputColor = color;
 			} else {
 				// @ts-ignore
@@ -134,7 +136,6 @@ export default class ColorPickerView extends View {
 			}
 
 			this.picker.setAttribute( 'color', outputColor );
-			this.color = outputColor;
 		}
 	}
 
@@ -194,9 +195,14 @@ function formatColorOutput( format: string, values: Array<number> | string ): st
 		return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
 	} else if ( format === 'hex' ) {
 		return `#${ values }`;
+	} else if ( format === 'rgb' ) {
+		return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
 	}
 
 	return '';
 }
 
+/**
+ * @TODO
+ */
 export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
