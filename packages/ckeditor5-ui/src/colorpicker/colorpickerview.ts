@@ -109,9 +109,26 @@ export default class ColorPickerView extends View {
 
 	// Sets color in the color picker.
 	public setColor( color: string | undefined ): void {
-		if ( color && this.picker ) {
-			this.picker.setAttribute( 'color', color );
-			this.color = color;
+		if ( !color ) {
+			this.color = '';
+
+			return;
+		}
+
+		if ( this.picker ) {
+			const parsedColor: { space: string; values: Array<number> } = parse( color );
+			let outputColor: string;
+
+			if ( parsedColor.space === 'hex' ) {
+				outputColor = color;
+			} else {
+				// @ts-ignore
+				const convertedColorChannels: Array<number> = convert[ parsedColor.space ].hex( parsedColor.values );
+				outputColor = formatColorOutput( 'hex', convertedColorChannels );
+			}
+
+			this.picker.setAttribute( 'color', outputColor );
+			this.color = outputColor;
 		}
 	}
 
@@ -166,9 +183,11 @@ type ColorPickerType = HTMLElement & {
 	color: string;
 };
 
-function formatColorOutput( format: string, values: Array<number> ): string {
+function formatColorOutput( format: string, values: Array<number> | string ): string {
 	if ( format === 'hsl' ) {
 		return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
+	} else if ( format === 'hex' ) {
+		return `#${ values }`;
 	}
 
 	return '';
