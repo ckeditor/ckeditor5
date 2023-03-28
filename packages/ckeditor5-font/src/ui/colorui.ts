@@ -115,7 +115,8 @@ export default class ColorUI extends Plugin {
 				columns: this.columns,
 				removeButtonLabel: t( 'Remove color' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
+				colorPickerOutputFormat: this.editor.config.get( this.componentName )!.colorPickerFormat
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
@@ -148,7 +149,7 @@ export default class ColorUI extends Plugin {
 				dropdownView.colorTableView!.appendGrids();
 
 				if ( editor.config.get( this.componentName )!.colorPicker !== false ) {
-					dropdownView.colorTableView!.appendColorPicker( editor.config.get( this.componentName )!.colorPickerFormat );
+					dropdownView.colorTableView!.appendColorPicker();
 				}
 
 				if ( isVisible ) {

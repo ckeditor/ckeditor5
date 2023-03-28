@@ -7,7 +7,7 @@
  * @module font/fontconfig
  */
 
-import type { ColorOption } from 'ckeditor5/src/ui';
+import type { ColorOption, ColorPickerOutputFormat } from 'ckeditor5/src/ui';
 import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
 
 /**
@@ -165,7 +165,7 @@ export interface FontColorConfig {
 	/**
 	 * @TODO
 	 */
-	colorPickerFormat?: 'hsl' | 'hex' | undefined;
+	colorPickerFormat?: ColorPickerOutputFormat;
 }
 
 /**

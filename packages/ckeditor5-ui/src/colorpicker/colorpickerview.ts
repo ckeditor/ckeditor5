@@ -42,7 +42,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * @TODO
 	 */
-	declare public outputColorFormat: 'hsl' | 'hex';
+	declare public outputColorFormat: ColorPickerOutputFormat;
 
 	/**
 	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
@@ -56,7 +56,7 @@ export default class ColorPickerView extends View {
 	*/
 	declare private _debounceInputEvent: DebouncedFunc<( arg: string ) => void>;
 
-	constructor( locale: Locale | undefined, colorPickerFormat: 'hsl' | 'hex' | undefined ) {
+	constructor( locale: Locale | undefined, colorPickerFormat?: ColorPickerOutputFormat ) {
 		super( locale );
 
 		this.set( 'color', '' );
@@ -81,6 +81,12 @@ export default class ColorPickerView extends View {
 			this.color = color;
 
 			const parsedColor: { space: string; values: Array<number> } = parse( color );
+
+			if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+				this.fire( 'change', { value: color } );
+
+				return;
+			}
 			// @ts-ignore
 			const convertedColorChannels: Array<number> = convert[ parsedColor.space ][ this.outputColorFormat ]( parsedColor.values );
 			const outputColor: string = formatColorOutput( this.outputColorFormat, convertedColorChannels );
@@ -192,3 +198,5 @@ function formatColorOutput( format: string, values: Array<number> | string ): st
 
 	return '';
 }
+
+export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';

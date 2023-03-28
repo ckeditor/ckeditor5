@@ -34,7 +34,7 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3,
-			colorPickerFormat: 'hsl'
+			colorPickerFormat: 'rgb'
 		}
 	} )
 	.then( editor => {

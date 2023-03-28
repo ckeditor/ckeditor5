@@ -18,7 +18,8 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	type ColorDefinition
+	type ColorDefinition,
+	type ColorPickerOutputFormat
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
@@ -133,6 +134,11 @@ export default class ColorTableView extends View {
 	public documentColorsGrid: ColorGridView | undefined;
 
 	/**
+	 * @TODO
+	 */
+	public colorPickerOutputFormat: ColorPickerOutputFormat | undefined;
+
+	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
@@ -144,14 +150,14 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerFormat }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerOutputFormat }: {
 
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			colorPickerFormat: 'hsl' | 'hex' | undefined;
+			colorPickerOutputFormat?: ColorPickerOutputFormat;
 		}
 	) {
 		super( locale );
@@ -168,6 +174,7 @@ export default class ColorTableView extends View {
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
 
+		this.colorPickerOutputFormat = colorPickerOutputFormat;
 		this._focusables = new ViewCollection();
 
 		this._focusCycler = new FocusCycler( {
@@ -307,12 +314,12 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker( colorPickerFormat: 'hsl' | 'hex' | undefined ): void {
+	public appendColorPicker(): void {
 		if ( this._colorPickerView ) {
 			return;
 		}
 
-		this._colorPickerView = new ColorPickerView( this.locale, colorPickerFormat );
+		this._colorPickerView = new ColorPickerView( this.locale, this.colorPickerOutputFormat );
 		this._colorPickerView.delegate( 'change' ).to( this, 'colorChange' );
 		this._colorPickerView.render();
 
