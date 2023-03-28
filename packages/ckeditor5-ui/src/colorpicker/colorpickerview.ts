@@ -77,36 +77,51 @@ export default class ColorPickerView extends View {
 
 		const waitingTime = 150;
 
-		this._debouncePickerEvent = debounce( ( color: string ) => {
-			this.color = color;
+		this._debouncePickerEvent = debounce( this._setColorFromPicker, waitingTime );
+		this._debounceInputEvent = debounce( this._setColorFromInput, waitingTime );
+	}
 
-			const parsedColor: { space: string; values: Array<number> } = parse( color );
+	/**
+	 * @TODO
+	 *
+	 * @param color
+	 * @returns
+	 */
+	private _setColorFromPicker( color: string ): void {
+		this.color = color;
 
-			if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-				this.fire( 'change', { value: color } );
+		const parsedColor: { space: string; values: Array<number> } = parse( color );
 
-				return;
-			}
+		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+			this.fire( 'change', { value: color } );
 
-			const outputColor = convertColor( parsedColor, this.outputColorFormat );
+			return;
+		}
 
-			this.fire( 'change', { value: outputColor } );
-		}, waitingTime );
+		const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
-		this._debounceInputEvent = debounce( ( color: string ) => {
-			const parsedColor: { space: string; values: Array<number> } = parse( color );
+		this.fire( 'change', { value: outputColor } );
+	}
 
-			if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-				this.fire( 'change', { value: color } );
-				this.setColor( color );
+	/**
+	 * @TODO
+	 *
+	 * @param color
+	 * @returns
+	 */
+	private _setColorFromInput( color: string ): void {
+		const parsedColor: { space: string; values: Array<number> } = parse( color );
 
-				return;
-			}
+		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+			this.fire( 'change', { value: color } );
+			this.setColor( color );
 
-			const outputColor = convertColor( parsedColor, this.outputColorFormat );
+			return;
+		}
 
-			this.fire( 'change', { value: outputColor } );
-		}, waitingTime );
+		const outputColor = convertColor( parsedColor, this.outputColorFormat );
+
+		this.fire( 'change', { value: outputColor } );
 	}
 
 	// Sets color in the color picker.
