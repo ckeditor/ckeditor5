@@ -42,7 +42,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * @TODO
 	 */
-	declare public colorFormat: 'hsl' | 'hex';
+	declare public outputColorFormat: 'hsl' | 'hex';
 
 	/**
 	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
@@ -60,7 +60,7 @@ export default class ColorPickerView extends View {
 		super( locale );
 
 		this.set( 'color', '' );
-		this.colorFormat = colorPickerFormat || 'hsl';
+		this.outputColorFormat = colorPickerFormat || 'hsl';
 
 		this.input = this._createInput();
 
@@ -78,17 +78,14 @@ export default class ColorPickerView extends View {
 		const waitingTime = 150;
 
 		this._debouncePickerEvent = debounce( ( color: string ) => {
-			console.log( parse( color ) );
+			this.color = color;
+
 			const parsedColor: { space: string; values: Array<number> } = parse( color );
-
 			// @ts-ignore
-			console.log( convert[ parsedColor.space ][ this.colorFormat ]( parsedColor.values ) );
+			const convertedColorChannels: Array<number> = convert[ parsedColor.space ][ this.outputColorFormat ]( parsedColor.values );
+			const outputColor: string = formatColorOutput( this.outputColorFormat, convertedColorChannels );
 
-			// @ts-ignore
-			const convertedColor: Array<number> = convert[ parsedColor.space ][ this.colorFormat ]( parsedColor.values );
-			const output: string = formatColorOutput( this.colorFormat, convertedColor );
-			this.fire( 'change', { value: output } );
-			this.color = output;
+			this.fire( 'change', { value: outputColor } );
 		}, waitingTime );
 
 		this._debounceInputEvent = debounce( ( color: string ) => {
