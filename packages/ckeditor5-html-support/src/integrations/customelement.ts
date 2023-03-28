@@ -9,7 +9,7 @@
 
 /* globals document */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine';
 
 import DataSchema from '../dataschema';
@@ -23,8 +23,8 @@ export default class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DataFilter, DataSchema ];
+	public static get requires() {
+		return [ DataFilter, DataSchema ] as const;
 	}
 
 	/**

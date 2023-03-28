@@ -7,7 +7,7 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 
 import DataFilter from './datafilter';
@@ -46,7 +46,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
+	public static get requires() {
 		return [
 			DataFilter,
 			CodeBlockElementSupport,
@@ -59,7 +59,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			StyleElementSupport,
 			DocumentListElementSupport,
 			CustomElementSupport
-		];
+		] as const;
 	}
 
 	/**

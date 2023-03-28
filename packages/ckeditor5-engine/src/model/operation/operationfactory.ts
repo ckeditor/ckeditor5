@@ -15,6 +15,7 @@ import NoOperation from './nooperation';
 import Operation from './operation';
 import RenameOperation from './renameoperation';
 import RootAttributeOperation from './rootattributeoperation';
+import RootOperation from './rootoperation';
 import SplitOperation from './splitoperation';
 import MergeOperation from './mergeoperation';
 
@@ -34,6 +35,7 @@ operations[ NoOperation.className ] = NoOperation;
 operations[ Operation.className ] = Operation;
 operations[ RenameOperation.className ] = RenameOperation;
 operations[ RootAttributeOperation.className ] = RootAttributeOperation;
+operations[ RootOperation.className ] = RootOperation;
 operations[ SplitOperation.className ] = SplitOperation;
 operations[ MergeOperation.className ] = MergeOperation;
 

@@ -44,6 +44,11 @@ export default class ArrowKeysObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public override observe(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override stopObserving(): void {}
 }
 
 /**

@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentlistpropertiesediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import type {
 	Consumables,
@@ -51,8 +51,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DocumentListEditing, DocumentListPropertiesUtils ];
+	public static get requires() {
+		return [ DocumentListEditing, DocumentListPropertiesUtils ] as const;
 	}
 
 	/**

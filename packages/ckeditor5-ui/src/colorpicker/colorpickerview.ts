@@ -111,17 +111,14 @@ export default class ColorPickerView extends View {
 
 	// Sets color in the color picker.
 	public setColor( color: string | undefined ): void {
-		// E.g. selection without color.
-		if ( !color ) {
-			this.color = '';
-
-			return;
-		}
-
 		let newPickerColor: string;
 
+		// E.g. selection without color.
+		if ( !color ) {
+			newPickerColor = '';
+		}
 		// Color is already in hex format (e.g. coming from picker or selection), so don't convert it.
-		if ( color.startsWith( '#' ) ) {
+		else if ( color.startsWith( '#' ) ) {
 			newPickerColor = color;
 		} else {
 			const parsedColor: { space: string; values: Array<number> } = parse( color );
@@ -167,9 +164,10 @@ export default class ColorPickerView extends View {
 	// Creates input for defining custom colors in color picker.
 	private _createInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const locale = this.locale;
 
 		labeledInput.set( {
-			label: this.t!( 'HEX' ),
+			label: locale!.t( 'HEX' ),
 			class: 'color-picker-hex-input'
 		} );
 

@@ -9,7 +9,7 @@
  * @module ckbox/ckboxuploadadapter
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import {
 	FileRepository,
 	type FileLoader,
@@ -26,7 +26,7 @@ import { getImageUrls } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
- * See the {@glink features/images/image-upload/ckbox CKBox file manager integration} guide to learn how to configure
+ * See the {@glink features/file-management/ckbox CKBox file manager integration} guide to learn how to configure
  * and use this feature as well as find out more about the full integration with the file manager
  * provided by the {@link module:ckbox/ckbox~CKBox} plugin.
  *
@@ -37,8 +37,8 @@ export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ];
+	public static get requires() {
+		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ] as const;
 	}
 
 	/**

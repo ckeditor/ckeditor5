@@ -3,6 +3,16 @@
  */
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ckeditor/*": [
+        "packages/*",
+        "external/ckeditor5-internal/packages/*",
+        "external/collaboration-features/packages/*"
+      ]
+    }
+  },
   "include": [
     "./packages/*/src/**/*.ts",
     "./external/ckeditor5-internal/packages/*/src/**/*.ts",

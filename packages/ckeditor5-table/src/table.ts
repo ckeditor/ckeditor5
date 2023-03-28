@@ -7,7 +7,7 @@
  * @module table/table
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
@@ -22,7 +22,7 @@ import '../theme/table.css';
 /**
  * The table plugin.
  *
- * For a detailed overview, check the {@glink features/table Table feature documentation}.
+ * For a detailed overview, check the {@glink features/tables/tables Table feature documentation}.
  *
  * This is a "glue" plugin that loads the following table features:
  *
@@ -37,8 +37,8 @@ export default class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ];
+	public static get requires() {
+		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ] as const;
 	}
 
 	/**

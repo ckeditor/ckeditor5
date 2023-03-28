@@ -7,7 +7,7 @@
  * @module image/image/imageediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { ViewElement } from 'ckeditor5/src/engine';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
@@ -25,8 +25,8 @@ export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageUtils ];
+	public static get requires() {
+		return [ ImageUtils ] as const;
 	}
 
 	/**

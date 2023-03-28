@@ -63,6 +63,11 @@ export default class EnterObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public observe(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
+	public stopObserving(): void {}
 }
 
 /**

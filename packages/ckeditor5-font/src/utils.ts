@@ -109,27 +109,40 @@ export function renderDowncastElement( styleAttr: string ) {
  * @param config.documentColorsCount The number of document colors inside the dropdown.
  * @returns The new color table view.
  */
-export function addColorTableToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerOutputFormat }: {
-		dropdownView: ColorTableDropdownView;
-		colors: Array<ColorDefinition>;
-		columns: number;
-		removeButtonLabel: string;
-		documentColorsLabel?: string;
-		documentColorsCount?: number;
-		colorPickerOutputFormat?: ColorPickerOutputFormat;
-	}
-): ColorTableView {
+export function addColorTableToDropdown( {
+	dropdownView,
+	colors,
+	columns,
+	removeButtonLabel,
+	documentColorsLabel,
+	documentColorsCount,
+	isColorPickerDisabled,
+	colorPickerOutputFormat
+}: {
+	dropdownView: ColorTableDropdownView;
+	colors: Array<ColorDefinition>;
+	columns: number;
+	removeButtonLabel: string;
+	documentColorsLabel?: string;
+	documentColorsCount?: number;
+	isColorPickerDisabled?: boolean;
+	colorPickerOutputFormat?: ColorPickerOutputFormat;
+} ): ColorTableView {
 	const locale = dropdownView.locale!;
-	const colorTableView = new ColorTableView( locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerOutputFormat }
-	);
+	const colorTableView = new ColorTableView( locale, {
+		colors,
+		columns,
+		removeButtonLabel,
+		documentColorsLabel,
+		documentColorsCount,
+		isColorPickerDisabled,
+		colorPickerOutputFormat
+	} );
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );
 
 	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
-	colorTableView.delegate( 'colorChange' ).to( dropdownView, 'colorChange' );
 
 	return colorTableView;
 }

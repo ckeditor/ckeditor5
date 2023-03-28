@@ -7,7 +7,7 @@
  * @module language/textpartlanguage
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import TextPartLanguageEditing from './textpartlanguageediting';
 import TextPartLanguageUI from './textpartlanguageui';
@@ -31,8 +31,8 @@ export default class TextPartLanguage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TextPartLanguageEditing, TextPartLanguageUI ];
+	public static get requires() {
+		return [ TextPartLanguageEditing, TextPartLanguageUI ] as const;
 	}
 
 	/**

@@ -23,7 +23,8 @@ describe( 'utils', () => {
 
 	describe( 'addColorTableToDropdown()', () => {
 		it( 'should create dropdown with color table', () => {
-			const dropdown = createDropdown();
+			const locale = { t: () => null };
+			const dropdown = createDropdown( locale );
 			dropdown.render();
 
 			addColorTableToDropdown( {
@@ -45,7 +46,8 @@ describe( 'utils', () => {
 					}
 				],
 				columns: 2,
-				removeButtonLabel: 'Remove Color'
+				removeButtonLabel: 'Remove Color',
+				isColorPickerDisabled: true
 			} );
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );

@@ -117,7 +117,7 @@ class MultirootEditor extends DataApiMixin( Editor ) {
 
 ## EditorUI class
 
-The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
+The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:ui/editorui/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
@@ -126,7 +126,7 @@ import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placehold
 /**
  * The multi-root editor UI class.
  *
- * @extends module:core/editor/editorui~EditorUI
+ * @extends module:ui/editorui/editorui~EditorUI
  */
 class MultirootEditorUI extends EditorUI {
 	/**
@@ -396,7 +396,7 @@ With HTML like:
 		<figcaption>It's siesta time in Valletta.</figcaption>
 	</figure>
 
-	<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy and many more.</p>
+	<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine, and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy and many more.</p>
 </div>
 
 <div class="demo-row">

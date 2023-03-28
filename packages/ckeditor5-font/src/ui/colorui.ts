@@ -98,6 +98,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
+		const isColorPickerDisabled = editor.config.get( `${ this.componentName }` )!.colorPicker === false ? true : false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -116,6 +117,7 @@ export default class ColorUI extends Plugin {
 				removeButtonLabel: t( 'Remove color' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
 				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
+				isColorPickerDisabled,
 				colorPickerOutputFormat: this.editor.config.get( this.componentName )!.colorPickerFormat
 			} );
 
@@ -140,17 +142,9 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			dropdownView.on( 'colorChange', ( evt, data ) => {
-				editor.execute( this.commandName, data );
-			} );
-
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				// Grids rendering is deferred (#6192).
 				dropdownView.colorTableView!.appendGrids();
-
-				if ( editor.config.get( this.componentName )!.colorPicker !== false ) {
-					dropdownView.colorTableView!.appendColorPicker();
-				}
 
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
@@ -159,6 +153,14 @@ export default class ColorUI extends Plugin {
 					this.colorTableView!.updateSelectedColors();
 				}
 			} );
+
+			if ( dropdownView.colorTableView!.colorPickerView ) {
+				dropdownView.colorTableView!.colorPickerView.on( 'change', ( evt, data ) => {
+					if ( data.value ) {
+						editor.execute( this.commandName, data );
+					}
+				} );
+			}
 
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(

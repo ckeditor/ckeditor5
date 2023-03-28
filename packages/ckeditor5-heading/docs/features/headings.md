@@ -10,7 +10,7 @@ The heading feature helps you structure your document by adding headings to part
 
 ## Demo
 
-Use the toolbar dropdown to style a heading, or type one or more `#` characters (depending on the heading level), followed by a space, to start a new heading with the {@link features/autoformat autoformatting feature}.
+Use the toolbar dropdown to style a heading. You can also type one or more `#` characters (depending on the heading level) followed by a space, and the {@link features/autoformat autoformatting feature} will create a new heading.
 
 {@snippet features/default-headings}
 
@@ -34,7 +34,7 @@ By default, when your editor build does not include the title plugin, an `<h1>` 
 
 ## Heading buttons
 
-The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
+The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable, and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
 
 {@snippet features/heading-buttons}
 
@@ -42,7 +42,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 
 ### Configuring heading levels
 
-You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
+You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option to do so.
 
 For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
@@ -73,7 +73,7 @@ ClassicEditor
 
 ### Configuring custom heading elements
 
-It is also possible to define fully custom elements for headings by using the {@link module:engine/conversion/conversion~ConverterDefinition advanced format} of the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+It is also possible to define fully custom elements for headings by using the {@link module:engine/conversion/conversion~Conversion#elementToElement advanced format} of the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
 
 For example, the following editor will support the following two heading options at the same time: `<h2 class="fancy">` and `<h2>`:
 
@@ -203,7 +203,7 @@ There are more CKEditor 5 features that can help you format your content:
 The {@link module:heading/heading~Heading} plugin registers:
 
 * The `'heading'` dropdown.
-* The `'heading'` command that accepts a value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+* The `'heading'` command that accepts a value based on the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 

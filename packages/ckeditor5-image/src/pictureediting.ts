@@ -7,7 +7,7 @@
  * @module image/pictureediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import ImageEditing from './image/imageediting';
 import ImageUtils from './imageutils';
@@ -43,7 +43,7 @@ import type { default as ImageUploadEditing, ImageUploadCompleteEvent } from './
  * </figure>
  * ```
  *
- * **Note:** The value of the `sources` {@glink framework/guides/architecture/editing-engine#changing-the-model model attribute}
+ * **Note:** The value of the `sources` {@glink framework/architecture/editing-engine#changing-the-model model attribute}
  * in both examples equals:
  *
  * ```css
@@ -71,8 +71,8 @@ export default class PictureEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageEditing, ImageUtils ];
+	public static get requires() {
+		return [ ImageEditing, ImageUtils ] as const;
 	}
 
 	/**

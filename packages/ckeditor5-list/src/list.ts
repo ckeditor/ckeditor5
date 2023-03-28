@@ -10,7 +10,7 @@
 import ListEditing from './list/listediting';
 import ListUI from './list/listui';
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The list feature.
@@ -22,8 +22,8 @@ export default class List extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListEditing, ListUI ];
+	public static get requires() {
+		return [ ListEditing, ListUI ] as const;
 	}
 
 	/**

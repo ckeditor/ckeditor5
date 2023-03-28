@@ -111,7 +111,7 @@
     "coveralls": "^3.1.0",
     "css-loader": "^5.2.7",
     "eslint": "^7.19.0",
-    "eslint-config-ckeditor5": "^4.1.1",
+    "eslint-config-ckeditor5": "^4.2.1",
     "glob": "^7.1.6",
     "http-server": "^14.1.1",
     "husky": "^8.0.2",
@@ -135,7 +135,7 @@
     "svgo": "^2.2.2",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "^9.3.0",
-    "umberto": "^2.3.1",
+    "umberto": "^2.5.1",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.58.1",
@@ -145,7 +145,7 @@
     "@typescript-eslint/eslint-plugin": "~5.43.0"
   },
   "engines": {
-    "node": ">=14.0.0",
+    "node": ">=16.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -160,8 +160,8 @@
     "postinstall": "node ./scripts/postinstall.js",
     "lint": "eslint --quiet \"**/*.{js,ts}\" --format ./scripts/eslint-formatter.js",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
-    "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js --tsconfig ./tsconfig.test.json",
-    "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js --tsconfig ./tsconfig.test.json",
+    "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
+    "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
     "manual:verify": "node ./scripts/web-crawler/index.js --manual",
     "bootstrap": "yarn install",
     "clean": "npx rimraf package-lock.json yarn.lock ./**/node_modules",

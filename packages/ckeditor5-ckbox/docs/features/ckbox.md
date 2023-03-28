@@ -25,9 +25,9 @@ The CKBox feature lets you easily insert images and links to other files into yo
 
 ## Demo
 
-Use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to open the CKBox dialog window. Then select an image and click the Choose button. The selected image will appear in the content. You can choose more than one file at a time. Play around, changing the alignment and size of the images. See more instructions below the demo.
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. See detailed instructions in the demo below.
 
-Please observe that the usual image icon {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images into the CKBox file manager. They will be accesible from the management panel.
+Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images into the CKBox file manager. You can access them from the management panel.
 
 {@snippet features/ckbox}
 
@@ -35,17 +35,17 @@ Please observe that the usual image icon {@icon @ckeditor/ckeditor5-core/theme/i
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-Non-embeddable files (like PDFs) are inserted as links. To test it, open the CKBox dialog again and choose any PDF file. A link will appear in the content. After you click this link, the file will be automatically downloaded.
+Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDFs) are inserted as links.
 
-The CKBox feature also supports uploading images. Drag any image into the editor content and it will be uploaded into the CKBox cloud storage. The uploaded file will be then automatically inserted into the content. If you want to upload a non-image file type (such as a PDF or a text file) to the cloud storage, just open the CKBox dialog and use the Upload button.
+You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
 
 ## How CKBox enhances CKEditor 5
 
-CKBox replaces the basic CKEditor 5 image upload feature. It provides the image and file upload and management capabilities:
+CKBox replaces the basic CKEditor 5 image upload feature. It provides image and file upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
-* Adds a separate dedicated toolbar button to open the CKBox UI to manage and reause uploaded files.
+* Adds a separate dedicated toolbar button to open the CKBox UI to manage and reuse uploaded files.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
@@ -99,12 +99,12 @@ ClassicEditor
 
 ## Configuration
 
-The feature can be configured via the {@link module:ckbox/ckbox~CKBoxConfig `config.ckbox`} object.
+The feature can be configured via the {@link module:ckbox/ckboxconfig~CKBoxConfig `config.ckbox`} object.
 
 ### Before you start
 
 <info-box>
-	This is a premium feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. 
+	This is a premium feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 
@@ -119,7 +119,7 @@ After you purchase a license, log into the CKEditor Ecosystem customer dashboard
 
 ### Defining upload categories
 
-By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckbox~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
+By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -152,7 +152,7 @@ Please keep in mind that if you define your own upload category mappings for a p
 
 ### Adding the ID for inserted assets
 
-After choosing an asset from the CKBox dialog, it is inserted into the editor content with a unique `data-ckbox-resource-id` attribute. If you want to disable it and do not want to add this attribute, set the {@link module:ckbox/ckbox~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option to `true`:
+After choosing an asset from the CKBox dialog, it is inserted into the editor content with a unique `data-ckbox-resource-id` attribute. If you want to disable it and do not want to add this attribute, set the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option to `true`:
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -171,7 +171,7 @@ ClassicEditor
 
 ### Changing the language
 
-By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckbox~CKBoxConfig#language `config.ckbox.language`} option:
+By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckboxconfig~CKBoxConfig#language `config.ckbox.language`} option:
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -197,7 +197,7 @@ Also, make sure to include the translation file after loading the CKBox library:
 
 ### Providing the token URL
 
-The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckbox~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.
+The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
@@ -216,7 +216,7 @@ ClassicEditor
 
 ### Configuring the API service and assets origin
 
-If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckbox~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} and {@link module:ckbox/ckbox~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
+If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} and {@link module:ckbox/ckboxconfig~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
 
 ```js
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
