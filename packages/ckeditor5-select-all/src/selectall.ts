@@ -7,7 +7,7 @@
  * @module select-all/selectall
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import SelectAllEditing from './selectallediting';
 import SelectAllUI from './selectallui';
 
@@ -23,8 +23,8 @@ export default class SelectAll extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ SelectAllEditing, SelectAllUI ];
+	public static get requires() {
+		return [ SelectAllEditing, SelectAllUI ] as const;
 	}
 
 	/**

@@ -185,7 +185,7 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * Creates `MoveOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `MoveOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.

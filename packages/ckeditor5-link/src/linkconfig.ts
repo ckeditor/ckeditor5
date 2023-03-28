@@ -93,7 +93,7 @@ export interface LinkConfig {
 	 * Link decorators are defined as objects with key-value pairs, where the key is the name provided for a given decorator and the
 	 * value is the decorator definition.
 	 *
-	 * The name of the decorator also corresponds to the {@glink framework/guides/architecture/editing-engine#text-attributes text
+	 * The name of the decorator also corresponds to the {@glink framework/architecture/editing-engine#text-attributes text
 	 * attribute} in the model. For instance, the `isExternal` decorator below is represented as a `linkIsExternal` attribute in the model.
 	 *
 	 * ```ts
@@ -191,21 +191,21 @@ export interface LinkDecoratorAutomaticDefinition {
 
 	/**
 	 * Key-value pairs used as link attributes added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
 	 */
 	attributes?: Record<string, string>;
 
 	/**
 	 * Key-value pairs used as link styles added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
 	 */
 	styles?: Record<string, string>;
 
 	/**
 	 * Class names used as link classes added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
  	 */
 	classes?: ArrayOrItem<string>;
@@ -245,21 +245,21 @@ export interface LinkDecoratorManualDefinition {
 
 	/**
 	 * Key-value pairs used as link attributes added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
 	 */
 	attributes?: Record<string, string>;
 
 	/**
 	 * Key-value pairs used as link styles added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
 	 */
 	styles?: Record<string, string>;
 
 	/**
 	 * Class names used as link classes added to the output during the
-	 * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
 	 * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
 	 */
 	classes?: ArrayOrItem<string>;

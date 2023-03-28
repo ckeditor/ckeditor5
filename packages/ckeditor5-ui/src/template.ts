@@ -1009,7 +1009,7 @@ export class TemplateToBinding extends TemplateBinding {
 }
 
 /**
- * Describes a binding to {@link module:utils/observablemixin~ObservableMixin} created by the {@link module:ui/template~BindChain#if}
+ * Describes a binding to {@link module:utils/observablemixin~Observable} created by the {@link module:ui/template~BindChain#if}
  * method.
  *
  * @internal
@@ -1073,7 +1073,7 @@ function hasTemplateBinding( schema: any ) {
  * an Array. Each entry of the Array corresponds to one of {@link module:ui/template~TemplateValueSchema}
  * items.
  *
- * @param node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
+ * @param node DOM Node updated when {@link module:utils/observablemixin~Observable} changes.
  */
 function getValueSchemaValue( schema: Array<TemplateSimpleValue | TemplateBinding>, node: Node ) {
 	return schema.map( schemaItem => {
@@ -1092,7 +1092,7 @@ function getValueSchemaValue( schema: Array<TemplateSimpleValue | TemplateBindin
  * constructed from {@link module:ui/template~TemplateValueSchema}.
  *
  * @param updater A function which updates the DOM (like attribute or text).
- * @param node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
+ * @param node DOM Node updated when {@link module:utils/observablemixin~Observable} changes.
  */
 function syncValueSchemaValue(
 	schema: Array<TemplateSimpleValue | TemplateBinding>,

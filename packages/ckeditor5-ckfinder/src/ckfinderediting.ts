@@ -7,7 +7,7 @@
  * @module ckfinder/ckfinderediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Notification } from 'ckeditor5/src/ui';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
@@ -27,8 +27,8 @@ export default class CKFinderEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Notification, 'LinkEditing' ];
+	public static get requires() {
+		return [ Notification, 'LinkEditing' ] as const;
 	}
 
 	/**

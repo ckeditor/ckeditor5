@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestyleediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine';
 
 import ImageStyleCommand from './imagestylecommand';
@@ -31,8 +31,8 @@ export default class ImageStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageUtils ];
+	public static get requires() {
+		return [ ImageUtils ] as const;
 	}
 
 	/**

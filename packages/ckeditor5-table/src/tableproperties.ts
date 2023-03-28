@@ -7,7 +7,7 @@
  * @module table/tableproperties
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 import TablePropertiesUI from './tableproperties/tablepropertiesui';
@@ -15,7 +15,7 @@ import TablePropertiesUI from './tableproperties/tablepropertiesui';
 /**
  * The table properties feature. Enables support for setting properties of tables (size, border, background, etc.).
  *
- * Read more in the {@glink features/table#table-and-cell-styling-tools Table and cell styling tools} section.
+ * Read more in the {@glink features/tables/tables-styling Table and cell styling tools} section.
  * See also the {@link module:table/tablecellproperties~TableCellProperties} plugin.
  *
  * This is a "glue" plugin that loads the
@@ -33,7 +33,7 @@ export default class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TablePropertiesEditing, TablePropertiesUI ];
+	public static get requires() {
+		return [ TablePropertiesEditing, TablePropertiesUI ] as const;
 	}
 }

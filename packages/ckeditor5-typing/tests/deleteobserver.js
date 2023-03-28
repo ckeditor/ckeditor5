@@ -532,6 +532,12 @@ describe( 'Delete', () => {
 				} );
 			} );
 		} );
+
+		it( 'should implement empty #stopObserving() method', () => {
+			expect( () => {
+				view.getObserver( DeleteObserver ).stopObserving();
+			} ).to.not.throw();
+		} );
 	} );
 
 	function getDomEvent() {

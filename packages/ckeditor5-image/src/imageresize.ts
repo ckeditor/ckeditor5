@@ -7,7 +7,7 @@
  * @module image/imageresize
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageResizeButtons from './imageresize/imageresizebuttons';
 import ImageResizeEditing from './imageresize/imageresizeediting';
 import ImageResizeHandles from './imageresize/imageresizehandles';
@@ -23,8 +23,8 @@ export default class ImageResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ];
+	public static get requires() {
+		return [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ] as const;
 	}
 
 	/**

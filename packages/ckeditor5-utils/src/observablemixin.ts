@@ -771,7 +771,7 @@ function attachBindToListeners( observable: ObservableInternal, toBindings: Bind
 /**
  * An interface which adds "observable properties" and data binding functionality.
  *
- * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
+ * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~Observable} mixin.
  *
  * ```ts
  * class MyClass extends ObservableMixin( OtherBaseClass ) {

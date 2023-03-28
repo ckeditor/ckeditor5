@@ -71,7 +71,7 @@ editor.model.insertContent( modelFragment );
 
 ## How to list all instances of the editor?
 
-By default, CKEditor 5 has no global registry of editor instances. But if necessary, such feature can be easily implemented as explained in the [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
+By default, CKEditor 5 has no global registry of editor instances. But if necessary, such feature can be easily implemented as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
 
 ## How to enable image drag&drop and upload? Where should I start?
 

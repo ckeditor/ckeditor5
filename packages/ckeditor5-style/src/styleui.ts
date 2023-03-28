@@ -7,7 +7,7 @@
  * @module style/styleui
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown } from 'ckeditor5/src/ui';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
@@ -34,8 +34,8 @@ export default class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ StyleUtils ];
+	public static get requires() {
+		return [ StyleUtils ] as const;
 	}
 
 	/**

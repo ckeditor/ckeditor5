@@ -7,7 +7,7 @@
  * @module image/imagecaption/imagecaptionui
  */
 
-import { Plugin, icons, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import ImageCaptionUtils from './imagecaptionutils';
 import type ToggleImageCaptionCommand from './toggleimagecaptioncommand';
@@ -19,8 +19,8 @@ export default class ImageCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ImageCaptionUtils ];
+	public static get requires() {
+		return [ ImageCaptionUtils ] as const;
 	}
 
 	/**

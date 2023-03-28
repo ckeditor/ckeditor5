@@ -703,6 +703,24 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
+
+			it( 'should update content if href is equal to content', () => {
+				setData( model, '<$text linkHref="url">ur[]l</$text>' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal( '<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>[]' );
+			} );
+
+			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
+				setData( model, '<$text linkHref="url">ur[]l</$text>' );
+
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to
+					.equal( '<$text linkHref="url2">url2</$text>[]' );
+			} );
 		} );
 
 		describe( 'range selection', () => {
@@ -751,6 +769,70 @@ describe( 'LinkCommand', () => {
 						'foo[<linkableInline linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true"></linkableInline>]bar' +
 					'</paragraph>'
 				);
+			} );
+
+			it( 'should update content if href is equal to content', () => {
+				setData( model, '[<$text linkHref="url">url</$text>]' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal( '[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url2</$text>]' );
+			} );
+
+			it( 'should not update content if href is equal to content but there is a non-link following in the selection', () => {
+				setData( model, '<paragraph>[<$text linkHref="url">url</$text>foo]</paragraph>' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal(
+						'<paragraph>[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">urlfoo</$text>]</paragraph>'
+					);
+			} );
+
+			it( 'should not update content if href is equal to content but there is a non-link preceding in the selection', () => {
+				setData( model, '<paragraph>[foo<$text linkHref="url">url</$text>]</paragraph>' );
+
+				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal(
+						'<paragraph>[<$text linkHref="url2" linkIsBar="true" linkIsFoo="true" linkIsSth="true">foourl</$text>]</paragraph>'
+					);
+			} );
+
+			it( 'should not add new attributes if there are falsy when href is equal to content', () => {
+				setData( model, '[<$text linkHref="url">url</$text>]' );
+
+				command.execute( 'url2', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to
+					.equal( '[<$text linkHref="url2">url2</$text>]' );
+			} );
+
+			it( 'should not update link which is equal its href if selection is on more than one element', () => {
+				setData( model,
+					'<paragraph>' +
+						'<$text linkHref="foo">[foo</$text>' +
+					'</paragraph>' +
+					'<paragraph>bar</paragraph>' +
+					'<paragraph>baz]</paragraph>'
+				);
+
+				command.execute( 'foooo' );
+
+				expect( getData( model ) ).to
+					.equal( '<paragraph>' +
+								'[<$text linkHref="foooo">foo</$text>' +
+							'</paragraph>' +
+							'<paragraph>' +
+								'<$text linkHref="foooo">bar</$text>' +
+							'</paragraph>' +
+							'<paragraph>' +
+								'<$text linkHref="foooo">baz</$text>]' +
+							'</paragraph>'
+					);
 			} );
 		} );
 

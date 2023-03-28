@@ -7,7 +7,7 @@
  * @module code-block/codeblock
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import CodeBlockEditing from './codeblockediting';
 import CodeBlockUI from './codeblockui';
@@ -25,8 +25,8 @@ export default class CodeBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ CodeBlockEditing, CodeBlockUI ];
+	public static get requires() {
+		return [ CodeBlockEditing, CodeBlockUI ] as const;
 	}
 
 	/**

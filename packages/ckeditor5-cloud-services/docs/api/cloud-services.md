@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-cloud-services.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)
 
-CKEditor 5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) integration layer, which handles {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`} and tokens.
+CKEditor 5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) integration layer, which handles {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudServices`} and tokens.
 
 ## Installation
 

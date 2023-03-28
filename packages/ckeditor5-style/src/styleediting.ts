@@ -7,7 +7,7 @@
  * @module style/styleediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import type { MatcherPattern } from 'ckeditor5/src/engine';
 import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 
@@ -18,7 +18,7 @@ import type { StyleConfig, StyleDefinition } from './styleconfig';
 /**
  * The style engine feature.
  *
- * It configures the {@glink features/general-html-support General HTML Support feature} based on
+ * It configures the {@glink features/html/general-html-support General HTML Support feature} based on
  * {@link module:style/styleconfig~StyleConfig#definitions configured style definitions} and introduces the
  * {@link module:style/stylecommand~StyleCommand style command} that applies styles to the content of the document.
  */
@@ -33,8 +33,8 @@ export default class StyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'GeneralHtmlSupport', StyleUtils ];
+	public static get requires() {
+		return [ 'GeneralHtmlSupport', StyleUtils ] as const;
 	}
 
 	/**

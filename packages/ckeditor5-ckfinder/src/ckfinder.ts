@@ -7,7 +7,7 @@
  * @module ckfinder/ckfinder
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';
@@ -22,7 +22,7 @@ import CKFinderEditing from './ckfinderediting';
  * * {@link module:ckfinder/ckfinderui~CKFinderUI},
  * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}.
  *
- * See the {@glink features/images/image-upload/ckfinder "CKFinder integration" guide} to learn how to configure
+ * See the {@glink features/file-management/ckfinder "CKFinder integration" guide} to learn how to configure
  * and use this feature.
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
@@ -39,7 +39,7 @@ export default class CKFinder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ];
+	public static get requires() {
+		return [ 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ] as const;
 	}
 }
