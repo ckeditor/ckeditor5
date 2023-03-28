@@ -92,6 +92,8 @@ npm run dev
 
 ## Running the editor – method 1
 
+### JavaScript
+
 You can now import all the needed plugins and configurations into your code. If you scaffolded your project using a Vite template, add the `ckeditor.js` file in the `src` folder. Then, modify the file by adding the following lines of code.
 
 ```js
@@ -140,6 +142,26 @@ ClassicEditor.defaultConfig = {
     language: 'en'
 };
 ```
+
+This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}. Then, replace the content of `main.js` with the following code:
+
+```js
+// main.js
+
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
+	.create( document.querySelector( '#app' ) )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
+### TypeScript
 
 If you scaffolded your project using a Vite template with TypeScript, add the `ckeditor.ts` file in the `src` folder. Then, modify the file by adding the following lines of code.
 
@@ -190,25 +212,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}. If you scaffolded your project using a Vite template, replace the content of `main.js` with the following code:
-
-```js
-// main.js
-
-import ClassicEditor from './ckeditor';
-
-ClassicEditor
-	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-	.create( document.querySelector( '#app' ) )
-	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-	} )
-	.catch( error => {
-		console.error( error.stack );
-	} );
-```
-
-If you scaffolded your project using a Vite template with TypeScript, replace the content of `main.ts` with the following code.
+Then, you can use the configured editor. Replace the content of `main.ts` with the following code.
 
 ```ts
 // main.ts
@@ -227,6 +231,8 @@ ClassicEditor
 ```
 
 ## Running the editor – method 2
+
+### JavaScript
 
 The second variant of how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
@@ -280,6 +286,8 @@ ClassicEditor
     } );
 
 ```
+
+### TypeScript
 
 You can also translate the above code using TypeScript.
 
