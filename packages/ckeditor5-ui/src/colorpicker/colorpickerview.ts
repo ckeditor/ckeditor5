@@ -111,9 +111,3 @@ export default class ColorPickerView extends View {
 		return labeledInput;
 	}
 }
-
-type CustomEvent = Event & {
-	detail: {
-		value: string;
-	};
-};

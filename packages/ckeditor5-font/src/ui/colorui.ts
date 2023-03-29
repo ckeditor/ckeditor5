@@ -98,7 +98,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
-		const hasColorPicker = editor.config.get( `${ this.componentName }` )!.colorPicker !== false;
+		const hasColorPicker = editor.config.get( this.componentName )!.colorPicker !== false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -154,10 +154,10 @@ export default class ColorUI extends Plugin {
 			} );
 
 			if ( dropdownView.colorTableView!.colorPickerView ) {
-				dropdownView.colorTableView!.colorPickerView.on( 'change', ( evt, data ) => {
-					if ( data.value ) {
-						editor.execute( this.commandName, data );
-					}
+				dropdownView.colorTableView!.colorPickerView.on( 'change:color', ( evt, evtName, newValue ) => {
+					editor.execute( this.commandName, {
+						value: newValue
+					} );
 				} );
 			}
 

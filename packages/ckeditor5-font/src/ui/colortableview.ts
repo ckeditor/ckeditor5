@@ -76,6 +76,7 @@ export default class ColorTableView extends View {
 	 * The maximum number of colors in the document colors section.
 	 * If it equals 0, the document colors section is not added.
 	 *
+	 * @readonly
 	 */
 	public documentColorsCount?: number;
 
@@ -260,6 +261,10 @@ export default class ColorTableView extends View {
 	public override render(): void {
 		super.render();
 
+		if ( this.colorPickerView ) {
+			this.colorPickerView.render();
+		}
+
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
 	}
@@ -281,6 +286,7 @@ export default class ColorTableView extends View {
 		if ( this.staticColorsGrid ) {
 			return;
 		}
+
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
@@ -309,7 +315,6 @@ export default class ColorTableView extends View {
 			this._focusables.add( this.documentColorsGrid );
 
 			if ( this.colorPickerView ) {
-				this.colorPickerView.render();
 				this.items.add( this.colorPickerView );
 			}
 		}
