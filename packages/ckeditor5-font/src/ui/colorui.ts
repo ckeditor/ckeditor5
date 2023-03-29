@@ -19,6 +19,7 @@ import {
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
+import type { FontColorConfig } from '../fontconfig';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -95,10 +96,11 @@ export default class ColorUI extends Plugin {
 		const locale = editor.locale;
 		const t = locale.t;
 		const command: FontColorCommand | FontBackgroundColorCommand = editor.commands.get( this.commandName )!;
-		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
+		const componentConfig = editor.config.get( this.componentName )! as FontColorConfig;
+		const colorsConfig = normalizeColorOptions( componentConfig.colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
-		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
-		const hasColorPicker = editor.config.get( this.componentName )!.colorPicker !== false;
+		const documentColorsCount = componentConfig.documentColors;
+		const hasColorPicker = componentConfig.colorPicker !== false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
