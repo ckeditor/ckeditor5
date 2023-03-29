@@ -144,14 +144,13 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, hasColorPicker }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
 
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			hasColorPicker: boolean;
 		}
 	) {
 		super( locale );
@@ -245,10 +244,6 @@ export default class ColorTableView extends View {
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
-
-		// if ( this.colorPickerView && selectedColor ) {
-		// 	this.colorPickerView.set( 'color', selectedColor );
-		// }
 	}
 
 	/**
@@ -317,7 +312,7 @@ export default class ColorTableView extends View {
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
-		this.listenTo( this, 'change:color', ( evt, name, value ) => {
+		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
 			colorPickerView.color = value;
 		} );
 

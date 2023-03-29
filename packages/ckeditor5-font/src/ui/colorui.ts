@@ -116,8 +116,7 @@ export default class ColorUI extends Plugin {
 				columns: this.columns,
 				removeButtonLabel: t( 'Remove color' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
-				hasColorPicker
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
