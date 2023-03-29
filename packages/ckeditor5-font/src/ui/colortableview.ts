@@ -17,6 +17,7 @@ import {
 	Template,
 	View,
 	ViewCollection,
+	ColorPickerView,
 	type ColorDefinition
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -78,6 +79,12 @@ export default class ColorTableView extends View {
 	 * @readonly
 	 */
 	public documentColorsCount?: number;
+
+	/**
+	 * Color picker allows to select custom colors.
+	 *
+	 */
+	public colorPickerView?: ColorPickerView;
 
 	/**
 	 * A collection of views that can be focused in the view.
@@ -294,6 +301,22 @@ export default class ColorTableView extends View {
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
 		}
+	}
+
+	public appendColorPicker(): void {
+		if ( this.colorPickerView ) {
+			return;
+		}
+
+		const colorPickerView = new ColorPickerView( this.locale );
+		this.colorPickerView = colorPickerView;
+		this.colorPickerView.render();
+
+		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
+			colorPickerView.color = value;
+		} );
+
+		this.items.add( this.colorPickerView );
 	}
 
 	/**

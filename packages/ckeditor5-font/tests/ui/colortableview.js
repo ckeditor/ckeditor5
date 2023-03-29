@@ -12,6 +12,7 @@ import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
@@ -150,6 +151,39 @@ describe( 'ColorTableView', () => {
 
 		it( 'should have correct amount of children', () => {
 			expect( colorTableView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'appendGrids()', () => {
+		it( 'shouldn\'t duplicate views if called more than once', () => {
+			colorTableView.appendGrids();
+			colorTableView.appendGrids();
+			expect( colorTableView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'appendColorPicker()', () => {
+		beforeEach( () => {
+			colorTableView.appendColorPicker();
+		} );
+
+		it( 'creates a color picker', () => {
+			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
+		} );
+
+		it( 'adds a color picker to items list', () => {
+			expect( colorTableView.items.length ).to.equal( 5 );
+		} );
+
+		it( 'binds picker\'s selected color to the selected color', () => {
+			colorTableView.selectedColor = '#00FF00';
+			expect( colorTableView.colorPickerView.color ).to.equal( '#00FF00' );
+		} );
+
+		it( 'shouldn\'t duplicate views if called more than once', () => {
+			colorTableView.appendColorPicker();
+			colorTableView.appendColorPicker();
+			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
 

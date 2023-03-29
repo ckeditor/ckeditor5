@@ -23,6 +23,8 @@ export * from './colorgrid/utils';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
 
+export { default as ColorPickerView } from './colorpicker/colorpickerview';
+
 export { default as ComponentFactory } from './componentfactory';
 
 export { default as DropdownView } from './dropdown/dropdownview';

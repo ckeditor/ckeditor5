@@ -177,6 +177,14 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
+		it( 'should execute command if the color gets changed', async () => {
+			const spy = sinon.spy( editor, 'execute' );
+
+			dropdown.colorTableView.colorPickerView.color = '#a37474';
+
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
@@ -358,6 +366,29 @@ describe( 'ColorUI', () => {
 						return editor;
 					} );
 			}
+		} );
+	} );
+
+	describe( 'config.colorPicker', () => {
+		it( 'can be turned off', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const customizedEditor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: {
+						...testColorConfig,
+						colorPicker: false
+					}
+				} );
+
+			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
+
+			editorElement.remove();
+			await customizedEditor.destroy();
+
+			expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
 		} );
 	} );
 } );
