@@ -369,39 +369,26 @@ describe( 'ColorUI', () => {
 		} );
 	} );
 
-	describe( 'config', () => {
-		let editor, editorElement, dropdown;
-
-		beforeEach( () => {
-			editorElement = document.createElement( 'div' );
+	describe( 'config.colorPicker', () => {
+		it( 'can be turned off', async () => {
+			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			return ClassicTestEditor
-				.create( element, {
+			const customizedEditor = await ClassicTestEditor
+				.create( editorElement, {
 					plugins: [ Paragraph, TestColorPlugin ],
 					testColor: {
 						...testColorConfig,
 						colorPicker: false
 					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
-					dropdown = editor.ui.componentFactory.create( 'testColor' );
 				} );
-		} );
 
-		afterEach( () => {
+			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
+
 			editorElement.remove();
+			await customizedEditor.destroy();
 
-			return editor.destroy();
-		} );
-
-		describe( 'colorPicker', () => {
-			it( 'can be turned off', async () => {
-				expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
-			} );
+			expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
 		} );
 	} );
 } );
