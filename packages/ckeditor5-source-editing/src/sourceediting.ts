@@ -9,7 +9,7 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
+import { type ContextPluginDependencies, type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
@@ -38,7 +38,7 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
+	public static get requires(): ContextPluginDependencies {
 		return [ PendingActions ] as const;
 	}
 
@@ -150,7 +150,7 @@ export default class SourceEditing extends Plugin {
 		// Update the editor data while calling editor.getData() in the source editing mode.
 		editor.data.on( 'get', () => {
 			if ( this.isSourceEditingMode ) {
-				this._updateEditorData();
+				this.updateEditorData();
 			}
 		}, { priority: 'high' } );
 	}
@@ -184,6 +184,29 @@ export default class SourceEditing extends Plugin {
 				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
 				'that contains markers created by the restricted editing feature.'
 			);
+		}
+	}
+
+	/**
+	 * Updates the source data in all hidden editing roots.
+	 */
+	public updateEditorData(): void {
+		const editor = this.editor;
+		const data: Record<string, string> = {};
+
+		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
+			const oldData = this._dataFromRoots.get( rootName );
+			const newData = domSourceEditingElementWrapper.dataset.value!;
+
+			// Do not set the data unless some changes have been made in the meantime.
+			// This prevents empty undo steps after switching to the normal editor.
+			if ( oldData !== newData ) {
+				data[ rootName ] = newData;
+			}
+		}
+
+		if ( Object.keys( data ).length ) {
+			editor.data.set( data, { batchType: { isUndoable: true } } );
 		}
 	}
 
@@ -262,7 +285,7 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		this._updateEditorData();
+		this.updateEditorData();
 
 		editingView.change( writer => {
 			for ( const [ rootName ] of this._replacedRoots ) {
@@ -276,29 +299,6 @@ export default class SourceEditing extends Plugin {
 		this._dataFromRoots.clear();
 
 		editingView.focus();
-	}
-
-	/**
-	 * Updates the source data in all hidden editing roots.
-	 */
-	private _updateEditorData(): void {
-		const editor = this.editor;
-		const data: Record<string, string> = {};
-
-		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			const oldData = this._dataFromRoots.get( rootName );
-			const newData = domSourceEditingElementWrapper.dataset.value!;
-
-			// Do not set the data unless some changes have been made in the meantime.
-			// This prevents empty undo steps after switching to the normal editor.
-			if ( oldData !== newData ) {
-				data[ rootName ] = newData;
-			}
-		}
-
-		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { batchType: { isUndoable: true } } );
-		}
 	}
 
 	/**
