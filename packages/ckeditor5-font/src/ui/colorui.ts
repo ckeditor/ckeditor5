@@ -141,9 +141,25 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			// Grids rendering is deferred once dropdown gets open (#6192).
+			let dropdownContentRendered = false;
+
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
-				// Grids rendering is deferred (#6192).
-				dropdownView.colorTableView!.appendGrids();
+				if ( !dropdownContentRendered ) {
+					dropdownContentRendered = true;
+
+					dropdownView.colorTableView!.appendGrids();
+
+					if ( hasColorPicker ) {
+						dropdownView.colorTableView!.appendColorPicker();
+
+						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+							editor.execute( this.commandName, {
+								value: newValue
+							} );
+						} );
+					}
+				}
 
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
@@ -152,14 +168,6 @@ export default class ColorUI extends Plugin {
 					this.colorTableView!.updateSelectedColors();
 				}
 			} );
-
-			if ( dropdownView.colorTableView!.colorPickerView ) {
-				dropdownView.colorTableView!.colorPickerView.on( 'change:color', ( evt, evtName, newValue ) => {
-					editor.execute( this.commandName, {
-						value: newValue
-					} );
-				} );
-			}
 
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(

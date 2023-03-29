@@ -168,10 +168,6 @@ export default class ColorTableView extends View {
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
 
-		if ( hasColorPicker ) {
-			this.colorPickerView = new ColorPickerView( locale );
-		}
-
 		this._focusables = new ViewCollection();
 
 		this._focusCycler = new FocusCycler( {
@@ -250,9 +246,9 @@ export default class ColorTableView extends View {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
 
-		if ( this.colorPickerView && selectedColor ) {
-			this.colorPickerView.set( 'color', selectedColor );
-		}
+		// if ( this.colorPickerView && selectedColor ) {
+		// 	this.colorPickerView.set( 'color', selectedColor );
+		// }
 	}
 
 	/**
@@ -260,10 +256,6 @@ export default class ColorTableView extends View {
 	 */
 	public override render(): void {
 		super.render();
-
-		if ( this.colorPickerView ) {
-			this.colorPickerView.render();
-		}
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
@@ -313,11 +305,23 @@ export default class ColorTableView extends View {
 			this.items.add( this.documentColorsGrid );
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
-
-			if ( this.colorPickerView ) {
-				this.items.add( this.colorPickerView );
-			}
 		}
+	}
+
+	public appendColorPicker(): void {
+		if ( this.colorPickerView ) {
+			return;
+		}
+
+		const colorPickerView = new ColorPickerView( this.locale );
+		this.colorPickerView = colorPickerView;
+		this.colorPickerView.render();
+
+		this.listenTo( this, 'change:color', ( evt, name, value ) => {
+			colorPickerView.color = value;
+		} );
+
+		this.items.add( this.colorPickerView );
 	}
 
 	/**

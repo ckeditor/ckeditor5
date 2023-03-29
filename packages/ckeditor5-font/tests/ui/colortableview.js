@@ -141,10 +141,6 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.documentColorsCount ).to.equal( 4 );
 		} );
 
-		it( 'should create color picker', () => {
-			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
-		} );
-
 		it( 'should create focus cycler', () => {
 			expect( colorTableView._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
@@ -155,6 +151,31 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
+			expect( colorTableView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'appendColorPicker()', () => {
+		beforeEach( () => {
+			colorTableView.appendColorPicker();
+		} );
+
+		it( 'creates a color picker', () => {
+			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
+		} );
+
+		it( 'adds a color picker to items list', () => {
+			expect( colorTableView.items.length ).to.equal( 5 );
+		} );
+
+		it( 'binds picker\'s selected color to the selected color', () => {
+			colorTableView.selectedColor = '#00FF00';
+			expect( colorTableView.colorPickerView.color ).to.equal( '#00FF00' );
+		} );
+
+		it( 'shouldn\'t duplicate views if called more than once', () => {
+			colorTableView.appendColorPicker();
+			colorTableView.appendColorPicker();
 			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
@@ -336,7 +357,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.get( colorTableView.items.length - 2 );
+				documentColorsGridView = colorTableView.items.last;
 			} );
 
 			describe( 'model manipulation', () => {
