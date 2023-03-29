@@ -1,67 +1,106 @@
 <textarea id="snippet-markdown">
 
-<h2>The Markdown language</h2>
-<p>Markdown is a lightweight markup language that you can use to add formatting elements to plain text documents. Created by <a href="https://daringfireball.net/projects/markdown/" target="_blank">John Gruber</a> in <s>2003</s>2004, Markdown is now one of the world&rsquo;s most popular markup languages.</p>
+<h2>Markdown output 🛫</h2>
+<p>
+	<a href="https://ckeditor.com/">CKEditor 5</a> can be configured to output Markdown instead of HTML. Markdown is a lightweight markup language that you can use to add formatting to plain text documents. Use the <strong>Source</strong> button to check and edit the Markdown source code of this content.
+</p>
 
-<hr />
+<p>
+	The editor-produced Markdown output supports most essential features, like <a href="https://ckeditor.com/">links</a>, <strong>different</strong> kinds of <em>emphasis</em>, <code>inline code formatting</code>, or code blocks:
+</p>
 
-<h2>Editing with Markdown output</h2>
-<p>The <a href="https://ckeditor.com/">CKEditor 5 WYSIWYG</a> editor lets you use this flexible yet simple markup language in the GitHub flavor. The editor-produced Markdown output supports the most important features, like <a href="https://ckeditor.com/">links</a>, <strong>different</strong> kinds of <em>emphasis</em>, <code>inline code formatting</code> or code blocks:</p>
+<pre><code class="language-css">p {
+    text-align: center;
+    color: red;
+}</code></pre>
 
-&lt;pre>&lt;code class="language-css">p {
-	text-align: center;
-	color: red;
-  }&lt;/code>&lt;/pre>
-
-<h2>Formatting blocks with Markdown</h2>
-<p>Markdown can be used to create various block-level features, such as:</p>
-<ul>
-	<li>Block quotes</li>
-	<li>Headings
-		<ol>
-			<li>Heading 1</li>
-			<li>Heading 2</li>
-			<li>Heading 3</li>
-		</ol>
-	</li>
-	<li>Lists, including nested ones
-		<ul>
-			<li>Numbered lists</li>
-			<li>Bulleted lists</li>
-			<li>To-do lists</li>
-		</ul>
-	</li>
-</ul>
-
-<h2>Support for tables in Markdown</h2>
-<p>Bear in mind that Markdown has only very basic support for tables, so things like table styles or merged cells will not work.</p>
-
-<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+<h2>Markdown input 🛬</h2>
+<p>
+	Thanks to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html" >autoformatting feature</a>, you can use Markdown syntax when writing. Try it out - use these (or any other) Markdown shortcuts in the editor to format the content on the fly 🚀!
+</p>
+<table>
 	<thead>
-		<tr>
-			<th scope="row">&nbsp;</th>
-			<th scope="col">Income</th>
-			<th scope="col">Revenue</th>
-		</tr>
+		<th>Inline formatting</th>
+		<th>Shortcut</th>
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row">Walker 3</th>
-			<td style="text-align:center">$104.000</td>
-			<td style="text-align:center">15%</td>
+			<td>
+				<strong>Bold</strong>
+			</td>
+			<td>
+				Type <code>**</code> or <code>__</code> around your text.
+			</td>
 		</tr>
 		<tr>
-			<th scope="row">Stroller</th>
-			<td style="text-align:center">$12.000</td>
-			<td style="text-align:center">10%</td>
+			<td>
+				<em>Italic</em>
+			</td>
+			<td>
+				Type <code>*</code> or <code>_</code> around your text.
+			</td>
 		</tr>
 		<tr>
-			<th scope="row">Runner</th>
-			<td style="text-align:center">$97.500</td>
-			<td style="text-align:center">15%</td>
+			<td>
+				<code>Code</code>
+			</td>
+			<td>
+				Type <code>ˋ</code> around your text.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<s>Strikethrough</s>
+			</td>
+			<td>
+				Type <code>~~</code> around your text.
+			</td>
 		</tr>
 	</tbody>
 </table>
+
+<p>
+	Shh! 🤫 Markdown has very basic support for tables. Some advanced table-related features like table or cell styling were disabled in this demo.
+</p>
+
+<h2>Block formatting</h2>
+
+<p>
+	You can also use Markdown to create various text blocks, such as:
+</p>
+
+<ul>
+	<li>
+		Block quotes - Start a line with <code>﹥</code> followed by a space.
+	</li>
+	<li>
+		Headings:
+		<ol>
+			<li>Heading 1 - Start a line with <code>#</code> followed by a space.</li>
+			<li>Heading 2 - Start a line with <code>##</code> followed by a space.</li>
+			<li>Heading 3 - Start a line with <code>###</code> followed by a space.</li>
+		</ol>
+	</li>
+	<li>Lists, including nested ones:
+		<ul>
+			<li>
+				Numbered lists - Start a line with <code>1.</code> or <code>1)</code> followed by a space.
+			</li>
+			<li>
+				Bulleted lists - Start a line with <code>*</code> or <code>-</code> followed by a space.
+			</li>
+			<li>
+				To-do lists - Start a line with <code>[ ]</code> or <code>[x]</code> followed by a space to insert an unchecked or checked list item.
+			</li>
+		</ul>
+	</li>
+	<li>
+		Code blocks - Start a line with <code>ˋˋˋ</code>.
+	</li>
+	<li>
+		Horizontal lines - Start a line with <code>---</code>.
+	</li>
+</ul>
 
 </textarea>
 
