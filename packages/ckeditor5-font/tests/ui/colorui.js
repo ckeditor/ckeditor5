@@ -180,9 +180,9 @@ describe( 'ColorUI', () => {
 		it( 'should execute command if color is changed', async () => {
 			const spy = sinon.spy( editor, 'execute' );
 
-			dropdown.colorTableView.colorPickerView.fire( 'change', { value: '#a37474' } );
+			dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
 		} );
 
 		describe( 'model to command binding', () => {

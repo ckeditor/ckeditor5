@@ -12,6 +12,7 @@ import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
@@ -81,7 +82,8 @@ describe( 'ColorTableView', () => {
 			columns: 5,
 			removeButtonLabel: 'Remove color',
 			documentColorsLabel: 'Document colors',
-			documentColorsCount: 4
+			documentColorsCount: 4,
+			hasColorPicker: true
 		} );
 		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
@@ -139,6 +141,10 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.documentColorsCount ).to.equal( 4 );
 		} );
 
+		it( 'should create color picker', () => {
+			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
+		} );
+
 		it( 'should create focus cycler', () => {
 			expect( colorTableView._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
@@ -149,7 +155,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 4 );
+			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
 
@@ -330,7 +336,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.last;
+				documentColorsGridView = colorTableView.items.get( colorTableView.items.length - 2 );
 			} );
 
 			describe( 'model manipulation', () => {

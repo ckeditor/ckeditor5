@@ -60,7 +60,6 @@ export default class ColorPickerView extends View {
 		} );
 
 		this._debounceColorPickerEvent = debounce( ( color: string ) => {
-			this.fire( 'change', { value: color } );
 			this.set( 'color', color );
 		}, waitingTime );
 

@@ -9,12 +9,13 @@ import ColorPickerView from './../../src/colorpicker/colorpickerview';
 import 'vanilla-colorful/hex-color-picker.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
-describe( 'ColorGridView', () => {
+describe( 'ColorPickerView', () => {
 	let locale, view, clock;
 
 	beforeEach( () => {
-		locale = { t() {} };
+		locale = new Locale();
 		view = new ColorPickerView( locale );
 		clock = sinon.useFakeTimers();
 		view.render();
@@ -29,30 +30,21 @@ describe( 'ColorGridView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-color-picker' ) ).to.be.true;
+			expect( [ ...view.element.classList ] ).to.include( 'ck-color-picker', 'ck' );
 		} );
 
 		it( 'should create input', () => {
 			const input = view.element.children[ 1 ];
-			expect( input.classList.contains( 'color-picker-hex-input' ) ).to.be.true;
+			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'should render color picker component', () => {
-			const view = new ColorPickerView( locale );
-			view.render();
-
 			expect( view.picker.tagName ).to.equal( document.createElement( 'hex-color-picker' ).tagName );
-
-			view.destroy();
 		} );
 
 		it( 'should update color state in input after changes in color picker', () => {
-			const view = new ColorPickerView( locale );
-			view.render();
-
 			const event = new CustomEvent( 'color-changed', {
 				detail: {
 					value: '#ff0000'
@@ -64,34 +56,31 @@ describe( 'ColorGridView', () => {
 			clock.tick( 200 );
 
 			expect( view.input.fieldView.value ).to.equal( '#ff0000' );
-
-			view.destroy();
-		} );
-
-		it( 'should update color picker state after changes in input', async () => {
-			const view = new ColorPickerView( locale );
-			view.render();
-
-			view.input.fieldView.value = '#ff0000';
-			view.input.fieldView.fire( 'input' );
-
-			clock.tick( 200 );
-
-			expect( view.color ).to.equal( '#ff0000' );
-			view.destroy();
 		} );
 	} );
 
-	describe( '#color', () => {
-		it( 'should get current color from color picker component', () => {
-			const view = new ColorPickerView( locale );
-			view.render();
+	it( 'should update color property after changes in input', () => {
+		view.input.fieldView.value = '#ff0000';
+		view.input.fieldView.fire( 'input' );
 
-			view.set( 'color', '#ff0000' );
+		clock.tick( 200 );
 
-			expect( view.color ).to.equal( '#ff0000' );
+		expect( view.color ).to.equal( '#ff0000' );
+	} );
 
-			view.destroy();
+	describe( 'color property', () => {
+		it( 'should be initialized with a proper value', () => {
+			expect( view.color ).to.be.equal( '' );
+		} );
+
+		it( 'should be observable', () => {
+			const observableSpy = testUtils.sinon.spy();
+
+			view.on( 'change:color', observableSpy );
+
+			view.color = '#ff0000';
+
+			sinon.assert.calledOnce( observableSpy );
 		} );
 	} );
 } );
