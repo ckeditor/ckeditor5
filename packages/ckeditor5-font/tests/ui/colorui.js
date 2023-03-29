@@ -368,4 +368,40 @@ describe( 'ColorUI', () => {
 			}
 		} );
 	} );
+
+	describe( 'config', () => {
+		let editor, editorElement, dropdown;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: {
+						...testColorConfig,
+						colorPicker: false
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
+					dropdown = editor.ui.componentFactory.create( 'testColor' );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		describe( 'colorPicker', () => {
+			it( 'can be turned off', async () => {
+				expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
+			} );
+		} );
+	} );
 } );
