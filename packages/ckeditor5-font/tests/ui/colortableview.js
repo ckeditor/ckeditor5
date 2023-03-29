@@ -82,8 +82,7 @@ describe( 'ColorTableView', () => {
 			columns: 5,
 			removeButtonLabel: 'Remove color',
 			documentColorsLabel: 'Document colors',
-			documentColorsCount: 4,
-			hasColorPicker: true
+			documentColorsCount: 4
 		} );
 		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
@@ -151,6 +150,14 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
+			expect( colorTableView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'appendGrids()', () => {
+		it( 'shouldn\'t duplicate views if called more than once', () => {
+			colorTableView.appendGrids();
+			colorTableView.appendGrids();
 			expect( colorTableView.items.length ).to.equal( 4 );
 		} );
 	} );

@@ -120,13 +120,7 @@ export function addColorTableToDropdown(
 	}
 ): ColorTableView {
 	const locale = dropdownView.locale!;
-	const colorTableView = new ColorTableView( locale, {
-		colors,
-		columns,
-		removeButtonLabel,
-		documentColorsLabel,
-		documentColorsCount
-	} );
+	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } );
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );

@@ -177,7 +177,7 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
-		it( 'should execute command if color is changed', async () => {
+		it( 'should execute command if the color gets changed', async () => {
 			const spy = sinon.spy( editor, 'execute' );
 
 			dropdown.colorTableView.colorPickerView.color = '#a37474';

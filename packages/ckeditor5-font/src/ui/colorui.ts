@@ -142,7 +142,7 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			// Grids rendering is deferred once dropdown gets open (#6192).
+			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
 			let dropdownContentRendered = false;
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
