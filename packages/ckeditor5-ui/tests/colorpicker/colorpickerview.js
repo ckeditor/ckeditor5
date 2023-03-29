@@ -94,4 +94,74 @@ describe( 'ColorGridView', () => {
 			view.destroy();
 		} );
 	} );
+
+	describe( '#setColor()', () => {
+		const pickerOutputFormats = [ 'hex', 'rgb', 'hsl', 'hwb', 'lab', 'lch' ];
+		const testColors = {
+			hex: '#E64C4C',
+			hsl: 'hsl(0, 75%, 60%)'
+			// rgb: '',
+			// hwb: '',
+			// lab: '',
+			// lch: ''
+		};
+
+		pickerOutputFormats.forEach( format => {
+			describe( `when picker output is set to ${ format }`, () => {
+				for ( const color in testColors ) {
+					describe( `and color is in ${ color } format`, () => {
+						let view;
+
+						beforeEach( () => {
+							view = new ColorPickerView( locale, format );
+							view.render();
+						} );
+
+						it( 'should set hex color on component', () => {
+							view.setColor( 'hsl(0, 75%, 60%)' );
+
+							expect( view.color ).to.equal( '#E64C4C' );
+						} );
+
+						it( 'should set hex color on picker', () => {
+							view.setColor( 'hsl(0, 75%, 60%)' );
+
+							expect( view.element.firstChild.getAttribute( 'color' ) ).to.equal( '#E64C4C' );
+						} );
+
+						it( 'should set hex color in input', () => {
+							view.setColor( 'hsl(0, 75%, 60%)' );
+
+							expect( view.input.fieldView.value ).to.equal( '#E64C4C' );
+						} );
+					} );
+				}
+			} );
+		} );
+	} );
+
+	describe( '#_debouncePickerEvent()', () => {
+		const pickerOutputFormats = [ 'hex', 'rgb', 'hsl', 'hwb', 'lab', 'lch' ];
+
+		pickerOutputFormats.forEach( format => {
+			describe( `when picker output is set to ${ format }`, () => {
+				let view;
+
+				beforeEach( () => {
+					view = new ColorPickerView( locale, format );
+					view.render();
+				} );
+
+				it( 'should fire change event with color in the configured format', () => {
+					const spy = sinon.spy();
+					view.on( 'change', spy );
+					// const spy = sinon.spy;
+
+					view._debouncePickerEvent( '#E64C4C' );
+
+					// expect( spy.)
+				} );
+			} );
+		} );
+	} );
 } );
