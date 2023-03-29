@@ -54,7 +54,7 @@ module.exports = function checkPackagesCodeCoverage( options ) {
 
 	if ( options.runFrameworkTests ) {
 		console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
-		[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName, options.packagesDir ) );
+		[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
 	}
 
 	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
@@ -87,7 +87,7 @@ module.exports = function checkPackagesCodeCoverage( options ) {
 	travisFolder.end( 'typescript-compilation' );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
-	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, options.packagesDir, [ '--resolve-js-first', '--cache' ] ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--resolve-js-first', '--cache' ] ) );
 
 	if ( shouldUploadCoverageReport( options.uploadCoverage ) ) {
 		console.log( 'Uploading combined code coverage report…' );
@@ -120,19 +120,11 @@ module.exports = function checkPackagesCodeCoverage( options ) {
  * @param {String} Directory containing feature packages to test.
  * @param {Array.<String>} testArgs additional arguments to pass into test script.
  */
-function checkPackage( fullPackageName, packagesDir, testArgs = [] ) {
+function checkPackage( fullPackageName, testArgs = [] ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
 	travisFolder.start( foldLabelName, yellow( `Testing ${ fullPackageName }` ) );
-
-	runSubprocess( {
-		binaryName: 'npx',
-		cliArguments: [ 'ckeditor5-dev-dependency-checker', path.join( packagesDir, fullPackageName ) ],
-		packageName: simplePackageName,
-		checkName: 'dependency',
-		failMessage: 'have a dependency problem'
-	} );
 
 	runSubprocess( {
 		binaryName: 'yarn',

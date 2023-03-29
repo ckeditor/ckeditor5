@@ -65,9 +65,9 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
 
-	// Linters.
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
+	exec( 'yarn', 'run', 'check-dependencies' );
 
 	if ( shortFlow ) {
 		process.exit();
