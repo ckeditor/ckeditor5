@@ -41,7 +41,9 @@ ClassicEditor
 		},
 		list: {
 			properties: {
-				styles: true
+				styles: true,
+				startIndex: true,
+				reversed: true
 			}
 		},
 		cloudServices: CS_CONFIG
