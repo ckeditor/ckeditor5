@@ -59,7 +59,7 @@ Both ways enable resize handles by default.
 
 In this case, the user is able to choose from a set of predefined options. These options can be displayed in form of a dropdown in the image toolbar available after the user clicks the image.
 
-To use this option, you need to [enable image resizing](#installation) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}. Then add the dropdown to the image toolbar configuration.
+To use this option, you need to [enable image resizing](#installation) and configure the available {@link module:image/imageconfig~ImageConfig#resizeOptions resize options}. Then add the dropdown to the image toolbar configuration.
 
 ```js
 const imageConfiguration = {
@@ -100,7 +100,7 @@ The example of CSS fixing the image aspect ratio is in the [last example](#aspec
 
 In this case, the resize options are displayed in the form of separate buttons. The benefit of this solution is the smoothest UX as the user needs just one click to resize an image.
 
-To use this option, you need to [enable image resizing](#installation) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}. Then add appropriate buttons to the image toolbar configuration.
+To use this option, you need to [enable image resizing](#installation) and configure the available {@link module:image/imageconfig~ImageConfig#resizeOptions resize options}. Then add appropriate buttons to the image toolbar configuration.
 
 ```js
 const imageConfiguration = {
