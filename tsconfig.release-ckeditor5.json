@@ -3,6 +3,10 @@
  */
 {
   "extends": "./tsconfig.release.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "emitDeclarationOnly": true
+  },
   "include": [
     "./src/",
     "./typings/"
