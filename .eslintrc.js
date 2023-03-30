@@ -39,6 +39,16 @@ module.exports = {
 			rules: {
 				'ckeditor5-rules/ckeditor-imports': 'off'
 			}
+		},
+		// Temporarily disable checking the "ckeditor5-rules/no-build-extensions" rule.
+		{
+			files: [
+				'docs/**/*.@(js|ts)',
+				'packages/*/docs/**/*.@(js|ts)'
+			],
+			rules: {
+				'ckeditor5-rules/no-build-extensions': 'off'
+			}
 		}
 	]
 };
