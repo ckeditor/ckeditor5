@@ -347,8 +347,8 @@ CKEditor 5 development environment uses [ESLint](https://eslint.org) and [stylel
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/2.13.1/user-guide/configuring#disabling-rules-with-inline-comments).
-* [CKEditor 5 ESLint preset](https://github.com/ckeditor/eslint-config-ckeditor5/blob/master/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
-* [CKEditor 5 stylelint preset](https://github.com/ckeditor/stylelint-config-ckeditor5/blob/master/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
+* [CKEditor 5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor 5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -1030,3 +1030,35 @@ class ClassWithSecrets {
 	private _shouldNotBeEmitted: string;
 }
 ```
+
+### Importing a predefined build: `ckeditor5-rules/no-build-extensions`
+
+<info-box info>
+	This rule only applies to code snippets from the documentation.
+</info-box>
+
+While importing a predefined build, only this build is allowed to be imported, like this:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+```
+
+Importing anything from the `src` directory, in order to extend a CKEditor 5 build, is not allowed. Other directories from a predefined builds are not published on npm, so such imports will not work.
+
+👎&nbsp; Examples of an incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+```
+
+```js
+// Assume we edit a file located in the path: `docs/_snippets/features/placeholder.js`.
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
