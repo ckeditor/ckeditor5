@@ -21,7 +21,7 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 <summary>View editor configuration script</summary>
 
 ```js
-import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root/src/ckeditor';
+import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
 
 MultiRootEditor
 	.create(
