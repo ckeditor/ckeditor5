@@ -30,6 +30,9 @@ export abstract class ReplaceCommandBase extends Command {
 		this.isEnabled = true;
 
 		this._state = state;
+
+		// Since this command executes on particular result independent of selection, it should be checked directly in execute block.
+		this.stopListening( this.editor.model.document.selection, 'change' );
 	}
 
 	public abstract override execute( ...args: Array<unknown> ): void;
@@ -45,6 +48,11 @@ export abstract class ReplaceCommandBase extends Command {
 
 		model.change( writer => {
 			const range = result.marker!.getRange();
+
+			// Don't replace a result that is in non-editable place.
+			if ( !model.isSelectableEditable( range ) ) {
+				return;
+			}
 
 			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
 			if ( range.root.rootName === '$graveyard' ) {

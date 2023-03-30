@@ -98,6 +98,17 @@ export default class Command extends ObservableMixin() {
 			this.refresh();
 		} );
 
+		// By default commands are disabled when selection is in non-editable place.
+		this.listenTo( this.editor.model.document.selection, 'change', () => {
+			const isEditable = this.editor.model.isSelectableEditable( this.editor.model.document.selection );
+
+			if ( !isEditable && this.affectsData ) {
+				this.forceDisabled( 'selectionNonEditable' );
+			} else {
+				this.clearForceDisabled( 'selectionNonEditable' );
+			}
+		} );
+
 		this.on<CommandExecuteEvent>( 'execute', evt => {
 			if ( !this.isEnabled ) {
 				evt.stop();

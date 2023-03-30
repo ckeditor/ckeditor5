@@ -17,7 +17,8 @@ import {
 } from 'ckeditor5/src/core';
 import {
 	CKEditorError,
-	getDataFromElement,
+	getDataFromElement, isIterable,
+	type ObservableChangeEvent,
 	setDataInElement
 } from 'ckeditor5/src/utils';
 
@@ -27,7 +28,17 @@ import MultiRootEditorUI from './multirooteditorui';
 import MultiRootEditorUIView from './multirooteditoruiview';
 
 import { isElement as _isElement } from 'lodash-es';
-import { type RootElement, type Writer } from 'ckeditor5/src/engine';
+import {
+	Selection,
+	DocumentSelection,
+	Node,
+	Range,
+	Position,
+	type RootElement,
+	type Selectable,
+	type Writer,
+	type ModelIsSelectableEditableEvent
+} from 'ckeditor5/src/engine';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
@@ -77,6 +88,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
+	 * @observable
+	 */
+	declare public readOnlyRootLocks: Map<string, Set<symbol | string>>;
+
+	/**
 	 * Creates an instance of the multi-root editor.
 	 *
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
@@ -105,6 +121,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this.sourceElements = {};
 		}
 
+		this.set( 'readOnlyRootLocks', new Map() );
+
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			// Create initial data object containing data from all roots.
 			const initialData: Record<string, string> = {};
@@ -125,6 +143,14 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		for ( const rootName of rootNames ) {
 			// Create root and `UIView` element for each editable container.
 			this.model.document.createRoot( '$root', rootName );
+
+			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+
+			editableRootElement.unbind( 'isReadOnly' );
+			editableRootElement.bind( 'isReadOnly' ).to( this, 'isReadOnly', this, 'readOnlyRootLocks',
+				( isReadOnly, readOnlyRootLocks ) => {
+					return isReadOnly || readOnlyRootLocks.has( rootName );
+				} );
 		}
 
 		if ( this.config.get( 'rootsAttributes' ) ) {
@@ -194,6 +220,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				}
 			}
 		} );
+
+		this.listenTo<ModelIsSelectableEditableEvent>( this.model, 'isSelectableEditable', ( evt, [ selectable ] ) => {
+			evt.return = this.isSelectableEditable( selectable );
+			evt.stop();
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -479,6 +510,76 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		}
 
 		return rootsAttributes;
+	}
+
+	public isSelectableEditable( selectable: Selectable ): boolean {
+		const rootNamesToCheck: Set<string | undefined> = new Set();
+
+		if ( this.isReadOnly ) {
+			return false;
+		}
+
+		if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
+			rootNamesToCheck.add( selectable.getFirstPosition() ? selectable.getFirstPosition()!.root.rootName : undefined );
+			rootNamesToCheck.add( selectable.getLastPosition() ? selectable.getLastPosition()!.root.rootName : undefined );
+		} else if ( selectable instanceof Range ) {
+			rootNamesToCheck.add( selectable.start.root.rootName );
+			rootNamesToCheck.add( selectable.end.root.rootName );
+		} else if ( selectable instanceof Position ) {
+			rootNamesToCheck.add( selectable.root.rootName );
+		} else if ( selectable instanceof Node ) {
+			rootNamesToCheck.add( selectable.rootName );
+		} else if ( isIterable( selectable ) ) {
+			for ( const range of selectable as Iterable<Range> ) {
+				rootNamesToCheck.add( range.start.root.rootName );
+				rootNamesToCheck.add( range.end.root.rootName );
+			}
+		} else {
+			// selectable is null
+			return false;
+		}
+
+		for ( const rootName of rootNamesToCheck ) {
+			if ( rootName === undefined ) {
+				continue;
+			}
+
+			if ( this.readOnlyRootLocks.has( rootName ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public enableRoot( rootName: string, lockId: string | symbol = 'multi-root-default-lock' ): void {
+		const locksForGivenRoot = this.readOnlyRootLocks.get( rootName );
+
+		if ( !locksForGivenRoot || !locksForGivenRoot.has( lockId ) ) {
+			return;
+		}
+
+		if ( locksForGivenRoot.size === 1 ) {
+			this.readOnlyRootLocks.delete( rootName );
+			this.fire<ObservableChangeEvent>( 'change:readOnlyRootLocks', 'readOnlyRootLocks',
+				this.readOnlyRootLocks, this.readOnlyRootLocks );
+		} else {
+			locksForGivenRoot.delete( lockId );
+		}
+	}
+
+	public disableRoot( rootName: string, lockId: string | symbol = 'multi-root-default-lock' ): void {
+		const locksForGivenRoot = this.readOnlyRootLocks.get( rootName );
+
+		if ( locksForGivenRoot ) {
+			if ( !locksForGivenRoot.has( lockId ) ) {
+				locksForGivenRoot.add( lockId );
+			}
+		} else {
+			this.readOnlyRootLocks.set( rootName, new Set( [ lockId ] ) );
+			this.fire<ObservableChangeEvent>( 'change:readOnlyRootLocks', 'readOnlyRootLocks',
+				this.readOnlyRootLocks, this.readOnlyRootLocks );
+		}
 	}
 
 	/**

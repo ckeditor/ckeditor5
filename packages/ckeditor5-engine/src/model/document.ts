@@ -25,7 +25,8 @@ import {
 	Collection,
 	EmitterMixin,
 	isInsideSurrogatePair,
-	isInsideCombinedSymbol
+	isInsideCombinedSymbol,
+	ObservableMixin
 } from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'lodash-es';
@@ -50,7 +51,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export default class Document extends EmitterMixin() {
+export default class Document extends ObservableMixin( EmitterMixin() ) {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */
@@ -86,6 +87,11 @@ export default class Document extends EmitterMixin() {
 	 * A flag that indicates whether the selection has changed since last change block.
 	 */
 	private _hasSelectionChangedFromTheLastChangeBlock: boolean;
+
+	/**
+	 * @observable
+	 */
+	declare public isReadOnly: boolean;
 
 	/**
 	 * Creates an empty document instance with no {@link #roots} (other than

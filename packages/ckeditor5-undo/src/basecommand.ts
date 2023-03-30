@@ -45,6 +45,9 @@ export default abstract class BaseCommand extends Command {
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
 
+		// This command should not depend on selection change.
+		this.stopListening( this.editor.model.document.selection, 'change' );
+
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.
 		this.listenTo<DataControllerSetEvent>( editor.data, 'set', ( evt, data ) => {

@@ -7,7 +7,7 @@
  * @module mention/mentioncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Range } from 'ckeditor5/src/engine';
 import { CKEditorError, toMap } from 'ckeditor5/src/utils';
 
@@ -51,6 +51,13 @@ import type { MentionAttribute } from './mention';
  *	```
  */
 export default class MentionCommand extends Command {
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		// Since this command may pass range in execution parameters, it should be checked directly in execute block.
+		this.stopListening( this.editor.model.document.selection, 'change' );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -83,6 +90,11 @@ export default class MentionCommand extends Command {
 		const mentionID = mentionData.id;
 
 		const range = options.range || selection.getFirstRange();
+
+		// Don't execute command if range is in non-editable place.
+		if ( !model.isSelectableEditable( range ) ) {
+			return;
+		}
 
 		const mentionText = options.text || mentionID;
 

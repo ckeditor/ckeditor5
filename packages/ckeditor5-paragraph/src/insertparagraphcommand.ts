@@ -7,7 +7,7 @@
  * @module paragraph/insertparagraphcommand
  */
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { Element, Position } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -28,6 +28,13 @@ import type { Element, Position } from '@ckeditor/ckeditor5-engine';
  * **Note**: This command moves the selection to the inserted paragraph.
  */
 export default class InsertParagraphCommand extends Command {
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		// Since this command passes position in execution block instead of selection, it should be checked directly.
+		this.stopListening( this.editor.model.document.selection, 'change' );
+	}
+
 	/**
 	 * Executes the command.
 	 *
@@ -44,6 +51,11 @@ export default class InsertParagraphCommand extends Command {
 		const attributes = options.attributes;
 
 		let position = options.position;
+
+		// Don't execute command if position is in non-editable place.
+		if ( !model.isSelectableEditable( position ) ) {
+			return;
+		}
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );

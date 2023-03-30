@@ -162,10 +162,9 @@ export default class ClipboardPipeline extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		// Pasting and dropping is disabled when editor is in the read-only mode.
-		// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+		// Pasting and dropping is disabled when selection is in non-editable place.
 		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', evt => {
-			if ( editor.isReadOnly ) {
+			if ( !editor.model.isSelectableEditable( editor.model.document.selection ) ) {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
@@ -268,9 +267,9 @@ export default class ClipboardPipeline extends Plugin {
 
 		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
 		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => {
-			// Cutting is disabled when editor is in the read-only mode.
+			// Cutting is disabled when selection is in non-editable place.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
-			if ( editor.isReadOnly ) {
+			if ( editor.model.isSelectableEditable( editor.model.document.selection ) ) {
 				data.preventDefault();
 			} else {
 				onCopyCut( evt, data );

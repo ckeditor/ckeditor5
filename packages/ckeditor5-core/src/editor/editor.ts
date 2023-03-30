@@ -303,6 +303,7 @@ export default abstract class Editor extends ObservableMixin() {
 		this.once<EditorDestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
 		this.model = new Model();
+		this.model.document.bind( 'isReadOnly' ).to( this );
 
 		const stylesProcessor = new StylesProcessor();
 

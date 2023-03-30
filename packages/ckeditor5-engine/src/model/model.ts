@@ -167,6 +167,8 @@ export default class Model extends ObservableMixin() {
 			evt.return = insertObject( this, element, selection, options );
 		} );
 
+		this.decorate( 'isSelectableEditable' );
+
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.document );
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
@@ -824,6 +826,10 @@ export default class Model extends ObservableMixin() {
 		return false;
 	}
 
+	public isSelectableEditable( selectable: Selectable ): boolean {
+		return !this.document.isReadOnly;
+	}
+
 	/**
 	 * Creates a position from the given root and path in that root.
 	 *
@@ -1247,3 +1253,5 @@ export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelec
  * @param args The arguments passed to the original method.
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;
+
+export type ModelIsSelectableEditableEvent = DecoratedMethodEvent<Model, 'isSelectableEditable'>;

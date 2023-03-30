@@ -91,7 +91,7 @@ export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
 export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
 export type { default as Item } from './model/item';
-export type { default as Node } from './model/node';
+export { default as Node } from './model/node';
 export type { default as RootElement } from './model/rootelement';
 export type {
 	default as Schema,
@@ -100,7 +100,7 @@ export type {
 	AttributeProperties,
 	SchemaItemDefinition
 } from './model/schema';
-export type { default as Selection, Selectable } from './model/selection';
+export { default as Selection, type Selectable } from './model/selection';
 export type { default as TypeCheckable } from './model/typecheckable';
 export type { default as Writer } from './model/writer';
 
@@ -115,7 +115,8 @@ export type {
 	ModelGetSelectedContentEvent,
 	ModelInsertContentEvent,
 	ModelInsertObjectEvent,
-	ModelModifySelectionEvent
+	ModelModifySelectionEvent,
+	ModelIsSelectableEditableEvent
 } from './model/model';
 export type { SelectionChangeRangeEvent } from './model/selection';
 

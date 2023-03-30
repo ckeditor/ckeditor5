@@ -7,7 +7,7 @@
  * @module paragraph/paragraphcommand
  */
 
-import { Command } from '@ckeditor/ckeditor5-core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
 
 import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
@@ -16,6 +16,13 @@ import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ck
  * The paragraph command.
  */
 export default class ParagraphCommand extends Command {
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		// Since this command may pass selection in execution block, it should be checked directly.
+		this.stopListening( this.editor.model.document.selection, 'change' );
+	}
+
 	/**
 	 * The value of the command. Indicates whether the selection start is placed in a paragraph.
 	 *
@@ -52,7 +59,14 @@ export default class ParagraphCommand extends Command {
 		const document = model.document;
 
 		model.change( writer => {
-			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
+			const selection = options.selection || document.selection;
+
+			// Don't execute command if selection is in non-editable place.
+			if ( !model.isSelectableEditable( selection ) ) {
+				return;
+			}
+
+			const blocks = selection.getSelectedBlocks();
 
 			for ( const block of blocks ) {
 				if ( !block.is( 'element', 'paragraph' ) && checkCanBecomeParagraph( block, model.schema ) ) {
