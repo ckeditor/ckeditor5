@@ -30,23 +30,31 @@ cleanReleaseArtifacts( options ).then(
  *
  * @aram {Object} options
  * @aram {String} options.cwd An absolute path to the repository where to look for packages.
+ * @aram {Array.<String>} options[ 'js-packages' ] Short name of packages that are written in JavaScript.
  * @returns {Promise}
  */
 async function cleanReleaseArtifacts( options ) {
 	const typeScriptPackages = await findTypeScriptPackages( options.cwd );
+	const jsPackages = options[ 'js-packages' ];
 
 	// CKEditor 5 packages.
 	const typeScriptPatterns = typeScriptPackages.map( pkg => {
+		let filesToRemove = '@(js|js.map|d.ts)';
+
+		if ( jsPackages.includes( pkg ) ) {
+			filesToRemove = '@(js.map|d.ts)';
+		}
+
 		return [
 			// Ignore the `lib/` directory in each package.
-			`packages/${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
+			`packages/${ pkg }/src/!(lib)/**/*.${ filesToRemove }`,
 			// Remove files from in the `src/` directory.
-			`packages/${ pkg }/src/*.@(js|js.map|d.ts)`
+			`packages/${ pkg }/src/*.${ filesToRemove }`
 		];
 	} );
 
-	// The root directory.
-	typeScriptPatterns.push( 'src/*.@(js|js.map|d.ts)' );
+	// The root directory (mostly `ckeditor5` package).
+	typeScriptPatterns.push( 'src/*.@(js.map|d.ts)' );
 
 	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
@@ -133,17 +141,23 @@ function removeFiles( pattern ) {
 function parseArguments( args ) {
 	const config = {
 		string: [
-			'cwd'
+			'cwd',
+			'js-packages'
 		],
 
 		default: {
-			cwd: process.cwd()
+			cwd: process.cwd(),
+			'js-packages': []
 		}
 	};
 
 	const options = minimist( args, config );
 
 	options.cwd = path.resolve( options.cwd );
+
+	if ( !Array.isArray( options[ 'js-packages' ] ) ) {
+		options[ 'js-packages' ] = options[ 'js-packages' ].split( ',' );
+	}
 
 	return options;
 }
