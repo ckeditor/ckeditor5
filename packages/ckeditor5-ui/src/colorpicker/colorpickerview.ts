@@ -27,7 +27,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * Color picker component.
 	 */
-	declare public picker: ColorPickerType;
+	declare public picker: HTMLElement;
 
 	/**
 	 * Input to defining custom colors in HEX.
@@ -76,6 +76,9 @@ export default class ColorPickerView extends View {
 		} );
 
 		const waitingTime = 150;
+		// this._debounceColorPickerEvent = debounce( ( color: string ) => {
+		// 	this.set( 'color', color );
+		// }, waitingTime );
 
 		this._debouncePickerEvent = debounce( this._setColorFromPicker, waitingTime );
 		this._debounceInputEvent = debounce( this._setColorFromInput, waitingTime );
@@ -93,14 +96,16 @@ export default class ColorPickerView extends View {
 		const parsedColor: { space: string; values: Array<number> } = parse( color );
 
 		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-			this.fire( 'change', { value: color } );
+			// this.fire( 'change', { value: color } );
+			this.set( 'color', color );
 
 			return;
 		}
 
 		const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
-		this.fire( 'change', { value: outputColor } );
+		// this.fire( 'change', { value: outputColor } );
+		this.set( 'color', outputColor );
 	}
 
 	/**
@@ -113,15 +118,18 @@ export default class ColorPickerView extends View {
 		const parsedColor: { space: string; values: Array<number> } = parse( color );
 
 		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-			this.fire( 'change', { value: color } );
-			this.setColor( color );
+			// this.fire( 'change', { value: color } );
+			this.set( 'color', color );
+			// this.setColor( color );
 
 			return;
 		}
 
 		const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
-		this.fire( 'change', { value: outputColor } );
+		// this.fire( 'change', { value: outputColor } );
+
+		this.set( 'color', outputColor );
 	}
 
 	// Sets color in the color picker.
@@ -242,8 +250,4 @@ type CustomEvent = Event & {
 	detail: {
 		value: string;
 	};
-};
-
-type ColorPickerType = HTMLElement & {
-	color: string;
 };

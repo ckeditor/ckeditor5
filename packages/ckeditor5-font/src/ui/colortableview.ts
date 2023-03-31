@@ -77,15 +77,9 @@ export default class ColorTableView extends View {
 	 * The maximum number of colors in the document colors section.
 	 * If it equals 0, the document colors section is not added.
 	 *
-	 */
-	public documentColorsCount?: number;
-
-	/**
-	 * If true, color picker should not be displayed.
-	 *
 	 * @readonly
 	 */
-	public isColorPickerDisabled?: boolean;
+	public documentColorsCount?: number;
 
 	/**
 	 * Color picker allows to select custom colors.
@@ -156,13 +150,12 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, isColorPickerDisabled, colorPickerOutputFormat }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerOutputFormat }: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			isColorPickerDisabled?: boolean;
 			colorPickerOutputFormat?: ColorPickerOutputFormat;
 		}
 	) {
@@ -179,10 +172,6 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
-		this.isColorPickerDisabled = isColorPickerDisabled;
-
-		this.colorPickerOutputFormat = colorPickerOutputFormat;
-		this.colorPickerView = new ColorPickerView( locale, this.colorPickerOutputFormat );
 
 		this._focusables = new ViewCollection();
 
@@ -200,6 +189,7 @@ export default class ColorTableView extends View {
 		} );
 
 		this._documentColorsLabel = documentColorsLabel;
+		this.colorPickerOutputFormat = colorPickerOutputFormat;
 
 		this.setTemplate( {
 			tag: 'div',
@@ -261,10 +251,6 @@ export default class ColorTableView extends View {
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
-
-		if ( this.colorPickerView ) {
-			this.colorPickerView.setColor( selectedColor );
-		}
 	}
 
 	/**
@@ -294,6 +280,7 @@ export default class ColorTableView extends View {
 		if ( this.staticColorsGrid ) {
 			return;
 		}
+
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		this.items.add( this.staticColorsGrid );
@@ -320,13 +307,23 @@ export default class ColorTableView extends View {
 			this.items.add( this.documentColorsGrid );
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
-
-			if ( !this.isColorPickerDisabled && this.colorPickerView ) {
-				// Render a color picker
-				this.colorPickerView.render();
-				this.items.add( this.colorPickerView );
-			}
 		}
+	}
+
+	public appendColorPicker(): void {
+		if ( this.colorPickerView ) {
+			return;
+		}
+
+		const colorPickerView = new ColorPickerView( this.locale, this.colorPickerOutputFormat );
+		this.colorPickerView = colorPickerView;
+		this.colorPickerView.render();
+
+		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
+			colorPickerView.color = value;
+		} );
+
+		this.items.add( this.colorPickerView );
 	}
 
 	/**

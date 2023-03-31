@@ -19,6 +19,7 @@ import {
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
+import type { FontColorConfig } from '../fontconfig';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -95,10 +96,11 @@ export default class ColorUI extends Plugin {
 		const locale = editor.locale;
 		const t = locale.t;
 		const command: FontColorCommand | FontBackgroundColorCommand = editor.commands.get( this.commandName )!;
-		const colorsConfig = normalizeColorOptions( ( editor.config.get( this.componentName )! ).colors! );
+		const componentConfig = editor.config.get( this.componentName )! as FontColorConfig;
+		const colorsConfig = normalizeColorOptions( componentConfig.colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
-		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` )!;
-		const isColorPickerDisabled = editor.config.get( `${ this.componentName }` )!.colorPicker === false ? true : false;
+		const documentColorsCount = componentConfig.documentColors;
+		const hasColorPicker = componentConfig.colorPicker !== false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -116,9 +118,7 @@ export default class ColorUI extends Plugin {
 				columns: this.columns,
 				removeButtonLabel: t( 'Remove color' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
-				isColorPickerDisabled,
-				colorPickerOutputFormat: this.editor.config.get( this.componentName )!.colorPickerFormat
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
@@ -142,9 +142,25 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
+			let dropdownContentRendered = false;
+
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
-				// Grids rendering is deferred (#6192).
-				dropdownView.colorTableView!.appendGrids();
+				if ( !dropdownContentRendered ) {
+					dropdownContentRendered = true;
+
+					dropdownView.colorTableView!.appendGrids();
+
+					if ( hasColorPicker ) {
+						dropdownView.colorTableView!.appendColorPicker();
+
+						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+							editor.execute( this.commandName, {
+								value: newValue
+							} );
+						} );
+					}
+				}
 
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
@@ -153,14 +169,6 @@ export default class ColorUI extends Plugin {
 					this.colorTableView!.updateSelectedColors();
 				}
 			} );
-
-			if ( dropdownView.colorTableView!.colorPickerView ) {
-				dropdownView.colorTableView!.colorPickerView.on( 'change', ( evt, data ) => {
-					if ( data.value ) {
-						editor.execute( this.commandName, data );
-					}
-				} );
-			}
 
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(

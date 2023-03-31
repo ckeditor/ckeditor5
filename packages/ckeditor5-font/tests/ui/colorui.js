@@ -5,7 +5,7 @@
 
 /* global document */
 
-import TestColorPlugin, { FontColorPlugin } from '../_utils/testcolorplugin';
+import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -177,12 +177,12 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
-		it( 'should execute command if color is changed', async () => {
+		it( 'should execute command if the color gets changed', async () => {
 			const spy = sinon.spy( editor, 'execute' );
 
-			dropdown.colorTableView.colorPickerView.fire( 'change', { value: '#a37474' } );
+			dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -367,52 +367,28 @@ describe( 'ColorUI', () => {
 					} );
 			}
 		} );
+	} );
 
-		describe( 'disable color picker', () => {
-			let editor, editorElement;
+	describe( 'config.colorPicker', () => {
+		it( 'can be turned off', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
-			beforeEach( () => {
-				editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
+			const customizedEditor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: {
+						...testColorConfig,
+						colorPicker: false
+					}
+				} );
 
-				return createLocalizedEditor( editorElement )
-					.then( localizedEditor => {
-						editor = localizedEditor;
-					} );
-			} );
+			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
 
-			afterEach( () => {
-				editorElement.remove();
+			editorElement.remove();
+			await customizedEditor.destroy();
 
-				return editor.destroy();
-			} );
-
-			it( 'Color picker should not be rendered', () => {
-				const spy = sinon.spy( dropdown.colorTableView.colorPickerView, 'render' );
-				dropdown.fire( 'change:isOpen' );
-
-				sinon.assert.notCalled( spy );
-			} );
-
-			function createLocalizedEditor( editorElement ) {
-				return ClassicTestEditor
-					.create( editorElement, {
-						plugins: [ FontColorPlugin ],
-						fontColor: {
-							colorPicker: false,
-							...testColorConfig
-						},
-						toolbar: [ 'fontColor' ],
-						language: 'pl'
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'fontColor' );
-						command = editor.commands.get( 'fontColorCommand' );
-
-						return editor;
-					} );
-			}
+			expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
 		} );
 	} );
 } );

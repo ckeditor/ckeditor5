@@ -116,7 +116,6 @@ export function addColorTableToDropdown( {
 	removeButtonLabel,
 	documentColorsLabel,
 	documentColorsCount,
-	isColorPickerDisabled,
 	colorPickerOutputFormat
 }: {
 	dropdownView: ColorTableDropdownView;
@@ -125,7 +124,6 @@ export function addColorTableToDropdown( {
 	removeButtonLabel: string;
 	documentColorsLabel?: string;
 	documentColorsCount?: number;
-	isColorPickerDisabled?: boolean;
 	colorPickerOutputFormat?: ColorPickerOutputFormat;
 } ): ColorTableView {
 	const locale = dropdownView.locale!;
@@ -135,7 +133,6 @@ export function addColorTableToDropdown( {
 		removeButtonLabel,
 		documentColorsLabel,
 		documentColorsCount,
-		isColorPickerDisabled,
 		colorPickerOutputFormat
 	} );
 
