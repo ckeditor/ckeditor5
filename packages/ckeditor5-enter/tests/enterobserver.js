@@ -9,9 +9,8 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import EnterObserver from '../src/enterobserver';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils';
-import { getCode } from '@ckeditor/ckeditor5-utils';
+import { getCode, env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EnterObserver', () => {
 	let view, viewDocument, enterSpy;
@@ -112,6 +111,23 @@ describe( 'EnterObserver', () => {
 		expect( enterSpy.secondCall.args[ 1 ] ).to.have.property( 'isSoft', false );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/13321.
+	it( 'should handle the insertParagraph input type and fire the enter event if shift key was pressed before in Safari', () => {
+		sinon.stub( env, 'isSafari' ).value( true );
+
+		fireKeyEvent( 'shift', { shiftKey: true }, 'keydown' );
+		fireKeyEvent( 'shift', { shiftKey: false }, 'keyup' );
+		fireKeyEvent( 'enter', { shiftKey: false }, 'keydown' );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.calledOnce( enterSpy );
+		sinon.assert.calledWithMatch( enterSpy, {}, { isSoft: false } );
+		expect( enterSpy.firstCall.args[ 1 ] ).to.have.property( 'isSoft', false );
+	} );
+
 	it( 'should never preventDefault() the beforeinput event', () => {
 		let interceptedEventData;
 
@@ -165,8 +181,8 @@ describe( 'EnterObserver', () => {
 		} ).to.not.throw();
 	} );
 
-	function fireKeyEvent( key, options ) {
-		viewDocument.fire( 'keydown', {
+	function fireKeyEvent( key, options, type = 'keydown' ) {
+		viewDocument.fire( type, {
 			keyCode: getCode( key ),
 			preventDefault: () => {},
 			domTarget: document.body,
