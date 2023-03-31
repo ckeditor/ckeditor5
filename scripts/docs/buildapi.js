@@ -44,6 +44,9 @@ function getConfig() {
 			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
 			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
 
+			// Ignore not a direct sources.
+			'!external/collaboration-features/packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
+
 			// Ignore builds.
 			'!packages/ckeditor5-build-*/src/**/*.ts',
 			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.ts',
