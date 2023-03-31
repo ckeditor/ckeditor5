@@ -26,10 +26,9 @@ Using TypeScript you're getting autocomplete for CKEditor 5 APIs. It helps to pr
 Running the editor doesn't differ much when using Typescript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
 
 ### Running the editor
+Here is an example of the classic editor build initialization:
 
-Here is an example of the usage of the classic build of CKEditor 5
-
-``` js
+```ts
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
@@ -40,7 +39,7 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 ```
 
 <info-box warning>
-Custom builds produced by online builders do not provide types yet.
+Custom builds produced by online builder do not provide types yet.
 </info-box>
 
 
@@ -52,7 +51,7 @@ If you want to integrate CKEditor 5 directly in your TypeScript project then ple
 * {@link installation/advanced/integrating-from-source-vite Integrarion from source using Vite}
 
 
-## How to build plugins using TypeScript.
+## Developing plugins using TypeScript
 
 CKEditor 5's API can be quite extensive and complex, but using TypeScript can make it easier to work with.
 
