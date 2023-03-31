@@ -247,6 +247,18 @@ npm init vue@latest ckeditor5-vue-example
 
 This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding Typescript. Choose your preferred options.
 
+```
+Vue.js - The Progressive JavaScript Framework
+
+✔ Add TypeScript? … No / Yes
+✔ Add JSX Support? … No / Yes
+✔ Add Vue Router for Single Page Application development? … No / Yes
+✔ Add Pinia for state management? … No / Yes
+✔ Add Vitest for Unit Testing? … No / Yes
+✔ Add an End-to-End Testing Solution? › No
+✔ Add ESLint for code quality? … No / Yes
+```
+
 #### Installing necessary packages
 
 You need two packages to use CKEditor from source with Vue and Vite: the official Vue component and the Vite plugin.
@@ -261,15 +273,16 @@ Install necessary packages using the following command.
 npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue
 ```
 
-#### Configuring `vite.config.js`
+#### Configuring `vite.config.js` / `vite.config.ts`
 
-Configuring CKEditor with Vue and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+Configuring CKEditor with Vue and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins. In the case of TypeScript, the config can remain the same. The only difference is the extension - `.ts`.
 
-```js
-// vite.config.js
+```ts
+// vite.config.js / vite.config.ts
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
@@ -282,13 +295,13 @@ export default defineConfig( {
       '@': fileURLToPath( new URL( './src', import.meta.url ) )
     }
   }
-} )
+} );
 ```
 
 The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
 
-```js
-// vite.config.js
+```ts
+// vite.config.js / vite.config.ts
 
 import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
@@ -298,11 +311,38 @@ Now, your setup with Vite and Vue is complete. You can also check how to configu
 
 ### Webpack
 
-This guide assumes that you are using [Vue CLI 4.5.0+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
+This guide assumes that you are using [Vue CLI 4.5.0+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command. You can install the Vue CLI using the below command.
+
+```bash
+npm install -g @vue/cli
+```
 
 <info-box>
 	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
+
+To create a new project, run:
+
+```bash
+vue create ckeditor5-vue-example
+```
+
+You can choose the default preset for quick setup. You can also "manually select features" to pick features you need, like TypeScript.
+
+```
+? Please pick a preset: Manually select features
+? Check the features needed for your project:
+(Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)
+ ◉ Babel
+❯◉ TypeScript
+ ◯ Progressive Web App (PWA) Support
+ ◯ Router
+ ◯ Vuex
+ ◯ CSS Pre-processors
+ ◉ Linter / Formatter
+ ◯ Unit Testing
+ ◯ E2E Testing
+```
 
 #### Configuring `vue.config.js`
 
@@ -319,9 +359,12 @@ npm install --save \
     raw-loader@4
 ```
 
-Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
+Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`). And if you're using TypeScript, the configuration can remain the same.
+
 
 ```js
+// vue.config.js
+
 const path = require( 'path' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -415,13 +458,18 @@ npm install --save \
 	@ckeditor/ckeditor5-theme-lark
 ```
 
+#### JavaScript
+
 You can use more packages, depending on which features are needed in your application.
 
 ```js
+// main.js
+
 import { createApp } from 'vue';
+import App from './App.vue';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 
-createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
+createApp( App ).use( CKEditor ).mount( '#app' );
 ```
 
 <info-box>
@@ -431,6 +479,8 @@ createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
 
 ```html
+<!-- App.vue -->
+
 <template>
 	<div id="app">
 		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
@@ -478,6 +528,75 @@ Now all you need to do is specify the list of rich text editor options (**includ
 	};
 </script>
 ```
+
+#### TypeScript
+
+You must make a few tweaks if you chose TypeScript during project initialization. First, change the main file extension to `.ts`.
+
+```ts
+// main.ts
+
+import { createApp } from 'vue';
+import App from './App.vue';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
+createApp( App ).use( CKEditor ).mount( '#app' );
+```
+
+Then, besides specifying the list of rich text editor options, add the `lang` property to the Vue component.
+
+```html
+<!-- App.vue -->
+
+<template>
+  <div id="app">
+      <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+  </div>
+</template>
+
+<script lang="ts">
+  // ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
+  // Since we're building CKEditor from source, we use the source version of ClassicEditor.
+  import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
+  import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+  import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+  import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+  import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+  import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+  export default {
+      name: 'app',
+      data() {
+          return {
+              editor: ClassicEditor,
+              editorData: '<p>Content of the editor.</p>',
+              editorConfig: {
+                  plugins: [
+                      EssentialsPlugin,
+                      BoldPlugin,
+                      ItalicPlugin,
+                      LinkPlugin,
+                      ParagraphPlugin
+                  ],
+
+                  toolbar: {
+                      items: [
+                          'bold',
+                          'italic',
+                          'link',
+                          'undo',
+                          'redo'
+                      ]
+                  }
+              }
+          };
+      }
+  };
+</script>
+```
+
+Finally, you can build your project. Commands may differ depending on the package manager, so check the scripts section of your `package.json` file.
 
 ## Using the Document editor build
 
