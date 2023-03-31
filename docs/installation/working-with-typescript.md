@@ -24,7 +24,7 @@ Using TypeScript you're getting autocomplete for CKEditor 5 APIs. It helps to pr
 
 ## Setup
 
-Running the editor doesn't differ much when using Typescript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
+Running CKEditor 5 doesn't differ much when using Typescript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
 
 ### Running the editor
 Here is an example of the classic editor build initialization:
