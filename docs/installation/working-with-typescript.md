@@ -6,6 +6,7 @@
 
 category: installation
 order: 29
+menu-title: TypeScript support
 modified_at: 2023-03-29
 ---
 
