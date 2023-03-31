@@ -10,7 +10,7 @@ menu-title: TypeScript support
 modified_at: 2023-03-29
 ---
 
-# TypeScript support
+# TypeScript support in CKEditor 5
 
 CKEditor 5 is built using TypeSript and so has native types definition.
 
