@@ -49,7 +49,7 @@ Custom builds produced by online builder do not provide types yet.
 If you want to integrate CKEditor 5 directly in your TypeScript project then please follow the instructions for integrating from source using webpack and Vite.
 
 * {@link installation/advanced/integrating-from-source-webpack Integration from source using webpack}
-* {@link installation/advanced/integrating-from-source-vite Integrarion from source using Vite}
+* {@link installation/advanced/integrating-from-source-vite Integration from source using Vite}
 
 
 ## Developing plugins using TypeScript
