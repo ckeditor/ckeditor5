@@ -144,7 +144,7 @@ export default class FileUploader extends EmitterMixin() {
 		xhr.addEventListener( 'error', onError( 'Network Error' ) );
 		xhr.addEventListener( 'abort', onError( 'Abort' ) );
 
-		/* istanbul ignore else */
+		/* istanbul ignore else -- @preserve */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', event => {
 				if ( event.lengthComputable ) {

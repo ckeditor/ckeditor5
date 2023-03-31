@@ -255,6 +255,8 @@ export default class Position extends TypeCheckable {
 		// Compare both path arrays to find common ancestor.
 		const result = compareArrays( thisPath, otherPath );
 
+		// TODO try ignoring a single case
+		/* istanbul ignore next -- @preserve */
 		switch ( result ) {
 			case 'prefix':
 				return 'before';
@@ -262,7 +264,6 @@ export default class Position extends TypeCheckable {
 			case 'extension':
 				return 'after';
 
-			/* istanbul ignore next */
 			case 'same':
 				// Already covered by `this.isEqual` above. Added so TypeScript can infer `result` as number in `default` case.
 				return 'same';

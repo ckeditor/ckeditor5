@@ -275,7 +275,7 @@ function findListMarkerNode( element: ViewElement ): ViewText | null {
 		return ( textNodeOrElement as any ).getChild( 0 );
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	return null;
 }
 

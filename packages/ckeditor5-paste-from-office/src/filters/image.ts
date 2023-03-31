@@ -191,7 +191,7 @@ function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocum
 
 	function containsMatchingImg( nodes: Iterable<ViewNode>, id: string ): boolean {
 		for ( const node of nodes ) {
-			/* istanbul ignore else */
+			/* istanbul ignore else -- @preserve */
 			if ( node.is( 'element' ) ) {
 				if ( node.name == 'img' && node.getAttribute( 'v:shapes' ) == id ) {
 					return true;
@@ -208,7 +208,7 @@ function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocum
 
 	function findSrc( shape: ViewElement ) {
 		for ( const child of shape.getChildren() ) {
-			/* istanbul ignore else */
+			/* istanbul ignore else -- @preserve */
 			if ( child.is( 'element' ) && child.getAttribute( 'src' ) ) {
 				return child.getAttribute( 'src' );
 			}

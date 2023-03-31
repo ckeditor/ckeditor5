@@ -209,7 +209,7 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	private _reportInfiniteLoop() {
 	// @if CK_DEBUG //		throw new Error(
 	// @if CK_DEBUG //			'Selection change observer detected an infinite rendering loop.\n\n' +
