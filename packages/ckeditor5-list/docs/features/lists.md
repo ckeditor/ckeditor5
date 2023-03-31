@@ -13,9 +13,9 @@ The list feature lets you create ordered (numbered) and unordered (bulleted) lis
 
 ## Demo
 
-Use the editor below to see the CKEditor 5 list feature in action. Toolbar buttons can be used to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
+Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
 
-A Markdown code provided by the {@link features/autoformat autoformatting feature} can also be utilized:
+You can also use Markdown code recognized by the {@link features/autoformat autoformatting feature}:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
 * Start a line with `1.` or `1)` followed by a space for a numbered list.
@@ -42,11 +42,11 @@ In addition to the basic functionality of creating the ordered and unordered lis
 
 ### List styles
 
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 #### Demo
 
-In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
+In the editor below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
 
 {@snippet features/lists-style}
 
@@ -54,11 +54,11 @@ In the editor below use the ordered or unordered list dropdown to choose the des
 
 The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
 
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
+When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
 #### Demo
 
-In the editor below, notice how the ordering is continued in the second list. You can go to the first item of the last list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index to achieve continuous numbering of spaceships.
+In the editor below, notice how the ordering continues in the second list. For continuous numbering of spaceships, go to the first item of the last list. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
 
 {@snippet features/lists-index}
 
@@ -66,11 +66,11 @@ In the editor below, notice how the ordering is continued in the second list. Yo
 
 The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
-When this feature is {@link module:list/listproperties~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
+When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
 
 #### Demo
 
-Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether it should be reversed.
+Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether the numbering order should be reversed.
 
 {@snippet features/lists-reversed}
 

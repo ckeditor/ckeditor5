@@ -46,73 +46,9 @@ describe( 'MultiRootEditorUI', () => {
 			expect( view.isRendered ).to.be.true;
 		} );
 
-		describe( 'editables', () => {
-			it( 'registers view.editables #element in the editor focus tracker', () => {
-				ui.focusTracker.isFocused = false;
-
-				view.editables.foo.element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
-
-				ui.focusTracker.isFocused = false;
-
-				view.editables.bar.element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
-			} );
-
-			it( 'sets view.editables #name', () => {
-				const editableFoo = editor.editing.view.document.getRoot( 'foo' );
-				const editableBar = editor.editing.view.document.getRoot( 'bar' );
-
-				expect( view.editables.foo.name ).to.equal( editableFoo.rootName );
-				expect( view.editables.bar.name ).to.equal( editableBar.rootName );
-			} );
-
-			it( 'registers editable elements', () => {
-				expect( ui.getEditableElement( 'foo' ) ).to.equal( view.editables.foo.element );
-				expect( ui.getEditableElement( 'bar' ) ).to.equal( view.editables.bar.element );
-			} );
-
-			it( 'attaches editable UI as view\'s DOM root', () => {
-				expect( editor.editing.view.getDomRoot( 'foo' ) ).to.equal( view.editables.foo.element );
-				expect( editor.editing.view.getDomRoot( 'bar' ) ).to.equal( view.editables.bar.element );
-			} );
-		} );
-
-		it( 'sets placeholder from editor.config.placeholder - string', () => {
-			return MultiRootEditor
-				.create( { foo: '', bar: '' }, {
-					extraPlugins: [ Paragraph ],
-					placeholder: 'Type here...'
-				} )
-				.then( newEditor => {
-					const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-					expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
-
-					const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-					expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
-
-					return newEditor.destroy();
-				} );
-		} );
-
-		it( 'sets placeholder from editor.config.placeholder - object', () => {
-			return MultiRootEditor
-				.create( { foo: '', bar: '' }, {
-					extraPlugins: [ Paragraph ],
-					placeholder: {
-						foo: 'Type foo...',
-						bar: 'Type bar...'
-					}
-				} )
-				.then( newEditor => {
-					const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
-					expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
-
-					const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
-					expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type bar...' );
-
-					return newEditor.destroy();
-				} );
+		it( 'adds initial editables', () => {
+			expect( ui.getEditableElement( 'foo' ) ).not.to.be.null;
+			expect( ui.getEditableElement( 'bar' ) ).not.to.be.null;
 		} );
 
 		describe( 'view.toolbar', () => {
@@ -191,6 +127,189 @@ describe( 'MultiRootEditorUI', () => {
 						} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'addEditable()', () => {
+		describe( 'editable', () => {
+			let editable, element;
+
+			beforeEach( () => {
+				editor.model.document.createRoot( '$root', 'new' ); // It is required to create model root first.
+				editable = view.createEditable( 'new' );
+				element = editable.element;
+				ui.addEditable( editable );
+			} );
+
+			it( 'registers `editable#element` in the editor focus tracker', () => {
+				ui.focusTracker.isFocused = false;
+
+				element.dispatchEvent( new Event( 'focus' ) );
+				expect( ui.focusTracker.isFocused ).to.true;
+
+				ui.focusTracker.isFocused = false;
+
+				element.dispatchEvent( new Event( 'focus' ) );
+				expect( ui.focusTracker.isFocused ).to.true;
+			} );
+
+			it( 'sets view.editables #name', () => {
+				expect( editable.name ).to.equal( 'new' );
+			} );
+
+			it( 'registers editable element', () => {
+				expect( ui.getEditableElement( 'new' ) ).to.equal( element );
+			} );
+
+			it( 'attaches editable UI as view DOM root', () => {
+				expect( editor.editing.view.getDomRoot( 'new' ) ).to.equal( element );
+			} );
+		} );
+
+		describe( 'placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '' }, {
+						extraPlugins: [ Paragraph ],
+						placeholder: 'Type here...'
+					} )
+					.then( newEditor => {
+						ui = newEditor.ui;
+						view = ui.view;
+
+						// Initial editables:
+						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+
+						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
+						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+
+						// New editable:
+						// Placeholder set to the string value from the config.
+						newEditor.model.change( writer => {
+							writer.addRoot( 'new' );
+							const editable = view.createEditable( 'new' );
+							ui.addEditable( editable );
+						} );
+
+						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
+						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets placeholder from editor.config.placeholder - object', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '', baz: '' }, {
+						extraPlugins: [ Paragraph ],
+						placeholder: {
+							foo: 'Type foo...',
+							bar: 'Type bar...',
+							abc: 'Type abc...'
+						}
+					} )
+					.then( newEditor => {
+						ui = newEditor.ui;
+						view = ui.view;
+
+						// Initial roots:
+						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+
+						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
+						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type bar...' );
+
+						// Placeholder not set as it was not defined in the config object.
+						const bazP = newEditor.editing.view.document.getRoot( 'baz' ).getChild( 0 );
+						expect( bazP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+
+						// New editable:
+						// Placeholder as it was defined in the config objects.
+						newEditor.model.change( writer => {
+							writer.addRoot( 'abc' );
+							const editable = view.createEditable( 'abc' );
+							ui.addEditable( editable );
+						} );
+
+						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type abc...' );
+
+						// Placeholder not set as it was not defined in the config object.
+						newEditor.model.change( writer => {
+							writer.addRoot( 'new' );
+							const editable = view.createEditable( 'new' );
+							ui.addEditable( editable );
+						} );
+
+						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
+						expect( newP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets placeholder as given in the parameter', () => {
+				return MultiRootEditor
+					.create( { foo: '' }, {
+						extraPlugins: [ Paragraph ],
+						placeholder: {
+							foo: 'Type foo...',
+							abc: 'Type abc...'
+						}
+					} )
+					.then( newEditor => {
+						ui = newEditor.ui;
+						view = ui.view;
+
+						// Placeholder as set in the parameter, even when defined in config:
+						newEditor.model.change( writer => {
+							writer.addRoot( 'abc' );
+							const editable = view.createEditable( 'abc' );
+							ui.addEditable( editable, 'Abc...' );
+						} );
+
+						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Abc...' );
+
+						// Placeholder as set in the parameter, when not defined in config:
+						newEditor.model.change( writer => {
+							writer.addRoot( 'new' );
+							const editable = view.createEditable( 'new' );
+							ui.addEditable( editable, 'New...' );
+						} );
+
+						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
+						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'New...' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+	} );
+
+	describe( 'removeEditable()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = ui.getEditableElement( 'foo' );
+			ui.removeEditable( ui.view.editables.foo );
+			ui.view.removeEditable( 'foo' );
+		} );
+
+		it( 'deregisters `editable#element` in the editor focus tracker', () => {
+			ui.focusTracker.isFocused = false;
+
+			element.dispatchEvent( new Event( 'focus' ) );
+			expect( ui.focusTracker.isFocused ).to.be.false;
+		} );
+
+		it( 'deregisters editable element', () => {
+			expect( ui.getEditableElement( 'foo' ) ).to.be.undefined;
+		} );
+
+		it( 'detaches editable UI from view DOM root', () => {
+			expect( editor.editing.view.getDomRoot( 'foo' ) ).to.be.undefined;
 		} );
 	} );
 

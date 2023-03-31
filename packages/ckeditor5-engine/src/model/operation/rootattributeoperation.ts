@@ -27,27 +27,23 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export default class RootAttributeOperation extends Operation {
 	/**
 	 * Root element to change.
-	 *
-	 * @readonly
 	 */
-	public root: RootElement;
+	public readonly root: RootElement;
 
 	/**
 	 * Key of an attribute to change or remove.
-	 *
-	 * @readonly
 	 */
-	public key: string;
+	public readonly key: string;
 
 	/**
-	 * Old value of the attribute with given key or `null` if adding a new attribute.
+	 * Old value of the attribute with given key or `null`, if attribute was not set before.
 	 *
 	 * @readonly
 	 */
 	public oldValue: unknown;
 
 	/**
-	 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
+	 * New value of the attribute with given key or `null`, if operation should remove attribute.
 	 *
 	 * @readonly
 	 */
@@ -59,8 +55,8 @@ export default class RootAttributeOperation extends Operation {
 	 * @see module:engine/model/operation/attributeoperation~AttributeOperation
 	 * @param root Root element to change.
 	 * @param key Key of an attribute to change or remove.
-	 * @param oldValue Old value of the attribute with given key or `null` if adding a new attribute.
-	 * @param newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
+	 * @param oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
+	 * @param newValue New value of the attribute with given key or `null`, if operation should remove attribute.
 	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
@@ -75,8 +71,8 @@ export default class RootAttributeOperation extends Operation {
 
 		this.root = root;
 		this.key = key;
-		this.oldValue = oldValue;
-		this.newValue = newValue;
+		this.oldValue = oldValue === undefined ? null : oldValue;
+		this.newValue = newValue === undefined ? null : newValue;
 	}
 
 	/**
@@ -131,7 +127,7 @@ export default class RootAttributeOperation extends Operation {
 
 		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
 			/**
-			 * The attribute which should be removed does not exists for the given node.
+			 * The attribute which should be removed does not exist for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
 			 * @param root
@@ -192,7 +188,7 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * Creates RootAttributeOperation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `RootAttributeOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.

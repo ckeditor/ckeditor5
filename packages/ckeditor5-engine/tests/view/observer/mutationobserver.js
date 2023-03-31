@@ -66,6 +66,23 @@ describe( 'MutationObserver', () => {
 		expect( domAdditionalRoot.childNodes[ 0 ].data ).to.equal( 'foobar' );
 	} );
 
+	it( 'should allow to stop observing a DOM element', () => {
+		const { domRoot: domAdditionalRoot } = setupRoot( 'additional' );
+
+		mutationObserver.stopObserving( domRoot );
+
+		domAdditionalRoot.innerHTML = 'foobar';
+		domRoot.innerHTML = 'abcabc';
+
+		mutationObserver.flush();
+
+		// Explanation:
+		// Mutation observer is listening on `domAdditionalRoot`. Because of that, the changes done to it are reverted.
+		// Mutation observer was disabled for `domRoot`. Because of that, changes done to it are kept.
+		expect( domAdditionalRoot.innerHTML ).to.equal( '<br data-cke-filler="true">' );
+		expect( domRoot.innerHTML ).to.equal( 'abcabc' );
+	} );
+
 	it( 'should handle bold', () => {
 		const domB = document.createElement( 'b' );
 

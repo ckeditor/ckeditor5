@@ -363,13 +363,13 @@ export default class Renderer extends ObservableMixin() {
 			this.domConverter.viewChildrenToDom( viewElement, { withChildren: false } )
 		);
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
-		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren );
+		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areSimilarElements );
 
-		if ( actions.indexOf( 'replace' ) !== -1 ) {
+		if ( actions.indexOf( 'update' ) !== -1 ) {
 			const counter = { equal: 0, insert: 0, delete: 0 };
 
 			for ( const action of actions ) {
-				if ( action === 'replace' ) {
+				if ( action === 'update' ) {
 					const insertIndex = counter.equal + counter.insert;
 					const deleteIndex = counter.equal + counter.delete;
 					const viewChild = viewElement.getChild( insertIndex );
@@ -663,17 +663,9 @@ export default class Renderer extends ObservableMixin() {
 
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 
-		// The rendering is not disabled on Android in the composition mode.
-		// Composition events are not cancellable and browser will modify the DOM tree.
-		// On Android composition events are immediately applied to the model, so we don't need to skip rendering,
-		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
-		// Since the composition is fragile and often breaks if the composed text node is replaced while composing
-		// we need to make sure that we update the existing text node and not replace it with another one.
-		// We don't want to change the behavior on other browsers for safety, but maybe one day cause it seems to make sense.
-		// https://github.com/ckeditor/ckeditor5/issues/12455.
-		const actions = env.isAndroid ?
-			this._findReplaceActions( diff, actualDomChildren, expectedDomChildren, { replaceText: true } ) :
-			diff;
+		// We need to make sure that we update the existing text node and not replace it with another one.
+		// The composition and different "language" browser extensions are fragile to text node being completely replaced.
+		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areTextNodes );
 
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
@@ -693,7 +685,7 @@ export default class Renderer extends ObservableMixin() {
 				// @if CK_DEBUG_TYPING // }
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
 				remove( actualDomChildren[ i ] );
-			} else if ( action === 'equal' || action === 'replace' ) {
+			} else if ( action === 'equal' || action === 'update' ) {
 				i++;
 			}
 		}
@@ -712,7 +704,7 @@ export default class Renderer extends ObservableMixin() {
 				i++;
 			}
 			// Update the existing text node data. Note that replace action is generated only for Android for now.
-			else if ( action === 'replace' ) {
+			else if ( action === 'update' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
 				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
@@ -774,22 +766,22 @@ export default class Renderer extends ObservableMixin() {
 	 * @param actions Actions array which is a result of the {@link module:utils/diff~diff} function.
 	 * @param actualDom Actual DOM children
 	 * @param expectedDom Expected DOM children.
-	 * @param options Options
-	 * @param options.replaceText Mark text nodes replacement.
-	 * @returns Actions array modified with the `replace` actions.
+	 * @param comparator A comparator function that should return `true` if the given node should be reused
+	 * (either by the update of a text node data or an element children list for similar elements).
+	 * @returns Actions array modified with the `update` actions.
 	 */
-	private _findReplaceActions(
+	private _findUpdateActions(
 		actions: Array<DiffResult>,
 		actualDom: Array<DomNode> | NodeList,
 		expectedDom: Array<DomNode>,
-		options: { replaceText?: boolean } = {}
-	): Array<DiffResult | 'replace'> {
+		comparator: ( a: DomNode, b: DomNode ) => boolean
+	): Array<DiffResult | 'update'> {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
 		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
 			return actions;
 		}
 
-		let newActions: Array<DiffResult | 'replace'> = [];
+		let newActions: Array<DiffResult | 'update'> = [];
 		let actualSlice = [];
 		let expectedSlice = [];
 
@@ -802,10 +794,12 @@ export default class Renderer extends ObservableMixin() {
 				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
 			} else { // equal
 				newActions = newActions.concat(
-					diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
-						.map( x => x === 'equal' ? 'replace' : x )
+					diff( actualSlice, expectedSlice, comparator )
+						.map( action => action === 'equal' ? 'update' : action )
 				);
+
 				newActions.push( 'equal' );
+
 				// Reset stored elements on 'equal'.
 				actualSlice = [];
 				expectedSlice = [];
@@ -814,8 +808,8 @@ export default class Renderer extends ObservableMixin() {
 		}
 
 		return newActions.concat(
-			diff( actualSlice, expectedSlice, options.replaceText ? areTextNodes : areSimilar )
-				.map( x => x === 'equal' ? 'replace' : x )
+			diff( actualSlice, expectedSlice, comparator )
+				.map( action => action === 'equal' ? 'update' : action )
 		);
 	}
 
@@ -1096,7 +1090,7 @@ function addInlineFiller( domDocument: DomDocument, domParentOrArray: DomNode | 
  * Whether two DOM nodes should be considered as similar.
  * Nodes are considered similar if they have the same tag name.
  */
-function areSimilar( node1: DomNode, node2: DomNode ): boolean {
+function areSimilarElements( node1: DomNode, node2: DomNode ): boolean {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
 		!isComment( node1 ) && !isComment( node2 ) &&

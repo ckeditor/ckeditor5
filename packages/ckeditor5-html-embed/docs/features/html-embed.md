@@ -10,7 +10,7 @@ The HTML embed feature lets you embed any HTML snippet in your content. The feat
 
 ## Demo
 
-Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
 
@@ -73,9 +73,9 @@ ClassicEditor
 
 ### Content previews
 
-The feature is by default configured to not show previews of the HTML snippets. The previews can be enabled by setting the {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
+The feature is by default configured to not show previews of the HTML snippets. The previews can be enabled by setting the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
 
-However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
+However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
 
 ```js
 ClassicEditor
@@ -121,7 +121,7 @@ In some cases, advanced users can be instructed to never paste HTML code from un
 
 #### Sanitizer
 
-The {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
+The {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
 
 Some popular JavaScript libraries that can be used include [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) and [`DOMPurify`](https://www.npmjs.com/package/dompurify).
 

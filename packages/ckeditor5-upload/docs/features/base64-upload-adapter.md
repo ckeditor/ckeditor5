@@ -18,7 +18,7 @@ Therefore using the `Base64` feature is a less efficient option to use than some
 
 ## Demo
 
-Use the editor below to see the adapter in action. Open the web browser console and click the button below to see the base64–encoded image in the editor output data.
+Use the editor below to see the adapter in action. Open the web browser console and click the button below the editor to see the base64–encoded image in the editor output data.
 
 {@snippet features/base64-upload}
 
@@ -69,7 +69,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 #### Client-side configuration
 
-Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. You can customize this behavior to accept, for example, SVG files (in this case use `svg+xml` type).
 

@@ -194,6 +194,13 @@ export default class SelectionObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
+	public override stopObserving( domElement: HTMLElement ): void {
+		this.stopListening( domElement );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override destroy(): void {
 		super.destroy();
 

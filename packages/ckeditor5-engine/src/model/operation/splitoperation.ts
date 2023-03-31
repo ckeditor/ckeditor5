@@ -226,7 +226,7 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
-	 * Creates `SplitOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `SplitOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.

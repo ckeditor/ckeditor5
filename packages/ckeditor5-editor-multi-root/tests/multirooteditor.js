@@ -17,6 +17,7 @@ import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -345,6 +346,474 @@ describe( 'MultiRootEditor', () => {
 				} );
 			} );
 		}
+	} );
+
+	describe( 'addRoot()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { foo: '' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should add a model root with given root name using operations', () => {
+			const document = editor.model.document;
+			const version = document.version;
+
+			editor.addRoot( 'bar' );
+
+			const root = document.getRoot( 'bar' );
+
+			expect( root ).not.to.be.null;
+			expect( root.isAttached() ).to.be.true;
+
+			const op = document.history.getOperation( version );
+			expect( op.type ).to.equal( 'addRoot' );
+			expect( op.rootName ).to.equal( 'bar' );
+
+			expect( editor.getData( { rootName: 'bar' } ) ).to.equal( '' );
+
+			// By default, `addRoot()` is not undoable.
+			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+		} );
+
+		it( 'should init the root with given data', () => {
+			editor.addRoot( 'bar', { data: '<p>Foo.</p>' } );
+
+			expect( editor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Foo.</p>' );
+		} );
+
+		it( 'should add a model root with given element name', () => {
+			editor.addRoot( 'bar', { elementName: 'div' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.name ).to.equal( 'div' );
+		} );
+
+		it( 'should add a model root with given attributes', () => {
+			editor.addRoot( 'bar', { attributes: { order: 20, isLocked: true } } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.getAttribute( 'order' ) ).to.equal( 20 );
+			expect( root.getAttribute( 'isLocked' ) ).to.be.true;
+		} );
+
+		it( 'should add a model root which can be undone by undo feature if `isUndoable` is set to `true`', () => {
+			editor.addRoot( 'bar', { data: '<p>Foo.</p>', isUndoable: true } );
+
+			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+
+			editor.execute( 'undo' );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root ).not.to.be.null;
+			expect( root.isAttached() ).to.be.false;
+		} );
+	} );
+
+	describe( 'detachRoot()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { foo: '<p>Foo.</p>', bar: '<p>Bar.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should detach given model root using operations', () => {
+			const document = editor.model.document;
+
+			editor.detachRoot( 'bar' );
+
+			const root = document.getRoot( 'bar' );
+
+			expect( root ).not.to.be.null;
+			expect( root.isAttached() ).to.be.false;
+
+			const op = document.history.getOperation( document.version - 1 );
+			expect( op.type ).to.equal( 'detachRoot' );
+			expect( op.rootName ).to.equal( 'bar' );
+
+			expect( editor.getData( { rootName: 'bar' } ) ).to.equal( '' );
+
+			// By default, `detachRoot()` is not undoable.
+			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+		} );
+
+		it( 'should detach given model root which can be undone by undo feature if `isUndoable` is set to `true`', () => {
+			editor.detachRoot( 'bar', true );
+
+			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+
+			editor.execute( 'undo' );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.isAttached() ).to.be.true;
+		} );
+
+		it( 'should detach a dynamically added root', () => {
+			editor.addRoot( 'new' );
+			editor.detachRoot( 'new' );
+
+			const root = editor.model.document.getRoot( 'new' );
+
+			expect( root ).not.to.be.null;
+			expect( root.isAttached() ).to.be.false;
+		} );
+	} );
+
+	describe( 'getFullData()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should return document data for all attached roots and only attached roots', () => {
+			editor.addRoot( 'new', { data: '<p>New.</p>' } );
+			editor.detachRoot( 'main' );
+			editor.addRoot( 'foo', { data: '<p>Foo.</p>' } );
+
+			const fullData = editor.getFullData();
+
+			expect( fullData ).to.deep.equal( {
+				foo: '<p>Foo.</p>',
+				new: '<p>New.</p>'
+			} );
+		} );
+
+		it( 'should pass options flags to data controller', () => {
+			sinon.spy( editor.data, 'get' );
+
+			editor.getFullData( { foo: 'bar' } );
+
+			expect( editor.data.get.calledWith( sinon.match( { foo: 'bar' } ) ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'createEditable()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { foo: '<p>Foo.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should return an HTMLElement which is updated with the downcasted model data', () => {
+			editor.addRoot( 'new' );
+
+			const element = editor.createEditable( editor.model.document.getRoot( 'new' ) );
+
+			expect( element.innerHTML ).to.equal( '<p><br data-cke-filler="true"></p>' );
+			expect( editor.getData( { rootName: 'new' } ) ).to.equal( '' );
+
+			editor.setData( { new: '<p>New.</p>' } );
+
+			expect( element.innerHTML ).to.equal( '<p>New.</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot( 'new' );
+
+				writer.insertText( 'Abc.', root.getChild( 0 ), 0 );
+			} );
+
+			expect( element.innerHTML ).to.equal( '<p>Abc.New.</p>' );
+		} );
+
+		it( 'should create editable in the editor UI view', () => {
+			editor.addRoot( 'new' );
+
+			sinon.spy( editor.ui.view, 'createEditable' );
+
+			editor.createEditable( editor.model.document.getRoot( 'new' ) );
+
+			expect( editor.ui.view.createEditable.calledOnce ).to.be.true;
+			expect( editor.ui.view.editables.new ).not.to.be.undefined;
+		} );
+
+		it( 'should add an editable to editor UI', () => {
+			editor.addRoot( 'new' );
+
+			sinon.spy( editor.ui, 'addEditable' );
+
+			editor.createEditable( editor.model.document.getRoot( 'new' ) );
+
+			expect( editor.ui.addEditable.calledOnce ).to.be.true;
+			expect( editor.ui.getEditableElement( 'new' ) ).not.to.be.null;
+		} );
+
+		it( 'should add custom placeholder to the editable', () => {
+			editor.addRoot( 'new' );
+
+			editor.createEditable( editor.model.document.getRoot( 'new' ), 'new' );
+
+			const editableElement = editor.ui.view.editables.new.element;
+
+			expect( editableElement.children[ 0 ].dataset.placeholder ).to.equal( 'new' );
+		} );
+	} );
+
+	describe( 'detachEditable()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { foo: '<p>Foo.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should detach the editable element from the model root and return the editable DOM element', () => {
+			const editableElement = editor.ui.view.editables.foo.element;
+
+			expect( editableElement.innerHTML ).to.equal( '<p>Foo.</p>' );
+
+			const returnedElement = editor.detachEditable( editor.model.document.getRoot( 'foo' ) );
+
+			expect( returnedElement ).to.equal( editableElement );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot( 'foo' );
+
+				writer.insertText( 'Bar.', root.getChild( 0 ), 'end' );
+			} );
+
+			expect( returnedElement.innerHTML ).to.equal( '<p>Foo.</p>' );
+		} );
+
+		it( 'should remove the editable from editor UI', () => {
+			sinon.spy( editor.ui, 'removeEditable' );
+
+			const editable = editor.ui.view.editables.foo;
+
+			editor.detachEditable( editor.model.document.getRoot( 'foo' ) );
+
+			expect( editor.ui.removeEditable.calledOnce ).to.be.true;
+			expect( editor.ui.removeEditable.calledWithExactly( editable ) ).to.be.true;
+		} );
+
+		it( 'should remove the editable from the editor UI view', () => {
+			sinon.spy( editor.ui.view, 'removeEditable' );
+
+			editor.detachEditable( editor.model.document.getRoot( 'foo' ) );
+
+			expect( editor.ui.view.editables.foo ).to.be.undefined;
+
+			expect( editor.ui.view.removeEditable.calledOnce ).to.be.true;
+			expect( editor.ui.view.removeEditable.calledWithExactly( 'foo' ) ).to.be.true;
+		} );
+	} );
+
+	it( 'should fire `addRoot` event when a root is added in model', done => {
+		MultiRootEditor.create( { foo: '' }, { plugins: [ Paragraph, Undo ] } ).then( editor => {
+			editor.on( 'addRoot', ( evt, root ) => {
+				expect( root.rootName ).to.equal( 'new' );
+				expect( root.name ).to.equal( 'div' );
+
+				done();
+			} );
+
+			editor.model.change( writer => {
+				writer.addRoot( 'new', 'div' );
+			} );
+
+			return editor.destroy();
+		} );
+	} );
+
+	it( 'should fire `detachRoot` event when a root is detached from model', done => {
+		MultiRootEditor.create( { foo: '' }, { plugins: [ Paragraph, Undo ] } ).then( editor => {
+			editor.on( 'detachRoot', ( evt, root ) => {
+				expect( root.rootName ).to.equal( 'foo' );
+				expect( root.name ).to.equal( '$root' );
+
+				done();
+			} );
+
+			editor.model.change( writer => {
+				writer.detachRoot( 'foo' );
+			} );
+
+			return editor.destroy();
+		} );
+	} );
+
+	describe( 'EditorConfig#rootsAttributes', () => {
+		it( 'should load attributes from editor configuration', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: null },
+					bar: { order: null, isLocked: false }
+				}
+			} );
+
+			const fooRoot = editor.model.document.getRoot( 'foo' );
+			const barRoot = editor.model.document.getRoot( 'bar' );
+
+			expect( fooRoot.getAttribute( 'order' ) ).to.equal( 10 );
+			expect( fooRoot.hasAttribute( 'isLocked' ) ).to.be.false;
+
+			expect( barRoot.hasAttribute( 'order' ) ).to.be.false;
+			expect( barRoot.getAttribute( 'isLocked' ) ).to.be.false;
+
+			await editor.destroy();
+		} );
+
+		it( 'should throw when trying to set an attribute on non-existing root', done => {
+			MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					abc: { order: 10, isLocked: null }
+				}
+			} ).then(
+				() => {
+					expect.fail( 'Expected multi-root-editor-root-attributes-no-root to be thrown.' );
+				},
+				err => {
+					assertCKEditorError( err, 'multi-root-editor-root-attributes-no-root' );
+				}
+			)
+				.then( done )
+				.catch( done );
+		} );
+	} );
+
+	describe( '#getRootsAttributes()', () => {
+		it( 'should return current values of roots attributes', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: true },
+					bar: { order: 20, isLocked: false }
+				}
+			} );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'order', 30, editor.model.document.getRoot( 'foo' ) );
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				bar: {
+					isLocked: true,
+					order: 20
+				},
+				foo: {
+					isLocked: true,
+					order: 30
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not return roots attributes that were not specified in config', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: true },
+					bar: { order: 20, isLocked: false }
+				}
+			} );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'keyA', 'foo', editor.model.document.getRoot( 'foo' ) );
+				writer.setAttribute( 'keyB', 'bar', editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				bar: {
+					isLocked: false,
+					order: 20
+				},
+				foo: {
+					isLocked: true,
+					order: 10
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should properly handle null values', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: null },
+					bar: { order: null, isLocked: false }
+				}
+			} );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'foo' ) );
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				bar: {
+					isLocked: false,
+					order: null
+				},
+				foo: {
+					isLocked: true,
+					order: 10
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should return attributes for all and only currently attached roots', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: true },
+					bar: { order: 20, isLocked: false }
+				}
+			} );
+
+			editor.detachRoot( 'bar' );
+			editor.addRoot( 'abc', { attributes: { order: 30 } } );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				abc: {
+					isLocked: null,
+					order: 30
+				},
+				foo: {
+					isLocked: true,
+					order: 10
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should return attributes added while adding roots', async () => {
+			// Empty multi-root, no roots, no roots attributes.
+			editor = await MultiRootEditor.create( {} );
+
+			editor.addRoot( 'foo', { attributes: { order: 10, isLocked: null } } );
+			editor.addRoot( 'bar', { attributes: { order: null, isLocked: true } } );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'order', 30, editor.model.document.getRoot( 'foo' ) );
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				bar: {
+					isLocked: true,
+					order: null
+				},
+				foo: {
+					isLocked: null,
+					order: 30
+				}
+			} );
+
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'destroy', () => {

@@ -7,10 +7,10 @@ The Markdown plugin lets you switch the default output from HTML to Markdown. Th
 
 ## Demo
 
-The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. Use the editor to create your content and see the Markdown output displayed as you type below the editor.
+The editor below is configured to output GitHub Flavored Markdown. Edit the content and see how the Markdown output changes (you can find it below the editor).
 
 <info-box info>
-	Please observe that the source editing feature in the demo below is a {@link features/source-editing separate plugin}. If you would like to use it in your integration, it needs to be installed separately.
+	Please note that the source editing feature in the demo below is a {@link features/source-editing separate plugin}. If you would like to use it in your integration, you need to install it separately.
 </info-box>
 
 {@snippet features/markdown}
