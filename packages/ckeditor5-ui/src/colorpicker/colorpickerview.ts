@@ -23,6 +23,8 @@ import * as convert from 'color-convert';
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
 
+const waitingTime = 150;
+
 export default class ColorPickerView extends View {
 	/**
 	 * Color picker component.
@@ -40,27 +42,15 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
-	 * @TODO
-	 */
-	declare public outputColorFormat: ColorPickerOutputFormat;
-
-	/**
-	* Debounced event method. The `pickerEvent()` method is called the specified `waitingTime` after `debouncedPickerEvent()` is called,
-	* unless a new action happens in the meantime.
+	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
+	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
-	declare private _debouncePickerEvent: DebouncedFunc<( arg: string ) => void>;
+	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
-	/**
-	* Debounced event method. The `inputEvent()` method is called the specified `waitingTime` after `debouncedInputEvent()` is called,
-	* unless a new action happens in the meantime.
-	*/
-	declare private _debounceInputEvent: DebouncedFunc<( arg: string ) => void>;
-
-	constructor( locale: Locale | undefined, colorPickerFormat?: ColorPickerOutputFormat ) {
+	constructor( locale: Locale | undefined ) {
 		super( locale );
 
 		this.set( 'color', '' );
-		this.outputColorFormat = colorPickerFormat || 'hsl';
 
 		this.input = this._createInput();
 
@@ -75,13 +65,46 @@ export default class ColorPickerView extends View {
 			children
 		} );
 
-		const waitingTime = 150;
-		// this._debounceColorPickerEvent = debounce( ( color: string ) => {
-		// 	this.set( 'color', color );
-		// }, waitingTime );
+		this._debounceColorPickerEvent = debounce( ( color: string ) => {
+			this.set( 'color', color );
+		}, waitingTime );
 
-		this._debouncePickerEvent = debounce( this._setColorFromPicker, waitingTime );
-		this._debounceInputEvent = debounce( this._setColorFromInput, waitingTime );
+		// Sets color in the picker if color was updated.
+		this.on( 'change:color', () => {
+			this.picker.setAttribute( 'color', this.color );
+		} );
+
+		// this.on( 'set:color', ( evt, propName, newValue, oldValue ) => {
+		// 	console.log( newValue );
+		// 	console.log( oldValue );
+		// 	console.log( evt );
+
+		// 	// evt.return = '#994400';
+
+		// 	let newPickerColor;
+		// 	const color = newValue;
+
+		// 	if ( !color ) {
+		// 		newPickerColor = '';
+		// 	}
+		// 	// Color is already in hex format (e.g. coming from picker or selection), so don't convert it.
+		// 	else if ( color.startsWith( '#' ) ) {
+		// 		newPickerColor = color;
+		// 	} else {
+		// 		const parsedColor: { space: string; values: Array<number> } = parse( color );
+
+		// 		// Color is invalid - reset it.
+		// 		if ( parsedColor.space === undefined ) {
+		// 			newPickerColor = '';
+		// 		}
+		// 		// Convert the color to the default internal picker's format - hex.
+		// 		else {
+		// 			newPickerColor = convertColor( parsedColor, 'hex' );
+		// 		}
+		// 	}
+
+		// 	// this.color = newPickerColor;
+		// } );
 	}
 
 	/**
@@ -90,81 +113,81 @@ export default class ColorPickerView extends View {
 	 * @param color
 	 * @returns
 	 */
-	private _setColorFromPicker( color: string ): void {
-		this.color = color;
+	// private _setColorFromPicker( color: string ): void {
+	// 	this.color = color;
 
-		const parsedColor: { space: string; values: Array<number> } = parse( color );
+	// 	const parsedColor: { space: string; values: Array<number> } = parse( color );
 
-		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-			// this.fire( 'change', { value: color } );
-			this.set( 'color', color );
+	// 	if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+	// 		// this.fire( 'change', { value: color } );
+	// 		this.set( 'color', color );
 
-			return;
-		}
+	// 		return;
+	// 	}
 
-		const outputColor = convertColor( parsedColor, this.outputColorFormat );
+	// 	const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
-		// this.fire( 'change', { value: outputColor } );
-		this.set( 'color', outputColor );
-	}
+	// 	// this.fire( 'change', { value: outputColor } );
+	// 	this.set( 'color', outputColor );
+	// }
 
-	/**
-	 * @TODO
-	 *
-	 * @param color
-	 * @returns
-	 */
-	private _setColorFromInput( color: string ): void {
-		const parsedColor: { space: string; values: Array<number> } = parse( color );
+	// /**
+	//  * @TODO
+	//  *
+	//  * @param color
+	//  * @returns
+	//  */
+	// private _setColorFromInput( color: string ): void {
+	// 	const parsedColor: { space: string; values: Array<number> } = parse( color );
 
-		if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
-			// this.fire( 'change', { value: color } );
-			this.set( 'color', color );
-			// this.setColor( color );
+	// 	if ( !parsedColor.space || parsedColor.space === this.outputColorFormat ) {
+	// 		// this.fire( 'change', { value: color } );
+	// 		this.set( 'color', color );
+	// 		// this.setColor( color );
 
-			return;
-		}
+	// 		return;
+	// 	}
 
-		const outputColor = convertColor( parsedColor, this.outputColorFormat );
+	// 	const outputColor = convertColor( parsedColor, this.outputColorFormat );
 
-		// this.fire( 'change', { value: outputColor } );
+	// 	// this.fire( 'change', { value: outputColor } );
 
-		this.set( 'color', outputColor );
-	}
+	// 	this.set( 'color', outputColor );
+	// }
 
-	// Sets color in the color picker.
-	public setColor( color: string | undefined ): void {
-		let newPickerColor: string;
+	// // Sets color in the color picker.
+	// public setColor( color: string | undefined ): void {
+	// 	let newPickerColor: string;
 
-		// E.g. selection without color.
-		if ( !color ) {
-			newPickerColor = '';
-		}
-		// Color is already in hex format (e.g. coming from picker or selection), so don't convert it.
-		else if ( color.startsWith( '#' ) ) {
-			newPickerColor = color;
-		} else {
-			const parsedColor: { space: string; values: Array<number> } = parse( color );
+	// 	// E.g. selection without color.
+	// 	if ( !color ) {
+	// 		newPickerColor = '';
+	// 	}
+	// 	// Color is already in hex format (e.g. coming from picker or selection), so don't convert it.
+	// 	else if ( color.startsWith( '#' ) ) {
+	// 		newPickerColor = color;
+	// 	} else {
+	// 		const parsedColor: { space: string; values: Array<number> } = parse( color );
 
-			// Color is invalid - reset it.
-			if ( parsedColor.space === undefined ) {
-				newPickerColor = '';
-			}
-			// Convert the color to the default internal picker's format - hex.
-			else {
-				newPickerColor = convertColor( parsedColor, 'hex' );
-			}
-		}
+	// 		// Color is invalid - reset it.
+	// 		if ( parsedColor.space === undefined ) {
+	// 			newPickerColor = '';
+	// 		}
+	// 		// Convert the color to the default internal picker's format - hex.
+	// 		else {
+	// 			newPickerColor = convertColor( parsedColor, 'hex' );
+	// 		}
+	// 	}
 
-		this.color = newPickerColor;
+	// 	this.color = newPickerColor;
 
-		// If picker hasn't been rendered yet, don't try to set its attribute.
-		if ( !this.picker ) {
-			return;
-		}
+	// 	// If picker hasn't been rendered yet, don't try to set its attribute.
+	// 	if ( !this.picker ) {
+	// 		return;
+	// 	}
 
-		this.picker.setAttribute( 'color', newPickerColor );
-	}
+	// 	this.picker.setAttribute( 'color', newPickerColor );
+	// }
 
 	// Renders color picker in the view.
 	public override render(): void {
@@ -180,7 +203,7 @@ export default class ColorPickerView extends View {
 		this.picker.addEventListener( 'color-changed', event => {
 			const customEvent = event as CustomEvent;
 			const color = customEvent.detail.value;
-			this._debouncePickerEvent( color );
+			this._debounceColorPickerEvent( color );
 		} );
 	}
 
@@ -200,7 +223,7 @@ export default class ColorPickerView extends View {
 			const inputValue = labeledInput.fieldView.element!.value;
 
 			if ( inputValue ) {
-				this._debounceInputEvent( inputValue );
+				this._debounceColorPickerEvent( inputValue );
 			}
 		} );
 

@@ -7,6 +7,8 @@
  * @module font/ui/colortableview
  */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { icons } from 'ckeditor5/src/core';
 import {
 	ButtonView,
@@ -18,11 +20,16 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	type ColorDefinition,
-	type ColorPickerOutputFormat
+	type ColorDefinition
+	// type ColorPickerOutputFormat
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
+
+// There are no available types for 'color-parse' module.
+// @ts-ignore
+import { default as parse } from 'color-parse';
+import * as convert from 'color-convert';
 
 import DocumentColorCollection from '../documentcolorcollection';
 
@@ -136,7 +143,7 @@ export default class ColorTableView extends View {
 	/**
 	 * @TODO
 	 */
-	public colorPickerOutputFormat?: ColorPickerOutputFormat;
+	public colorPickerOutputFormat: ColorPickerOutputFormat;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -189,7 +196,7 @@ export default class ColorTableView extends View {
 		} );
 
 		this._documentColorsLabel = documentColorsLabel;
-		this.colorPickerOutputFormat = colorPickerOutputFormat;
+		this.colorPickerOutputFormat = colorPickerOutputFormat || 'hsl';
 
 		this.setTemplate( {
 			tag: 'div',
@@ -315,12 +322,12 @@ export default class ColorTableView extends View {
 			return;
 		}
 
-		const colorPickerView = new ColorPickerView( this.locale, this.colorPickerOutputFormat );
+		const colorPickerView = new ColorPickerView( this.locale );
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
 		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
-			colorPickerView.color = value;
+			colorPickerView.color = value ? convertToHex( value ) : '';
 		} );
 
 		this.items.add( this.colorPickerView );
@@ -455,3 +462,50 @@ export default class ColorTableView extends View {
 		}
 	}
 }
+
+/**
+ * @TODO
+ *
+ * @param colorObject
+ * @returns
+ */
+function convertToHex( color: string ): string {
+	if ( !color ) {
+		return '';
+	}
+
+	if ( color.startsWith( '#' ) ) {
+		return color;
+	}
+
+	const colorObject = parse( color );
+	// @ts-ignore
+	const convertedColorChannels: Array<number> = convert[ colorObject.space ].hex( colorObject.values );
+
+	return formatColorOutput( 'hex', convertedColorChannels );
+}
+
+/**
+ * @TODO
+ *
+ * @param format
+ * @param values
+ * @returns
+ */
+function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
+	switch ( format ) {
+		case 'hex': return `#${ values }`;
+		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
+		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
+		case 'hwb': return `hwb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
+		case 'lab': return `lab( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
+		case 'lch': return `lch( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
+
+		default: return '';
+	}
+}
+
+/**
+ * @TODO
+ */
+export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
