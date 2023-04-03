@@ -21,7 +21,6 @@ import {
 	ViewCollection,
 	ColorPickerView,
 	type ColorDefinition
-	// type ColorPickerOutputFormat
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
@@ -141,11 +140,6 @@ export default class ColorTableView extends View {
 	public documentColorsGrid: ColorGridView | undefined;
 
 	/**
-	 * @TODO
-	 */
-	public colorPickerOutputFormat: ColorPickerOutputFormat;
-
-	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
@@ -157,13 +151,12 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerOutputFormat }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			colorPickerOutputFormat?: ColorPickerOutputFormat;
 		}
 	) {
 		super( locale );
@@ -196,7 +189,6 @@ export default class ColorTableView extends View {
 		} );
 
 		this._documentColorsLabel = documentColorsLabel;
-		this.colorPickerOutputFormat = colorPickerOutputFormat || 'hsl';
 
 		this.setTemplate( {
 			tag: 'div',
@@ -479,33 +471,7 @@ function convertToHex( color: string ): string {
 	}
 
 	const colorObject = parse( color );
+
 	// @ts-ignore
-	const convertedColorChannels: Array<number> = convert[ colorObject.space ].hex( colorObject.values );
-
-	return formatColorOutput( 'hex', convertedColorChannels );
+	return '#' + convert[ colorObject.space ].hex( colorObject.values );
 }
-
-/**
- * @TODO
- *
- * @param format
- * @param values
- * @returns
- */
-function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
-	switch ( format ) {
-		case 'hex': return `#${ values }`;
-		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
-		case 'hwb': return `hwb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'lab': return `lab( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
-		case 'lch': return `lch( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
-
-		default: return '';
-	}
-}
-
-/**
- * @TODO
- */
-export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
