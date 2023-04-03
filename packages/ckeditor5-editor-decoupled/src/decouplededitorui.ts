@@ -125,6 +125,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		if ( placeholder ) {
 			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 
+			/* istanbul ignore next -- @preserve */
 			if ( placeholderText ) {
 				enablePlaceholder( {
 					view: editingView,

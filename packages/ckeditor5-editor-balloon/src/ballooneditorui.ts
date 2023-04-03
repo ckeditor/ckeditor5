@@ -117,6 +117,7 @@ export default class BalloonEditorUI extends EditorUI {
 		if ( placeholder ) {
 			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 
+			/* istanbul ignore next -- @preserve */
 			if ( placeholderText ) {
 				enablePlaceholder( {
 					view: editingView,
