@@ -7,12 +7,12 @@
 category: installation
 order: 29
 menu-title: TypeScript support
-modified_at: 2023-03-29
+modified_at: 2023-04-03
 ---
 
 # TypeScript support in CKEditor 5
 
-CKEditor 5 is built using TypeSript and so has native types definition.
+CKEditor 5 is built using TypeSript and so has native types definition. All the official packages and builds distributed using NPM and CDN contain type definitions but their DLL versions aren't supported yet.
 
 <info-box hint>
 Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
@@ -40,7 +40,7 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 ```
 
 <info-box warning>
-Custom builds produced by online builder do not provide types yet.
+Custom builds produced by online builder do not provide built-in type definitions yet.
 </info-box>
 
 
@@ -54,7 +54,7 @@ If you want to integrate CKEditor 5 directly in your TypeScript project then ple
 
 ## Developing plugins using TypeScript
 
-CKEditor 5's API can be quite extensive and complex, but using TypeScript can make it easier to work with.
+CKEditor 5's API is extensive and complex, but using TypeScript can make it easier to work with.
 
 You can use {@link framework/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
 
