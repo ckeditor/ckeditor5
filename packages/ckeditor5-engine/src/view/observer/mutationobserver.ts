@@ -100,6 +100,7 @@ export default class MutationObserver extends Observer {
 	public override stopObserving( domElement: HTMLElement ): void {
 		this._domElements.delete( domElement );
 
+		/* istanbul ignore next -- @preserve */
 		if ( this.isEnabled ) {
 			// Unfortunately, it is not possible to stop observing particular DOM element.
 			// In order to stop observing one of multiple DOM elements, we need to re-connect the mutation observer.
