@@ -173,7 +173,7 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 	// @ts-ignore
 	const convertedColorChannels: Array<number> = convert[ colorObject.space ][ outputFormat ]( colorObject.values );
 
-	return formatColorOutput( outputFormat, convertedColorChannels );
+	return formatColorOutput( convertedColorChannels, outputFormat );
 }
 
 /**
@@ -209,7 +209,7 @@ export function convertToHex( color: string ): string {
  * @param values
  * @returns A color string.
  */
-function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
+function formatColorOutput( values: Array<number> | string, format: ColorPickerOutputFormat ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
 		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
