@@ -210,5 +210,5 @@ function appendCoverageReport() {
  * @returns {Boolean}
  */
 function shouldUploadCoverageReport() {
-	return true;
+	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }
