@@ -246,6 +246,12 @@ export default class ColorTableView extends View {
 		}
 
 		if ( this.colorPickerView ) {
+			// We only want to update the color picker value at dropdown open.
+			// If we bind it with `this.selectedColor`, we'll get circular dependency
+			// which is messed up when we try to convert the color from picker input.
+			// After inputting the beginning of color like `#1`, it would be parsed, converted
+			// (depending on the output format), and set back to `#110000`, making it impossible
+			// to use input in any other manner than pasting a ready color string.
 			this.colorPickerView.color = selectedColor ? convertToHex( selectedColor ) : '';
 		}
 	}
