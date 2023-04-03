@@ -9,7 +9,7 @@ The horizontal line feature lets you visually divide your content into sections 
 
 ## Demo
 
-To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start a new line with `---` to insert a horizontal line thanks to the {@link features/autoformat autoformatting feature}.
+To insert a horizontal line in the demo below, use the toolbar button {@icon @ckeditor/ckeditor5-horizontal-line/theme/icons/horizontalline.svg Horizontal line}. Alternatively, start a new line with `---`. The {@link features/autoformat autoformatting feature} will turn it into a horizontal line.
 
 {@snippet features/horizontal-line}
 

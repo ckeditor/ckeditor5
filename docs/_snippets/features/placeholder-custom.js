@@ -21,7 +21,7 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-		placeholder: 'Type the content here!'
+		placeholder: 'Type some content here!'
 	} )
 	.then( editor => {
 		window.editor = editor;

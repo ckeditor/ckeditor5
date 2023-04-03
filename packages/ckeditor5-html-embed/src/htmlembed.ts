@@ -18,7 +18,7 @@ import HtmlEmbedUI from './htmlembedui';
  *
  * It allows inserting HTML snippets directly into the editor.
  *
- * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
+ * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
  */
 export default class HtmlEmbed extends Plugin {
 	/**

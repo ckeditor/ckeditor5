@@ -12,7 +12,7 @@ CKEditor 5 comes with various tools to insert, upload, resize, style, caption, a
 
 ## Demo
 
-To see all the image features in action, check out the demo below. To learn more about individual plugins (sub-features) in the image ecosystem, see the [**Image features**](#image-features) section.
+To see all the image features in action, check out the demo below. To learn more about individual plugins (sub-features) of the image ecosystem, see the [**Image features**](#image-features) section.
 
 {@snippet features/image-full}
 
@@ -179,7 +179,7 @@ The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all edito
 
 {@img assets/img/toolbar-items.png 749 An extended contextual toolbar.}
 
-The image toolbar is configurable using the {@link module:image/image~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle and text alternative buttons, use the following configuration:
+The image toolbar is configurable using the {@link module:image/imageconfig~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle and text alternative buttons, use the following configuration:
 
 ```js
 ClassicEditor

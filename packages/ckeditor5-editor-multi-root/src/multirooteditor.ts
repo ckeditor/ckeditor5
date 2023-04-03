@@ -27,6 +27,7 @@ import MultiRootEditorUI from './multirooteditorui';
 import MultiRootEditorUIView from './multirooteditoruiview';
 
 import { isElement as _isElement } from 'lodash-es';
+import { type RootElement, type Writer } from 'ckeditor5/src/engine';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
@@ -67,7 +68,13 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * The elements on which the editor has been initialized.
 	 */
-	public readonly sourceElements: Record<string, HTMLElement> | undefined;
+	public readonly sourceElements: Record<string, HTMLElement>;
+
+	/**
+	 * Holds attributes keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
+	 * config property and should be returned by {@link #getRootsAttributes}.
+	 */
+	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
 	 * Creates an instance of the multi-root editor.
@@ -94,6 +101,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 		if ( !sourceIsData ) {
 			this.sourceElements = sourceElementsOrData as Record<string, HTMLElement>;
+		} else {
+			this.sourceElements = {};
 		}
 
 		if ( this.config.get( 'initialData' ) === undefined ) {
@@ -118,6 +127,42 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this.model.document.createRoot( '$root', rootName );
 		}
 
+		if ( this.config.get( 'rootsAttributes' ) ) {
+			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
+
+			for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
+				if ( !rootNames.includes( rootName ) ) {
+					/**
+					 * Trying to set attributes on a non-existing root.
+					 *
+					 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
+					 * editor roots.
+					 *
+					 * @error multi-root-editor-root-attributes-no-root
+					 */
+					throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
+				}
+
+				for ( const key of Object.keys( attributes ) ) {
+					this._registeredRootsAttributesKeys.add( key );
+				}
+			}
+
+			this.data.on( 'init', () => {
+				this.model.enqueueChange( { isUndoable: false }, writer => {
+					for ( const [ name, attributes ] of Object.entries( rootsAttributes ) ) {
+						const root = this.model.document.getRoot( name )!;
+
+						for ( const [ key, value ] of Object.entries( attributes ) ) {
+							if ( value !== null ) {
+								writer.setAttribute( key, value, root! );
+							}
+						}
+					}
+				} );
+			} );
+		}
+
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
 			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>
@@ -126,6 +171,20 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
 
 		this.ui = new MultiRootEditorUI( this, view );
+
+		this.model.document.on( 'change:data', () => {
+			const changedRoots = this.model.document.differ.getChangedRoots();
+
+			for ( const changes of changedRoots ) {
+				const root = this.model.document.getRoot( changes.name )!;
+
+				if ( changes.state == 'attached' ) {
+					this.fire<AddRootEvent>( 'addRoot', root );
+				} else if ( changes.state == 'detached' ) {
+					this.fire<DetachRootEvent>( 'detachRoot', root );
+				}
+			}
+		} );
 	}
 
 	/**
@@ -175,6 +234,246 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 					}
 				}
 			} );
+	}
+
+	/**
+	 * Adds a new root to the editor.
+	 *
+	 * ```ts
+	 * editor.addRoot( 'myRoot', { data: '<p>Initial root data.</p>' } );
+	 * ```
+	 *
+	 * After a root is added, you will be able to modify and retrieve its data.
+	 *
+	 * All root names must be unique. An error will be thrown if you will try to create a root with the name same as
+	 * an already existing, attached root. However, you can call this method for a detached root. See also {@link #detachRoot}.
+	 *
+	 * Whenever a root is added, the editor instance will fire {@link #event:addRoot `addRoot` event}. The event is also called when
+	 * the root is added indirectly, e.g. by the undo feature or on a remote client during real-time collaboration.
+	 *
+	 * Note, that this method only adds a root to the editor model. It **does not** create a DOM editable element for the new root.
+	 * Until such element is created (and attached to the root), the root is "virtual": it is not displayed anywhere and its data can
+	 * be changed only using the editor API.
+	 *
+	 * To create a DOM editable element for the root, listen to {@link #event:addRoot `addRoot` event} and call {@link #createEditable}.
+	 * Then, insert the DOM element in a desired place, that will depend on the integration with your application and your requirements.
+	 *
+	 * ```ts
+	 * editor.on( 'addRoot', ( evt, root ) => {
+	 * 	const editableElement = editor.createEditable( root );
+	 *
+	 * 	// You may want to create a more complex DOM structure here.
+	 * 	//
+	 * 	// Alternatively, you may want to create a DOM structure before
+	 * 	// calling `editor.addRoot()` and only append `editableElement` at
+	 * 	// a proper place.
+	 *
+	 * 	document.querySelector( '#editors' ).appendChild( editableElement );
+	 * } );
+	 *
+	 * // ...
+	 *
+	 * editor.addRoot( 'myRoot' ); // Will create a root, a DOM editable element and append it to `#editors` container element.
+	 * ```
+	 *
+	 * You can set root attributes on the new root while you add it:
+	 *
+	 * ```ts
+	 * // Add a collapsed root at fourth position from top.
+	 * // Keep in mind that these are just examples of attributes. You need to provide your own features that will handle the attributes.
+	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes` configuration option}.
+	 *
+	 * Note that attributes keys of attributes added in `attributes` option are also included in {@link #getRootsAttributes} return value.
+	 *
+	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
+	 *
+	 * Additionally, you can group adding multiple roots in one undo step. This can be useful if you add multiple roots that are
+	 * combined into one, bigger UI element, and want them all to be undone together.
+	 *
+	 * ```ts
+	 * let rowId = 0;
+	 *
+	 * editor.model.change( () => {
+	 * 	editor.addRoot( 'left-row-' + rowId, { isUndoable: true } );
+	 * 	editor.addRoot( 'center-row-' + rowId, { isUndoable: true } );
+	 * 	editor.addRoot( 'right-row-' + rowId, { isUndoable: true } );
+	 *
+	 * 	rowId++;
+	 * } );
+	 * ```
+	 *
+	 * @param rootName Name of the root to add.
+	 * @param options Additional options for the added root.
+	 */
+	public addRoot(
+		rootName: string,
+		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
+	): void {
+		const dataController = this.data;
+		const registeredKeys = this._registeredRootsAttributesKeys;
+
+		if ( isUndoable ) {
+			this.model.change( _addRoot );
+		} else {
+			this.model.enqueueChange( { isUndoable: false }, _addRoot );
+		}
+
+		function _addRoot( writer: Writer ) {
+			const root = writer.addRoot( rootName, elementName );
+
+			if ( data ) {
+				writer.insert( dataController.parse( data, root ), root, 0 );
+			}
+
+			for ( const key of Object.keys( attributes ) ) {
+				registeredKeys.add( key );
+				writer.setAttribute( key, attributes[ key ], root );
+			}
+		}
+	}
+
+	/**
+	 * Detaches a root from the editor.
+	 *
+	 * ```ts
+	 * editor.detachRoot( 'myRoot' );
+	 * ```
+	 *
+	 * A detached root is not entirely removed from the editor model, however it can be considered removed.
+	 *
+	 * After a root is detached all its children are removed, all markers inside it are removed, and whenever something is inserted to it,
+	 * it is automatically removed as well. Finally, a detached root is not returned by
+	 * {@link module:engine/model/document~Document#getRootNames} by default.
+	 *
+	 * It is possible to re-add a previously detached root calling {@link #addRoot}.
+	 *
+	 * Whenever a root is detached, the editor instance will fire {@link #event:detachRoot `detachRoot` event}. The event is also
+	 * called when the root is detached indirectly, e.g. by the undo feature or on a remote client during real-time collaboration.
+	 *
+	 * Note, that this method only detached a root in the editor model. It **does not** destroy the DOM editable element linked with
+	 * the root and it **does not** remove the DOM element from the DOM structure of your application.
+	 *
+	 * To properly remove a DOM editable element after a root was detached, listen to {@link #event:detachRoot `detachRoot` event}
+	 * and call {@link #detachEditable}. Then, remove the DOM element from your application.
+	 *
+	 * ```ts
+	 * editor.on( 'detachRoot', ( evt, root ) => {
+	 * 	const editableElement = editor.detachEditable( root );
+	 *
+	 * 	// You may want to do an additional DOM clean-up here.
+	 *
+	 * 	editableElement.remove();
+	 * } );
+	 *
+	 * // ...
+	 *
+	 * editor.detachRoot( 'myRoot' ); // Will detach the root, and remove the DOM editable element.
+	 * ```
+	 *
+	 * By setting `isUndoable` flag to `true`, you can allow for re-adding the root using the undo feature.
+	 *
+	 * Additionally, you can group detaching multiple roots in one undo step. This can be useful if the roots are combined into one,
+	 * bigger UI element, and you want them all to be re-added together.
+	 *
+	 * ```ts
+	 * editor.model.change( () => {
+	 * 	editor.detachRoot( 'left-row-3', true );
+	 * 	editor.detachRoot( 'center-row-3', true );
+	 * 	editor.detachRoot( 'right-row-3', true );
+	 * } );
+	 * ```
+	 *
+	 * @param rootName Name of the root to detach.
+	 * @param isUndoable Whether detaching the root can be undone (using the undo feature) or not.
+	 */
+	public detachRoot( rootName: string, isUndoable = false ): void {
+		if ( isUndoable ) {
+			this.model.change( writer => writer.detachRoot( rootName ) );
+		} else {
+			this.model.enqueueChange( { isUndoable: false }, writer => writer.detachRoot( rootName ) );
+		}
+	}
+
+	/**
+	 * Creates and returns a new DOM editable element for the given root element.
+	 *
+	 * The new DOM editable is attached to the model root and can be used to modify the root content.
+	 *
+	 * @param root Root for which the editable element should be created.
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @returns The created DOM element. Append it in a desired place in your application.
+	 */
+	public createEditable( root: RootElement, placeholder?: string ): HTMLElement {
+		const editable = this.ui.view.createEditable( root.rootName );
+
+		this.ui.addEditable( editable, placeholder );
+
+		this.editing.view.forceRender();
+
+		return editable.element!;
+	}
+
+	/**
+	 * Detaches the DOM editable element that was attached to the given root.
+	 *
+	 * @param root Root for which the editable element should be detached.
+	 * @returns The DOM element that was detached. You may want to remove it from your application DOM structure.
+	 */
+	public detachEditable( root: RootElement ): HTMLElement {
+		const rootName = root.rootName;
+		const editable = this.ui.view.editables[ rootName ];
+
+		this.ui.removeEditable( editable );
+		this.ui.view.removeEditable( rootName );
+
+		return editable.element!;
+	}
+
+	/**
+	 * Returns the document data for all attached roots.
+	 *
+	 * @param options Additional configuration for the retrieved data.
+	 * Editor features may introduce more configuration options that can be set through this parameter.
+	 * @param options.trim Whether returned data should be trimmed. This option is set to `'empty'` by default,
+	 * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
+	 * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
+	 * @returns The full document data.
+	 */
+	public getFullData( options?: Record<string, unknown> ): Record<string, string> {
+		const data: Record<string, string> = {};
+
+		for ( const rootName of this.model.document.getRootNames() ) {
+			data[ rootName ] = this.data.get( { ...options, rootName } );
+		}
+
+		return data;
+	}
+
+	/**
+	 * Returns currently set roots attributes for attributes specified in
+	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`} configuration option.
+	 *
+	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
+	 */
+	public getRootsAttributes(): Record<string, RootAttributes> {
+		const rootsAttributes: Record<string, RootAttributes> = {};
+		const keys = Array.from( this._registeredRootsAttributesKeys );
+
+		for ( const rootName of this.model.document.getRootNames() ) {
+			rootsAttributes[ rootName ] = {};
+
+			const root = this.model.document.getRoot( rootName )!;
+
+			for ( const key of keys ) {
+				rootsAttributes[ rootName ][ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
+			}
+		}
+
+		return rootsAttributes;
 	}
 
 	/**
@@ -365,3 +664,68 @@ function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 function isElement( value: any ): value is Element {
 	return _isElement( value );
 }
+
+/**
+ * Fired whenever a root is {@link ~MultiRootEditor#addRoot added or re-added} to the editor model.
+ *
+ * Use this event to {@link ~MultiRootEditor#createEditable create a DOM editable} for the added root and append the DOM element
+ * in a desired place in your application.
+ *
+ * The event is fired after all changes from a given batch are applied. The event is not fired, if the root was added and detached
+ * in the same batch.
+ *
+ * @eventName ~MultiRootEditor#addRoot
+ * @param root The root that was added.
+ */
+export type AddRootEvent = {
+	name: 'addRoot';
+	args: [ root: RootElement ];
+};
+
+/**
+ * Fired whenever a root is {@link ~MultiRootEditor#detachRoot detached} from the editor model.
+ *
+ * Use this event to {@link ~MultiRootEditor#detachEditable destroy a DOM editable} for the detached root and remove the DOM element
+ * from your application.
+ *
+ * The event is fired after all changes from a given batch are applied. The event is not fired, if the root was detached and re-added
+ * in the same batch.
+ *
+ * @eventName ~MultiRootEditor#detachRoot
+ * @param root The root that was detached.
+ */
+export type DetachRootEvent = {
+	name: 'detachRoot';
+	args: [ root: RootElement ];
+};
+
+/**
+ * Additional options available when adding a root.
+ */
+export type AddRootOptions = {
+
+	/**
+	 * Initial data for the root.
+	 */
+	data?: string;
+
+	/**
+	 * Initial attributes for the root.
+	 */
+	attributes?: RootAttributes;
+
+	/**
+	 * Element name for the root element in the model. It can be used to set different schema rules for different roots.
+	 */
+	elementName?: string;
+
+	/**
+	 * Whether creating the root can be undone (using the undo feature) or not.
+	 */
+	isUndoable?: boolean;
+};
+
+/**
+ * Attributes set on a model root element.
+ */
+export type RootAttributes = Record<string, unknown>;

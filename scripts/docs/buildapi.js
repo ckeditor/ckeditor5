@@ -8,14 +8,11 @@
 'use strict';
 
 const path = require( 'path' );
-const parseArguments = require( './parse-arguments' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 module.exports = function buildApiDocs() {
-	const options = parseArguments( process.argv.slice( 2 ) );
-	const type = options.ts ? 'typedoc' : 'jsdoc';
-	const config = getConfig( type );
+	const config = getConfig();
 
 	return require( '@ckeditor/ckeditor5-dev-docs' ).build( config );
 };
@@ -23,45 +20,40 @@ module.exports = function buildApiDocs() {
 /**
  * Prepares the configuration for the API docs builder.
  *
- * @param {'jsdoc'|'typedoc'} type The requested API type to build.
  * @returns {Object}
  */
-function getConfig( type ) {
+function getConfig() {
 	const commonConfig = {
 		cwd: ROOT_DIRECTORY,
 		outputPath: path.join( ROOT_DIRECTORY, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
 		validateOnly: process.argv.includes( '--validate-only' ),
 		strict: process.argv.includes( '--strict' ),
-		type
+		type: 'typedoc'
 	};
-
-	if ( type === 'typedoc' ) {
-		return {
-			...commonConfig,
-			tsconfig: path.join( ROOT_DIRECTORY, 'tsconfig.typedoc.json' ),
-			sourceFiles: [
-				'packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
-				'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
-				'!packages/ckeditor5-build-*/src/**/*.ts',
-				'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
-				'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
-				'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.ts'
-			]
-		};
-	}
 
 	return {
 		...commonConfig,
+		tsconfig: path.join( ROOT_DIRECTORY, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
-			'packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
-			'packages/@(ckeditor|ckeditor5)-*/_src/**/*.@(js|jsdoc)',
-			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-			'!packages/ckeditor5-build-*/src/**/*.js',
-			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
-			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/_src/**/*.@(js|jsdoc)',
-			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.js'
+			// CKEditor 5 sources.
+			'packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
+			'external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/**/*.ts',
+
+			// Ignore libraries or generated files.
+			'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
+			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.ts',
+
+			// Ignore not a direct sources.
+			'!external/collaboration-features/packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
+
+			// Ignore builds.
+			'!packages/ckeditor5-build-*/src/**/*.ts',
+			'!external/@(ckeditor5-internal|collaboration-features)/packages/ckeditor5-build-*/src/**/*.ts',
+
+			// Ignore augmentation files.
+			'!packages/@(ckeditor|ckeditor5)-*/src/augmentation.ts',
+			'!external/@(ckeditor5-internal|collaboration-features)/packages/@(ckeditor|ckeditor5)-*/src/augmentation.ts'
 		]
 	};
 }

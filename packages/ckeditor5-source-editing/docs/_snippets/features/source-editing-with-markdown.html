@@ -1,27 +1,110 @@
 <div id="editor-markdown">
 
-<h2>The world wide web markup</h32>
+<h2>Markdown output 🛫</h2>
 
-<figure class="image image_resized image-style-align-right">
-<img src="%BASE_PATH%/assets/img/html5-icon.png" alt="HTML 5 icon.">
-</figure>
+<p>
+	<a href="https://ckeditor.com/">CKEditor 5</a> can be configured to output Markdown instead of HTML. Markdown is a lightweight markup language that you can use to add formatting to plain text documents. Use the <strong>Source</strong> button to check and edit the Markdown source code of this content.
+</p>
 
-<p>The <a href="https://html.spec.whatwg.org/"><strong>Hypertext Markup Language</strong></a>, most often referred to as simply <strong><abbr title="HyperText Markup Language">HTML</abbr></strong>, is a standard <i>markup language</i> for web browsers. It was first practically implemented by Tim Berners-Lee in 1991, although it was already theoretically designed much earlier, in fact as early as 1980.</p>
+<p>
+	The editor-produced Markdown output supports most essential features, like <a href="https://ckeditor.com/">links</a>, <strong>different</strong> kinds of <em>emphasis</em>, <code>inline code formatting</code>, or code blocks:
+</p>
 
-<h3>The HTML structure</h3>
+<pre><code class="language-css">p {
+    text-align: center;
+    color: red;
+}</code></pre>
 
-<p>HTML uses elements &ndash; called <i>tags</i> &ndash; to describe the style and semantics of the content. They are also used to introduce non-textual elements. The tags are shortcodes surrounded by angle brackets.</p>
+<h2>Markdown input 🛬</h2>
 
-<h3>The types of HTML elements</h3>
+<p>
+	Thanks to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html" >autoformatting feature</a>, you can use Markdown syntax when writing. Try it out - use these (or any other) Markdown shortcuts in the editor to format the content on the fly 🚀!
+</p>
+<table>
+	<thead>
+		<th>Inline formatting</th>
+		<th>Shortcut</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<strong>Bold</strong>
+			</td>
+			<td>
+				Type <code>**</code> or <code>__</code> around your text.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<em>Italic</em>
+			</td>
+			<td>
+				Type <code>*</code> or <code>_</code> around your text.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code>Code</code>
+			</td>
+			<td>
+				Type <code>ˋ</code> around your text.
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<s>Strikethrough</s>
+			</td>
+			<td>
+				Type <code>~~</code> around your text.
+			</td>
+		</tr>
+	</tbody>
+</table>
 
-<h4>The semantic tags</h4>
+<p>
+	Shh! 🤫 Markdown has very basic support for tables. Some advanced table-related features like table or cell styling were disabled in this demo.
+</p>
 
-<p>The <i>semantic</i> tag would be eg. &lt;h2&gt; elements, describing level 2 headings (there are six levels of these), like the one above. This type of elements needs both an opening and a closing tag &ndash; &lt;/h2&gt;. Other popular elements of this kind are &lt;p&gt; for paragraphs (like this one) or &lt;a&gt; for links (seen at the beginning).</p>
+<h2>Block formatting</h2>
 
-<h4>The content tags</h4>
+<p>
+	You can also use Markdown to create various text blocks, such as:
+</p>
 
-<p>The other type &ndash; <i>content</i> tag &ndash; includes elements such as &lt;img /&gt; which does not require a closing tag. It is used to include an image in the content.</p>
-
-<p>There are some more <abbr title="HyperText Markup Language">HTML</abbr> tags, that may combine both of these aims. One of these would be the &lt;abbr&gt; tag, which is used to explain abbreviations on hover.</p>
-
+<ul>
+	<li>
+		Block quotes - Start a line with <code>﹥</code> followed by a space.
+	</li>
+	<li>
+		Headings:
+		<ol>
+			<li>
+				Heading 1 - Start a line with <code>#</code> followed by a space.
+			</li>
+			<li>
+				Heading 2 - Start a line with <code>##</code> followed by a space.
+			</li>
+			<li>Heading 3 - Start a line with <code>###</code> followed by a space.</li>
+		</ol>
+	</li>
+	<li>Lists, including nested ones:
+		<ul>
+			<li>
+				Numbered lists - Start a line with <code>1.</code> or <code>1)</code> followed by a space.
+			</li>
+			<li>
+				Bulleted lists - Start a line with <code>*</code> or <code>-</code> followed by a space.
+			</li>
+			<li>
+				To-do lists - Start a line with <code>[ ]</code> or <code>[x]</code> followed by a space to insert an unchecked or checked list item.
+			</li>
+		</ul>
+	</li>
+	<li>
+		Code blocks - Start a line with <code>ˋˋˋ</code>.
+	</li>
+	<li>
+		Horizontal lines - Start a line with <code>---</code>.
+	</li>
+</ul>
 </div>

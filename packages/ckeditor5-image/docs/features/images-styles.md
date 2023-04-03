@@ -24,7 +24,7 @@ This package allows for adjusting the image appearance by:
 </info-box>
 
 ### Image classes
-The styles applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the {@link module:image/imagestyle~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imagestyle~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
+The styles applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the {@link module:image/imageconfig~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imageconfig~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
 	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The initial image appearance should be handled by the integrator by defining the proper custom {@link installation/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
@@ -44,7 +44,7 @@ Block type images, on the other hand, can be inserted only between other blocks 
 
 **Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. Applying a style may change the type of the image, depending on the configuration of the style.
 
-When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageinsert~ImageInsertConfig#type `image.insert.type` configuration}.
+When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageconfig~ImageInsertConfig#type `image.insert.type` configuration}.
 
 <info-box hint>
 	All of the default editor builds support both block and inline images, but it is also possible to {@link features/images-installation#inline-and-block-images disable one of these types}.
@@ -58,7 +58,7 @@ The default image toolbar has its standard configuration already set in the pred
 * The default UI of the classic, inline, balloon and balloon block builds consists of a set of buttons to apply only the [semantical styles](#semantical-styles) to support creating a structured content. [**See a live example**](#semantical-example).
 * The document editor build UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
 
-It is also possible to create a completely custom image styles UI, setting your own icons and tooltips, and grouping the image style buttons into the {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition custom drop-downs}. Read more about it in the [**customizing the image styles UI**](#configuring-the-styles) section of this guide.
+It is also possible to create a completely custom image styles UI, setting your own icons and tooltips, and grouping the image style buttons into the {@link module:image/imageconfig~ImageStyleDropdownDefinition custom drop-downs}. Read more about it in the [**customizing the image styles UI**](#configuring-the-styles) section of this guide.
 
 ## Approaches to styling images
 CKEditor5 offers two basic approaches to styling the images:
@@ -66,7 +66,7 @@ CKEditor5 offers two basic approaches to styling the images:
 * On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrarily. The style that defines the image alignment will be called a [“presentational”](#presentational-styles) one, since it refers only to the appearance of the image.
 
 <info-box hint>
-The distinction made above is purely theoretical. Setting up both semantical and presentational styles is done in exactly the same way, using the {@link module:image/image~ImageConfig#styles `ImageConfig#styles`} configuration.
+The distinction made above is purely theoretical. Setting up both semantical and presentational styles is done in exactly the same way, using the {@link module:image/imageconfig~ImageConfig#styles `ImageConfig#styles`} configuration.
 </info-box>
 
 ### Semantical styles
@@ -82,14 +82,14 @@ A semantical style lets the user choose from predefined appearances of the image
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles) instead or define custom semantical styles to make sure that there are no conflicts with the image resizing feature.
 </info-box>
 
-As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
+As most of the predefined editor builds support editing structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
-The example below presents an editor with such a basic configuration. There are three types of the images:
-* **a block image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Block image} - a representation of a block image with no style-related CSS class,
-* **an inline image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline image} - a representation of an inline image with no style-related CSS class,
-* **a side image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Side image} - a semantical style applying the `image-style-side` CSS class to it.
+The example below shows an editor with such a basic configuration. There are three types of images:
+* **A block image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Block image} &mdash; a representation of a block image with no style-related CSS class
+* **An inline image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline image} &mdash; a representation of an inline image with no style-related CSS class
+* **A side image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Side image} &mdash; a semantical style with the `image-style-side` CSS class applied to it
 
-You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
+You can change the style of an individual image using the contextual toolbar that opens after clicking the image.
 
 <div id="semantical-example">
 
@@ -101,7 +101,7 @@ You can change the style of an individual image using the contextual toolbar inv
 	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-The editor above does not require any configuration, using one of the following builds: classic, inline, balloon or balloon-block, for example:
+The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
@@ -135,7 +135,7 @@ The sample editor below uses predefined presentational image styles represented 
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
-In addition to the above, the sample is configured to use the {@link features/images-resizing image resize feature} with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'resizeImage:original'`, `'resizeImage:50'` and `'resizeImage:75'`. They allow you to set the image width in the editor to the original image size (up to 100% of the editor window width), 50% and 75% respectively. You can also use the resize handles to set a custom size of the image.
+In addition to the above, the sample is configured to use the {@link features/images-resizing image resize feature} with three {@link module:image/imageconfig~ImageConfig#resizeOptions resize options} available: `'resizeImage:original'`, `'resizeImage:50'` and `'resizeImage:75'`. They allow you to set the image width in the editor to the original image size (up to 100% of the editor window width), 50% and 75% respectively. You can also use the resize handles to set a custom size of the image.
 
 See the result below:
 
@@ -173,11 +173,11 @@ There are three ways of defining the image styles in the editor configuration:
 
 ### Demo
 
-The editor example below shows the possibilities of customizing the image visual representation and customizing image styles UI (icons, tooltips and drop-downs).
+The editor example below shows what you can achieve by customizing the visual representation of images and the UI for setting image styles (icons, tooltips, and drop-downs).
 
 {@snippet features/image-style-custom}
 
-The editor presented above uses custom image styles, custom image toolbar configuration with {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition declarative drop-downs}, and some modified [default styles](#ready-to-use-styles). You can find some more examples of using and modifying these styles in the {@link module:image/image~ImageConfig#styles `config.image.styles`} API documentation.
+The editor presented above uses custom image styles, custom image toolbar configuration with {@link module:image/imageconfig~ImageStyleDropdownDefinition declarative drop-downs}, and some modified [default styles](#ready-to-use-styles). You can find some more examples of using and modifying these styles in the {@link module:image/imageconfig~ImageConfig#styles `config.image.styles`} API documentation.
 
 ```js
 ClassicEditor
@@ -433,7 +433,7 @@ This feature is available in all {@link installation/getting-started/predefined-
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
 * A button for each defined style, for example: `'imageStyle:block'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
-* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'block'` and `'side'`):
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/imageconfig~ImageConfig#styles `image.styles`} configuration option (for example, `'block'` and `'side'`):
 
 	```js
 	editor.execute( 'imageStyle', { value: 'side' } );

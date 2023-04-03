@@ -6,9 +6,9 @@ order: 40
 
 # Implementing a custom editor creator
 
-The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/framework/multi-root-editor **multi-root editor**} can be created.
+The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/builds/multi-root-editor **multi-root editor**} can be created.
 
-This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/framework/multi-root-editor demo of the multi-root editor} too.
+This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/builds/multi-root-editor demo of the multi-root editor} too.
 
 ## Editor class
 
@@ -117,7 +117,7 @@ class MultirootEditor extends DataApiMixin( Editor ) {
 
 ## EditorUI class
 
-The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
+The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:ui/editorui/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
@@ -126,7 +126,7 @@ import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placehold
 /**
  * The multi-root editor UI class.
  *
- * @extends module:core/editor/editorui~EditorUI
+ * @extends module:ui/editorui/editorui~EditorUI
  */
 class MultirootEditorUI extends EditorUI {
 	/**
@@ -396,7 +396,7 @@ With HTML like:
 		<figcaption>It's siesta time in Valletta.</figcaption>
 	</figure>
 
-	<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy and many more.</p>
+	<p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine, and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take a tour through locations familiar to you from Game of Thrones, Gladiator, Troy and many more.</p>
 </div>
 
 <div class="demo-row">
@@ -457,4 +457,4 @@ MultirootEditor
 	} );
 ```
 
-This will create the exact same editor as the one used on the {@link examples/framework/multi-root-editor multi-root editor editor example page}.
+This will create the exact same editor as the one used on the {@link examples/builds/multi-root-editor multi-root editor editor example page}.

@@ -144,7 +144,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	 * Tooltip of the button bound to the template.
 	 *
 	 * @see #tooltip
-	 * @see #_getTooltipString
+	 * @see module:ui/button/buttonview~ButtonView#_getTooltipString
 	 * @internal
 	 * @observable
 	 */

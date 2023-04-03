@@ -9,7 +9,7 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 ## Demo
 
 <info-box hint>
-	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example, to create a header or insert an image. See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
+	In the editor below, move the caret around the content. You'll see that the block toolbar button (&#182;) is following your selection. Click the button to show the toolbar.
 </info-box>
 
 {@snippet features/blocktoolbar}
@@ -23,6 +23,8 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 To access the block toolbar, you need to click the button with a paragraph mark (or pilcrow &ndash; &#182;) on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
 The block toolbar complements the {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
+
+See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 
 ## Configuration
 
