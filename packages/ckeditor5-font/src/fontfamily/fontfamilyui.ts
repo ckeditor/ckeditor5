@@ -36,10 +36,9 @@ export default class FontFamilyUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-
 		const options = this._getLocalizedOptions();
-
 		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
+		const accessibleLabel = t( 'Font Family' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
@@ -51,17 +50,17 @@ export default class FontFamilyUI extends Plugin {
 				ariaHasPopup: 'listbox',
 				icon: fontFamilyIcon,
 				role: 'combobox',
-				tooltip: t( 'Font Family' )
+				tooltip: accessibleLabel
 			} );
 
 			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => {
 				if ( !value ) {
-					return t( 'Font Family' );
+					return accessibleLabel;
 				}
 
 				const selectedOption = options.find( opt => opt.model === value );
 
-				return `${ t( 'Font Family' ) }, ${ selectedOption ? selectedOption.title : value }`;
+				return `${ accessibleLabel }, ${ selectedOption ? selectedOption.title : value }`;
 			} );
 
 			dropdownView.extendTemplate( {
@@ -71,6 +70,10 @@ export default class FontFamilyUI extends Plugin {
 			} );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
+
+			dropdownView.once( 'change:isOpen', () => {
+				dropdownView.listView!.ariaLabel = accessibleLabel;
+			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {

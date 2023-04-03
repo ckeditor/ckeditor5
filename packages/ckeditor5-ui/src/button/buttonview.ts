@@ -227,7 +227,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
-				'aria-selected': bind.to( 'ariaSelected' ),
+				'aria-selected': bind.to( 'ariaSelected', value => value !== undefined ? String( value ) : null ),
 				'data-cke-tooltip-text': bind.to( '_tooltipString' ),
 				'data-cke-tooltip-position': bind.to( 'tooltipPosition' )
 			},

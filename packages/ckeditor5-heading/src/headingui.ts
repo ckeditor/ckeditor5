@@ -60,16 +60,19 @@ export default class HeadingUI extends Plugin {
 					model: new Model( {
 						label: option.title,
 						class: option.class,
-						withText: true
+						withText: true,
+						role: 'option'
 					} )
 				};
 
 				if ( option.model === 'paragraph' ) {
 					def.model.bind( 'isOn' ).to( paragraphCommand, 'value' );
+					def.model.bind( 'ariaSelected' ).to( paragraphCommand, 'value' );
 					def.model.set( 'commandName', 'paragraph' );
 					commands.push( paragraphCommand );
 				} else {
 					def.model.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
+					def.model.bind( 'ariaSelected' ).to( headingCommand, 'value', value => value === option.model );
 					def.model.set( {
 						commandName: 'heading',
 						commandValue: option.model
@@ -86,6 +89,8 @@ export default class HeadingUI extends Plugin {
 			addListToDropdown( dropdownView, itemDefinitions );
 
 			dropdownView.buttonView.set( {
+				ariaHasPopup: 'listbox',
+				role: 'combobox',
 				isOn: false,
 				withText: true,
 				tooltip: dropdownTooltip
@@ -116,6 +121,10 @@ export default class HeadingUI extends Plugin {
 				}
 
 				return titles[ whichModel ];
+			} );
+
+			dropdownView.once( 'change:isOpen', () => {
+				dropdownView.listView!.ariaLabel = dropdownTooltip;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
