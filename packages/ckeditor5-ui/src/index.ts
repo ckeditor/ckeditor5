@@ -22,7 +22,6 @@ export { default as SwitchButtonView } from './button/switchbuttonview';
 export * from './colorgrid/utils';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
-export { type ColorPickerOutputFormat } from './colorpicker/colorpickerview';
 
 export { default as ColorPickerView } from './colorpicker/colorpickerview';
 

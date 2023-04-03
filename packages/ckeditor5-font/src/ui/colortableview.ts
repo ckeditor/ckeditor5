@@ -250,6 +250,10 @@ export default class ColorTableView extends View {
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
+
+		if ( this.colorPickerView ) {
+			this.colorPickerView.color = selectedColor ? convertToHex( selectedColor ) : '';
+		}
 	}
 
 	/**
@@ -317,10 +321,6 @@ export default class ColorTableView extends View {
 		const colorPickerView = new ColorPickerView( this.locale );
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
-
-		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
-			colorPickerView.color = value ? convertToHex( value ) : '';
-		} );
 
 		this.items.add( this.colorPickerView );
 	}
