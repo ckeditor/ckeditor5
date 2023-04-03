@@ -22,7 +22,7 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 
 ```js
 
-import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
