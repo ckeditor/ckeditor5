@@ -7,6 +7,8 @@
  * @module font/utils
  */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import ColorTableView from './ui/colortableview';
 
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
@@ -19,6 +21,11 @@ import type {
 	ViewElementDefinition,
 	DowncastConversionApi
 } from 'ckeditor5/src/engine';
+
+// There are no available types for 'color-parse' module.
+// @ts-ignore
+import { default as parse } from 'color-parse';
+import * as convert from 'color-convert';
 
 /**
  * The name of the font size plugin.
@@ -140,3 +147,76 @@ function normalizeColorCode( value: string ): string {
 export type ColorTableDropdownView = DropdownView & {
 	colorTableView?: ColorTableView;
 };
+
+/**
+ * @TODO
+ *
+ * @param colorObject
+ * @returns
+ */
+export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
+	if ( !color ) {
+		return '';
+	}
+
+	const colorObject = parse( color );
+
+	if ( !colorObject.space ) {
+		return '';
+	}
+
+	if ( colorObject.space === outputFormat ) {
+		return color;
+	}
+
+	// @ts-ignore
+	const convertedColorChannels: Array<number> = convert[ colorObject.space ][ outputFormat ]( colorObject.values );
+
+	return formatColorOutput( outputFormat, convertedColorChannels );
+}
+
+/**
+ * @TODO
+ */
+export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+
+/**
+ * @TODO
+ *
+ * @param colorObject
+ * @returns
+ */
+export function convertToHex( color: string ): string {
+	if ( !color ) {
+		return '';
+	}
+
+	if ( color.startsWith( '#' ) ) {
+		return color;
+	}
+
+	const colorObject = parse( color );
+
+	// @ts-ignore
+	return '#' + convert[ colorObject.space ].hex( colorObject.values );
+}
+
+/**
+ * @TODO
+ *
+ * @param format
+ * @param values
+ * @returns
+ */
+function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
+	switch ( format ) {
+		case 'hex': return `#${ values }`;
+		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
+		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
+		case 'hwb': return `hwb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
+		case 'lab': return `lab( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
+		case 'lch': return `lch( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
+
+		default: return '';
+	}
+}

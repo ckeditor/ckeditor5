@@ -7,18 +7,12 @@
  * @module font/ui/colorui
  */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
-// There are no available types for 'color-parse' module.
-// @ts-ignore
-import { default as parse } from 'color-parse';
-import * as convert from 'color-convert';
-
 import {
 	addColorTableToDropdown,
+	convertColor,
 	type ColorTableDropdownView,
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
@@ -189,55 +183,3 @@ export default class ColorUI extends Plugin {
 		} );
 	}
 }
-
-/**
- * @TODO
- *
- * @param colorObject
- * @returns
- */
-function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
-	if ( !color ) {
-		return '';
-	}
-
-	const colorObject = parse( color );
-
-	if ( !colorObject.space ) {
-		return '';
-	}
-
-	if ( colorObject.space === outputFormat ) {
-		return color;
-	}
-
-	// @ts-ignore
-	const convertedColorChannels: Array<number> = convert[ colorObject.space ][ outputFormat ]( colorObject.values );
-
-	return formatColorOutput( outputFormat, convertedColorChannels );
-}
-
-/**
- * @TODO
- *
- * @param format
- * @param values
- * @returns
- */
-function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
-	switch ( format ) {
-		case 'hex': return `#${ values }`;
-		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'hsl': return `hsl( ${ values[ 0 ] }, ${ values[ 1 ] }%, ${ values[ 2 ] }% )`;
-		case 'hwb': return `hwb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
-		case 'lab': return `lab( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
-		case 'lch': return `lch( ${ values[ 0 ] }% ${ values[ 1 ] } ${ values[ 2 ] } )`;
-
-		default: return '';
-	}
-}
-
-/**
- * @TODO
- */
-export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';

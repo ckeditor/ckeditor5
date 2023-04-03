@@ -7,8 +7,6 @@
  * @module font/ui/colortableview
  */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { icons } from 'ckeditor5/src/core';
 import {
 	ButtonView,
@@ -25,12 +23,8 @@ import {
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
 
-// There are no available types for 'color-parse' module.
-// @ts-ignore
-import { default as parse } from 'color-parse';
-import * as convert from 'color-convert';
-
 import DocumentColorCollection from '../documentcolorcollection';
+import { convertToHex } from '../utils';
 
 import '../../theme/fontcolor.css';
 
@@ -453,25 +447,4 @@ export default class ColorTableView extends View {
 			this.documentColors.add( Object.assign( {}, predefinedColor ) );
 		}
 	}
-}
-
-/**
- * @TODO
- *
- * @param colorObject
- * @returns
- */
-function convertToHex( color: string ): string {
-	if ( !color ) {
-		return '';
-	}
-
-	if ( color.startsWith( '#' ) ) {
-		return color;
-	}
-
-	const colorObject = parse( color );
-
-	// @ts-ignore
-	return '#' + convert[ colorObject.space ].hex( colorObject.values );
 }
