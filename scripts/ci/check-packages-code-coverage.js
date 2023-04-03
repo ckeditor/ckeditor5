@@ -49,7 +49,7 @@ module.exports = function checkPackagesCodeCoverage() {
 		.filter( fullPackageName => ![ ...EXCLUDED_PACKAGES, ...frameworkPackages ].includes( fullPackageName ) );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
-	[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName ) );
+	[ 'ckeditor5', ...frameworkPackages ].forEach( fullPackageName => checkPackage( fullPackageName, [ '--source-map' ] ) );
 
 	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
 
