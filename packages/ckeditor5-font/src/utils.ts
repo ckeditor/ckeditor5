@@ -149,10 +149,11 @@ export type ColorTableDropdownView = DropdownView & {
 };
 
 /**
- * @TODO
+ * Parses and converts the color string to requested format. Handles variety of color spaces
+ * like `hsl`, `hex` or `rgb`.
  *
- * @param colorObject
- * @returns
+ * @param color
+ * @returns A color string.
  */
 export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
 	if ( !color ) {
@@ -176,15 +177,15 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 }
 
 /**
- * @TODO
+ * Color formats handled by color converter.
  */
 export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
 
 /**
- * @TODO
+ * Converts a color string to hex format.
  *
- * @param colorObject
- * @returns
+ * @param color
+ * @returns A color string.
  */
 export function convertToHex( color: string ): string {
 	if ( !color ) {
@@ -202,11 +203,11 @@ export function convertToHex( color: string ): string {
 }
 
 /**
- * @TODO
+ * Formats the passed color channels according to the requested format.
  *
  * @param format
  * @param values
- * @returns
+ * @returns A color string.
  */
 function formatColorOutput( format: ColorPickerOutputFormat, values: Array<number> | string ): string {
 	switch ( format ) {
