@@ -153,17 +153,15 @@ export default class ColorUI extends Plugin {
 			let dropdownContentRendered = false;
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
-				const colorTableView = dropdownView.colorTableView!;
-
 				if ( !dropdownContentRendered ) {
 					dropdownContentRendered = true;
 
-					colorTableView!.appendGrids();
+					dropdownView.colorTableView!.appendGrids();
 
 					if ( hasColorPicker ) {
-						colorTableView!.appendColorPicker();
+						dropdownView.colorTableView!.appendColorPicker();
 
-						colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
 							const convertedColor = convertColor( newValue, componentConfig.colorPickerFormat || 'hsl' );
 
 							editor.execute( this.commandName, {
