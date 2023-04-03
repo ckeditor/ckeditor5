@@ -160,7 +160,9 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 		return '';
 	}
 
-	const colorObject = parse( color );
+	// Parser library treats `hex` format as belonging to `rgb` space, which messes up further conversion.
+	// Let's parse such strings on our own.
+	const colorObject = color.startsWith( '#' ) ? { space: 'hex', values: color.substring( 1 ) } : parse( color );
 
 	if ( !colorObject.space ) {
 		return '';
