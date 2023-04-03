@@ -109,29 +109,18 @@ export function renderDowncastElement( styleAttr: string ) {
  * @param config.documentColorsCount The number of document colors inside the dropdown.
  * @returns The new color table view.
  */
-export function addColorTableToDropdown( {
-	dropdownView,
-	colors,
-	columns,
-	removeButtonLabel,
-	documentColorsLabel,
-	documentColorsCount
-}: {
-	dropdownView: ColorTableDropdownView;
-	colors: Array<ColorDefinition>;
-	columns: number;
-	removeButtonLabel: string;
-	documentColorsLabel?: string;
-	documentColorsCount?: number;
-} ): ColorTableView {
+export function addColorTableToDropdown(
+	{ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+		dropdownView: ColorTableDropdownView;
+		colors: Array<ColorDefinition>;
+		columns: number;
+		removeButtonLabel: string;
+		documentColorsLabel?: string;
+		documentColorsCount?: number;
+	}
+): ColorTableView {
 	const locale = dropdownView.locale!;
-	const colorTableView = new ColorTableView( locale, {
-		colors,
-		columns,
-		removeButtonLabel,
-		documentColorsLabel,
-		documentColorsCount
-	} );
+	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } );
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );

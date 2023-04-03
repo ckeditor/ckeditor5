@@ -39,7 +39,7 @@ export default class ColorPickerView extends View {
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
 	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
-	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
 
 	constructor( locale: Locale | undefined ) {
 		super( locale );
@@ -64,7 +64,7 @@ export default class ColorPickerView extends View {
 		}, waitingTime );
 
 		// Sets color in the picker if color was updated.
-		this.on( 'change:color', () => {
+		this.on( 'change:color', ( ) => {
 			this.picker.setAttribute( 'color', this.color );
 		} );
 	}
@@ -110,9 +110,3 @@ export default class ColorPickerView extends View {
 		return labeledInput;
 	}
 }
-
-type CustomEvent = Event & {
-	detail: {
-		value: string;
-	};
-};
