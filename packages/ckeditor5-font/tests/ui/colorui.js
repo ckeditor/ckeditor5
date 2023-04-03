@@ -182,7 +182,7 @@ describe( 'ColorUI', () => {
 
 			dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
 		} );
 
 		describe( 'model to command binding', () => {

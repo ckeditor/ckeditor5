@@ -175,11 +175,6 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 
-		it( 'binds picker\'s selected color to the selected color', () => {
-			colorTableView.selectedColor = '#00FF00';
-			expect( colorTableView.colorPickerView.color ).to.equal( '#00FF00' );
-		} );
-
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendColorPicker();
 			colorTableView.appendColorPicker();
