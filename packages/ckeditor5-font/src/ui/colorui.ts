@@ -101,7 +101,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( componentConfig.colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = componentConfig.documentColors;
-		const hasColorPicker = componentConfig.colorPicker !== false;
+		const hasColorPicker = componentConfig.colorPicker?.disable !== true;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -156,7 +156,7 @@ export default class ColorUI extends Plugin {
 						dropdownView.colorTableView!.appendColorPicker();
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
-							const convertedColor = convertColor( newValue, componentConfig.colorPickerFormat || 'hsl' );
+							const convertedColor = convertColor( newValue, componentConfig.colorPicker?.outputFormat || 'hsl' );
 
 							editor.execute( this.commandName, {
 								value: convertedColor

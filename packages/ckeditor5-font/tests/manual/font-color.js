@@ -34,7 +34,9 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3,
-			colorPickerFormat: 'rgb'
+			colorPicker: {
+				outputFormat: 'rgb'
+			}
 		}
 	} )
 	.then( editor => {
@@ -68,10 +70,14 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3,
-			colorPicker: false
+			colorPicker: {
+				disable: true
+			}
 		},
 		fontBackgroundColor: {
-			colorPicker: false
+			colorPicker: {
+				disable: true
+			}
 		}
 	} )
 	.then( editor => {
