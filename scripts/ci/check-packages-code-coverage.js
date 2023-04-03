@@ -81,7 +81,7 @@ module.exports = function checkPackagesCodeCoverage() {
 	travisFolder.end( 'typescript-compilation' );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
-	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--resolve-js-first', '--cache' ] ) );
+	featurePackages.forEach( fullPackageName => checkPackage( fullPackageName, [ '--resolve-js-first', '--cache', '--source-map' ] ) );
 
 	if ( shouldUploadCoverageReport() ) {
 		console.log( 'Uploading combined code coverage report…' );
