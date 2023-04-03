@@ -1001,10 +1001,10 @@ describe( 'Selection', () => {
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c' ] );
 		} );
 
-		it( 'returns two blocks for a non collapsed selection (starts at block end)', () => {
+		it( 'returns one block for a non collapsed selection (starts at block end)', () => {
 			setData( model, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
 
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#c' ] );
 		} );
 
 		it( 'returns proper block for a multi-range selection', () => {
@@ -1139,10 +1139,10 @@ describe( 'Selection', () => {
 				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 			} );
 
-			it( 'returns only the first block for a non collapsed selection if only end of selection is touching a block', () => {
+			it( 'returns no blocks if selection spanning two blocks has no content', () => {
 				setData( model, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
 
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
 			} );
 
 			it( 'does not return the last block if none of its content is selected (nested case)', () => {
@@ -1181,6 +1181,44 @@ describe( 'Selection', () => {
 					expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 				}
 			);
+		} );
+
+		describe( '#11585', () => {
+			it( 'does not return the first block if none of its contents is selected', () => {
+				setData( model, '<p>a[</p><p>b</p><p>c]</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
+			} );
+
+			it( 'returns the first block if at least one of its child nodes is selected', () => {
+				setData( model, '<p>a[<imageBlock></imageBlock></p><p>b</p><p>c]</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
+			} );
+
+			it( 'returns the block if it has a collapsed selection at the beginning', () => {
+				setData( model, '<p>[]a</p><p>b</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+			} );
+
+			it( 'returns the block if it has a collapsed selection at the end', () => {
+				setData( model, '<p>a[]</p><p>b</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
+			} );
+
+			it( 'does not return first and last blocks if no content is selected', () => {
+				setData( model, '<p>a[</p><p>]b</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
+			} );
+
+			it( 'returns the first and last blocks if no content is selected but both blocks are empty', () => {
+				setData( model, '<p>[</p><p>]</p>' );
+
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p', 'p' ] );
+			} );
 		} );
 	} );
 

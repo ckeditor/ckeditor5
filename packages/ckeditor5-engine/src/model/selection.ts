@@ -637,13 +637,23 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 * </block>
 	 * ```
 	 *
-	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
-	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
+	 * **Special case**: Selection ignores first and/or last blocks if nothing (from user perspective) is selected in them.
 	 *
 	 * ```xml
+	 * // Selection ends and the beginning of the last block
 	 * <paragraph>[a</paragraph>
 	 * <paragraph>b</paragraph>
-	 * <paragraph>]c</paragraph> // this block will not be returned
+	 * <paragraph>]c</paragraph> // This block will not be returned
+	 *
+	 * // Selection begins at the end of the first block
+	 * <paragraph>a[</paragraph> // This block will not be returned
+	 * <paragraph>b</paragraph>
+	 * <paragraph>c]</paragraph>
+	 *
+	 * // Selection begings at the end of the first block and ends at the beginning of the last block
+	 * <paragraph>a[</paragraph> // This block will not be returned
+	 * <paragraph>b</paragraph>
+	 * <paragraph>]c</paragraph> // This block will not be returned
 	 * ```
 	 */
 	public* getSelectedBlocks(): IterableIterator<Element> {
@@ -653,7 +663,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 			// Get start block of range in case of a collapsed range.
 			const startBlock = getParentBlock( range.start, visited );
 
-			if ( startBlock && isTopBlockInRange( startBlock, range ) ) {
+			if ( isStartBlockSelected( startBlock, range ) ) {
 				yield startBlock as any;
 			}
 
@@ -667,8 +677,7 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 
 			const endBlock = getParentBlock( range.end, visited );
 
-			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) && isTopBlockInRange( endBlock, range ) ) {
+			if ( isEndBlockSelected( endBlock, range ) ) {
 				yield endBlock as any;
 			}
 		}
@@ -874,6 +883,70 @@ function isTopBlockInRange( block: Node, range: Range ) {
 	const isParentInRange = range.containsRange( Range._createOn( parentBlock ), true );
 
 	return !isParentInRange;
+}
+
+/**
+ * If a selection starts at the end of a block, that block is not returned as from user perspective this block wasn't selected.
+ * See [#11585](https://github.com/ckeditor/ckeditor5/issues/11585) for more details.
+ *
+ * ```xml
+ * <paragraph>a[</paragraph> // this block will not be returned
+ * <paragraph>b</paragraph>
+ * <paragraph>c]</paragraph>
+ * ```
+ *
+ * Collapsed selection is not affected by it:
+ *
+ * ```xml
+ * <paragraph>a[]</paragraph> // this block will be returned
+ * ```
+ */
+function isStartBlockSelected( startBlock: Element | undefined, range: Range ): boolean {
+	if ( !startBlock ) {
+		return false;
+	}
+
+	if ( range.isCollapsed || startBlock.isEmpty ) {
+		return true;
+	}
+
+	if ( range.start.isTouching( Position._createAt( startBlock, startBlock.maxOffset ) ) ) {
+		return false;
+	}
+
+	return isTopBlockInRange( startBlock, range );
+}
+
+/**
+ * If a selection ends at the beginning of a block, that block is not returned as from user perspective this block wasn't selected.
+ * See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
+ *
+ * ```xml
+ * <paragraph>[a</paragraph>
+ * <paragraph>b</paragraph>
+ * <paragraph>]c</paragraph> // this block will not be returned
+ * ```
+ *
+ * Collapsed selection is not affected by it:
+ *
+ * ```xml
+ * <paragraph>[]a</paragraph> // this block will be returned
+ * ```
+ */
+function isEndBlockSelected( endBlock: Element | undefined, range: Range ): boolean {
+	if ( !endBlock ) {
+		return false;
+	}
+
+	if ( range.isCollapsed || endBlock.isEmpty ) {
+		return true;
+	}
+
+	if ( range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
+		return false;
+	}
+
+	return isTopBlockInRange( endBlock, range );
 }
 
 /**
