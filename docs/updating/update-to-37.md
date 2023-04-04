@@ -27,7 +27,7 @@ As of version `37.0.0` we provide native TypeScript types, and community types a
 	
 	For example:
   
-	  ```js
+	  ```ts
 	  // typings/types.d.ts
 
 	  declare module 'ckeditor5/src/core' {
@@ -42,8 +42,37 @@ As of version `37.0.0` we provide native TypeScript types, and community types a
 2. Replace the community types with native types:
 	- Update any import statements to use the native types instead of the community types
 	- Update any code that references the community types to use the native types
+	- Make sure that all imports are from package entrypoint, instead of a path to a module.
 
-3. Test your project:
+	For example:
+
+	```ts
+	// Instead of:
+	import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+	// Do:
+	import { Plugin } from '@ckeditor/ckeditor5-core';
+	```
+
+3. Adjust your `tsconfig.json` to include at least:
+
+	```json
+	{
+		"compilerOptions": {
+			"lib": [
+				"DOM",
+				"DOM.Iterable"
+			],
+			"module": "es6",
+			"target": "es2019",
+			"moduleResolution": "node"
+		}
+	}
+	```
+
+	You can choose other options for you own project, but they are not guaranteed to work.
+
+4. Test your project:
 	- Ensure that the changes did not introduce any new errors or issues
 	- Verify that the project still functions as intended
 
