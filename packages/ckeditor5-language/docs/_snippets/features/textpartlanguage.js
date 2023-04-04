@@ -7,6 +7,7 @@
 
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
@@ -15,6 +16,7 @@ ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-part-language' ), {
+		cloudServices: CS_CONFIG,
 		language: {
 			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },

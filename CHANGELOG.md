@@ -25,6 +25,7 @@ Changelog
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Differ.getChangedRoots()` which returns the roots added or detached since last the differ reset. `Differ#isEmpty` and `Differ#hasDataChanges()` will return `true` if a root was added or detached. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
 * **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Limiting the dropdown on the singular feed level should now be possible. Closes [#13504](https://github.com/ckeditor/ckeditor5/issues/13504). ([commit](https://github.com/ckeditor/ckeditor5/commit/489b3fda402504cb0492fceb368af475c8dd85b6))
 * **[multi-root-editor](https://www.npmjs.com/package/@ckeditor/ckeditor5-multi-root-editor)**: Introduced the multi-root editor type that allows defining multiple editable areas handled by a single editor instance. Closes [#11493](https://github.com/ckeditor/ckeditor5/issues/11493). ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Added support for custom path prefixes in WebSocket URLs. Any path proceeding the required `/ws` part in the WebSocket URL is now preserved.  
 
 ### Bug fixes
 
