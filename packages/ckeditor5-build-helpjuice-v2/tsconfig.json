@@ -3,7 +3,5 @@
 	"include": [
 		"src",
 		"../../typings"
-	],
-	"no-consecutive-blank-lines": false,
-	"no-unused-variable": false,
+	]
 }

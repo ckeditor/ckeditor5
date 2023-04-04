@@ -19,7 +19,7 @@ import type { AdditionalSlot } from '../tableediting';
  */
 export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const headingRows = Number(table.getAttribute( 'headingRows' )) || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 

@@ -52,8 +52,8 @@ export default function tableHeadingsRefreshHandler( model: Model, editing: Edit
 			continue;
 		}
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+		const headingRows = Number(table.getAttribute( 'headingRows' )) || 0;
+		const headingColumns = Number(table.getAttribute( 'headingColumns' )) || 0;
 
 		const tableWalker = new TableWalker( table );
 

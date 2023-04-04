@@ -4,8 +4,7 @@
 		"declaration": true,
 		"emitDeclarationOnly": true,
 		"declarationDir": "build",
-		"stripInternal": true,
-		"skipLibCheck": true
+		"stripInternal": true
 	},
 	"include": [
 		"src",
