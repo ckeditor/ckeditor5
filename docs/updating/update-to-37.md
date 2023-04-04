@@ -13,16 +13,16 @@ modified_at: 2023-04-03
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 37.0.0 see the [release notes for CKEditor 5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
+For the entire list of changes introduced in version 37.0.0, see the [release notes for CKEditor 5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v37.0.0.
 
 ## TypeScript typings
 
-As of version `37.0.0` we provide native TypeScript types, and community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here's how to do it:
+As of version 37.0.` we provide native TypeScript types, hence community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here is how to do it:
 
 1. Remove community types:
-	- Remove all used `@types/ckeditor__ckeditor5-*` packages
+	- Remove any `@types/ckeditor__ckeditor5-*` packages used
 	- Remove any augmentation of types you had in your project
 	
 	For example:
