@@ -83,4 +83,16 @@ describe( 'ColorPickerView', () => {
 			sinon.assert.calledOnce( observableSpy );
 		} );
 	} );
+
+	describe( 'SliderView', () => {
+		it( 'focuses the slider in DOM', () => {
+			const slider = view.slidersView[ 0 ];
+
+			const spy = sinon.spy( slider.element, 'focus' );
+
+			slider.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
 } );

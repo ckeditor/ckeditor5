@@ -309,6 +309,7 @@ export default class ColorTableView extends View {
 		}
 
 		const colorPickerView = new ColorPickerView( this.locale );
+
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
@@ -317,6 +318,21 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this.colorPickerView );
+
+		this.colorPickerView.slidersView.forEach( slider => {
+			this.focusTracker.add( slider.element! );
+			this._focusables.add( slider );
+		} );
+
+		this.focusTracker.add( this.colorPickerView.input.element! );
+		this._focusables.add( this.colorPickerView.input );
+
+		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
+
+		this.keystrokes.set( 'arrowright', stopPropagation );
+		this.keystrokes.set( 'arrowleft', stopPropagation );
+		this.keystrokes.set( 'arrowup', stopPropagation );
+		this.keystrokes.set( 'arrowdown', stopPropagation );
 	}
 
 	/**

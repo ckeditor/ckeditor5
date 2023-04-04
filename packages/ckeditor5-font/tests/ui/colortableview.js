@@ -616,6 +616,20 @@ describe( 'ColorTableView', () => {
 			expect( activeStaticDocumentTile ).to.be.undefined;
 			expect( activeDocumentColorTile ).to.be.undefined;
 		} );
+
+		it( 'should stop propagation when use arrow keys', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.arrowright,
+				stopPropagation: sinon.spy()
+			};
+
+			dropdown.colorTableView.appendColorPicker();
+
+			dropdown.colorTableView.focusTracker.isFocused = true;
+
+			dropdown.colorTableView.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+		} );
 	} );
 
 	describe( 'disabled document colors section', () => {

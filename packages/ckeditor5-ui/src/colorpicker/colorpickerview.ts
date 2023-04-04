@@ -36,6 +36,11 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
+	 * List of sliders view of the color picker.
+	 */
+	declare public slidersView: Array<View<HTMLElement>>;
+
+	/**
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
 	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
@@ -54,7 +59,8 @@ export default class ColorPickerView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-color-picker' ]
+				class: [ 'ck', 'ck-color-picker' ],
+				tabindex: -1
 			},
 			children
 		} );
@@ -75,6 +81,18 @@ export default class ColorPickerView extends View {
 
 		this.picker = global.document.createElement( 'hex-color-picker' );
 		this.picker.setAttribute( 'class', 'hex-color-picker' );
+		this.picker.setAttribute( 'tabindex', '-1' );
+
+		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
+		const sliders = colorPickersChildren.filter( item => item.tagName === 'DIV' );
+
+		const slidersView = sliders.map( slider => {
+			const view = new SliderView( slider );
+
+			return view;
+		} );
+
+		this.slidersView = slidersView;
 
 		if ( this.element ) {
 			this.element.insertBefore( this.picker, this.input.element );
@@ -108,5 +126,16 @@ export default class ColorPickerView extends View {
 		} );
 
 		return labeledInput;
+	}
+}
+
+class SliderView extends View {
+	constructor( element: HTMLElement ) {
+		super();
+		this.element = element;
+	}
+
+	public focus(): void {
+		this.element!.focus();
 	}
 }
