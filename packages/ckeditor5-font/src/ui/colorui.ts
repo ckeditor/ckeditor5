@@ -121,14 +121,32 @@ export default class ColorUI extends Plugin {
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
 			dropdownView.buttonView.set( {
-				label: this.dropdownLabel,
+				ariaHasPopup: 'listbox',
+				role: 'combobox',
 				icon: this.icon,
-				tooltip: true
+				tooltip: true,
+				ariaLabelledBy: null
 			} );
 
 			dropdownView.extendTemplate( {
 				attributes: {
 					class: 'ck-color-ui-dropdown'
+				}
+			} );
+
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( command, 'value', value => {
+				if ( value ) {
+					const localizedColor = localizedColors.find( ( { model } ) => model === value );
+
+					if ( localizedColor ) {
+						// E.g. "blue".
+						return `${ localizedColor.label }, ${ this.dropdownLabel }`;
+					}
+
+					// E.g. "hsl( ... )"
+					return `${ value }, ${ this.dropdownLabel }`;
+				} else {
+					return this.dropdownLabel;
 				}
 			} );
 

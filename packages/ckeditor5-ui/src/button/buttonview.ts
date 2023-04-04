@@ -73,6 +73,16 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaLabel: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public ariaLabelledBy: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public class: string | undefined;
 
 	/**
@@ -171,6 +181,8 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 
 		// Implement the Button interface.
 		this.set( 'ariaSelected', undefined );
+		this.set( 'ariaLabel', undefined );
+		this.set( 'ariaLabelledBy', `ck-editor__aria-label_${ ariaLabelUid }` );
 		this.set( 'class', undefined );
 		this.set( 'labelStyle', undefined );
 		this.set( 'icon', undefined );
@@ -189,7 +201,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'withKeystroke', false );
 
 		this.children = this.createCollection();
-		this.labelView = this._createLabelView( ariaLabelUid );
+		this.labelView = this._createLabelView();
 
 		this.iconView = new IconView();
 		this.iconView.extendTemplate( {
@@ -224,7 +236,8 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 				role: bind.to( 'role' ),
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
-				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
+				'aria-label': bind.to( 'ariaLabel' ),
+				'aria-labelledby': bind.to( 'ariaLabelledBy' ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
 				'aria-selected': bind.to( 'ariaSelected', value => value !== undefined ? String( value ) : null ),
@@ -288,10 +301,8 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 
 	/**
 	 * Creates a label view instance and binds it with button attributes.
-	 *
-	 * @param ariaLabelUid The aria label UID.
 	 */
-	private _createLabelView( ariaLabelUid: string ) {
+	private _createLabelView() {
 		const labelView = new View();
 		const bind = this.bindTemplate;
 
@@ -304,7 +315,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 					'ck-button__label'
 				],
 				style: bind.to( 'labelStyle' ),
-				id: `ck-editor__aria-label_${ ariaLabelUid }`
+				id: this.ariaLabelledBy
 			},
 
 			children: [

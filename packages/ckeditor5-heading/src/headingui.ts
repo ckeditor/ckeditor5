@@ -42,7 +42,7 @@ export default class HeadingUI extends Plugin {
 		const t = editor.t;
 		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose heading' );
-		const dropdownTooltip = t( 'Heading' );
+		const accessibleLabel = t( 'Heading' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
@@ -93,7 +93,9 @@ export default class HeadingUI extends Plugin {
 				role: 'combobox',
 				isOn: false,
 				withText: true,
-				tooltip: dropdownTooltip
+				tooltip: accessibleLabel,
+				ariaLabel: t( 'Headings' ),
+				ariaLabelledBy: null
 			} );
 
 			dropdownView.extendTemplate( {
@@ -124,7 +126,7 @@ export default class HeadingUI extends Plugin {
 			} );
 
 			dropdownView.once( 'change:isOpen', () => {
-				dropdownView.listView!.ariaLabel = dropdownTooltip;
+				dropdownView.listView!.ariaLabel = accessibleLabel;
 			} );
 
 			// Execute command when an item from the dropdown is selected.

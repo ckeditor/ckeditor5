@@ -160,6 +160,20 @@ export default interface Button {
 	ariaSelected?: boolean | undefined;
 
 	/**
+	 * (Optional) TODO
+	 *
+	 * @observable
+	 */
+	ariaLabel?: string | undefined;
+
+	/**
+	 * (Optional) TODO
+	 *
+	 * @observable
+	 */
+	ariaLabelledBy?: string | undefined;
+
+	/**
 	 * (Optional) The value of the `role` attribute of the button.
 	 *
 	 * @observable

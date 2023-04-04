@@ -43,14 +43,15 @@ export default class StyleUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const t = editor.t;
 		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
 		const styleUtils: StyleUtils = editor.plugins.get( 'StyleUtils' );
 		const styleDefinitions = editor.config.get( 'style.definitions' );
 		const normalizedStyleDefinitions = styleUtils.normalizeConfig( dataSchema, styleDefinitions );
+		const accessibleLabel = t( 'Styles' );
 
 		// Add the dropdown to the component factory.
 		editor.ui.componentFactory.add( 'style', locale => {
-			const t = locale.t;
 			const dropdown = createDropdown( locale );
 			const styleCommand: StyleCommand = editor.commands.get( 'style' )!;
 
@@ -71,8 +72,14 @@ export default class StyleUI extends Plugin {
 			// The entire dropdown will be disabled together with the command (e.g. when the editor goes read-only).
 			dropdown.bind( 'isEnabled' ).to( styleCommand );
 
-			// This dropdown has no icon. It displays text label depending on the selection.
-			dropdown.buttonView.withText = true;
+			dropdown.buttonView.set( {
+				ariaHasPopup: 'listbox',
+				role: 'combobox',
+				// This dropdown has no icon. It displays text label depending on the selection.
+				withText: true,
+				ariaLabel: accessibleLabel,
+				ariaLabelledBy: null
+			} );
 
 			// The label of the dropdown is dynamic and depends on how many styles are active at a time.
 			dropdown.buttonView.bind( 'label' ).to( styleCommand, 'value', value => {
@@ -81,7 +88,7 @@ export default class StyleUI extends Plugin {
 				} else if ( value.length === 1 ) {
 					return value[ 0 ];
 				} else {
-					return t( 'Styles' );
+					return accessibleLabel;
 				}
 			} );
 

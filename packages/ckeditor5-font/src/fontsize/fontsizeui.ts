@@ -42,10 +42,9 @@ export default class FontSizeUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-
 		const options = this._getLocalizedOptions();
-
 		const command: FontSizeCommand = editor.commands.get( FONT_SIZE )!;
+		const accessibleLabel = t( 'Font Size' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
@@ -58,17 +57,18 @@ export default class FontSizeUI extends Plugin {
 				ariaHasPopup: 'listbox',
 				icon: fontSizeIcon,
 				role: 'combobox',
-				tooltip: t( 'Font Size' )
+				tooltip: accessibleLabel,
+				ariaLabelledBy: null
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => {
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( command, 'value', value => {
 				if ( !value ) {
-					return t( 'Font Size' );
+					return accessibleLabel;
 				}
 
 				const selectedOption = options.find( opt => opt.model === value );
 
-				return `${ t( 'Font Size' ) }, ${ selectedOption ? selectedOption.title : value }`;
+				return `${ selectedOption ? selectedOption.title : value }, ${ accessibleLabel }`;
 			} );
 
 			dropdownView.extendTemplate( {
@@ -80,6 +80,10 @@ export default class FontSizeUI extends Plugin {
 			} );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
+
+			dropdownView.once( 'change:isOpen', () => {
+				dropdownView.listView!.ariaLabel = accessibleLabel;
+			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {

@@ -50,17 +50,18 @@ export default class FontFamilyUI extends Plugin {
 				ariaHasPopup: 'listbox',
 				icon: fontFamilyIcon,
 				role: 'combobox',
-				tooltip: accessibleLabel
+				tooltip: accessibleLabel,
+				ariaLabelledBy: null
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).to( command, 'value', value => {
+			dropdownView.buttonView.bind( 'ariaLabel' ).to( command, 'value', value => {
 				if ( !value ) {
 					return accessibleLabel;
 				}
 
 				const selectedOption = options.find( opt => opt.model === value );
 
-				return `${ accessibleLabel }, ${ selectedOption ? selectedOption.title : value }`;
+				return `${ selectedOption ? selectedOption.title : value }, ${ accessibleLabel }`;
 			} );
 
 			dropdownView.extendTemplate( {
