@@ -9,10 +9,12 @@
 
 const childProcess = require( 'child_process' );
 const fs = require( 'fs' );
-const glob = require( 'glob' );
 const path = require( 'path' );
+const glob = require( 'glob' );
 const TravisFolder = require( './travis-folder' );
 const { cyan, red, yellow, magenta } = require( './ansi-colors' );
+
+const CKEDITOR5_ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 const failedChecks = {
 	unitTests: new Set(),
@@ -27,38 +29,41 @@ const travisFolder = new TravisFolder();
  * file that will be sent to Coveralls.
  *
  * @param {Object} options
- * @param {String} options.packagesDir Directory containing feature packages to test.
- * @param {Boolean} options.runFrameworkTests Whether framework packages should be tested.
- * @param {Boolean} options.uploadCoverage Whether coverage should be uploaded. If true, usual criteria for upload still have to be met.
- * @param {Array.<String>} [options.excludedPackages=[]] Optional parameter including names of packages that should be skipped from testing.
- * @param {Array.<String>} [options.doNotEnforceCoverage=[]] Optional parameter including names of packages that should not enforce full
+ * @param {String} [options.repositoryDirectory=CKEDITOR5_ROOT_DIRECTORY] An absolute path to the root directory that keeps packages.
+ * @param {String} [options.packagesDirectory='packages'] Directory containing feature packages to test.
+ * @param {Boolean} [options.shouldRunFrameworkTests=true] Whether framework packages should be tested.
+ * @param {Boolean} [options.isPublicRepository=true] Whether the checked repository is public.
+ * @param {Array.<String>} [options.skipPackages=[]] Parameter including names of packages that should be skipped from testing.
+ * @param {Array.<String>} [options.allowNonFullCoveragePackages=[]] Parameter including names of packages that should not enforce full
  * coverage.
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
 module.exports = function checkPackagesCodeCoverage( {
-	packagesDir,
-	runFrameworkTests,
-	uploadCoverage,
-	excludedPackages = [],
-	doNotEnforceCoverage = []
+	repositoryDirectory = CKEDITOR5_ROOT_DIRECTORY,
+	packagesDirectory = 'packages',
+	shouldRunFrameworkTests = true,
+	isPublicRepository = true,
+	skipPackages = [],
+	allowNonFullCoveragePackages = []
 } ) {
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'rm -r -f .out', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .out', { stdio: 'inherit' } );
 
-	const frameworkPackages = fs.readdirSync( path.join( __dirname, '..', '..', 'src' ) )
+	const frameworkPackages = fs.readdirSync( path.join( CKEDITOR5_ROOT_DIRECTORY, 'src' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
-	const featurePackages = childProcess.execSync( `ls -1 ${ packagesDir }`, { encoding: 'utf8', stdio: [ null, 'pipe', 'inherit' ] } )
+	const featuresPackagesExecOptions = { cwd: repositoryDirectory, encoding: 'utf8', stdio: [ null, 'pipe', 'inherit' ] };
+	const featurePackages = childProcess.execSync( `ls -1 ${ packagesDirectory }`, featuresPackagesExecOptions )
 		.toString()
 		.trim()
 		.split( '\n' )
-		.filter( fullPackageName => ![ ...excludedPackages, ...frameworkPackages ].includes( fullPackageName ) );
+		.filter( fullPackageName => ![ ...skipPackages, ...frameworkPackages ].includes( fullPackageName ) );
 
-	if ( runFrameworkTests ) {
+	if ( shouldRunFrameworkTests ) {
 		console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
-		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => checkPackage( packageName, doNotEnforceCoverage ) );
+		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => checkPackage( packageName, allowNonFullCoveragePackages ) );
 	}
 
 	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
@@ -66,7 +71,7 @@ module.exports = function checkPackagesCodeCoverage( {
 	for ( const fullPackageName of frameworkPackages ) {
 		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
-		const cwd = path.join( __dirname, '..', '..', 'packages', fullPackageName );
+		const cwd = path.join( CKEDITOR5_ROOT_DIRECTORY, 'packages', fullPackageName );
 		const pkgJsonPath = path.join( cwd, 'package.json' );
 
 		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
@@ -84,16 +89,23 @@ module.exports = function checkPackagesCodeCoverage( {
 		childProcess.execSync( command, { cwd, stdio: 'inherit' } );
 
 		console.log( '* Updating the "main" field in `package.json`.' );
-		pkgJson.main = pkgJson.main.replace( /(?<=\.)ts$/, 'js' );
+
+		const pkgJsonMain = pkgJson.main;
+		pkgJson.main = pkgJsonMain.replace( /\.ts$/, 'js' );
+		pkgJson.types = pkgJsonMain.replace( /\.ts$/, 'd.ts' );
+
 		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 	}
 
 	travisFolder.end( 'typescript-compilation' );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
-	featurePackages.forEach( packageName => checkPackage( packageName, doNotEnforceCoverage, [ '--resolve-js-first', '--cache' ] ) );
 
-	if ( shouldUploadCoverageReport( uploadCoverage ) ) {
+	featurePackages.forEach( packageName => {
+		checkPackage( packageName, allowNonFullCoveragePackages, [ '--resolve-js-first', '--cache' ] );
+	} );
+
+	if ( shouldUploadCoverageReport( isPublicRepository ) ) {
 		console.log( 'Uploading combined code coverage report…' );
 		childProcess.execSync( 'npx coveralls < .out/combined_lcov.info', { stdio: 'inherit' } );
 		console.log( 'Done' );
@@ -117,10 +129,10 @@ module.exports = function checkPackagesCodeCoverage( {
 
 /**
  * @param {String} fullPackageName
- * @param {Array.<String>} doNotEnforceCoverage Parameter including names of packages that should not enforce full coverage.
- * @param {Array.<String>} testArgs additional arguments to pass into test script.
+ * @param {Array.<String>} allowNonFullCoveragePackages Parameter including names of packages that should not enforce full coverage.
+ * @param {Array.<String>} testArgs Additional arguments to pass into test script.
  */
-function checkPackage( fullPackageName, doNotEnforceCoverage, testArgs = [] ) {
+function checkPackage( fullPackageName, allowNonFullCoveragePackages, testArgs = [] ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
@@ -134,7 +146,7 @@ function checkPackage( fullPackageName, doNotEnforceCoverage, testArgs = [] ) {
 		failMessage: 'failed to pass unit tests'
 	} );
 
-	if ( !doNotEnforceCoverage.includes( fullPackageName ) ) {
+	if ( !allowNonFullCoveragePackages.includes( fullPackageName ) ) {
 		childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output', { stdio: 'inherit' } );
 
 		runSubprocess( {
@@ -210,11 +222,12 @@ function appendCoverageReport() {
  * If the repository slugs are different, the pull request comes from the community (forked repository).
  * For such builds, sending the CC report will be disabled.
  *
- * @param {Boolean} uploadCoverage Whether coverage should be uploaded. If true, usual criteria for upload still have to be met.
+ * @param {Boolean} isPublicRepository If set to `false` the coverage report will not be uploaded.
+ * We do not want to send private packages to Coveralls.
  * @returns {Boolean}
  */
-function shouldUploadCoverageReport( uploadCoverage ) {
-	if ( !uploadCoverage ) {
+function shouldUploadCoverageReport( isPublicRepository ) {
+	if ( !isPublicRepository ) {
 		console.log( cyan( 'Uploading of the code coverage report is disabled for this build.\n' ) );
 
 		return false;
