@@ -177,12 +177,73 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
-		it( 'should execute command if the color gets changed', async () => {
+		it( 'should propagate `selectedColor` from colorTable to color picker when dropdown is opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
+			const colorPickerView = dropdown.colorTableView.colorPickerView;
+			dropdown.colorTableView.selectedColor = '#123123';
+
+			dropdown.isOpen = false;
+			dropdown.isOpen = true;
+
+			expect( colorPickerView.color ).to.equal( '#123123' );
+
+			dropdown.element.remove();
+		} );
+
+		it( 'should convert non-hex `selectedColor` from colorTable to color picker when dropdown is opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
+			const colorPickerView = dropdown.colorTableView.colorPickerView;
+			dropdown.colorTableView.selectedColor = 'hsl( 100, 100%, 50% )';
+
+			dropdown.isOpen = false;
+			dropdown.isOpen = true;
+
+			expect( colorPickerView.color ).to.equal( '#55FF00' );
+
+			dropdown.element.remove();
+		} );
+
+		it( 'should execute command if the color gets changed in color picker', async () => {
 			const spy = sinon.spy( editor, 'execute' );
 
 			dropdown.colorTableView.colorPickerView.color = '#a37474';
 
 			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
+		} );
+
+		it( 'should apply color from color picker in the configured format', async () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor
+				.create( element, {
+					plugins: [
+						Paragraph,
+						TestColorPlugin
+					],
+					testColor: Object.assign( {
+						colorPicker: {
+							outputFormat: 'rgb'
+						}
+					}, testColorConfig )
+				} );
+
+			const spy = sinon.spy( editor, 'execute' );
+
+			command = editor.commands.get( 'testColorCommand' );
+			dropdown = editor.ui.componentFactory.create( 'testColor' );
+			dropdown.isOpen = true;
+			dropdown.render();
+
+			dropdown.colorTableView.colorPickerView.color = '#a37474';
+
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'rgb( 163, 116, 116 )' } ) );
+
+			element.remove();
+			dropdown.destroy();
+			await editor.destroy();
 		} );
 
 		describe( 'model to command binding', () => {
