@@ -27,7 +27,7 @@ In this release, we added official support for [multi-root editor type](https://
 * Add and detach document roots. The multi-root editor will allow you to add or remove editing fields in your application in a dynamic fashion (i.e. after the editor was initialised), without the need to create additional editor instances.
 * The multi-root editor will allow you to use root attributes to store additional metadata related to roots (editable fields). You can change these attributes and obtain them when you save the document data. Finally, you can react to these changes to alter how your application looks or behaves. Root attributes are a tool that will help you customize the editing experience further according to your needs. To take advantage of root attributes, you will need to provide a custom feature. As of now, there are no official plugins that would require saving and using the attributes of the root.
 
-**The multi-root editor is still a project in progress!
+**The multi-root editor is still a project in progress!**
 
 While the new predefined build is readily available, several features are not yet supported in the multi-root editor as of this release. These include: revision history, pagination, PDF/Word export, table resize, word count, HTML comments, full-page editing, title, mini-map, and the Cloud Services editor bundle. We will work on bringing support for these features in upcoming releases.
 
