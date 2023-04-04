@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="518px" height="565px" viewBox="0 0 518 565" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <defs>
+        <circle id="path-1" cx="319.5" cy="357.5" r="185.5"></circle>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="371" height="371" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <circle id="path-3" cx="227" cy="220" r="208"></circle>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="416" height="416" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Oval-Copy-5" stroke="#979797" mask="url(#mask-2)" stroke-width="2" opacity="0.444563045" stroke-dasharray="5,10" xlink:href="#path-1"></use>
+        <use id="Oval-Copy-6" stroke="#979797" mask="url(#mask-4)" stroke-width="2" opacity="0.444563045" stroke-dasharray="5,10" xlink:href="#path-3"></use>
+        <circle id="Oval" fill-opacity="0.1" fill="#303030" cx="341" cy="48" r="7"></circle>
+    </g>
+</svg>

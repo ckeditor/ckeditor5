@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-editor__editable {
+	& .image,
+	& .image-inline {
+		position: relative;
+	}
+
+	/* Upload progress bar. */
+	& .image .ck-progress-bar,
+	& .image-inline .ck-progress-bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+}

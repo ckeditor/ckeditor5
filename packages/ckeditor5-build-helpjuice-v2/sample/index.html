@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Helpjuice Editor</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
+			rel="stylesheet">
+		<script src="https://kit.fontawesome.com/e515c4e615.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Helpjuice Editor</h1>
+
+			<div id="new-glossary-term-modal">
+				<form action="">
+					<div class="expression">
+						<input type="text" name="glossary_term[expression]" id="glossary_term_expression">
+					</div>
+					<div class="definition">
+						<textarea col="1" row="2" placeholder="Type Term Definition..." name="glossary_term[definition]"
+							id="glossary_term_definition"></textarea>
+					</div>
+				</form>
+			</div>
+
+			<div id="helpjuice-editor">
+
+			</div>
+		</div>
+
+		<script src="../build/hjeditor.js"></script>
+		<script src="editor.js"></script>
+
+		<!-- Stimulus Controllers -->
+		<script type="module">
+			import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+			window.Stimulus = Application.start();
+
+			Stimulus.register("accordion", class extends Controller {
+				static targets = ["body"]
+				static classes = ["active"]
+
+				toggle() {
+					this.bodyTarget.classList.toggle("active");
+				}
+			})
+
+			Stimulus.register("tab", class extends Controller {
+				static targets = ["body"]
+				static classes = ["active"]
+
+				toggle() {
+					this.bodyTarget.classList.toggle("active");
+				}
+			})
+		</script>
+	</body>
+
+</html>

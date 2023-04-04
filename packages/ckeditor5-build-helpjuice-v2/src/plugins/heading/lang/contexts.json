@@ -1,0 +1,13 @@
+{
+	"Paragraph": "Dropdown option label for the paragraph format.",
+	"Heading": "Tooltip for the heading dropdown.",
+	"Choose heading": "Default label for the heading dropdown.",
+	"Heading 1": "Dropdown option label for the heading level 1 format.",
+	"Heading 2": "Dropdown option label for the heading level 2 format.",
+	"Heading 3": "Dropdown option label for the heading level 3 format.",
+	"Heading 4": "Dropdown option label for the heading level 4 format.",
+	"Heading 5": "Dropdown option label for the heading level 5 format.",
+	"Heading 6": "Dropdown option label for the heading level 6 format.",
+	"Type your title": "A default value of the placeholder for the content title.",
+	"Type or paste your content here.": "A default value of the placeholder for the content body."
+}

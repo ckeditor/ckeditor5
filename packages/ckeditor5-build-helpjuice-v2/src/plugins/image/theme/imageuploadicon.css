@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-image-upload-complete-icon {
+	display: block;
+	position: absolute;
+
+	/*
+	 * Smaller images should have the icon closer to the border.
+	 * Match the icon position with the linked image indicator brought by the link image feature.
+	 */
+	top: min(var(--ck-spacing-medium), 6%);
+	right: min(var(--ck-spacing-medium), 6%);
+	border-radius: 50%;
+	z-index: 1;
+
+	&::after {
+		content: "";
+		position: absolute;
+	}
+}

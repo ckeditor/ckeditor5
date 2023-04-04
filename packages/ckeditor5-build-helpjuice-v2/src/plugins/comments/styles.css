@@ -1,0 +1,7 @@
+.helpjuice-thread {
+    background-color: #fcf0b0;
+}
+
+.helpjuice-thread.active {
+    background-color: #ff0;
+}

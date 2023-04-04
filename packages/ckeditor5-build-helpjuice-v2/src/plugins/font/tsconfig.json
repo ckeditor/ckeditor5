@@ -1,0 +1,13 @@
+{
+	"extends": "../../tsconfig.release.json",
+	"include": [
+		"src",
+		"../../typings"
+	],
+	"exclude": [
+		"tests"
+	],
+	"compilerOptions":{
+		"skipLibCheck": true
+	}
+}
