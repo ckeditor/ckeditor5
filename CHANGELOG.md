@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [37.0.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0) (2023-04-04)
+## [37.0.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0) (2023-04-05)
 
 ### Release highlights
 
