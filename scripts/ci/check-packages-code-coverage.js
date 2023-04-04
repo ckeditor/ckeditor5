@@ -90,9 +90,7 @@ module.exports = function checkPackagesCodeCoverage( {
 
 		console.log( '* Updating the "main" field in `package.json`.' );
 
-		const pkgJsonMain = pkgJson.main;
-		pkgJson.main = pkgJsonMain.replace( /\.ts$/, 'js' );
-		pkgJson.types = pkgJsonMain.replace( /\.ts$/, 'd.ts' );
+		pkgJson.main = pkgJson.main.replace( /\.ts$/, 'js' );
 
 		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 	}
