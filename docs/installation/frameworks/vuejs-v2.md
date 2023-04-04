@@ -248,18 +248,6 @@ npm init vue@2 ckeditor5-vue-example
 
 This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project. Choose your preferred options.
 
-```
-Vue.js - The Progressive JavaScript Framework
-
-✔ Add TypeScript? … No / Yes
-✔ Add JSX Support? … No / Yes
-✔ Add Vue Router for Single Page Application development? … No / Yes
-✔ Add Pinia for state management? … No / Yes
-✔ Add Vitest for Unit Testing? … No / Yes
-✔ Add an End-to-End Testing Solution? › No
-✔ Add ESLint for code quality? … No / Yes
-```
-
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
@@ -298,7 +286,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-Now, your setup with Vite and Vue 2 is complete. You can also check how to configure webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+Now, your setup with Vite and Vue 2 is complete. You can also check how to configure webpack in the next section or move straight to [Installing plugins](#installing-plugins).
 
 ### Webpack
 
@@ -319,13 +307,6 @@ vue create ckeditor5-vue-example
 ```
 
 To start a Vue 2 project, pick the Vue 2 default preset.
-
-```
-? Please pick a preset: 
-  Default ([Vue 3] babel, eslint) 
-❯ Default ([Vue 2] babel, eslint) 
-  Manually select features 
-```
 
 #### Configuring `vue.config.js`
 
@@ -426,7 +407,7 @@ module.exports = {
     By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
 </info-box>
 
-### Using the editor from source
+### Installing plugins
 
 Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-vue2`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 

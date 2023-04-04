@@ -247,18 +247,6 @@ npm init vue@latest ckeditor5-vue-example
 
 This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project, for example, by adding Typescript. Choose your preferred options.
 
-```
-Vue.js - The Progressive JavaScript Framework
-
-✔ Add TypeScript? … No / Yes
-✔ Add JSX Support? … No / Yes
-✔ Add Vue Router for Single Page Application development? … No / Yes
-✔ Add Pinia for state management? … No / Yes
-✔ Add Vitest for Unit Testing? … No / Yes
-✔ Add an End-to-End Testing Solution? › No
-✔ Add ESLint for code quality? … No / Yes
-```
-
 #### Installing necessary packages
 
 You need two packages to use CKEditor from source with Vue and Vite: the official Vue component and the Vite plugin.
@@ -307,7 +295,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-Now, your setup with Vite and Vue is complete. You can also check how to configure webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+Now, your setup with Vite and Vue is complete. You can also check how to configure webpack in the next section or move straight to [Installing plugins](#installing-plugin).
 
 ### Webpack
 
@@ -328,21 +316,6 @@ vue create ckeditor5-vue-example
 ```
 
 You can choose the default preset for quick setup. You can also "manually select features" to pick features you need, like TypeScript.
-
-```
-? Please pick a preset: Manually select features
-? Check the features needed for your project:
-(Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)
- ◉ Babel
-❯◉ TypeScript
- ◯ Progressive Web App (PWA) Support
- ◯ Router
- ◯ Vuex
- ◯ CSS Pre-processors
- ◉ Linter / Formatter
- ◯ Unit Testing
- ◯ E2E Testing
-```
 
 #### Configuring `vue.config.js`
 
@@ -444,7 +417,7 @@ module.exports = {
     By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach than CKEditor's UI library you must create different webpack loader rules for your project's SVG files and the CKEditor's ones.
 </info-box>
 
-### Using the editor from source
+### Installing plugins
 
 Having your project configured, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`, `@ckeditor/ckeditor5-vue`, and `@ckeditor/vite-plugin-ckeditor5`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
