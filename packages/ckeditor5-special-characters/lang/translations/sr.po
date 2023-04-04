@@ -22,27 +22,27 @@ msgstr "Специјални карактери"
 
 msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
 msgid "All"
-msgstr "Svi"
+msgstr "Сви"
 
 msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
 msgid "Arrows"
-msgstr "Strelice"
+msgstr "Стрелице"
 
 msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
 msgid "Currency"
-msgstr "Valute"
+msgstr "Валуте"
 
 msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
 msgid "Latin"
-msgstr "Latinični"
+msgstr "Латинични"
 
 msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
 msgid "Mathematical"
-msgstr "Matematički"
+msgstr "Maтематички"
 
 msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
 msgid "Text"
-msgstr "Tekst"
+msgstr "Текст"
 
 msgctxt "A label for the \"leftwards simple arrow\" symbol."
 msgid "leftwards simple arrow"

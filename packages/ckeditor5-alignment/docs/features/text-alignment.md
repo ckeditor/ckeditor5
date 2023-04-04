@@ -9,7 +9,7 @@ The alignment feature lets you align your content to the left or right as well a
 
 ## Demo
 
-Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to change the alignment of a paragraph.
+Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to change the alignment of the element.
 
 {@snippet features/text-alignment}
 

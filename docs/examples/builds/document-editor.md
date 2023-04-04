@@ -22,7 +22,7 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 
 ```js
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {

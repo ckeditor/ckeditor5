@@ -638,7 +638,7 @@ Full code example:
 	</div>
 </div>
 
-<script src="../build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/multi-root/ckeditor.js"></script>
 <script>
 	MultiRootEditor
 		.create( {

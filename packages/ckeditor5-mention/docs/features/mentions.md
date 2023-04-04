@@ -305,7 +305,7 @@ Below is an example of a customized mention feature that:
 * Uses a feed of items with additional properties (`id`, `username`, `link`).
 * Renders custom item views in the autocomplete panel.
 * Converts a mention to an `<a>` element instead of a `<span>`.
-* Limits a number of mentions to 4 elements.
+* Limits the number of mentions to four elements.
 
 {@snippet features/mention-customization}
 
