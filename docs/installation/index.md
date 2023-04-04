@@ -8,7 +8,7 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Getting started with CKEditor 5
 
-CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM, written from scratch in ES6 with excellent webpack support. Find out the most convenient way to start using it!
+CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
 <info-box>
@@ -22,7 +22,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 
 ## Migrating from CKEditor 4
 
-If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too.
+If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration section} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too.
 
 ## Start using CKEditor 5 instantly with CDN
 
@@ -30,26 +30,26 @@ Start using CKEditor 5 instantly thanks to the power of our CDN. Check out the {
 
 ## Installing predefined CKEditor 5 builds
 
-Predefined CKEditor 5 builds are ready-to-use distributions aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choose the right one for you. This is the fastest way to kick-off your CKEditor 5 installation.
+Predefined CKEditor 5 builds are ready-to-use distributions aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/getting-started/predefined-builds available predefined builds} and choose the right one for you. This is the fastest way to kick off your CKEditor 5 installation.
 
 ## Customizing the CKEditor 5 installation
 
-Learn how to install a custom CKEditor 5 easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
+Learn how to install a custom CKEditor 5 build easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
 ## Integration with frameworks
 
-Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular or Vue, and learn to utilize them and to integrate CKEditor 5 with your software.
+Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
 
 ## Advanced installation concepts
 
-Find out more about the {@link installation/plugins/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data} and what the {@link installation/plugins/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or {@link installation/advanced/integrating-from-source-webpack integrating CKEditor 5 from source}.
+Find out more about the {@link installation/plugins/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data}, and what the {@link installation/plugins/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or integrating CKEditor 5 from source {@link installation/advanced/integrating-from-source-webpack using webpack} or {@link installation/advanced/integrating-from-source-vite Vite}.
 
 **Related links**
 
  * {@link updating/updating-ckeditor-5 Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
  * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
- * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, how to change the UI or even bring your own UI to the editor.
+ * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
