@@ -27,7 +27,7 @@ As of version `37.0.0` we provide native TypeScript types, and community types a
 	
 	For example:
   
-	  ```jsx
+	  ```js
 	  // typings/types.d.ts
 
 	  declare module 'ckeditor5/src/core' {
