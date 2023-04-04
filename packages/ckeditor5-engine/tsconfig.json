@@ -8,6 +8,7 @@
 		"tests"
 	],
   	"compilerOptions": {
-	  	"removeComments": true
+	  	"removeComments": true,
+	  	"alwaysStrict": true
 	}
 }
