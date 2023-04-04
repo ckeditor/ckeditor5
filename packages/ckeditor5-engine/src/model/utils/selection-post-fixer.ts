@@ -114,6 +114,8 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
 /**
  * Tries fixing a range if it's incorrect.
  *
+ * **Note:** This helper is used by the selection post-fixer and to fix the `beforeinput` target ranges.
+ *
  * @returns Returns fixed range or null if range is valid.
  */
 export function tryFixingRange( range: Range, schema: Schema ): Range | null {

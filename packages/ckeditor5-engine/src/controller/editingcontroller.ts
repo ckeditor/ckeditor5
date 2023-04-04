@@ -123,6 +123,7 @@ export default class EditingController extends ObservableMixin() {
 			convertSelectionChange( this.model, this.mapper )
 		);
 
+		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
 		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
 			fixTargetRanges( this.mapper, this.model.schema ),
 			{ priority: 'high' }
@@ -247,7 +248,9 @@ export default class EditingController extends ObservableMixin() {
 }
 
 /**
- * TODO
+ * Checks whether the target ranges provided by the `beforeInput` event can be properly mapped to model ranges and fixes them if needed.
+ *
+ * This is using the same logic as the selection post-fixer.
  */
 function fixTargetRanges( mapper: Mapper, schema: Schema ): GetCallback<ViewDocumentInputEvent> {
 	return ( evt, data ) => {

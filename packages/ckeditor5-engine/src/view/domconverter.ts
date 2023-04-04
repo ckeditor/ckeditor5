@@ -852,7 +852,6 @@ export default class DomConverter {
 				offset = offset < 0 ? 0 : offset;
 			}
 
-			// TODO throw or return null if offset is bigger than text node length? But this would explode in IME.
 			return new ViewPosition( viewParent, offset );
 		}
 		// domParent instanceof HTMLElement.

@@ -175,15 +175,14 @@ export default class DeleteObserver extends Observer {
 			}
 
 			// The default deletion unit for deleteContentBackward is a single code point
-			// but on Android it sometimes passes a wider target range, so we need to change
-			// the unit of deletion to include the whole range to be removed and not a single code point.
+			// but if the browser provides a wider target range then we should use it.
 			if ( inputType === 'deleteContentBackward' ) {
 				// On Android, deleteContentBackward has sequence 1 by default.
 				if ( env.isAndroid ) {
 					deleteData.sequence = 1;
 				}
 
-				// IME wants more than a single character to be removed.
+				// The beforeInput event wants more than a single character to be removed.
 				if ( shouldUseTargetRanges( targetRanges ) ) {
 					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.createSelection( targetRanges );
@@ -326,7 +325,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 }
 
 /**
- * TODO
+ * Verifies if the given target ranges cover more than a single character and should be used instead of single code-point deletion.
  */
 function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
 	// The collapsed target range could happen for example while deleting inside an inline filler
@@ -344,12 +343,14 @@ function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
 	let count = 0;
 
 	for ( const { nextPosition } of walker ) {
+		// There is some element in the range so count it as a single character.
 		if ( !nextPosition.parent.is( '$text' ) ) {
 			count++;
 		} else {
 			const data = nextPosition.parent.data;
 			const offset = nextPosition.offset;
 
+			// Count combined symbols and emoji sequences as a single character.
 			if (
 				isInsideSurrogatePair( data, offset ) ||
 				isInsideCombinedSymbol( data, offset ) ||
