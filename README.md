@@ -73,11 +73,11 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 ```html
 <script>
-    ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-        } );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
 </script>
 ```
 
@@ -92,7 +92,7 @@ For more advanced users or those who need to integrate CKEditor 5 with their app
 * Use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html)
 * Use some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html):
   * [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html)
-  * [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html),
+  * [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html)
   * [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html)
 
 #### CKEditor 5 Framework
@@ -126,7 +126,7 @@ The CKEditor 5 Framework offers access to a plethora of various plugins, support
 
 From collaborative editing support providing comments and tracking changes, through editing tools that let users control the content looks and structure such as tables, lists, font styles, to accessibility helpers and multi-language support - CKEditor 5 is easily extensible and customizable. Special duty features like Markdown input and output and source editing, or export to PDF and Word provide solutions for users with diverse and specialized needs. Images and videos are easily supported and CKEditor 5 offers various upload and storage systems to manage these.
 
-The number of options and the ease of customization and adding new ones make the editing experience even better for any environments and professional backgrounds.
+The number of options and the ease of customization and adding new ones make the editing experience even better for any environment and professional background.
 
 Refer to the [CKEditor 5 Features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html) documentation for details.
 
