@@ -27,19 +27,20 @@ const travisFolder = new TravisFolder();
  * file that will be sent to Coveralls.
  *
  * @param {Object} options
- * @param {String} packagesDir Directory containing feature packages to test.
- * @param {String[]} [options.excludedPackages=[]] Optional parameter including names of packages that should be skipped from testing.
- * @param {String[]} [options.doNotEnforceCoverage=[]] Optional parameter including names of packages that should not enforce full coverage.
- * @param {Boolean} runFrameworkTests Whether framework packages should be tested.
- * @param {Boolean} uploadCoverage Whether coverage should be uploaded. If true, usual criteria for upload still have to be met.
+ * @param {String} options.packagesDir Directory containing feature packages to test.
+ * @param {Boolean} options.runFrameworkTests Whether framework packages should be tested.
+ * @param {Boolean} options.uploadCoverage Whether coverage should be uploaded. If true, usual criteria for upload still have to be met.
+ * @param {Array.<String>} [options.excludedPackages=[]] Optional parameter including names of packages that should be skipped from testing.
+ * @param {Array.<String>} [options.doNotEnforceCoverage=[]] Optional parameter including names of packages that should not enforce full
+ * coverage.
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
 module.exports = function checkPackagesCodeCoverage( {
 	packagesDir,
-	excludedPackages = [],
-	doNotEnforceCoverage = [],
 	runFrameworkTests,
-	uploadCoverage
+	uploadCoverage,
+	excludedPackages = [],
+	doNotEnforceCoverage = []
 } ) {
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
@@ -116,7 +117,7 @@ module.exports = function checkPackagesCodeCoverage( {
 
 /**
  * @param {String} fullPackageName
- * @param {String[]} options.doNotEnforceCoverage Parameter including names of packages that should not enforce full coverage.
+ * @param {Array.<String>} doNotEnforceCoverage Parameter including names of packages that should not enforce full coverage.
  * @param {Array.<String>} testArgs additional arguments to pass into test script.
  */
 function checkPackage( fullPackageName, doNotEnforceCoverage, testArgs = [] ) {
