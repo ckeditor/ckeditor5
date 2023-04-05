@@ -194,6 +194,7 @@ CKEditor 5 supports several different image upload strategies. Check out the {@l
 CKEditor 4 was licensed under GPL, LGPL, and MPL Open Source licenses.
 
 CKEditor 5 is licensed under GPL2+ Open Source license only. If you are running an Open Source project under an OSI-approved license incompatible with GPL, we will be happy to [support you with a no-cost license](https://ckeditor.com/contact/). If your project is a commercial one, you will need to [obtain a commercial license](https://ckeditor.com/contact/).
+
 ## Recommended migration strategy
 
 You can approach moving from CKEditor 4 to CKEditor 5 as follows:

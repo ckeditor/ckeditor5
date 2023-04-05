@@ -4,7 +4,7 @@
  */
 
 /**
- * @module markdown-gfm/html2markdown
+ * @module markdown-gfm/html2markdown/html2markdown
  */
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */

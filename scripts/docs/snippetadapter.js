@@ -15,6 +15,7 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const glob = require( 'glob' );
+const { addTypeScriptLoader } = require( './utils' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
@@ -458,14 +459,12 @@ function getWebpackConfig( snippets, config ) {
 							}
 						}
 					]
-				},
-				{
-					test: /\.ts$/,
-					use: [ 'ts-loader' ]
 				}
 			]
 		}
 	};
+
+	addTypeScriptLoader( webpackConfig, 'tsconfig.docs.json' );
 
 	for ( const snippetData of snippets ) {
 		if ( !webpackConfig.output.path ) {
@@ -615,7 +614,7 @@ function splitSnippetsIntoChunks( snippets, chunkSize ) {
  * @returns {Object}
  */
 function getWebpackConfigForAssets( config ) {
-	return {
+	const webpackConfig = {
 		mode: config.production ? 'production' : 'development',
 
 		entry: {
@@ -672,14 +671,14 @@ function getWebpackConfigForAssets( config ) {
 						MiniCssExtractPlugin.loader,
 						'css-loader'
 					]
-				},
-				{
-					test: /\.ts$/,
-					use: [ 'ts-loader' ]
 				}
 			]
 		}
 	};
+
+	addTypeScriptLoader( webpackConfig, 'tsconfig.docs.json' );
+
+	return webpackConfig;
 }
 
 /**

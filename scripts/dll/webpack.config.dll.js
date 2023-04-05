@@ -11,6 +11,7 @@ const TerserPlugin = require( 'terser-webpack-plugin' );
 const WrapperPlugin = require( 'wrapper-webpack-plugin' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
+const { addTypeScriptLoader } = require( '../docs/utils' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
@@ -42,7 +43,8 @@ function loadCKEditor5modules( window ) {
 		'typing',
 		'undo',
 		'upload',
-		'widget'
+		'widget',
+		'watchdog'
 	];
 
 	for ( const item of dllPackages ) {
@@ -72,7 +74,8 @@ const webpackConfig = {
 
 		// Other, common packages:
 		'./src/upload.js',
-		'./src/widget.js'
+		'./src/widget.js',
+		'./src/watchdog.js'
 	],
 	optimization: {
 		minimize: false,
@@ -140,14 +143,13 @@ const webpackConfig = {
 						}
 					}
 				]
-			},
-			{
-				test: /\.ts$/,
-				use: [ 'ts-loader' ]
 			}
+			// ts-loader is injected by the `addTypeScriptLoader()` function.
 		]
 	}
 };
+
+addTypeScriptLoader( webpackConfig, 'tsconfig.dll.json' );
 
 if ( !IS_DEVELOPMENT_MODE ) {
 	webpackConfig.optimization.minimize = true;

@@ -22,7 +22,7 @@
 		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
 	],
 	"path": "docs",
-	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
+	"observablesdocs": "module:utils/observablemixin~Observable",
 	"redirects": {
 		"api/module_adapter-ckfinder_uploadadapter-CKFinderAdapterConfig.html": "api/module_ckfinder_ckfinder-CKFinderConfig.html",
 		"api/easy-video.html": "api/media-embed.html",
@@ -247,6 +247,7 @@
 		"framework/guides/support/error-codes.html": "support/error-codes.html",
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
+		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
 		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/deep-dive/conversion/intro.html",
 		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/deep-dive/conversion/intro.html",
@@ -603,7 +604,7 @@
 			"id": "api-reference",
 			"sourceDir": "api",
 			"slug": "api",
-			"type": "jsdoc"
+			"type": "typedoc"
 		}
 	]
 }

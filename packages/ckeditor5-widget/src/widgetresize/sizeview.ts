@@ -13,59 +13,38 @@ import type ResizeState from './resizerstate';
 
 /**
  * A view displaying the proposed new element size during the resizing.
- *
- * @protected
- * @extends {module:ui/view~View}
  */
 export default class SizeView extends View {
 	/**
+	 * The visibility of the view defined based on the existence of the host proposed dimensions.
+	 *
 	 * @internal
+	 * @observable
 	 * @readonly
 	 */
 	declare public _isVisible: boolean;
 
 	/**
+	 * The text that will be displayed in the `SizeView` child.
+	 * It can be formatted as the pixel values (e.g. 10x20) or the percentage value (e.g. 10%).
+	 *
 	 * @internal
+	 * @observable
 	 * @readonly
 	 */
 	declare public _label: string;
 
 	/**
+	 * The position of the view defined based on the host size and active handle position.
+	 *
 	 * @internal
+	 * @observable
 	 * @readonly
 	 */
 	declare public _viewPosition: string;
 
 	constructor() {
 		super();
-
-		/**
-		 * The visibility of the view defined based on the existence of the host proposed dimensions.
-		 *
-		 * @private
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #_isVisible
-		 */
-
-		/**
-		 * The text that will be displayed in the `SizeView` child.
-		 * It can be formatted as the pixel values (e.g. 10x20) or the percentage value (e.g. 10%).
-		 *
-		 * @private
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #_label
-		 */
-
-		/**
-		 * The position of the view defined based on the host size and active handle position.
-		 *
-		 * @private
-		 * @observable
-		 * @readonly
-		 * @member {String} #_viewPosition
-		 */
 
 		const bind = this.bindTemplate;
 
@@ -90,12 +69,9 @@ export default class SizeView extends View {
 	/**
 	 * A method used for binding the `SizeView` instance properties to the `ResizeState` instance observable properties.
 	 *
-	 * @protected
 	 * @internal
-	 * @param {module:widget/widgetresize~ResizerOptions} options
-	 * An object defining the resizer options, used for setting the proper size label.
-	 * @param {module:widget/widgetresize/resizerstate~ResizeState} resizeState
-	 * The `ResizeState` class instance, used for keeping the `SizeView` state up to date.
+	 * @param options An object defining the resizer options, used for setting the proper size label.
+	 * @param resizeState The `ResizeState` class instance, used for keeping the `SizeView` state up to date.
 	 */
 	public _bindToState( options: ResizerOptions, resizeState: ResizeState ): void {
 		this.bind( '_isVisible' ).to( resizeState, 'proposedWidth', resizeState, 'proposedHeight', ( width, height ) =>
@@ -126,7 +102,6 @@ export default class SizeView extends View {
 	/**
 	 * A method used for cleaning up. It removes the bindings and hides the view.
 	 *
-	 * @protected
 	 * @internal
 	 */
 	public _dismiss(): void {

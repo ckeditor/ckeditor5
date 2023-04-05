@@ -7,10 +7,10 @@
  * @module heading/headingediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
-import type { HeadingOption } from './heading';
+import type { HeadingOption } from './headingconfig';
 
 import HeadingCommand from './headingcommand';
 
@@ -48,8 +48,8 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Paragraph ];
+	public static get requires() {
+		return [ Paragraph ] as const;
 	}
 
 	/**
@@ -118,15 +118,5 @@ export default class HeadingEditing extends Plugin {
 			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HeadingEditing.pluginName ]: HeadingEditing;
-	}
-
-	interface CommandsMap {
-		heading: HeadingCommand;
 	}
 }

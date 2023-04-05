@@ -84,10 +84,6 @@ describe( 'MediaFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should implement the CSS transition disabling feature', () => {
-			expect( view.disableCssTransitions ).to.be.a( 'function' );
-		} );
-
 		describe( 'url input view', () => {
 			it( 'has info text', () => {
 				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );

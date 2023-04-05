@@ -414,8 +414,8 @@ The {@link module:table/table~Table} plugins register the following UI component
 #### Toolbars
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
-* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'` and `'tableRow'` dropdowns and `'mergeTableCells'` split button.
-* The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
+* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/tableconfig~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'` and `'tableRow'` dropdowns and `'mergeTableCells'` split button.
+* The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/tableconfig~TableConfig#tableToolbar configure} its content.
 
 <!-- not sure what to do about this ^ -->
 

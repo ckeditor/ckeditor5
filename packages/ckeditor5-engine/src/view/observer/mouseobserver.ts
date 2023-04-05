@@ -9,32 +9,26 @@
 
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
-import type View from '../view';
 
 /**
  * Mouse events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
- *
- * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'mouseover' | 'mouseout'> {
-	constructor( view: View ) {
-		super( view );
+	/**
+	 * @inheritDoc
+	 */
+	public readonly domEventType = [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ] as const;
 
-		this.domEventType = [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ];
-	}
-
+	/**
+	 * @inheritDoc
+	 */
 	public onDomEvent( domEvent: MouseEvent ): void {
 		this.fire( domEvent.type, domEvent );
 	}
 }
-
-export type ViewDocumentMouseEvent = {
-	name: 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
-	args: [ data: DomEventData<MouseEvent> ];
-};
 
 /**
  * Fired when the mouse button is pressed down on one of the editing roots of the editor.
@@ -45,9 +39,13 @@ export type ViewDocumentMouseEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @event module:engine/view/document~Document#event:mousedown
- * @param {module:engine/view/observer/domeventdata~DomEventData} data The event data.
+ * @eventName module:engine/view/document~Document#mousedown
+ * @param data The event data.
  */
+export type ViewDocumentMouseDownEvent = {
+	name: 'mousedown';
+	args: [ data: DomEventData<MouseEvent> ];
+};
 
 /**
  * Fired when the mouse button is released over one of the editing roots of the editor.
@@ -58,6 +56,44 @@ export type ViewDocumentMouseEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @event module:engine/view/document~Document#event:mouseup
- * @param {module:engine/view/observer/domeventdata~DomEventData} data The event data.
+ * @eventName module:engine/view/document~Document#mouseup
+ * @param  data The event data.
  */
+export type ViewDocumentMouseUpEvent = {
+	name: 'mouseup';
+	args: [ data: DomEventData<MouseEvent> ];
+};
+
+/**
+ * Fired when the mouse is over one of the editing roots of the editor.
+ *
+ * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
+ * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ *
+ * @see module:engine/view/observer/mouseobserver~MouseObserver
+ * @eventName module:engine/view/document~Document#mouseover
+ * @param  data The event data.
+ */
+export type ViewDocumentMouseOverEvent = {
+	name: 'mouseover';
+	args: [ data: DomEventData<MouseEvent> ];
+};
+
+/**
+ * Fired when the mouse is moved out of the one of the editing roots of the editor.
+ *
+ * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
+ * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ *
+ * @see module:engine/view/observer/mouseobserver~MouseObserver
+ * @eventName module:engine/view/document~Document#mouseout
+ * @param  data The event data.
+ */
+export type ViewDocumentMouseOutEvent = {
+	name: 'mouseout';
+	args: [ data: DomEventData<MouseEvent> ];
+};

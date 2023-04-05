@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
+import type HorizontalLineCommand from './horizontallinecommand';
 import horizontalLineIcon from '../theme/icons/horizontalline.svg';
 
 /**
@@ -32,7 +33,7 @@ export default class HorizontalLineUI extends Plugin {
 
 		// Add the `horizontalLine` button to feature components.
 		editor.ui.componentFactory.add( 'horizontalLine', locale => {
-			const command = editor.commands.get( 'horizontalLine' )!;
+			const command: HorizontalLineCommand = editor.commands.get( 'horizontalLine' )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -51,11 +52,5 @@ export default class HorizontalLineUI extends Plugin {
 
 			return view;
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HorizontalLineUI.pluginName ]: HorizontalLineUI;
 	}
 }

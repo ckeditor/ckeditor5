@@ -10,3 +10,9 @@
 export { default as CodeBlock } from './codeblock';
 export { default as CodeBlockEditing } from './codeblockediting';
 export { default as CodeBlockUI } from './codeblockui';
+export type { default as CodeBlockCommand } from './codeblockcommand';
+export type { default as IndentCodeBlockCommand } from './indentcodeblockcommand';
+export type { default as OutdentCodeBlockCommand } from './outdentcodeblockcommand';
+export type { CodeBlockConfig } from './codeblockconfig';
+
+import './augmentation';

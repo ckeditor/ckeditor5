@@ -7,7 +7,7 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import { Plugin, icons, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import Paragraph from './paragraph';
@@ -22,22 +22,22 @@ const icon = icons.paragraph;
  * This plugin is not loaded automatically by the {@link module:paragraph/paragraph~Paragraph} plugin. It must
  * be added manually.
  *
- *		ClassicEditor
- *			.create( {
- *				plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
- *				toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * @extends module:core/plugin~Plugin
+ * ```ts
+ * ClassicEditor
+ *   .create( {
+ *     plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
+ *     toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
+ *   } )
+ *   .then( ... )
+ *   .catch( ... );
+ * ```
  */
 export default class ParagraphButtonUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Paragraph ];
+	public static get requires() {
+		return [ Paragraph ] as const;
 	}
 
 	/**

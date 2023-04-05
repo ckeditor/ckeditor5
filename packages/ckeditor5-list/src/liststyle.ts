@@ -7,7 +7,7 @@
  * @module list/liststyle
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import ListProperties from './listproperties';
 import { logWarning } from 'ckeditor5/src/utils';
 
@@ -23,8 +23,8 @@ export default class ListStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListProperties ];
+	public static get requires() {
+		return [ ListProperties ] as const;
 	}
 
 	/**
@@ -38,11 +38,5 @@ export default class ListStyle extends Plugin {
 		super( editor );
 
 		logWarning( 'The `ListStyle` plugin is obsolete. Use `ListProperties` instead.' );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListStyle.pluginName ]: ListStyle;
 	}
 }

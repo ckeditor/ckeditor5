@@ -96,7 +96,7 @@ export default class MentionCommand extends Command {
 			 *
 			 * Incorrect markers: `'@@'`, `'[@'`.
 			 *
-			 * See {@link module:mention/mention~MentionConfig}.
+			 * See {@link module:mention/mentionconfig~MentionConfig}.
 			 *
 			 * @error mentioncommand-incorrect-marker
 			 */
@@ -132,7 +132,7 @@ export default class MentionCommand extends Command {
 			 * ]
 			 * ```
 			 *
-			 * See {@link module:mention/mention~MentionConfig}.
+			 * See {@link module:mention/mentionconfig~MentionConfig}.
 			 *
 			 * @error mentioncommand-incorrect-id
 			 */

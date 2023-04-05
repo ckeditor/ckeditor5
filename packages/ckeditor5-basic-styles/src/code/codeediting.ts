@@ -7,7 +7,7 @@
  * @module basic-styles/code/codeediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing';
 
 import AttributeCommand from '../attributecommand';
@@ -32,8 +32,8 @@ export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ TwoStepCaretMovement ];
+	public static get requires() {
+		return [ TwoStepCaretMovement ] as const;
 	}
 
 	/**
@@ -67,15 +67,5 @@ export default class CodeEditing extends Plugin {
 
 		// Setup highlight over selected element.
 		inlineHighlight( editor, CODE, 'code', HIGHLIGHT_CLASS );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		code: AttributeCommand;
-	}
-
-	interface PluginsMap {
-		[ CodeEditing.pluginName ]: CodeEditing;
 	}
 }

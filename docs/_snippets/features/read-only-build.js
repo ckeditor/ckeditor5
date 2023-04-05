@@ -5,11 +5,10 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
-import ExportPdf from '@ckeditor/ckeditor5-export-pdf/src/exportpdf';
-import ExportWord from '@ckeditor/ckeditor5-export-word/src/exportword';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
+import { ExportWord } from '@ckeditor/ckeditor5-export-word';
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( FindAndReplace );
 ClassicEditor.builtinPlugins.push( ExportPdf );

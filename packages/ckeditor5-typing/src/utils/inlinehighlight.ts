@@ -25,16 +25,18 @@ import type { ViewElement } from '@ckeditor/ckeditor5-engine';
  *
  * Usage:
  *
- *		import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+ * ```ts
+ * import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
  *
- *		// Make `ck-link_selected` class be applied on an `a` element
- *		// whenever the corresponding `linkHref` attribute element is selected.
- *		inlineHighlight( editor, 'linkHref', 'a', 'ck-link_selected' );
+ * // Make `ck-link_selected` class be applied on an `a` element
+ * // whenever the corresponding `linkHref` attribute element is selected.
+ * inlineHighlight( editor, 'linkHref', 'a', 'ck-link_selected' );
+ * ```
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {String} attributeName The attribute name to check.
- * @param {String} tagName The tagName of a view item.
- * @param {String} className The class name to apply in the view.
+ * @param editor The editor instance.
+ * @param attributeName The attribute name to check.
+ * @param tagName The tagName of a view item.
+ * @param className The class name to apply in the view.
  */
 export default function inlineHighlight(
 	editor: Editor,

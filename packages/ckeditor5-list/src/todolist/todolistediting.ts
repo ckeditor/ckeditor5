@@ -17,12 +17,12 @@ import type {
 	ModelApplyOperationEvent,
 	UpcastElementEvent,
 	ViewDocumentArrowKeyEvent,
-	ViewDocumentKeyEvent,
+	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation
 } from 'ckeditor5/src/engine';
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import {
 	getCode,
@@ -67,8 +67,8 @@ export default class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListEditing ];
+	public static get requires() {
+		return [ ListEditing ] as const;
 	}
 
 	/**
@@ -148,7 +148,7 @@ export default class TodoListEditing extends Plugin {
 		);
 
 		// Toggle check state of selected to-do list items on keystroke.
-		this.listenTo<ViewDocumentKeyEvent>( editing.view.document, 'keydown', ( evt, data ) => {
+		this.listenTo<ViewDocumentKeyDownEvent>( editing.view.document, 'keydown', ( evt, data ) => {
 			if ( getCode( data ) === ITEM_TOGGLE_KEYSTROKE ) {
 				editor.execute( 'checkTodoList' );
 				evt.stop();
@@ -248,10 +248,4 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 			eventInfo.stop();
 		}
 	};
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TodoListEditing.pluginName ]: TodoListEditing;
-	}
 }

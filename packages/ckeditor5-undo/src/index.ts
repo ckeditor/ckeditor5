@@ -9,4 +9,8 @@
 
 export { default as Undo } from './undo';
 export { default as UndoEditing } from './undoediting';
-export { default as UndoUi } from './undoui';
+export { default as UndoUI } from './undoui';
+export type { default as UndoCommand } from './undocommand';
+export type { default as RedoCommand } from './redocommand';
+
+import './augmentation';

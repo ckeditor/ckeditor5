@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/clipboard
+ * @module ckeditor5/clipboard
  */
 
 export * from '@ckeditor/ckeditor5-clipboard';

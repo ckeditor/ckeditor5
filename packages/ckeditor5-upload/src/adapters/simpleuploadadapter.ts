@@ -9,41 +9,42 @@
 
 /* globals XMLHttpRequest, FormData */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
+import type { SimpleUploadConfig } from '../uploadconfig';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The Simple upload adapter allows uploading images to an application running on your server using
  * the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a
- * minimal {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig editor configuration}.
+ * minimal {@link module:upload/uploadconfig~SimpleUploadConfig editor configuration}.
  *
- *		ClassicEditor
- *			.create( document.querySelector( '#editor' ), {
- *				simpleUpload: {
- *					uploadUrl: 'http://example.com',
- *					headers: {
- *						...
- *					}
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * ```ts
+ * ClassicEditor
+ * 	.create( document.querySelector( '#editor' ), {
+ * 		simpleUpload: {
+ * 			uploadUrl: 'http://example.com',
+ * 			headers: {
+ * 				...
+ * 			}
+ * 		}
+ * 	} )
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
  *
  * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
  * learn more about the feature (configuration, server–side requirements, etc.).
  *
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ FileRepository ];
+	public static get requires() {
+		return [ FileRepository ] as const;
 	}
 
 	/**
@@ -65,7 +66,7 @@ export default class SimpleUploadAdapter extends Plugin {
 
 		if ( !options.uploadUrl ) {
 			/**
-			 * The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}
+			 * The {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}
 			 * configuration required by the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`}
 			 * is missing. Make sure the correct URL is specified for the image upload to work properly.
 			 *
@@ -84,35 +85,25 @@ export default class SimpleUploadAdapter extends Plugin {
 
 /**
  * Upload adapter.
- *
- * @private
- * @implements module:upload/filerepository~UploadAdapter
  */
 class Adapter implements UploadAdapter {
+	/**
+	 * FileLoader instance to use during the upload.
+	 */
 	public loader: FileLoader;
+
+	/**
+	 * The configuration of the adapter.
+	 */
 	public options: SimpleUploadConfig;
 
 	private xhr?: XMLHttpRequest;
 
 	/**
 	 * Creates a new adapter instance.
-	 *
-	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} options
 	 */
 	constructor( loader: FileLoader, options: SimpleUploadConfig ) {
-		/**
-		 * FileLoader instance to use during the upload.
-		 *
-		 * @member {module:upload/filerepository~FileLoader} #loader
-		 */
 		this.loader = loader;
-
-		/**
-		 * The configuration of the adapter.
-		 *
-		 * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} #options
-		 */
 		this.options = options;
 	}
 
@@ -120,7 +111,6 @@ class Adapter implements UploadAdapter {
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
-	 * @returns {Promise}
 	 */
 	public upload(): Promise<UploadResponse> {
 		return this.loader.file
@@ -135,7 +125,6 @@ class Adapter implements UploadAdapter {
 	 * Aborts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#abort
-	 * @returns {Promise}
 	 */
 	public abort(): void {
 		if ( this.xhr ) {
@@ -145,10 +134,8 @@ class Adapter implements UploadAdapter {
 
 	/**
 	 * Initializes the `XMLHttpRequest` object using the URL specified as
-	 * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
+	 * {@link module:upload/uploadconfig~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
 	 * configuration.
-	 *
-	 * @private
 	 */
 	private _initRequest(): void {
 		const xhr = this.xhr = new XMLHttpRequest();
@@ -160,10 +147,9 @@ class Adapter implements UploadAdapter {
 	/**
 	 * Initializes XMLHttpRequest listeners
 	 *
-	 * @private
-	 * @param {Function} resolve Callback function to be called when the request is successful.
-	 * @param {Function} reject Callback function to be called when the request cannot be completed.
-	 * @param {File} file Native File object.
+	 * @param resolve Callback function to be called when the request is successful.
+	 * @param reject Callback function to be called when the request cannot be completed.
+	 * @param file Native File object.
 	 */
 	private _initListeners(
 		resolve: ( result: UploadResponse ) => void,
@@ -208,8 +194,7 @@ class Adapter implements UploadAdapter {
 	/**
 	 * Prepares the data and sends the request.
 	 *
-	 * @private
-	 * @param {File} file File instance to be uploaded.
+	 * @param file File instance to be uploaded.
 	 */
 	private _sendRequest( file: File ): void {
 		// Set headers if specified.
@@ -231,111 +216,5 @@ class Adapter implements UploadAdapter {
 
 		// Send the request.
 		this.xhr!.send( data );
-	}
-}
-
-/**
- * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				simpleUpload: {
- *					// The URL the images are uploaded to.
- *					uploadUrl: 'http://example.com',
- *
- *					// Headers sent along with the XMLHttpRequest to the upload server.
- *					headers: {
- *						...
- *					}
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
- *
- * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
- *
- * @interface SimpleUploadConfig
- */
-export type SimpleUploadConfig = {
-	uploadUrl: string;
-	headers?: Record<string, string>;
-	withCredentials?: boolean;
-};
-
-/**
- * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
- *
- * Read more in {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig}.
- *
- * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} module:core/editor/editorconfig~EditorConfig#simpleUpload
- */
-declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-		simpleUpload?: SimpleUploadConfig;
-	}
-}
-
-/**
- * The path (URL) to the server (application) which handles the file upload. When specified, enables the automatic
- * upload of resources (images) inserted into the editor content.
- *
- * Learn more about the server application requirements in the
- * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
- * of the feature guide.
- *
- * @member {String} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl
- */
-
-/**
- * An object that defines additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) sent with
- * the request to the server during the upload. This is the right place to implement security mechanisms like
- * authentication and [CSRF](https://developer.mozilla.org/en-US/docs/Glossary/CSRF) protection.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				simpleUpload: {
- *					headers: {
- *						'X-CSRF-TOKEN': 'CSRF-Token',
- *						Authorization: 'Bearer <JSON Web Token>'
- *					}
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
- *
- * Learn more about the server application requirements in the
- * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
- * of the feature guide.
- *
- * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
- */
-
-/**
- * This flag enables the
- * [`withCredentials`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials)
- * property of the request sent to the server during the upload. It affects cross-site requests only and, for instance,
- * allows credentials such as cookies to be sent along with the request.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				simpleUpload: {
- *					withCredentials: true
- *				}
- *			} );
- *			.then( ... )
- *			.catch( ... );
- *
- * Learn more about the server application requirements in the
- * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
- * of the feature guide.
- *
- * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]
- */
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ SimpleUploadAdapter.pluginName ]: SimpleUploadAdapter;
 	}
 }

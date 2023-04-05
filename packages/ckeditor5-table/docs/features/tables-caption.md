@@ -70,7 +70,7 @@ The {@link module:table/tablecaption~TableCaption} plugin registers the followin
 
 #### Toolbars
 
-{@link module:table/tablecaption~TableCaption} plugin allows adding the `toggleTableCaption` item to the toolbar. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
+{@link module:table/tablecaption~TableCaption} plugin allows adding the `toggleTableCaption` item to the toolbar. It is possible to {@link module:table/tableconfig~TableConfig#tableToolbar configure} its content.
 
 ### Editor commands
 

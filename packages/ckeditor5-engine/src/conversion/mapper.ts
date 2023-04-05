@@ -40,85 +40,55 @@ import type ViewNode from '../view/node';
  * and {@link module:engine/conversion/mapper~Mapper#toModelPosition toModelPosition} methods. `Mapper` adds its own default callbacks
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
- * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Mapper extends EmitterMixin() {
-	private _modelToViewMapping: WeakMap<ModelElement | ModelDocumentFragment, ViewElement | ViewDocumentFragment>;
-	private _viewToModelMapping: WeakMap<ViewElement | ViewDocumentFragment, ModelElement | ModelDocumentFragment>;
-	private _viewToModelLengthCallbacks: Map<string, ( element: ViewElement ) => number>;
-	private _markerNameToElements: Map<string, Set<ViewElement>>;
-	private _elementToMarkerNames: Map<ViewElement, Set<string>>;
-	private _deferredBindingRemovals: Map<ViewElement, ViewElement | ViewDocumentFragment>;
-	private _unboundMarkerNames: Set<string>;
+	/**
+	 * Model element to view element mapping.
+	 */
+	private _modelToViewMapping = new WeakMap<ModelElement | ModelDocumentFragment, ViewElement | ViewDocumentFragment>();
+
+	/**
+	 * View element to model element mapping.
+	 */
+	private _viewToModelMapping = new WeakMap<ViewElement | ViewDocumentFragment, ModelElement | ModelDocumentFragment>();
+
+	/**
+	 * A map containing callbacks between view element names and functions evaluating length of view elements
+	 * in model.
+	 */
+	private _viewToModelLengthCallbacks = new Map<string, ( element: ViewElement ) => number>();
+
+	/**
+	 * Model marker name to view elements mapping.
+	 *
+	 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~Element view elements}.
+	 * One marker (name) can be mapped to multiple elements.
+	 */
+	private _markerNameToElements = new Map<string, Set<ViewElement>>();
+
+	/**
+	 * View element to model marker names mapping.
+	 *
+	 * This is reverse to {@link ~Mapper#_markerNameToElements} map.
+	 */
+	private _elementToMarkerNames = new Map<ViewElement, Set<string>>();
+
+	/**
+	 * The map of removed view elements with their current root (used for deferred unbinding).
+	 */
+	private _deferredBindingRemovals = new Map<ViewElement, ViewElement | ViewDocumentFragment>();
+
+	/**
+	 * Stores marker names of markers which have changed due to unbinding a view element (so it is assumed that the view element
+	 * has been removed, moved or renamed).
+	 */
+	private _unboundMarkerNames = new Set<string>();
 
 	/**
 	 * Creates an instance of the mapper.
 	 */
 	constructor() {
 		super();
-
-		/**
-		 * Model element to view element mapping.
-		 *
-		 * @private
-		 * @member {WeakMap}
-		 */
-		this._modelToViewMapping = new WeakMap();
-
-		/**
-		 * View element to model element mapping.
-		 *
-		 * @private
-		 * @member {WeakMap}
-		 */
-		this._viewToModelMapping = new WeakMap();
-
-		/**
-		 * A map containing callbacks between view element names and functions evaluating length of view elements
-		 * in model.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._viewToModelLengthCallbacks = new Map();
-
-		/**
-		 * Model marker name to view elements mapping.
-		 *
-		 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~Element view elements}.
-		 * One marker (name) can be mapped to multiple elements.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._markerNameToElements = new Map();
-
-		/**
-		 * View element to model marker names mapping.
-		 *
-		 * This is reverse to {@link ~Mapper#_markerNameToElements} map.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._elementToMarkerNames = new Map();
-
-		/**
-		 * The map of removed view elements with their current root (used for deferred unbinding).
-		 *
-		 * @private
-		 * @member {Map.<module:engine/view/element~Element,module:engine/view/documentfragment~DocumentFragment>}
-		 */
-		this._deferredBindingRemovals = new Map();
-
-		/**
-		 * Stores marker names of markers which have changed due to unbinding a view element (so it is assumed that the view element
-		 * has been removed, moved or renamed).
-		 *
-		 * @private
-		 * @member {Set.<module:engine/model/markercollection~Marker>}
-		 */
-		this._unboundMarkerNames = new Set();
 
 		// Default mapper algorithm for mapping model position to view position.
 		this.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( evt, data ) => {
@@ -163,8 +133,8 @@ export default class Mapper extends EmitterMixin() {
 	 * {@link module:engine/conversion/mapper~Mapper#toViewElement toViewElement} methods.
 	 * The information that elements are bound is also used to translate positions.
 	 *
-	 * @param {module:engine/model/element~Element} modelElement Model element.
-	 * @param {module:engine/view/element~Element} viewElement View element.
+	 * @param modelElement Model element.
+	 * @param viewElement View element.
 	 */
 	public bindElements(
 		modelElement: ModelElement | ModelDocumentFragment,
@@ -183,9 +153,9 @@ export default class Mapper extends EmitterMixin() {
 	 * This behavior allows for re-binding model element to another view element without fear of losing the new binding
 	 * when the previously bound view element is unbound.
 	 *
-	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
-	 * @param {Object} [options={}] The options object.
-	 * @param {Boolean} [options.defer=false] Controls whether the binding should be removed immediately or deferred until a
+	 * @param viewElement View element to unbind.
+	 * @param options The options object.
+	 * @param options.defer Controls whether the binding should be removed immediately or deferred until a
 	 * {@link #flushDeferredBindings `flushDeferredBindings()`} call.
 	 */
 	public unbindViewElement(
@@ -220,7 +190,7 @@ export default class Mapper extends EmitterMixin() {
 	 * This behavior lets for re-binding view element to another model element without fear of losing the new binding
 	 * when the previously bound model element is unbound.
 	 *
-	 * @param {module:engine/model/element~Element} modelElement Model element to unbind.
+	 * @param modelElement Model element to unbind.
 	 */
 	public unbindModelElement( modelElement: ModelElement ): void {
 		const viewElement = this.toViewElement( modelElement )!;
@@ -236,8 +206,8 @@ export default class Mapper extends EmitterMixin() {
 	 * Binds the given marker name with the given {@link module:engine/view/element~Element view element}. The element
 	 * will be added to the current set of elements bound with the given marker name.
 	 *
-	 * @param {module:engine/view/element~Element} element Element to bind.
-	 * @param {String} name Marker name.
+	 * @param element Element to bind.
+	 * @param name Marker name.
 	 */
 	public bindElementToMarker( element: ViewElement, name: string ): void {
 		const elements = this._markerNameToElements.get( name ) || new Set();
@@ -253,8 +223,8 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Unbinds an element from given marker name.
 	 *
-	 * @param {module:engine/view/element~Element} element Element to unbind.
-	 * @param {String} name Marker name.
+	 * @param element Element to unbind.
+	 * @param name Marker name.
 	 */
 	public unbindElementFromMarkerName( element: ViewElement, name: string ): void {
 		const nameToElements = this._markerNameToElements.get( name );
@@ -281,8 +251,6 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Returns all marker names of markers which have changed due to unbinding a view element (so it is assumed that the view element
 	 * has been removed, moved or renamed) since the last flush. After returning, the marker names list is cleared.
-	 *
-	 * @returns {Array.<String>}
 	 */
 	public flushUnboundMarkerNames(): Array<string> {
 		const markerNames = Array.from( this._unboundMarkerNames );
@@ -325,11 +293,21 @@ export default class Mapper extends EmitterMixin() {
 	 *
 	 * **Note:** {@link module:engine/view/uielement~UIElement} does not have corresponding element in model.
 	 *
-	 * @param {module:engine/view/element~Element} viewElement View element.
-	 * @returns {module:engine/model/element~Element|undefined} Corresponding model element or `undefined` if not found.
+	 * @label ELEMENT
+	 * @param viewElement View element.
+	 * @returns Corresponding model element or `undefined` if not found.
 	 */
 	public toModelElement( viewElement: ViewElement ): ModelElement | undefined;
+
+	/**
+	 * Gets the corresponding model document fragment.
+	 *
+	 * @label DOCUMENT_FRAGMENT
+	 * @param viewDocumentFragment View document fragment.
+	 * @returns Corresponding model document fragment or `undefined` if not found.
+	 */
 	public toModelElement( viewDocumentFragment: ViewDocumentFragment ): ModelDocumentFragment | undefined;
+
 	public toModelElement( viewElement: ViewElement | ViewDocumentFragment ): ModelElement | ModelDocumentFragment | undefined {
 		return this._viewToModelMapping.get( viewElement );
 	}
@@ -337,11 +315,21 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding view element.
 	 *
-	 * @param {module:engine/model/element~Element} modelElement Model element.
-	 * @returns {module:engine/view/element~Element|undefined} Corresponding view element or `undefined` if not found.
+	 * @label ELEMENT
+	 * @param modelElement Model element.
+	 * @returns Corresponding view element or `undefined` if not found.
 	 */
 	public toViewElement( modelElement: ModelElement ): ViewElement | undefined;
+
+	/**
+	 * Gets the corresponding view document fragment.
+	 *
+	 * @label DOCUMENT_FRAGMENT
+	 * @param modelDocumentFragment Model document fragment.
+	 * @returns Corresponding view document fragment or `undefined` if not found.
+	 */
 	public toViewElement( modelDocumentFragment: ModelDocumentFragment ): ViewDocumentFragment | undefined;
+
 	public toViewElement( modelElement: ModelElement | ModelDocumentFragment ): ViewElement | ViewDocumentFragment | undefined {
 		return this._modelToViewMapping.get( modelElement );
 	}
@@ -349,8 +337,8 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding model range.
 	 *
-	 * @param {module:engine/view/range~Range} viewRange View range.
-	 * @returns {module:engine/model/range~Range} Corresponding model range.
+	 * @param viewRange View range.
+	 * @returns Corresponding model range.
 	 */
 	public toModelRange( viewRange: ViewRange ): ModelRange {
 		return new ModelRange( this.toModelPosition( viewRange.start ), this.toModelPosition( viewRange.end ) );
@@ -359,8 +347,8 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets the corresponding view range.
 	 *
-	 * @param {module:engine/model/range~Range} modelRange Model range.
-	 * @returns {module:engine/view/range~Range} Corresponding view range.
+	 * @param modelRange Model range.
+	 * @returns Corresponding view range.
 	 */
 	public toViewRange( modelRange: ModelRange ): ViewRange {
 		return new ViewRange( this.toViewPosition( modelRange.start ), this.toViewPosition( modelRange.end ) );
@@ -370,8 +358,8 @@ export default class Mapper extends EmitterMixin() {
 	 * Gets the corresponding model position.
 	 *
 	 * @fires viewToModelPosition
-	 * @param {module:engine/view/position~Position} viewPosition View position.
-	 * @returns {module:engine/model/position~Position} Corresponding model position.
+	 * @param viewPosition View position.
+	 * @returns Corresponding model position.
 	 */
 	public toModelPosition( viewPosition: ViewPosition ): ModelPosition {
 		const data: MapperViewToModelPositionEvent[ 'args' ][ 0 ] = {
@@ -388,11 +376,11 @@ export default class Mapper extends EmitterMixin() {
 	 * Gets the corresponding view position.
 	 *
 	 * @fires modelToViewPosition
-	 * @param {module:engine/model/position~Position} modelPosition Model position.
-	 * @param {Object} [options] Additional options for position mapping process.
-	 * @param {Boolean} [options.isPhantom=false] Should be set to `true` if the model position to map is pointing to a place
+	 * @param modelPosition Model position.
+	 * @param options Additional options for position mapping process.
+	 * @param options.isPhantom Should be set to `true` if the model position to map is pointing to a place
 	 * in model tree which no longer exists. For example, it could be an end of a removed model range.
-	 * @returns {module:engine/view/position~Position} Corresponding view position.
+	 * @returns Corresponding view position.
 	 */
 	public toViewPosition(
 		modelPosition: ModelPosition,
@@ -412,8 +400,8 @@ export default class Mapper extends EmitterMixin() {
 	/**
 	 * Gets all view elements bound to the given marker name.
 	 *
-	 * @param {String} name Marker name.
-	 * @returns {Set.<module:engine/view/element~Element>|null} View elements bound with the given marker name or `null`
+	 * @param name Marker name.
+	 * @returns View elements bound with the given marker name or `null`
 	 * if no elements are bound to the given marker name.
 	 */
 	public markerNameToElements( name: string ): Set<ViewElement> | null {
@@ -444,28 +432,30 @@ export default class Mapper extends EmitterMixin() {
 	 * The callback is fired with one argument, which is a view element instance. The callback is expected to return
 	 * a number representing the length of the view element in the model.
 	 *
-	 *		// List item in view may contain nested list, which have other list items. In model though,
-	 *		// the lists are represented by flat structure. Because of those differences, length of list view element
-	 *		// may be greater than one. In the callback it's checked how many nested list items are in evaluated list item.
+	 * ```ts
+	 * // List item in view may contain nested list, which have other list items. In model though,
+	 * // the lists are represented by flat structure. Because of those differences, length of list view element
+	 * // may be greater than one. In the callback it's checked how many nested list items are in evaluated list item.
 	 *
-	 *		function getViewListItemLength( element ) {
-	 *			let length = 1;
+	 * function getViewListItemLength( element ) {
+	 * 	let length = 1;
 	 *
-	 *			for ( let child of element.getChildren() ) {
-	 *				if ( child.name == 'ul' || child.name == 'ol' ) {
-	 *					for ( let item of child.getChildren() ) {
-	 *						length += getViewListItemLength( item );
-	 *					}
-	 *				}
-	 *			}
+	 * 	for ( let child of element.getChildren() ) {
+	 * 		if ( child.name == 'ul' || child.name == 'ol' ) {
+	 * 			for ( let item of child.getChildren() ) {
+	 * 				length += getViewListItemLength( item );
+	 * 			}
+	 * 		}
+	 * 	}
 	 *
-	 *			return length;
-	 *		}
+	 * 	return length;
+	 * }
 	 *
-	 *		mapper.registerViewToModelLength( 'li', getViewListItemLength );
+	 * mapper.registerViewToModelLength( 'li', getViewListItemLength );
+	 * ```
 	 *
-	 * @param {String} viewElementName Name of view element for which callback is registered.
-	 * @param {Function} lengthCallback Function return a length of view element instance in model.
+	 * @param viewElementName Name of view element for which callback is registered.
+	 * @param lengthCallback Function return a length of view element instance in model.
 	 */
 	public registerViewToModelLength(
 		viewElementName: string,
@@ -478,8 +468,7 @@ export default class Mapper extends EmitterMixin() {
 	 * For the given `viewPosition`, finds and returns the closest ancestor of this position that has a mapping to
 	 * the model.
 	 *
-	 * @param {module:engine/view/position~Position} viewPosition Position for which a mapped ancestor should be found.
-	 * @returns {module:engine/view/element~Element}
+	 * @param viewPosition Position for which a mapped ancestor should be found.
 	 */
 	public findMappedViewAncestor( viewPosition: ViewPosition ): ViewElement {
 		let parent: any = viewPosition.parent;
@@ -496,18 +485,21 @@ export default class Mapper extends EmitterMixin() {
 	 *
 	 * Example:
 	 *
-	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, p ) -> 5
+	 * ```html
+	 * <p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, p ) -> 5
+	 * ```
 	 *
 	 * Is a sum of:
 	 *
-	 *		<p>foo|<b>bar</b></p> // _toModelOffset( p, 3, p ) -> 3
-	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, b ) -> 2
+	 * ```html
+	 * <p>foo|<b>bar</b></p> // _toModelOffset( p, 3, p ) -> 3
+	 * <p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, b ) -> 2
+	 * ```
 	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} viewParent Position parent.
-	 * @param {Number} viewOffset Position offset.
-	 * @param {module:engine/view/element~Element} viewBlock Block used as a base to calculate offset.
-	 * @returns {Number} Offset in the model.
+	 * @param viewParent Position parent.
+	 * @param viewOffset Position offset.
+	 * @param viewBlock Block used as a base to calculate offset.
+	 * @returns Offset in the model.
 	 */
 	private _toModelOffset(
 		viewParent: ViewElement,
@@ -553,13 +545,15 @@ export default class Mapper extends EmitterMixin() {
 	 *
 	 * Examples:
 	 *
-	 *		foo                          -> 3 // Text length is equal to its data length.
-	 *		<p>foo</p>                   -> 1 // Length of an element which is mapped is by default equal to 1.
-	 *		<b>foo</b>                   -> 3 // Length of an element which is not mapped is a length of its children.
-	 *		<div><p>x</p><p>y</p></div>  -> 2 // Assuming that <div> is not mapped and <p> are mapped.
+	 * ```
+	 * foo                          -> 3 // Text length is equal to its data length.
+	 * <p>foo</p>                   -> 1 // Length of an element which is mapped is by default equal to 1.
+	 * <b>foo</b>                   -> 3 // Length of an element which is not mapped is a length of its children.
+	 * <div><p>x</p><p>y</p></div>  -> 2 // Assuming that <div> is not mapped and <p> are mapped.
+	 * ```
 	 *
-	 * @param {module:engine/view/element~Element} viewNode View node.
-	 * @returns {Number} Length of the node in the tree model.
+	 * @param viewNode View node.
+	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
 		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
@@ -588,24 +582,26 @@ export default class Mapper extends EmitterMixin() {
 	 *
 	 * Example:
 	 *
-	 *		<p>fo<b>bar</b>bom</p> -> expected offset: 4
+	 * ```
+	 * <p>fo<b>bar</b>bom</p> -> expected offset: 4
 	 *
-	 *		findPositionIn( p, 4 ):
-	 *		<p>|fo<b>bar</b>bom</p> -> expected offset: 4, actual offset: 0
-	 *		<p>fo|<b>bar</b>bom</p> -> expected offset: 4, actual offset: 2
-	 *		<p>fo<b>bar</b>|bom</p> -> expected offset: 4, actual offset: 5 -> we are too far
+	 * findPositionIn( p, 4 ):
+	 * <p>|fo<b>bar</b>bom</p> -> expected offset: 4, actual offset: 0
+	 * <p>fo|<b>bar</b>bom</p> -> expected offset: 4, actual offset: 2
+	 * <p>fo<b>bar</b>|bom</p> -> expected offset: 4, actual offset: 5 -> we are too far
 	 *
-	 *		findPositionIn( b, 4 - ( 5 - 3 ) ):
-	 *		<p>fo<b>|bar</b>bom</p> -> expected offset: 2, actual offset: 0
-	 *		<p>fo<b>bar|</b>bom</p> -> expected offset: 2, actual offset: 3 -> we are too far
+	 * findPositionIn( b, 4 - ( 5 - 3 ) ):
+	 * <p>fo<b>|bar</b>bom</p> -> expected offset: 2, actual offset: 0
+	 * <p>fo<b>bar|</b>bom</p> -> expected offset: 2, actual offset: 3 -> we are too far
 	 *
-	 *		findPositionIn( bar, 2 - ( 3 - 3 ) ):
-	 *		We are in the text node so we can simple find the offset.
-	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
+	 * findPositionIn( bar, 2 - ( 3 - 3 ) ):
+	 * We are in the text node so we can simple find the offset.
+	 * <p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
+	 * ```
 	 *
-	 * @param {module:engine/view/element~Element} viewParent Tree view element in which we are looking for the position.
-	 * @param {Number} expectedOffset Expected offset.
-	 * @returns {module:engine/view/position~Position} Found position.
+	 * @param viewParent Tree view element in which we are looking for the position.
+	 * @param expectedOffset Expected offset.
+	 * @returns Found position.
 	 */
 	public findPositionIn( viewParent: ViewNode | ViewDocumentFragment, expectedOffset: number ): ViewPosition {
 		// Last scanned view node.
@@ -647,13 +643,14 @@ export default class Mapper extends EmitterMixin() {
 	 * Because we prefer positions in the text nodes over positions next to text nodes, if the view position was next to a text node,
 	 * it moves it into the text node instead.
 	 *
-	 *		<p>[]<b>foo</b></p> -> <p>[]<b>foo</b></p> // do not touch if position is not directly next to text
-	 *		<p>foo[]<b>foo</b></p> -> <p>foo{}<b>foo</b></p> // move to text node
-	 *		<p><b>[]foo</b></p> -> <p><b>{}foo</b></p> // move to text node
+	 * ```
+	 * <p>[]<b>foo</b></p> -> <p>[]<b>foo</b></p> // do not touch if position is not directly next to text
+	 * <p>foo[]<b>foo</b></p> -> <p>foo{}<b>foo</b></p> // move to text node
+	 * <p><b>[]foo</b></p> -> <p><b>{}foo</b></p> // move to text node
+	 * ```
 	 *
-	 * @private
-	 * @param {module:engine/view/position~Position} viewPosition Position potentially next to the text node.
-	 * @returns {module:engine/view/position~Position} Position in the text node if possible.
+	 * @param viewPosition Position potentially next to the text node.
+	 * @returns Position in the text node if possible.
 	 */
 	private _moveViewPositionToTextNode( viewPosition: ViewPosition ): ViewPosition {
 		// If the position is just after a text node, put it at the end of that text node.
@@ -670,123 +667,164 @@ export default class Mapper extends EmitterMixin() {
 		// Otherwise, just return the given position.
 		return viewPosition;
 	}
-
-	/**
-	 * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
-	 * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to
-	 * calculate the {@link module:engine/view/position~Position view position}. The calculated view position should be added as
-	 * a `viewPosition` value in the `data` object that is passed as one of parameters to the event callback.
-	 *
-	 * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
-	 * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that
-	 * 		// <span> element.
-	 *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
-	 *			const positionParent = modelPosition.parent;
-	 *
-	 *			if ( positionParent.name == 'captionedImage' ) {
-	 *				const viewImg = data.mapper.toViewElement( positionParent );
-	 *				const viewCaption = viewImg.nextSibling; // The <span> element.
-	 *
-	 *				data.viewPosition = new ViewPosition( viewCaption, modelPosition.offset );
-	 *
-	 *				// Stop the event if other callbacks should not modify calculated value.
-	 *				evt.stop();
-	 *			}
-	 *		} );
-	 *
-	 * **Note:** keep in mind that sometimes a "phantom" model position is being converted. A "phantom" model position is
-	 * a position that points to a nonexistent place in model. Such a position might still be valid for conversion, though
-	 * (it would point to a correct place in the view when converted). One example of such a situation is when a range is
-	 * removed from the model, there may be a need to map the range's end (which is no longer a valid model position). To
-	 * handle such situations, check the `data.isPhantom` flag:
-	 *
-	 * 		// Assume that there is a "customElement" model element and whenever the position is before it,
-	 * 		// we want to move it to the inside of the view element bound to "customElement".
-	 *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
-	 *			if ( data.isPhantom ) {
-	 *				return;
-	 *			}
-	 *
-	 *			// Below line might crash for phantom position that does not exist in model.
-	 *			const sibling = data.modelPosition.nodeBefore;
-	 *
-	 *			// Check if this is the element we are interested in.
-	 *			if ( !sibling.is( 'element', 'customElement' ) ) {
-	 *				return;
-	 *			}
-	 *
-	 *			const viewElement = data.mapper.toViewElement( sibling );
-	 *
-	 *			data.viewPosition = new ViewPosition( sibling, 0 );
-	 *
-	 *			evt.stop();
-	 *		} );
-	 *
-	 * **Note:** the default mapping callback is provided with a `low` priority setting and does not cancel the event, so it is possible to
-	 * attach a custom callback after a default callback and also use `data.viewPosition` calculated by the default callback
-	 * (for example to fix it).
-	 *
-	 * **Note:** the default mapping callback will not fire if `data.viewPosition` is already set.
-	 *
-	 * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
-	 * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
-	 * Also, the condition that checks if a special case scenario happened should be as simple as possible.
-	 *
-	 * @event modelToViewPosition
-	 * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
-	 * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
-	 * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
-	 */
-
-	/**
-	 * Fired for each view-to-model position mapping request. See {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition}.
-	 *
-	 * 		// See example in `modelToViewPosition` event description.
-	 * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
-	 *		mapper.on( 'viewToModelPosition', ( evt, data ) => {
-	 *			const positionParent = viewPosition.parent;
-	 *
-	 *			if ( positionParent.hasClass( 'image-caption' ) ) {
-	 *				const viewImg = positionParent.previousSibling;
-	 *				const modelImg = data.mapper.toModelElement( viewImg );
-	 *
-	 *				data.modelPosition = new ModelPosition( modelImg, viewPosition.offset );
-	 *				evt.stop();
-	 *			}
-	 *		} );
-	 *
-	 * **Note:** the default mapping callback is provided with a `low` priority setting and does not cancel the event, so it is possible to
-	 * attach a custom callback after the default callback and also use `data.modelPosition` calculated by the default callback
-	 * (for example to fix it).
-	 *
-	 * **Note:** the default mapping callback will not fire if `data.modelPosition` is already set.
-	 *
-	 * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
-	 * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
-	 * Also, the condition that checks if special case scenario happened should be as simple as possible.
-	 *
-	 * @event viewToModelPosition
-	 * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
-	 * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
-	 * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
-	 */
 }
 
+/**
+ * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
+ * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to
+ * calculate the {@link module:engine/view/position~Position view position}. The calculated view position should be added as
+ * a `viewPosition` value in the `data` object that is passed as one of parameters to the event callback.
+ *
+ * ```ts
+ * // Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
+ * // and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that
+ * // <span> element.
+ * mapper.on( 'modelToViewPosition', ( evt, data ) => {
+ * 	const positionParent = modelPosition.parent;
+ *
+ * 	if ( positionParent.name == 'captionedImage' ) {
+ * 		const viewImg = data.mapper.toViewElement( positionParent );
+ * 		const viewCaption = viewImg.nextSibling; // The <span> element.
+ *
+ * 		data.viewPosition = new ViewPosition( viewCaption, modelPosition.offset );
+ *
+ * 		// Stop the event if other callbacks should not modify calculated value.
+ * 		evt.stop();
+ * 	}
+ * } );
+ * ```
+ *
+ * **Note:** keep in mind that sometimes a "phantom" model position is being converted. A "phantom" model position is
+ * a position that points to a nonexistent place in model. Such a position might still be valid for conversion, though
+ * (it would point to a correct place in the view when converted). One example of such a situation is when a range is
+ * removed from the model, there may be a need to map the range's end (which is no longer a valid model position). To
+ * handle such situations, check the `data.isPhantom` flag:
+ *
+ * ```ts
+ * // Assume that there is a "customElement" model element and whenever the position is before it,
+ * // we want to move it to the inside of the view element bound to "customElement".
+ * mapper.on( 'modelToViewPosition', ( evt, data ) => {
+ * 	if ( data.isPhantom ) {
+ * 		return;
+ * 	}
+ *
+ * 	// Below line might crash for phantom position that does not exist in model.
+ * 	const sibling = data.modelPosition.nodeBefore;
+ *
+ * 	// Check if this is the element we are interested in.
+ * 	if ( !sibling.is( 'element', 'customElement' ) ) {
+ * 		return;
+ * 	}
+ *
+ * 	const viewElement = data.mapper.toViewElement( sibling );
+ *
+ * 	data.viewPosition = new ViewPosition( sibling, 0 );
+ *
+ * 	evt.stop();
+ * } );
+ * ```
+ *
+ * **Note:** the default mapping callback is provided with a `low` priority setting and does not cancel the event, so it is possible to
+ * attach a custom callback after a default callback and also use `data.viewPosition` calculated by the default callback
+ * (for example to fix it).
+ *
+ * **Note:** the default mapping callback will not fire if `data.viewPosition` is already set.
+ *
+ * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
+ * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
+ * Also, the condition that checks if a special case scenario happened should be as simple as possible.
+ *
+ * @eventName ~Mapper#modelToViewPosition
+ */
 export type MapperModelToViewPositionEvent = {
 	name: 'modelToViewPosition';
-	args: [ {
-		mapper: Mapper;
-		modelPosition: ModelPosition;
-		viewPosition?: ViewPosition;
-		isPhantom?: boolean;
-	} ];
+	args: [ MapperModelToViewPositionEventData ];
 };
 
+/**
+ * Data pipeline object that can store and pass data between callbacks. The callback should add
+ * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
+ */
+export type MapperModelToViewPositionEventData = {
+
+	/**
+	 * Mapper instance that fired the event.
+	 */
+	mapper: Mapper;
+
+	/**
+	 * The model position.
+	 */
+	modelPosition: ModelPosition;
+
+	/**
+	 * The callback should add the `viewPosition` value to that object with calculated the
+	 * {@link module:engine/view/position~Position view position}.
+	 */
+	viewPosition?: ViewPosition;
+
+	/**
+	 * Should be set to `true` if the model position to map is pointing to a place
+	 * in model tree which no longer exists. For example, it could be an end of a removed model range.
+	 */
+	isPhantom?: boolean;
+};
+
+/**
+ * Fired for each view-to-model position mapping request. See {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition}.
+ *
+ * ```ts
+ * // See example in `modelToViewPosition` event description.
+ * // This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
+ * mapper.on( 'viewToModelPosition', ( evt, data ) => {
+ * 	const positionParent = viewPosition.parent;
+ *
+ * 	if ( positionParent.hasClass( 'image-caption' ) ) {
+ * 		const viewImg = positionParent.previousSibling;
+ * 		const modelImg = data.mapper.toModelElement( viewImg );
+ *
+ * 		data.modelPosition = new ModelPosition( modelImg, viewPosition.offset );
+ * 		evt.stop();
+ * 	}
+ * } );
+ * ```
+ *
+ * **Note:** the default mapping callback is provided with a `low` priority setting and does not cancel the event, so it is possible to
+ * attach a custom callback after the default callback and also use `data.modelPosition` calculated by the default callback
+ * (for example to fix it).
+ *
+ * **Note:** the default mapping callback will not fire if `data.modelPosition` is already set.
+ *
+ * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
+ * mapping between the given model and view elements is unsolvable by using just elements mapping and default algorithm.
+ * Also, the condition that checks if special case scenario happened should be as simple as possible.
+ *
+ * @eventName ~Mapper#viewToModelPosition
+ */
 export type MapperViewToModelPositionEvent = {
 	name: 'viewToModelPosition';
-	args: [ {
-		mapper: Mapper;
-		modelPosition?: ModelPosition;
-		viewPosition: ViewPosition;
-	} ];
+	args: [ MapperViewToModelPositionEventData ];
+};
+
+/**
+ * Data pipeline object that can store and pass data between callbacks. The callback should add
+ * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
+ */
+export type MapperViewToModelPositionEventData = {
+
+	/**
+	 * Mapper instance that fired the event.
+	 */
+	mapper: Mapper;
+
+	/**
+	 * The callback should add `modelPosition` value to that object with calculated
+	 * {@link module:engine/model/position~Position model position}.
+	 */
+	modelPosition?: ModelPosition;
+
+	/**
+	 * The view position.
+	 */
+	viewPosition: ViewPosition;
 };

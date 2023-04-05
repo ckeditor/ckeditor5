@@ -13,8 +13,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The toolbar separator view class.
- *
- * @extends module:ui/view~View
  */
 export default class ToolbarSeparatorView extends View {
 	/**

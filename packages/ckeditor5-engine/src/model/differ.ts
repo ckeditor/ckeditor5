@@ -22,6 +22,8 @@ import type Node from './node';
 import type Operation from './operation/operation';
 import type RenameOperation from './operation/renameoperation';
 import type SplitOperation from './operation/splitoperation';
+import type RootOperation from './operation/rootoperation';
+import type RootAttributeOperation from './operation/rootattributeoperation';
 
 /**
  * Calculates the difference between two model states.
@@ -62,6 +64,13 @@ export default class Differ {
 	 * - `newMarkerData`.
 	 */
 	private readonly _changedMarkers: Map<string, { newMarkerData: MarkerData; oldMarkerData: MarkerData }> = new Map();
+
+	/**
+	 * A map that stores all roots that have been changed.
+	 *
+	 * The keys are the names of the roots while value represents the changes.
+	 */
+	private readonly _changedRoots: Map<string, DiffItemRoot> = new Map();
 
 	/**
 	 * Stores the number of changes that were processed. Used to order the changes chronologically. It is important
@@ -105,14 +114,11 @@ export default class Differ {
 	 * Informs whether there are any changes buffered in `Differ`.
 	 */
 	public get isEmpty(): boolean {
-		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
+		return this._changesInElement.size == 0 && this._changedMarkers.size == 0 && this._changedRoots.size == 0;
 	}
 
 	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
-	 *
-	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
-	 * in the state before the operation is executed.
 	 *
 	 * @param operationToBuffer An operation to buffer.
 	 */
@@ -127,7 +133,9 @@ export default class Differ {
 			MoveOperation |
 			RenameOperation |
 			SplitOperation |
-			MergeOperation
+			MergeOperation |
+			RootOperation |
+			RootAttributeOperation
 		);
 
 		switch ( operation.type ) {
@@ -238,6 +246,21 @@ export default class Differ {
 
 				break;
 			}
+			case 'detachRoot':
+			case 'addRoot': {
+				this._bufferRootStateChange( operation.rootName, operation.isAdd );
+
+				break;
+			}
+			case 'addRootAttribute':
+			case 'removeRootAttribute':
+			case 'changeRootAttribute': {
+				const rootName = operation.root.rootName;
+
+				this._bufferRootAttributeChange( rootName, operation.key, operation.oldValue, operation.newValue );
+
+				break;
+			}
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.
@@ -332,11 +355,16 @@ export default class Differ {
 	 *
 	 * * model structure changes,
 	 * * attribute changes,
+	 * * a root is added or detached,
 	 * * changes of markers which were defined as `affectsData`,
 	 * * changes of markers' `affectsData` property.
 	 */
 	public hasDataChanges(): boolean {
 		if ( this._changesInElement.size > 0 ) {
+			return true;
+		}
+
+		if ( this._changedRoots.size > 0 ) {
 			return true;
 		}
 
@@ -544,6 +572,30 @@ export default class Differ {
 	}
 
 	/**
+	 * Returns all roots that have changed (either were attached, or detached, or their attributes changed).
+	 *
+	 * @returns Diff between the old and the new roots state.
+	 */
+	public getChangedRoots(): Array<DiffItemRoot> {
+		return Array.from( this._changedRoots.values() ).map( diffItem => {
+			const entry = { ...diffItem };
+
+			if ( entry.state !== undefined ) {
+				// The root was attached or detached -- do not return its attributes changes.
+				// If the root was attached, it should be handled as a whole, together with its attributes, the same way as model nodes.
+				// If the root was detached, its attributes should be discarded anyway.
+				//
+				// Keep in mind that filtering must happen on this stage (when retrieving changes). If filtering happens on-the-fly as
+				// the attributes change, it may lead to incorrect situation, e.g.: detach root, change attribute, re-attach root.
+				// In this case, attribute change cannot be filtered. After the root is re-attached, the attribute change must be kept.
+				delete entry.attributes;
+			}
+
+			return entry;
+		} );
+	}
+
+	/**
 	 * Returns a set of model items that were marked to get refreshed.
 	 */
 	public getRefreshedItems(): Set<Item> {
@@ -557,8 +609,75 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._changedRoots.clear();
 		this._refreshedItems = new Set();
 		this._cachedChanges = null;
+	}
+
+	/**
+	 * Buffers the root state change after the root was attached or detached
+	 */
+	private _bufferRootStateChange( rootName: string, isAttached: boolean ): void {
+		if ( !this._changedRoots.has( rootName ) ) {
+			this._changedRoots.set( rootName, { name: rootName, state: isAttached ? 'attached' : 'detached' } );
+
+			return;
+		}
+
+		const diffItem = this._changedRoots.get( rootName )!;
+
+		if ( diffItem.state !== undefined ) {
+			// Root `state` can only toggle between of the values ('attached' or 'detached') and no value. It cannot be any other way,
+			// because if the root was originally attached it can only become detached. Then, if it is re-attached in the same batch of
+			// changes, it gets back to "no change" (which means no value). Same if the root was originally detached.
+			delete diffItem.state;
+
+			if ( diffItem.attributes === undefined ) {
+				// If there is no `state` change and no `attributes` change, remove the entry.
+				this._changedRoots.delete( rootName );
+			}
+		} else {
+			diffItem.state = isAttached ? 'attached' : 'detached';
+		}
+	}
+
+	/**
+	 * Buffers a root attribute change.
+	 */
+	private _bufferRootAttributeChange( rootName: string, key: string, oldValue: unknown, newValue: unknown ): void {
+		const diffItem: DiffItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
+		const attrs: Record<string, { oldValue: unknown; newValue: unknown }> = diffItem.attributes || {};
+
+		if ( attrs[ key ] ) {
+			// If this attribute or metadata was already changed earlier and is changed again, check to what value it is changed.
+			const attrEntry = attrs[ key ];
+
+			if ( newValue === attrEntry.oldValue ) {
+				// If it was changed back to the old value, remove the entry.
+				delete attrs[ key ];
+			} else {
+				// If it was changed to a different value, update the entry.
+				attrEntry.newValue = newValue;
+			}
+		} else {
+			// If this attribute or metadata was not set earlier, add an entry.
+			attrs[ key ] = { oldValue, newValue };
+		}
+
+		if ( Object.entries( attrs ).length === 0 ) {
+			// If attributes or metadata changes set became empty, remove it from the diff item.
+			delete diffItem.attributes;
+
+			if ( diffItem.state === undefined ) {
+				// If there is no `state` change and no `attributes` change, remove the entry.
+				this._changedRoots.delete( rootName );
+			}
+		} else {
+			// Make sure that, if a new object in the structure was created, it gets set.
+			diffItem.attributes = attrs;
+
+			this._changedRoots.set( rootName, diffItem );
+		}
 	}
 
 	/**
@@ -1203,7 +1322,7 @@ function _changesInGraveyardFilter( entry: DiffItem ) {
 export type DiffItem = DiffItemInsert | DiffItemRemove | DiffItemAttribute;
 
 /**
- * The single diff item for inserted nodes.
+ * A single diff item for inserted nodes.
  */
 export interface DiffItemInsert {
 
@@ -1228,13 +1347,13 @@ export interface DiffItemInsert {
 	position: Position;
 
 	/**
-	 * The length of an inserted text node. For elements it is always 1 as each inserted element is counted as a one.
+	 * The length of an inserted text node. For elements, it is always 1 as each inserted element is counted as a one.
 	 */
 	length: number;
 }
 
 /**
- * The single diff item for removed nodes.
+ * A single diff item for removed nodes.
  */
 export interface DiffItemRemove {
 
@@ -1259,13 +1378,13 @@ export interface DiffItemRemove {
 	position: Position;
 
 	/**
-	 * The length of a removed text node. For elements it is always 1 as each removed element is counted as a one.
+	 * The length of a removed text node. For elements, it is always 1, as each removed element is counted as a one.
 	 */
 	length: number;
 }
 
 /**
- * The single diff item for attribute change.
+ * A single diff item for attribute change.
  */
 export interface DiffItemAttribute {
 
@@ -1293,6 +1412,33 @@ export interface DiffItemAttribute {
 	 * The range where the change happened.
 	 */
 	range: Range;
+}
+
+/**
+ * A single diff item for a changed root.
+ */
+export interface DiffItemRoot {
+
+	/**
+	 * Name of the changed root.
+	 */
+	name: string;
+
+	/**
+	 * Set accordingly if the root got attached or detached. Otherwise, not set.
+	 */
+	state?: 'attached' | 'detached';
+
+	/**
+	 * Keeps all attribute changes that happened on the root.
+	 *
+	 * The keys are keys of the changed attributes. The values are objects containing the attribute value before the change
+	 * (`oldValue`) and after the change (`newValue`).
+	 *
+	 * Note, that if the root state changed (`state` is set), then `attributes` property will not be set. All attributes should be
+	 * handled together with the root being attached or detached.
+	 */
+	attributes?: Record<string, { oldValue: unknown; newValue: unknown }>;
 }
 
 interface DiffItemInternal {

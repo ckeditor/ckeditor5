@@ -8,3 +8,5 @@
  */
 
 export { default as PasteFromOffice } from './pastefromoffice';
+
+import './augmentation';

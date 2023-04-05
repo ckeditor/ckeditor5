@@ -42,7 +42,8 @@ ClassicEditor
 					marker: '#',
 					feed: [
 						'#a01', '#a02', '#a03', '#a04', '#a05', '#a06', '#a07'
-					]
+					],
+					dropdownLimit: 3
 				}
 			]
 		}

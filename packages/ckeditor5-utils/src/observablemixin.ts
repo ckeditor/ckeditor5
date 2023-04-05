@@ -11,6 +11,8 @@
 
 import EmitterMixin, { type Emitter } from './emittermixin';
 import CKEditorError from './ckeditorerror';
+import type { Constructor, Mixed } from './mix';
+
 import { isObject } from 'lodash-es';
 
 const observablePropertiesSymbol = Symbol( 'observableProperties' );
@@ -43,12 +45,7 @@ const defaultObservableClass = ObservableMixin( EmitterMixin() );
  *
  * @label EXTENDS
  */
-export default function ObservableMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
-	base: Base
-): {
-	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Observable;
-	prototype: InstanceType<Base> & Observable;
-};
+export default function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, Observable>;
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
@@ -74,7 +71,7 @@ export default function ObservableMixin(): {
 	prototype: Observable;
 };
 
-export default function ObservableMixin( base?: abstract new( ...args: Array<any> ) => Emitter ): unknown {
+export default function ObservableMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {
 		return defaultObservableClass;
 	}
@@ -774,7 +771,7 @@ function attachBindToListeners( observable: ObservableInternal, toBindings: Bind
 /**
  * An interface which adds "observable properties" and data binding functionality.
  *
- * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
+ * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~Observable} mixin.
  *
  * ```ts
  * class MyClass extends ObservableMixin( OtherBaseClass ) {
@@ -995,7 +992,7 @@ export interface Observable extends Emitter {
 	bind<K1 extends keyof this & string, K2 extends keyof this & string>(
 		bindProperty1: K1,
 		bindProperty2: K2
-	): DualBindChain<this[ K1 ], this[ K2 ]>;
+	): DualBindChain<K1, this[ K1 ], K2, this[ K2 ]>;
 
 	/**
 	 * Binds {@link #set observable properties} to other objects implementing the
@@ -1181,7 +1178,7 @@ interface ObservableInternal extends Observable {
  * observable.prop = 2; // -> 'prop has changed from 1 to 2'
  * ```
  *
- * @eventName change:\{property\}
+ * @eventName ~Observable#change:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
@@ -1219,7 +1216,7 @@ export type ObservableChangeEvent<TValue = any> = {
  *
  * **Note:** The event is fired even when the new value is the same as the old value.
  *
- * @eventName set:\{property\}
+ * @eventName ~Observable#set:\{property\}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
@@ -1366,7 +1363,7 @@ interface SingleBindChain<TKey extends string, TVal> {
 	): void;
 }
 
-interface DualBindChain<TVal1, TVal2> {
+interface DualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2> {
 	to<
 		O extends Observable & { [ P in K1 ]: TVal1 } & { [ P in K2 ]: TVal2 },
 		K1 extends keyof O,
@@ -1375,6 +1372,12 @@ interface DualBindChain<TVal1, TVal2> {
 		observable: O,
 		key1: K1,
 		key2: K2
+	): void;
+
+	to<
+		O extends Observable & { [ P in TKey1 ]: TVal1 } & { [ P in TKey2 ]: TVal2 }
+	>(
+		observable: O
 	): void;
 }
 

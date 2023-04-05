@@ -7,13 +7,16 @@
  * @module engine/view/uielement
  */
 
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
 import Node from './node';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
+import type Document from './document';
 import type DomConverter from './domconverter';
 import type Item from './item';
+import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver';
+import type { KeyEventData } from './observer/keyobserver';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -35,12 +38,8 @@ type DomElement = globalThis.HTMLElement;
  *
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
- *
- * @extends module:engine/view/element~Element
  */
 export default class UIElement extends Element {
-	public override getFillerOffset: () => null;
-
 	/**
 	 * Creates new instance of UIElement.
 	 *
@@ -48,22 +47,20 @@ export default class UIElement extends Element {
 	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createUIElement
-	 * @protected
-	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
-	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attributes] Collection of attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into created element.
+	 * @internal
+	 * @param document The document instance to which this element belongs.
+	 * @param name Node name.
+	 * @param attrs Collection of attributes.
+	 * @param children A list of nodes to be inserted into created element.
 	 */
-	constructor( ...args: ConstructorParameters<typeof Element> ) {
-		super( ...args );
+	constructor(
+		document: Document,
+		name: string,
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
+	) {
+		super( document, name, attrs, children );
 
-		/**
-		 * Returns `null` because filler is not needed for UIElements.
-		 *
-		 * @method #getFillerOffset
-		 * @returns {null} Always returns null.
-		 */
 		this.getFillerOffset = getFillerOffset;
 	}
 
@@ -72,7 +69,7 @@ export default class UIElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.
 	 *
-	 * @protected
+	 * @internal
 	 */
 	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
 		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
@@ -92,22 +89,22 @@ export default class UIElement extends Element {
 	 * {@link module:engine/view/domconverter~DomConverter}.
 	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
 	 *
-	 *		const myUIElement = downcastWriter.createUIElement( 'span' );
-	 *		myUIElement.render = function( domDocument, domConverter ) {
-	 *			const domElement = this.toDomElement( domDocument );
+	 * ```ts
+	 * const myUIElement = downcastWriter.createUIElement( 'span' );
+	 * myUIElement.render = function( domDocument, domConverter ) {
+	 * 	const domElement = this.toDomElement( domDocument );
 	 *
-	 *			domConverter.setContentOf( domElement, '<b>this is ui element</b>' );
+	 * 	domConverter.setContentOf( domElement, '<b>this is ui element</b>' );
 	 *
-	 *			return domElement;
-	 *		};
+	 * 	return domElement;
+	 * };
+	 * ```
 	 *
 	 * If changes in your UI element should trigger some editor UI update you should call
-	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
+	 * the {@link module:ui/editorui/editorui~EditorUI#update `editor.ui.update()`} method
 	 * after rendering your UI element.
 	 *
-	 * @param {Document} domDocument
-	 * @param {module:engine/view/domconverter~DomConverter} domConverter Instance of the DomConverter used to optimize the output.
-	 * @returns {HTMLElement}
+	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
 	public render( domDocument: DomDocument, domConverter: DomConverter ): DomElement {
 		// Provide basic, default output.
@@ -117,9 +114,6 @@ export default class UIElement extends Element {
 	/**
 	 * Creates DOM element based on this view UIElement.
 	 * Note that each time this method is called new DOM element is created.
-	 *
-	 * @param {Document} domDocument
-	 * @returns {HTMLElement}
 	 */
 	public toDomElement( domDocument: DomDocument ): DomElement {
 		const domElement = domDocument.createElement( this.name );
@@ -132,32 +126,8 @@ export default class UIElement extends Element {
 	}
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		uiElement.is( 'uiElement' ); // -> true
- *		uiElement.is( 'element' ); // -> true
- *		uiElement.is( 'node' ); // -> true
- *		uiElement.is( 'view:uiElement' ); // -> true
- *		uiElement.is( 'view:element' ); // -> true
- *		uiElement.is( 'view:node' ); // -> true
- *
- *		uiElement.is( 'model:element' ); // -> false
- *		uiElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is an ui element, you can also check its
- * {@link module:engine/view/uielement~UIElement#name name}:
- *
- *		uiElement.is( 'element', 'span' ); // -> true if this is a span ui element
- *		uiElement.is( 'uiElement', 'span' ); // -> same as above
- *		text.is( 'element', 'span' ); -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type Type to check.
- * @param {String} [name] Element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 UIElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'uiElement' || type === 'view:uiElement' ||
@@ -179,31 +149,33 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
  * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
- * @param {module:engine/view/view~View} view View controller to which the quirks handling will be injected.
+ * @param view View controller to which the quirks handling will be injected.
  */
 export function injectUiElementHandling( view: View ): void {
-	view.document.on( 'arrowKey', ( evt: unknown, data: any ) =>
+	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( evt, data ) =>
 		jumpOverUiElement( evt, data, view.domConverter ), { priority: 'low' } );
 }
 
-// Returns `null` because block filler is not needed for UIElements.
-//
-// @returns {null}
+/**
+ * Returns `null` because block filler is not needed for UIElements.
+ */
 function getFillerOffset() {
 	return null;
 }
 
-// Selection cannot be placed in a `UIElement`. Whenever it is placed there, it is moved before it. This
-// causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
-// ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
-function jumpOverUiElement( evt: unknown, data: any, domConverter: DomConverter ) {
+/**
+ * Selection cannot be placed in a `UIElement`. Whenever it is placed there, it is moved before it. This
+ * causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
+ * ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
+ */
+function jumpOverUiElement( evt: unknown, data: KeyEventData, domConverter: DomConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;
 
 		// Jump over UI element if selection is collapsed or shift key is pressed. These are the cases when selection would extend.
 		if ( domSelectionCollapsed || data.shiftKey ) {
-			const domParent = domSelection.focusNode;
+			const domParent = domSelection.focusNode!;
 			const domOffset = domSelection.focusOffset;
 
 			const viewPosition = domConverter.domPositionToView( domParent, domOffset );

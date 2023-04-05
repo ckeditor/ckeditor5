@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils';
 import SelectAllCommand from './selectallcommand';
-import type { ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine';
+import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
 
@@ -19,8 +19,6 @@ const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
  *
  * It registers the `'selectAll'` {@link module:select-all/selectallcommand~SelectAllCommand command}
  * and the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke listener which executes it.
- *
- * @extends module:core/plugin~Plugin
  */
 export default class SelectAllEditing extends Plugin {
 	/**
@@ -40,21 +38,11 @@ export default class SelectAllEditing extends Plugin {
 
 		editor.commands.add( 'selectAll', new SelectAllCommand( editor ) );
 
-		this.listenTo<ViewDocumentKeyEvent>( viewDocument, 'keydown', ( eventInfo, domEventData ) => {
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( eventInfo, domEventData ) => {
 			if ( getCode( domEventData ) === SELECT_ALL_KEYSTROKE ) {
 				editor.execute( 'selectAll' );
 				domEventData.preventDefault();
 			}
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		selectAll: SelectAllCommand;
-	}
-
-	interface PluginsMap {
-		[ SelectAllEditing.pluginName ]: SelectAllEditing;
 	}
 }

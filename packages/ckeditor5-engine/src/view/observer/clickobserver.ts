@@ -9,33 +9,27 @@
 
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
-import type View from '../view';
+import type { BubblingEvent } from './bubblingemittermixin';
 
 /**
  * {@link module:engine/view/document~Document#event:click Click} event observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/view~View view controller}
- * by a {@link module:engine/view/view~View#addObserver} method.
- *
- * @extends module:engine/view/observer/domeventobserver~DomEventObserver
+ * {@link module:engine/view/view~View view controller} by a {@link module:engine/view/view~View#addObserver} method.
  */
 export default class ClickObserver extends DomEventObserver<'click'> {
-	constructor( view: View ) {
-		super( view );
+	/**
+	 * @inheritDoc
+	 */
+	public readonly domEventType = 'click' as const;
 
-		this.domEventType = 'click';
-	}
-
+	/**
+	 * @inheritDoc
+	 */
 	public onDomEvent( domEvent: MouseEvent ): void {
 		this.fire( domEvent.type, domEvent );
 	}
 }
-
-export type ViewDocumentClickEvent = {
-	name: 'click';
-	args: [ data: DomEventData<MouseEvent> ];
-};
 
 /**
  * Fired when one of the editables has been clicked.
@@ -47,6 +41,10 @@ export type ViewDocumentClickEvent = {
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/clickobserver~ClickObserver
- * @event module:engine/view/document~Document#event:click
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ * @eventName module:engine/view/document~Document#click
+ * @param data Event data.
  */
+export type ViewDocumentClickEvent = BubblingEvent<{
+	name: 'click';
+	args: [ data: DomEventData<MouseEvent> ];
+}>;

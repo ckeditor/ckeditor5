@@ -5,12 +5,15 @@
 
 /* globals document, Event, console */
 
+import ClassicEditor from '../src/classiceditor';
 import ClassicEditorUI from '../src/classiceditorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import ClassicEditor from '../src/classiceditor';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -383,6 +386,20 @@ describe( 'ClassicEditor', () => {
 				.then( () => {
 					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
+		} );
+	} );
+
+	describe( 'static fields', () => {
+		it( 'ClassicEditor.Context', () => {
+			expect( ClassicEditor.Context ).to.equal( Context );
+		} );
+
+		it( 'ClassicEditor.EditorWatchdog', () => {
+			expect( ClassicEditor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'ClassicEditor.ContextWatchdog', () => {
+			expect( ClassicEditor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
 	} );
 

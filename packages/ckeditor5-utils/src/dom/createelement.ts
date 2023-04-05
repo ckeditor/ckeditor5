@@ -11,27 +11,87 @@ import isIterable from '../isiterable';
 import { isString } from 'lodash-es';
 
 /**
- * Creates element with attributes and children.
+ * Attributes to be applied to the HTML element.
+ */
+type HTMLElementAttributes = { readonly [ key: string ]: string };
+
+/**
+ * Attributes to be applied to the SVG element.
+ */
+type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
+
+/**
+ * Element or elements that will be added to the created element as children. Strings will be automatically turned into Text nodes.
+ */
+type ChildrenElements = Node | string | Iterable<Node | string>;
+
+/**
+ * Creates an HTML element with attributes and children elements.
  *
  * ```ts
  * createElement( document, 'p' ); // <p>
  * createElement( document, 'p', { class: 'foo' } ); // <p class="foo">
  * createElement( document, 'p', null, 'foo' ); // <p>foo</p>
- * createElement( document, 'p', null, [ 'foo', createElement( document, 'img' ) ] ); // <p>foo<img></p>
+ * createElement( document, 'p', null, [ createElement(...) ] ); // <p><...></p>
  * ```
  *
- * @param doc Document used to create element.
+ * @label HTML_ELEMENT
+ * @param doc Document used to create the element.
+ * @param name Name of the HTML element.
+ * @param attributes Object where keys represent attribute keys and values represent attribute values.
+ * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
+ * @returns HTML element.
+ */
+export default function createElement<T extends keyof HTMLElementTagNameMap>(
+	doc: Document,
+	name: T,
+	attributes?: HTMLElementAttributes,
+	children?: ChildrenElements
+): HTMLElementTagNameMap[T];
+
+/**
+ * Creates an SVG element with attributes and children elements.
+ *
+ * ```ts
+ * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg' } ); // <mask>
+ * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg', id: 'foo' } ); // <mask id="foo">
+ * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg' }, 'foo' ); // <mask>foo</mask>
+ * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg' }, [ createElement(...) ] ); // <mask><...></mask>
+ * ```
+ *
+ * @label SVG_ELEMENT
+ * @param doc Document used to create the element.
+ * @param name Name of the SVG element.
+ * @param attributes Object where keys represent attribute keys and values represent attribute values.
+ * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
+ * @returns SVG element.
+ */
+export default function createElement<T extends keyof SVGElementTagNameMap>(
+	doc: Document,
+	name: T,
+	attributes: SVGElementAttributes,
+	children?: ChildrenElements
+): SVGElementTagNameMap[T];
+
+/**
+ * Creates an HTML or SVG element with attributes and children elements.
+ *
+ * ```ts
+ * createElement( document, 'p' ); // <p>
+ * createElement( document, 'mask', { xmlns: 'http://www.w3.org/2000/svg' } ); // <mask>
+ * ```
+ *
+ * @param doc Document used to create the element.
  * @param name Name of the element.
- * @param attributes Object keys will become attributes keys and object values will became attributes values.
- * @param children Child or any iterable of children. Strings will be automatically turned
- * into Text nodes.
- * @returns Created element.
+ * @param attributes Object where keys represent attribute keys and values represent attribute values.
+ * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
+ * @returns HTML or SVG element.
  */
 export default function createElement(
 	doc: Document,
 	name: string,
-	attributes: { readonly [ key: string ]: string } = {},
-	children: Node | string | Iterable<Node | string> = []
+	attributes: SVGElementAttributes | HTMLElementAttributes = {},
+	children: ChildrenElements = []
 ): Element {
 	const namespace = attributes && attributes.xmlns;
 	const element = namespace ? doc.createElementNS( namespace, name ) : doc.createElement( name );
