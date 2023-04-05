@@ -19,7 +19,7 @@ Listed below are the most important changes that require your attention when upg
 
 ## TypeScript typings
 
-As of version 37.0.` we provide native TypeScript types, hence community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here is how to do it:
+As of version 37.0.0 we provide native TypeScript types, hence community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here is how to do it:
 
 1. Remove community types:
 	- Remove any `@types/ckeditor__ckeditor5-*` packages used
