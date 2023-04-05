@@ -153,6 +153,20 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
+	 * (Optional) TODO
+	 *
+	 * @observable
+	 */
+	ariaLabel?: string | undefined;
+
+	/**
+	 * (Optional) TODO
+	 *
+	 * @observable
+	 */
+	ariaLabelledBy?: string | undefined;
+
+	/**
 	 * (Optional) The value of the `style` attribute of the label.
 	 *
 	 * @observable
