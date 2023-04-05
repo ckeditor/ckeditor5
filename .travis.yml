@@ -9,7 +9,6 @@ branches:
   - release
   - /^v\d+\.\d+\.\d+$/
   - /^(ck|cf|ci)\/epic\/\d+/
-  - ck/13643-test
 services:
 - xvfb
 node_js:
