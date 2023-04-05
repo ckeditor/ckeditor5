@@ -200,7 +200,7 @@ describe( 'ColorUI', () => {
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 
-			expect( colorPickerView.color ).to.equal( '#55FF00' );
+			expect( colorPickerView.color ).to.equal( '#55ff00' );
 
 			dropdown.element.remove();
 		} );
