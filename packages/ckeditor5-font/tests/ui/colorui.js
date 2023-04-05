@@ -477,6 +477,8 @@ describe( 'ColorUI', () => {
 
 			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
 
+			dropdown.isOpen = true;
+
 			editorElement.remove();
 			await customizedEditor.destroy();
 

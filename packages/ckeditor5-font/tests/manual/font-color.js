@@ -70,14 +70,10 @@ ClassicEditor
 		],
 		fontColor: {
 			columns: 3,
-			colorPicker: {
-				disable: true
-			}
+			colorPicker: false
 		},
 		fontBackgroundColor: {
-			colorPicker: {
-				disable: true
-			}
+			colorPicker: false
 		}
 	} )
 	.then( editor => {
