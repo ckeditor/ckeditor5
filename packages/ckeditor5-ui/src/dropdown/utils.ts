@@ -310,6 +310,7 @@ export function addListToDropdown(
 	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
 	options: {
 		ariaLabel?: string;
+		role?: string
 	} = {}
 ): void {
 	if ( dropdownView.isOpen ) {
@@ -340,6 +341,7 @@ function addListToOpenDropdown(
 	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
 	options: {
 		ariaLabel?: string;
+		role?: string;
 	}
 ): void {
 	const locale = dropdownView.locale;
@@ -348,6 +350,7 @@ function addListToOpenDropdown(
 	const items = typeof itemsOrCallback == 'function' ? itemsOrCallback() : itemsOrCallback;
 
 	listView.ariaLabel = options.ariaLabel;
+	listView.role = options.role;
 
 	listView.items.bindTo( items ).using( def => {
 		if ( def.type === 'separator' ) {

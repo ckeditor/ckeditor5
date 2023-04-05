@@ -51,7 +51,7 @@ export default class FontSizeUI extends Plugin {
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), { role: 'menu' } );
 
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
@@ -129,6 +129,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 				commandParam: option.model,
 				label: option.title,
 				class: 'ck-fontsize-option',
+				role: 'menuitemradio',
 				withText: true
 			} )
 		};
