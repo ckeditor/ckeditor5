@@ -12,13 +12,13 @@
       "ckeditor5-collaboration": [
         "external/collaboration-features/packages/ckeditor5-collaboration"
       ],
-      "@ckeditor/ckeditor-cloud-services-collaboration": [
-        "external/ckeditor-cloud-services-collaboration"
-      ],
       "@ckeditor/*": [
         "packages/*",
         "external/ckeditor5-internal/packages/*",
         "external/collaboration-features/packages/*"
+      ],
+      "@ckeditor/ckeditor-cloud-services-collaboration/*": [
+        "external/ckeditor-cloud-services-collaboration/*"
       ]
     }
   },
