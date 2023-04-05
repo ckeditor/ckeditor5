@@ -116,6 +116,20 @@ describe( 'ColorPickerView', () => {
 				expect( view._hexColor ).to.equal( '#0000ff' );
 			} );
 
+			it( 'handles an empty value', () => {
+				view.color = '#fff';
+				view.color = '';
+
+				expect( view._hexColor ).to.equal( '#000000' );
+			} );
+
+			it( 'gracefully handles an invalid value', () => {
+				view.color = '#fff';
+				view.color = 'lorem ipsum dolor';
+
+				expect( view._hexColor ).to.equal( '#000000' );
+			} );
+
 			it( 'doesnt trigger multiple changes if changed to a same color in different format', () => {
 				view._hexColor = '#00ff00';
 

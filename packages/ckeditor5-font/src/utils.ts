@@ -200,6 +200,10 @@ export function convertToHex( color: string ): string {
 
 	const colorObject = parse( color );
 
+	if ( !colorObject.space ) {
+		return '#000';
+	}
+
 	// @ts-ignore
 	return '#' + convert[ colorObject.space ].hex( colorObject.values );
 }

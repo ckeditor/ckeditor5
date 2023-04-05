@@ -140,6 +140,10 @@ export default class ColorPickerView extends View {
 function convertColorToCommonHexFormat( inputColor: string ): string {
 	let ret = convertToHex( inputColor );
 
+	if ( !ret ) {
+		ret = '#000';
+	}
+
 	if ( ret.length === 4 ) {
 		// Unfold shortcut format.
 		ret = '#' + [ ret[ 1 ], ret[ 1 ], ret[ 2 ], ret[ 2 ], ret[ 3 ], ret[ 3 ] ].join( '' );
