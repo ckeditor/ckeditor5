@@ -20,11 +20,15 @@ import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
-import { getData as getModelData, parse } from '../../src/dev-utils/model';
+import { getData as getModelData, setData as setModelData, parse } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Enter } from '@ckeditor/ckeditor5-enter';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {
@@ -625,5 +629,112 @@ describe( 'EditingController', () => {
 			editing.reconvertItem( model.document.getRoot().getChild( 0 ) );
 			sinon.assert.calledOnce( changeSpy );
 		} );
+	} );
+
+	describe( 'beforeInput target ranges fixing', () => {
+		let editor, model, view, viewDocument, viewRoot, beforeInputSpy, deleteSpy;
+
+		testUtils.createSinonSandbox();
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Typing, Enter ] } );
+			model = editor.model;
+			view = editor.editing.view;
+			viewDocument = view.document;
+			viewRoot = viewDocument.getRoot();
+
+			beforeInputSpy = testUtils.sinon.spy();
+			viewDocument.on( 'beforeinput', beforeInputSpy );
+
+			deleteSpy = testUtils.sinon.spy();
+			viewDocument.on( 'delete', deleteSpy );
+
+			// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
+			sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not fix flat range on text', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			setModelData( model, '<paragraph>foobar[]</paragraph>' );
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 )
+			) ];
+
+			const eventData = {
+				inputType: 'deleteContentBackward',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.targetRanges ).to.deep.equal( eventData.targetRanges );
+
+			// Verify delete event.
+			sinon.assert.calledOnce( deleteSpy );
+
+			const deleteData = deleteSpy.args[ 0 ][ 1 ];
+
+			expect( deleteData.selectionToRemove.getFirstRange().isEqual( targetRanges[ 0 ] ) ).to.be.true;
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		} );
+
+		it.skip( 'should fix range that ends in block object', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			model.schema.register( 'blockObject', { inheritAllFrom: '$blockObject' } );
+			editor.conversion.elementToElement( { model: 'blockObject', view: 'div' } );
+
+			setModelData( model, '<blockObject></blockObject><paragraph>[]foobar</paragraph>' );
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ), 0 ),
+				view.createPositionAt( viewRoot.getChild( 1 ).getChild( 0 ), 0 )
+			) ];
+
+			const eventData = {
+				inputType: 'deleteContentBackward',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( targetRanges[ 0 ] );
+
+			// Verify delete event.
+			sinon.assert.calledOnce( deleteSpy );
+
+			const deleteData = deleteSpy.args[ 0 ][ 1 ];
+
+			expect( deleteData.selectionToRemove.getFirstRange().isEqual( targetRanges[ 0 ] ) ).to.be.true;
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		} );
+
+		function fireBeforeInputEvent( eventData ) {
+			viewDocument.fire( 'beforeinput', {
+				domEvent: {
+					preventDefault() {}
+				},
+				...eventData
+			} );
+		}
 	} );
 } );
