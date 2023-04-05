@@ -640,17 +640,17 @@ export default class Selection extends EmitterMixin( TypeCheckable ) {
 	 * **Special case**: Selection ignores first and/or last blocks if nothing (from user perspective) is selected in them.
 	 *
 	 * ```xml
-	 * // Selection ends and the beginning of the last block
+	 * // Selection ends and the beginning of the last block.
 	 * <paragraph>[a</paragraph>
 	 * <paragraph>b</paragraph>
 	 * <paragraph>]c</paragraph> // This block will not be returned
 	 *
-	 * // Selection begins at the end of the first block
+	 * // Selection begins at the end of the first block.
 	 * <paragraph>a[</paragraph> // This block will not be returned
 	 * <paragraph>b</paragraph>
 	 * <paragraph>c]</paragraph>
 	 *
-	 * // Selection begings at the end of the first block and ends at the beginning of the last block
+	 * // Selection begings at the end of the first block and ends at the beginning of the last block.
 	 * <paragraph>a[</paragraph> // This block will not be returned
 	 * <paragraph>b</paragraph>
 	 * <paragraph>]c</paragraph> // This block will not be returned
@@ -890,7 +890,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
  * See [#11585](https://github.com/ckeditor/ckeditor5/issues/11585) for more details.
  *
  * ```xml
- * <paragraph>a[</paragraph> // this block will not be returned
+ * <paragraph>a[</paragraph> // This block will not be returned
  * <paragraph>b</paragraph>
  * <paragraph>c]</paragraph>
  * ```
@@ -898,7 +898,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
  * Collapsed selection is not affected by it:
  *
  * ```xml
- * <paragraph>a[]</paragraph> // this block will be returned
+ * <paragraph>a[]</paragraph> // This block will be returned
  * ```
  */
 function isStartBlockSelected( startBlock: Element | undefined, range: Range ): boolean {
