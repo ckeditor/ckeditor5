@@ -42,7 +42,7 @@ export default class HeadingUI extends Plugin {
 		const t = editor.t;
 		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose heading' );
-		const dropdownTooltip = t( 'Heading' );
+		const headingLabel = t( 'Heading' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
@@ -60,6 +60,7 @@ export default class HeadingUI extends Plugin {
 					model: new Model( {
 						label: option.title,
 						class: option.class,
+						role: 'menuitemradio',
 						withText: true
 					} )
 				};
@@ -83,12 +84,15 @@ export default class HeadingUI extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, itemDefinitions );
+			addListToDropdown( dropdownView, itemDefinitions, {
+				ariaLabel: headingLabel,
+				role: 'menu'
+			} );
 
 			dropdownView.buttonView.set( {
 				isOn: false,
 				withText: true,
-				tooltip: dropdownTooltip
+				tooltip: headingLabel
 			} );
 
 			dropdownView.extendTemplate( {
