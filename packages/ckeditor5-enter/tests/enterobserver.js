@@ -49,7 +49,7 @@ describe( 'EnterObserver', () => {
 	} );
 
 	it( 'should not work if the observer is disabled', () => {
-		view.getObserver( EnterObserver ).isEnabled = false;
+		view.getObserver( EnterObserver )._isEnabled = false;
 
 		fireBeforeInputDomEvent( domRoot, {
 			inputType: 'insertParagraph'
@@ -129,5 +129,11 @@ describe( 'EnterObserver', () => {
 		} );
 
 		expect( interceptedEventInfo.stop.called ).to.be.undefined;
+	} );
+
+	it( 'should implement empty #stopObserving() method', () => {
+		expect( () => {
+			view.getObserver( EnterObserver ).stopObserving();
+		} ).to.not.throw();
 	} );
 } );

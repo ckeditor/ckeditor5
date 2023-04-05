@@ -29,7 +29,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
 <table>
   <thead>
     <tr>
-      <th>Package&nbsp;version</th>
+      <th>CKEditor&nbsp;5&nbsp;version</th>
       <th>Angular&nbsp;version</th>
       <th>Details</th>
     </tr>

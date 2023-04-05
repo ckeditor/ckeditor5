@@ -28,7 +28,7 @@ export default class HeadingCommand extends Command {
 
 	/**
 	 * Set of defined model's elements names that this command support.
-	 * See {@link module:heading/heading~HeadingOption}.
+	 * See {@link module:heading/headingconfig~HeadingOption}.
 	 */
 	public readonly modelElements: Array<string>;
 

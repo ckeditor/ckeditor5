@@ -154,6 +154,10 @@ describe( 'ImageTextAlternativeUI', () => {
 			form = plugin._form;
 		} );
 
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( form.disableCssTransitions ).to.be.a( 'function' );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-image/issues/114
 		it( 'should make sure the input always stays in sync with the value of the command', () => {
 			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );

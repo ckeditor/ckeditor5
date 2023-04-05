@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+
 import {
 	FocusTracker,
 	type Locale,
@@ -18,20 +19,84 @@ import '../../theme/components/input/input.css';
 
 /**
  * The base input view class.
- *
- * @extends module:ui/view~View
  */
 export default class InputView extends View<HTMLInputElement> {
+	/**
+	 * Stores information about the editor UI focus and propagates it so various plugins and components
+	 * are unified as a focus group.
+	 */
 	public readonly focusTracker: FocusTracker;
 
+	/**
+	 * The value of the input.
+	 *
+	 * @observable
+	 */
 	declare public value: string | undefined;
+
+	/**
+	 * The `id` attribute of the input (i.e. to pair with a `<label>` element).
+	 *
+	 * @observable
+	 */
 	declare public id: string | undefined;
+
+	/**
+	 * The `placeholder` attribute of the input.
+	 *
+	 * @observable
+	 */
 	declare public placeholder: string | undefined;
+
+	/**
+	 * Controls whether the input view is in read-only mode.
+	 *
+	 * @observable
+	 */
 	declare public isReadOnly: boolean;
+
+	/**
+	 * Set to `true` when the field has some error. Usually controlled via
+	 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
+	 *
+	 * @observable
+	 */
 	declare public hasError: boolean;
+
+	/**
+	 * The `id` of the element describing this field, e.g. when it has
+	 * some error; it helps screen readers read the error text.
+	 *
+	 * @observable
+	 */
 	declare public ariaDescribedById: string | undefined;
+
+	/**
+	 * An observable flag set to `true` when the input is currently focused by the user.
+	 * Set to `false` otherwise.
+	 *
+	 * @readonly
+	 * @observable
+	 * @default false
+	 */
 	declare public isFocused: boolean;
+
+	/**
+	 * An observable flag set to `true` when the input contains no text, i.e.
+	 * when {@link #value} is `''`, `null`, or `false`.
+	 *
+	 * @readonly
+	 * @observable
+	 * @default true
+	 */
 	declare public isEmpty: boolean;
+
+	/**
+	 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc.
+	 *
+	 * @observable
+	 * @default 'text'
+	 */
 	declare public inputMode: string;
 
 	/**
@@ -40,94 +105,17 @@ export default class InputView extends View<HTMLInputElement> {
 	constructor( locale?: Locale ) {
 		super( locale );
 
-		/**
-		 * The value of the input.
-		 *
-		 * @observable
-		 * @member {String} #value
-		 */
 		this.set( 'value', undefined );
-
-		/**
-		 * The `id` attribute of the input (i.e. to pair with a `<label>` element).
-		 *
-		 * @observable
-		 * @member {String} #id
-		 */
 		this.set( 'id', undefined );
-
-		/**
-		 * The `placeholder` attribute of the input.
-		 *
-		 * @observable
-		 * @member {String} #placeholder
-		 */
 		this.set( 'placeholder', undefined );
-
-		/**
-		 * Controls whether the input view is in read-only mode.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * Set to `true` when the field has some error. Usually controlled via
-		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
-		 *
-		 * @observable
-		 * @member {Boolean} #hasError
-		 */
 		this.set( 'hasError', false );
-
-		/**
-		 * The `id` of the element describing this field, e.g. when it has
-		 * some error; it helps screen readers read the error text.
-		 *
-		 * @observable
-		 * @member {Boolean} #ariaDescribedById
-		 */
 		this.set( 'ariaDescribedById', undefined );
 
-		/**
-		 * Stores information about the editor UI focus and propagates it so various plugins and components
-		 * are unified as a focus group.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
-		 */
 		this.focusTracker = new FocusTracker();
 
-		/**
-		 * An observable flag set to `true` when the input is currently focused by the user.
-		 * Set to `false` otherwise.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isFocused
-		 * @default false
-		 */
 		this.bind( 'isFocused' ).to( this.focusTracker );
-
-		/**
-		 * An observable flag set to `true` when the input contains no text, i.e.
-		 * when {@link #value} is `''`, `null`, or `false`.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isEmpty
-		 * @default true
-		 */
 		this.set( 'isEmpty', true );
-
-		/**
-		 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc.
-		 *
-		 * @observable
-		 * @member {Boolean} #inputMode
-		 * @default 'text'
-		 */
 		this.set( 'inputMode', 'text' );
 
 		const bind = this.bindTemplate;
@@ -157,13 +145,6 @@ export default class InputView extends View<HTMLInputElement> {
 				change: bind.to( this._updateIsEmpty.bind( this ) )
 			}
 		} );
-
-		/**
-		 * Fired when the user types in the input. Corresponds to the native
-		 * DOM `input` event.
-		 *
-		 * @event input
-		 */
 	}
 
 	/**
@@ -210,8 +191,6 @@ export default class InputView extends View<HTMLInputElement> {
 
 	/**
 	 * Updates the {@link #isEmpty} property value on demand.
-	 *
-	 * @private
 	 */
 	private _updateIsEmpty() {
 		this.isEmpty = isInputElementEmpty( this.element! );
@@ -219,8 +198,6 @@ export default class InputView extends View<HTMLInputElement> {
 
 	/**
 	 * Sets the `value` property of the {@link #element DOM element} on demand.
-	 *
-	 * @private
 	 */
 	private _setDomElementValue( value: any ) {
 		this.element!.value = ( !value && value !== 0 ) ? '' : value;
@@ -231,7 +208,13 @@ function isInputElementEmpty( domElement: HTMLInputElement ) {
 	return !domElement.value;
 }
 
+/**
+ * Fired when the user types in the input. Corresponds to the native
+ * DOM `input` event.
+ *
+ * @eventName ~InputView#input
+ */
 export type InputViewInputEvent = {
 	name: 'input';
-	args: [ InstanceType<typeof global.InputEvent> ];
+	args: [ InputEvent ];
 };

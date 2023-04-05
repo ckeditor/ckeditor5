@@ -152,7 +152,7 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * Creates `InsertOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `InsertOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
@@ -176,9 +176,9 @@ export default class InsertOperation extends Operation {
 		return insert;
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
 
-	// @if CK_DEBUG_ENGINE //	return `InsertOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
+	// @if CK_DEBUG_ENGINE // 	return `InsertOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
 	// @if CK_DEBUG_ENGINE // }
 }

@@ -12,7 +12,7 @@ import { first } from 'ckeditor5/src/utils';
 import type { Element, Writer } from 'ckeditor5/src/engine';
 
 import { isDefault } from './utils';
-import type { SupportedOption } from './alignmentediting';
+import type { SupportedOption } from './alignmentconfig';
 
 const ALIGNMENT = 'alignment';
 

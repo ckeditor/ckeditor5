@@ -25,35 +25,29 @@ import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } f
  * * {@link module:engine/view/downcastwriter~DowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export default class Range extends TypeCheckable {
-	public start: Position;
-	public end: Position;
+export default class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
+	/**
+	 * Start position.
+	 */
+	public readonly start: Position;
+
+	/**
+	 * End position.
+	 */
+	public readonly end: Position;
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
 	 * **Note:** Constructor creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
-	 * @param {module:engine/view/position~Position} start Start position.
-	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at the `start` position.
+	 * @param start Start position.
+	 * @param end End position. If not set, range will be collapsed at the `start` position.
 	 */
 	constructor( start: Position, end: Position | null = null ) {
 		super();
 
-		/**
-		 * Start position.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/position~Position}
-		 */
 		this.start = start.clone();
-
-		/**
-		 * End position.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/position~Position}
-		 */
 		this.end = end ? end.clone() : start.clone();
 	}
 
@@ -67,8 +61,6 @@ export default class Range extends TypeCheckable {
 	 * This iterator uses {@link module:engine/view/treewalker~TreeWalker TreeWalker} with `boundaries` set to this range and
 	 * `ignoreElementEnd` option
 	 * set to `true`.
-	 *
-	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
 	public* [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
@@ -76,8 +68,6 @@ export default class Range extends TypeCheckable {
 
 	/**
 	 * Returns whether the range is collapsed, that is it start and end positions are equal.
-	 *
-	 * @type {Boolean}
 	 */
 	public get isCollapsed(): boolean {
 		return this.start.isEqual( this.end );
@@ -86,8 +76,6 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Returns whether this range is flat, that is if {@link module:engine/view/range~Range#start start} position and
 	 * {@link module:engine/view/range~Range#end end} position are in the same {@link module:engine/view/position~Position#parent parent}.
-	 *
-	 * @type {Boolean}
 	 */
 	public get isFlat(): boolean {
 		return this.start.parent === this.end.parent;
@@ -95,8 +83,6 @@ export default class Range extends TypeCheckable {
 
 	/**
 	 * Range root element.
-	 *
-	 * @type {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	public get root(): Node | DocumentFragment {
 		return this.start.root;
@@ -108,8 +94,10 @@ export default class Range extends TypeCheckable {
 	 *
 	 * For example:
 	 *
-	 *		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b>]</p>
-	 *		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
+	 * ```html
+	 * <p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b>]</p>
+	 * <p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
+	 * ```
 	 *
 	 * Note that in the sample above:
 	 *
@@ -117,7 +105,7 @@ export default class Range extends TypeCheckable {
 	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
 	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
-	 * @returns {module:engine/view/range~Range} Enlarged range.
+	 * @returns Enlarged range.
 	 */
 	public getEnlarged(): Range {
 		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
@@ -141,8 +129,10 @@ export default class Range extends TypeCheckable {
 	 *
 	 * For example:
 	 *
-	 *		<p>Foo</p>[<p><b>Bar</b>]</p> -> <p>Foo</p><p><b>{Bar}</b></p>
-	 *		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
+	 * ```html
+	 * <p>Foo</p>[<p><b>Bar</b>]</p> -> <p>Foo</p><p><b>{Bar}</b></p>
+	 * <p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
+	 * ```
 	 *
 	 * Note that in the sample above:
 	 *
@@ -150,7 +140,7 @@ export default class Range extends TypeCheckable {
 	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
 	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
-	 * @returns {module:engine/view/range~Range} Shrink range.
+	 * @returns Shrunk range.
 	 */
 	public getTrimmed(): Range {
 		let start = this.start.getLastMatchingPosition( enlargeTrimSkip );
@@ -178,8 +168,8 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Two ranges are equal if their start and end positions are equal.
 	 *
-	 * @param {module:engine/view/range~Range} otherRange Range to compare with.
-	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise
+	 * @param otherRange Range to compare with.
+	 * @returns `true` if ranges are equal, `false` otherwise
 	 */
 	public isEqual( otherRange: Range ): boolean {
 		return this == otherRange || ( this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end ) );
@@ -188,9 +178,8 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Checks whether this range contains given {@link module:engine/view/position~Position position}.
 	 *
-	 * @param {module:engine/view/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/view/position~Position position} is contained in this range,
-	 * `false` otherwise.
+	 * @param position Position to check.
+	 * @returns `true` if given {@link module:engine/view/position~Position position} is contained in this range, `false` otherwise.
 	 */
 	public containsPosition( position: Position ): boolean {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
@@ -199,11 +188,11 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Checks whether this range contains given {@link module:engine/view/range~Range range}.
 	 *
-	 * @param {module:engine/view/range~Range} otherRange Range to check.
-	 * @param {Boolean} [loose=false] Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
+	 * @param otherRange Range to check.
+	 * @param loose Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
 	 * start or end at the same position as this range boundaries. If the check is loose (`true`), compared range can start, end or
 	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
-	 * @returns {Boolean} `true` if given {@link module:engine/view/range~Range range} boundaries are contained by this range, `false`
+	 * @returns `true` if given {@link module:engine/view/range~Range range} boundaries are contained by this range, `false`
 	 * otherwise.
 	 */
 	public containsRange( otherRange: Range, loose: boolean = false ): boolean {
@@ -224,29 +213,31 @@ export default class Range extends TypeCheckable {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = downcastWriter.createText( 'foo' );
-	 *		let img = downcastWriter.createContainerElement( 'img' );
-	 *		let bar = downcastWriter.createText( 'bar' );
-	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
+	 * ```ts
+	 * let foo = downcastWriter.createText( 'foo' );
+	 * let img = downcastWriter.createContainerElement( 'img' );
+	 * let bar = downcastWriter.createText( 'bar' );
+	 * let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
-	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
-	 *		let otherRange = view.createRange( // "oo", img, "ba" are in range.
-	 *			view.createPositionAt( foo, 1 ),
-	 *			view.createPositionAt( bar, 2 )
-	 *		);
-	 *		let transformed = range.getDifference( otherRange );
-	 *		// transformed array has no ranges because `otherRange` contains `range`
+	 * let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
+	 * let otherRange = view.createRange( // "oo", img, "ba" are in range.
+	 * 	view.createPositionAt( foo, 1 ),
+	 * 	view.createPositionAt( bar, 2 )
+	 * );
+	 * let transformed = range.getDifference( otherRange );
+	 * // transformed array has no ranges because `otherRange` contains `range`
 	 *
-	 *		otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
-	 *		transformed = range.getDifference( otherRange );
-	 *		// transformed array has one range: from ( p, 2 ) to ( bar, 1 )
+	 * otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
+	 * transformed = range.getDifference( otherRange );
+	 * // transformed array has one range: from ( p, 2 ) to ( bar, 1 )
 	 *
-	 *		otherRange = view.createRange( view.createPositionAt( p, 1 ), view.createPositionAt( p, 2 ) ); // img is in range.
-	 *		transformed = range.getDifference( otherRange );
-	 *		// transformed array has two ranges: from ( foo, 1 ) to ( p, 1 ) and from ( p, 2 ) to ( bar, 1 )
+	 * otherRange = view.createRange( view.createPositionAt( p, 1 ), view.createPositionAt( p, 2 ) ); // img is in range.
+	 * transformed = range.getDifference( otherRange );
+	 * // transformed array has two ranges: from ( foo, 1 ) to ( p, 1 ) and from ( p, 2 ) to ( bar, 1 )
+	 * ```
 	 *
-	 * @param {module:engine/view/range~Range} otherRange Range to differentiate against.
-	 * @returns {Array.<module:engine/view/range~Range>} The difference between ranges.
+	 * @param otherRange Range to differentiate against.
+	 * @returns The difference between ranges.
 	 */
 	public getDifference( otherRange: Range ): Array<Range> {
 		const ranges: Array<Range> = [];
@@ -279,20 +270,22 @@ export default class Range extends TypeCheckable {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = downcastWriter.createText( 'foo' );
-	 *		let img = downcastWriter.createContainerElement( 'img' );
-	 *		let bar = downcastWriter.createText( 'bar' );
-	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
+	 * ```ts
+	 * let foo = downcastWriter.createText( 'foo' );
+	 * let img = downcastWriter.createContainerElement( 'img' );
+	 * let bar = downcastWriter.createText( 'bar' );
+	 * let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
-	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
-	 *		let otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
-	 *		let transformed = range.getIntersection( otherRange ); // range from ( foo, 1 ) to ( p, 2 ).
+	 * let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
+	 * let otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
+	 * let transformed = range.getIntersection( otherRange ); // range from ( foo, 1 ) to ( p, 2 ).
 	 *
-	 *		otherRange = view.createRange( view.createPositionAt( bar, 1 ), view.createPositionAt( bar, 3 ); "ar" is in range.
-	 *		transformed = range.getIntersection( otherRange ); // null - no common part.
+	 * otherRange = view.createRange( view.createPositionAt( bar, 1 ), view.createPositionAt( bar, 3 ); "ar" is in range.
+	 * transformed = range.getIntersection( otherRange ); // null - no common part.
+	 * ```
 	 *
-	 * @param {module:engine/view/range~Range} otherRange Range to check for intersection.
-	 * @returns {module:engine/view/range~Range|null} A common part of given ranges or `null` if ranges have no common part.
+	 * @param otherRange Range to check for intersection.
+	 * @returns A common part of given ranges or `null` if ranges have no common part.
 	 */
 	public getIntersection( otherRange: Range ): Range | null {
 		if ( this.isIntersecting( otherRange ) ) {
@@ -323,12 +316,7 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
-	 * @param {module:engine/view/position~Position} [options.startPosition]
-	 * @param {Boolean} [options.singleCharacters=false]
-	 * @param {Boolean} [options.shallow=false]
-	 * @param {Boolean} [options.ignoreElementEnd=false]
-	 * @returns {module:engine/view/treewalker~TreeWalker}
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 */
 	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
 		options.boundaries = this;
@@ -339,8 +327,6 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
 	 * which is a common ancestor of range's both ends (in which the entire range is contained).
-	 *
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	public getCommonAncestor(): Node | DocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
@@ -350,8 +336,6 @@ export default class Range extends TypeCheckable {
 	 * Returns an {@link module:engine/view/element~Element Element} contained by the range.
 	 * The element will be returned when it is the **only** node within the range and **fully–contained**
 	 * at the same time.
-	 *
-	 * @returns {module:engine/view/element~Element|null}
 	 */
 	public getContainedElement(): Element | null {
 		if ( this.isCollapsed ) {
@@ -387,8 +371,6 @@ export default class Range extends TypeCheckable {
 
 	/**
 	 * Clones this range.
-	 *
-	 * @returns {module:engine/view/range~Range}
 	 */
 	public clone(): Range {
 		return new Range( this.start, this.end );
@@ -405,8 +387,7 @@ export default class Range extends TypeCheckable {
 	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
-	 * @returns {Iterable.<module:engine/view/item~Item>}
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 */
 	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
 		options.boundaries = this;
@@ -429,8 +410,7 @@ export default class Range extends TypeCheckable {
 	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
-	 * @returns {Iterable.<module:engine/view/position~Position>}
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 */
 	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<Position> {
 		options.boundaries = this;
@@ -447,8 +427,8 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Checks and returns whether this range intersects with the given range.
 	 *
-	 * @param {module:engine/view/range~Range} otherRange Range to compare with.
-	 * @returns {Boolean} True if ranges intersect.
+	 * @param otherRange Range to compare with.
+	 * @returns True if ranges intersect.
 	 */
 	public isIntersecting( otherRange: Range ): boolean {
 		return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
@@ -457,14 +437,12 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Creates a range from the given parents and offsets.
 	 *
-	 * @protected
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} startElement Start position
-	 * parent element.
-	 * @param {Number} startOffset Start position offset.
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} endElement End position
-	 * parent element.
-	 * @param {Number} endOffset End position offset.
-	 * @returns {module:engine/view/range~Range} Created range.
+	 * @internal
+	 * @param startElement Start position parent element.
+	 * @param startOffset Start position offset.
+	 * @param endElement End position parent element.
+	 * @param endOffset End position offset.
+	 * @returns Created range.
 	 */
 	public static _createFromParentsAndOffsets(
 		startElement: Element | DocumentFragment,
@@ -482,10 +460,9 @@ export default class Range extends TypeCheckable {
 	 * Creates a new range, spreading from specified {@link module:engine/view/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
-	 * @protected
-	 * @param {module:engine/view/position~Position} position Beginning of the range.
-	 * @param {Number} shift How long the range should be.
-	 * @returns {module:engine/view/range~Range}
+	 * @internal
+	 * @param position Beginning of the range.
+	 * @param shift How long the range should be.
 	 */
 	public static _createFromPositionAndShift( position: Position, shift: number ): Range {
 		const start = position;
@@ -498,9 +475,8 @@ export default class Range extends TypeCheckable {
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * @protected
-	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
-	 * @returns {module:engine/view/range~Range}
+	 * @internal
+	 * @param element Element which is a parent for the range.
 	 */
 	public static _createIn( element: Element | DocumentFragment ): Range {
 		return this._createFromParentsAndOffsets( element, 0, element, element.childCount );
@@ -509,9 +485,7 @@ export default class Range extends TypeCheckable {
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 *
-	 * @protected
-	 * @param {module:engine/view/item~Item} item
-	 * @returns {module:engine/view/range~Range}
+	 * @internal
 	 */
 	public static _createOn( item: Item ): Range {
 		const size = item.is( '$textProxy' ) ? item.offsetSize : 1;
@@ -520,26 +494,15 @@ export default class Range extends TypeCheckable {
 	}
 }
 
-/**
- * Checks whether this object is of the given type.
- *
- *		range.is( 'range' ); // -> true
- *		range.is( 'view:range' ); // -> true
- *
- *		range.is( 'model:range' ); // -> false
- *		range.is( 'element' ); // -> false
- *		range.is( 'selection' ); // -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 Range.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'view:range';
 };
 
-// Function used by getEnlarged and getTrimmed methods.
+/**
+ * Function used by getEnlarged and getTrimmed methods.
+ */
 function enlargeTrimSkip( value: TreeWalkerValue ): boolean {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;

@@ -241,7 +241,8 @@ describe( 'LinkUI', () => {
 			editor.commands.get( 'link' ).isEnabled = true;
 			editor.commands.get( 'unlink' ).isEnabled = true;
 
-			expect( formView.urlInputView.isReadOnly ).to.be.false;
+			expect( formView.urlInputView.isEnabled ).to.be.true;
+			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.false;
 			expect( formView.saveButtonView.isEnabled ).to.be.true;
 			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
@@ -251,7 +252,8 @@ describe( 'LinkUI', () => {
 			editor.commands.get( 'link' ).isEnabled = false;
 			editor.commands.get( 'unlink' ).isEnabled = false;
 
-			expect( formView.urlInputView.isReadOnly ).to.be.true;
+			expect( formView.urlInputView.isEnabled ).to.be.false;
+			expect( formView.urlInputView.fieldView.isReadOnly ).to.be.true;
 			expect( formView.saveButtonView.isEnabled ).to.be.false;
 			expect( formView.cancelButtonView.isEnabled ).to.be.true;
 
@@ -811,6 +813,14 @@ describe( 'LinkUI', () => {
 			formView = linkUIFeature.formView;
 
 			expect( balloon.visibleView ).to.equal( formView );
+		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._addFormView();
+
+			expect( linkUIFeature.formView.disableCssTransitions ).to.be.a( 'function' );
 		} );
 	} );
 

@@ -5,9 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import { AutoImage } from '@ckeditor/ckeditor5-image';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( MediaEmbed, AutoImage );
 

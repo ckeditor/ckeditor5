@@ -387,7 +387,7 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
-Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements. 
+Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements.
 
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
@@ -537,7 +537,7 @@ Relations between generic items (which one can be used where) can be visualized 
 	</$block>
 	<$blockObject/>         <!-- example: <imageBlock>, <table> -->
 	<$container>            <!-- example: <blockQuote> -->
-		<$container/> 
+		<$container/>
 		<$block/>
 		<$blockObject/>
 	</$container>
@@ -554,7 +554,7 @@ The above rules will be met for instance by such a model content:
 	<paragraph>           <!-- inheritAllFrom: $block -->
 		<$text/>          <!-- allowIn: $block -->
 		<softBreak/>      <!-- allowWhere: $text -->
-		<$text/>          <!-- allowIn: $block --> 
+		<$text/>          <!-- allowIn: $block -->
 		<imageInline/>    <!-- inheritAllFrom: $inlineObject -->
 	</paragraph>
 	<imageBlock>          <!-- inheritAllFrom: $blockObject -->
@@ -587,7 +587,7 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 	<paragraph>           <!-- isBlock: true -->
 		<$text/>          <!-- isInline: true, isContent: true -->
 		<softBreak/>      <!-- isInline: true -->
-		<$text/>          <!-- isInline: true, isContent: true --> 
+		<$text/>          <!-- isInline: true, isContent: true -->
 		<imageInline/>    <!-- isInline: true, isObject: true -->
 	</paragraph>
 	<imageBlock>          <!-- isBlock: true, isObject: true -->
@@ -612,7 +612,7 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 
 ## Defining advanced rules in `checkChild()` callbacks
 
-The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
+The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~Observable#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 

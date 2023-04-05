@@ -52,8 +52,3 @@ export default class DocumentListUtils extends Plugin {
 	}
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListUtils.pluginName ]: DocumentListUtils;
-	}
-}

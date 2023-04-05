@@ -164,12 +164,12 @@ DecoupledEditor
 ## Configuration
 
 <info-box>
-	For more technical details, please check the {@link module:minimap/minimap~MinimapConfig plugin configuration API}.
+	For more technical details, please check the {@link module:minimap/minimapconfig~MinimapConfig plugin configuration API}.
 </info-box>
 
 ### Minimap container
 
-The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimap~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
+The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
@@ -188,7 +188,7 @@ DecoupledEditor
 
 ### Content styles and classes
 
-The minimap feature uses `<iframe>` internally. For a proper look and operation, it is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimap~MinimapConfig#extraClasses detailed classes documentation} to learn more.
+The minimap feature uses `<iframe>` internally. For a proper look and operation, it is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimapconfig~MinimapConfig#extraClasses detailed classes documentation} to learn more.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

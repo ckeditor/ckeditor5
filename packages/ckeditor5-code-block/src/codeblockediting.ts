@@ -7,7 +7,7 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type PluginDependencies, type Editor, type MultiCommand } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 
 import {
@@ -56,8 +56,8 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ShiftEnter ];
+	public static get requires() {
+		return [ ShiftEnter ] as const;
 	}
 
 	/**
@@ -110,7 +110,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		this.listenTo<ViewDocumentTabEvent>( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
-			const command = editor.commands.get( commandName )!;
+			const command: OutdentCodeBlockCommand | IndentCodeBlockCommand = editor.commands.get( commandName )!;
 
 			if ( !command.isEnabled ) {
 				return;
@@ -498,16 +498,4 @@ function isEmptyishTextNode( node: Node | null ) {
 
 function isSoftBreakNode( node: Node | null ) {
 	return node && node.is( 'element', 'softBreak' );
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ CodeBlockEditing.pluginName ]: CodeBlockEditing;
-	}
-
-	interface CommandsMap {
-		indentCodeBlock: IndentCodeBlockCommand;
-		outdentCodeBlock: OutdentCodeBlockCommand;
-		codeBlock: CodeBlockCommand;
-	}
 }

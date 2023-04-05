@@ -10,14 +10,14 @@
 import View from '../../view';
 import Template from '../../template';
 
+import type ViewCollection from '../../viewcollection';
+
 import {
 	global,
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-
-import type ViewCollection from '../../viewcollection';
 
 import '../../../theme/components/panel/stickypanel.css';
 
@@ -27,21 +27,120 @@ const toPx = toUnit( 'px' );
  * The sticky panel view class.
  */
 export default class StickyPanelView extends View {
+	/**
+	 * Collection of the child views which creates balloon panel contents.
+	 */
 	public readonly content: ViewCollection;
 
+	/**
+	 * Controls whether the sticky panel should be active.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isActive: boolean;
+
+	/**
+	 * Controls whether the sticky panel is in the "sticky" state.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isSticky: boolean;
+
+	/**
+	 * The limiter element for the sticky panel instance. Its bounding rect limits
+	 * the "stickyness" of the panel, i.e. when the panel reaches the bottom
+	 * edge of the limiter, it becomes sticky to that edge and does not float
+	 * off the limiter. It is mandatory for the panel to work properly and once
+	 * set, it cannot be changed.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public limiterElement: HTMLElement | null;
+
+	/**
+	 * The offset from the bottom edge of {@link #limiterElement}
+	 * which stops the panel from stickying any further to prevent limiter's content
+	 * from being completely covered.
+	 *
+	 * @readonly
+	 * @observable
+	 * @default 50
+	 */
 	declare public limiterBottomOffset: number;
+
+	/**
+	 * The offset from the top edge of the web browser's viewport which makes the
+	 * panel become sticky. The default value is `0`, which means the panel becomes
+	 * sticky when it's upper edge touches the top of the page viewport.
+	 *
+	 * This attribute is useful when the web page has UI elements positioned to the top
+	 * either using `position: fixed` or `position: sticky`, which would cover the
+	 * sticky panel or vice–versa (depending on the `z-index` hierarchy).
+	 *
+	 * Bound to {@link module:ui/editorui/editorui~EditorUI#viewportOffset `EditorUI#viewportOffset`}.
+	 *
+	 * If {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset.top`} is defined, then
+	 * it will override the default value.
+	 *
+	 * @observable
+	 * @default 0
+	 */
 	declare public viewportTopOffset: number;
 
+	/**
+	 * Controls the `margin-left` CSS style of the panel.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
+	 */
 	declare public _marginLeft: string | null;
+
+	/**
+	 * Set `true` if the sticky panel reached the bottom edge of the
+	 * {@link #limiterElement}.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
+	 */
 	declare public _isStickyToTheLimiter: boolean;
+
+	/**
+	 * Set `true` if the sticky panel uses the {@link #viewportTopOffset},
+	 * i.e. not {@link #_isStickyToTheLimiter} and the {@link #viewportTopOffset}
+	 * is not `0`.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
+	 */
 	declare public _hasViewportTopOffset: boolean;
 
+	/**
+	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
+	 */
 	private _panelRect?: DOMRect;
+
+	/**
+	 * The DOM bounding client rect of the {@link #limiterElement}
+	 * of the panel.
+	 */
 	private _limiterRect?: DOMRect;
+
+	/**
+	 * A dummy element which visually fills the space as long as the
+	 * actual panel is sticky. It prevents flickering of the UI.
+	 */
 	private _contentPanelPlaceholder: HTMLElement;
+
+	/**
+	 * The panel which accepts children into {@link #content} collection.
+	 * Also an element which is positioned when {@link #isSticky}.
+	 */
 	private _contentPanel: HTMLElement;
 
 	/**
@@ -52,132 +151,18 @@ export default class StickyPanelView extends View {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * Controls whether the sticky panel should be active.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isActive
-		 */
 		this.set( 'isActive', false );
-
-		/**
-		 * Controls whether the sticky panel is in the "sticky" state.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isSticky
-		 */
 		this.set( 'isSticky', false );
-
-		/**
-		 * The limiter element for the sticky panel instance. Its bounding rect limits
-		 * the "stickyness" of the panel, i.e. when the panel reaches the bottom
-		 * edge of the limiter, it becomes sticky to that edge and does not float
-		 * off the limiter. It is mandatory for the panel to work properly and once
-		 * set, it cannot be changed.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {HTMLElement} #limiterElement
-		 */
 		this.set( 'limiterElement', null );
-
-		/**
-		 * The offset from the bottom edge of {@link #limiterElement}
-		 * which stops the panel from stickying any further to prevent limiter's content
-		 * from being completely covered.
-		 *
-		 * @readonly
-		 * @observable
-		 * @default 50
-		 * @member {Number} #limiterBottomOffset
-		 */
 		this.set( 'limiterBottomOffset', 50 );
-
-		/**
-		 * The offset from the top edge of the web browser's viewport which makes the
-		 * panel become sticky. The default value is `0`, which means the panel becomes
-		 * sticky when it's upper edge touches the top of the page viewport.
-		 *
-		 * This attribute is useful when the web page has UI elements positioned to the top
-		 * either using `position: fixed` or `position: sticky`, which would cover the
-		 * sticky panel or vice–versa (depending on the `z-index` hierarchy).
-		 *
-		 * Bound to {@link module:core/editor/editorui~EditorUI#viewportOffset `EditorUI#viewportOffset`}.
-		 *
-		 * If {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset.top`} is defined, then
-		 * it will override the default value.
-		 *
-		 * @observable
-		 * @default 0
-		 * @member {Number} #viewportTopOffset
-		 */
 		this.set( 'viewportTopOffset', 0 );
 
-		/**
-		 * Controls the `margin-left` CSS style of the panel.
-		 *
-		 * @protected
-		 * @readonly
-		 * @observable
-		 * @member {String} #_marginLeft
-		 */
 		this.set( '_marginLeft', null );
-
-		/**
-		 * Set `true` if the sticky panel reached the bottom edge of the
-		 * {@link #limiterElement}.
-		 *
-		 * @protected
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #_isStickyToTheLimiter
-		 */
 		this.set( '_isStickyToTheLimiter', false );
-
-		/**
-		 * Set `true` if the sticky panel uses the {@link #viewportTopOffset},
-		 * i.e. not {@link #_isStickyToTheLimiter} and the {@link #viewportTopOffset}
-		 * is not `0`.
-		 *
-		 * @protected
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #_hasViewportTopOffset
-		 */
 		this.set( '_hasViewportTopOffset', false );
 
-		/**
-		 * Collection of the child views which creates balloon panel contents.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.content = this.createCollection();
 
-		/**
-		 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
-		 *
-		 * @protected
-		 * @member {Object} #_panelRect
-		 */
-
-		/**
-		 * The DOM bounding client rect of the {@link #limiterElement}
-		 * of the panel.
-		 *
-		 * @protected
-		 * @member {Object} #_limiterRect
-		 */
-
-		/**
-		 * A dummy element which visually fills the space as long as the
-		 * actual panel is sticky. It prevents flickering of the UI.
-		 *
-		 * @protected
-		 * @property {HTMLElement}
-		 */
 		this._contentPanelPlaceholder = new Template( {
 			tag: 'div',
 			attributes: {
@@ -194,13 +179,6 @@ export default class StickyPanelView extends View {
 			}
 		} ).render() as HTMLElement;
 
-		/**
-		 * The panel which accepts children into {@link #content} collection.
-		 * Also an element which is positioned when {@link #isSticky}.
-		 *
-		 * @protected
-		 * @property {HTMLElement}
-		 */
 		this._contentPanel = new Template( {
 			tag: 'div',
 
@@ -270,8 +248,6 @@ export default class StickyPanelView extends View {
 	/**
 	 * Analyzes the environment to decide whether the panel should
 	 * be sticky or not.
-	 *
-	 * @protected
 	 */
 	private _checkIfShouldBeSticky(): void {
 		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();

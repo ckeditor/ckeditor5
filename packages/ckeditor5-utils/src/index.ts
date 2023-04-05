@@ -10,12 +10,15 @@
 export { default as env } from './env';
 export { default as diff, type DiffResult } from './diff';
 export { default as fastDiff } from './fastdiff';
+export { default as diffToChanges } from './difftochanges';
 
 export { default as mix } from './mix';
 
+export type { Constructor, Mixed } from './mix';
+
 export {
 	default as EmitterMixin,
-	Emitter,
+	type Emitter,
 	type BaseEvent,
 	type CallbackOptions,
 	type EmitterMixinDelegateChain,
@@ -29,7 +32,7 @@ export { default as EventInfo } from './eventinfo';
 
 export {
 	default as ObservableMixin,
-	Observable,
+	type Observable,
 	type DecoratedMethodEvent,
 	type ObservableChangeEvent,
 	type ObservableSetEvent
@@ -44,7 +47,7 @@ export { default as compareArrays } from './comparearrays';
 export { default as createElement } from './dom/createelement';
 export { default as Config } from './config';
 export { default as isIterable } from './isiterable';
-export { default as DomEmitterMixin, DomEmitter } from './dom/emittermixin';
+export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin';
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor';
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
@@ -66,7 +69,7 @@ export * from './dom/scroll';
 
 export * from './keyboard';
 export * from './language';
-export { default as Locale, LocaleTranslate } from './locale';
+export { default as Locale, type LocaleTranslate } from './locale';
 export {
 	default as Collection,
 	type CollectionAddEvent,

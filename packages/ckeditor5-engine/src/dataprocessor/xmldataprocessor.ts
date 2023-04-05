@@ -23,54 +23,45 @@ import type { MatcherPattern } from '../view/matcher';
  * This data processor implementation uses XML as input and output data.
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
  * For example, `<link>Text</link>` is a valid XML but invalid HTML.
- *
- * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class XmlDataProcessor implements DataProcessor {
+	/**
+	 * A list of namespaces allowed to use in the XML input.
+	 *
+	 * For example, registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>`
+	 * and `<container:tagName></container:tagName>` input. It is mainly for debugging.
+	 */
 	public namespaces: Array<string>;
+
+	/**
+	 * DOM parser instance used to parse an XML string to an XML document.
+	 */
 	public domParser: DOMParser;
+
+	/**
+	 * DOM converter used to convert DOM elements to view elements.
+	 */
 	public domConverter: DomConverter;
+
+	/**
+	 * A basic HTML writer instance used to convert DOM elements to an XML string.
+	 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
+	 */
 	public htmlWriter: HtmlWriter;
+
 	public skipComments: boolean = true;
 
 	/**
 	 * Creates a new instance of the XML data processor class.
 	 *
-	 * @param {module:engine/view/document~Document} document The view document instance.
-	 * @param {Object} options Configuration options.
-	 * @param {Array.<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
+	 * @param document The view document instance.
+	 * @param options Configuration options.
+	 * @param options.namespaces A list of namespaces allowed to use in the XML input.
 	 */
 	constructor( document: ViewDocument, options: { namespaces?: Array<string> } = {} ) {
-		/**
-		 * A list of namespaces allowed to use in the XML input.
-		 *
-		 * For example, registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>`
-		 * and `<container:tagName></container:tagName>` input. It is mainly for debugging.
-		 *
-		 * @member {Array.<String>}
-		 */
 		this.namespaces = options.namespaces || [];
-
-		/**
-		 * DOM parser instance used to parse an XML string to an XML document.
-		 *
-		 * @member {DOMParser}
-		 */
 		this.domParser = new DOMParser();
-
-		/**
-		 * DOM converter used to convert DOM elements to view elements.
-		 *
-		 * @member {module:engine/view/domconverter~DomConverter}
-		 */
 		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
-
-		/**
-		 * A basic HTML writer instance used to convert DOM elements to an XML string.
-		 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
-		 *
-		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
-		 */
 		this.htmlWriter = new BasicHtmlWriter();
 	}
 
@@ -78,8 +69,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
 	 * to data format &mdash; in this case an XML string.
 	 *
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
-	 * @returns {String} An XML string.
+	 * @returns An XML string.
 	 */
 	public toData( viewFragment: ViewDocumentFragment ): string {
 		// Convert view DocumentFragment to DOM DocumentFragment.
@@ -93,8 +83,8 @@ export default class XmlDataProcessor implements DataProcessor {
 	/**
 	 * Converts the provided XML string to a view tree.
 	 *
-	 * @param {String} data An XML string.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} A converted view element.
+	 * @param data An XML string.
+	 * @returns A converted view element.
 	 */
 	public toView( data: string ): ViewDocumentFragment {
 		// Convert input XML data to DOM DocumentFragment.
@@ -117,8 +107,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 * The raw data can be later accessed by a
 	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as raw data.
+	 * @param pattern Pattern matching all view elements whose content should be treated as raw data.
 	 */
 	public registerRawContentMatcher( pattern: MatcherPattern ): void {
 		this.domConverter.registerRawContentMatcher( pattern );
@@ -133,7 +122,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 *
 	 * This mode may be required by some features and will be turned on by them automatically.
 	 *
-	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
+	 * @param type Whether to use the default or the marked `&nbsp;` block fillers.
 	 */
 	public useFillerType( type: 'default' | 'marked' ): void {
 		this.domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
@@ -142,10 +131,6 @@ export default class XmlDataProcessor implements DataProcessor {
 	/**
 	 * Converts an XML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
-	 *
-	 * @private
-	 * @param {String} data
-	 * @returns {DocumentFragment}
 	 */
 	private _toDom( data: string ): DocumentFragment {
 		// Stringify namespaces.

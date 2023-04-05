@@ -29,8 +29,10 @@ export default class CheckTodoListCommand extends Command {
 
 	/**
 	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 *
+	 * @internal
 	 */
-	private _selectedElements: Array<Element>;
+	public _selectedElements: Array<Element>;
 
 	/**
 	 * @inheritDoc

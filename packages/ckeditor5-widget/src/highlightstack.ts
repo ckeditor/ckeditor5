@@ -23,23 +23,12 @@ import type { DowncastWriter, HighlightDescriptor } from '@ckeditor/ckeditor5-en
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
 export default class HighlightStack extends EmitterMixin() {
-	private readonly _stack: Array<HighlightDescriptor>;
-
-	/**
-	 * Creates class instance.
-	 */
-	constructor() {
-		super();
-
-		this._stack = [];
-	}
+	private readonly _stack: Array<HighlightDescriptor> = [];
 
 	/**
 	 * Adds highlight descriptor to the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	public add( descriptor: HighlightDescriptor, writer: DowncastWriter ): void {
 		const stack = this._stack;
@@ -63,8 +52,7 @@ export default class HighlightStack extends EmitterMixin() {
 	 * Removes highlight descriptor from the stack.
 	 *
 	 * @fires change:top
-	 * @param {String} id Id of the descriptor to remove.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param id Id of the descriptor to remove.
 	 */
 	public remove( id: string, writer: DowncastWriter ): void {
 		const stack = this._stack;
@@ -86,9 +74,6 @@ export default class HighlightStack extends EmitterMixin() {
 	/**
 	 * Inserts a given descriptor in correct place in the stack. It also takes care about updating information
 	 * when descriptor with same id is already present.
-	 *
-	 * @private
-	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
 	 */
 	private _insertDescriptor( descriptor: HighlightDescriptor ) {
 		const stack = this._stack;
@@ -118,8 +103,7 @@ export default class HighlightStack extends EmitterMixin() {
 	/**
 	 * Removes descriptor with given id from the stack.
 	 *
-	 * @private
-	 * @param {String} id Descriptor's id.
+	 * @param id Descriptor's id.
 	 */
 	private _removeDescriptor( id: string ) {
 		const stack = this._stack;
@@ -132,20 +116,18 @@ export default class HighlightStack extends EmitterMixin() {
 	}
 }
 
-// Compares two descriptors by checking their priority and class list.
-//
-// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} a
-// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} b
-// @returns {Boolean} Returns true if both descriptors are defined and have same priority and classes.
+/**
+ * Compares two descriptors by checking their priority and class list.
+ *
+ * @returns Returns true if both descriptors are defined and have same priority and classes.
+ */
 function compareDescriptors( a: HighlightDescriptor, b: HighlightDescriptor ) {
 	return a && b && a.priority == b.priority && classesToString( a.classes ) == classesToString( b.classes );
 }
 
-// Checks whenever first descriptor should be placed in the stack before second one.
-//
-// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} a
-// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} b
-// @returns {Boolean}
+/**
+ * Checks whenever first descriptor should be placed in the stack before second one.
+ */
 function shouldABeBeforeB( a: HighlightDescriptor, b: HighlightDescriptor ) {
 	if ( a.priority! > b.priority! ) {
 		return true;
@@ -157,11 +139,10 @@ function shouldABeBeforeB( a: HighlightDescriptor, b: HighlightDescriptor ) {
 	return classesToString( a.classes ) > classesToString( b.classes );
 }
 
-// Converts CSS classes passed with {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} to
-// sorted string.
-//
-// @param {String|Array<String>} descriptor
-// @returns {String}
+/**
+ * Converts CSS classes passed with {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} to
+ * sorted string.
+ */
 function classesToString( classes: ArrayOrItem<string> ) {
 	return Array.isArray( classes ) ? classes.sort().join( ',' ) : classes;
 }
@@ -169,19 +150,30 @@ function classesToString( classes: ArrayOrItem<string> ) {
 /**
  * Fired when top element on {@link module:widget/highlightstack~HighlightStack} has been changed
  *
- * @event change:top
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} [data.newDescriptor] New highlight
- * descriptor. It will be `undefined` when last descriptor is removed from the stack.
- * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} [data.oldDescriptor] Old highlight
- * descriptor. It will be `undefined` when first descriptor is added to the stack.
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that can be used to modify element.
+ * @eventName ~HighlightStack#change:top
  */
 export type HighlightStackChangeEvent = {
 	name: 'change' | 'change:top';
-	args: [ {
-		oldDescriptor: HighlightDescriptor;
-		newDescriptor: HighlightDescriptor;
-		writer: DowncastWriter;
-	} ];
+	args: [ HighlightStackChangeEventData ];
+};
+
+/**
+ * Additional information about the change.
+ */
+export type HighlightStackChangeEventData = {
+
+	/**
+	 * Old highlight descriptor. It will be `undefined` when first descriptor is added to the stack.
+	 */
+	oldDescriptor: HighlightDescriptor;
+
+	/**
+	 * New highlight descriptor. It will be `undefined` when last descriptor is removed from the stack.
+	 */
+	newDescriptor: HighlightDescriptor;
+
+	/**
+	 * View writer that can be used to modify element.
+	 */
+	writer: DowncastWriter;
 };

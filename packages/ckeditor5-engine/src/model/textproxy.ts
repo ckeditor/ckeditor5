@@ -227,15 +227,15 @@ export default class TextProxy extends TypeCheckable {
 		return this.textNode.getAttributeKeys();
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `#${ this.data }`;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelTextProxy: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // public logExtended(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( `ModelTextProxy: ${ this }, ` +
 	// @if CK_DEBUG_ENGINE // 		`attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
 	// @if CK_DEBUG_ENGINE // }

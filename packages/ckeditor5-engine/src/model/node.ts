@@ -87,7 +87,7 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Index of this node in it's parent or `null` if the node has no parent.
+	 * Index of this node in its parent or `null` if the node has no parent.
 	 *
 	 * Accessing this property throws an error if this node's parent element does not contain it.
 	 * This means that model tree got broken.
@@ -107,8 +107,8 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Offset at which this node starts in it's parent. It is equal to the sum of {@link #offsetSize offsetSize}
-	 * of all it's previous siblings. Equals to `null` if node has no parent.
+	 * Offset at which this node starts in its parent. It is equal to the sum of {@link #offsetSize offsetSize}
+	 * of all its previous siblings. Equals to `null` if node has no parent.
 	 *
 	 * Accessing this property throws an error if this node's parent element does not contain it.
 	 * This means that model tree got broken.
@@ -184,10 +184,14 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
+	 * Returns `true` if the node is inside a document root that is attached to the document.
 	 */
 	public isAttached(): boolean {
-		return this.root.is( 'rootElement' );
+		// If the node has no parent it means that it is a root.
+		// But this is not a `RootElement`, so it means that it is not attached.
+		//
+		// If this is not the root, check if this element's root is attached.
+		return this.parent === null ? false : this.root.isAttached();
 	}
 
 	/**

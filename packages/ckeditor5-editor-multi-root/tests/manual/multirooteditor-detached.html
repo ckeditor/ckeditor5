@@ -1,0 +1,48 @@
+<p>
+	<button id="destroyEditor">Destroy editor</button>
+	<button id="initEditor">Init editor</button>
+</p>
+
+<h2>The toolbar</h2>
+<div class="toolbar-container"></div>
+
+<h2>The editable</h2>
+<div class="editable-container"></div>
+
+<style>
+	.editable-container,
+	.toolbar-container {
+		position: relative;
+		border: 1px solid red;
+	}
+
+	.editable-container::after,
+	.toolbar-container::after {
+		content: attr(class);
+		position: absolute;
+		background: red;
+		color: #fff;
+		top: 0;
+		right: 0;
+		font: 10px/2 monospace;
+		padding: .1em .3em;
+	}
+
+	.toolbar-container{
+		padding: 1em;
+	}
+
+	.editable-container {
+		padding: 3em;
+		overflow-y: scroll;
+		max-height: 300px;
+	}
+
+	.editable-container .ck-editor__editable {
+		padding: 2em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	}
+</style>

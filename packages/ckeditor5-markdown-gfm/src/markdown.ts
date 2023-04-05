@@ -32,9 +32,3 @@ export default class Markdown extends Plugin {
 		return 'Markdown';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Markdown.pluginName ]: Markdown;
-	}
-}

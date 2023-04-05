@@ -101,7 +101,7 @@ export default class SplitOperation extends Operation {
 
 	/**
 	 * Artificial range that contains all the nodes from the split element that will be moved to the new element.
-	 * The range starts at {@link ~#splitPosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
+	 * The range starts at {@link #splitPosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
 	 */
 	public get movedRange(): Range {
 		const end = this.splitPosition.getShiftedBy( Number.POSITIVE_INFINITY );
@@ -226,7 +226,7 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
-	 * Creates `SplitOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `SplitOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
@@ -239,9 +239,9 @@ export default class SplitOperation extends Operation {
 		return new this( splitPosition, json.howMany, insertionPosition, graveyardPosition, json.baseVersion );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `SplitOperation( ${ this.baseVersion } ): ${ this.splitPosition } ` +
-	// @if CK_DEBUG_ENGINE //		`( ${ this.howMany } ) -> ${ this.insertionPosition }` +
-	// @if CK_DEBUG_ENGINE //		`${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
+	// @if CK_DEBUG_ENGINE // 	`( ${ this.howMany } ) -> ${ this.insertionPosition }` +
+	// @if CK_DEBUG_ENGINE // 	`${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
 	// @if CK_DEBUG_ENGINE // }
 }

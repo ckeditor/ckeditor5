@@ -15,39 +15,29 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
  * The styles map is capable of normalizing style names so e.g. the following operations are possible:
  */
 export default class StylesMap {
+	/**
+	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
+	 * value access model using lodash's get, set, unset, etc methods.
+	 *
+	 * When no style processor rules are defined it acts as simple key-value storage.
+	 */
 	private _styles: Record<string, string>;
+
+	/**
+	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
+	 */
 	private readonly _styleProcessor: StylesProcessor;
 
 	/**
 	 * Creates Styles instance.
-	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} styleProcessor
 	 */
 	constructor( styleProcessor: StylesProcessor ) {
-		/**
-		 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
-		 * value access model using lodash's get, set, unset, etc methods.
-		 *
-		 * When no style processor rules are defined it acts as simple key-value storage.
-		 *
-		 * @private
-		 * @type {Object}
-		 */
 		this._styles = {};
-
-		/**
-		 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
-		 *
-		 * @private
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
 		this._styleProcessor = styleProcessor;
 	}
 
 	/**
 	 * Returns true if style map has no styles set.
-	 *
-	 * @type {Boolean}
 	 */
 	public get isEmpty(): boolean {
 		const entries = Object.entries( this._styles );
@@ -58,8 +48,6 @@ export default class StylesMap {
 
 	/**
 	 * Number of styles defined.
-	 *
-	 * @type {Number}
 	 */
 	public get size(): number {
 		if ( this.isEmpty ) {
@@ -72,9 +60,9 @@ export default class StylesMap {
 	/**
 	 * Set styles map to a new value.
 	 *
-	 *		styles.setTo( 'border:1px solid blue;margin-top:1px;' );
-	 *
-	 * @param {String} inlineStyle
+	 * ```ts
+	 * styles.setTo( 'border:1px solid blue;margin-top:1px;' );
+	 * ```
 	 */
 	public setTo( inlineStyle: string ): void {
 		this.clear();
@@ -89,30 +77,33 @@ export default class StylesMap {
 	/**
 	 * Checks if a given style is set.
 	 *
-	 *		styles.setTo( 'margin-left:1px;' );
+	 * ```ts
+	 * styles.setTo( 'margin-left:1px;' );
 	 *
-	 *		styles.has( 'margin-left' );    // -> true
-	 *		styles.has( 'padding' );        // -> false
+	 * styles.has( 'margin-left' );    // -> true
+	 * styles.has( 'padding' );        // -> false
+	 * ```
 	 *
 	 * **Note**: This check supports normalized style names.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		styles.setTo( 'margin:2px;' );
+	 * styles.setTo( 'margin:2px;' );
 	 *
-	 *		styles.has( 'margin' );         // -> true
-	 *		styles.has( 'margin-top' );     // -> true
-	 *		styles.has( 'margin-left' );    // -> true
+	 * styles.has( 'margin' );         // -> true
+	 * styles.has( 'margin-top' );     // -> true
+	 * styles.has( 'margin-left' );    // -> true
 	 *
-	 *		styles.remove( 'margin-top' );
+	 * styles.remove( 'margin-top' );
 	 *
-	 *		styles.has( 'margin' );         // -> false
-	 *		styles.has( 'margin-top' );     // -> false
-	 *		styles.has( 'margin-left' );    // -> true
+	 * styles.has( 'margin' );         // -> false
+	 * styles.has( 'margin-top' );     // -> false
+	 * styles.has( 'margin-left' );    // -> true
+	 * ```
 	 *
-	 * @param {String} name Style name.
-	 * @returns {Boolean}
+	 * @param name Style name.
 	 */
 	public has( name: string ): boolean {
 		if ( this.isEmpty ) {
@@ -132,52 +123,81 @@ export default class StylesMap {
 	 *
 	 * Can insert one by one:
 	 *
-	 *		styles.set( 'color', 'blue' );
-	 *		styles.set( 'margin-right', '1em' );
-	 *
-	 * or many styles at once:
-	 *
-	 *		styles.set( {
-	 *			color: 'blue',
-	 *			'margin-right': '1em'
-	 *		} );
+	 * ```ts
+	 * styles.set( 'color', 'blue' );
+	 * styles.set( 'margin-right', '1em' );
+	 * ```
 	 *
 	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
 	 * enabled style processor rules} to normalize passed values.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		styles.set( 'margin', '2px' );
+	 * styles.set( 'margin', '2px' );
+	 * ```
 	 *
 	 * The above code will set margin to:
 	 *
-	 *		styles.getNormalized( 'margin' );
-	 *		// -> { top: '2px', right: '2px', bottom: '2px', left: '2px' }
+	 * ```ts
+	 * styles.getNormalized( 'margin' );
+	 * // -> { top: '2px', right: '2px', bottom: '2px', left: '2px' }
+	 * ```
 	 *
 	 * Which makes it possible to retrieve a "sub-value":
 	 *
-	 *		styles.get( 'margin-left' );       // -> '2px'
+	 * ```ts
+	 * styles.get( 'margin-left' );       // -> '2px'
+	 * ```
 	 *
 	 * Or modify it:
 	 *
-	 *		styles.remove( 'margin-left' );
+	 * ```ts
+	 * styles.remove( 'margin-left' );
 	 *
-	 *		styles.getNormalized( 'margin' );  // -> { top: '1px', bottom: '1px', right: '1px' }
-	 *		styles.toString();                 // -> 'margin-bottom:1px;margin-right:1px;margin-top:1px;'
+	 * styles.getNormalized( 'margin' );  // -> { top: '1px', bottom: '1px', right: '1px' }
+	 * styles.toString();                 // -> 'margin-bottom:1px;margin-right:1px;margin-top:1px;'
+	 * ```
 	 *
 	 * This method also allows to set normalized values directly (if a particular styles processor rule was enabled):
 	 *
-	 *		styles.set( 'border-color', { top: 'blue' } );
-	 *		styles.set( 'margin', { right: '2em' } );
+	 * ```ts
+	 * styles.set( 'border-color', { top: 'blue' } );
+	 * styles.set( 'margin', { right: '2em' } );
 	 *
-	 *		styles.toString();                 // -> 'border-color-top:blue;margin-right:2em;'
+	 * styles.toString();                 // -> 'border-color-top:blue;margin-right:2em;'
+	 * ```
 	 *
-	 * @param {String|Object} nameOrObject Style property name or object with multiple properties.
-	 * @param {String|Object} valueOrObject Value to set.
+	 * @label KEY_VALUE
+	 * @param name Style property name.
+	 * @param value Value to set.
 	 */
-	public set( nameOrObject: string, valueOrObject: StyleValue ): void;
-	public set( nameOrObject: Styles ): void;
+	public set( name: string, value: StyleValue ): void;
+
+	/**
+	 * Sets many styles at once:
+	 *
+	 * ```ts
+	 * styles.set( {
+	 * 	color: 'blue',
+	 * 	'margin-right': '1em'
+	 * } );
+	 * ```
+	 *
+	 * It is equivalent to:
+	 *
+	 * ```ts
+	 * styles.set( 'color', 'blue' );
+	 * styles.set( 'margin-right', '1em' );
+	 * ```
+	 *
+	 * See {@link #set:KEY_VALUE}
+	 *
+	 * @label CONFIG_OBJECT
+	 */
+	public set( styles: Styles ): void;
+
 	public set( nameOrObject: string | Styles, valueOrObject?: StyleValue ): void {
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
@@ -191,26 +211,30 @@ export default class StylesMap {
 	/**
 	 * Removes given style.
 	 *
-	 *		styles.setTo( 'background:#f00;margin-right:2px;' );
+	 * ```ts
+	 * styles.setTo( 'background:#f00;margin-right:2px;' );
 	 *
-	 *		styles.remove( 'background' );
+	 * styles.remove( 'background' );
 	 *
-	 *		styles.toString();   // -> 'margin-right:2px;'
+	 * styles.toString();   // -> 'margin-right:2px;'
+	 * ```
 	 *
 	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
 	 * enabled style processor rules} to normalize passed values.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		styles.setTo( 'margin:1px' );
+	 * styles.setTo( 'margin:1px' );
 	 *
-	 *		styles.remove( 'margin-top' );
-	 *		styles.remove( 'margin-right' );
+	 * styles.remove( 'margin-top' );
+	 * styles.remove( 'margin-right' );
 	 *
-	 *		styles.toString(); // -> 'margin-bottom:1px;margin-left:1px;'
+	 * styles.toString(); // -> 'margin-bottom:1px;margin-left:1px;'
+	 * ```
 	 *
-	 * @param {String} name Style name.
+	 * @param name Style name.
 	 */
 	public remove( name: string ): void {
 		const path = toPath( name );
@@ -224,27 +248,28 @@ export default class StylesMap {
 	/**
 	 * Returns a normalized style object or a single value.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		const styles = new Styles();
-	 *		styles.setTo( 'margin:1px 2px 3em;' );
+	 * const styles = new Styles();
+	 * styles.setTo( 'margin:1px 2px 3em;' );
 	 *
-	 *		styles.getNormalized( 'margin' );
-	 *		// will log:
-	 *		// {
-	 *		//     top: '1px',
-	 *		//     right: '2px',
-	 *		//     bottom: '3em',
-	 *		//     left: '2px'     // normalized value from margin shorthand
-	 *		// }
+	 * styles.getNormalized( 'margin' );
+	 * // will log:
+	 * // {
+	 * //     top: '1px',
+	 * //     right: '2px',
+	 * //     bottom: '3em',
+	 * //     left: '2px'     // normalized value from margin shorthand
+	 * // }
 	 *
-	 *		styles.getNormalized( 'margin-left' ); // -> '2px'
+	 * styles.getNormalized( 'margin-left' ); // -> '2px'
+	 * ```
 	 *
 	 * **Note**: This method will only return normalized styles if a style processor was defined.
 	 *
-	 * @param {String} name Style name.
-	 * @returns {Object|String|undefined}
+	 * @param name Style name.
 	 */
 	public getNormalized( name?: string ): StyleValue {
 		return this._styleProcessor.getNormalized( name, this._styles );
@@ -253,24 +278,26 @@ export default class StylesMap {
 	/**
 	 * Returns a normalized style string. Styles are sorted by name.
 	 *
-	 *		styles.set( 'margin' , '1px' );
-	 *		styles.set( 'background', '#f00' );
+	 * ```ts
+	 * styles.set( 'margin' , '1px' );
+	 * styles.set( 'background', '#f00' );
 	 *
-	 *		styles.toString(); // -> 'background:#f00;margin:1px;'
+	 * styles.toString(); // -> 'background:#f00;margin:1px;'
+	 * ```
 	 *
 	 * **Note**: This method supports normalized styles if defined.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		styles.set( 'margin' , '1px' );
-	 *		styles.set( 'background', '#f00' );
-	 *		styles.remove( 'margin-top' );
-	 *		styles.remove( 'margin-right' );
+	 * styles.set( 'margin' , '1px' );
+	 * styles.set( 'background', '#f00' );
+	 * styles.remove( 'margin-top' );
+	 * styles.remove( 'margin-right' );
 	 *
-	 *		styles.toString(); // -> 'background:#f00;margin-bottom:1px;margin-left:1px;'
-	 *
-	 * @returns {String}
+	 * styles.toString(); // -> 'background:#f00;margin-bottom:1px;margin-left:1px;'
+	 * ```
 	 */
 	public toString(): string {
 		if ( this.isEmpty ) {
@@ -286,53 +313,58 @@ export default class StylesMap {
 	/**
 	 * Returns property as a value string or undefined if property is not set.
 	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.data.addStyleProcessorRules( addMarginRules );
+	 * ```ts
+	 * // Enable 'margin' shorthand processing:
+	 * editor.data.addStyleProcessorRules( addMarginRules );
 	 *
-	 *		const styles = new Styles();
-	 *		styles.setTo( 'margin:1px;' );
-	 *		styles.set( 'margin-bottom', '3em' );
+	 * const styles = new Styles();
+	 * styles.setTo( 'margin:1px;' );
+	 * styles.set( 'margin-bottom', '3em' );
 	 *
-	 *		styles.getAsString( 'margin' ); // -> 'margin: 1px 1px 3em;'
+	 * styles.getAsString( 'margin' ); // -> 'margin: 1px 1px 3em;'
+	 * ```
 	 *
 	 * Note, however, that all sub-values must be set for the longhand property name to return a value:
 	 *
-	 *		const styles = new Styles();
-	 *		styles.setTo( 'margin:1px;' );
-	 *		styles.remove( 'margin-bottom' );
+	 * ```ts
+	 * const styles = new Styles();
+	 * styles.setTo( 'margin:1px;' );
+	 * styles.remove( 'margin-bottom' );
 	 *
-	 *		styles.getAsString( 'margin' ); // -> undefined
+	 * styles.getAsString( 'margin' ); // -> undefined
+	 * ```
 	 *
 	 * In the above scenario, it is not possible to return a `margin` value, so `undefined` is returned.
 	 * Instead, you should use:
 	 *
-	 *		const styles = new Styles();
-	 *		styles.setTo( 'margin:1px;' );
-	 *		styles.remove( 'margin-bottom' );
+	 * ```ts
+	 * const styles = new Styles();
+	 * styles.setTo( 'margin:1px;' );
+	 * styles.remove( 'margin-bottom' );
 	 *
-	 *		for ( const styleName of styles.getStyleNames() ) {
-	 *			console.log( styleName, styles.getAsString( styleName ) );
-	 *		}
-	 *		// 'margin-top', '1px'
-	 *		// 'margin-right', '1px'
-	 *		// 'margin-left', '1px'
+	 * for ( const styleName of styles.getStyleNames() ) {
+	 * 	console.log( styleName, styles.getAsString( styleName ) );
+	 * }
+	 * // 'margin-top', '1px'
+	 * // 'margin-right', '1px'
+	 * // 'margin-left', '1px'
+	 * ```
 	 *
 	 * In general, it is recommend to iterate over style names like in the example above. This way, you will always get all
 	 * the currently set style values. So, if all the 4 margin values would be set
 	 * the for-of loop above would yield only `'margin'`, `'1px'`:
 	 *
-	 *		const styles = new Styles();
-	 *		styles.setTo( 'margin:1px;' );
+	 * ```ts
+	 * const styles = new Styles();
+	 * styles.setTo( 'margin:1px;' );
 	 *
-	 *		for ( const styleName of styles.getStyleNames() ) {
-	 *			console.log( styleName, styles.getAsString( styleName ) );
-	 *		}
-	 *		// 'margin', '1px'
+	 * for ( const styleName of styles.getStyleNames() ) {
+	 * 	console.log( styleName, styles.getAsString( styleName ) );
+	 * }
+	 * // 'margin', '1px'
+	 * ```
 	 *
 	 * **Note**: To get a normalized version of a longhand property use the {@link #getNormalized `#getNormalized()`} method.
-	 *
-	 * @param {String} propertyName
-	 * @returns {String|undefined}
 	 */
 	public getAsString( propertyName: string ): string | undefined {
 		if ( this.isEmpty ) {
@@ -359,14 +391,17 @@ export default class StylesMap {
 	 *
 	 * When `expand` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
 	 *
-	 * 		stylesMap.setTo( 'margin: 1em' )
+	 * ```ts
+	 * stylesMap.setTo( 'margin: 1em' )
+	 * ```
 	 *
 	 * will be expanded to:
 	 *
-	 * 		[ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ]
+	 * ```ts
+	 * [ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ]
+	 * ```
 	 *
-	 * @param {Boolean} [expand=false] Expand shorthand style properties and all return equivalent style representations.
-	 * @returns {Array.<String>}
+	 * @param expand Expand shorthand style properties and all return equivalent style representations.
 	 */
 	public getStyleNames( expand = false ): Array<string> {
 		if ( this.isEmpty ) {
@@ -391,9 +426,6 @@ export default class StylesMap {
 
 	/**
 	 * Returns normalized styles entries for further processing.
-	 *
-	 * @private
-	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
 	private _getStylesEntries(): Array<PropertyDescriptor> {
 		const parsed: Array<PropertyDescriptor> = [];
@@ -409,9 +441,6 @@ export default class StylesMap {
 
 	/**
 	 * Removes empty objects upon removing an entry from internal object.
-	 *
-	 * @param {String} path
-	 * @private
 	 */
 	private _cleanEmptyObjectsOnPath( path: string ): void {
 		const pathParts = path.split( '.' );
@@ -449,7 +478,7 @@ export class StylesProcessor {
 	/**
 	 * Creates StylesProcessor instance.
 	 *
-	 * @private
+	 * @internal
 	 */
 	constructor() {
 		this._normalizers = new Map();
@@ -461,17 +490,19 @@ export class StylesProcessor {
 	/**
 	 * Parse style string value to a normalized object and appends it to styles object.
 	 *
-	 *		const styles = {};
+	 * ```ts
+	 * const styles = {};
 	 *
-	 *		stylesProcessor.toNormalizedForm( 'margin', '1px', styles );
+	 * stylesProcessor.toNormalizedForm( 'margin', '1px', styles );
 	 *
-	 *		// styles will consist: { margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; } }
+	 * // styles will consist: { margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; } }
+	 * ```
 	 *
 	 * **Note**: To define normalizer callbacks use {@link #setNormalizer}.
 	 *
-	 * @param {String} name Name of style property.
-	 * @param {String} propertyValue Value of style property.
-	 * @param {Object} styles Object holding normalized styles.
+	 * @param name Name of style property.
+	 * @param propertyValue Value of style property.
+	 * @param styles Object holding normalized styles.
 	 */
 	public toNormalizedForm( name: string, propertyValue: StyleValue, styles: Styles ): void {
 		if ( isObject( propertyValue ) ) {
@@ -493,22 +524,24 @@ export class StylesProcessor {
 
 	/**
 	 * Returns a normalized version of a style property.
-	 *		const styles = {
-	 *			margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; },
-	 *			background: { color: '#f00' }
-	 *		};
 	 *
-	 *		stylesProcessor.getNormalized( 'background' );
-	 *		// will return: { color: '#f00' }
+	 * ```ts
+	 * const styles = {
+	 * 	margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; },
+	 * 	background: { color: '#f00' }
+	 * };
 	 *
-	 *		stylesProcessor.getNormalized( 'margin-top' );
-	 *		// will return: '1px'
+	 * stylesProcessor.getNormalized( 'background' );
+	 * // will return: { color: '#f00' }
+	 *
+	 * stylesProcessor.getNormalized( 'margin-top' );
+	 * // will return: '1px'
+	 * ```
 	 *
 	 * **Note**: In some cases extracting single value requires defining an extractor callback {@link #setExtractor}.
 	 *
-	 * @param {String} name Name of style property.
-	 * @param {Object} styles Object holding normalized styles.
-	 * @returns {*}
+	 * @param name Name of style property.
+	 * @param styles Object holding normalized styles.
 	 */
 	public getNormalized( name: string | undefined, styles: Styles ): StyleValue {
 		if ( !name ) {
@@ -542,30 +575,34 @@ export class StylesProcessor {
 	 *
 	 * For default margin reducer, the below code:
 	 *
-	 *		stylesProcessor.getReducedForm( 'margin', {
-	 *			margin: { top: '1px', right: '1px', bottom: '2px', left: '1px; }
-	 *		} );
+	 * ```ts
+	 * stylesProcessor.getReducedForm( 'margin', {
+	 * 	margin: { top: '1px', right: '1px', bottom: '2px', left: '1px; }
+	 * } );
+	 * ```
 	 *
 	 * will return:
 	 *
-	 *		[
-	 *			[ 'margin', '1px 1px 2px' ]
-	 *		]
+	 * ```ts
+	 * [
+	 * 	[ 'margin', '1px 1px 2px' ]
+	 * ]
+	 * ```
 	 *
 	 * because it might be represented as a shorthand 'margin' value. However if one of margin long hand values is missing it should return:
 	 *
-	 *		[
-	 *			[ 'margin-top', '1px' ],
-	 *			[ 'margin-right', '1px' ],
-	 *			[ 'margin-bottom', '2px' ]
-	 *			// the 'left' value is missing - cannot use 'margin' shorthand.
-	 *		]
+	 * ```ts
+	 * [
+	 * 	[ 'margin-top', '1px' ],
+	 * 	[ 'margin-right', '1px' ],
+	 * 	[ 'margin-bottom', '2px' ]
+	 * 	// the 'left' value is missing - cannot use 'margin' shorthand.
+	 * ]
+	 * ```
 	 *
 	 * **Note**: To define reducer callbacks use {@link #setReducer}.
 	 *
-	 * @param {String} name Name of style property.
-	 * @param {Object} styles Object holding normalized styles.
-	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
+	 * @param name Name of style property.
 	 */
 	public getReducedForm( name: string, styles: Styles ): Array<PropertyDescriptor> {
 		const normalizedValue = this.getNormalized( name, styles );
@@ -587,8 +624,7 @@ export class StylesProcessor {
 	/**
 	 * Return all style properties. Also expand shorthand properties (e.g. `margin`, `background`) if respective extractor is available.
 	 *
-	 * @param {Object} styles Object holding normalized styles.
-	 * @returns {Array.<String>}
+	 * @param styles Object holding normalized styles.
 	 */
 	public getStyleNames( styles: Styles ): Array<string> {
 		// Find all extractable styles that have a value.
@@ -615,17 +651,16 @@ export class StylesProcessor {
 	/**
 	 * Returns related style names.
 	 *
-	 *		stylesProcessor.getRelatedStyles( 'margin' );
-	 *		// will return: [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ];
+	 * ```ts
+	 * stylesProcessor.getRelatedStyles( 'margin' );
+	 * // will return: [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ];
 	 *
-	 *		stylesProcessor.getRelatedStyles( 'margin-top' );
-	 *		// will return: [ 'margin' ];
+	 * stylesProcessor.getRelatedStyles( 'margin-top' );
+	 * // will return: [ 'margin' ];
+	 * ```
 	 *
 	 * **Note**: To define new style relations load an existing style processor or use
 	 * {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation `StylesProcessor.setStyleRelation()`}.
-	 *
-	 * @param {String} name
-	 * @returns {Array.<String>}
 	 */
 	public getRelatedStyles( name: string ): Array<string> {
 		return this._consumables.get( name ) || [];
@@ -648,39 +683,42 @@ export class StylesProcessor {
 	 *
 	 * A normalizer should parse various margin notations as a single object:
 	 *
-	 *		const styles = {
-	 *			margin: {
-	 *				top: '1px',
-	 *				right: '2em',
-	 *				bottom: '1px',
-	 *				left: '2em'
-	 *			}
-	 *		};
+	 * ```ts
+	 * const styles = {
+	 * 	margin: {
+	 * 		top: '1px',
+	 * 		right: '2em',
+	 * 		bottom: '1px',
+	 * 		left: '2em'
+	 * 	}
+	 * };
+	 * ```
 	 *
 	 * Thus a normalizer for 'margin' style should return an object defining style path and value to store:
 	 *
-	 *		const returnValue = {
-	 *			path: 'margin',
-	 *			value: {
-	 *				top: '1px',
-	 *				right: '2em',
-	 *				bottom: '1px',
-	 *				left: '2em'
-	 *			}
-	 *		};
+	 * ```ts
+	 * const returnValue = {
+	 * 	path: 'margin',
+	 * 	value: {
+	 * 		top: '1px',
+	 * 		right: '2em',
+	 * 		bottom: '1px',
+	 * 		left: '2em'
+	 * 	}
+	 * };
+	 * ```
 	 *
 	 * Additionally to fully support all margin notations there should be also defined 4 normalizers for longhand margin notations. Below
 	 * is an example for 'margin-top' style property normalizer:
 	 *
-	 *		stylesProcessor.setNormalizer( 'margin-top', valueString => {
-	 *			return {
-	 *				path: 'margin.top',
-	 *				value: valueString
-	 *			}
-	 *		} );
-	 *
-	 * @param {String} name
-	 * @param {Function} callback
+	 * ```ts
+	 * stylesProcessor.setNormalizer( 'margin-top', valueString => {
+	 * 	return {
+	 * 		path: 'margin.top',
+	 * 		value: valueString
+	 * 	}
+	 * } );
+	 * ```
 	 */
 	public setNormalizer( name: string, callback: Normalizer ): void {
 		this._normalizers.set( name, callback );
@@ -691,39 +729,44 @@ export class StylesProcessor {
 	 *
 	 * Most normalized style values are stored as one level objects. It is assumed that `'margin-top'` style will be stored as:
 	 *
-	 *		const styles = {
-	 *			margin: {
-	 *				top: 'value'
-	 *			}
-	 *		}
+	 * ```ts
+	 * const styles = {
+	 * 	margin: {
+	 * 		top: 'value'
+	 * 	}
+	 * }
+	 * ```
 	 *
 	 * However, some styles can have conflicting notations and thus it might be harder to extract a style value from shorthand. For instance
 	 * the 'border-top-style' can be defined using `'border-top:solid'`, `'border-style:solid none none none'` or by `'border:solid'`
 	 * shorthands. The default border styles processors stores styles as:
 	 *
-	 *		const styles = {
-	 *			border: {
-	 *				style: {
-	 *					top: 'solid'
-	 *				}
-	 *			}
-	 *		}
+	 * ```ts
+	 * const styles = {
+	 * 	border: {
+	 * 		style: {
+	 * 			top: 'solid'
+	 * 		}
+	 * 	}
+	 * }
+	 * ```
 	 *
 	 * as it is better to modify border style independently from other values. On the other part the output of the border might be
 	 * desired as `border-top`, `border-left`, etc notation.
 	 *
-	 * In the above example a reducer should return a side border value that combines style, color and width:
+	 * In the above example an extractor should return a side border value that combines style, color and width:
 	 *
-	 *		styleProcessor.setExtractor( 'border-top', styles => {
-	 *			return {
-	 *				color: styles.border.color.top,
-	 *				style: styles.border.style.top,
-	 *				width: styles.border.width.top
-	 *			}
-	 *		} );
+	 * ```ts
+	 * styleProcessor.setExtractor( 'border-top', styles => {
+	 * 	return {
+	 * 		color: styles.border.color.top,
+	 * 		style: styles.border.style.top,
+	 * 		width: styles.border.width.top
+	 * 	}
+	 * } );
+	 * ```
 	 *
-	 * @param {String} name
-	 * @param {Function|String} callbackOrPath Callback that return a requested value or path string for single values.
+	 * @param callbackOrPath Callback that return a requested value or path string for single values.
 	 */
 	public setExtractor( name: string, callbackOrPath: Extractor ): void {
 		this._extractors.set( name, callbackOrPath );
@@ -738,29 +781,32 @@ export class StylesProcessor {
 	 * For shorthand styles a reducer should return minimal style notation either by returning single name-value tuple or multiple tuples
 	 * if a shorthand cannot be used. For instance for a margin shorthand a reducer might return:
 	 *
-	 *		const marginShortHandTuple = [
-	 *			[ 'margin', '1px 1px 2px' ]
-	 *		];
+	 * ```ts
+	 * const marginShortHandTuple = [
+	 * 	[ 'margin', '1px 1px 2px' ]
+	 * ];
+	 * ```
 	 *
 	 * or a longhand tuples for defined values:
 	 *
-	 *		// Considering margin.bottom and margin.left are undefined.
-	 *		const marginLonghandsTuples = [
-	 *			[ 'margin-top', '1px' ],
-	 *			[ 'margin-right', '1px' ]
-	 *		];
+	 * ```ts
+	 * // Considering margin.bottom and margin.left are undefined.
+	 * const marginLonghandsTuples = [
+	 * 	[ 'margin-top', '1px' ],
+	 * 	[ 'margin-right', '1px' ]
+	 * ];
+	 * ```
 	 *
 	 * A reducer obtains a normalized style value:
 	 *
-	 *		// Simplified reducer that always outputs 4 values which are always present:
-	 *		stylesProcessor.setReducer( 'margin', margin => {
-	 *			return [
-	 *				[ 'margin', `${ margin.top } ${ margin.right } ${ margin.bottom } ${ margin.left }` ]
-	 *			]
-	 *		} );
-	 *
-	 * @param {String} name
-	 * @param {Function} callback
+	 * ```ts
+	 * // Simplified reducer that always outputs 4 values which are always present:
+	 * stylesProcessor.setReducer( 'margin', margin => {
+	 * 	return [
+	 * 		[ 'margin', `${ margin.top } ${ margin.right } ${ margin.bottom } ${ margin.left }` ]
+	 * 	]
+	 * } );
+	 * ```
 	 */
 	public setReducer( name: string, callback: Reducer ): void {
 		this._reducers.set( name, callback );
@@ -769,12 +815,14 @@ export class StylesProcessor {
 	/**
 	 * Defines a style shorthand relation to other style notations.
 	 *
-	 *		stylesProcessor.setStyleRelation( 'margin', [
-	 *			'margin-top',
-	 *			'margin-right',
-	 *			'margin-bottom',
-	 *			'margin-left'
-	 *		] );
+	 * ```ts
+	 * stylesProcessor.setStyleRelation( 'margin', [
+	 * 	'margin-top',
+	 * 	'margin-right',
+	 * 	'margin-bottom',
+	 * 	'margin-left'
+	 * ] );
+	 * ```
 	 *
 	 * This enables expanding of style names for shorthands. For instance, if defined,
 	 * {@link module:engine/conversion/viewconsumable~ViewConsumable view consumable} items are automatically created
@@ -784,9 +832,6 @@ export class StylesProcessor {
 	 * fine since the view consumable will contain a consumable `margin-left` item (thanks to the relation) and
 	 * `element.getStyle( 'margin-left' )` will work as well assuming that the style processor was correctly configured.
 	 * However, once `margin-left` is consumed, `margin` will not be consumable anymore.
-	 *
-	 * @param {String} shorthandName
-	 * @param {Array.<String>} styleNames
 	 */
 	public setStyleRelation( shorthandName: string, styleNames: Array<string> ): void {
 		this._mapStyleNames( shorthandName, styleNames );
@@ -798,10 +843,6 @@ export class StylesProcessor {
 
 	/**
 	 * Set two-way binding of style names.
-	 *
-	 * @param {String} name
-	 * @param {Array.<String>} styleNames
-	 * @private
 	 */
 	private _mapStyleNames( name: string, styleNames: Array<string> ) {
 		if ( !this._consumables.has( name ) ) {
@@ -812,10 +853,12 @@ export class StylesProcessor {
 	}
 }
 
-// Parses inline styles and puts property - value pairs into styles map.
-//
-// @param {String} stylesString Styles to parse.
-// @returns {Map.<String, String>} stylesMap Map of parsed properties and values.
+/**
+ * Parses inline styles and puts property - value pairs into styles map.
+ *
+ * @param stylesString Styles to parse.
+ * @returns Map of parsed properties and values.
+ */
 function parseInlineStyles( stylesString: string ): Map<string, string> {
 	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
 	let quoteType = null;
@@ -889,16 +932,16 @@ function parseInlineStyles( stylesString: string ): Map<string, string> {
 	return stylesMap;
 }
 
-// Return lodash compatible path from style name.
+/**
+ * Return lodash compatible path from style name.
+ */
 function toPath( name: string ): string {
 	return name.replace( '-', '.' );
 }
 
-// Appends style definition to the styles object.
-//
-// @param {String} nameOrPath
-// @param {String|Object} valueOrObject
-// @private
+/**
+ * Appends style definition to the styles object.
+ */
 function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObject: StyleValue ) {
 	let valueToSet = valueOrObject;
 
@@ -915,68 +958,85 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
  * - first string describes property name
  * - second string describes property value
  *
- *		const marginDescriptor = [ 'margin', '2px 3em' ];
- *		const marginTopDescriptor = [ 'margin-top', '2px' ];
- *
- * @typedef {Array.<String, String>} module:engine/view/stylesmap~PropertyDescriptor
+ * ```ts
+ * const marginDescriptor = [ 'margin', '2px 3em' ];
+ * const marginTopDescriptor = [ 'margin-top', '2px' ];
+ * ```
  */
-export type PropertyDescriptor = [ string, string ];
+export type PropertyDescriptor = [ name: string, value: string ];
 
 /**
  * An object describing values associated with the sides of a box, for instance margins, paddings,
  * border widths, border colors, etc.
  *
- *		const margin = {
- *			top: '1px',
- *			right: '3px',
- *			bottom: '3px',
- *			left: '7px'
- *		};
+ * ```ts
+ * const margin = {
+ * 	top: '1px',
+ * 	right: '3px',
+ * 	bottom: '3px',
+ * 	left: '7px'
+ * };
  *
- *		const borderColor = {
- *			top: 'red',
- *			right: 'blue',
- *			bottom: 'blue',
- *			left: 'red'
- *		};
- *
- * @typedef {Object} module:engine/view/stylesmap~BoxSides
- *
- * @property {String} top Top side value.
- * @property {String} right Right side value.
- * @property {String} bottom Bottom side value.
- * @property {String} left Left side value.
+ * const borderColor = {
+ * 	top: 'red',
+ * 	right: 'blue',
+ * 	bottom: 'blue',
+ * 	left: 'red'
+ * };
+ * ```
  */
 export type BoxSides = {
+
+	/**
+	 * Top side value.
+	 */
 	top: undefined | string;
+
+	/**
+	 * Left side value.
+	 */
 	left: undefined | string;
+
+	/**
+	 * Right side value.
+	 */
 	right: undefined | string;
+
+	/**
+	 * Bottom side value.
+	 */
 	bottom: undefined | string;
 };
 
 /**
- * TODO docs
+ * Object holding styles as key-value pairs.
  */
 export interface Styles {
 	[ name: string ]: StyleValue;
 }
 
 /**
- * TODO docs
+ * The value of style.
  */
 export type StyleValue = string | Array<string> | Styles | BoxSides;
 
 /**
- * TODO docs
+ * A normalizer method for a style property.
+ *
+ * @see ~StylesProcessor#setNormalizer
  */
 export type Normalizer = ( name: string ) => { path: string; value: StyleValue };
 
 /**
- * TODO docs
+ * An extractor callback for a style property or path string for single values.
+ *
+ * @see ~StylesProcessor#setExtractor
  */
 export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
 
 /**
- * TODO docs
+ * A reducer callback for a style property.
+ *
+ * @see ~StylesProcessor#setReducer
  */
 export type Reducer = ( value: StyleValue ) => Array<PropertyDescriptor>;

@@ -18,11 +18,11 @@ The easiest way to set up your project is to grab the starter files from our [Gi
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 
-The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run the build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly). At this stage, you can move to the {@link framework/creating-simple-plugin-timestamp#creating-a-plugin Creating a plugin section} of this guide. 
+The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run the build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly). At this stage, you can move to the {@link framework/creating-simple-plugin-timestamp#creating-a-plugin Creating a plugin section} of this guide.
 
 ### DIY path with setting up the environment from the scratch
 
-If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide. 
+If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide.
 
 When this is done, you need to install the following dependencies that will be necessary to proceed:
 ```bash
@@ -91,7 +91,7 @@ Now you just need to build your application using the command below.
 ```bash
 ./node_modules/.bin/webpack --mode development
 ```
-After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development. 
+After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development.
 
 ## Creating a plugin
 

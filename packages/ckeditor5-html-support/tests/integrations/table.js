@@ -7,6 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import { priorities } from 'ckeditor5/src/utils';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
@@ -933,6 +934,51 @@ describe( 'TableElementSupport', () => {
 					'<tbody align="right" dir="ltr" lang="en" valign="bottom">' +
 						'<tr align="right" valign="bottom">' +
 							'<td align="right" valign="bottom">Foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		await editor.destroy();
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/11479
+	it( 'should not strip attributes from <colgroup> and <col> elements', async () => {
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Table, TableCaption, TableColumnResize, Paragraph, GeneralHtmlSupport ],
+			htmlSupport: {
+				allow: [
+					{
+						name: /^(figure|table|colgroup|col|tbody|thead|tr|th|td)$/,
+						attributes: true
+					}
+				]
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<colgroup data-foo="bar">' +
+					'<col data-baz="qux"></col>' +
+				'</colgroup>' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>Foo</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equalMarkup(
+			'<figure class="table">' +
+				'<table class="ck-table-resized">' +
+					'<colgroup data-foo="bar">' +
+						'<col style="width:100%;" data-baz="qux">' +
+					'</colgroup>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>Foo</td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>' +

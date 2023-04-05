@@ -190,7 +190,7 @@ export default class MinimapView extends View {
 /**
  * Fired when the minimap view is clicked.
  *
- * @eventName click
+ * @eventName ~MinimapView#click
  * @param percentage The number between 0 and 1 representing a place in the minimap (its height) that was clicked.
  */
 export type MinimapClickEvent = {
@@ -201,7 +201,7 @@ export type MinimapClickEvent = {
 /**
  * Fired when the position tracker is dragged or the minimap is scrolled via mouse wheel.
  *
- * @eventName drag
+ * @eventName ~MinimapView#drag
  * @param movementY The vertical movement of the minimap as a result of dragging or scrolling.
  */
 export type MinimapDragEvent = {

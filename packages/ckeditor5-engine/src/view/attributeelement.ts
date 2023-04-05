@@ -7,10 +7,12 @@
  * @module engine/view/attributeelement
  */
 
-import Element from './element';
+import Element, { type ElementAttributes } from './element';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type DocumentFragment from './documentfragment';
+import type Document from './document';
+import type Node from './node';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;
@@ -25,16 +27,34 @@ const DEFAULT_PRIORITY = 10;
  *
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
- *
- * @extends module:engine/view/element~Element
  */
 export default class AttributeElement extends Element {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
-	public override getFillerOffset: () => number | null;
-	private readonly _priority: number;
-	private readonly _id: string | number | null;
-	private readonly _clonesGroup: Set<AttributeElement> | null;
+	/**
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 *
+	 * @internal
+	 * @readonly
+	 */
+	public _priority: number = DEFAULT_PRIORITY;
+
+	/**
+	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+	 * and then two elements are considered similar if, and only if they have the same `_id`.
+	 *
+	 * @internal
+	 * @readonly
+	 */
+	public _id: string | number | null = null;
+
+	/**
+	 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
+	 * and still exist in the view tree.
+	 *
+	 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 */
+	private readonly _clonesGroup: Set<AttributeElement> | null = null;
 
 	/**
 	 * Creates an attribute element.
@@ -42,57 +62,24 @@ export default class AttributeElement extends Element {
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
 	 * @see module:engine/view/element~Element
 	 * @protected
-	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
-	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into created element.
+	 * @param document The document instance to which this element belongs.
+	 * @param name Node name.
+	 * @param attrs Collection of attributes.
+	 * @param children A list of nodes to be inserted into created element.
 	 */
-	constructor( ...args: ConstructorParameters<typeof Element> ) {
-		super( ...args );
+	constructor(
+		document: Document,
+		name: string,
+		attrs?: ElementAttributes,
+		children?: Node | Iterable<Node>
+	) {
+		super( document, name, attrs, children );
 
-		/**
-		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
-		 *
-		 * @method #getFillerOffset
-		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-		 */
 		this.getFillerOffset = getFillerOffset;
-
-		/**
-		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
-		 *
-		 * @protected
-		 * @member {Number}
-		 */
-		this._priority = DEFAULT_PRIORITY;
-
-		/**
-		 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
-		 * and then two elements are considered similar if, and only if they have the same `_id`.
-		 *
-		 * @protected
-		 * @member {String|Number}
-		 */
-		this._id = null;
-
-		/**
-		 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
-		 * and still exist in the view tree.
-		 *
-		 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
-		 *
-		 * @protected
-		 * @member {Set.<module:engine/view/attributeelement~AttributeElement>|null}
-		 */
-		this._clonesGroup = null;
 	}
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
-	 *
-	 * @readonly
-	 * @type {Number}
 	 */
 	public get priority(): number {
 		return this._priority;
@@ -101,9 +88,6 @@ export default class AttributeElement extends Element {
 	/**
 	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
 	 * and then two elements are considered similar if, and only if they have the same `id`.
-	 *
-	 * @readonly
-	 * @type {String|Number}
 	 */
 	public get id(): string | number | null {
 		return this._id;
@@ -118,7 +102,7 @@ export default class AttributeElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError attribute-element-get-elements-with-same-id-no-id}
 	 * if this element has no `id`.
 	 *
-	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>} Set containing all the attribute elements
+	 * @returns Set containing all the attribute elements
 	 * with the same `id` that were added and not removed from the view tree.
 	 */
 	public getElementsWithSameId(): Set<AttributeElement> {
@@ -154,9 +138,6 @@ export default class AttributeElement extends Element {
 	 * * {@link module:engine/view/downcastwriter~DowncastWriter#unwrap} checks similarity of passed element and processed element to
 	 * decide whether processed element should be unwrapped,
 	 * * etc.
-	 *
-	 * @param {module:engine/view/element~Element} otherElement
-	 * @returns {Boolean}
 	 */
 	public override isSimilar( otherElement: Element ): boolean {
 		// If any element has an `id` set, just compare the ids.
@@ -170,50 +151,26 @@ export default class AttributeElement extends Element {
 	/**
 	 * Clones provided element with priority.
 	 *
-	 * @protected
-	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * @internal
+	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
-	 * @returns {module:engine/view/attributeelement~AttributeElement} Clone of this element.
+	 * @returns Clone of this element.
 	 */
-	public override _clone( deep: boolean = false ): Element {
+	public override _clone( deep: boolean = false ): this {
 		const cloned = super._clone( deep );
 
 		// Clone priority too.
-		( cloned as any )._priority = this._priority;
+		cloned._priority = this._priority;
 
 		// And id too.
-		( cloned as any )._id = this._id;
+		cloned._id = this._id;
 
 		return cloned;
 	}
 }
 
-/**
- * Checks whether this object is of the given.
- *
- *		attributeElement.is( 'attributeElement' ); // -> true
- *		attributeElement.is( 'element' ); // -> true
- *		attributeElement.is( 'node' ); // -> true
- *		attributeElement.is( 'view:attributeElement' ); // -> true
- *		attributeElement.is( 'view:element' ); // -> true
- *		attributeElement.is( 'view:node' ); // -> true
- *
- *		attributeElement.is( 'model:element' ); // -> false
- *		attributeElement.is( 'documentFragment' ); // -> false
- *
- * Assuming that the object being checked is an attribute element, you can also check its
- * {@link module:engine/view/attributeelement~AttributeElement#name name}:
- *
- *		attributeElement.is( 'element', 'b' ); // -> true if this is a bold element
- *		attributeElement.is( 'attributeElement', 'b' ); // -> same as above
- *		text.is( 'element', 'b' ); -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type Type to check.
- * @param {String} [name] Element name.
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 AttributeElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'attributeElement' || type === 'view:attributeElement' ||
@@ -229,9 +186,11 @@ AttributeElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
-// Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
-//
-// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+/**
+ * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+ *
+ * @returns Block filler offset or `null` if block filler is not needed.
+ */
 function getFillerOffset( this: AttributeElement ): number | null {
 	// <b>foo</b> does not need filler.
 	if ( nonUiChildrenCount( this ) ) {
@@ -257,10 +216,9 @@ function getFillerOffset( this: AttributeElement ): number | null {
 	return this.childCount;
 }
 
-// Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
-//
-// @param {module:engine/view/element~Element} element
-// @returns {Number}
+/**
+ * Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
+ */
 function nonUiChildrenCount( element: Element | DocumentFragment ): number {
 	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;
 }

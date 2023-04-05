@@ -163,7 +163,7 @@ describe( 'Delete', () => {
 		} );
 
 		it( 'should not work if the observer is disabled', () => {
-			view.getObserver( DeleteObserver ).isEnabled = false;
+			view.getObserver( DeleteObserver )._isEnabled = false;
 
 			fireBeforeInputDomEvent( domRoot, {
 				inputType: 'deleteContentBackward'
@@ -531,6 +531,12 @@ describe( 'Delete', () => {
 					sinon.assert.calledOnce( keydownSpy );
 				} );
 			} );
+		} );
+
+		it( 'should implement empty #stopObserving() method', () => {
+			expect( () => {
+				view.getObserver( DeleteObserver ).stopObserving();
+			} ).to.not.throw();
 		} );
 	} );
 

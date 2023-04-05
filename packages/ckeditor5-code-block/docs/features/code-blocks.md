@@ -28,7 +28,7 @@ Each code block can be assigned a programming language. The language of the code
 <pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
-It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and HTML):
+It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and HTML):
 
 ```js
 ClassicEditor
@@ -73,14 +73,14 @@ ClassicEditor
 ```
 
 <info-box>
-	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
+	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
 </info-box>
 
 ### Integration with code highlighters
 
 Although live code block highlighting ***is impossible when editing*** in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
 
-The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 
 ## Tips and tweaks
 
@@ -106,11 +106,11 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 {@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indentation inside code blocks in CKEditor 5 rich text editor.}
 
 <info-box>
-	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
+	The indentation created this way can be changed. Use the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
 </info-box>
 
 <info-box>
-	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
+	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
 
 ### Preserving line indentation
@@ -176,7 +176,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	editor.execute( 'codeBlock', { language: 'css' } );
 	```
 
-	When executing the command, you can use languages defined by the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration. The default list of languages is as follows:
+	When executing the command, you can use languages defined by the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages `codeBlock.languages`} configuration. The default list of languages is as follows:
 
 	```js
 	codeBlock.languages: [
@@ -208,8 +208,8 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in the [section about indentation](#changing-line-indentation):
 
-	* The `'indentCodeBlock'` command is enabled when the selection is anchored anywhere in the code block and it allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
-	* The `'outdentCodeBlock'` command is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from these lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
+	* The `'indentCodeBlock'` command is enabled when the selection is anchored anywhere in the code block and it allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
+	* The `'outdentCodeBlock'` command is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from these lines, as configured by {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

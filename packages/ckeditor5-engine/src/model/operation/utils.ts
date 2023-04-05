@@ -151,7 +151,7 @@ export function _setAttribute( range: Range, key: string, value: unknown ): void
 
 /**
  * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~Node nodes}. See
- * {@link module:engine/model/node~NodeSet NodeSet} for details on how normalization is performed.
+ * {@link ~NodeSet NodeSet} for details on how normalization is performed.
  *
  * @internal
  * @param nodes Objects to normalize.

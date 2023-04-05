@@ -12,8 +12,7 @@
 import {
 	Plugin,
 	icons,
-	type Editor,
-	type ToolbarConfig
+	type Editor
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -52,40 +51,70 @@ const { pilcrow } = icons;
  * By default, the button is attached so its right boundary is touching the
  * {@link module:engine/view/editableelement~EditableElement}:
  *
- * 		 __ |
- * 		|  ||  This is a block of content that the
- * 		 ¯¯ |  button is attached to. This is a
- * 		    |  block of content that the button is
- * 		    |  attached to.
+ * ```
+ *  __ |
+ * |  ||  This is a block of content that the
+ *  ¯¯ |  button is attached to. This is a
+ *     |  block of content that the button is
+ *     |  attached to.
+ * ```
  *
  * The position of the button can be adjusted using the CSS `transform` property:
  *
- * 		.ck-block-toolbar-button {
- * 			transform: translateX( -10px );
- * 		}
+ * ```css
+ * .ck-block-toolbar-button {
+ * 	transform: translateX( -10px );
+ * }
+ * ```
  *
- * 		 __   |
- * 		|  |  |  This is a block of content that the
- * 		 ¯¯   |  button is attached to. This is a
- * 		      |  block of content that the button is
- * 		      |  attached to.
+ * ```
+ *  __   |
+ * |  |  |  This is a block of content that the
+ *  ¯¯   |  button is attached to. This is a
+ *       |  block of content that the button is
+ *       |  attached to.
+ * ```
  *
  * **Note**: If you plan to run the editor in a right–to–left (RTL) language, keep in mind the button
  * will be attached to the **right** boundary of the editable area. In that case, make sure the
  * CSS position adjustment works properly by adding the following styles:
  *
- * 		.ck[dir="rtl"] .ck-block-toolbar-button {
- * 			transform: translateX( 10px );
- * 		}
- *
- * @extends module:core/plugin~Plugin
+ * ```css
+ * .ck[dir="rtl"] .ck-block-toolbar-button {
+ * 	transform: translateX( 10px );
+ * }
+ * ```
  */
 export default class BlockToolbar extends Plugin {
+	/**
+	 * The toolbar view.
+	 */
 	public readonly toolbarView: ToolbarView;
+
+	/**
+	 * The balloon panel view, containing the {@link #toolbarView}.
+	 */
 	public readonly panelView: BalloonPanelView;
+
+	/**
+	 * The button view that opens the {@link #toolbarView}.
+	 */
 	public readonly buttonView: BlockButtonView;
 
-	private _resizeObserver: ResizeObserver | null;
+	/**
+	 * An instance of the resize observer that allows to respond to changes in editable's geometry
+	 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
+	 *
+	 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
+	 *
+	 * **Note:** Created in {@link #afterInit}.
+	 */
+	private _resizeObserver: ResizeObserver | null = null;
+
+	/**
+	 * A cached and normalized `config.blockToolbar` object.
+	 */
 	private _blockToolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
 
 	/**
@@ -101,48 +130,10 @@ export default class BlockToolbar extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * A cached and normalized `config.blockToolbar` object.
-		 *
-		 * @type {module:core/editor/editorconfig~EditorConfig#blockToolbar}
-		 * @private
-		 */
 		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) );
-
-		/**
-		 * The toolbar view.
-		 *
-		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
 		this.toolbarView = this._createToolbarView();
-
-		/**
-		 * The balloon panel view, containing the {@link #toolbarView}.
-		 *
-		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
-		 */
 		this.panelView = this._createPanelView();
-
-		/**
-		 * The button view that opens the {@link #toolbarView}.
-		 *
-		 * @type {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
-		 */
 		this.buttonView = this._createButtonView();
-
-		/**
-		 * An instance of the resize observer that allows to respond to changes in editable's geometry
-		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
-		 *
-		 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
-		 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
-		 *
-		 * **Note:** Created in {@link #afterInit}.
-		 *
-		 * @protected
-		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
-		 */
-		this._resizeObserver = null;
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
@@ -196,8 +187,6 @@ export default class BlockToolbar extends Plugin {
 	 * Fills the toolbar with its items based on the configuration.
 	 *
 	 * **Note:** This needs to be done after all plugins are ready.
-	 *
-	 * @inheritDoc
 	 */
 	public afterInit(): void {
 		const factory = this.editor.ui.componentFactory;
@@ -240,11 +229,8 @@ export default class BlockToolbar extends Plugin {
 
 	/**
 	 * Creates the {@link #toolbarView}.
-	 *
-	 * @private
-	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	private _createToolbarView() {
+	private _createToolbarView(): ToolbarView {
 		const t = this.editor.locale.t;
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
@@ -266,11 +252,8 @@ export default class BlockToolbar extends Plugin {
 
 	/**
 	 * Creates the {@link #panelView}.
-	 *
-	 * @private
-	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 	 */
-	private _createPanelView() {
+	private _createPanelView(): BalloonPanelView {
 		const editor = this.editor;
 		const panelView = new BalloonPanelView( editor.locale );
 
@@ -290,11 +273,8 @@ export default class BlockToolbar extends Plugin {
 
 	/**
 	 * Creates the {@link #buttonView}.
-	 *
-	 * @private
-	 * @returns {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 	 */
-	private _createButtonView() {
+	private _createButtonView(): BlockButtonView {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
@@ -345,8 +325,6 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * Shows or hides the button.
 	 * When all the conditions for displaying the button are matched, it shows the button. Hides otherwise.
-	 *
-	 * @private
 	 */
 	private _updateButton() {
 		const editor = this.editor;
@@ -394,8 +372,6 @@ export default class BlockToolbar extends Plugin {
 
 	/**
 	 * Hides the button.
-	 *
-	 * @private
 	 */
 	private _hideButton() {
 		this.buttonView.isVisible = false;
@@ -404,8 +380,6 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * Shows the {@link #toolbarView} attached to the {@link #buttonView}.
 	 * If the toolbar is already visible, then it simply repositions it.
-	 *
-	 * @private
 	 */
 	private _showPanel() {
 		// Usually, the only way to show the toolbar is by pressing the block button. It makes it impossible for
@@ -457,8 +431,7 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * Hides the {@link #toolbarView}.
 	 *
-	 * @private
-	 * @param {Boolean} [focusEditable=false] When `true`, the editable will be focused after hiding the panel.
+	 * @param focusEditable When `true`, the editable will be focused after hiding the panel.
 	 */
 	private _hidePanel( focusEditable?: boolean ) {
 		this.panelView.isVisible = false;
@@ -471,8 +444,7 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * Attaches the {@link #buttonView} to the target block of content.
 	 *
-	 * @protected
-	 * @param {HTMLElement} targetElement Target element.
+	 * @param targetElement Target element.
 	 */
 	private _attachButtonToElement( targetElement: HTMLElement ) {
 		const contentStyles = window.getComputedStyle( targetElement );
@@ -512,8 +484,7 @@ export default class BlockToolbar extends Plugin {
 	 * Gets the {@link #toolbarView} max-width, based on
 	 * editable width plus distance between farthest edge of the {@link #buttonView} and the editable.
 	 *
-	 * @private
-	 * @returns {String} maxWidth A maximum width that toolbar can have, in pixels.
+	 * @returns A maximum width that toolbar can have, in pixels.
 	 */
 	private _getToolbarMaxWidth() {
 		const editableElement = this.editor.ui.view.editable.element!;
@@ -523,44 +494,5 @@ export default class BlockToolbar extends Plugin {
 		const offset = isRTL ? ( buttonRect.left - editableRect.right ) + buttonRect.width : editableRect.left - buttonRect.left;
 
 		return toPx( editableRect.width + offset );
-	}
-}
-
-/**
- * The block toolbar configuration. Used by the {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}
- * feature.
- *
- *		const config = {
- *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'bulletedList', 'numberedList' ]
- *		};
- *
- * You can also use `'|'` to create a separator between groups of items:
- *
- *		const config = {
- *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
- *		};
- *
- * ## Configuring items grouping
- *
- * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
- *
- *		const config = {
- *			blockToolbar: {
- *				items: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ],
- *				shouldNotGroupWhenFull: true
- *			},
- *		};
- *
- * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
- */
- declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
-		blockToolbar?: ToolbarConfig;
-	}
-
-	interface PluginsMap {
-		[ BlockToolbar.pluginName ]: BlockToolbar;
 	}
 }

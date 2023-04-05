@@ -28,7 +28,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  */
 export default class MergeOperation extends Operation {
 	/**
-	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link ~#targetPosition}.
+	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link #targetPosition}.
 	 */
 	public sourcePosition: Position;
 
@@ -51,7 +51,7 @@ export default class MergeOperation extends Operation {
 	 * Creates a merge operation.
 	 *
 	 * @param sourcePosition Position inside the merged element. All nodes from that
-	 * element after that position will be moved to {@link ~#targetPosition}.
+	 * element after that position will be moved to {@link #targetPosition}.
 	 * @param howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param graveyardPosition Position in graveyard to which the merged element will be moved.
@@ -192,7 +192,7 @@ export default class MergeOperation extends Operation {
 	}
 
 	/**
-	 * Creates `MergeOperation` object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `MergeOperation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
@@ -205,9 +205,9 @@ export default class MergeOperation extends Operation {
 		return new this( sourcePosition, json.howMany, targetPosition, graveyardPosition, json.baseVersion );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `MergeOperation( ${ this.baseVersion } ): ` +
-	// @if CK_DEBUG_ENGINE //		`${ this.sourcePosition } -> ${ this.targetPosition }` +
-	// @if CK_DEBUG_ENGINE //		` ( ${ this.howMany } ), ${ this.graveyardPosition }`;
+	// @if CK_DEBUG_ENGINE // 		`${ this.sourcePosition } -> ${ this.targetPosition }` +
+	// @if CK_DEBUG_ENGINE // 		` ( ${ this.howMany } ), ${ this.graveyardPosition }`;
 	// @if CK_DEBUG_ENGINE // }
 }

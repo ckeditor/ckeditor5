@@ -9,8 +9,7 @@
 
 import {
 	Plugin,
-	type MultiCommand,
-	type PluginDependencies
+	type MultiCommand
 } from 'ckeditor5/src/core';
 
 import type {
@@ -28,7 +27,7 @@ import type {
 } from 'ckeditor5/src/engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
-import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
@@ -104,8 +103,8 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete, DocumentListUtils ];
+	public static get requires() {
+		return [ Enter, Delete, DocumentListUtils ] as const;
 	}
 
 	/**
@@ -208,8 +207,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' )!;
-		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' )!;
+		const mergeBackwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemBackward' )!;
+		const mergeForwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemForward' )!;
 
 		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -290,7 +289,7 @@ export default class DocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
-		const enterCommand = commands.get( 'enter' )!;
+		const enterCommand: EnterCommand = commands.get( 'enter' )!;
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo<ViewDocumentEnterEvent>( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -336,7 +335,7 @@ export default class DocumentListEditing extends Plugin {
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
-			const splitCommand = commands.get( 'splitListItemBefore' )!;
+			const splitCommand: DocumentListSplitCommand = commands.get( 'splitListItemBefore' )!;
 
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
@@ -757,7 +756,7 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
  * It allows triggering a re-wrapping of a list item.
  *
  * @internal
- * @eventName postFixer
+ * @eventName ~DocumentListEditing#postFixer
  * @param listHead The head element of a list.
  * @param writer The writer to do changes with.
  * @param seenIds The set of already known IDs.
@@ -783,7 +782,7 @@ export type DocumentListEditingPostFixerEvent = {
  * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
  *
  * @internal
- * @eventName checkAttributes
+ * @eventName ~DocumentListEditing#checkAttributes
  */
 export type DocumentListEditingCheckAttributesEvent = {
 	name: 'checkAttributes' | 'checkAttributes:list' | 'checkAttributes:item';
@@ -793,9 +792,3 @@ export type DocumentListEditingCheckAttributesEvent = {
 	} ];
 	return: boolean;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListEditing.pluginName ]: DocumentListEditing;
-	}
-}
