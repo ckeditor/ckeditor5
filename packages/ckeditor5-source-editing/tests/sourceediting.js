@@ -514,6 +514,22 @@ describe( 'SourceEditing', () => {
 		} );
 	} );
 
+	describe( 'updateEditorData', () => {
+		it( 'should update editor model when called', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
+			plugin.updateEditorData();
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>bar</paragraph>' );
+		} );
+	} );
+
 	describe( 'integration with undo', () => {
 		it( 'should preserve the undo/redo stacks when no changes has been in the source editing mode', () => {
 			editor.model.change( writer => {

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor, ImageResize */
+/* globals window, document, console, ClassicEditor, ImageResize, ListProperties */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-basic' ), {
-		extraPlugins: [ ImageResize ],
+		extraPlugins: [ ImageResize, ListProperties ],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
@@ -35,6 +35,13 @@ ClassicEditor
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
 		},
 		cloudServices: CS_CONFIG
 	} )
