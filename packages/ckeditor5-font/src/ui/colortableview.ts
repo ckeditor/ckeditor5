@@ -18,6 +18,7 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
+	ColorPaletteIcon,
 	type ColorDefinition
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -133,6 +134,26 @@ export default class ColorTableView extends View {
 	public documentColorsGrid: ColorGridView | undefined;
 
 	/**
+	 * The "Save" button view.
+	 */
+	public saveButtonView: ButtonView;
+
+	/**
+	 * The "Cancel" button view.
+	 */
+	public cancelButtonView: ButtonView;
+
+	/**
+	 * The action bar where are "save button" and "cancel button".
+	 */
+	public actionBarView: View;
+
+	/**
+	 * The "Color picker" button view.
+	 */
+	public colorPickerButtonView: ButtonView;
+
+	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
@@ -166,6 +187,13 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
+		this.colorPickerButtonView = new ButtonView();
+
+		const { saveButtonView, cancelButtonView } = this._createActionButtons();
+		this.saveButtonView = saveButtonView;
+		this.cancelButtonView = cancelButtonView;
+
+		this.actionBarView = this._createAtionBarView( { saveButtonView, cancelButtonView } );
 
 		this._focusables = new ViewCollection();
 
@@ -300,6 +328,12 @@ export default class ColorTableView extends View {
 			this.items.add( this.documentColorsGrid );
 			this.focusTracker.add( this.documentColorsGrid.element! );
 			this._focusables.add( this.documentColorsGrid );
+
+			const colorPaletteButton = this._createColorPickerButton();
+
+			this.items.add( colorPaletteButton );
+			this.focusTracker.add( colorPaletteButton.element! );
+			this._focusables.add( colorPaletteButton );
 		}
 	}
 
@@ -317,6 +351,13 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this.colorPickerView );
+		this.items.add( this.actionBarView );
+
+		this.focusTracker.add( this.saveButtonView.element! );
+		this._focusables.add( this.saveButtonView );
+
+		this.focusTracker.add( this.cancelButtonView.element! );
+		this._focusables.add( this.cancelButtonView );
 	}
 
 	/**
@@ -356,6 +397,81 @@ export default class ColorTableView extends View {
 		this._focusables.add( buttonView );
 
 		return buttonView;
+	}
+
+	/**
+	 * Creates bar with "save" and "cancel" buttons in it.
+	 */
+	private _createAtionBarView( { saveButtonView, cancelButtonView }: {
+		saveButtonView: ButtonView;
+		cancelButtonView: ButtonView;
+	} ): View {
+		const actionBarRow = new View();
+		const children = this.createCollection();
+
+		children.add( saveButtonView );
+		children.add( cancelButtonView );
+
+		actionBarRow.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-color-table_action-bar'
+				]
+			},
+			children
+		} );
+
+		return actionBarRow;
+	}
+
+	/**
+	 * Creates "save" and "cancel" buttons.
+	 */
+	private _createActionButtons() {
+		const locale = this.locale;
+		const saveButtonView = new ButtonView( locale );
+		const cancelButtonView = new ButtonView( locale );
+
+		saveButtonView.set( {
+			icon: icons.check,
+			class: 'ck-button-save',
+			type: 'submit'
+		} );
+
+		cancelButtonView.set( {
+			icon: icons.cancel,
+			class: 'ck-button-cancel'
+		} );
+
+		saveButtonView.on( 'execute', () => {
+			this.fire( 'execute', {
+				value: this.selectedColor
+			} );
+		} );
+
+		return {
+			saveButtonView, cancelButtonView
+		};
+	}
+
+	/**
+	 * Creates "color picker" button.
+	 */
+	private _createColorPickerButton() {
+		const children = this.createCollection();
+
+		this.colorPickerButtonView.set( {
+			label: 'Color picker',
+			withText: true,
+			icon: ColorPaletteIcon,
+			class: 'ck-color-table__color-picker'
+		} );
+
+		children.add( this.colorPickerButtonView );
+
+		return this.colorPickerButtonView;
 	}
 
 	/**

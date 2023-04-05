@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorTableView from './../../src/ui/colortableview';
 import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
+import { icons } from 'ckeditor5/src/core';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
@@ -150,7 +151,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 4 );
+			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
 
@@ -158,7 +159,7 @@ describe( 'ColorTableView', () => {
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendGrids();
 			colorTableView.appendGrids();
-			expect( colorTableView.items.length ).to.equal( 4 );
+			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 	} );
 
@@ -172,7 +173,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'adds a color picker to items list', () => {
-			expect( colorTableView.items.length ).to.equal( 5 );
+			expect( colorTableView.items.length ).to.equal( 7 );
 		} );
 
 		it( 'binds picker\'s selected color to the selected color', () => {
@@ -183,7 +184,7 @@ describe( 'ColorTableView', () => {
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendColorPicker();
 			colorTableView.appendColorPicker();
-			expect( colorTableView.items.length ).to.equal( 5 );
+			expect( colorTableView.items.length ).to.equal( 7 );
 		} );
 	} );
 
@@ -265,9 +266,10 @@ describe( 'ColorTableView', () => {
 				colorTableView.focusTracker.isFocused = true;
 				colorTableView.focusTracker.focusedElement = colorTableView.items.get( 0 ).element;
 
-				const spy = sinon.spy( colorTableView.documentColorsGrid, 'focus' );
+				const spy = sinon.spy( colorTableView.colorPickerButtonView, 'focus' );
 
 				colorTableView.keystrokes.press( keyEvtData );
+
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
@@ -300,6 +302,53 @@ describe( 'ColorTableView', () => {
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, sinon.match.any, { value: null } );
+		} );
+	} );
+
+	describe( 'action bar', () => {
+		let actionBar, saveButton, cancelButton;
+
+		beforeEach( () => {
+			colorTableView.appendColorPicker();
+			actionBar = colorTableView.actionBarView;
+			saveButton = colorTableView.saveButtonView;
+			cancelButton = colorTableView.cancelButtonView;
+		} );
+
+		it( 'should have proper class', () => {
+			expect( actionBar.element.classList.contains( 'ck-color-table_action-bar' ) ).to.be.true;
+		} );
+
+		describe( 'save button', () => {
+			it( 'should have proper class', () => {
+				expect( saveButton.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			} );
+
+			it( 'should have proper settings', () => {
+				expect( saveButton.withText ).to.be.false;
+				expect( saveButton.icon ).to.equal( icons.check );
+			} );
+
+			it( 'should execute event with "null" value', () => {
+				const spy = sinon.spy();
+				colorTableView.on( 'execute', spy );
+
+				saveButton.element.dispatchEvent( new Event( 'click' ) );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWith( spy, sinon.match.any, { value: colorTableView.selectedColor } );
+			} );
+		} );
+
+		describe( 'cancel button', () => {
+			it( 'should have proper class', () => {
+				expect( cancelButton.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
+			} );
+
+			it( 'should have proper settings', () => {
+				expect( cancelButton.withText ).to.be.false;
+				expect( cancelButton.icon ).to.equal( icons.cancel );
+			} );
 		} );
 	} );
 
@@ -364,7 +413,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.last;
+				documentColorsGridView = colorTableView.items.get( 3 );
 			} );
 
 			describe( 'model manipulation', () => {
