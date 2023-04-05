@@ -155,7 +155,7 @@ export type ColorTableDropdownView = DropdownView & {
  * @param color
  * @returns A color string.
  */
-export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
+export function convertColor( color: string, outputFormat: ColorPickerFormat ): string {
 	if ( !color ) {
 		return '';
 	}
@@ -181,7 +181,7 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 /**
  * Color formats handled by color converter.
  */
-export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
 
 /**
  * Converts a color string to hex format.
@@ -211,7 +211,7 @@ export function convertToHex( color: string ): string {
  * @param values
  * @returns A color string.
  */
-function formatColorOutput( values: Array<number> | string, format: ColorPickerOutputFormat ): string {
+function formatColorOutput( values: Array<number> | string, format: ColorPickerFormat ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
 		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;

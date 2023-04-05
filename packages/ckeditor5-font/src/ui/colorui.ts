@@ -16,7 +16,7 @@ import {
 	type ColorTableDropdownView,
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR,
-	type ColorPickerOutputFormat
+	type ColorPickerFormat
 } from '../utils';
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
@@ -186,10 +186,10 @@ export default class ColorUI extends Plugin {
 	}
 }
 
-function getOutputFormat( config: undefined | false | ColorPickerConfig ): ColorPickerOutputFormat {
-	if ( !config || !config.outputFormat ) {
+function getOutputFormat( config: undefined | false | ColorPickerConfig ): ColorPickerFormat {
+	if ( !config || !config.format ) {
 		return 'hsl';
 	} else {
-		return config.outputFormat;
+		return config.format;
 	}
 }

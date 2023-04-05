@@ -7,7 +7,7 @@
  * @module font/fontconfig
  */
 
-import type { ColorPickerOutputFormat } from './utils';
+import type { ColorPickerFormat } from './utils';
 import type { ColorOption } from 'ckeditor5/src/ui';
 import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
 
@@ -167,11 +167,11 @@ export interface FontColorConfig {
  * It can be forced to apply colors in the editor in selected format.
  *
  * @default `{
- * 	outputFormat: 'hsl'
+ * 	format: 'hsl'
  * }`
  */
 export type ColorPickerConfig = {
-	outputFormat?: ColorPickerOutputFormat;
+	format?: ColorPickerFormat;
 };
 
 /**

@@ -35,7 +35,7 @@ ClassicEditor
 		fontColor: {
 			columns: 3,
 			colorPicker: {
-				outputFormat: 'rgb'
+				format: 'rgb'
 			}
 		}
 	} )

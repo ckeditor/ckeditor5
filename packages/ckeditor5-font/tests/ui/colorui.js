@@ -226,7 +226,7 @@ describe( 'ColorUI', () => {
 					],
 					testColor: Object.assign( {
 						colorPicker: {
-							outputFormat: 'rgb'
+							format: 'rgb'
 						}
 					}, testColorConfig )
 				} );
