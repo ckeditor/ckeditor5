@@ -278,13 +278,13 @@ interface CallbackMap {
  * Updates a GHS attribute on a specified item.
  * @param callback That receives a map or set as an argument and should modify it (add or remove entries).
  */
-function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
+export function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
 	writer: Writer,
 	item: Item | DocumentSelection,
 	ghsAttributeName: string,
 	subject: T,
 	callback: CallbackMap[T]
-) {
+): void {
 	const oldValue = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 	const newValue: Record<string, any> = {};
 
