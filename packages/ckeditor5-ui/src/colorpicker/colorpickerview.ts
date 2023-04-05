@@ -7,6 +7,9 @@
  * @module ui/colorpicker/colorpickerview
  */
 
+// @todo - this should be part of the UI library.
+import { convertToHex } from '@ckeditor/ckeditor5-font/src/utils';
+
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
@@ -36,6 +39,19 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
+     * An internal representation of a color
+     *
+     * Since the picker uses a hex, we store it in that format.
+	 *
+	 * Since this is unified color format it won't fire a change event if color is changed
+	 * from `#f00` to `#ff0000` (same value, different format).
+     *
+     * @observable
+     * @private
+     */
+	declare public _hexColor: string;
+
+	/**
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
 	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
@@ -45,6 +61,8 @@ export default class ColorPickerView extends View {
 		super( locale );
 
 		this.set( 'color', '' );
+
+		this.set( '_hexColor', '' );
 
 		this.input = this._createInput();
 
@@ -64,8 +82,10 @@ export default class ColorPickerView extends View {
 		}, waitingTime );
 
 		// Sets color in the picker if color was updated.
-		this.on( 'change:color', ( ) => {
+		this.on( 'change:color', () => {
 			this.picker.setAttribute( 'color', this.color );
+
+			this._hexColor = convertColorToCommonHexFormat( this.color );
 		} );
 	}
 
@@ -109,4 +129,21 @@ export default class ColorPickerView extends View {
 
 		return labeledInput;
 	}
+}
+
+/**
+ * Converts any color format to a unified hex format.
+ *
+ * @param inputColor
+ * @returns An unified hex string.
+ */
+function convertColorToCommonHexFormat( inputColor: string ): string {
+	let ret = convertToHex( inputColor );
+
+	if ( ret.length === 4 ) {
+		// Unfold shortcut format.
+		ret = '#' + [ ret[ 1 ], ret[ 1 ], ret[ 2 ], ret[ 2 ], ret[ 3 ], ret[ 3 ] ].join( '' );
+	}
+
+	return ret.toLowerCase();
 }

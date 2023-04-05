@@ -83,4 +83,58 @@ describe( 'ColorPickerView', () => {
 			sinon.assert.calledOnce( observableSpy );
 		} );
 	} );
+
+	describe( '_hexColor property', () => {
+		describe( 'follows the color property and', () => {
+			it( 'reflects a hex value', () => {
+				view.color = '#ff0000';
+
+				expect( view._hexColor ).to.equal( '#ff0000' );
+			} );
+
+			it( 'properly converts rgb format', () => {
+				view.color = 'rgb(0, 255, 0)';
+
+				expect( view._hexColor ).to.equal( '#00ff00' );
+			} );
+
+			it( 'properly converts hsl format', () => {
+				view.color = 'hsl(42, 100%, 52%)';
+
+				expect( view._hexColor ).to.equal( '#ffb60a' );
+			} );
+
+			it( 'unfolds a shortened hex format', () => {
+				view.color = '#00f';
+
+				expect( view._hexColor ).to.equal( '#0000ff' );
+			} );
+
+			it( 'forces hex value in a lowercased format', () => {
+				view.color = '#0000FF';
+
+				expect( view._hexColor ).to.equal( '#0000ff' );
+			} );
+
+			it( 'doesnt trigger multiple changes if changed to a same color in different format', () => {
+				view._hexColor = '#00ff00';
+
+				const observableSpy = sinon.spy();
+
+				view.on( 'change:_hexColor', observableSpy );
+
+				view.color = '#00ff00';
+
+				expect( observableSpy.callCount, 'first attempt' ).to.equal( 0 );
+
+				view.color = '#00FF00';
+
+				expect( observableSpy.callCount, 'second attempt' ).to.equal( 0 );
+
+				view.color = 'rgb(0, 255, 0)';
+
+				expect( observableSpy.callCount, 'third attempt' ).to.equal( 0 );
+			} );
+		} );
+	} );
 } );
