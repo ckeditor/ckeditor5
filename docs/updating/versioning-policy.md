@@ -5,7 +5,7 @@ order: 25
 
 # Versioning policy
 
-CKEditor 5 consists of multiple npm packages (over 50, at the moment of writing this guide). When releasing them, we use the following rules:
+CKEditor 5 consists of multiple npm packages (over 80). When releasing them, we use the following rules:
 
 * We use the `MAJOR.MINOR.PATCH` version identifiers.
 * All packages are always in the same version.

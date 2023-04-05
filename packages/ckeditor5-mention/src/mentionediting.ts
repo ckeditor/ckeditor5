@@ -304,13 +304,3 @@ function checkAndFix( textNode: Item | null, writer: Writer ): boolean {
 
 	return false;
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		mention: MentionCommand;
-	}
-
-	interface PluginsMap {
-		[ MentionEditing.pluginName ]: MentionEditing;
-	}
-}

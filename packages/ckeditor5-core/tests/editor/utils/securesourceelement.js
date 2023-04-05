@@ -18,7 +18,6 @@ describe( 'secureSourceElement()', () => {
 		sourceElement = document.createElement( 'div' );
 		editor = new CustomEditor();
 
-		editor.sourceElement = sourceElement;
 		editor.state = 'ready';
 	} );
 
@@ -28,28 +27,20 @@ describe( 'secureSourceElement()', () => {
 		}
 	} );
 
-	it( 'does not throw if the editor was not initialized using the source element', () => {
-		delete editor.sourceElement;
-
-		expect( () => {
-			secureSourceElement( editor );
-		} ).to.not.throw();
-	} );
-
 	it( 'does not throw if the editor was initialized using the element for the first time', () => {
 		expect( () => {
-			secureSourceElement( editor );
+			secureSourceElement( editor, sourceElement );
 		} ).to.not.throw();
 	} );
 
 	it( 'sets the property after initializing the editor', () => {
-		secureSourceElement( editor );
+		secureSourceElement( editor, sourceElement );
 
 		expect( sourceElement.ckeditorInstance ).to.equal( editor );
 	} );
 
 	it( 'removes the property after destroying the editor', () => {
-		secureSourceElement( editor );
+		secureSourceElement( editor, sourceElement );
 
 		return editor.destroy()
 			.then( () => {
@@ -63,7 +54,7 @@ describe( 'secureSourceElement()', () => {
 		sourceElement.ckeditorInstance = 'foo';
 
 		expectToThrowCKEditorError( () => {
-			secureSourceElement( editor );
+			secureSourceElement( editor, sourceElement );
 		}, /^editor-source-element-already-used/, editor );
 	} );
 } );

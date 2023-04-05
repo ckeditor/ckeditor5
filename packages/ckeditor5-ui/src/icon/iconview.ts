@@ -11,20 +11,75 @@
 
 import View from '../view';
 
-import '../../theme/components/icon/icon.css';
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+
+import '../../theme/components/icon/icon.css';
 
 /**
  * The icon view class.
- *
- * @extends module:ui/view~View
  */
 export default class IconView extends View {
+	/**
+	 * The SVG source of the icon.
+	 *
+	 * @observable
+	 */
 	declare public content: string | undefined;
+
+	/**
+	 * This attribute specifies the boundaries to which the
+	 * icon content should stretch.
+	 *
+	 * @observable
+	 * @default '0 0 20 20'
+	 */
 	declare public viewBox: string;
+
+	/**
+	 * The fill color of the child `path.ck-icon__fill`.
+	 *
+	 * @observable
+	 * @default ''
+	 */
 	declare public fillColor: string;
+
+	/**
+	 * When set true (default), all parts of the icon inherit the fill color from the CSS `color` property of the
+	 * icon's DOM parent.
+	 *
+	 * This effectively makes the icon monochromatic and allows it to change its fill color dynamically, for instance,
+	 * when a {@link module:ui/button/buttonview~ButtonView} displays an icon and it switches between different states
+	 * (pushed, hovered, etc.) the icon will follow along.
+	 *
+	 * **Note**: For the monochromatic icon to render properly, it must be made up of shapes that can be filled
+	 * with color instead of, for instance, paths with strokes. Be sure to use the *outline stroke* tool
+	 * (the name could be different in your vector graphics editor) before exporting your icon. Also, remove any
+	 * excess `fill="..."` attributes that could break the color inheritance.
+	 *
+	 * **Note**: If you want to preserve the original look of your icon and disable dynamic color inheritance,
+	 * set this flag to `false`.
+	 *
+	 * @observable
+	 * @default true
+	 */
 	declare public isColorInherited: boolean;
-	declare public static presentationalAttributeNames: Array<string>;
+
+	/**
+	 * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
+	 * when the icon {@link module:ui/icon/iconview~IconView#content content} is loaded.
+	 *
+	 * See the [specification](https://www.w3.org/TR/SVG/styling.html#TermPresentationAttribute) to learn more.
+	 */
+	private static presentationalAttributeNames: Array<string> = [
+		'alignment-baseline', 'baseline-shift', 'clip-path', 'clip-rule', 'color', 'color-interpolation',
+		'color-interpolation-filters', 'color-rendering', 'cursor', 'direction', 'display', 'dominant-baseline', 'fill', 'fill-opacity',
+		'fill-rule', 'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style',
+		'font-variant', 'font-weight', 'image-rendering', 'letter-spacing', 'lighting-color', 'marker-end', 'marker-mid', 'marker-start',
+		'mask', 'opacity', 'overflow', 'paint-order', 'pointer-events', 'shape-rendering', 'stop-color', 'stop-opacity', 'stroke',
+		'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width',
+		'text-anchor', 'text-decoration', 'text-overflow', 'text-rendering', 'transform', 'unicode-bidi', 'vector-effect',
+		'visibility', 'white-space', 'word-spacing', 'writing-mode'
+	];
 
 	/**
 	 * @inheritDoc
@@ -34,53 +89,9 @@ export default class IconView extends View {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The SVG source of the icon.
-		 *
-		 * @observable
-		 * @member {String} #content
-		 */
 		this.set( 'content', '' );
-
-		/**
-		 * This attribute specifies the boundaries to which the
-		 * icon content should stretch.
-		 *
-		 * @observable
-		 * @default '0 0 20 20'
-		 * @member {String} #viewBox
-		 */
 		this.set( 'viewBox', '0 0 20 20' );
-
-		/**
-		 * The fill color of the child `path.ck-icon__fill`.
-		 *
-		 * @observable
-		 * @default ''
-		 * @member {String} #fillColor
-		 */
 		this.set( 'fillColor', '' );
-
-		/**
-		 * When set true (default), all parts of the icon inherit the fill color from the CSS `color` property of the
-		 * icon's DOM parent.
-		 *
-		 * This effectively makes the icon monochromatic and allows it to change its fill color dynamically, for instance,
-		 * when a {@link module:ui/button/buttonview~ButtonView} displays an icon and it switches between different states
-		 * (pushed, hovered, etc.) the icon will follow along.
-		 *
-		 * **Note**: For the monochromatic icon to render properly, it must be made up of shapes that can be filled
-		 * with color instead of, for instance, paths with strokes. Be sure to use the *outline stroke* tool
-		 * (the name could be different in your vector graphics editor) before exporting your icon. Also, remove any
-		 * excess `fill="..."` attributes that could break the color inheritance.
-		 *
-		 * **Note**: If you want to preserve the original look of your icon and disable dynamic color inheritance,
-		 * set this flag to `false`.
-		 *
-		 * @observable
-		 * @default true
-		 * @member {Boolean} #isColorInherited
-		 */
 		this.set( 'isColorInherited', true );
 
 		this.setTemplate( {
@@ -127,8 +138,6 @@ export default class IconView extends View {
 
 	/**
 	 * Updates the {@link #element} with the value of {@link #content}.
-	 *
-	 * @private
 	 */
 	private _updateXMLContent() {
 		if ( this.content ) {
@@ -160,8 +169,6 @@ export default class IconView extends View {
 
 	/**
 	 * Fills all child `path.ck-icon__fill` with the `#fillColor`.
-	 *
-	 * @private
 	 */
 	private _colorFillPaths() {
 		if ( this.fillColor ) {
@@ -171,23 +178,3 @@ export default class IconView extends View {
 		}
 	}
 }
-
-/**
- * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
- * when the icon {@link module:ui/icon/iconview~IconView#content content} is loaded.
- *
- * See the [specification](https://www.w3.org/TR/SVG/styling.html#TermPresentationAttribute) to learn more.
- *
- * @protected
- * @member {Array.<String>} module:ui/icon/iconview~IconView.presentationalAttributeNames
- */
-IconView.presentationalAttributeNames = [
-	'alignment-baseline', 'baseline-shift', 'clip-path', 'clip-rule', 'color', 'color-interpolation',
-	'color-interpolation-filters', 'color-rendering', 'cursor', 'direction', 'display', 'dominant-baseline', 'fill', 'fill-opacity',
-	'fill-rule', 'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style',
-	'font-variant', 'font-weight', 'image-rendering', 'letter-spacing', 'lighting-color', 'marker-end', 'marker-mid', 'marker-start',
-	'mask', 'opacity', 'overflow', 'paint-order', 'pointer-events', 'shape-rendering', 'stop-color', 'stop-opacity', 'stroke',
-	'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width',
-	'text-anchor', 'text-decoration', 'text-overflow', 'text-rendering', 'transform', 'unicode-bidi', 'vector-effect',
-	'visibility', 'white-space', 'word-spacing', 'writing-mode'
-];

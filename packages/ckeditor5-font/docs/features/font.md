@@ -33,7 +33,7 @@ The plugin enables the following features in the rich-text editor:
 
 ## Configuring the font family feature
 
-It is possible to configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
+It is possible to configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
 
 Use the special `'default'` keyword to use the default font family defined in the web page styles. It removes any custom font family.
 
@@ -61,7 +61,7 @@ ClassicEditor
 
 ### Accepting all font names
 
-By default, all `font-family` values that are not specified in the `config.fontFamily.options` are stripped. You can enable support for all font names by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} option.
+By default, all `font-family` values that are not specified in the `config.fontFamily.options` are stripped. You can enable support for all font names by using the {@link module:font/fontconfig~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} option.
 
 ```js
 ClassicEditor
@@ -82,7 +82,7 @@ ClassicEditor
 
 ## Configuring the font size feature
 
-It is possible to configure which font size options are supported by the WYSIWYG editor. Use the {@link module:font/fontsize~FontSizeConfig#options `config.fontSize.options`} configuration option to do so.
+It is possible to configure which font size options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontSizeConfig#options `config.fontSize.options`} configuration option to do so.
 
 Use the special `'default'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
 
@@ -185,7 +185,7 @@ ClassicEditor
 
 ### Accepting all font sizes
 
-By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
+By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontconfig~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
 ```js
 ClassicEditor
@@ -222,7 +222,7 @@ Check out the WYSIWYG editor below with both features customized using the edito
 
 ### Specifying available colors
 
-It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontcolor~FontColorConfig#colors `config.fontColor.colors`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors `config.fontBackgroundColor.colors`} configuration options to do so.
+It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontconfig~FontColorConfig#colors `config.fontColor.colors`} and {@link module:font/fontconfig~FontColorConfig#colors `config.fontBackgroundColor.colors`} configuration options to do so.
 
 ```js
 ClassicEditor
@@ -290,7 +290,7 @@ ClassicEditor
 
 ### Changing the geometry of the color grid
 
-You can configure the number of columns in the color dropdown by setting the {@link module:font/fontcolor~FontColorConfig#columns `config.fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `config.fontBackgroundColor.columns`} configuration options.
+You can configure the number of columns in the color dropdown by setting the {@link module:font/fontconfig~FontColorConfig#columns `config.fontColor.columns`} and {@link module:font/fontconfig~FontColorConfig#columns `config.fontBackgroundColor.columns`} configuration options.
 
 Usually, you will want to use this option when changing the number of [available colors](#specifying-available-colors).
 
@@ -325,7 +325,7 @@ ClassicEditor
 
 The font and font background color dropdowns contain the "Document colors" section. It lists the colors already used in the document for the users to be able to easily reuse them (for consistency purposes).
 
-By default, the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using the {@link module:font/fontcolor~FontColorConfig#documentColors `config.fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `config.fontBackgroundColor.documentColors`} options.
+By default, the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using the {@link module:font/fontconfig~FontColorConfig#documentColors `config.fontColor.documentColors`} or {@link module:font/fontconfig~FontColorConfig#documentColors `config.fontBackgroundColor.documentColors`} options.
 
 ```js
 ClassicEditor
@@ -416,7 +416,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers the following com
 * The `'fontFamily'` dropdown.
 * The {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand `'fontFamily'`} command.
 
-	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `config.fontFamily.options`} configuration option.
+	The number of options and their names correspond to the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option.
 
 	You can change the font family of the current selection by executing the command with a desired value:
 
@@ -462,7 +462,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 * The `'fontSize'` dropdown.
 * The {@link module:font/fontsize/fontsizecommand~FontSizeCommand `'fontSize'`} command.
 
-	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `config.fontSize.options`} configuration option.
+	The number of options and their names correspond to the {@link module:font/fontconfig~FontSizeConfig#options `config.fontSize.options`} configuration option.
 
 	You can change the font size of the current selection by executing the command with a desired value:
 
@@ -522,7 +522,7 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 
 The {@link module:font/font~Font} plugin provides basic support for the deprecated `<font>` tag.
 
-While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
+While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable the {@link module:font/fontconfig~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontconfig~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
 
 Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
 

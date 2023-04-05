@@ -32,14 +32,41 @@
 	</div>
 </div>
 
+<form id="config">
+	<label for="viewportOffset">viewportOffset</label>
+	<input type="number" id="viewportOffset" step="10" value="0" />
+	<br />
+	<br />
+	<label for="ancestorOffset">ancestorOffset</label>
+	<input type="number" id="ancestorOffset" step="10" value="0" />
+	<br />
+	<br />
+	<label for="alignToTop">alignToTop</label>
+	<input type="checkbox" id="alignToTop" />
+</form>
+
 <style>
 	body {
-		height: 2000px;
+		height: 5000px;
 		width: 2000px;
 	}
 
 	body > .test-box {
 		position: absolute;
+	}
+
+	#config {
+		padding: 20px;
+		background: #fff;
+		border: 1px solid #ddd;
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		opacity: .7;
+	}
+
+	#config input {
+		width: 40px;
 	}
 
 	.test-box {

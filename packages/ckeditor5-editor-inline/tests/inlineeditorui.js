@@ -178,7 +178,7 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
-			it( 'sets placeholder from editor.config.placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return VirtualInlineTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
@@ -193,38 +193,16 @@ describe( 'InlineEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from the "placeholder" attribute of a passed <textarea>', () => {
-				const element = document.createElement( 'textarea' );
-
-				element.setAttribute( 'placeholder', 'placeholder-text' );
-
+			it( 'sets placeholder from editor.config.placeholder - object', () => {
 				return VirtualInlineTestEditor
-					.create( element, {
-						extraPlugins: [ Paragraph ]
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
+						placeholder: { main: 'placeholder-text' }
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'uses editor.config.placeholder rather than the "placeholder" attribute of a passed <textarea>', () => {
-				const element = document.createElement( 'textarea' );
-
-				element.setAttribute( 'placeholder', 'placeholder-text' );
-
-				return VirtualInlineTestEditor
-					.create( element, {
-						placeholder: 'config takes precedence',
-						extraPlugins: [ Paragraph ]
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
 
 						return newEditor.destroy();
 					} );

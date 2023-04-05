@@ -9,6 +9,9 @@
 
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
+import type ViewCollection from '../../viewcollection';
+import type Button from '../../button/button';
+import type DropdownButton from './dropdownbutton';
 
 import {
 	KeystrokeHandler,
@@ -20,51 +23,128 @@ import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
 import '../../../theme/components/dropdown/splitbutton.css';
 
-import type ViewCollection from '../../viewcollection';
-import type Button from '../../button/button';
-import type DropdownButton from './dropdownbutton';
-
 /**
  * The split button view class.
  *
- *		const view = new SplitButtonView();
+ * ```ts
+ * const view = new SplitButtonView();
  *
- *		view.set( {
- *			label: 'A button',
- *			keystroke: 'Ctrl+B',
- *			tooltip: true
- *		} );
+ * view.set( {
+ * 	label: 'A button',
+ * 	keystroke: 'Ctrl+B',
+ * 	tooltip: true
+ * } );
  *
- *		view.render();
+ * view.render();
  *
- *		document.body.append( view.element );
+ * document.body.append( view.element );
+ * ```
  *
  * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
- *
- * @implements module:ui/dropdown/button/dropdownbutton~DropdownButton
- * @extends module:ui/view~View
  */
-export default class SplitButtonView extends View implements DropdownButton {
+export default class SplitButtonView extends View<HTMLDivElement> implements DropdownButton {
+	/**
+	 * Collection of the child views inside of the split button {@link #element}.
+	 */
 	public readonly children: ViewCollection;
+
+	/**
+	 * A main button of split button.
+	 */
 	public readonly actionView: ButtonView;
+
+	/**
+	 * A secondary button of split button that opens dropdown.
+	 */
 	public readonly arrowView: ButtonView;
+
+	/**
+	 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
+	 * keystrokes of the split button:
+	 *
+	 * * <kbd>▶</kbd> moves focus to arrow view when action view is focused,
+	 * * <kbd>◀</kbd> moves focus to action view when arrow view is focused.
+	 */
 	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * Tracks information about DOM focus in the dropdown.
+	 */
 	public readonly focusTracker: FocusTracker;
 
+	/**
+	 * @inheritDoc
+	 */
 	declare public label: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public keystroke: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tooltip: Button[ 'tooltip' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tooltipPosition: Button[ 'tooltipPosition' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public type: Button[ 'type' ];
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isOn: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isEnabled: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public isToggleable: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public withText: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public withKeystroke: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public icon: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public tabindex: number;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public class: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	declare public labelStyle: string | undefined;
 
 	/**
@@ -92,48 +172,10 @@ export default class SplitButtonView extends View implements DropdownButton {
 		this.set( 'type', 'button' );
 		this.set( 'withText', false );
 
-		/**
-		 * Collection of the child views inside of the split button {@link #element}.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.children = this.createCollection();
-
-		/**
-		 * A main button of split button.
-		 *
-		 * @readonly
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.actionView = this._createActionView();
-
-		/**
-		 * A secondary button of split button that opens dropdown.
-		 *
-		 * @readonly
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
 		this.arrowView = this._createArrowView();
-
-		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
-		 * keystrokes of the split button:
-		 *
-		 * * <kbd>▶</kbd> moves focus to arrow view when action view is focused,
-		 * * <kbd>◀</kbd> moves focus to action view when arrow view is focused.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * Tracks information about DOM focus in the dropdown.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
 		this.focusTracker = new FocusTracker();
 
 		this.setTemplate( {
@@ -197,7 +239,7 @@ export default class SplitButtonView extends View implements DropdownButton {
 	}
 
 	/**
-	 * Focuses the {@link #actionView#element} of the action part of split button.
+	 * Focuses the {@link module:ui/button/buttonview~ButtonView#element} of the action part of split button.
 	 */
 	public focus(): void {
 		this.actionView.focus();
@@ -206,9 +248,6 @@ export default class SplitButtonView extends View implements DropdownButton {
 	/**
 	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #actionView} and binds it with main split button
 	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	private _createActionView() {
 		const actionView = new ButtonView();
@@ -241,9 +280,6 @@ export default class SplitButtonView extends View implements DropdownButton {
 	/**
 	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #arrowView} and binds it with main split button
 	 * attributes.
-	 *
-	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	private _createArrowView() {
 		const arrowView = new ButtonView();

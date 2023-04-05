@@ -45,49 +45,49 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * Keep in mind that the element will be inserted only if it is allowed
 	 * by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToElement( {
-	 *			view: 'p',
-	 *			model: 'paragraph'
-	 *		} );
+	 * ```ts
+	 * editor.conversion.for( 'upcast' ).elementToElement( {
+	 * 	view: 'p',
+	 * 	model: 'paragraph'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToElement( {
-	 *			view: 'p',
-	 *			model: 'paragraph',
-	 *			converterPriority: 'high'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToElement( {
+	 * 	view: 'p',
+	 * 	model: 'paragraph',
+	 * 	converterPriority: 'high'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToElement( {
-	 *			view: {
-	 *				name: 'p',
-	 *				classes: 'fancy'
-	 *			},
-	 *			model: 'fancyParagraph'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToElement( {
+	 * 	view: {
+	 * 		name: 'p',
+	 * 		classes: 'fancy'
+	 * 	},
+	 * 	model: 'fancyParagraph'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToElement( {
-	 * 			view: {
-	 *				name: 'p',
-	 *				classes: 'heading'
-	 * 			},
-	 * 			model: ( viewElement, conversionApi ) => {
-	 * 				const modelWriter = conversionApi.writer;
+	 * editor.conversion.for( 'upcast' ).elementToElement( {
+	 * 	view: {
+	 * 		name: 'p',
+	 * 		classes: 'heading'
+	 * 	},
+	 * 	model: ( viewElement, conversionApi ) => {
+	 * 		const modelWriter = conversionApi.writer;
 	 *
-	 * 				return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
-	 * 			}
-	 * 		} );
+	 * 		return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+	 * 	}
+	 * } );
+	 * ```
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @method #elementToElement
-	 * @param {Object} config Conversion configuration.
-	 * @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
-	 * set, the converter will fire for every view element.
-	 * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element instance or a
-	 * function that takes a view element and {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi upcast conversion API}
+	 * @param config Conversion configuration.
+	 * @param config.view Pattern matching all view elements which should be converted. If not set, the converter
+	 * will fire for every view element.
+	 * @param config.model Name of the model element, a model element instance or a function that takes a view element
+	 * and {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi upcast conversion API}
 	 * and returns a model element. The model element will be inserted in the model.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param config.converterPriority Converter priority.
 	 */
 	public elementToElement( config: {
 		view: MatcherPattern;
@@ -105,7 +105,9 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 *
 	 * This helper is meant to set a model attribute on all the elements that are inside the converted element:
 	 *
-	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 * ```
+	 * <strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 * ```
 	 *
 	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
@@ -113,78 +115,78 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 *
 	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
-	 *			view: 'strong',
-	 *			model: 'bold'
-	 *		} );
+	 * ```ts
+	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 * 	view: 'strong',
+	 * 	model: 'bold'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
-	 *			view: 'strong',
-	 *			model: 'bold',
-	 *			converterPriority: 'high'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 * 	view: 'strong',
+	 * 	model: 'bold',
+	 * 	converterPriority: 'high'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
-	 *			view: {
-	 *				name: 'span',
-	 *				classes: 'bold'
-	 *			},
-	 *			model: 'bold'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 * 	view: {
+	 * 		name: 'span',
+	 * 		classes: 'bold'
+	 * 	},
+	 * 	model: 'bold'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
-	 *			view: {
-	 *				name: 'span',
-	 *				classes: [ 'styled', 'styled-dark' ]
-	 *			},
-	 *			model: {
-	 *				key: 'styled',
-	 *				value: 'dark'
-	 *			}
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 * 	view: {
+	 * 		name: 'span',
+	 * 		classes: [ 'styled', 'styled-dark' ]
+	 * 	},
+	 * 	model: {
+	 * 		key: 'styled',
+	 * 		value: 'dark'
+	 * 	}
+	 * } );
 	 *
-	 * 		editor.conversion.for( 'upcast' ).elementToAttribute( {
-	 *			view: {
-	 *				name: 'span',
-	 *				styles: {
-	 *					'font-size': /[\s\S]+/
-	 *				}
-	 *			},
-	 *			model: {
-	 *				key: 'fontSize',
-	 *				value: ( viewElement, conversionApi ) => {
-	 *					const fontSize = viewElement.getStyle( 'font-size' );
-	 *					const value = fontSize.substr( 0, fontSize.length - 2 );
+	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 * 	view: {
+	 * 		name: 'span',
+	 * 		styles: {
+	 * 			'font-size': /[\s\S]+/
+	 * 		}
+	 * 	},
+	 * 	model: {
+	 * 		key: 'fontSize',
+	 * 		value: ( viewElement, conversionApi ) => {
+	 * 			const fontSize = viewElement.getStyle( 'font-size' );
+	 * 			const value = fontSize.substr( 0, fontSize.length - 2 );
 	 *
-	 *					if ( value <= 10 ) {
-	 *						return 'small';
-	 *					} else if ( value > 12 ) {
-	 *						return 'big';
-	 *					}
+	 * 			if ( value <= 10 ) {
+	 * 				return 'small';
+	 * 			} else if ( value > 12 ) {
+	 * 				return 'big';
+	 * 			}
 	 *
-	 *					return null;
-	 *				}
-	 *			}
-	 *		} );
+	 * 			return null;
+	 * 		}
+	 * 	}
+	 * } );
+	 * ```
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @method #elementToAttribute
-	 * @param {Object} config Conversion configuration.
-	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
-	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
+	 * @param config Conversion configuration.
+	 * @param config.view Pattern matching all view elements which should be converted.
+	 * @param config.model Model attribute key or an object with `key` and `value` properties, describing
 	 * the model attribute. `value` property may be set as a function that takes a view element and
 	 * {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi upcast conversion API} and returns the value.
 	 * If `String` is given, the model attribute value will be set to `true`.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param config.converterPriority Converter priority. Defaults to `low`.
 	 */
 	public elementToAttribute( config: {
 		view: MatcherPattern;
 		model: string | {
 			key: string;
-			value: unknown;
+			value?: unknown;
 		};
 		converterPriority?: PriorityString;
 	} ): this {
@@ -200,122 +202,128 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
 	 * is set only on the corresponding model node:
 	 *
-	 *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
+	 * ```
+	 * <div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
+	 * ```
 	 *
 	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
 	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute} which sets attributes for
 	 * all the children in the model:
 	 *
-	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 * ```
+	 * <strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 * ```
 	 *
 	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
 	 *
 	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: 'src',
-	 *			model: 'source'
-	 *		} );
+	 * ```ts
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: 'src',
+	 * 	model: 'source'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: { key: 'src' },
-	 *			model: 'source'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: { key: 'src' },
+	 * 	model: 'source'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: { key: 'src' },
-	 *			model: 'source',
-	 *			converterPriority: 'normal'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: { key: 'src' },
+	 * 	model: 'source',
+	 * 	converterPriority: 'normal'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: {
-	 *				key: 'data-style',
-	 *				value: /[\s\S]+/
-	 *			},
-	 *			model: 'styled'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: {
+	 * 		key: 'data-style',
+	 * 		value: /[\s\S]+/
+	 * 	},
+	 * 	model: 'styled'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: {
-	 *				name: 'img',
-	 *				key: 'class',
-	 *				value: 'styled-dark'
-	 *			},
-	 *			model: {
-	 *				key: 'styled',
-	 *				value: 'dark'
-	 *			}
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: {
+	 * 		name: 'img',
+	 * 		key: 'class',
+	 * 		value: 'styled-dark'
+	 * 	},
+	 * 	model: {
+	 * 		key: 'styled',
+	 * 		value: 'dark'
+	 * 	}
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: {
-	 *				key: 'class',
-	 *				value: /styled-[\S]+/
-	 *			},
-	 *			model: {
-	 *				key: 'styled'
-	 *				value: ( viewElement, conversionApi ) => {
-	 *					const regexp = /styled-([\S]+)/;
-	 *					const match = viewElement.getAttribute( 'class' ).match( regexp );
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: {
+	 * 		key: 'class',
+	 * 		value: /styled-[\S]+/
+	 * 	},
+	 * 	model: {
+	 * 		key: 'styled'
+	 * 		value: ( viewElement, conversionApi ) => {
+	 * 			const regexp = /styled-([\S]+)/;
+	 * 			const match = viewElement.getAttribute( 'class' ).match( regexp );
 	 *
-	 *					return match[ 1 ];
-	 *				}
-	 *			}
-	 *		} );
+	 * 			return match[ 1 ];
+	 * 		}
+	 * 	}
+	 * } );
+	 * ```
 	 *
 	 * Converting styles works a bit differently as it requires `view.styles` to be an object and by default
 	 * a model attribute will be set to `true` by such a converter. You can set the model attribute to any value by providing the `value`
 	 * callback that returns the desired value.
 	 *
-	 *		// Default conversion of font-weight style will result in setting bold attribute to true.
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: {
-	 *				styles: {
-	 *					'font-weight': 'bold'
-	 *				}
-	 *			},
-	 *			model: 'bold'
-	 *		} );
+	 * ```ts
+	 * // Default conversion of font-weight style will result in setting bold attribute to true.
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: {
+	 * 		styles: {
+	 * 			'font-weight': 'bold'
+	 * 		}
+	 * 	},
+	 * 	model: 'bold'
+	 * } );
 	 *
-	 *		// This converter will pass any style value to the `lineHeight` model attribute.
-	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-	 *			view: {
-	 *				styles: {
-	 *					'line-height': /[\s\S]+/
-	 *				}
-	 *			},
-	 *			model: {
-	 *				key: 'lineHeight',
-	 *				value: ( viewElement, conversionApi ) => viewElement.getStyle( 'line-height' )
-	 *			}
-	 *		} );
+	 * // This converter will pass any style value to the `lineHeight` model attribute.
+	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 * 	view: {
+	 * 		styles: {
+	 * 			'line-height': /[\s\S]+/
+	 * 		}
+	 * 	},
+	 * 	model: {
+	 * 		key: 'lineHeight',
+	 * 		value: ( viewElement, conversionApi ) => viewElement.getStyle( 'line-height' )
+	 * 	}
+	 * } );
+	 * ```
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @method #attributeToAttribute
-	 * @param {Object} config Conversion configuration.
-	 * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
+	 * @param config Conversion configuration.
+	 * @param config.view Specifies which view attribute will be converted. If a `String` is passed,
 	 * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
 	 * specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
 	 * property specifying a view element name from/on which the attribute should be converted. `value` can be given as a `String`,
 	 * a `RegExp` or a function callback, that takes view attribute value as the only parameter and returns `Boolean`.
-	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
+	 * @param config.model Model attribute key or an object with `key` and `value` properties, describing
 	 * the model attribute. `value` property may be set as a function that takes a view element and
 	 * {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi upcast conversion API} and returns the value.
 	 * If `String` is given, the model attribute value will be same as view attribute value.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param config.converterPriority Converter priority. Defaults to `low`.
 	 */
 	public attributeToAttribute( config: {
 		view: string | {
 			key: string;
-			value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
+			value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
 			name?: string;
 		} | {
-			name?: string;
+			name?: string | RegExp;
 			styles?: PropertyPatterns;
 			classes?: ClassPatterns;
 			attributes?: PropertyPatterns;
@@ -323,6 +331,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		model: string | {
 			key: string;
 			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+			name?: string;
 		};
 		converterPriority?: PriorityString;
 	} ): this {
@@ -343,42 +352,42 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 *
 	 * In most of the cases, the {@link #dataToMarker} should be used instead.
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
-	 *			view: 'marker-search',
-	 *			model: 'search'
-	 *		} );
+	 * ```ts
+	 * editor.conversion.for( 'upcast' ).elementToMarker( {
+	 * 	view: 'marker-search',
+	 * 	model: 'search'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
-	 *			view: 'marker-search',
-	 *			model: 'search',
-	 *			converterPriority: 'high'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToMarker( {
+	 * 	view: 'marker-search',
+	 * 	model: 'search',
+	 * 	converterPriority: 'high'
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
-	 *			view: 'marker-search',
-	 *			model: ( viewElement, conversionApi ) => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToMarker( {
+	 * 	view: 'marker-search',
+	 * 	model: ( viewElement, conversionApi ) => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
+	 * } );
 	 *
-	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
-	 *			view: {
-	 *				name: 'span',
-	 *				attributes: {
-	 *					'data-marker': 'search'
-	 *				}
-	 *			},
-	 *			model: 'search'
-	 *		} );
+	 * editor.conversion.for( 'upcast' ).elementToMarker( {
+	 * 	view: {
+	 * 		name: 'span',
+	 * 		attributes: {
+	 * 			'data-marker': 'search'
+	 * 		}
+	 * 	},
+	 * 	model: 'search'
+	 * } );
+	 * ```
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @method #elementToMarker
-	 * @param {Object} config Conversion configuration.
-	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
-	 * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
+	 * @param config Conversion configuration.
+	 * @param config.view Pattern matching all view elements which should be converted.
+	 * @param config.model Name of the model marker, or a function that takes a view element and returns
 	 * a model marker name.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param config.converterPriority Converter priority.
 	 */
 	public elementToMarker( config: {
 		view: MatcherPattern;
@@ -408,52 +417,56 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 *
 	 * Basic usage:
 	 *
-	 *		// Using the default conversion.
-	 *		// In this case, all markers from the `comment` group will be converted.
-	 *		// The conversion will look for `<comment-start>` and `<comment-end>` tags and
-	 *		// `data-comment-start-before`, `data-comment-start-after`,
-	 *		// `data-comment-end-before` and `data-comment-end-after` attributes.
-	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
-	 *			view: 'comment'
-	 *		} );
+	 * ```ts
+	 * // Using the default conversion.
+	 * // In this case, all markers from the `comment` group will be converted.
+	 * // The conversion will look for `<comment-start>` and `<comment-end>` tags and
+	 * // `data-comment-start-before`, `data-comment-start-after`,
+	 * // `data-comment-end-before` and `data-comment-end-after` attributes.
+	 * editor.conversion.for( 'upcast' ).dataToMarker( {
+	 * 	view: 'comment'
+	 * } );
+	 * ```
 	 *
 	 * An example of a model that may be generated by this conversion:
 	 *
-	 *		// View:
-	 *		<p>Foo<comment-start name="commentId:uid"></comment-start>bar</p>
-	 *		<figure data-comment-end-after="commentId:uid" class="image"><img src="abc.jpg" /></figure>
+	 * ```
+	 * // View:
+	 * <p>Foo<comment-start name="commentId:uid"></comment-start>bar</p>
+	 * <figure data-comment-end-after="commentId:uid" class="image"><img src="abc.jpg" /></figure>
 	 *
-	 *		// Model:
-	 *		<paragraph>Foo[bar</paragraph>
-	 *		<imageBlock src="abc.jpg"></imageBlock>]
+	 * // Model:
+	 * <paragraph>Foo[bar</paragraph>
+	 * <imageBlock src="abc.jpg"></imageBlock>]
+	 * ```
 	 *
 	 * Where `[]` are boundaries of a marker that will receive the `comment:commentId:uid` name.
 	 *
 	 * Other examples of usage:
 	 *
-	 *		// Using a custom function which is the same as the default conversion:
-	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
-	 *			view: 'comment',
-	 *			model: ( name, conversionApi ) => 'comment:' + name,
-	 *		} );
+	 * ```ts
+	 * // Using a custom function which is the same as the default conversion:
+	 * editor.conversion.for( 'upcast' ).dataToMarker( {
+	 * 	view: 'comment',
+	 * 	model: ( name, conversionApi ) => 'comment:' + name,
+	 * } );
 	 *
-	 *		// Using the converter priority:
-	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
-	 *			view: 'comment',
-	 *			model: ( name, conversionApi ) => 'comment:' + name,
-	 *			converterPriority: 'high'
-	 *		} );
+	 * // Using the converter priority:
+	 * editor.conversion.for( 'upcast' ).dataToMarker( {
+	 * 	view: 'comment',
+	 * 	model: ( name, conversionApi ) => 'comment:' + name,
+	 * 	converterPriority: 'high'
+	 * } );
+	 * ```
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @method #dataToMarker
-	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.view The marker group name to convert.
-	 * @param {Function} [config.model] A function that takes the `name` part from the view element or attribute and
+	 * @param config Conversion configuration.
+	 * @param config.view The marker group name to convert.
+	 * @param config.model A function that takes the `name` part from the view element or attribute and
 	 * {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi upcast conversion API} and returns the marker name.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param config.converterPriority Converter priority.
 	 */
 	public dataToMarker( config: {
 		view: string;
@@ -475,7 +488,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
  * When a view element is being converted to the model but it does not have converter specified, that view element
  * will be converted to {@link module:engine/model/documentfragment~DocumentFragment model document fragment} and returned.
  *
- * @returns {Function} Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
+ * @returns Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
  * {@link module:engine/view/element~Element elements} that returns
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
  */
@@ -498,7 +511,7 @@ export function convertToModelFragment() {
 /**
  * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
  *
- * @returns {Function} {@link module:engine/view/text~Text View text} converter.
+ * @returns {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
 	return (
@@ -557,11 +570,13 @@ export function convertText() {
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
  * conversion mechanism, the callback should be set directly on view document.
  *
- *		view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
+ * ```ts
+ * view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
+ * ```
  *
- * @param {module:engine/model/model~Model} model Data model.
- * @param {module:engine/conversion/mapper~Mapper} mapper Conversion mapper.
- * @returns {Function} {@link module:engine/view/document~Document#event:selectionChange} callback function.
+ * @param model Data model.
+ * @param mapper Conversion mapper.
+ * @returns {@link module:engine/view/document~Document#event:selectionChange} callback function.
  */
 export function convertSelectionChange( model: Model, mapper: Mapper ) {
 	return (
@@ -586,17 +601,19 @@ export function convertSelectionChange( model: Model, mapper: Mapper ) {
 	};
 }
 
-// View element to model element conversion helper.
-//
-// See {@link ~UpcastHelpers#elementToElement `.elementToElement()` upcast helper} for examples.
-//
-// @param {Object} config Conversion configuration.
-// @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
-// set, the converter will fire for every view element.
-// @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
-// instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-// @returns {Function} Conversion helper.
+/**
+ * View element to model element conversion helper.
+ *
+ * See {@link ~UpcastHelpers#elementToElement `.elementToElement()` upcast helper} for examples.
+ *
+ * @param config Conversion configuration.
+ * @param config.view Pattern matching all view elements which should be converted. If not
+ * set, the converter will fire for every view element.
+ * @param config.model Name of the model element, a model element
+ * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
+ * @param config.converterPriority Converter priority.
+ * @returns Conversion helper.
+ */
 function upcastElementToElement( config: {
 	view: MatcherPattern;
 	model: string | ElementCreatorFunction;
@@ -614,22 +631,24 @@ function upcastElementToElement( config: {
 	};
 }
 
-// View element to model attribute conversion helper.
-//
-// See {@link ~UpcastHelpers#elementToAttribute `.elementToAttribute()` upcast helper} for examples.
-//
-// @param {Object} config Conversion configuration.
-// @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
-// @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
-// the model attribute. `value` property may be set as a function that takes a view element and returns the value.
-// If `String` is given, the model attribute value will be set to `true`.
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-// @returns {Function} Conversion helper.
+/**
+ * View element to model attribute conversion helper.
+ *
+ * See {@link ~UpcastHelpers#elementToAttribute `.elementToAttribute()` upcast helper} for examples.
+ *
+ * @param config Conversion configuration.
+ * @param config.view Pattern matching all view elements which should be converted.
+ * @param config.model Model attribute key or an object with `key` and `value` properties, describing
+ * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
+ * If `String` is given, the model attribute value will be set to `true`.
+ * @param config.converterPriority Converter priority. Defaults to `low`.
+ * @returns Conversion helper.
+ */
 function upcastElementToAttribute( config: {
 	view: MatcherPattern;
 	model: string | {
 		key: string;
-		value: unknown | AttributeCreatorFunction;
+		value?: unknown | AttributeCreatorFunction;
 	};
 	converterPriority?: PriorityString;
 } ) {
@@ -647,26 +666,28 @@ function upcastElementToAttribute( config: {
 	};
 }
 
-// View attribute to model attribute conversion helper.
-//
-// See {@link ~UpcastHelpers#attributeToAttribute `.attributeToAttribute()` upcast helper} for examples.
-//
-// @param {Object} config Conversion configuration.
-// @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
-// attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
-// specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
-// property specifying a view element name from/on which the attribute should be converted. `value` can be given as a `String`,
-// a `RegExp` or a function callback, that takes view attribute value as the only parameter and returns `Boolean`.
-// @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
-// the model attribute. `value` property may be set as a function that takes a view element and returns the value.
-// If `String` is given, the model attribute value will be same as view attribute value.
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-// @returns {Function} Conversion helper.
+/**
+ * View attribute to model attribute conversion helper.
+ *
+ * See {@link ~UpcastHelpers#attributeToAttribute `.attributeToAttribute()` upcast helper} for examples.
+ *
+ * @param config Conversion configuration.
+ * @param config.view Specifies which view attribute will be converted. If a `String` is passed,
+ * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
+ * specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
+ * property specifying a view element name from/on which the attribute should be converted. `value` can be given as a `String`,
+ * a `RegExp` or a function callback, that takes view attribute value as the only parameter and returns `Boolean`.
+ * @param config.model Model attribute key or an object with `key` and `value` properties, describing
+ * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
+ * If `String` is given, the model attribute value will be same as view attribute value.
+ * @param config.converterPriority Converter priority. Defaults to `low`.
+ * @returns Conversion helper.
+ */
 function upcastAttributeToAttribute( config: {
 	view: string | {
 		key?: string;
-		value?: string | RegExp | Array<string> | Record<string, string> | ( ( value: unknown ) => boolean );
-		name?: string;
+		value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
+		name?: string | RegExp;
 		styles?: PropertyPatterns;
 		classes?: ClassPatterns;
 		attributes?: PropertyPatterns;
@@ -694,16 +715,18 @@ function upcastAttributeToAttribute( config: {
 	};
 }
 
-// View element to model marker conversion helper.
-//
-// See {@link ~UpcastHelpers#elementToMarker `.elementToMarker()` upcast helper} for examples.
-//
-// @param {Object} config Conversion configuration.
-// @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
-// @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
-// a model marker name.
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-// @returns {Function} Conversion helper.
+/**
+ * View element to model marker conversion helper.
+ *
+ * See {@link ~UpcastHelpers#elementToMarker `.elementToMarker()` upcast helper} for examples.
+ *
+ * @param config Conversion configuration.
+ * @param config.view Pattern matching all view elements which should be converted.
+ * @param config.model Name of the model marker, or a function that takes a view element and returns
+ * a model marker name.
+ * @param config.converterPriority Converter priority.
+ * @returns Conversion helper.
+ */
 function upcastElementToMarker( config: {
 	view: MatcherPattern;
 	model: string | MarkerFromElementCreatorFunction;
@@ -714,15 +737,13 @@ function upcastElementToMarker( config: {
 	return upcastElementToElement( { ...config, model } );
 }
 
-// View data to model marker conversion helper.
-//
-// See {@link ~UpcastHelpers#dataToMarker} to learn more.
-//
-// @param {Object} config
-// @param {String} config.view
-// @param {Function} [config.model]
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='normal']
-// @returns {Function} Conversion helper.
+/**
+ * View data to model marker conversion helper.
+ *
+ * See {@link ~UpcastHelpers#dataToMarker} to learn more.
+ *
+ * @returns Conversion helper.
+ */
 function upcastDataToMarker( config: {
 	view: string;
 	model?: MarkerFromAttributeCreatorFunction;
@@ -781,16 +802,15 @@ function upcastDataToMarker( config: {
 	};
 }
 
-// Function factory, returns a callback function which converts view attributes to a model marker.
-//
-// The converter looks for elements with `data-group-start-before`, `data-group-start-after`, `data-group-end-before`
-// and `data-group-end-after` attributes and inserts `$marker` model elements before/after those elements.
-// `group` part is specified in `config.view`.
-//
-// @param {Object} config
-// @param {String} config.view
-// @param {Function} [config.model]
-// @returns {Function} Marker converter.
+/**
+ * Function factory, returns a callback function which converts view attributes to a model marker.
+ *
+ * The converter looks for elements with `data-group-start-before`, `data-group-start-after`, `data-group-end-before`
+ * and `data-group-end-after` attributes and inserts `$marker` model elements before/after those elements.
+ * `group` part is specified in `config.view`.
+ *
+ * @returns Marker converter.
+ */
 function upcastAttributeToMarker( config: {
 	view: string;
 	model: MarkerFromAttributeCreatorFunction;
@@ -856,11 +876,13 @@ function upcastAttributeToMarker( config: {
 	};
 }
 
-// Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
-// and if so, returns it.
-//
-// @param {Object} config Conversion view config.
-// @returns {String|null} View element name or `null` if name is not directly set.
+/**
+ * Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
+ * and if so, returns it.
+ *
+ * @param config Conversion view config.
+ * @returns View element name or `null` if name is not directly set.
+ */
 function getViewElementNameFromConfig( viewConfig: any ): string | null {
 	if ( typeof viewConfig == 'string' ) {
 		return viewConfig;
@@ -873,10 +895,12 @@ function getViewElementNameFromConfig( viewConfig: any ): string | null {
 	return null;
 }
 
-// Helper for to-model-element conversion. Takes a config object and returns a proper converter function.
-//
-// @param {Object} config Conversion configuration.
-// @returns {Function} View to model converter.
+/**
+ * Helper for to-model-element conversion. Takes a config object and returns a proper converter function.
+ *
+ * @param config Conversion configuration.
+ * @returns View to model converter.
+ */
 function prepareToElementConverter( config: {
 	view: MatcherPattern;
 	model: string | ElementCreatorFunction;
@@ -919,12 +943,14 @@ function prepareToElementConverter( config: {
 	};
 }
 
-// Helper function for upcasting-to-element converter. Takes the model configuration, the converted view element
-// and a writer instance and returns a model element instance to be inserted in the model.
-//
-// @param {String|Function|module:engine/model/element~Element} model Model conversion configuration.
-// @param {module:engine/view/node~Node} input The converted view node.
-// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi The upcast conversion API.
+/**
+ * Helper function for upcasting-to-element converter. Takes the model configuration, the converted view element
+ * and a writer instance and returns a model element instance to be inserted in the model.
+ *
+ * @param model Model conversion configuration.
+ * @param input The converted view node.
+ * @param conversionApi The upcast conversion API.
+ */
 function getModelElement(
 	model: string | ElementCreatorFunction,
 	input: ViewElement,
@@ -937,12 +963,14 @@ function getModelElement(
 	}
 }
 
-// Helper function view-attribute-to-model-attribute helper. Normalizes `config.view` which was set as `String` or
-// as an `Object` with `key`, `value` and `name` properties. Normalized `config.view` has is compatible with
-// {@link module:engine/view/matcher~MatcherPattern}.
-//
-// @param {Object} config Conversion config.
-// @returns {String} Key of the converted view attribute.
+/**
+ * Helper function view-attribute-to-model-attribute helper. Normalizes `config.view` which was set as `String` or
+ * as an `Object` with `key`, `value` and `name` properties. Normalized `config.view` has is compatible with
+ * {@link module:engine/view/matcher~MatcherPattern}.
+ *
+ * @param config Conversion config.
+ * @returns Key of the converted view attribute.
+ */
 function normalizeViewAttributeKeyValueConfig( config: any ) {
 	if ( typeof config.view == 'string' ) {
 		config.view = { key: config.view };
@@ -976,13 +1004,15 @@ function normalizeViewAttributeKeyValueConfig( config: any ) {
 	return key;
 }
 
-// Helper function that normalizes `config.model` in from-model-attribute conversion. `config.model` can be set
-// as a `String`, an `Object` with only `key` property or an `Object` with `key` and `value` properties. Normalized
-// `config.model` is an `Object` with `key` and `value` properties.
-//
-// @param {Object} config Conversion config.
-// @param {String} viewAttributeKeyToCopy Key of the converted view attribute. If it is set, model attribute value
-// will be equal to view attribute value.
+/**
+ * Helper function that normalizes `config.model` in from-model-attribute conversion. `config.model` can be set
+ * as a `String`, an `Object` with only `key` property or an `Object` with `key` and `value` properties. Normalized
+ * `config.model` is an `Object` with `key` and `value` properties.
+ *
+ * @param config Conversion config.
+ * @param viewAttributeKeyToCopy Key of the converted view attribute. If it is set, model attribute value
+ * will be equal to view attribute value.
+ */
 function normalizeModelAttributeConfig( config: any, viewAttributeKeyToCopy: string | null = null ) {
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true :
 		( viewElement: ViewElement ) => viewElement.getAttribute( viewAttributeKeyToCopy );
@@ -993,13 +1023,14 @@ function normalizeModelAttributeConfig( config: any, viewAttributeKeyToCopy: str
 	config.model = { key, value };
 }
 
-// Helper for to-model-attribute conversion. Takes the model attribute name and conversion configuration and returns
-// a proper converter function.
-//
-// @param {String} modelAttributeKey The key of the model attribute to set on a model node.
-// @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
-// @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
-// on all elements in the range.
+/**
+ * Helper for to-model-attribute conversion. Takes the model attribute name and conversion configuration and returns
+ * a proper converter function.
+ *
+ * @param config Conversion configuration. It is possible to provide multiple configurations in an array.
+ * @param shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
+ * on all elements in the range.
+ */
 function prepareToAttributeConverter(
 	config: {
 		view: MatcherPattern;
@@ -1080,10 +1111,11 @@ function prepareToAttributeConverter(
 	};
 }
 
-// Helper function that checks if element name should be consumed in attribute converters.
-//
-// @param {Object} config Conversion view config.
-// @returns {Boolean}
+/**
+ * Helper function that checks if element name should be consumed in attribute converters.
+ *
+ * @param viewConfig Conversion view config.
+ */
 function onlyViewNameIsDefined( viewConfig: any, viewItem: ViewElement ): boolean {
 	// https://github.com/ckeditor/ckeditor5-engine/issues/1786
 	const configToTest = typeof viewConfig == 'function' ? viewConfig( viewItem ) : viewConfig;
@@ -1095,17 +1127,19 @@ function onlyViewNameIsDefined( viewConfig: any, viewItem: ViewElement ): boolea
 	return !configToTest.classes && !configToTest.attributes && !configToTest.styles;
 }
 
-// Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
-// to ensure proper model structure.
-//
-// If any node on the given range has already defined an attribute with the same name, its value will not be updated.
-//
-// @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
-// @param {Object} modelAttribute Model attribute to set.
-// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
-// @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
-// on all elements in the range.
-// @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
+/**
+ * Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
+ * to ensure proper model structure.
+ *
+ * If any node on the given range has already defined an attribute with the same name, its value will not be updated.
+ *
+ * @param modelRange Model range on which attribute should be set.
+ * @param modelAttribute Model attribute to set.
+ * @param conversionApi Conversion API.
+ * @param shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
+ * on all elements in the range.
+ * @returns `true` if attribute was set on at least one node from given `modelRange`.
+ */
 function setAttributeOn(
 	modelRange: ModelRange,
 	modelAttribute: {
@@ -1139,10 +1173,10 @@ function setAttributeOn(
 	return result;
 }
 
-// Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
-// function and converts it to a format that is supported by `upcastElementToElement()` function.
-//
-// @param {Object} config Conversion configuration.
+/**
+ * Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
+ * function and converts it to a format that is supported by `upcastElementToElement()` function.
+ */
 function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementCreatorFunction ): ElementCreatorFunction {
 	return ( viewElement, conversionApi ) => {
 		const markerName = typeof model == 'string' ? model : model( viewElement, conversionApi );
@@ -1151,10 +1185,10 @@ function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementC
 	};
 }
 
-// Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastDataToMarker()`
-// function and converts it to a format that is supported by `upcastElementToElement()` function.
-//
-// @param {Object} config Conversion configuration.
+/**
+ * Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastDataToMarker()`
+ * function and converts it to a format that is supported by `upcastElementToElement()` function.
+ */
 function normalizeDataToMarkerConfig(
 	config: {
 		view: string;
@@ -1195,8 +1229,3 @@ export type MarkerFromAttributeCreatorFunction = (
 	attributeValue: string,
 	conversionApi: UpcastConversionApi
 ) => string;
-
-export type ModelAttributeDefinition<TValue = unknown> = {
-	key: string;
-	value: TValue;
-};

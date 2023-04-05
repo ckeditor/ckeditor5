@@ -5,9 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Font from '@ckeditor/ckeditor5-font/src/font';
+import { Code } from '@ckeditor/ckeditor5-basic-styles';
+import { Font } from '@ckeditor/ckeditor5-font';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( Code );
 ClassicEditor.builtinPlugins.push( Font );

@@ -262,7 +262,7 @@ describe( 'ImageStyleUI', () => {
 
 				expect( buttonView.label ).to.equal( expectedLabel );
 				expect( buttonView.tooltip ).to.be.true;
-				expect( buttonView.class ).to.be.null;
+				expect( buttonView.class ).to.be.undefined;
 
 				expect( buttonView.arrowView.label ).to.equal( config.title );
 				expect( buttonView.arrowView.tooltip ).to.be.true;
@@ -500,7 +500,7 @@ describe( 'ImageStyleUI', () => {
 
 			it( 'should not have the "ck-splitbutton_flatten" class', () => {
 				for ( const { buttonView } of dropdowns ) {
-					expect( buttonView.class ).to.be.null;
+					expect( buttonView.class ).to.be.undefined;
 				}
 			} );
 

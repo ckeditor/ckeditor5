@@ -19,7 +19,13 @@ export { default as inlineHighlight } from './utils/inlinehighlight';
 export { default as findAttributeRange } from './utils/findattributerange';
 export { default as getLastTextLine, type LastTextLineData } from './utils/getlasttextline';
 
+export { default as InsertTextCommand, type InsertTextCommandExecuteEvent } from './inserttextcommand';
+
+export type { default as DeleteCommand } from './deletecommand';
 export type { TypingConfig } from './typingconfig';
 export type { ViewDocumentDeleteEvent } from './deleteobserver';
-export type { ViewDocumentInsertTextEvent } from './inserttextobserver';
+export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver';
 export type { TextWatcherMatchedEvent } from './textwatcher';
+export type { TextWatcherMatchedDataEvent } from './textwatcher';
+
+import './augmentation';

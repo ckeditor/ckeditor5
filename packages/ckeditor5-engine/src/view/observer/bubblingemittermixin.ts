@@ -17,10 +17,12 @@ import {
 	type GetEventInfo,
 	type GetNameOrEventInfo,
 	type BaseEvent,
-	type CallbackOptions
+	type CallbackOptions,
+	type Constructor,
+	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import BubblingEventInfo from './bubblingeventinfo';
+import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo';
 import type Document from '../document';
 import type Node from '../node';
 import type Range from '../range';
@@ -30,18 +32,22 @@ import type DocumentSelection from '../documentselection';
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
 /**
- * Bubbling emitter mixin for the view document as described in the
- * {@link ~BubblingEmitter} interface.
+ * Bubbling emitter mixin for the view document as described in the {@link ~BubblingEmitter} interface.
  *
- * @mixin BubblingEmitterMixin
- * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
+ * This function creates a class that inherits from the provided `base` and implements `Emitter` interface.
+ * The base class must implement {@link module:utils/emittermixin~Emitter} interface.
+ *
+ * ```ts
+ * class BaseClass extends EmitterMixin() {
+ * 	// ...
+ * }
+ *
+ * class MyClass extends BubblingEmitterMixin( BaseClass ) {
+ * 	// This class derives from `BaseClass` and implements the `BubblingEmitter` interface.
+ * }
+ * ```
  */
-export default function BubblingEmitterMixin<Base extends abstract new( ...args: Array<any> ) => Emitter>(
-	base: Base
-): {
-	new( ...args: ConstructorParameters<Base> ): InstanceType<Base> & BubblingEmitter;
-	prototype: InstanceType<Base> & BubblingEmitter;
-} {
+export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
 	abstract class Mixin extends base implements BubblingEmitter {
 		public abstract get selection(): DocumentSelection;
 
@@ -161,14 +167,16 @@ export default function BubblingEmitterMixin<Base extends abstract new( ...args:
 	} );
 }
 
-// Update the event info bubbling fields.
-//
-// @param {module:utils/eventinfo~EventInfo} eventInfo The event info object to update.
-// @param {'none'|'capturing'|'atTarget'|'bubbling'} eventPhase The current event phase.
-// @param {module:engine/view/document~Document|module:engine/view/node~Node} currentTarget The current bubbling target.
+/**
+ * Update the event info bubbling fields.
+ *
+ * @param eventInfo The event info object to update.
+ * @param eventPhase The current event phase.
+ * @param currentTarget The current bubbling target.
+ */
 function updateEventInfo(
 	eventInfo: EventInfo,
-	eventPhase: BubblingEventInfo[ '_eventPhase' ],
+	eventPhase: EventPhase,
 	currentTarget: unknown
 ) {
 	if ( eventInfo instanceof BubblingEventInfo ) {
@@ -177,14 +185,13 @@ function updateEventInfo(
 	}
 }
 
-// Fires the listener for the specified context. Returns `true` if event was stopped.
-//
-// @private
-// @param {Map.<String|Function, module:utils/emittermixin~Emitter>} eventContexts
-// @param {String|module:engine/view/node~Node} context
-// @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
-// @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
-// @returns {Boolean} True if event stop was called.
+/**
+ * Fires the listener for the specified context. Returns `true` if event was stopped.
+ *
+ * @param eventInfo The `EventInfo` object.
+ * @param eventArgs Additional arguments to be passed to the callbacks.
+ * @returns True if event stop was called.
+ */
 function fireListenerFor(
 	eventContexts: BubblingEventContexts,
 	context: string | Node,
@@ -202,12 +209,9 @@ function fireListenerFor(
 	return eventInfo.stop.called;
 }
 
-// Returns an emitter for a specified view node.
-//
-// @private
-// @param {Map.<String|Function, module:utils/emittermixin~Emitter>} eventContexts
-// @param {module:engine/view/node~Node} node
-// @returns {module:utils/emittermixin~Emitter|null}
+/**
+ * Returns an emitter for a specified view node.
+ */
 function getCustomContext( eventContexts: BubblingEventContexts, node: Node ): Emitter | null {
 	for ( const [ context, emitter ] of eventContexts ) {
 		if ( typeof context == 'function' && context( node ) ) {
@@ -218,7 +222,9 @@ function getCustomContext( eventContexts: BubblingEventContexts, node: Node ): E
 	return null;
 }
 
-// Returns bubbling contexts map for the source (emitter).
+/**
+ * Returns bubbling contexts map for the source (emitter).
+ */
 function getBubblingContexts( source: { [ x: string ]: any; [ contextsSymbol ]?: BubblingEventContexts } ) {
 	if ( !source[ contextsSymbol ] ) {
 		source[ contextsSymbol ] = new Map();
@@ -227,7 +233,9 @@ function getBubblingContexts( source: { [ x: string ]: any; [ contextsSymbol ]?:
 	return source[ contextsSymbol ];
 }
 
-// Returns the deeper parent element for the range.
+/**
+ * Returns the deeper parent element for the range.
+ */
 function getDeeperRangeParent( range: Range ): Node | null {
 	if ( !range ) {
 		return null;
@@ -254,36 +262,40 @@ function getDeeperRangeParent( range: Range ): Node | null {
  *
  * Examples:
  *
- *		// Listeners registered in the context of the view element names:
- *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
- *			// ...
- *		}, { context: 'blockquote' } );
+ * ```ts
+ * // Listeners registered in the context of the view element names:
+ * this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ * 	// ...
+ * }, { context: 'blockquote' } );
  *
- *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
- *			// ...
- *		}, { context: 'li' } );
+ * this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ * 	// ...
+ * }, { context: 'li' } );
  *
- *		// Listeners registered in the context of the '$text' and '$root' nodes.
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: '$text', priority: 'high' } );
+ * // Listeners registered in the context of the '$text' and '$root' nodes.
+ * this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ * 	// ...
+ * }, { context: '$text', priority: 'high' } );
  *
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: '$root' } );
+ * this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ * 	// ...
+ * }, { context: '$root' } );
  *
- *		// Listeners registered in the context of custom callback function.
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: isWidget } );
+ * // Listeners registered in the context of custom callback function.
+ * this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ * 	// ...
+ * }, { context: isWidget } );
  *
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: isWidget, priority: 'high' } );
+ * this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ * 	// ...
+ * }, { context: isWidget, priority: 'high' } );
+ * ```
  *
  * Example flow for selection in text:
  *
- *		<blockquote><p>Foo[]bar</p></blockquote>
+ * ```xml
+ * <blockquote><p>Foo[]bar</p></blockquote>
+ * ```
  *
  * Fired events on contexts:
  * 1. `'$capture'`
@@ -295,7 +307,9 @@ function getDeeperRangeParent( range: Range ): Node | null {
  *
  * Example flow for selection on element (i.e., Widget):
  *
- *		<blockquote><p>Foo[<widget/>]bar</p></blockquote>
+ * ```xml
+ * <blockquote><p>Foo[<widget/>]bar</p></blockquote>
+ * ```
  *
  * Fired events on contexts:
  * 1. `'$capture'`
@@ -307,7 +321,9 @@ function getDeeperRangeParent( range: Range ): Node | null {
  *
  * There could be multiple listeners registered for the same context and at different priority levels:
  *
- *		<p>Foo[]bar</p>
+ * ```html
+ * <p>Foo[]bar</p>
+ * ```
  *
  * 1. `'$capture'` at priorities:
  *    1. `'highest'`
@@ -339,22 +355,41 @@ function getDeeperRangeParent( range: Range ): Node | null {
  *    3. `'normal'`
  *    4. `'low'`
  *    5. `'lowest'`
- *
- * @interface BubblingEmitter
- * @extends module:utils/emittermixin~Emitter
  */
+export type BubblingEmitter = Emitter;
 
-type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>;
-
+/**
+ * A context matcher function.
+ *
+ * Should return true for nodes that that match the custom context.
+ */
 export type BubblingEventContextFunction = ( node: Node ) => boolean;
 
+/**
+ * Helper type that allows describing bubbling event. Extends `TEvent` so that:
+ *
+ * * the event is called with {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo}`
+ * instead of {@link module:utils/eventinfo~EventInfo}, and
+ * * {@link ~BubblingCallbackOptions} can be specified as additional options.
+ *
+ * @typeParam TEvent The event description to extend.
+ */
 export type BubblingEvent<TEvent extends BaseEvent> = TEvent & {
 	eventInfo: BubblingEventInfo<TEvent[ 'name' ], ( TEvent extends { return: infer TReturn } ? TReturn : unknown )>;
 	callbackOptions: BubblingCallbackOptions;
 };
 
-export type BubblingCallbackOptions = CallbackOptions & {
-	context?: ArrayOrItem<string | BubblingEventContextFunction>;
-};
+/**
+ * Additional options for registering a callback.
+ */
+export interface BubblingCallbackOptions extends CallbackOptions {
 
-export type BubblingEmitter = Emitter;
+	/**
+	 * Specifies the context in which the event should be triggered to call the callback.
+	 *
+	 * @see ~BubblingEmitter
+	 */
+	context?: ArrayOrItem<string | BubblingEventContextFunction>;
+}
+
+type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>;

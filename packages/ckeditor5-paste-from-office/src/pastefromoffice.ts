@@ -7,7 +7,7 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
@@ -41,8 +41,8 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline ];
+	public static get requires() {
+		return [ ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -50,13 +50,14 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<Normalizer> = [];
 
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
-		editor.plugins.get( 'ClipboardPipeline' ).on(
+		clipboardPipeline.on(
 			'inputTransformation',
 			( evt, data: NormalizerData ) => {
 				if ( data._isTransformedWithPasteFromOffice ) {
@@ -82,11 +83,5 @@ export default class PasteFromOffice extends Plugin {
 			},
 			{ priority: 'high' }
 		);
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PasteFromOffice.pluginName ]: PasteFromOffice;
 	}
 }

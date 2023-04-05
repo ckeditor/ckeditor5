@@ -17,49 +17,39 @@ import type View from '../view';
  * Information about a DOM event in context of the {@link module:engine/view/document~Document}.
  * It wraps the native event, which usually should not be used as the wrapper contains
  * additional data (like key code for keyboard events).
+ *
+ * @typeParam TEvent The type of DOM Event that this class represents.
  */
 export default class DomEventData<TEvent extends Event = Event> {
+	/**
+	 * Instance of the view controller.
+	 */
 	public readonly view: View;
+
+	/**
+	 * The instance of the document.
+	 */
 	public readonly document: Document;
+
+	/**
+	 * The DOM event.
+	 */
 	public readonly domEvent: TEvent;
+
+	/**
+	 * The DOM target.
+	 */
 	public readonly domTarget: HTMLElement;
 
 	/**
-	 * @param {module:engine/view/view~View} view The instance of the view controller.
-	 * @param {Event} domEvent The DOM event.
-	 * @param {Object} [additionalData] Additional properties that the instance should contain.
+	 * @param view The instance of the view controller.
+	 * @param domEvent The DOM event.
+	 * @param additionalData Additional properties that the instance should contain.
 	 */
 	constructor( view: View, domEvent: TEvent, additionalData?: object ) {
-		/**
-		 * Instance of the view controller.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/view~View} module:engine/view/observer/observer~Observer.DomEvent#view
-		 */
 		this.view = view;
-
-		/**
-		 * The instance of the document.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer.DomEvent#document
-		 */
 		this.document = view.document;
-
-		/**
-		 * The DOM event.
-		 *
-		 * @readonly
-		 * @member {Event} module:engine/view/observer/observer~Observer.DomEvent#domEvent
-		 */
 		this.domEvent = domEvent;
-
-		/**
-		 * The DOM target.
-		 *
-		 * @readonly
-		 * @member {HTMLElement} module:engine/view/observer/observer~Observer.DomEvent#target
-		 */
 		this.domTarget = domEvent.target as any;
 
 		extend( this, additionalData );
@@ -67,9 +57,6 @@ export default class DomEventData<TEvent extends Event = Event> {
 
 	/**
 	 * The tree view element representing the target.
-	 *
-	 * @readonly
-	 * @type module:engine/view/element~Element
 	 */
 	public get target(): Element {
 		return this.view.domConverter.mapDomToView( this.domTarget ) as Element;

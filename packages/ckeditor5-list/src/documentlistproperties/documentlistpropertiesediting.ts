@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentlistpropertiesediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import type {
 	Consumables,
@@ -51,8 +51,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ DocumentListEditing, DocumentListPropertiesUtils ];
+	public static get requires() {
+		return [ DocumentListEditing, DocumentListPropertiesUtils ] as const;
 	}
 
 	/**
@@ -428,12 +428,6 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	return strategies;
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
-	}
-}
-
 declare module '../documentlist/documentlistediting' {
 	interface ListItemAttributesMap {
 		listStyle?: string;
@@ -443,7 +437,7 @@ declare module '../documentlist/documentlistediting' {
 }
 
 declare module '../documentlist/utils/model' {
-	interface ListElement extends Element {
+	interface ListElement {
 		getAttribute( key: 'listStyle' ): string;
 		getAttribute( key: 'listStart' ): number;
 		getAttribute( key: 'listReversed' ): boolean;

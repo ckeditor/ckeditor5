@@ -32,42 +32,32 @@ import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } f
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position extends TypeCheckable {
-	public parent: Node | DocumentFragment;
+	/**
+	 * Position parent.
+	 */
+	public readonly parent: Node | DocumentFragment;
+
+	/**
+	 * Position offset.
+	 */
 	public offset: number;
 
 	/**
 	 * Creates a position.
 	 *
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} parent Position parent.
-	 * @param {Number} offset Position offset.
+	 * @param parent Position parent.
+	 * @param offset Position offset.
 	 */
 	constructor( parent: Node | DocumentFragment, offset: number ) {
 		super();
 
-		/**
-		 * Position parent.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
-		 * module:engine/view/position~Position#parent
-		 */
 		this.parent = parent;
-
-		/**
-		 * Position offset.
-		 *
-		 * @readonly
-		 * @member {Number} module:engine/view/position~Position#offset
-		 */
 		this.offset = offset;
 	}
 
 	/**
 	 * Node directly after the position. Equals `null` when there is no node after position or position is located
 	 * inside text node.
-	 *
-	 * @readonly
-	 * @type {module:engine/view/node~Node|null}
 	 */
 	public get nodeAfter(): Node | null {
 		if ( this.parent.is( '$text' ) ) {
@@ -80,9 +70,6 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Node directly before the position. Equals `null` when there is no node before position or position is located
 	 * inside text node.
-	 *
-	 * @readonly
-	 * @type {module:engine/view/node~Node|null}
 	 */
 	public get nodeBefore(): Node | null {
 		if ( this.parent.is( '$text' ) ) {
@@ -94,9 +81,6 @@ export default class Position extends TypeCheckable {
 
 	/**
 	 * Is `true` if position is at the beginning of its {@link module:engine/view/position~Position#parent parent}, `false` otherwise.
-	 *
-	 * @readonly
-	 * @type {Boolean}
 	 */
 	public get isAtStart(): boolean {
 		return this.offset === 0;
@@ -104,9 +88,6 @@ export default class Position extends TypeCheckable {
 
 	/**
 	 * Is `true` if position is at the end of its {@link module:engine/view/position~Position#parent parent}, `false` otherwise.
-	 *
-	 * @readonly
-	 * @type {Boolean}
 	 */
 	public get isAtEnd(): boolean {
 		const endOffset = this.parent.is( '$text' ) ? this.parent.data.length : ( this.parent as any ).childCount;
@@ -116,9 +97,6 @@ export default class Position extends TypeCheckable {
 
 	/**
 	 * Position's root, that is the root of the position's parent element.
-	 *
-	 * @readonly
-	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	public get root(): Node | DocumentFragment {
 		return this.parent.root;
@@ -127,8 +105,6 @@ export default class Position extends TypeCheckable {
 	/**
 	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this position, or `null` if
 	 * position is not inside an editable element.
-	 *
-	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
 	public get editableElement(): EditableElement | null {
 		let editable = this.parent;
@@ -147,8 +123,8 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Returns a new instance of Position with offset incremented by `shift` value.
 	 *
-	 * @param {Number} shift How position offset should get changed. Accepts negative values.
-	 * @returns {module:engine/view/position~Position} Shifted position.
+	 * @param shift How position offset should get changed. Accepts negative values.
+	 * @returns Shifted position.
 	 */
 	public getShiftedBy( shift: number ): Position {
 		const shifted = Position._createAt( this );
@@ -165,15 +141,16 @@ export default class Position extends TypeCheckable {
 	 *
 	 * For example:
 	 *
-	 * 		getLastMatchingPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
-	 * 		getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } ); // <p>foo[]</p> -> <p>{}foo</p>
-	 * 		getLastMatchingPosition( value => false ); // Do not move the position.
+	 * ```ts
+	 * getLastMatchingPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
+	 * getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } ); // <p>foo[]</p> -> <p>{}foo</p>
+	 * getLastMatchingPosition( value => false ); // Do not move the position.
+	 * ```
 	 *
-	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~type TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
-	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
-	 *
-	 * @returns {module:engine/view/position~Position} The position after the last item which matches the `skip` callback test.
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @returns The position after the last item which matches the `skip` callback test.
 	 */
 	public getLastMatchingPosition( skip: ( value: TreeWalkerValue ) => boolean, options: TreeWalkerOptions = {} ): Position {
 		options.startPosition = this;
@@ -187,7 +164,7 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
 	 *
-	 * @returns {Array} Array with ancestors.
+	 * @returns Array with ancestors.
 	 */
 	public getAncestors(): Array<Node | DocumentFragment> {
 		if ( this.parent.is( 'documentFragment' ) ) {
@@ -200,9 +177,6 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
 	 * which is a common ancestor of both positions.
-	 *
-	 * @param {module:engine/view/position~Position} position
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	public getCommonAncestor( position: Position ): Node | DocumentFragment | null {
 		const ancestorsA = this.getAncestors();
@@ -220,8 +194,8 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Checks whether this position equals given position.
 	 *
-	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
-	 * @returns {Boolean} True if positions are same.
+	 * @param otherPosition Position to compare with.
+	 * @returns True if positions are same.
 	 */
 	public isEqual( otherPosition: Position ): boolean {
 		return ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
@@ -234,8 +208,8 @@ export default class Position extends TypeCheckable {
 	 *
 	 * @see module:engine/view/position~Position#isAfter
 	 * @see module:engine/view/position~Position#compareWith
-	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
-	 * @returns {Boolean} Returns `true` if this position is before given position.
+	 * @param otherPosition Position to compare with.
+	 * @returns Returns `true` if this position is before given position.
 	 */
 	public isBefore( otherPosition: Position ): boolean {
 		return this.compareWith( otherPosition ) == 'before';
@@ -248,8 +222,8 @@ export default class Position extends TypeCheckable {
 	 *
 	 * @see module:engine/view/position~Position#isBefore
 	 * @see module:engine/view/position~Position#compareWith
-	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
-	 * @returns {Boolean} Returns `true` if this position is after given position.
+	 * @param otherPosition Position to compare with.
+	 * @returns Returns `true` if this position is after given position.
 	 */
 	public isAfter( otherPosition: Position ): boolean {
 		return this.compareWith( otherPosition ) == 'after';
@@ -259,8 +233,7 @@ export default class Position extends TypeCheckable {
 	 * Checks whether this position is before, after or in same position that other position. Two positions may be also
 	 * different when they are located in separate roots.
 	 *
-	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
-	 * @returns {module:engine/view/position~PositionRelation}
+	 * @param otherPosition Position to compare with.
 	 */
 	public compareWith( otherPosition: Position ): PositionRelation {
 		if ( this.root !== otherPosition.root ) {
@@ -289,19 +262,20 @@ export default class Position extends TypeCheckable {
 			case 'extension':
 				return 'after';
 
+			/* istanbul ignore next */
+			case 'same':
+				// Already covered by `this.isEqual` above. Added so TypeScript can infer `result` as number in `default` case.
+				return 'same';
+
 			default:
-				return thisPath[ result as number ] < otherPath[ result as number ] ? 'before' : 'after';
+				return thisPath[ result ] < otherPath[ result ] ? 'before' : 'after';
 		}
 	}
 
 	/**
 	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this positions as a start position.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}
-	 * @param {module:engine/view/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
-	 * @param {Boolean} [options.singleCharacters=false]
-	 * @param {Boolean} [options.shallow=false]
-	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}
 	 */
 	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
 		options.startPosition = this;
@@ -309,6 +283,9 @@ export default class Position extends TypeCheckable {
 		return new TreeWalker( options );
 	}
 
+	/**
+	 * Clones this position.
+	 */
 	public clone(): Position {
 		return new Position( this.parent, this.offset );
 	}
@@ -326,12 +303,10 @@ export default class Position extends TypeCheckable {
 	 * * {@link module:engine/view/position~Position._createBefore},
 	 * * {@link module:engine/view/position~Position._createAfter}.
 	 *
-	 * @protected
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @internal
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public static _createAt( itemOrPosition: Item | Position, offset?: number | 'before' | 'after' | 'end' ): Position {
+	public static _createAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
 		if ( itemOrPosition instanceof Position ) {
 			return new this( itemOrPosition.parent, itemOrPosition.offset );
 		} else {
@@ -360,9 +335,8 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Creates a new position after given view item.
 	 *
-	 * @protected
-	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
-	 * @returns {module:engine/view/position~Position}
+	 * @internal
+	 * @param item View item after which the position should be located.
 	 */
 	public static _createAfter( item: Item ): Position {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
@@ -386,9 +360,8 @@ export default class Position extends TypeCheckable {
 	/**
 	 * Creates a new position before given view item.
 	 *
-	 * @protected
-	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
-	 * @returns {module:engine/view/position~Position}
+	 * @internal
+	 * @param item View item before which the position should be located.
 	 */
 	public static _createBefore( item: Item ): Position {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
@@ -410,21 +383,8 @@ export default class Position extends TypeCheckable {
 	}
 }
 
-/**
- * Checks whether this object is of the given type.
- *
- *		position.is( 'position' ); // -> true
- *		position.is( 'view:position' ); // -> true
- *
- *		position.is( 'model:position' ); // -> false
- *		position.is( 'element' ); // -> false
- *		position.is( 'range' ); // -> false
- *
- * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
- *
- * @param {String} type
- * @returns {Boolean}
- */
+// The magic of type inference using `is` method is centralized in `TypeCheckable` class.
+// Proper overload would interfere with that.
 Position.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'view:position';
 };
@@ -432,7 +392,10 @@ Position.prototype.is = function( type: string ): boolean {
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
- *
- * @typedef {String} module:engine/view/position~PositionRelation
  */
 export type PositionRelation = 'before' | 'after' | 'same' | 'different';
+
+/**
+ * Offset or one of the flags.
+ */
+export type PositionOffset = number | 'before' | 'after' | 'end';

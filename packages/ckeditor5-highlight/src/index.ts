@@ -10,3 +10,7 @@
 export { default as Highlight } from './highlight';
 export { default as HighlightEditing } from './highlightediting';
 export { default as HighlightUI } from './highlightui';
+export type { default as HighlightCommand } from './highlightcommand';
+export type { HighlightOption, HighlightConfig } from './highlightconfig';
+
+import './augmentation';

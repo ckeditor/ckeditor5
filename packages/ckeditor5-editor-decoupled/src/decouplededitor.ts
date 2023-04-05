@@ -9,6 +9,7 @@
 
 import {
 	Editor,
+	Context,
 	ElementApiMixin,
 	DataApiMixin,
 	secureSourceElement,
@@ -19,6 +20,8 @@ import {
 	CKEditorError,
 	getDataFromElement
 } from 'ckeditor5/src/utils';
+
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
@@ -38,6 +41,8 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
+ *
+ * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
  *
  * # Decoupled editor and document editor build
  *
@@ -88,7 +93,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
+			secureSourceElement( this, sourceElementOrData );
 		}
 
 		this.model.document.createRoot();
@@ -143,8 +148,8 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	/**
 	 * Creates a new decoupled editor instance.
 	 *
-	 * Remember that `DecoupledEditor` does not append the toolbar element to your web page so you have to do it manually after the editor
-	 * has been initialized.
+	 * **Note:** remember that `DecoupledEditor` does not append the toolbar element to your web page, so you have to do it manually
+	 * after the editor has been initialized.
 	 *
 	 * There are two ways how the editor can be initialized.
 	 *
@@ -250,7 +255,7 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
 		return new Promise( resolve => {
 			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
@@ -269,6 +274,27 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 			);
 		} );
 	}
+
+	/**
+	 * The {@link module:core/context~Context} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static Context = Context;
+
+	/**
+	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static EditorWatchdog = EditorWatchdog;
+
+	/**
+	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+	 *
+	 * Exposed as static editor field for easier access in editor builds.
+	 */
+	public static ContextWatchdog = ContextWatchdog;
 }
 
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {

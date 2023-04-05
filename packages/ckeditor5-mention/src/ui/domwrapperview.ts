@@ -38,7 +38,7 @@ export default class DomWrapperView extends View {
 		super( locale );
 
 		// Disable template rendering on this view.
-		this.template = false as unknown as Template;
+		this.template = undefined;
 
 		this.domElement = domElement;
 

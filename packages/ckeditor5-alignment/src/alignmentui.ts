@@ -11,7 +11,8 @@ import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import { isSupported, normalizeAlignmentOptions } from './utils';
-import type { SupportedOption } from './alignmentediting';
+import type { SupportedOption } from './alignmentconfig';
+import type AlignmentCommand from './alignmentcommand';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -31,7 +32,7 @@ export default class AlignmentUI extends Plugin {
 	 * Returns the localized option titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:alignment/alignment~AlignmentConfig#options} are available:
+	 * {@link module:alignment/alignmentconfig~AlignmentConfig#options} are available:
 	 *
 	 * * `'left'`,
 	 * * `'right'`,
@@ -100,7 +101,7 @@ export default class AlignmentUI extends Plugin {
 
 			// The default icon depends on the direction of the content.
 			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? iconsMap.get( 'right' ) : iconsMap.get( 'left' );
-			const command = editor.commands.get( 'alignment' )!;
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 
 			// Change icon to reflect current selection's alignment.
 			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => iconsMap.get( value ) || defaultIcon );
@@ -127,7 +128,7 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
-			const command = editor.commands.get( 'alignment' )!;
+			const command: AlignmentCommand = editor.commands.get( 'alignment' )!;
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
@@ -149,11 +150,5 @@ export default class AlignmentUI extends Plugin {
 
 			return buttonView;
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ AlignmentUI.pluginName ]: AlignmentUI;
 	}
 }

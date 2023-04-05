@@ -26,7 +26,7 @@ import type InlineEditorUIView from './inlineeditoruiview';
 /**
  * The inline editor UI class.
  *
- * @extends module:core/editor/editorui~EditorUI
+ * @extends module:ui/editorui/editorui~EditorUI
  */
 export default class InlineEditorUI extends EditorUI {
 	/**
@@ -155,17 +155,20 @@ export default class InlineEditorUI extends EditorUI {
 		const editingRoot = editingView.document.getRoot()!;
 		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
-		const placeholderText = editor.config.get( 'placeholder' ) ||
-			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
+		const placeholder = editor.config.get( 'placeholder' );
 
-		if ( placeholderText ) {
-			enablePlaceholder( {
-				view: editingView,
-				element: editingRoot,
-				text: placeholderText,
-				isDirectHost: false,
-				keepOnFocus: true
-			} );
+		if ( placeholder ) {
+			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
+
+			if ( placeholderText ) {
+				enablePlaceholder( {
+					view: editingView,
+					element: editingRoot,
+					text: placeholderText,
+					isDirectHost: false,
+					keepOnFocus: true
+				} );
+			}
 		}
 	}
 }

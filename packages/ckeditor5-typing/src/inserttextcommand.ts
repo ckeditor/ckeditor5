@@ -15,36 +15,27 @@ import type { DocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-en
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
- *
- * @extends module:core/command~Command
  */
 export default class InsertTextCommand extends Command {
+	/**
+	 * Typing's change buffer used to group subsequent changes into batches.
+	 */
 	private readonly _buffer: ChangeBuffer;
 
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Number} undoStepSize The maximum number of atomic changes
+	 * @param undoStepSize The maximum number of atomic changes
 	 * which can be contained in one batch in the command buffer.
 	 */
 	constructor( editor: Editor, undoStepSize: number ) {
 		super( editor );
 
-		/**
-		 * Typing's change buffer used to group subsequent changes into batches.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {module:typing/utils/changebuffer~ChangeBuffer} #_buffer
-		 */
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 	}
 
 	/**
 	 * The current change buffer.
-	 *
-	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 	 */
 	public get buffer(): ChangeBuffer {
 		return this._buffer;
@@ -65,24 +56,9 @@ export default class InsertTextCommand extends Command {
 	 * at the beginning of the range (which after the removal is a collapsed range).
 	 *
 	 * @fires execute
-	 * @param {Object} [options] The command options.
-	 * @param {String} [options.text=''] The text to be inserted.
-	 * @param {module:engine/model/selection~Selection} [options.selection] The selection in which the text is inserted.
-	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
-	 * the current selection in the model will be used instead.
-	 * // TODO note that those 2 options are exclusive (either selection or range)
-	 * @param {module:engine/model/range~Range} [options.range] The range in which the text is inserted. Defaults
-	 * to the first range in the current selection.
-	 * @param {module:engine/model/range~Range} [options.resultRange] The range where the selection
-	 * should be placed after the insertion. If not specified, the selection will be placed right after
-	 * the inserted text.
+	 * @param options The command options.
 	 */
-	public override execute( options: {
-		text?: string;
-		selection?: Selection | DocumentSelection;
-		range?: Range;
-		resultRange?: Range;
-	} = {} ): void {
+	public override execute( options: InsertTextCommandOptions = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const text = options.text || '';
@@ -118,4 +94,43 @@ export default class InsertTextCommand extends Command {
 			this._buffer.input( textInsertions );
 		} );
 	}
+}
+
+/**
+ * Interface with parameters for executing InsertTextCommand.
+ *
+ * Both `range` and `selection` parameters are used for defining selection but should not be used together.
+ * If both are defined, only `selection` will be considered.
+ */
+export interface InsertTextCommandOptions {
+
+	/**
+	 * The text to be inserted.
+	 */
+	text?: string;
+
+	/**
+	 * The selection in which the text is inserted.
+	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
+	 * the current selection in the model will be used instead.
+	 */
+	selection?: Selection | DocumentSelection;
+
+	/**
+	 * The range in which the text is inserted. Defaults to the first range in the current selection.
+	 */
+	range?: Range;
+
+	/**
+	 * The range where the selection should be placed after the insertion.
+	 * If not specified, the selection will be placed right after the inserted text.
+	 */
+	resultRange?: Range;
+}
+
+export interface InsertTextCommandExecuteEvent {
+	name: 'execute';
+	args: [
+		data: [ options: InsertTextCommandOptions ]
+	];
 }

@@ -7,7 +7,7 @@
  * @module block-quote/blockquoteediting
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
 
@@ -31,8 +31,8 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete ];
+	public static get requires() {
+		return [ Enter, Delete ] as const;
 	}
 
 	/**
@@ -105,12 +105,12 @@ export default class BlockQuoteEditing extends Plugin {
 
 		const viewDocument = this.editor.editing.view.document;
 		const selection = editor.model.document.selection;
-		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
+		const blockQuoteCommand: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
 		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
-			if ( !selection.isCollapsed || !blockQuoteCommand!.value ) {
+			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}
 
@@ -142,15 +142,5 @@ export default class BlockQuoteEditing extends Plugin {
 				evt.stop();
 			}
 		}, { context: 'blockquote' } );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		blockQuote: BlockQuoteCommand;
-	}
-
-	interface PluginsMap {
-		[ BlockQuoteEditing.pluginName ]: BlockQuoteEditing;
 	}
 }

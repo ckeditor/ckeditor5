@@ -85,7 +85,7 @@ describe( 'BalloonEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
-			it( 'sets placeholder from editor.config.placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return VirtualBalloonTestEditor
 					.create( 'foo', {
 						extraPlugins: [ BalloonToolbar, Paragraph ],
@@ -100,40 +100,16 @@ describe( 'BalloonEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from the "placeholder" attribute of a passed <textarea>', () => {
-				const element = document.createElement( 'textarea' );
-
-				element.setAttribute( 'placeholder', 'placeholder-text' );
-
+			it( 'sets placeholder from editor.config.placeholder - object', () => {
 				return VirtualBalloonTestEditor
-					.create( element, {
-						plugins: [ BalloonToolbar ],
-						extraPlugins: [ Paragraph ]
+					.create( 'foo', {
+						extraPlugins: [ BalloonToolbar, Paragraph ],
+						placeholder: { main: 'placeholder-text' }
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'uses editor.config.placeholder rather than the "placeholder" attribute of a passed <textarea>', () => {
-				const element = document.createElement( 'textarea' );
-
-				element.setAttribute( 'placeholder', 'placeholder-text' );
-
-				return VirtualBalloonTestEditor
-					.create( element, {
-						plugins: [ BalloonToolbar ],
-						extraPlugins: [ Paragraph ],
-						placeholder: 'config takes precedence'
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
 
 						return newEditor.destroy();
 					} );

@@ -16,8 +16,6 @@ import BaseCommand from './basecommand';
  * {@link module:engine/model/document~Document#history history} that happened after the reversed undo batch.
  *
  * The redo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}.
- *
- * @extends module:undo/basecommand~BaseCommand
  */
 export default class RedoCommand extends BaseCommand {
 	/**

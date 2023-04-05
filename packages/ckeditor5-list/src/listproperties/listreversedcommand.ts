@@ -17,7 +17,7 @@ import { getSelectedListItems } from '../list/utils';
  */
 export default class ListReversedCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: boolean | null;
 

@@ -14,17 +14,17 @@
 		<p>CKEditor Team</p>
 	</blockquote>
 	<p>
-		More often than not in our modern times, <a href="https://ckeditor.com/blog/Collaborative-writing-and-how-to-implement-it-in-your-application/">writing is a team sport</a>. The <a href="https://ckeditor.com/blog/content-publishing-during-covid-19/">worldwide pandemic</a> has completely changed the way we cooperate and brought the very idea of cooperation and the demands for collaborative writing tools to a whole different level. Conference tables and whiteboards have been replaced by functions such as <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">track changes</a> and <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">comments</a> offering a perfect collaboration communication platform for writing and editing as a team. You can also easily track the progress and changes done in the content with the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">revision history</a> feature.
+		Nowadays, <a href="https://ckeditor.com/blog/Collaborative-writing-and-how-to-implement-it-in-your-application/">writing is often a team sport</a>. The <a href="https://ckeditor.com/blog/content-publishing-during-covid-19/">worldwide pandemic</a> has completely changed the way we cooperate. It has also brought the very idea of cooperation and the demands for collaborative writing tools to a whole new level. Conference tables and whiteboards have been replaced by functions such as <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html">track changes</a> and <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html">comments</a> offering a perfect collaboration communication platform for writing and editing as a team. You can also easily track the progress of your work and changes to your content with the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html">revision history</a> feature.
 	</p>
 	<p class="info-box">
-		<span>CKEditor 5 is an ultra-modern JavaScript rich-text editor with MVC architecture, a custom data model, and virtual DOM. It is written from scratch in ES6 and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support.&nbsp;</span>
+		<span>CKEditor 5 is an ultra-modern JavaScript rich-text editor with MVC architecture, a custom data model, and virtual DOM. It is written from scratch in JavaScript/TypeScript and has excellent webpack support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support.&nbsp;</span>
 	</p>
 	<hr>
 	<h4>
 		Choose the best way to start
 	</h4>
 	<p>
-		CKEditor 5 is a powerful tool that can be <span class="marker">tailored</span> to basically <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/index.html">all kinds of needs and solutions</a>. There are several ways to integrate the software with your system. From the easy ones, like simply downloading a <span class="spoiler">ready-to-go</span> zip from the Online builder, through predefined builds, up to advanced framework integrations and DLL solutions.
+		CKEditor 5 is a powerful tool that can be <span class="marker">tailored</span> to <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/index.html">all kinds of needs and solutions</a>. There are several ways to integrate the software with your system. From the easy ones, like simply downloading a <span class="spoiler">ready-to-go</span> zip from the online builder, through predefined builds, up to advanced framework integrations and DLL solutions.
 	</p>
 	<p>
 		Start the configuration by creating the editor:
@@ -34,7 +34,7 @@
 		window.editor = editor;
 	} );</code></pre>
 	<p>
-		then enable some of the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">collaboration features</a>:
+		Then enable some of the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html">collaboration features</a>:
 	</p>
 	<pre class="fancy-code fancy-code-dark"><code class="language-javascript">ClassicEditor.create( document.querySelector( '#editor' ), {
 		toolbar: [ ..., 'comment', 'trackChanges' ],
@@ -166,10 +166,30 @@
 	}
 
 	.ck.ck-content pre.fancy-code::before {
+		--ck-fancy-code-disc-radius: 6px;
+
 		content: "";
 		display: block;
-		height: 13px;
-		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		height: calc(var(--ck-fancy-code-disc-radius) * 2);
+		background-image: radial-gradient(
+			circle,
+			#f16b5d var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		),
+		radial-gradient(
+			circle,
+			#f5be4d var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		),
+		radial-gradient(
+			circle,
+			#56c452 var(--ck-fancy-code-disc-radius),
+			#0000 var(--ck-fancy-code-disc-radius)
+		);
+		background-size: calc(var(--ck-fancy-code-disc-radius) * 2)
+			calc(var(--ck-fancy-code-disc-radius) * 2);
+		background-position: 0 0, calc(var(--ck-fancy-code-disc-radius) * 3) 0,
+			calc(var(--ck-fancy-code-disc-radius) * 6) 0;
 		margin-bottom: 8px;
 		background-repeat: no-repeat;
 	}

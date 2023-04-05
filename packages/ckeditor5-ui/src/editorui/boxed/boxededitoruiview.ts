@@ -9,55 +9,42 @@
 
 import EditorUIView from '../editoruiview';
 import LabelView from '../../label/labelview';
-
 import type ViewCollection from '../../viewcollection';
+
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The boxed editor UI view class. This class represents an editor interface
  * consisting of a toolbar and an editable area, enclosed within a box.
- *
- * @extends module:ui/editorui/editoruiview~EditorUIView
  */
 export default abstract class BoxedEditorUIView extends EditorUIView {
+	/**
+	 * Collection of the child views located in the top (`.ck-editor__top`)
+	 * area of the UI.
+	 */
 	public readonly top: ViewCollection;
+
+	/**
+	 * Collection of the child views located in the main (`.ck-editor__main`)
+	 * area of the UI.
+	 */
 	public readonly main: ViewCollection;
 
-	private _voiceLabelView: LabelView;
+	/**
+	 * Voice label of the UI.
+	 */
+	private readonly _voiceLabelView: LabelView;
 
 	/**
 	 * Creates an instance of the boxed editor UI view class.
 	 *
-	 * @param {module:utils/locale~Locale} locale The locale instance..
+	 * @param locale The locale instance..
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
-		/**
-		 * Collection of the child views located in the top (`.ck-editor__top`)
-		 * area of the UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.top = this.createCollection();
-
-		/**
-		 * Collection of the child views located in the main (`.ck-editor__main`)
-		 * area of the UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.main = this.createCollection();
-
-		/**
-		 * Voice label of the UI.
-		 *
-		 * @protected
-		 * @readonly
-		 * @member {module:ui/view~View} #_voiceLabelView
-		 */
 		this._voiceLabelView = this._createVoiceLabel();
 
 		this.setTemplate( {
@@ -107,9 +94,6 @@ export default abstract class BoxedEditorUIView extends EditorUIView {
 
 	/**
 	 * Creates a voice label view instance.
-	 *
-	 * @private
-	 * @returns {module:ui/label/labelview~LabelView}
 	 */
 	private _createVoiceLabel() {
 		const t = this.t;

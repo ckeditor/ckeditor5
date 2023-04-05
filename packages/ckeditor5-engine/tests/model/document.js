@@ -44,7 +44,17 @@ describe( 'Document', () => {
 				baseVersion: 0,
 				isDocumentOperation: true,
 				_execute: sinon.stub().returns( data ),
-				_validate: () => {}
+				_validate: () => {},
+				toJSON() {
+					// This method creates only a shallow copy, all nested objects should be defined separately.
+					// See https://github.com/ckeditor/ckeditor5-engine/issues/1477.
+					const json = Object.assign( {}, this );
+
+					// Remove reference to the parent `Batch` to avoid circular dependencies.
+					delete json.batch;
+
+					return json;
+				}
 			};
 
 			batch = new Batch();
@@ -121,12 +131,31 @@ describe( 'Document', () => {
 
 			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
+
+		it( 'should return only attached roots', () => {
+			doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootB._isAttached = false;
+
+			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a' ] );
+		} );
+
+		it( 'should return detached roots when `includeDetached` flag is set to `true`', () => {
+			doc.createRoot( '$root', 'a' );
+			const rootB = doc.createRoot( '$root', 'b' );
+
+			rootB._isAttached = false;
+
+			expect( Array.from( doc.getRootNames( true ) ) ).to.deep.equal( [ 'a', 'b' ] );
+		} );
 	} );
 
 	describe( 'createRoot()', () => {
-		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
+		it( 'should create a new RootElement, attached, with default element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot();
 
+			expect( root.isAttached() ).to.be.true;
 			expect( doc.roots.length ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
@@ -134,9 +163,10 @@ describe( 'Document', () => {
 			expect( root ).to.have.property( 'rootName', 'main' );
 		} );
 
-		it( 'should create a new RootElement with custom element and root names, add it to roots map and return it', () => {
+		it( 'should create a new RootElement, attached, with custom element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot( 'customElementName', 'customRootName' );
 
+			expect( root.isAttached() ).to.be.true;
 			expect( doc.roots.length ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
@@ -169,6 +199,14 @@ describe( 'Document', () => {
 		it( 'should return null when trying to get non-existent root', () => {
 			expect( doc.getRoot( 'not-existing' ) ).to.null;
 		} );
+
+		it( 'should return a detached root', () => {
+			const root = doc.createRoot( '$root', 'a' );
+
+			root._isAttached = false;
+
+			expect( doc.getRoot( 'a' ) ).to.equal( root );
+		} );
 	} );
 
 	describe( '_getDefaultRoot()', () => {
@@ -183,6 +221,33 @@ describe( 'Document', () => {
 
 			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );
+	} );
+
+	it( 'should automatically remove elements or markers when added to a detached root', () => {
+		let root, p;
+
+		model.change( writer => {
+			root = writer.addRoot( 'new' );
+			writer.detachRoot( 'new' );
+		} );
+
+		model.change( writer => {
+			p = writer.createElement( 'paragraph' );
+			writer.insert( p, root, 0 );
+		} );
+
+		expect( root.isEmpty ).to.be.true;
+		expect( p.parent.rootName ).to.equal( '$graveyard' );
+
+		model.change( writer => {
+			writer.addMarker( 'newMarker', {
+				usingOperation: true,
+				affectsData: true,
+				range: writer.createRangeIn( root )
+			} );
+		} );
+
+		expect( model.markers.get( 'newMarker' ) ).to.be.null;
 	} );
 
 	describe( 'destroy()', () => {

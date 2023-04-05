@@ -11,7 +11,7 @@ Image text alternative (the `alt` attribute) helps screen reader users navigate 
 
 ## Demo
 
-You can see the demo of a WYSIWYG editor with the base image feature enabled below. Click on the images to activate the image toolbar and use the contextual toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to edit the text alternative.
+The editor below has the base image feature enabled. Click any of the images and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to edit the text alternative.
 
 {@snippet features/image-text-alternative}
 

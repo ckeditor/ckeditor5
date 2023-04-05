@@ -9,7 +9,7 @@
 
 import { ListItemView } from 'ckeditor5/src/ui';
 
-import type { MentionFeedItem } from '../mention';
+import type { MentionFeedItem } from '../mentionconfig';
 
 import type DomWrapperView from './domwrapperview';
 
