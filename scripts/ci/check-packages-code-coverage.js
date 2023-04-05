@@ -64,7 +64,7 @@ module.exports = function checkPackagesCodeCoverage( {
 	if ( shouldRunFrameworkTests ) {
 		console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
 		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => {
-			checkPackage( packageName, [ ...allowNonFullCoveragePackages, '--source-map' ] );
+			checkPackage( packageName, allowNonFullCoveragePackages, [ '--source-map' ] );
 		} );
 	}
 
