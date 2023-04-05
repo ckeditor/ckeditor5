@@ -27,17 +27,17 @@ As of version 37.0.0 we provide native TypeScript types, hence community types a
 	
 	For example:
   
-	  ```ts
-	  // typings/types.d.ts
+		```ts
+		// typings/types.d.ts
 
-	  declare module 'ckeditor5/src/core' {
-		  export * from 'ckeditor__ckeditor5-core';
-	  }
+		declare module 'ckeditor5/src/core' {
+			export * from 'ckeditor__ckeditor5-core';
+		}
 
-	  declare module 'ckeditor5/src/ui' {
-		  export * from 'ckeditor__ckeditor5-ui';
-	  }
-	  ```
+		declare module 'ckeditor5/src/ui' {
+			export * from 'ckeditor__ckeditor5-ui';
+		}
+		```
 
 2. Replace the community types with native types:
 	- Update any import statements to use the native types instead of the community types
@@ -46,13 +46,13 @@ As of version 37.0.0 we provide native TypeScript types, hence community types a
 
 	For example:
 
-	```ts
-	// Instead of:
-	import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+		```ts
+		// Instead of:
+		import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-	// Do:
-	import { Plugin } from '@ckeditor/ckeditor5-core';
-	```
+		// Do:
+		import { Plugin } from '@ckeditor/ckeditor5-core';
+		```
 
 3. Adjust your `tsconfig.json` to include at least:
 
