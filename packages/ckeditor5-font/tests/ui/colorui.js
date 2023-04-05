@@ -214,10 +214,11 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should apply color from color picker in the configured format', async () => {
-			element = document.createElement( 'div' );
+			// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
+			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			editor = await ClassicTestEditor
+			const editor = await ClassicTestEditor
 				.create( element, {
 					plugins: [
 						Paragraph,
@@ -231,9 +232,8 @@ describe( 'ColorUI', () => {
 				} );
 
 			const spy = sinon.spy( editor, 'execute' );
+			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
-			command = editor.commands.get( 'testColorCommand' );
-			dropdown = editor.ui.componentFactory.create( 'testColor' );
 			dropdown.isOpen = true;
 			dropdown.render();
 
