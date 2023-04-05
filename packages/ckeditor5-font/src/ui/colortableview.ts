@@ -24,7 +24,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 import type { Model } from 'ckeditor5/src/engine';
 
 import DocumentColorCollection from '../documentcolorcollection';
-import { convertToHex } from '../utils';
+import { convertToHex } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 
 import '../../theme/fontcolor.css';
 

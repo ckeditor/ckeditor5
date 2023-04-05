@@ -8,7 +8,7 @@
  */
 
 // @todo - this should be part of the UI library.
-import { convertToHex } from '@ckeditor/ckeditor5-font/src/utils';
+import { convertToHex } from './utils';
 
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -86,6 +86,10 @@ export default class ColorPickerView extends View {
 			this.picker.setAttribute( 'color', this.color );
 
 			this._hexColor = convertColorToCommonHexFormat( this.color );
+		} );
+
+		this.on( 'change:_hexColor', () => {
+			this.color = this._hexColor;
 		} );
 	}
 

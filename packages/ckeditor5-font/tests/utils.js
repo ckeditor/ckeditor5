@@ -7,10 +7,9 @@ import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
 	addColorTableToDropdown,
-	renderDowncastElement,
-	convertColor,
-	convertToHex
+	renderDowncastElement
 } from './../src/utils';
+import { convertToHex, convertColor } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

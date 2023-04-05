@@ -12,12 +12,11 @@ import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusC
 
 import {
 	addColorTableToDropdown,
-	convertColor,
 	type ColorTableDropdownView,
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR,
-	type ColorPickerFormat
 } from '../utils';
+import { convertColor, type ColorPickerFormat } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';

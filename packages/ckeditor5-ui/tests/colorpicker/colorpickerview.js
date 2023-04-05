@@ -150,5 +150,17 @@ describe( 'ColorPickerView', () => {
 				expect( observableSpy.callCount, 'third attempt' ).to.equal( 0 );
 			} );
 		} );
+
+		describe( 'propagation to the color property', () => {
+			it( 'propagates a simple hex value change', () => {
+				view._hexColor = '#f1e2a3';
+
+				expect( view.color ).to.equal( '#f1e2a3' );
+			} );
+
+			describe( 'output format integration', () => {
+				it( 'respects rgb output format', () => {} );
+			} );
+		} );
 	} );
 } );
