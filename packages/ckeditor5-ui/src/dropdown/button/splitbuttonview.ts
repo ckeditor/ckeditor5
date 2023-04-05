@@ -150,6 +150,16 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * @inheritDoc
 	 */
+	declare public ariaLabel?: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public ariaLabelledBy: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale?: Locale ) {
 		super( locale );
 
