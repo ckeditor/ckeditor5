@@ -15,6 +15,7 @@ import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import parse from 'color-parse';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -115,7 +116,7 @@ describe( 'utils', () => {
 						}
 
 						it( `to ${ color }`, () => {
-							expect( convertColor( testColors[ format ], color ) ).to.equal( testColors[ color ] );
+							assertSimilarity( testColors[ color ], convertColor( testColors[ format ], color ) );
 						} );
 					}
 				} );
@@ -143,9 +144,26 @@ describe( 'utils', () => {
 
 			for ( const color in testColors ) {
 				it( `${ color }`, () => {
-					expect( convertToHex( testColors[ color ] ) ).to.equal( '#E64C4C' );
+					assertSimilarity( '#E64C4C', convertToHex( testColors[ color ], color ) );
 				} );
 			}
 		} );
 	} );
 } );
+
+// Some conversions are only provided indirectly (e.g. LAB to Hex is actually LAB -> XYZ -> RGB -> Hex).
+// That causes some rounding errors in between them and some colors are not exactly the same, but "good enough".
+// Let's take that into account and allow for an error margin.
+function assertSimilarity( expected, actual ) {
+	const expectedChannels = parse( expected ).values;
+	const actualChannels = parse( actual ).values;
+
+	for ( let i = 0; i < expectedChannels.values.length; i++ ) {
+		// Silly workaround for conversion to hue 360 being the same as 0.
+		if ( [ 'hsl', 'hwb' ].includes( actualChannels.space ) && actualChannels.values[ 0 ] === 360 ) {
+			actualChannels.values[ 0 ] = 0;
+		}
+
+		expect( Math.abs( expectedChannels.values[ i ] - actualChannels.values[ i ] ) ).to.be.below( 3 );
+	}
+}
