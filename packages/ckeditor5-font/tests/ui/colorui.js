@@ -246,6 +246,37 @@ describe( 'ColorUI', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should fallback to `hsl` format for color picker if config was not provided correctly', async () => {
+			// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			const editor = await ClassicTestEditor
+				.create( element, {
+					plugins: [
+						Paragraph,
+						TestColorPlugin
+					],
+					testColor: Object.assign( {
+						colorPicker: {}
+					}, testColorConfig )
+				} );
+
+			const spy = sinon.spy( editor, 'execute' );
+			const dropdown = editor.ui.componentFactory.create( 'testColor' );
+
+			dropdown.isOpen = true;
+			dropdown.render();
+
+			dropdown.colorTableView.colorPickerView.color = '#a37474';
+
+			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
+
+			element.remove();
+			dropdown.destroy();
+			await editor.destroy();
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;

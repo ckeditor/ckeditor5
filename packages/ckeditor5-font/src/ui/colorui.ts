@@ -15,12 +15,13 @@ import {
 	convertColor,
 	type ColorTableDropdownView,
 	type FONT_BACKGROUND_COLOR,
-	type FONT_COLOR
+	type FONT_COLOR,
+	type ColorPickerOutputFormat
 } from '../utils';
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
-import type { FontColorConfig } from '../fontconfig';
+import type { ColorPickerConfig, FontColorConfig } from '../fontconfig';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -101,7 +102,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( componentConfig.colors! );
 		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = componentConfig.documentColors;
-		const hasColorPicker = componentConfig.colorPicker?.disable !== true;
+		const hasColorPicker = componentConfig.colorPicker !== false;
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -156,7 +157,8 @@ export default class ColorUI extends Plugin {
 						dropdownView.colorTableView!.appendColorPicker();
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
-							const convertedColor = convertColor( newValue, componentConfig.colorPicker?.outputFormat || 'hsl' );
+							const outputFormat = getOutputFormat( componentConfig.colorPicker );
+							const convertedColor = convertColor( newValue, outputFormat );
 
 							editor.execute( this.commandName, {
 								value: convertedColor
@@ -181,5 +183,13 @@ export default class ColorUI extends Plugin {
 
 			return dropdownView;
 		} );
+	}
+}
+
+function getOutputFormat( config: undefined | false | ColorPickerConfig ): ColorPickerOutputFormat {
+	if ( !config || !config.outputFormat ) {
+		return 'hsl';
+	} else {
+		return config.outputFormat;
 	}
 }

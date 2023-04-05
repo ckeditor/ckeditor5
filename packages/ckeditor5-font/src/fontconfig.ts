@@ -156,23 +156,21 @@ export interface FontColorConfig {
 	columns?: number;
 
 	/**
-	 * Configuration of the color picker feature.
+	 * Configuration of the color picker feature. It can be disabled or have
+	 * the output format changed.
 	 */
-	colorPicker?: ColorPickerConfig;
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**
  * Configuration of the color picker feature.
- * It can be set to be disabled (as it is enabled by default) or to output the colors
- * in the selected format.
+ * It can be forced to apply colors in the editor in selected format.
  *
  * @default `{
- * disable: false,
- * outputFormat: 'hsl'
+ * 	outputFormat: 'hsl'
  * }`
  */
 export type ColorPickerConfig = {
-	disable?: boolean;
 	outputFormat?: ColorPickerOutputFormat;
 };
 
