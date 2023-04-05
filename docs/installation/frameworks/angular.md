@@ -73,11 +73,17 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 
 ## Quick start
 
-<info-box>
-	CKEditor 5 packages do not include TypeScript typings yet. With strict mode enabled, you must take care of the typings yourself. Otherwise, you might see the `Could not find a declaration file for module` error. **Please bear in mind that projects generated using Angular CLI have strict mode enabled by default.**
+You can use Angular CLI to create a new Angular project. Use the below command to install it globally.
 
-	For more information, please see [Strict mode project tips](#strict-mode-project-tips).
-</info-box>
+```bash
+npm install -g @angular/cli
+```
+
+It allows you to generate a new project with the following command.
+
+```bash
+ng new ckeditor5-angular-example
+```
 
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
@@ -96,34 +102,53 @@ npm install --save @ckeditor/ckeditor5-build-classic
 Now, add `CKEditorModule` to modules whose components will be using the `<ckeditor>` component in their templates.
 
 ```ts
+// app.module.ts
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
+import { AppComponent } from './app.component';
+
 @NgModule( {
-	imports: [
-		CKEditorModule,
-		// ...
-	],
-	// ...
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    CKEditorModule
+  ],
+  providers: [],
+  bootstrap: [ AppComponent ]
 } )
+export class AppModule { }
+
 ```
 
 Import the editor build in your Angular component and assign it to a `public` property to make it accessible from the template:
 
 ```ts
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// app.component.ts
+
+import { Component } from '@angular/core';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component( {
-	// ...
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: [ './app.component.css' ]
 } )
-export class MyComponent {
-	public Editor = ClassicEditor;
-	// ...
+export class AppComponent {
+  title = 'angular';
+  public Editor = ClassicEditor;
 }
 ```
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
+<!-- app.component.html -->
+
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
@@ -134,26 +159,37 @@ Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 If you want to use the {@link framework/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
 ```ts
-import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+// app.component.ts
+
+import { Component } from '@angular/core';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
-	// ...
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: [ './app.component.css' ]
 } )
-export class MyComponent {
-	public Editor = DecoupledEditor;
+export class AppComponent {
+  title = 'angular';
+  public Editor = DecoupledEditor;
 
-	public onReady( editor ) {
-		editor.ui.getEditableElement().parentElement.insertBefore(
-			editor.ui.view.toolbar.element,
-			editor.ui.getEditableElement()
-		);
-	}
+  public onReady( editor: DecoupledEditor ): void {
+    const element = editor.ui.getEditableElement()!;
+    const parent = element.parentElement!;
+
+    parent.insertBefore(
+      editor.ui.view.toolbar.element!,
+      element
+    );
+  }
 }
 ```
 
 And then, in the template:
 
 ```html
+<!-- app.component.html -->
+
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
@@ -164,6 +200,8 @@ If you want to add more plugins to the existing build or customize something tha
 You should finish the above tutorial with the generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 
 ```ts
+// app.component.ts
+
 import * as Editor from 'path/to/the/ckeditor';
 
 @Component( {
@@ -178,6 +216,8 @@ export class MyComponent {
 Note that to allow importing JavaScript files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you target `ES6` or higher, otherwise you are likely to end up with [a weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
 
 ```json
+// tsconfig.json
+
 "compilerOptions": {
 	"allowJs": true,
 	"target": "es2015"
@@ -212,28 +252,27 @@ Unpack it into you application main directory. The directory with the editor bui
 Then, add the package located in the `ckeditor5` directory as a dependency of your project:
 
 ```
-yarn add file:./ckeditor5
+npm install ./ckeditor5
 ```
 
 Now, import the build in your application:
 
 ```ts
+// app.component.ts
+
 import { Component } from '@angular/core';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
-@Component({
+@Component( {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
-})
-
+} )
 export class AppComponent {
   title = 'customEditor';
   public Editor = Editor;
 }
 ```
-
-When running the application, you might additionally get errors about missing types. You can handle them by setting `"strict": false` in `tsconfig.json` or by [adding a proper type definition](#strict-mode-project-tips).
 
 ### Using the editor with collaboration plugins
 
@@ -247,48 +286,29 @@ For such a scenario we provide a few ready-to-use integrations featuring collabo
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
-### Strict mode project tips
-
-If you have the strict mode set in your project, you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
-
-To fix that, you need to create a TypeScript declaration file and declare modules that miss their types:
-
-```ts
-// typings.d.ts
-
-// You should specify the CKEditor 5 build you use here:
-declare module '@ckeditor/ckeditor5-build-classic' {
-	const ClassicEditorBuild: any;
-
-	export = ClassicEditorBuild;
-}
-```
-
-Unfortunately, CKEditor 5 builds do not ship with corresponding TypeScript typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
-
 ## Integration with `ngModel`
 
 The component implements the [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor) interface and works with the `ngModel`. Here is how to use it:
 
-1. Create some model in your component to share with the editor:
+Create some model in your component to share with the editor:
 
-	```ts
-	@Component( {
-		// ...
-	} )
-	export class MyComponent {
-		public model = {
-			editorData: '<p>Hello, world!</p>'
-		};
-		// ...
-	}
-	```
+```ts
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public model = {
+		editorData: '<p>Hello, world!</p>'
+	};
+	// ...
+}
+```
 
-2. Use the model in the template to enable a two–way data binding:
+Use the model in the template to enable a two–way data binding:
 
-	```html
-	<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
-	```
+```html
+<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
+```
 
 ## Supported `@Input` properties
 
@@ -592,31 +612,32 @@ export class MyComponent {
 
 The CKEditor 5 rich text editor component can be localized in two steps.
 
-### 1. Loading translation files
+### Loading translation files
 
 First, you need to add translation files to the bundle. This step can be achieved in two ways:
 
-* By importing translations for given languages directly in your component file:
+By importing translations for given languages directly in your component file:
 
-	```ts
-	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
-	import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	...
-	```
+```ts
+import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// More imports.
+// ...
+```
 
-* By adding paths to translation files to the `"scripts"` array in `angular.json`:
+By adding paths to translation files to the `"scripts"` array in `angular.json`:
 
-	```json
-	"architect": {
-		"build": {
-			"options": {
-				"scripts": [ "node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js" ]
-			}
+```json
+"architect": {
+	"build": {
+		"options": {
+			"scripts": [ "node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js" ]
 		}
 	}
-	```
+}
+```
 
-### 2. Configuring the language
+### Configuring the language
 
 Then, you need to configure the editor to use the given language:
 
