@@ -11,6 +11,7 @@ import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
+import type ViewCollection from '../viewcollection';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
@@ -38,7 +39,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * List of sliders view of the color picker.
 	 */
-	declare public slidersView: Array<View<HTMLElement>>;
+	declare public slidersView: ViewCollection;
 
 	/**
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
@@ -83,16 +84,7 @@ export default class ColorPickerView extends View {
 		this.picker.setAttribute( 'class', 'hex-color-picker' );
 		this.picker.setAttribute( 'tabindex', '-1' );
 
-		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
-		const sliders = colorPickersChildren.filter( item => item.tagName === 'DIV' );
-
-		const slidersView = sliders.map( slider => {
-			const view = new SliderView( slider );
-
-			return view;
-		} );
-
-		this.slidersView = slidersView;
+		this._createSlidersView();
 
 		if ( this.element ) {
 			this.element.insertBefore( this.picker, this.input.element );
@@ -102,6 +94,23 @@ export default class ColorPickerView extends View {
 			const customEvent = event as CustomEvent;
 			const color = customEvent.detail.value;
 			this._debounceColorPickerEvent( color );
+		} );
+	}
+
+	private _createSlidersView() {
+		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
+		const sliders = colorPickersChildren.filter( item => item.tagName === 'DIV' );
+
+		const slidersView = sliders.map( slider => {
+			const view = new SliderView( slider );
+
+			return view;
+		} );
+
+		this.slidersView = this.createCollection();
+
+		slidersView.forEach( item => {
+			this.slidersView.add( item );
 		} );
 	}
 
@@ -129,6 +138,9 @@ export default class ColorPickerView extends View {
 	}
 }
 
+/**
+ * View abstraction over pointer in color picker.
+ */
 class SliderView extends View {
 	constructor( element: HTMLElement ) {
 		super();
