@@ -295,7 +295,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-Now, your setup with Vite and Vue is complete. You can also check how to configure webpack in the next section or move straight to [Installing plugins](#installing-plugin).
+Now, your setup with Vite and Vue is complete. You can also check how to configure webpack in the next section or move straight to [Installing plugins](#installing-plugins).
 
 ### Webpack
 
