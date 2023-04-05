@@ -5,9 +5,16 @@ Changelog
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+There was an invalid version of the `ckeditor5-collaboration` dependency in the following packages:
 
-Internal changes only (updated dependencies, documentation, etc.).
+* **[@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**
+* **[@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**
+* **[@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**
+* **[@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**
+
+Due to that and the [CKEditor 5 versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html), we release all packages once again.
+
+Check out the highlights of the [v37.0.0 original release](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
 
 ### Released packages
 
