@@ -8,12 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import {
-	createDropdown,
-	normalizeColorOptions,
-	getLocalizedColorOptions,
-	focusChildOnDropdownOpen
-} from 'ckeditor5/src/ui';
+import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import {
 	addColorTableToDropdown,
