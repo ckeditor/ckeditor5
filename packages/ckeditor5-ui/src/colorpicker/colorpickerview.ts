@@ -8,7 +8,7 @@
  */
 
 // @todo - this should be part of the UI library.
-import { convertToHex } from './utils';
+import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerFormat } from './utils';
 
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -19,6 +19,7 @@ import { createLabeledInputText } from '../labeledfield/utils';
 
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
+import ColorGridView from '../colorgrid/colorgridview';
 
 const waitingTime = 150;
 
@@ -57,12 +58,16 @@ export default class ColorPickerView extends View {
 	*/
 	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
 
-	constructor( locale: Locale | undefined ) {
+	declare private _format: ColorPickerFormat;
+
+	constructor( locale: Locale | undefined, config: ColorPickerConfig | undefined ) {
 		super( locale );
 
 		this.set( 'color', '' );
 
 		this.set( '_hexColor', '' );
+
+		this._format = config?.format || 'hsl';
 
 		this.input = this._createInput();
 
@@ -89,7 +94,7 @@ export default class ColorPickerView extends View {
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			this.color = this._hexColor;
+			this.color = convertColor( this._hexColor, this._format );
 		} );
 	}
 

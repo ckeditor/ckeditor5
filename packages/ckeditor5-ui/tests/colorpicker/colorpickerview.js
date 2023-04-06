@@ -16,7 +16,7 @@ describe( 'ColorPickerView', () => {
 
 	beforeEach( () => {
 		locale = new Locale();
-		view = new ColorPickerView( locale );
+		view = new ColorPickerView( locale, { format: 'hex' } );
 		clock = sinon.useFakeTimers();
 		view.render();
 	} );
@@ -80,7 +80,7 @@ describe( 'ColorPickerView', () => {
 
 			view.color = '#ff0000';
 
-			sinon.assert.calledOnce( observableSpy );
+			expect( observableSpy.callCount ).to.equal( 1 );
 		} );
 	} );
 
@@ -159,7 +159,47 @@ describe( 'ColorPickerView', () => {
 			} );
 
 			describe( 'output format integration', () => {
-				it( 'respects rgb output format', () => {} );
+				it( 'respects rgb output format', () => {
+					view._format = 'rgb';
+					view._hexColor = '#001000';
+
+					expect( view.color ).to.equal( 'rgb( 0, 16, 0 )' );
+				} );
+
+				it( 'respects hex output format', () => {
+					view._format = 'hex';
+					view._hexColor = '#00f';
+
+					expect( view.color ).to.equal( '#0000ff' );
+				} );
+
+				it( 'respects hsl output format', () => {
+					view._format = 'hsl';
+					view._hexColor = '#3D9BFF';
+
+					expect( view.color ).to.equal( 'hsl( 211, 100%, 62% )' );
+				} );
+
+				it( 'respects hwb output format', () => {
+					view._format = 'hwb';
+					view._hexColor = '#5cb291';
+
+					expect( view.color ).to.equal( 'hwb( 157, 36, 30 )' );
+				} );
+
+				it( 'respects lab output format', () => {
+					view._format = 'lab';
+					view._hexColor = '#bfe972';
+
+					expect( view.color ).to.equal( 'lab( 87% -32 53 )' );
+				} );
+
+				it( 'respects lch output format', () => {
+					view._format = 'lch';
+					view._hexColor = '#be0909';
+
+					expect( view.color ).to.equal( 'lch( 40% 81 39 )' );
+				} );
 			} );
 		} );
 	} );

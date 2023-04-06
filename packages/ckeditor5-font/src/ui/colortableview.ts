@@ -24,7 +24,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 import type { Model } from 'ckeditor5/src/engine';
 
 import DocumentColorCollection from '../documentcolorcollection';
-import { convertToHex } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
+import { type ColorPickerConfig, convertToHex } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 
 import '../../theme/fontcolor.css';
 
@@ -313,12 +313,12 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker(): void {
+	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
 		if ( this.colorPickerView ) {
 			return;
 		}
 
-		const colorPickerView = new ColorPickerView( this.locale );
+		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 

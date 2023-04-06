@@ -186,7 +186,7 @@ describe( 'ColorUI', () => {
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 
-			expect( colorPickerView.color ).to.equal( '#123123' );
+			expect( colorPickerView.color ).to.equal( 'hsl( 154, 45%, 13% )' );
 
 			dropdown.element.remove();
 		} );
@@ -200,7 +200,7 @@ describe( 'ColorUI', () => {
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 
-			expect( colorPickerView.color ).to.equal( '#55ff00' );
+			expect( colorPickerView.color ).to.equal( 'hsl( 100, 100%, 50% )' );
 
 			dropdown.element.remove();
 		} );

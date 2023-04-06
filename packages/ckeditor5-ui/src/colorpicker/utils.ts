@@ -15,6 +15,24 @@ import { default as parse } from 'color-parse';
 import * as convert from 'color-convert';
 
 /**
+ * Color formats handled by color converter.
+ */
+export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+
+/**
+ * Configuration of the color picker feature.
+ *
+ * It can be forced to apply colors in the editor in a particular format.
+ *
+ * @default `{
+ * 	format: 'hsl'
+ * }`
+ */
+export type ColorPickerConfig = {
+	format?: ColorPickerFormat;
+};
+
+/**
  * Parses and converts the color string to requested format. Handles variety of color spaces
  * like `hsl`, `hex` or `rgb`.
  *
@@ -43,11 +61,6 @@ export function convertColor( color: string, outputFormat: ColorPickerFormat ): 
 
 	return formatColorOutput( convertedColorChannels, outputFormat );
 }
-
-/**
- * Color formats handled by color converter.
- */
-export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
 
 /**
  * Converts a color string to hex format.

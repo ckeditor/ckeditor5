@@ -14,13 +14,13 @@ import {
 	addColorTableToDropdown,
 	type ColorTableDropdownView,
 	type FONT_BACKGROUND_COLOR,
-	type FONT_COLOR,
+	type FONT_COLOR
 } from '../utils';
-import { convertColor, type ColorPickerFormat } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
+import { convertColor, type ColorPickerFormat, type ColorPickerConfig } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
-import type { ColorPickerConfig, FontColorConfig } from '../fontconfig';
+import type { FontColorConfig } from '../fontconfig';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -153,7 +153,8 @@ export default class ColorUI extends Plugin {
 					dropdownView.colorTableView!.appendGrids();
 
 					if ( hasColorPicker ) {
-						dropdownView.colorTableView!.appendColorPicker();
+						// @todo: remove duplication of format: hsl default assignment (it's also in the colorpickerview class).
+						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || { format: 'hsl' } );
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
 							const outputFormat = getOutputFormat( componentConfig.colorPicker );
