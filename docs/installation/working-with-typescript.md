@@ -17,6 +17,10 @@ CKEditor 5 is built using TypeScript and so has native types definition. All the
 Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
 </info-box>
 
+<info-box warning>
+Since version `37.0.0` CKEditor 5 has built-in type definitions. If you have used type definitions created by the community, you will need to replace them with native types. {@link updating/update-to-37 Check the guide}.
+</info-box>
+
 ## Why use CKEditor 5 with TypeScript?
 
 Using TypeScript comes with some advantages:
