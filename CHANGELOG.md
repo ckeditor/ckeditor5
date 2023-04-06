@@ -5,7 +5,7 @@ Changelog
 
 ### Known bugs
 
-**⚠️ After the release we noticed a bug that may affect integrations using comments feature without real-time collaboration!**
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
 
 Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
 
@@ -121,7 +121,7 @@ Other releases:
 
 ### Known bugs
 
-**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration!**
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
 
 Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
 
