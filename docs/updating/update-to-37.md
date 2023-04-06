@@ -22,8 +22,8 @@ Listed below are the most important changes that require your attention when upg
 As of version 37.0.0 we provide native TypeScript types, hence community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here is how to do it:
 
 1. Remove community types:
-	- Remove any `@types/ckeditor__ckeditor5-*` packages used
-	- Remove any augmentation of types you had in your project
+	* Remove any `@types/ckeditor__ckeditor5-*` packages used
+	* Remove any augmentation of types you had in your project
 	
 	For example:
   
@@ -40,9 +40,9 @@ As of version 37.0.0 we provide native TypeScript types, hence community types a
 	  ```
 
 2. Replace the community types with native types:
-	- Update any import statements to use the native types instead of the community types
-	- Update any code that references the community types to use the native types
-	- Make sure that all imports are from package entrypoint, instead of a path to a module.
+	* Update any import statements to use the native types instead of the community types
+	* Update any code that references the community types to use the native types
+	* Make sure that all imports are from package entrypoint, instead of a path to a module.
 
 	For example:
 
@@ -73,7 +73,79 @@ As of version 37.0.0 we provide native TypeScript types, hence community types a
 	You can choose other options for you own project, but they are not guaranteed to work.
 
 4. Test your project:
-	- Ensure that the changes did not introduce any new errors or issues
-	- Verify that the project still functions as intended
+	* Ensure that the changes did not introduce any new errors or issues
+	* Verify that the project still functions as intended
 
 We want to thank our community for providing the types so far!
+
+## Comments archive
+
+Release v37.0.0 introduces the comments archive feature. Below you will find notes regarding the feature as well as migration tips in case of breaking changes that may affect some integrations.
+
+Note, that the [documentation for the previous editor version (36.0.1)](https://ckeditor.com/docs/ckeditor5/36.0.1/) is still available if you would like to compare the differences.
+
+### General notes
+
+* Comments archive is enabled by default and cannot be turned off
+* You need to add the `commentsArchive` button to the toolbar to get access to the comments archive panel
+* The UI in comment annotation has changed. The remove and edit buttons have been moved to a dropdown. A new button for resolving a comment thread was added
+* Markers for resolved comment threads are still preserved in the document data. This allows for re-opening (unresolving) a comment thread. Comment threads can be re-opened only if their related marker is still present in the content
+* When a commented part of the document is removed from the document, the related comment thread is resolved and moved to the archive
+* In integrations using `Context` and multiple editor instances, each editor instance will display only its own comment threads in the comments archive panel
+* Comment threads that were removed before comments archive was introduced will not be shown in the archive
+* The undo feature no longer undoes creating or removing a comment thread
+* The undo feature no longer undoes resolving or re-opening a comment thread
+
+### Breaking changes
+
+#### Non-real-time collaboration integration
+
+This concerns only applications that use the comments feature without real-time collaboration and provide their own integration.
+
+##### "Load and save" integration
+
+Additional data for comment threads has to be stored and passed to `CommentsRepository#addCommentThread()` when adding comments data. Make sure that you correctly store the new properties: `resolvedBy`, `resolvedAt`, `context`, and `attributes`. This may require changes in your database, depending on your integration.
+
+##### Adapter integration
+
+Comment thread becomes an actual data entity, with its own properties, that need to be saved in the database. This requires changes in the adapter and may require changes in your database, depending on your integration.
+
+New methods are required in the [comments adapter](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_comments_commentsrepository-CommentsAdapter.html):
+
+* `addCommentThread()`
+* `updateCommentThread()`
+* `resolveCommentThread()`
+* `reopenCommentThread()`
+* `removeCommentThread()` &ndash; it is now required (it was optional before).
+
+Additionally, `getCommentThread()` should be updated to resolve with an object that includes new comment thread properties: `resolvedBy`, `resolvedAt`, `context`, and `attributes`.
+
+You may also review the updated API docs for the {@link module:comments/comments/commentsrepository~CommentsAdapter comments adapter}.
+
+#### Custom views and templates
+
+This concerns only applications that customize comment and comment threads views and templates.
+
+Multiple CSS rules have been changed, so make sure that your custom views display properly. Additionally, comments annotations may be now displayed in the comments archive dropdown which is available from the toolbar. This means that your custom views may be affected by new CSS rules (most notably, CSS reset rules). Make sure that your custom views display properly inside the comments archive dropdown.
+
+Comments and comment threads views and templates have substantially changed due to the introduction of the comments archive. These changes may be incompatible with your custom views or templates. Please review the following:
+
+* {@link module:comments/comments/ui/view/commentthreadview~CommentThreadView `CommentThreadView` template}
+* {@link module:comments/comments/ui/view/commentview~CommentView#function-getTemplate `CommentView` template}
+* updated {@link features/annotations-custom-template custom templates} and {@link features/annotations-custom-view custom views} guides
+* `CommentThreadView` introduces `resolveButton`, which fires a new `resolveCommentThread` event. If you have a completely custom thread view (inheriting directly from `BaseCommentThreadView`) make sure to implement a UI element that will fire this event on `CommentThreadView`
+
+Finally, we introduced a special type of comment &ndash; "system comment" &ndash; which looks like a simple comment and displays system messages, such as "Comment thread was resolved" (displayed for a resolved comment thread). These comments are created using `CommentView` (or a defined custom view). A system comment has the `#isSystemComment` property set to `true`. You may use it to recognize a system comment and provide necessary customization (for example, system comment should not have action buttons). System comment receives a temporary comment model. Note, that the system comment model's `attributes` property is set to an empty object. Make sure that your custom comment view correctly handles system comments.
+
+#### Comments outside editor
+
+This concerns only these applications which use comments outside editor feature.
+
+New events, properties, and changes in the API has to be handled. Please review the updated guide for {@link features/comments-outside-editor comments outside editor} and compare with your current integration.
+
+Notable changes include, but are not limited to:
+
+* handling new `CommentsRepository` events: `resolveCommentThread` and `reopenCommentThread`
+* new `context` and `isResolvable` parameters in {@link module:comments/comments/commentsrepository~CommentsRepository#openNewCommentThread `CommentsRepository#openNewCommentThread()`} call
+
+Keep in mind that currently, for comments outside the editor, the resolved comment threads are not displayed in the archive panel.
