@@ -70,6 +70,7 @@
     "@ckeditor/ckeditor5-select-all": "^37.0.1",
     "@ckeditor/ckeditor5-source-editing": "^37.0.1",
     "@ckeditor/ckeditor5-special-characters": "^37.0.1",
+    "@ckeditor/ckeditor5-style": "^37.0.1",
     "@ckeditor/ckeditor5-table": "^37.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^37.0.1",
     "@ckeditor/ckeditor5-typing": "^37.0.1",
