@@ -108,10 +108,10 @@ export default class ColorPickerView extends View {
 	// Creates input for defining custom colors in color picker.
 	private _createInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
-		const locale = this.locale;
+		const { t } = this.locale!;
 
 		labeledInput.set( {
-			label: locale!.t( 'HEX' ),
+			label: t( 'HEX' ),
 			class: 'color-picker-hex-input'
 		} );
 
