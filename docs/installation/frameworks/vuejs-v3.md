@@ -22,7 +22,7 @@ CKEditor 5 consists of the {@link installation/getting-started/predefined-builds
 
 The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
 
-Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
+Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-5-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
 	The {@link features/watchdog watchdog feature} is available for the {@link installation/frameworks/react React} and {@link installation/frameworks/angular Angular} integrations, but is not supported in Vue yet.
@@ -38,7 +38,7 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 npm install --save @ckeditor/ckeditor5-vue @ckeditor/ckeditor5-build-classic
 ```
 
-You now need to enable the CKEditor component in your application. There are 2 ways to do so:
+You now need to enable the CKEditor 5 component in your application. There are 2 ways to do so:
 
 * [via a direct script include](#direct-script-include),
 * [by using ES6 module imports](#using-es6-modules).
@@ -47,7 +47,7 @@ Optionally, you can [use the component locally](#using-the-component-locally).
 
 ### Direct script include
 
-This is the quickest way to start using CKEditor in your project. Assuming [Vue is installed](https://v3.vuejs.org/guide/installation.html), include the `<script>` tags for the WYSIWYG editor component and the build:
+This is the quickest way to start using CKEditor 5 in your project. Assuming [Vue is installed](https://v3.vuejs.org/guide/installation.html), include the `<script>` tags for the WYSIWYG editor component and the build:
 
 ```html
 <script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
@@ -61,7 +61,7 @@ Vue.createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
+	Instead of calling the `use()` method to install CKEditor 5 component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Use the `<ckeditor>` component in your template:
@@ -108,7 +108,7 @@ createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
+	Instead of calling the `use()` method to install CKEditor 5 component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 The following example showcases a single–file component of the application. Use the `<ckeditor>` component in your template:
@@ -148,7 +148,7 @@ The following example showcases a single–file component of the application. Us
 
 ## Using the component locally
 
-If you do not want the CKEditor component to be enabled globally, you can skip the `use()` part entirely. Instead, configure it in the `components` property of your view.
+If you do not want the CKEditor 5 component to be enabled globally, you can skip the `use()` part entirely. Instead, configure it in the `components` property of your view.
 
 <info-box>
 	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as [direct script includes](#direct-script-include) or [ES6 module imports](#using-es6-modules).
@@ -233,7 +233,7 @@ Finally, import the build in your application:
 </script>
 ```
 
-## Using CKEditor from source
+## Using CKEditor 5 from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/index CKEditor 5 Framework}. You have two options regarding building your application: Vite or webpack.
 
@@ -249,7 +249,7 @@ This command will install and execute `create-vue`, the official project scaffol
 
 #### Installing necessary packages
 
-You need two packages to use CKEditor from source with Vue and Vite: the official Vue component and the Vite plugin.
+You need two packages to use CKEditor 5 from source with Vue and Vite: the official Vue component and the Vite plugin.
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
@@ -306,7 +306,7 @@ npm install -g @vue/cli
 ```
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
+	Learn more about building CKEditor 5 from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
 
 To create a new project, run:
@@ -319,7 +319,7 @@ You can choose the default preset for quick setup. You can also "manually select
 
 #### Configuring `vue.config.js`
 
-To build CKEditor with your application, certain changes must be made to the default project configuration.
+To build CKEditor 5 with your application, certain changes must be made to the default project configuration.
 
 First, install the necessary dependencies:
 
@@ -343,7 +343,7 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
-	// The source of CKEditor is encapsulated in ES6 modules. By default, the code
+	// The source of CKEditor 5 is encapsulated in ES6 modules. By default, the code
 	// from the node_modules directory is not transpiled, so you must explicitly tell
 	// the CLI tools to transpile JavaScript files in all ckeditor5-* modules.
 	transpileDependencies: [
@@ -352,7 +352,7 @@ module.exports = {
 
 	configureWebpack: {
 		plugins: [
-			// CKEditor needs its own plugin to be built using webpack.
+			// CKEditor 5 needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
 				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
 				language: 'en',
@@ -364,8 +364,8 @@ module.exports = {
 	},
 
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
-	//	1. The icons used by CKEditor must be loaded using raw-loader,
-	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
+	//	1. The icons used by CKEditor 5 must be loaded using raw-loader,
+	//	2. The CSS used by CKEditor 5 must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
 		// (1.) To handle the editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
@@ -446,7 +446,7 @@ createApp( App ).use( CKEditor ).mount( '#app' );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
+	Instead of calling the `use()` method to install CKEditor 5 component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
@@ -462,7 +462,7 @@ Now all you need to do is specify the list of rich text editor options (**includ
 
 <script>
 	// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
-	// Since we're building CKEditor from source, we use the source version of ClassicEditor.
+	// Since we're building CKEditor 5 from source, we use the source version of ClassicEditor.
 	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -529,7 +529,7 @@ Then, besides specifying the list of rich text editor options, add the `lang` pr
 
 <script lang="ts">
   // ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
-  // Since we're building CKEditor from source, we use the source version of ClassicEditor.
+  // Since we're building CKEditor 5 from source, we use the source version of ClassicEditor.
   import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
   import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -658,7 +658,7 @@ For more information, please refer to the {@link features/ui-language Setting th
 
 ### CKEditor 5 built from source
 
-Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorTranslationsPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) to localize your editor:
+Using the editor [built from source](#using-ckeditor-5-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorTranslationsPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) to localize your editor:
 
 ```js
 // vue.config.js
@@ -673,7 +673,7 @@ module.exports = {
 
 	configureWebpack: {
 		plugins: [
-			// CKEditor needs its own plugin to be built using webpack.
+			// CKEditor 5 needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
 				// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 				language: 'de',
@@ -722,7 +722,7 @@ This directive specifies the editor to be used by the component. It must directl
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link installation/advanced/using-two-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-5-from-source) or use a {@link installation/advanced/using-two-editors "super build"}.
 </info-box>
 
 ### `tag-name`
