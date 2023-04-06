@@ -135,7 +135,15 @@ export default class ColorPickerView extends View {
 			class: 'color-picker-hex-input'
 		} );
 
-		labeledInput.fieldView.bind( 'value' ).to( this, 'color' );
+		labeledInput.fieldView.bind( 'value' ).to( this, 'color', pickerColor => {
+			if ( labeledInput.isFocused ) {
+				// Text field shouldn't be updated with color change if the text field is focused.
+				// Imagine user typing hex code and getting the value of field changed.
+				return labeledInput.fieldView.value;
+			} else {
+				return pickerColor;
+			}
+		} );
 
 		labeledInput.fieldView.on( 'input', () => {
 			const inputValue = labeledInput.fieldView.element!.value;

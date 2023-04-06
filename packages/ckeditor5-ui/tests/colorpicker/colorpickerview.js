@@ -39,12 +39,46 @@ describe( 'ColorPickerView', () => {
 		} );
 	} );
 
+	describe( 'color text input field', () => {
+		it( 'should get value updated if picker\'s state property was changed', () => {
+			view.color = '#0000ff';
+
+			clock.tick( 200 );
+
+			expect( view.input.fieldView.value ).to.equal( '#0000ff' );
+		} );
+
+		it( 'should update color property after getting an input', () => {
+			view.input.fieldView.value = '#ff0000';
+			view.input.fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#ff0000' );
+		} );
+
+		// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
+		it.skip( 'should not update color property during input editing when focused', () => {
+			view.color = '#000000';
+
+			view.input.isFocused = true;
+			view.input.fieldView.value = '#ffffff';
+			view.input.fieldView.fire( 'input' );
+
+			view.color = '#aaaaaa';
+
+			clock.tick( 200 );
+
+			expect( view.input.fieldView.value ).to.equal( '#ffffff' );
+		} );
+	} );
+
 	describe( 'render()', () => {
 		it( 'should render color picker component', () => {
 			expect( view.picker.tagName ).to.equal( document.createElement( 'hex-color-picker' ).tagName );
 		} );
 
-		it( 'should update color state in input after changes in color picker', () => {
+		it( 'should listen to 3rd party picker color change event', () => {
 			const event = new CustomEvent( 'color-changed', {
 				detail: {
 					value: '#ff0000'
@@ -55,17 +89,8 @@ describe( 'ColorPickerView', () => {
 
 			clock.tick( 200 );
 
-			expect( view.input.fieldView.value ).to.equal( '#ff0000' );
+			expect( view.color ).to.equal( '#ff0000' );
 		} );
-	} );
-
-	it( 'should update color property after changes in input', () => {
-		view.input.fieldView.value = '#ff0000';
-		view.input.fieldView.fire( 'input' );
-
-		clock.tick( 200 );
-
-		expect( view.color ).to.equal( '#ff0000' );
 	} );
 
 	describe( 'color property', () => {
