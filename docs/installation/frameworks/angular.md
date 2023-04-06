@@ -73,23 +73,15 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 
 ## Quick start
 
-You can use Angular CLI to create a new Angular project. Use the below command to install it globally.
-
-```bash
-npm install -g @angular/cli
-```
-
-It allows you to generate a new project with the following command.
-
-```bash
-ng new ckeditor5-angular-example
-```
-
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-angular
 ```
+
+<info-box>
+	If you don't have an existing project, you can use [Angular CLI](https://angular.io/cli) to create a new one.
+</info-box>
 
 Install one of the {@link installation/getting-started/predefined-builds predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
