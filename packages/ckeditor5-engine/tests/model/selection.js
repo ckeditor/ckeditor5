@@ -16,6 +16,8 @@ import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
+import { stringifyBlocks } from './_utils/utils';
+
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;
 
@@ -1131,95 +1133,6 @@ describe( 'Selection', () => {
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
-
-		describe( '#984', () => {
-			it( 'does not return the last block if none of its content is selected', () => {
-				setData( model, '<p>[a</p><p>b</p><p>]c</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
-			} );
-
-			it( 'returns no blocks if selection spanning two blocks has no content', () => {
-				setData( model, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
-			} );
-
-			it( 'does not return the last block if none of its content is selected (nested case)', () => {
-				setData( model, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
-			} );
-
-			// Like a super edge case, we can live with this behavior as I don't even know what we could expect here
-			// since only the innermost block is considerd a block to return (so the <nB>b...</nB> needs to be ignored).
-			it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
-				setData( model, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
-			} );
-
-			it( 'returns the last block if at least one of its child nodes is selected', () => {
-				setData( model, '<p>[a</p><p>b</p><p><imageBlock></imageBlock>]c</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
-			} );
-
-			// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
-			it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
-				setData( model, '<p>[a</p><p>b</p><p><imageBlock>x]</imageBlock>c</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
-			} );
-
-			it(
-				'does not return the last block if at least one of its child nodes is selected ' +
-				'(end in an inline element, no content selected)',
-				() => {
-					setData( model, '<p>[a</p><p>b</p><p><imageBlock>]x</imageBlock>c</p>' );
-
-					expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
-				}
-			);
-		} );
-
-		describe( '#11585', () => {
-			it( 'does not return the first block if none of its contents is selected', () => {
-				setData( model, '<p>a[</p><p>b</p><p>c]</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
-			} );
-
-			it( 'returns the first block if at least one of its child nodes is selected', () => {
-				setData( model, '<p>a[<imageBlock></imageBlock></p><p>b</p><p>c]</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
-			} );
-
-			it( 'returns the block if it has a collapsed selection at the beginning', () => {
-				setData( model, '<p>[]a</p><p>b</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
-			} );
-
-			it( 'returns the block if it has a collapsed selection at the end', () => {
-				setData( model, '<p>a[]</p><p>b</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
-			} );
-
-			it( 'does not return first and last blocks if no content is selected', () => {
-				setData( model, '<p>a[</p><p>]b</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
-			} );
-
-			it( 'returns the first and last blocks if no content is selected but both blocks are empty', () => {
-				setData( model, '<p>[</p><p>]</p>' );
-
-				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p', 'p' ] );
-			} );
-		} );
 	} );
 
 	describe( 'attributes interface', () => {
@@ -1395,21 +1308,4 @@ describe( 'Selection', () => {
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 	} );
-
-	// Map all elements to names. If element contains child text node it will be appended to name with '#'.
-	function stringifyBlocks( elements ) {
-		return Array.from( elements ).map( el => {
-			const name = el.name;
-
-			let innerText = '';
-
-			for ( const child of el.getChildren() ) {
-				if ( child.is( '$text' ) ) {
-					innerText += child.data;
-				}
-			}
-
-			return innerText.length ? `${ name }#${ innerText }` : name;
-		} );
-	}
 } );
