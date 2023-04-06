@@ -110,7 +110,7 @@ Additional data for comment threads has to be stored and passed to `CommentsRepo
 
 Comment thread becomes an actual data entity, with its own properties, that need to be saved in the database. This requires changes in the adapter and may require changes in your database, depending on your integration.
 
-New methods are required in the [comments adapter](https://ckeditor.com/docs/ckeditor5/latest/api/module_comments_comments_commentsrepository-CommentsAdapter.html):
+New methods are required in the {@link module:comments/comments/commentsrepository~CommentsAdapter comments adapter}:
 
 * `addCommentThread()`
 * `updateCommentThread()`
