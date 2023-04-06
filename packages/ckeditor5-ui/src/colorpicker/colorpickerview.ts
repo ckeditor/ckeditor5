@@ -59,14 +59,14 @@ export default class ColorPickerView extends View {
 
 	declare private _format: ColorPickerFormat;
 
-	constructor( locale: Locale | undefined, config: ColorPickerConfig | undefined ) {
+	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
 		super( locale );
 
 		this.set( 'color', '' );
 
 		this.set( '_hexColor', '' );
 
-		this._format = config?.format || 'hsl';
+		this._format = config.format || 'hsl';
 
 		this.input = this._createInput();
 

@@ -57,7 +57,13 @@ export function convertColor( color: string, outputFormat: ColorPickerFormat ): 
 	}
 
 	// @ts-ignore
-	const convertedColorChannels: Array<number> = convert[ colorObject.space ][ outputFormat ]( colorObject.values );
+	const conversionFunction = convert[ colorObject.space ][ outputFormat ];
+
+	if ( !conversionFunction ) {
+		return '';
+	}
+
+	const convertedColorChannels: Array<number> = conversionFunction( colorObject.values );
 
 	return formatColorOutput( convertedColorChannels, outputFormat );
 }
@@ -90,8 +96,8 @@ export function convertToHex( color: string ): string {
 /**
  * Formats the passed color channels according to the requested format.
  *
- * @param format
  * @param values
+ * @param format
  * @returns A color string.
  */
 function formatColorOutput( values: Array<number> | string, format: ColorPickerFormat ): string {

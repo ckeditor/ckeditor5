@@ -37,6 +37,11 @@ describe( 'ColorPickerView', () => {
 			const input = view.element.children[ 1 ];
 			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
 		} );
+
+		it( 'assigns a proper default format value', () => {
+			const pickerView = new ColorPickerView( locale, {} );
+			expect( pickerView._format ).to.equal( 'hsl' );
+		} );
 	} );
 
 	describe( 'color text input field', () => {

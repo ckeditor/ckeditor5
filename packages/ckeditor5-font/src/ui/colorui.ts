@@ -157,8 +157,7 @@ export default class ColorUI extends Plugin {
 					dropdownView.colorTableView!.appendGrids();
 
 					if ( hasColorPicker ) {
-						// @todo: remove duplication of format: hsl default assignment (it's also in the colorpickerview class).
-						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || { format: 'hsl' } );
+						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
 							editor.execute( this.commandName, {
