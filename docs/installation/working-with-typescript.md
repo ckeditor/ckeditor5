@@ -18,7 +18,7 @@ Using TypeScript is just an option. If you don't need its features, you can cont
 </info-box>
 
 <info-box warning>
-Since version `37.0.0` CKEditor 5 has built-in type definitions. If you have used type definitions created by the community, you will need to replace them with native types. {@link updating/update-to-37 Check the guide}.
+Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
 </info-box>
 
 ## Why use CKEditor 5 with TypeScript?
