@@ -3,6 +3,21 @@ Changelog
 
 ## [37.0.1](https://github.com/ckeditor/ckeditor5/compare/v37.0.0...v37.0.1) (2023-04-05)
 
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations using comments feature without real-time collaboration!**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
+
 ### Release highlights
 
 There was an invalid version of the `ckeditor5-collaboration` dependency in the following packages:
@@ -103,6 +118,21 @@ Other releases:
 
 
 ## [37.0.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0) (2023-04-05)
+
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration!**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
 
 ### Release highlights
 
