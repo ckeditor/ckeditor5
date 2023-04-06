@@ -19,7 +19,6 @@ import { createLabeledInputText } from '../labeledfield/utils';
 
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';
-import ColorGridView from '../colorgrid/colorgridview';
 
 const waitingTime = 150;
 
@@ -88,7 +87,7 @@ export default class ColorPickerView extends View {
 
 		// Sets color in the picker if color was updated.
 		this.on( 'change:color', () => {
-			const convertedColor = convertColor( this.color, this._format )
+			const convertedColor = convertColor( this.color, this._format );
 
 			if ( convertedColor != this.color ) {
 				this.color = convertedColor;

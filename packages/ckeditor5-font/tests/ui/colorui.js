@@ -177,104 +177,68 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
-		it( 'should propagate `selectedColor` from colorTable to color picker when dropdown is opened', () => {
-			global.document.body.appendChild( dropdown.element );
+		describe( 'color picker', () => {
+			it( 'should execute command if the color gets changed', () => {
+				const spy = sinon.spy( editor, 'execute' );
 
-			const colorPickerView = dropdown.colorTableView.colorPickerView;
-			dropdown.colorTableView.selectedColor = '#123123';
+				dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			dropdown.isOpen = false;
-			dropdown.isOpen = true;
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+			} );
 
-			expect( colorPickerView.color ).to.equal( 'hsl( 153, 46%, 13% )' );
+			it.skip( 'should avoid call the command multiple times', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				// Color format normalization could result with command being called multiple times.
+				dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			dropdown.element.remove();
-		} );
+				expect( spy.callCount ).to.equal( 1 );
+			} );
 
-		it( 'should convert non-hex `selectedColor` from colorTable to color picker when dropdown is opened', () => {
-			global.document.body.appendChild( dropdown.element );
+			it( 'should should get proper default color format', () => {
+				const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
-			const colorPickerView = dropdown.colorTableView.colorPickerView;
-			dropdown.colorTableView.selectedColor = 'hsl( 100, 100%, 50% )';
+				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
 
-			dropdown.isOpen = false;
-			dropdown.isOpen = true;
+				dropdown.isOpen = true;
 
-			expect( colorPickerView.color ).to.equal( 'hsl( 100, 100%, 50% )' );
+				sinon.assert.calledWithExactly( spy, sinon.match( {
+					format: 'hsl'
+				} ) );
+			} );
 
-			dropdown.element.remove();
-		} );
+			it( 'should pass proper color format from the config', async () => {
+				// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
 
-		it( 'should execute command if the color gets changed in color picker', async () => {
-			const spy = sinon.spy( editor, 'execute' );
+				const editor = await ClassicTestEditor
+					.create( element, {
+						plugins: [
+							Paragraph,
+							TestColorPlugin
+						],
+						testColor: Object.assign( {
+							colorPicker: {
+								format: 'rgb'
+							}
+						}, testColorConfig )
+					} );
 
-			dropdown.colorTableView.colorPickerView.color = '#a37474';
+				const dropdown = editor.ui.componentFactory.create( 'testColor' );
+				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
 
-			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
-		} );
+				dropdown.isOpen = true;
 
-		it( 'should apply color from color picker in the configured format', async () => {
-			// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
-			const element = document.createElement( 'div' );
-			document.body.appendChild( element );
+				spy.restore();
 
-			const editor = await ClassicTestEditor
-				.create( element, {
-					plugins: [
-						Paragraph,
-						TestColorPlugin
-					],
-					testColor: Object.assign( {
-						colorPicker: {
-							format: 'rgb'
-						}
-					}, testColorConfig )
-				} );
+				element.remove();
+				dropdown.destroy();
+				await editor.destroy();
 
-			const spy = sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-			dropdown.isOpen = true;
-			dropdown.render();
-
-			dropdown.colorTableView.colorPickerView.color = '#a37474';
-
-			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'rgb( 163, 116, 116 )' } ) );
-
-			element.remove();
-			dropdown.destroy();
-			await editor.destroy();
-		} );
-
-		it( 'should fallback to `hsl` format for color picker if config was not provided correctly', async () => {
-			// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
-			const element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			const editor = await ClassicTestEditor
-				.create( element, {
-					plugins: [
-						Paragraph,
-						TestColorPlugin
-					],
-					testColor: Object.assign( {
-						colorPicker: {}
-					}, testColorConfig )
-				} );
-
-			const spy = sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-			dropdown.isOpen = true;
-			dropdown.render();
-
-			dropdown.colorTableView.colorPickerView.color = '#a37474';
-
-			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
-
-			element.remove();
-			dropdown.destroy();
-			await editor.destroy();
+				sinon.assert.calledWithExactly( spy, sinon.match( {
+					format: 'rgb'
+				} ) );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {

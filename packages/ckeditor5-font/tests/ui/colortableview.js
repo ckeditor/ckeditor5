@@ -175,7 +175,7 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 
-		it( 'binds picker\'s selected color to the selected color', () => {
+		it( 'binds container\'s selected color to the color picker\'s color', () => {
 			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
 			expect( colorTableView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
 		} );
