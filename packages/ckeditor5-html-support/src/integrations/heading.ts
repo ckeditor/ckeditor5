@@ -79,11 +79,7 @@ export default class HeadingElementSupport extends Plugin {
 	 * Removes css classes from "htmlAttributes" of new paragraph created when hitting "enter" in heading.
 	 */
 	private removeClassesOnEnter( editor: Editor, options: Array<HeadingOption> ): void {
-		const enterCommand = editor.commands.get( 'enter' );
-
-		if ( !enterCommand ) {
-			return;
-		}
+		const enterCommand = editor.commands.get( 'enter' )!;
 
 		this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
