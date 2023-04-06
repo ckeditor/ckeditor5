@@ -680,5 +680,9 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_cmd">wsc_cmd</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customDictionaryIds">wsc_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customLoaderScript">wsc_customLoaderScript</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customerId">wsc_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_height">wsc_height</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_lang">wsc_lang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_left">wsc_left</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_top">wsc_top</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_userDictionaryName">wsc_userDictionaryName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_width">wsc_width</a></td>
+			<td>The spell and grammar checking functionality for CKEditor 5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
+		</tr>
 	</tbody>
 </table>
