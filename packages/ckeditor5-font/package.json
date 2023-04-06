@@ -12,7 +12,6 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "^36.0.1",
     "ckeditor5": "^36.0.1"
   },
   "devDependencies": {
@@ -24,6 +23,7 @@
     "@ckeditor/ckeditor5-paragraph": "^36.0.1",
     "@ckeditor/ckeditor5-table": "^36.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^36.0.1",
+    "@ckeditor/ckeditor5-ui": "^36.0.1",
     "@ckeditor/ckeditor5-utils": "^36.0.1",
     "color-parse": "1.4.2",
     "typescript": "^4.8.4",

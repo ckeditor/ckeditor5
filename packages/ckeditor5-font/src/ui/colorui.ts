@@ -8,7 +8,12 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
+import {
+	createDropdown,
+	normalizeColorOptions,
+	getLocalizedColorOptions,
+	focusChildOnDropdownOpen
+} from 'ckeditor5/src/ui';
 
 import {
 	addColorTableToDropdown,
@@ -16,7 +21,6 @@ import {
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils';
-import { convertColor, type ColorPickerFormat, type ColorPickerConfig } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 import type ColorTableView from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
@@ -180,13 +184,5 @@ export default class ColorUI extends Plugin {
 
 			return dropdownView;
 		} );
-	}
-}
-
-function getOutputFormat( config: undefined | false | ColorPickerConfig ): ColorPickerFormat {
-	if ( !config || !config.format ) {
-		return 'hsl';
-	} else {
-		return config.format;
 	}
 }

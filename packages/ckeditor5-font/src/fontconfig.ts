@@ -7,8 +7,7 @@
  * @module font/fontconfig
  */
 
-import type { ColorPickerFormat, ColorPickerConfig } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
-import type { ColorOption } from 'ckeditor5/src/ui';
+import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui';
 import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
 
 /**

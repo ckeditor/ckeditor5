@@ -18,13 +18,13 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	type ColorDefinition
+	type ColorDefinition,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
 
 import DocumentColorCollection from '../documentcolorcollection';
-import { type ColorPickerConfig, convertToHex } from '@ckeditor/ckeditor5-ui/src/colorpicker/utils';
 
 import '../../theme/fontcolor.css';
 
@@ -243,17 +243,6 @@ export default class ColorTableView extends View {
 
 		if ( documentColorsGrid ) {
 			documentColorsGrid.selectedColor = selectedColor;
-		}
-
-		// @todo: to be removed.
-		if ( this.colorPickerView ) {
-			// We only want to update the color picker value at dropdown open.
-			// If we bind it with `this.selectedColor`, we'll get circular dependency
-			// which is messed up when we try to convert the color from picker input.
-			// After inputting the beginning of color like `#1`, it would be parsed, converted
-			// (depending on the output format), and set back to `#110000`, making it impossible
-			// to use input in any other manner than pasting a ready color string.
-			this.colorPickerView.color = selectedColor ? convertToHex( selectedColor ) : '';
 		}
 	}
 
