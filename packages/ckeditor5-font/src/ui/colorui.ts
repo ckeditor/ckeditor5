@@ -157,11 +157,8 @@ export default class ColorUI extends Plugin {
 						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || { format: 'hsl' } );
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
-							const outputFormat = getOutputFormat( componentConfig.colorPicker );
-							const convertedColor = convertColor( newValue, outputFormat );
-
 							editor.execute( this.commandName, {
-								value: convertedColor
+								value: newValue
 							} );
 						} );
 					}

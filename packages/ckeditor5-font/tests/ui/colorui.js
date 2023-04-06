@@ -186,7 +186,7 @@ describe( 'ColorUI', () => {
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 
-			expect( colorPickerView.color ).to.equal( 'hsl( 154, 45%, 13% )' );
+			expect( colorPickerView.color ).to.equal( 'hsl( 153, 46%, 13% )' );
 
 			dropdown.element.remove();
 		} );

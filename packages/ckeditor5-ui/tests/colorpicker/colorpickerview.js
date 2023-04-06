@@ -82,6 +82,62 @@ describe( 'ColorPickerView', () => {
 
 			expect( observableSpy.callCount ).to.equal( 1 );
 		} );
+
+		describe( 'output format integration', () => {
+			it( 'respects rgb output format', () => {
+				view._format = 'rgb';
+				view.color = '#001000';
+
+				expect( view.color ).to.equal( 'rgb( 0, 16, 0 )' );
+			} );
+
+			it( 'respects hex output format', () => {
+				view._format = 'hex';
+				view.color = '#0000f1';
+
+				expect( view.color ).to.equal( '#0000f1' );
+			} );
+
+			it( 'respects hsl output format', () => {
+				view._format = 'hsl';
+				view.color = '#3D9BFF';
+
+				expect( view.color ).to.equal( 'hsl( 211, 100%, 62% )' );
+			} );
+
+			it( 'respects hwb output format', () => {
+				view._format = 'hwb';
+				view.color = '#5cb291';
+
+				expect( view.color ).to.equal( 'hwb( 157, 36, 30 )' );
+			} );
+
+			it( 'respects lab output format', () => {
+				view._format = 'lab';
+				view.color = '#bfe972';
+
+				expect( view.color ).to.equal( 'lab( 87% -32 53 )' );
+			} );
+
+			it( 'respects lch output format', () => {
+				view._format = 'lch';
+				view.color = '#be0909';
+
+				expect( view.color ).to.equal( 'lch( 40% 81 39 )' );
+			} );
+		} );
+
+		it( 'normalizes format for subsequent changes to the same color but in different format', () => {
+			view.color = 'rgb( 255, 0, 0 )';
+
+			// At one point color property (format conversion) was driven by _hexColor value **change**.
+			// This was wrong because _hexColor is normalized, so if you set it to same color in one format
+			// and then in another - there's no change in normalized color.
+			// So _hexColor change event was not triggered, thus no format was enforced.
+			view.color = 'red';
+
+			expect( view.color ).to.equal( '#FF0000' );
+		} );
 	} );
 
 	describe( '_hexColor property', () => {
@@ -90,6 +146,18 @@ describe( 'ColorPickerView', () => {
 				view.color = '#ff0000';
 
 				expect( view._hexColor ).to.equal( '#ff0000' );
+			} );
+
+			it( 'forces hex value in a lowercased format', () => {
+				view.color = '#0000FF';
+
+				expect( view._hexColor ).to.equal( '#0000ff' );
+			} );
+
+			it( 'normalizes shorten hex value', () => {
+				view.color = '#00F';
+
+				expect( view._hexColor ).to.equal( '#0000ff' );
 			} );
 
 			it( 'properly converts rgb format', () => {
@@ -104,14 +172,14 @@ describe( 'ColorPickerView', () => {
 				expect( view._hexColor ).to.equal( '#ffb60a' );
 			} );
 
-			it( 'unfolds a shortened hex format', () => {
-				view.color = '#00f';
+			it( 'properly converts keyword format', () => {
+				view.color = 'red';
 
-				expect( view._hexColor ).to.equal( '#0000ff' );
+				expect( view._hexColor ).to.equal( '#ff0000' );
 			} );
 
-			it( 'forces hex value in a lowercased format', () => {
-				view.color = '#0000FF';
+			it( 'unfolds a shortened hex format', () => {
+				view.color = '#00f';
 
 				expect( view._hexColor ).to.equal( '#0000ff' );
 			} );
@@ -130,7 +198,7 @@ describe( 'ColorPickerView', () => {
 				expect( view._hexColor ).to.equal( '#000000' );
 			} );
 
-			it( 'doesnt trigger multiple changes if changed to a same color in different format', () => {
+			it( 'doesn\'t trigger multiple changes if changed to a same color in different format', () => {
 				view._hexColor = '#00ff00';
 
 				const observableSpy = sinon.spy();
@@ -156,50 +224,6 @@ describe( 'ColorPickerView', () => {
 				view._hexColor = '#f1e2a3';
 
 				expect( view.color ).to.equal( '#f1e2a3' );
-			} );
-
-			describe( 'output format integration', () => {
-				it( 'respects rgb output format', () => {
-					view._format = 'rgb';
-					view._hexColor = '#001000';
-
-					expect( view.color ).to.equal( 'rgb( 0, 16, 0 )' );
-				} );
-
-				it( 'respects hex output format', () => {
-					view._format = 'hex';
-					view._hexColor = '#00f';
-
-					expect( view.color ).to.equal( '#0000ff' );
-				} );
-
-				it( 'respects hsl output format', () => {
-					view._format = 'hsl';
-					view._hexColor = '#3D9BFF';
-
-					expect( view.color ).to.equal( 'hsl( 211, 100%, 62% )' );
-				} );
-
-				it( 'respects hwb output format', () => {
-					view._format = 'hwb';
-					view._hexColor = '#5cb291';
-
-					expect( view.color ).to.equal( 'hwb( 157, 36, 30 )' );
-				} );
-
-				it( 'respects lab output format', () => {
-					view._format = 'lab';
-					view._hexColor = '#bfe972';
-
-					expect( view.color ).to.equal( 'lab( 87% -32 53 )' );
-				} );
-
-				it( 'respects lch output format', () => {
-					view._format = 'lch';
-					view._hexColor = '#be0909';
-
-					expect( view.color ).to.equal( 'lch( 40% 81 39 )' );
-				} );
 			} );
 		} );
 	} );

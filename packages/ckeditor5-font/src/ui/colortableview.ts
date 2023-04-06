@@ -245,6 +245,7 @@ export default class ColorTableView extends View {
 			documentColorsGrid.selectedColor = selectedColor;
 		}
 
+		// @todo: to be removed.
 		if ( this.colorPickerView ) {
 			// We only want to update the color picker value at dropdown open.
 			// If we bind it with `this.selectedColor`, we'll get circular dependency
@@ -321,6 +322,10 @@ export default class ColorTableView extends View {
 		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
+
+		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
+			colorPickerView.color = value;
+		} );
 
 		this.items.add( this.colorPickerView );
 	}
