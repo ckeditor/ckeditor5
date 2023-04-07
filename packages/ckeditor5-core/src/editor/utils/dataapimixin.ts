@@ -84,7 +84,7 @@ export interface DataApi {
 	 * editor.getData( { rootName: 'header' } ); // -> '<p>Content for header part.</p>'
 	 * ```
 	 *
-	 * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
+	 * By default, the editor outputs HTML. This can be controlled by injecting a different data processor.
 	 * See the {@glink features/markdown Markdown output} guide for more details.
 	 *
 	 * A warning is logged when you try to retrieve data for a detached root, as most probably this is a mistake. A detached root should

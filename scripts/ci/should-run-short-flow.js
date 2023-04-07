@@ -28,6 +28,11 @@ const filePatterns = [
  * @returns {Boolean}
  */
 module.exports = cwd => {
+	// Nightly CI (CRON) should always run full build.
+	if ( TRAVIS_EVENT_TYPE === 'cron' ) {
+		return false;
+	}
+
 	// We target last commit content by default if we're not processing a pull request.
 	let diffTargets = 'HEAD HEAD~1';
 

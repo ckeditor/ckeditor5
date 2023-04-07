@@ -5,6 +5,8 @@
 
 /* global window, document, console, BalloonEditor */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 const maxCharacters = 120;
 const container = document.querySelector( '.demo-update' );
 const progressCircle = document.querySelector( '.demo-update__chart__circle' );
@@ -19,6 +21,7 @@ sendButton.addEventListener( 'click', () => {
 
 BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',

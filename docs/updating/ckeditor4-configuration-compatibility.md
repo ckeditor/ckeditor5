@@ -546,7 +546,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<td>
 				<p>N/A.</p>
 				<p>The {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} allows configuring where to insert the toolbar and the editable element.</p>
-				<p>In addition to that, CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/framework/multi-root-editor multi-root editor example}.</p>
+				<p>In addition to that, CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/builds/multi-root-editor multi-root editor example}.</p>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-shiftEnterMode">shiftEnterMode</a></td>
@@ -681,7 +681,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_cmd">wsc_cmd</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_customDictionaryIds">wsc_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_customLoaderScript">wsc_customLoaderScript</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_customerId">wsc_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_height">wsc_height</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_lang">wsc_lang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_left">wsc_left</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_top">wsc_top</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_userDictionaryName">wsc_userDictionaryName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-wsc_width">wsc_width</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_cmd">wsc_cmd</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customDictionaryIds">wsc_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customLoaderScript">wsc_customLoaderScript</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customerId">wsc_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_height">wsc_height</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_lang">wsc_lang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_left">wsc_left</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_top">wsc_top</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_userDictionaryName">wsc_userDictionaryName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_width">wsc_width</a></td>
 			<td>The spell and grammar checking functionality for CKEditor 5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
 		</tr>
 	</tbody>

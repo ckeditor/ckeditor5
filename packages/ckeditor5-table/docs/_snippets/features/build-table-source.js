@@ -25,7 +25,7 @@ ClassicEditor.defaultConfig = {
 			'|', 'heading', '|', 'fontFamily', 'fontSize',
 			'|', 'bold', 'italic',
 			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-			'|', 'aligmnet',
+			'|', 'alignment',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
