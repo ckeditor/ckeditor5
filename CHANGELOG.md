@@ -3,6 +3,21 @@ Changelog
 
 ## [37.0.1](https://github.com/ckeditor/ckeditor5/compare/v37.0.0...v37.0.1) (2023-04-05)
 
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
+
 ### Release highlights
 
 There was an invalid version of the `ckeditor5-collaboration` dependency in the following packages:
@@ -104,7 +119,24 @@ Other releases:
 
 ## [37.0.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0) (2023-04-05)
 
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
+
 ### Release highlights
+
+#### Migration to TypeScript
 
 We are excited to announce that CKEditor 5 has been completely migrated to TypeScript, making v37.0.0 the first major release with full TypeScript support. This migration has brought numerous improvements, including better code organization and enhanced stability:
 
@@ -119,20 +151,20 @@ We believe this release will be a significant milestone for CKEditor 5 and will 
 
 #### Comments archive
 
-We are excited to introduce the Comments Archive feature. It provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the archive from the toolbar and use the comments archive dropdown to view and restore archived comments if necessary. This new feature will help simplify the feedback management process for our users.
+We are excited to introduce the Comments archive feature! The new feature provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users are now able to resolve comment threads (instead of permanently removing them). Resolved comments are moved to the comments archive panel, which can be accessed from the toolbar. You can view and restore archived comment threads if necessary. This new feature will help simplify the feedback management process for our users.
+
+Make sure to add `commentsArchive` button to your toolbar configuration and review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html) to learn more about the feature from a technical point of view.
 
 #### Multi-root editor
 
 In this release, we added official support for [multi-root editor type](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html) and a new [multi-root editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#multi-root-editor). Additionally, we bring some fundamental improvements that make the multi-root editor more flexible and useful!
 
 * Add and detach document roots. The multi-root editor will allow you to add or remove editing fields in your application in a dynamic fashion (i.e. after the editor was initialised), without the need to create additional editor instances.
-* The multi-root editor will allow you to use root attributes to store additional metadata related to roots (editable fields). You can change these attributes and obtain them when you save the document data. Finally, you can react to these changes to alter how your application looks or behaves. Root attributes are a tool that will help you customize the editing experience further according to your needs. To take advantage of root attributes, you will need to provide a custom feature. As of now, there are no official plugins that would require saving and using the attributes of the root.
+* The multi-root editor will allow you to use root attributes to store additional metadata related to roots (editable fields). You can change these attributes and retrieve them when you save the document data. Finally, you can react to these changes to alter how your application looks or behaves. Root attributes are a tool that will help you customize the editing experience further according to your needs. To take advantage of root attributes, you will need to provide a custom feature. You will need to handle these attributes only if you provide custom features that use them.
 
 **The multi-root editor is still a project in progress!**
 
-While the new predefined build is readily available, several features are not yet supported in the multi-root editor as of this release. These include: revision history, pagination, PDF/Word export, table resize, word count, HTML comments, full-page editing, title, mini-map, and the Cloud Services editor bundle. We will work on bringing support for these features in upcoming releases.
-
-Other than that we look forward to sharing with you guides that will better explain how you can use these new improvements!
+While the new predefined build is readily available, **several features are not yet supported in the multi-root editor** as of this release. These include: revision history, pagination, PDF/Word export, table resize, word count, HTML comments, full-page editing, title, mini-map. Multi-root editor cannot be uploaded as an editor bundle to the Cloud Services. Multi-root editor is not compatible with framework integrations as of now. We will work on bringing support for these features in upcoming releases.
 
 #### Tables
 
@@ -141,11 +173,17 @@ We expanded the General HTM Support feature with support for the `<colgroup>`’
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * Upgraded the minimal versions of Node.js to `16.0.0` due to the end of LTS.
+* Comments archive feature requires changes in the non-real time comments adapter integration. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html) and the updated API docs for comments adapter.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The table columns' widths are stored as model elements instead of a model element attribute. See [#11479](https://github.com/ckeditor/ckeditor5/issues/11479).
 * The [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package is no longer available as a standalone DLL build. It is now included in the main `ckeditor5-dll.js` build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
+* It is no longer possible to undo creating or removing a comment thread.
+* UI in comment annotation has changed. Remove and edit buttons have been moved to a dropdown. A new button which resolves a comment thread was added.
+* Comments outside editor integration has to be updated due to the introduction of comments archive. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html). 
+* Comment and comment thread views has substantially changed due to the introduction of comments archive. These changes may be incompatible with your custom views or templates. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html).
+* Regarding Export to PDF and Export to Word features, if you use a custom callback to get the document data, make sure to pass `ignoreResolvedComments: true` in `editor.getData()` options. If not, the resolved comments may be visible in the converted document.
 
 ### Features
 
@@ -188,6 +226,7 @@ We expanded the General HTM Support feature with support for the `<colgroup>`’
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `model.DocumentFragment#isAttached` was introduced for compatibility reasons. It always returns `false`. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
 * **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Introduced the `StyleUtils` plugin to make the style util functions accessible. Closes [#13484](https://github.com/ckeditor/ckeditor5/issues/13484). ([commit](https://github.com/ckeditor/ckeditor5/commit/ee181f9903b09701deba2d3d85dab25fb5fadfbf))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The table columns' widths are stored as model elements instead of model element attributes. See [#11479](https://github.com/ckeditor/ckeditor5/issues/11479). ([commit](https://github.com/ckeditor/ckeditor5/commit/61debdca19f7a5166433220b819232d20d8b9f26))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `CommentThread#attributes` as well as `#setAttribute()` and `#getAttribute()` methods.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the `BaseSuggestionThreadView#canAccept` and `#canDiscard` observable properties. These properties are bound with related suggestions commands. `SuggestionThreadView#acceptButton.isEnabled` and `#discardButton.isEnabled` are bound to `#canAccept` an `#canDiscard`.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced `EditorUI#removeEditableElement()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added configuration to the `View#scrollToTheSelection()` helper allowing to scroll to the top of the boundary. Closes [#13688](https://github.com/ckeditor/ckeditor5/issues/13688). ([commit](https://github.com/ckeditor/ckeditor5/commit/75a5b122690c775cf55d61f3d80519cb85952ebb))

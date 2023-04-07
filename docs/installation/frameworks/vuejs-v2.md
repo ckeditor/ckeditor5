@@ -252,7 +252,7 @@ This command will install and execute `create-vue`, the official project scaffol
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
-You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
+You need to install some packages to use CKEditor 5 from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
 
 ```bash
 npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
@@ -297,7 +297,7 @@ npm install -g @vue/cli
 ```
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
+	Learn more about building CKEditor 5 from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
 
 To create a new project, run:
@@ -310,7 +310,7 @@ To start a Vue 2 project, pick the Vue 2 default preset.
 
 #### Configuring `vue.config.js`
 
-To build CKEditor with your application, certain changes must be made to the default project configuration.
+To build CKEditor 5 with your application, certain changes must be made to the default project configuration.
 
 First, install the necessary dependencies:
 
@@ -333,7 +333,7 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
-	// The source of CKEditor is encapsulated in ES6 modules. By default, the code
+	// The source of CKEditor 5 is encapsulated in ES6 modules. By default, the code
 	// from the node_modules directory is not transpiled, so you must explicitly tell
 	// the CLI tools to transpile JavaScript files in all ckeditor5-* modules.
 	transpileDependencies: [
@@ -342,7 +342,7 @@ module.exports = {
 
 	configureWebpack: {
 		plugins: [
-			// CKEditor needs its own plugin to be built using webpack.
+			// CKEditor 5 needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
 				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
 				language: 'en',
@@ -354,8 +354,8 @@ module.exports = {
 	},
 
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
-	//	1. The icons used by CKEditor must be loaded using raw-loader,
-	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
+	//	1. The icons used by CKEditor 5 must be loaded using raw-loader,
+	//	2. The CSS used by CKEditor 5 must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
 		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
@@ -454,7 +454,7 @@ Now all you need to do is specify the list of rich text editor options (**includ
 
 <script>
 	// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
-	// Since we're building CKEditor from source, we use the source version of ClassicEditor.
+	// Since we're building CKEditor 5 from source, we use the source version of ClassicEditor.
 	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';

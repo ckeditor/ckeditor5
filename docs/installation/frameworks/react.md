@@ -519,7 +519,7 @@ This command will install and execute `create-vite`, the official project scaffo
 
 #### Installing necessary packages
 
-Besides the CKEditor base and plugins, you need to install additional packages to use it from source with React and Vite: the Vite plugin, the official React component, and the default theme.
+Besides the CKEditor 5 base and plugins, you need to install additional packages to use it from source with React and Vite: the Vite plugin, the official React component, and the default theme.
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
@@ -540,7 +540,7 @@ npm install --save \
 
 #### Configuring `vite.config.js`
 
-Configuring CKEditor with React and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+Configuring CKEditor 5 with React and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
 
 ```js
 // vite.config.js

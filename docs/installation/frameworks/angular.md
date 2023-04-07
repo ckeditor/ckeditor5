@@ -42,15 +42,20 @@ Because of the breaking changes in the Angular library output format, the `@cked
     <tr>
       <td colspan="3">Actively supported versions</td>
     </tr>
-	<tr>
+    <tr>
       <td><code>^6</code></td>
       <td><code>13+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.1">37</a>.</td>
+      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a>.</td>
     </tr>
     <tr>
       <td colspan="3">Past releases (no longer maintained)</td>
     </tr>
 	<tr>
+      <td><code>^5</code></td>
+      <td><code>13+</code></td>
+      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
+    </tr>
+    <tr>
       <td><code>^5</code></td>
       <td><code>13+</code></td>
       <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
