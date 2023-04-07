@@ -303,22 +303,6 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker(): void {
-		if ( this.colorPickerView ) {
-			return;
-		}
-
-		const colorPickerView = new ColorPickerView( this.locale );
-		this.colorPickerView = colorPickerView;
-		this.colorPickerView.render();
-
-		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
-			colorPickerView.color = value;
-		} );
-
-		this.items.add( this.colorPickerView );
-	}
-
 	/**
 	 * Appends {@link #colorPickerView} view.
 	 */
