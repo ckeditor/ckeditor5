@@ -63,9 +63,7 @@ module.exports = function checkPackagesCodeCoverage( {
 
 	if ( shouldRunFrameworkTests ) {
 		console.log( magenta( '\nVerifying CKEditor 5 Framework\n' ) );
-		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => {
-			checkPackage( packageName, allowNonFullCoveragePackages, [ '--source-map' ] );
-		} );
+		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => checkPackage( packageName, allowNonFullCoveragePackages ) );
 	}
 
 	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
@@ -104,7 +102,7 @@ module.exports = function checkPackagesCodeCoverage( {
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
 
 	featurePackages.forEach( packageName => {
-		checkPackage( packageName, allowNonFullCoveragePackages, [ '--resolve-js-first', '--cache', '--source-map' ] );
+		checkPackage( packageName, allowNonFullCoveragePackages, [ '--resolve-js-first', '--cache' ] );
 	} );
 
 	if ( shouldUploadCoverageReport( isPublicRepository ) ) {
