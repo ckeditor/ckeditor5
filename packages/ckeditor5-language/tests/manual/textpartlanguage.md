@@ -1,6 +1,6 @@
 ## Text part language feature
 
-1. The data should be loaded with four paragraph. Each paragraph style with applied language should be italic.
+1. The data should be loaded with four paragraph.
 2. Put selection in each paragraph and check if language dropdown label is changing properly.
 3. Play with languages:
 	* Change language of the text selection.

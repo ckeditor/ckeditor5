@@ -240,13 +240,19 @@ Integrating the rich text editor from source allows you to use the full power of
 
 ### Vite
 
-This guide assumes you have Vue 2 with Vite already configured. `create-vue` uses Vue 3 by default, so keep that in mind if you want to start from scratch. You need to install some packages to use CKEditor from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
+This guide assumes that you use `create-vue` as your boilerplate. To get started with Vite and Vue 2, run the command below.
+
+```bash
+npm init vue@2 ckeditor5-vue-example
+```
+
+This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project. Choose your preferred options.
 
 <info-box>
 	Using the Vite plugin to build CKEditor 5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
-It's time to install CKEditor packages. Install them using the following command.
+You need to install some packages to use CKEditor 5 from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
 
 ```bash
 npm install --save @ckeditor/vite-plugin-ckeditor5 @ckeditor/ckeditor5-vue2
@@ -259,8 +265,8 @@ Configuring CKEditor with Vue 2 and Vite is pretty simple. Modify the existing c
 ```js
 // vite.config.js
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue2'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue2';
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
@@ -268,7 +274,7 @@ export default defineConfig( {
     vue(),
     ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
   ],
-} )
+} );
 ```
 
 The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
@@ -280,19 +286,31 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-Now, your setup with Vite and Vue 2 is complete. You can also check how to configure webpack in the next section or move straight to [Using the editor from source](#using-the-editor-from-source).
+Now, your setup with Vite and Vue 2 is complete. You can also check how to configure webpack in the next section or move straight to [Installing plugins](#installing-plugins).
 
 ### Webpack
 
-This guide assumes that you are using [Vue CLI 3+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
+This guide assumes that you are using [Vue CLI 3+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command. You can install the Vue CLI using the below command.
+
+```bash
+npm install -g @vue/cli
+```
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
+	Learn more about building CKEditor 5 from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
+
+To create a new project, run:
+
+```bash
+vue create ckeditor5-vue-example
+```
+
+To start a Vue 2 project, pick the Vue 2 default preset.
 
 #### Configuring `vue.config.js`
 
-To build CKEditor with your application, certain changes must be made to the default project configuration.
+To build CKEditor 5 with your application, certain changes must be made to the default project configuration.
 
 First, install the necessary dependencies:
 
@@ -308,12 +326,14 @@ npm install --save \
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
 
 ```js
+// vue.config.js
+
 const path = require( 'path' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
-	// The source of CKEditor is encapsulated in ES6 modules. By default, the code
+	// The source of CKEditor 5 is encapsulated in ES6 modules. By default, the code
 	// from the node_modules directory is not transpiled, so you must explicitly tell
 	// the CLI tools to transpile JavaScript files in all ckeditor5-* modules.
 	transpileDependencies: [
@@ -322,7 +342,7 @@ module.exports = {
 
 	configureWebpack: {
 		plugins: [
-			// CKEditor needs its own plugin to be built using webpack.
+			// CKEditor 5 needs its own plugin to be built using webpack.
 			new CKEditorTranslationsPlugin( {
 				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
 				language: 'en',
@@ -334,8 +354,8 @@ module.exports = {
 	},
 
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
-	//	1. The icons used by CKEditor must be loaded using raw-loader,
-	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
+	//	1. The icons used by CKEditor 5 must be loaded using raw-loader,
+	//	2. The CSS used by CKEditor 5 must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
 		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
@@ -387,7 +407,7 @@ module.exports = {
     By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
 </info-box>
 
-### Using the editor from source
+### Installing plugins
 
 Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-vue2`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
@@ -404,9 +424,17 @@ npm install --save \
 You can use more packages, depending on which features are needed in your application.
 
 ```js
+// main.js
+
+import Vue from 'vue';
+import App from './App.vue';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 
 Vue.use( CKEditor );
+
+new Vue( {
+  render: ( h ) => h( App )
+} ).$mount( '#app' );
 ```
 
 <info-box>
@@ -416,6 +444,8 @@ Vue.use( CKEditor );
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
 
 ```html
+<!-- App.vue -->
+
 <template>
 	<div id="app">
 		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
@@ -424,7 +454,7 @@ Now all you need to do is specify the list of rich text editor options (**includ
 
 <script>
 	// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
-	// Since we're building CKEditor from source, we use the source version of ClassicEditor.
+	// Since we're building CKEditor 5 from source, we use the source version of ClassicEditor.
 	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -463,6 +493,8 @@ Now all you need to do is specify the list of rich text editor options (**includ
 	};
 </script>
 ```
+
+Finally, you can build your project. Commands may differ depending on the package manager, so check the scripts section of your package.json file.
 
 ## Using the Document editor build
 

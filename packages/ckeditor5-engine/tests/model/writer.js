@@ -2654,13 +2654,15 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'detachRoot()', () => {
-		it( 'should detach the root from the model and remove all children and markers from it', () => {
+		it( 'should detach the root from the model and remove all children, attributes and markers from it', () => {
 			let root, p;
 
 			model.change( writer => {
 				root = writer.addRoot( 'new' );
 				p = writer.createElement( 'paragraph' );
 				writer.insert( p, root, 0 );
+				writer.setAttribute( 'foo', true, root );
+				writer.setAttribute( 'bar', false, root );
 				writer.addMarker( 'newMarker', { usingOperation: true, affectsData: true, range: writer.createRangeIn( root ) } );
 			} );
 
@@ -2670,6 +2672,7 @@ describe( 'Writer', () => {
 
 			expect( root.isAttached() ).to.be.false;
 			expect( root.isEmpty );
+			expect( Array.from( root.getAttributes() ).length ).to.equal( 0 );
 			expect( p.parent.rootName ).to.equal( '$graveyard' );
 			expect( model.markers.get( 'newMarker' ) ).to.be.null;
 		} );

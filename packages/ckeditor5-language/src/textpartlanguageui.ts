@@ -13,8 +13,6 @@ import { Collection } from 'ckeditor5/src/utils';
 import { stringifyLanguageAttribute } from './utils';
 import type TextPartLanguageCommand from './textpartlanguagecommand';
 
-import '../theme/language.css';
-
 /**
  * The text part language UI plugin.
  *

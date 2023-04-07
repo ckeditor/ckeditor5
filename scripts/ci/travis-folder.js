@@ -20,26 +20,24 @@ module.exports = class TravisFolder {
 	}
 
 	start( badge, description ) {
-		console.log( `travis_fold:start:${ badge }${ description }` );
-
 		const nanoSeconds = process.hrtime.bigint();
 
 		this._lastTimerId = crypto.createHash( 'md5' ).update( nanoSeconds.toString() ).digest( 'hex' );
 		this._lastStartTime = nanoSeconds;
 
-		// Intentional direct write to stdout, to manually control EOL.
-		process.stdout.write( `travis_time:start:${ this._lastTimerId }\r\n` );
+		console.log( `travis_fold:start:${ badge }` );
+		console.log( `travis_time:start:${ this._lastTimerId }` );
+		console.log( description );
 	}
 
 	end( badge ) {
 		const travisEndTime = process.hrtime.bigint();
 		const duration = travisEndTime - this._lastStartTime;
 
-		// Intentional direct write to stdout, to manually control EOL.
-		process.stdout.write(
-			`\ntravis_time:end:${ this._lastTimerId }:start=${ this._lastStartTime },finish=${ travisEndTime },duration=${ duration }\r\n`
+		console.log(
+			`travis_time:end:${ this._lastTimerId }:` +
+			`start=${ this._lastStartTime },finish=${ travisEndTime },duration=${ duration },event=${ badge }`
 		);
-
-		console.log( `\ntravis_fold:end:${ badge }\n` );
+		console.log( `travis_fold:end:${ badge }\n` );
 	}
 };

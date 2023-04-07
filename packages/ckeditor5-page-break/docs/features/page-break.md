@@ -9,7 +9,7 @@ The page break feature lets you insert page breaks into your content. This gives
 
 ## Demo
 
-Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the **Open print preview** the button below the editor in order to preview the content.
+Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the "Open print preview" button below the editor to preview the content.
 
 {@snippet features/page-break}
 
