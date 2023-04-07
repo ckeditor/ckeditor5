@@ -303,6 +303,9 @@ export default class ColorTableView extends View {
 		}
 	}
 
+	/**
+	 * Appends {@link #colorPickerView} view.
+	 */
 	public appendColorPicker(): void {
 		if ( this.colorPickerView ) {
 			return;
@@ -319,12 +322,15 @@ export default class ColorTableView extends View {
 
 		this.items.add( this.colorPickerView );
 
-		this._focusColorPickersElements();
+		this._addColorPickersElementsToFocusTracker();
 
 		this._stopPropagationOnArrowsKeys();
 	}
 
-	private _focusColorPickersElements() {
+	/**
+	 * Adds color picker elements to focus tracker.
+	 */
+	private _addColorPickersElementsToFocusTracker() {
 		for ( const slider of this.colorPickerView!.slidersView ) {
 			this.focusTracker.add( slider.element! );
 			this._focusables.add( slider );
@@ -334,6 +340,9 @@ export default class ColorTableView extends View {
 		this._focusables.add( this.colorPickerView!.input );
 	}
 
+	/**
+	 * Remove defualt behavior of arrow keys in dropdown.
+	 */
 	private _stopPropagationOnArrowsKeys() {
 		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
 

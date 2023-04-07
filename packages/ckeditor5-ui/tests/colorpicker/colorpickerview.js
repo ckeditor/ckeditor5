@@ -86,7 +86,7 @@ describe( 'ColorPickerView', () => {
 
 	describe( 'SliderView', () => {
 		it( 'focuses the slider in DOM', () => {
-			const slider = view.slidersView[ 0 ];
+			const slider = view.slidersView.first;
 
 			const spy = sinon.spy( slider.element, 'focus' );
 
