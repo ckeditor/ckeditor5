@@ -24,6 +24,10 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 ## Supported Angular versions
 
+<info-box warning>
+	There is a [known issue](https://github.com/ckeditor/ckeditor5/issues/13838) related to using types from predefined builds in event handlers.
+</info-box>
+
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
 
 <table>
@@ -38,13 +42,18 @@ Because of the breaking changes in the Angular library output format, the `@cked
     <tr>
       <td colspan="3">Actively supported versions</td>
     </tr>
-    <tr>
-      <td><code>^5</code></td>
+	<tr>
+      <td><code>^6</code></td>
       <td><code>13+</code></td>
-      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
+      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.1">37</a>.</td>
     </tr>
     <tr>
       <td colspan="3">Past releases (no longer maintained)</td>
+    </tr>
+	<tr>
+      <td><code>^5</code></td>
+      <td><code>13+</code></td>
+      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
     </tr>
     <tr>
       <td><code>^4</code></td>
@@ -165,12 +174,13 @@ export class AppComponent {
   title = 'angular';
   public Editor = DecoupledEditor;
 
-  public onReady( editor: DecoupledEditor ): void {
-    const element = editor.ui.getEditableElement()!;
+  public onReady( editor: any ): void { //using `any` is temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
+    const decoupledEditor = editor as DecoupledEditor;
+    const element = decoupledEditor.ui.getEditableElement()!;
     const parent = element.parentElement!;
 
     parent.insertBefore(
-      editor.ui.view.toolbar.element!,
+      decoupledEditor.ui.view.toolbar.element!,
       element
     );
   }
