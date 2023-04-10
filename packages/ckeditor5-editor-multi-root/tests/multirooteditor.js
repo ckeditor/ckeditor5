@@ -645,6 +645,29 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
+	it( 'should first fire `detachRoot` event then `addRoot` event', () => {
+		let events = [];
+
+		return MultiRootEditor.create( { foo: '' }, { plugins: [ Paragraph, Undo ] } ).then( editor => {
+			editor.on( 'addRoot', () => {
+				events.push( 'addRoot' );
+			} );
+
+			editor.on( 'detachRoot', () => {
+				events.push( 'detachRoot' );
+			} );
+
+			editor.model.change( writer => {
+				writer.addRoot( 'bar' );
+				writer.detachRoot( 'foo' );
+			} );
+
+			return editor.destroy();
+		} ).then( () => {
+			expect( events ).to.deep.equal( [ 'detachRoot', 'addRoot' ] );
+		} );
+	} );
+
 	describe( 'EditorConfig#rootsAttributes', () => {
 		it( 'should load attributes from editor configuration', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
