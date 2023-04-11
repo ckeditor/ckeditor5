@@ -74,7 +74,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

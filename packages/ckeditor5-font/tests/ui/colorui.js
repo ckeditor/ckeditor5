@@ -177,12 +177,68 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
-		it( 'should execute command if the color gets changed', async () => {
-			const spy = sinon.spy( editor, 'execute' );
+		describe( 'color picker', () => {
+			it( 'should execute command if the color gets changed', () => {
+				const spy = sinon.spy( editor, 'execute' );
 
-			dropdown.colorTableView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerView.color = '#a37474';
 
-			sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+			} );
+
+			it.skip( 'should avoid call the command multiple times', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				// Color format normalization could result with command being called multiple times.
+				dropdown.colorTableView.colorPickerView.color = '#a37474';
+
+				expect( spy.callCount ).to.equal( 1 );
+			} );
+
+			it( 'should should get proper default color format', () => {
+				const dropdown = editor.ui.componentFactory.create( 'testColor' );
+
+				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
+
+				dropdown.isOpen = true;
+
+				sinon.assert.calledWithExactly( spy, sinon.match( {
+					format: 'hsl'
+				} ) );
+			} );
+
+			it( 'should pass proper color format from the config', async () => {
+				// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const editor = await ClassicTestEditor
+					.create( element, {
+						plugins: [
+							Paragraph,
+							TestColorPlugin
+						],
+						testColor: Object.assign( {
+							colorPicker: {
+								format: 'rgb'
+							}
+						}, testColorConfig )
+					} );
+
+				const dropdown = editor.ui.componentFactory.create( 'testColor' );
+				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
+
+				dropdown.isOpen = true;
+
+				spy.restore();
+
+				element.remove();
+				dropdown.destroy();
+				await editor.destroy();
+
+				sinon.assert.calledWithExactly( spy, sinon.match( {
+					format: 'rgb'
+				} ) );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -384,6 +440,8 @@ describe( 'ColorUI', () => {
 				} );
 
 			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
+
+			dropdown.isOpen = true;
 
 			editorElement.remove();
 			await customizedEditor.destroy();

@@ -18,7 +18,8 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	type ColorDefinition
+	type ColorDefinition,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
@@ -145,7 +146,6 @@ export default class ColorTableView extends View {
 	constructor(
 		locale: Locale,
 		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
-
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
@@ -303,12 +303,12 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker(): void {
+	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
 		if ( this.colorPickerView ) {
 			return;
 		}
 
-		const colorPickerView = new ColorPickerView( this.locale );
+		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
