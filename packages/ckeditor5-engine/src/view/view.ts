@@ -418,7 +418,6 @@ export default class View extends ObservableMixin() {
 	} = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
-		/* istanbul ignore else -- @preserve */
 		if ( range ) {
 			scrollViewportToShowTarget( {
 				target: this.domConverter.viewRangeToDom( range ),
