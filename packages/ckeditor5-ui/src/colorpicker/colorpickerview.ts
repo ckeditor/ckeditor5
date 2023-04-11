@@ -97,7 +97,7 @@ export default class ColorPickerView extends View {
 		} );
 	}
 
-	private _createSlidersView() {
+	private _createSlidersView(): void {
 		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
 		const sliders = colorPickersChildren.filter( item => item.role === 'slider' );
 

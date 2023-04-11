@@ -330,7 +330,7 @@ export default class ColorTableView extends View {
 	/**
 	 * Adds color picker elements to focus tracker.
 	 */
-	private _addColorPickersElementsToFocusTracker() {
+	private _addColorPickersElementsToFocusTracker(): void {
 		for ( const slider of this.colorPickerView!.slidersView ) {
 			this.focusTracker.add( slider.element! );
 			this._focusables.add( slider );
@@ -341,9 +341,9 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Remove defualt behavior of arrow keys in dropdown.
+	 * Remove default behavior of arrow keys in dropdown.
 	 */
-	private _stopPropagationOnArrowsKeys() {
+	private _stopPropagationOnArrowsKeys(): void {
 		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
 
 		this.keystrokes.set( 'arrowright', stopPropagation );
