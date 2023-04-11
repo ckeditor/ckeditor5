@@ -1387,7 +1387,6 @@ export default class Writer {
 		// First, remove all markers from the root. It is better to do it before removing stuff for undo purposes.
 		// However, looking through all the markers may not be the best performance wise. But there's no better solution for now.
 		for ( const marker of this.model.markers ) {
-			/* istanbul ignore else -- @preserve */
 			if ( marker.getRange().root === root ) {
 				this.removeMarker( marker );
 			}

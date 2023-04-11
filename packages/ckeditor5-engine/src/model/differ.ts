@@ -668,7 +668,6 @@ export default class Differ {
 			// If attributes or metadata changes set became empty, remove it from the diff item.
 			delete diffItem.attributes;
 
-			/* istanbul ignore else -- @preserve */
 			if ( diffItem.state === undefined ) {
 				// If there is no `state` change and no `attributes` change, remove the entry.
 				this._changedRoots.delete( rootName );
