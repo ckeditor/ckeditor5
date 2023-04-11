@@ -372,6 +372,11 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 function upcastListItemAttributes( attributeStrategies: Array<AttributeStrategy> ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element:li', ( evt, data, conversionApi ) => {
+			// https://github.com/ckeditor/ckeditor5/issues/13858
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const listParent = data.viewItem.parent as ViewElement;
 			const listItem = data.modelRange!.start.nodeAfter || data.modelRange!.end.nodeBefore;
 
