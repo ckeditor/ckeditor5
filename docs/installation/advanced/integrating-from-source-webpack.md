@@ -16,7 +16,7 @@ This scenario allows you to fully control the building process of CKEditor 5. Th
 	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor 5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to initialize a new project using `npm init`. Then, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+First of all, you need to install source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. You can also install them individually. An example list of plugins may look like this:
 
@@ -253,12 +253,13 @@ If you want to use TypeScript, add the `tsconfig.json` file at the root of your 
 {
   "compilerOptions": {
     "lib": [
-      "ESNext",
-      "dom"
+      "DOM",
+      "DOM.Iterable"
     ],
     "outDir": "lib",
     "removeComments": true,
-    "target": "ES6",
+	"module": "es6",
+    "target": "es2019",
     "baseUrl": "./",
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -359,32 +360,32 @@ If you want to use TypeScript, the `ckeditor` file looks very similar. However, 
 ```ts
 // ckeditor.ts
 
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+export default class CustomEditor extends ClassicEditor {}
 
-ClassicEditor.builtinPlugins = [
-    EssentialsPlugin,
-    AutoformatPlugin,
-    BoldPlugin,
-    ItalicPlugin,
-    BlockQuotePlugin,
-    HeadingPlugin,
-    LinkPlugin,
-    ListPlugin,
-    ParagraphPlugin
+CustomEditor.builtinPlugins = [
+    Essentials,
+    Autoformat,
+    Bold,
+    Italic,
+    BlockQuote,
+    Heading,
+    Link,
+    List,
+    Paragraph
 ];
 
-ClassicEditor.defaultConfig = {
+CustomEditor.defaultConfig = {
     toolbar: {
         items: [
             'heading',
@@ -484,30 +485,30 @@ You can also translate the above code using TypeScript.
 ```ts
 // main.ts
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
     .create( document.querySelector<HTMLElement>( '#app')!, {
         // The plugins are now passed directly to .create().
         plugins: [
-            EssentialsPlugin,
-            AutoformatPlugin,
-            BoldPlugin,
-            ItalicPlugin,
-            BlockQuotePlugin,
-            HeadingPlugin,
-            LinkPlugin,
-            ListPlugin,
-            ParagraphPlugin,
+            Essentials,
+            Autoformat,
+            Bold,
+            Italic,
+            BlockQuote,
+            Heading,
+            Link,
+            List,
+            Paragraph
         ],
 
         // So is the rest of the default configuration.
@@ -574,7 +575,7 @@ And add it to your webpack configuration:
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 module.exports = {
-	// More configuration. 
+	// More configuration.
 	// ...
 
 	plugins: [
