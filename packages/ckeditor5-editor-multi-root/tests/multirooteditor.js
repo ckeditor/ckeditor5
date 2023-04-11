@@ -646,7 +646,7 @@ describe( 'MultiRootEditor', () => {
 	} );
 
 	it( 'should first fire `detachRoot` event then `addRoot` event', () => {
-		let events = [];
+		const events = [];
 
 		return MultiRootEditor.create( { foo: '' }, { plugins: [ Paragraph, Undo ] } ).then( editor => {
 			editor.on( 'addRoot', () => {
