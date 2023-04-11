@@ -254,10 +254,6 @@ export default class EditingController extends ObservableMixin() {
  */
 function fixTargetRanges( mapper: Mapper, schema: Schema ): GetCallback<ViewDocumentInputEvent> {
 	return ( evt, data ) => {
-		if ( !data.targetRanges ) {
-			return;
-		}
-
 		for ( let i = 0; i < data.targetRanges.length; i++ ) {
 			const viewRange = data.targetRanges[ i ];
 			const modelRange = mapper.toModelRange( viewRange );

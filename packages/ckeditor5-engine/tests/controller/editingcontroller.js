@@ -632,7 +632,7 @@ describe( 'EditingController', () => {
 	} );
 
 	describe( 'beforeInput target ranges fixing', () => {
-		let editor, model, view, viewDocument, viewRoot, beforeInputSpy, deleteSpy;
+		let editor, model, view, viewDocument, viewRoot, beforeInputSpy, deleteSpy, insertTextSpy, enterSpy;
 
 		testUtils.createSinonSandbox();
 
@@ -644,13 +644,25 @@ describe( 'EditingController', () => {
 			viewRoot = viewDocument.getRoot();
 
 			beforeInputSpy = testUtils.sinon.spy();
-			viewDocument.on( 'beforeinput', beforeInputSpy );
+			viewDocument.on( 'beforeinput', beforeInputSpy, { context: '$capture', priority: 'highest' } );
 
-			deleteSpy = testUtils.sinon.spy();
-			viewDocument.on( 'delete', deleteSpy );
+			deleteSpy = testUtils.sinon.stub().callsFake( evt => evt.stop() );
+			viewDocument.on( 'delete', deleteSpy, { context: '$capture', priority: 'highest' } );
+
+			insertTextSpy = testUtils.sinon.stub().callsFake( evt => evt.stop() );
+			viewDocument.on( 'insertText', insertTextSpy, { context: '$capture', priority: 'highest' } );
+
+			enterSpy = testUtils.sinon.stub().callsFake( evt => evt.stop() );
+			viewDocument.on( 'enter', enterSpy, { context: '$capture', priority: 'highest' } );
 
 			// Stub `editor.editing.view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 			sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			model.schema.register( 'blockObject', { inheritAllFrom: '$blockObject' } );
+			editor.conversion.elementToElement( { model: 'blockObject', view: 'div' } );
 		} );
 
 		afterEach( async () => {
@@ -658,10 +670,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should not fix flat range on text', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-
-			setModelData( model, '<paragraph>foobar[]</paragraph>' );
+			setModelData( model, '<paragraph>foobar</paragraph>' );
 
 			const targetRanges = [ view.createRange(
 				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
@@ -680,29 +689,31 @@ describe( 'EditingController', () => {
 
 			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
 			expect( inputData.inputType ).to.equal( eventData.inputType );
-			expect( inputData.targetRanges ).to.deep.equal( eventData.targetRanges );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 )
+			) );
 
 			// Verify delete event.
 			sinon.assert.calledOnce( deleteSpy );
 
 			const deleteData = deleteSpy.args[ 0 ][ 1 ];
-
-			expect( deleteData.selectionToRemove.getFirstRange().isEqual( targetRanges[ 0 ] ) ).to.be.true;
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+			expect( deleteData.selectionToRemove.getFirstRange().isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 )
+			) ) ).to.be.true;
 		} );
 
-		it.skip( 'should fix range that ends in block object', () => {
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-
-			model.schema.register( 'blockObject', { inheritAllFrom: '$blockObject' } );
-			editor.conversion.elementToElement( { model: 'blockObject', view: 'div' } );
-
-			setModelData( model, '<blockObject></blockObject><paragraph>[]foobar</paragraph>' );
+		it( 'should fix range that ends in block object (deleteContentBackward)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<blockObject></blockObject>' +
+				'<paragraph>bar</paragraph>'
+			);
 
 			const targetRanges = [ view.createRange(
-				view.createPositionAt( viewRoot.getChild( 0 ), 0 ),
-				view.createPositionAt( viewRoot.getChild( 1 ).getChild( 0 ), 0 )
+				view.createPositionAt( viewRoot.getChild( 1 ), 0 ),
+				view.createPositionAt( viewRoot.getChild( 2 ).getChild( 0 ), 0 )
 			) ];
 
 			const eventData = {
@@ -717,15 +728,211 @@ describe( 'EditingController', () => {
 
 			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
 			expect( inputData.inputType ).to.equal( eventData.inputType );
-			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( targetRanges[ 0 ] );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot.getChild( 2 ).getChild( 0 ), 0 )
+			) );
 
 			// Verify delete event.
 			sinon.assert.calledOnce( deleteSpy );
 
 			const deleteData = deleteSpy.args[ 0 ][ 1 ];
+			expect( deleteData.selectionToRemove.getFirstRange().isEqual( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot.getChild( 2 ).getChild( 0 ), 0 )
+			) ) ).to.be.true;
+		} );
 
-			expect( deleteData.selectionToRemove.getFirstRange().isEqual( targetRanges[ 0 ] ) ).to.be.true;
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		it( 'should fix range that ends in block object (deleteContentForward)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<blockObject></blockObject>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 1 ), 0 )
+			) ];
+
+			const eventData = {
+				inputType: 'deleteContentForward',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot, 2 )
+			) );
+
+			// Verify delete event.
+			sinon.assert.calledOnce( deleteSpy );
+		} );
+
+		it( 'should fix range that is collapsed inside an object (insertText)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<blockObject></blockObject>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot.getChild( 1 ), 0 ),
+				view.createPositionAt( viewRoot.getChild( 1 ), 0 )
+			) ];
+
+			const eventData = {
+				inputType: 'insertText',
+				data: 'abc',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.data ).to.equal( eventData.data );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 2 )
+			) );
+
+			// Verify insertText event.
+			sinon.assert.calledOnce( insertTextSpy );
+
+			const insertTextData = insertTextSpy.args[ 0 ][ 1 ];
+			expect( insertTextData.selection.getFirstRange().isEqual( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 2 )
+			) ) ).to.be.true;
+		} );
+
+		it( 'should fix range that is collapsed after an object (insertText)', () => {
+			// Note that this is a synthetic scenario and in real life scenarios such event (insert text)
+			// should prefer to jump into the nearest position that accepts text (now it wraps the object).
+
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<blockObject></blockObject>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot, 2 ),
+				view.createPositionAt( viewRoot, 2 )
+			) ];
+
+			const eventData = {
+				inputType: 'insertText',
+				data: 'abc',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.data ).to.equal( eventData.data );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 2 )
+			) );
+
+			// Verify insertText event.
+			sinon.assert.calledOnce( insertTextSpy );
+
+			const insertTextData = insertTextSpy.args[ 0 ][ 1 ];
+			expect( insertTextData.selection.getFirstRange().isEqual( view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 2 )
+			) ) ).to.be.true;
+		} );
+
+		it( 'should fix range that is collapsed before an object (insertText)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<blockObject></blockObject>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 1 )
+			) ];
+
+			const eventData = {
+				inputType: 'insertText',
+				data: 'abc',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.data ).to.equal( eventData.data );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 )
+			) );
+
+			// Verify insertText event.
+			sinon.assert.calledOnce( insertTextSpy );
+
+			const insertTextData = insertTextSpy.args[ 0 ][ 1 ];
+			expect( insertTextData.selection.getFirstRange().isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 )
+			) ) ).to.be.true;
+		} );
+
+		it( 'should fix range that is wrapping the block element (enter)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>bar</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			const targetRanges = [ view.createRange(
+				view.createPositionAt( viewRoot, 1 ),
+				view.createPositionAt( viewRoot, 2 )
+			) ];
+
+			const eventData = {
+				inputType: 'insertParagraph',
+				targetRanges
+			};
+
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.targetRanges[ 0 ] ).to.deep.equal( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 1 ).getChild( 0 ), 0 ),
+				view.createPositionAt( viewRoot.getChild( 1 ).getChild( 0 ), 3 )
+			) );
+
+			// Verify enter event.
+			sinon.assert.calledOnce( enterSpy );
 		} );
 
 		function fireBeforeInputEvent( eventData ) {
