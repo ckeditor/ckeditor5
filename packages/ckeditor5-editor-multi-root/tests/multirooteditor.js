@@ -233,6 +233,48 @@ describe( 'MultiRootEditor', () => {
 				.catch( done );
 		} );
 
+		it( 'throws error when initial roots are different than initial data - missing root in initial roots', done => {
+			MultiRootEditor.create( {
+				foo: document.createElement( 'div' )
+			}, {
+				initialData: {
+					foo: '<p>Foo</p>',
+					bar: '<p>Bar</p>'
+				}
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when initital roots and initial data are mismatched.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-initial-data-mismatch', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error when initial roots are different than initial data - missing root in initial data', done => {
+			MultiRootEditor.create( {
+				foo: document.createElement( 'div' ),
+				bar: document.createElement( 'div' )
+			}, {
+				initialData: {
+					foo: '<p>Foo</p>'
+				}
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when initital roots and initial data are mismatched.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-initial-data-mismatch', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
 		function test( getElementOrData ) {
 			it( 'creates an instance which inherits from the MultiRootEditor', () => {
 				return MultiRootEditor
