@@ -225,12 +225,12 @@ describe( 'HeadingCommand', () => {
 			}
 
 			it( 'converts all elements where selection is applied', () => {
-				setData( model, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>baz]</heading3>' );
+				setData( model, '<heading1>fo[o</heading1><heading2>bar</heading2><heading3>baz]</heading3>' );
 
 				command.execute( { value: 'heading3' } );
 
 				expect( getData( model ) ).to.equal(
-					'<heading3>foo[</heading3><heading3>bar</heading3><heading3>baz]</heading3>'
+					'<heading3>fo[o</heading3><heading3>bar</heading3><heading3>baz]</heading3>'
 				);
 			} );
 
