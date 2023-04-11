@@ -152,7 +152,7 @@ export default class ColorUI extends Plugin {
 					dropdownView.colorTableView!.appendGrids();
 
 					if ( hasColorPicker ) {
-						dropdownView.colorTableView!.appendColorPicker();
+						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
 							editor.execute( this.commandName, {

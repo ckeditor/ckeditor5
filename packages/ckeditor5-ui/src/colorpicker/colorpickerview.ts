@@ -7,6 +7,8 @@
  * @module ui/colorpicker/colorpickerview
  */
 
+import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerFormat } from './utils';
+
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
@@ -42,15 +44,34 @@ export default class ColorPickerView extends View {
 	declare public slidersView: ViewCollection;
 
 	/**
+     * An internal representation of a color
+     *
+     * Since the picker uses a hex, we store it in that format.
+	 *
+	 * Since this is unified color format it won't fire a change event if color is changed
+	 * from `#f00` to `#ff0000` (same value, different format).
+     *
+     * @observable
+     * @private
+     */
+	declare public _hexColor: string;
+
+	/**
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
 	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
 	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
 
-	constructor( locale: Locale | undefined ) {
+	declare private _format: ColorPickerFormat;
+
+	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
 		super( locale );
 
 		this.set( 'color', '' );
+
+		this.set( '_hexColor', '' );
+
+		this._format = config.format || 'hsl';
 
 		this.input = this._createInput();
 
@@ -71,8 +92,24 @@ export default class ColorPickerView extends View {
 		}, waitingTime );
 
 		// Sets color in the picker if color was updated.
-		this.on( 'change:color', ( ) => {
-			this.picker.setAttribute( 'color', this.color );
+		this.on( 'change:color', () => {
+			const convertedColor = convertColor( this.color, this._format );
+
+			if ( convertedColor != this.color ) {
+				this.color = convertedColor;
+			}
+
+			this._hexColor = convertColorToCommonHexFormat( this.color );
+		} );
+
+		this.on( 'change:_hexColor', () => {
+			this.picker.setAttribute( 'color', this._hexColor );
+
+			// There has to be two way binding between properties.
+			// Extra precaution has to be taken to trigger change back only when the color really changes.
+			if ( convertColorToCommonHexFormat( this.color ) != convertColorToCommonHexFormat( this._hexColor ) ) {
+				this.color = this._hexColor;
+			}
 		} );
 	}
 
@@ -124,7 +161,15 @@ export default class ColorPickerView extends View {
 			class: 'color-picker-hex-input'
 		} );
 
-		labeledInput.fieldView.bind( 'value' ).to( this, 'color' );
+		labeledInput.fieldView.bind( 'value' ).to( this, 'color', pickerColor => {
+			if ( labeledInput.isFocused ) {
+				// Text field shouldn't be updated with color change if the text field is focused.
+				// Imagine user typing hex code and getting the value of field changed.
+				return labeledInput.fieldView.value;
+			} else {
+				return pickerColor;
+			}
+		} );
 
 		labeledInput.fieldView.on( 'input', () => {
 			const inputValue = labeledInput.fieldView.element!.value;
@@ -150,4 +195,25 @@ class SliderView extends View {
 	public focus(): void {
 		this.element!.focus();
 	}
+}
+
+/**
+ * Converts any color format to a unified hex format.
+ *
+ * @param inputColor
+ * @returns An unified hex string.
+ */
+function convertColorToCommonHexFormat( inputColor: string ): string {
+	let ret = convertToHex( inputColor );
+
+	if ( !ret ) {
+		ret = '#000';
+	}
+
+	if ( ret.length === 4 ) {
+		// Unfold shortcut format.
+		ret = '#' + [ ret[ 1 ], ret[ 1 ], ret[ 2 ], ret[ 2 ], ret[ 3 ], ret[ 3 ] ].join( '' );
+	}
+
+	return ret.toLowerCase();
 }

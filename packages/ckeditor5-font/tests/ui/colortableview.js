@@ -169,7 +169,7 @@ describe( 'ColorTableView', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			colorTableView.appendColorPicker();
+			colorTableView.appendColorPicker( {} );
 
 			return ClassicTestEditor
 				.create( element, {
@@ -203,14 +203,14 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 
-		it( 'binds picker\'s selected color to the selected color', () => {
-			colorTableView.selectedColor = '#00FF00';
-			expect( colorTableView.colorPickerView.color ).to.equal( '#00FF00' );
+		it( 'binds container\'s selected color to the color picker\'s color', () => {
+			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
+			expect( colorTableView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
-			colorTableView.appendColorPicker();
-			colorTableView.appendColorPicker();
+			colorTableView.appendColorPicker( {} );
+			colorTableView.appendColorPicker( {} );
 			expect( colorTableView.items.length ).to.equal( 5 );
 		} );
 
@@ -259,7 +259,7 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			dropdown.colorTableView.appendColorPicker();
+			dropdown.colorTableView.appendColorPicker( {} );
 
 			dropdown.colorTableView.focusTracker.isFocused = true;
 
