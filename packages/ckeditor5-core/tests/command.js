@@ -133,7 +133,9 @@ describe( 'Command', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			sinon.assert.notCalled( setSpy );
+			// called once because of refresh on document change (isReadOnly flag in document)
+			sinon.assert.calledOnce( setSpy );
+
 			sinon.assert.calledOnce( changeSpy );
 		} );
 	} );

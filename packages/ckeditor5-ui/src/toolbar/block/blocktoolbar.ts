@@ -339,7 +339,7 @@ export default class BlockToolbar extends Plugin {
 		}
 
 		// Hides the button when the selection is in non-editable place.
-		if ( editor.model.isSelectableEditable( editor.model.document.selection ) ) {
+		if ( !editor.model.isSelectableEditable( editor.model.document.selection ) ) {
 			this._hideButton();
 
 			return;

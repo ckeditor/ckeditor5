@@ -92,7 +92,6 @@ export default class Command extends ObservableMixin() {
 		this.editor = editor;
 		this.set( 'value', undefined );
 		this.set( 'isEnabled', false );
-		this.set( 'isEnabled', false );
 
 		this._affectsData = true;
 		this._executesOnCustomSelectable = false;

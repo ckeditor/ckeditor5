@@ -802,20 +802,21 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.notCalled ).to.be.true;
 			} );
 
-			it( 'should mark allowed effect as "copy" if the editor is read-only', () => {
+			it( 'should not start dragging if the editor is in read-only state', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
 				const spyClipboardOutput = sinon.spy();
+				const spyPreventDefault = sinon.spy();
 
 				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
-				fireDragStart( dataTransferMock );
+				fireDragStart( dataTransferMock, spyPreventDefault );
 
 				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
-				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
+				expect( spyPreventDefault.called ).to.be.true;
 			} );
 
 			it( 'should start dragging by grabbing the widget selection handle', () => {
@@ -881,55 +882,6 @@ describe( 'Drag and Drop', () => {
 					'<paragraph>foo</paragraph>' +
 					'[<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>]' +
 					'<paragraph>bar</paragraph>'
-				);
-			} );
-
-			it( 'should start dragging by grabbing the widget selection handle (in read only mode)', () => {
-				setModelData( model,
-					'<paragraph>[]foobar</paragraph>' +
-					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
-				);
-
-				editor.enableReadOnlyMode( 'unit-test' );
-
-				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-
-				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
-
-				const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
-				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
-				const selectionHandleElement = widgetViewElement.getChild( 0 );
-
-				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
-
-				const eventData = {
-					domTarget: domNode,
-					target: selectionHandleElement,
-					domEvent: {}
-				};
-
-				viewDocument.fire( 'mousedown', {
-					...eventData
-				} );
-
-				viewDocument.fire( 'dragstart', {
-					...eventData,
-					dataTransfer: dataTransferMock,
-					stopPropagation: () => {}
-				} );
-
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
-				);
-
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
-
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
 				);
 			} );
 

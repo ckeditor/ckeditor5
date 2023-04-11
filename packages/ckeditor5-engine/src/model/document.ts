@@ -493,7 +493,7 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
  * @param batch The batch that was used in the executed changes block.
  */
 export type DocumentChangeEvent = {
-	name: 'change' | 'change:data';
+	name: 'change' | 'change:data' | `change:${ string }`;
 	args: [ batch: Batch ];
 };
 

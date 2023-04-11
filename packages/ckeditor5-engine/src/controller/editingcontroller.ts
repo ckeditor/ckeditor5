@@ -112,7 +112,11 @@ export default class EditingController extends ObservableMixin() {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo<DocumentChangeEvent>( doc, 'change', () => {
+		this.listenTo<DocumentChangeEvent>( doc, 'change', evt => {
+			if ( evt.name === 'change:isReadOnly' ) {
+				return;
+			}
+
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
