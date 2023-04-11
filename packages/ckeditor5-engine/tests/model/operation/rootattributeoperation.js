@@ -105,6 +105,19 @@ describe( 'RootAttributeOperation', () => {
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
 	} );
 
+	it( 'should set oldValue and newValue to null if undefined was passed', () => {
+		const op = new RootAttributeOperation(
+			root,
+			'x',
+			undefined,
+			undefined,
+			doc.version
+		);
+
+		expect( op.oldValue ).to.be.null;
+		expect( op.newValue ).to.be.null;
+	} );
+
 	it( 'should create a RootAttributeOperation as a reverse', () => {
 		const operation = new RootAttributeOperation( root, 'x', 'old', 'new', doc.version );
 		const reverse = operation.getReversed();

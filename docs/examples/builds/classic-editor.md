@@ -22,7 +22,7 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 
 ```js
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
