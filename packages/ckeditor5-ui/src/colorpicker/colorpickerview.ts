@@ -7,7 +7,6 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-// @todo - this should be part of the UI library.
 import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerFormat } from './utils';
 
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
