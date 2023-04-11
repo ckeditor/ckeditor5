@@ -42,7 +42,7 @@ export default class DeleteCommand extends Command {
 		this._buffer = new ChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	/**

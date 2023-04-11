@@ -32,7 +32,7 @@ export default class InsertParagraphCommand extends Command {
 		super( editor );
 
 		// Since this command passes position in execution block instead of selection, it should be checked directly.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	/**

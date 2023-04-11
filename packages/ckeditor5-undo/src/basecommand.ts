@@ -46,7 +46,7 @@ export default abstract class BaseCommand extends Command {
 		this.refresh();
 
 		// This command should not depend on selection change.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.

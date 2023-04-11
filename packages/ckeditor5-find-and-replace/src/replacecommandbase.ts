@@ -32,7 +32,7 @@ export abstract class ReplaceCommandBase extends Command {
 		this._state = state;
 
 		// Since this command executes on particular result independent of selection, it should be checked directly in execute block.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	public abstract override execute( ...args: Array<unknown> ): void;

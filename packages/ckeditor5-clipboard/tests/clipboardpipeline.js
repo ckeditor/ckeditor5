@@ -509,7 +509,7 @@ describe( 'ClipboardPipeline feature', () => {
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			viewDocument.on( 'clipboardOutput', spy );
+			viewDocument.on( 'clipboardInput', spy );
 
 			viewDocument.fire( 'cut', {
 				dataTransfer: dataTransferMock,

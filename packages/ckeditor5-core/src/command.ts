@@ -65,6 +65,11 @@ export default class Command extends ObservableMixin() {
 	declare public isEnabled: boolean;
 
 	/**
+	 * A flag indicating whether a command execution works on selection or provides custom selectable.
+	 */
+	protected _executesOnCustomSelectable: boolean;
+
+	/**
 	 * A flag indicating whether a command execution changes the editor data or not.
 	 *
 	 * @see #affectsData
@@ -87,8 +92,10 @@ export default class Command extends ObservableMixin() {
 		this.editor = editor;
 		this.set( 'value', undefined );
 		this.set( 'isEnabled', false );
+		this.set( 'isEnabled', false );
 
 		this._affectsData = true;
+		this._executesOnCustomSelectable = false;
 		this._disableStack = new Set();
 
 		this.decorate( 'execute' );
@@ -100,9 +107,13 @@ export default class Command extends ObservableMixin() {
 
 		// By default commands are disabled when selection is in non-editable place.
 		this.listenTo( this.editor.model.document.selection, 'change', () => {
+			if ( !this.affectsData || !this._executesOnCustomSelectable ) {
+				return;
+			}
+
 			const isEditable = this.editor.model.isSelectableEditable( this.editor.model.document.selection );
 
-			if ( !isEditable && this.affectsData ) {
+			if ( !isEditable ) {
 				this.forceDisabled( 'selectionNonEditable' );
 			} else {
 				this.clearForceDisabled( 'selectionNonEditable' );

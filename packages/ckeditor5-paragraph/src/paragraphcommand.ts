@@ -20,7 +20,7 @@ export default class ParagraphCommand extends Command {
 		super( editor );
 
 		// Since this command may pass selection in execution block, it should be checked directly.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	/**

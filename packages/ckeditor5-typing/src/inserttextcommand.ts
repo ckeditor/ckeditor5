@@ -34,7 +34,7 @@ export default class InsertTextCommand extends Command {
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	/**

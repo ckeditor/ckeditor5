@@ -55,7 +55,7 @@ export default class MentionCommand extends Command {
 		super( editor );
 
 		// Since this command may pass range in execution parameters, it should be checked directly in execute block.
-		this.stopListening( this.editor.model.document.selection, 'change' );
+		this._executesOnCustomSelectable = true;
 	}
 
 	/**

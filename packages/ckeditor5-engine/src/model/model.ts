@@ -826,6 +826,13 @@ export default class Model extends ObservableMixin() {
 		return false;
 	}
 
+	/**
+	 * Method used to check whether given selectable is editable.
+	 *
+	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} as it may be decorated
+	 * and used differently in different environment (ex. multi-root editor can disable particular root instead of whole editor).
+	 *
+	 */
 	public isSelectableEditable( selectable: Selectable ): boolean {
 		return !this.document.isReadOnly;
 	}

@@ -88,6 +88,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
+	 * A set of lock IDs for enabling or disabling particular root.
+	 *
 	 * @observable
 	 */
 	declare public readOnlyRootLocks: Map<string, Set<symbol | string>>;
@@ -512,6 +514,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		return rootsAttributes;
 	}
 
+	/**
+	 * Overloaded function of {@link module:engine/model/model~Model#isSelectableEditable} to work with multiple roots.
+	 */
 	public isSelectableEditable( selectable: Selectable ): boolean {
 		const rootNamesToCheck: Set<string | undefined> = new Set();
 
@@ -552,6 +557,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		return true;
 	}
 
+	/**
+	 * Enables read-only mode for a particular root only.
+	 */
 	public enableRoot( rootName: string, lockId: string | symbol = 'multi-root-default-lock' ): void {
 		const locksForGivenRoot = this.readOnlyRootLocks.get( rootName );
 
@@ -568,6 +576,9 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		}
 	}
 
+	/**
+	 * Disables read-only mode for a particular root.
+	 */
 	public disableRoot( rootName: string, lockId: string | symbol = 'multi-root-default-lock' ): void {
 		const locksForGivenRoot = this.readOnlyRootLocks.get( rootName );
 
