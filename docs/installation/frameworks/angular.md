@@ -25,7 +25,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 ## Supported Angular versions
 
 <info-box warning>
-	There is a [known issue](https://github.com/ckeditor/ckeditor5/issues/13838) related to using types from predefined builds in event handlers. You can set "strictTemplates": false in tsconfig.json as a workaround for the issue.
+	There is a [known issue](https://github.com/ckeditor/ckeditor5/issues/13838) related to using types from predefined builds in event handlers.
 </info-box>
 
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
@@ -179,12 +179,13 @@ export class AppComponent {
   title = 'angular';
   public Editor = DecoupledEditor;
 
-  public onReady( editor: DecoupledEditor ): void { // you need to set "strictTemplates": false in tsconfig.json as a workaround for https://github.com/ckeditor/ckeditor5/issues/13838
-    const element = editor.ui.getEditableElement()!;
+  public onReady( editor: any ): void { //using `any` is temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
+    const decoupledEditor = editor as DecoupledEditor;
+    const element = decoupledEditor.ui.getEditableElement()!;
     const parent = element.parentElement!;
 
     parent.insertBefore(
-      editor.ui.view.toolbar.element!,
+      decoupledEditor.ui.view.toolbar.element!,
       element
     );
   }
