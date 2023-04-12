@@ -53,10 +53,10 @@ When you use TypeScript you need to import all modules provided by CKEditor 5 us
 
 ```ts
 // Instead of:
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 // Do:
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 ```
 
 Thanks to this approach you will avoid problems with missing types during the compile time of your project.

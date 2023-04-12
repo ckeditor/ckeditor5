@@ -16,7 +16,7 @@ This scenario allows you to fully control the building process of CKEditor 5. Th
 	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor 5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+First of all, you need to install the source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. You can also install them individually. An example list of plugins may look like this:
 
@@ -413,7 +413,7 @@ import ClassicEditor from './ckeditor';
 
 ClassicEditor
     // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-    .create( document.querySelector<HTMLElement>( '#app' )! )
+    .create( document.querySelector( '#app' ) as HTMLElement )
     .then( editor => {
         console.log( 'Editor was initialized', editor );
     } )
@@ -497,7 +497,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-    .create( document.querySelector<HTMLElement>( '#app')!, {
+    .create( document.querySelector( '#app') as HTMLElement, {
         // The plugins are now passed directly to .create().
         plugins: [
             Essentials,

@@ -221,7 +221,7 @@ import ClassicEditor from './ckeditor';
 
 ClassicEditor
     // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-    .create( document.querySelector<HTMLElement>( '#app' )! )
+    .create( document.querySelector( '#app' ) as HTMLElement )
     .then( editor => {
         console.log( 'Editor was initialized', editor );
     } )
@@ -306,7 +306,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-    .create( document.querySelector<HTMLElement>( '#app')!, {
+    .create( document.querySelector( '#app') as HTMLElement, {
         // The plugins are now passed directly to .create().
         plugins: [
             Essentials,
