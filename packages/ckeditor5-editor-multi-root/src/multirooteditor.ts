@@ -227,20 +227,16 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		// same as `ui.getEditableElement()` method will not return editables.
 		const data: Record<string, string> = {};
 
-		if ( this.sourceElements ) {
-			for ( const rootName of Object.keys( this.sourceElements ) ) {
-				data[ rootName ] = shouldUpdateSourceElement ? this.getData( { rootName } ) : '';
-			}
+		for ( const rootName of Object.keys( this.sourceElements ) ) {
+			data[ rootName ] = shouldUpdateSourceElement ? this.getData( { rootName } ) : '';
 		}
 
 		this.ui.destroy();
 
 		return super.destroy()
 			.then( () => {
-				if ( this.sourceElements ) {
-					for ( const rootName of Object.keys( this.sourceElements ) ) {
-						setDataInElement( this.sourceElements[ rootName ], data[ rootName ] );
-					}
+				for ( const rootName of Object.keys( this.sourceElements ) ) {
+					setDataInElement( this.sourceElements[ rootName ], data[ rootName ] );
 				}
 			} );
 	}

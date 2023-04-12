@@ -529,7 +529,7 @@ export default abstract class Editor extends ObservableMixin() {
 			return this.commands.execute( commandName, ...commandParams );
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next */
+			/* istanbul ignore next -- @preserve */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -547,7 +547,7 @@ export default abstract class Editor extends ObservableMixin() {
 		this.editing.view.focus();
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	/**
 	 * Creates and initializes a new editor instance.
 	 *

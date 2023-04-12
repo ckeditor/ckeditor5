@@ -487,6 +487,16 @@ describe( 'view', () => {
 			sinon.assert.calledWithExactly( global.window.scrollTo, 100, 95 );
 		} );
 
+		it( 'should not call scrollTo when selection is null', () => {
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			view.scrollToTheSelection();
+
+			sinon.assert.notCalled( global.window.scrollTo );
+		} );
+
 		function stubSelectionRangeGeometry( geometry ) {
 			const domRange = global.document.createRange();
 			domRange.setStart( domRoot, 0 );

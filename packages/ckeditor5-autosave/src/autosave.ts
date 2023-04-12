@@ -202,7 +202,7 @@ export default class Autosave extends Plugin {
 
 		// It's not possible to easy test it because karma uses `beforeunload` event
 		// to warn before full page reload and this event cannot be dispatched manually.
-		/* istanbul ignore next */
+		/* istanbul ignore next -- @preserve */
 		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
 			if ( this._pendingActions.hasAny ) {
 				domEvt.returnValue = this._pendingActions.first!.message;

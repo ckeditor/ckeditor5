@@ -284,7 +284,7 @@ export default class ImageUploadEditing extends Plugin {
 
 				// Force re–paint in Safari. Without it, the image will display with a wrong size.
 				// https://github.com/ckeditor/ckeditor5/issues/1975
-				/* istanbul ignore next */
+				/* istanbul ignore next -- @preserve */
 				if ( env.isSafari ) {
 					const viewFigure = editor.editing.mapper.toViewElement( imageElement )!;
 					const viewImg = imageUtils.findViewImgElement( viewFigure )!;

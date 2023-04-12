@@ -33,7 +33,7 @@ export default function areConnectedThroughProperties( target1: unknown, target2
 	return false;
 }
 
-/* istanbul ignore next */
+/* istanbul ignore next -- @preserve */
 // eslint-disable-next-line
 function checkConnectionBetweenProps( target1: unknown, target2: unknown, excludedNodes: any ) {
 	const { subNodes: subNodes1, prevNodeMap: prevNodeMap1 } = getSubNodes( target1, excludedNodes.subNodes ) as any;
