@@ -378,7 +378,7 @@ function upcastListItemAttributes( attributeStrategies: Array<AttributeStrategy>
 			}
 
 			const listParent = data.viewItem.parent as ViewElement;
-			const listItem = data.modelRange!.start.nodeAfter || data.modelRange!.end.nodeBefore;
+			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
 			for ( const strategy of attributeStrategies ) {
 				if ( strategy.appliesToListItem( listItem! ) ) {
