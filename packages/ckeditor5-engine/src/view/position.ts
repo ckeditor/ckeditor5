@@ -255,9 +255,6 @@ export default class Position extends TypeCheckable {
 		// Compare both path arrays to find common ancestor.
 		const result = compareArrays( thisPath, otherPath );
 
-		// Istanbul ignore is needed only for case 'same'. Esbuild does not allow placing comments in between statements.
-		// In order to remove it, write a test for this case.
-		/* istanbul ignore next -- @preserve */
 		switch ( result ) {
 			case 'prefix':
 				return 'before';
@@ -265,12 +262,9 @@ export default class Position extends TypeCheckable {
 			case 'extension':
 				return 'after';
 
-			case 'same':
-				// Already covered by `this.isEqual` above. Added so TypeScript can infer `result` as number in `default` case.
-				return 'same';
-
 			default:
-				return thisPath[ result ] < otherPath[ result ] ? 'before' : 'after';
+				// Cast to number to avoid having 'same' as a type of `result`.
+				return thisPath[ result as number ] < otherPath[ result as number ] ? 'before' : 'after';
 		}
 	}
 
