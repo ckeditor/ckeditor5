@@ -251,7 +251,11 @@ describe( 'MultiRootEditor', () => {
 					}
 				)
 				.then( done )
-				.catch( done );
+				.catch( done )
+				.finally( () => {
+					// Cleanup. This is difficult as we don't have editor instance to destroy.
+					document.querySelector( '.ck-body-wrapper' ).remove();
+				} );
 		} );
 
 		it( 'throws error when initial roots are different than initial data - detached root', done => {
@@ -287,7 +291,11 @@ describe( 'MultiRootEditor', () => {
 					}
 				)
 				.then( done )
-				.catch( done );
+				.catch( done )
+				.finally( () => {
+					// Cleanup. This is difficult as we don't have editor instance to destroy.
+					document.querySelector( '.ck-body-wrapper' ).remove();
+				} );
 		} );
 
 		it( 'throws error when initial roots are different than initial data - missing root in initial data', done => {
@@ -308,7 +316,11 @@ describe( 'MultiRootEditor', () => {
 					}
 				)
 				.then( done )
-				.catch( done );
+				.catch( done )
+				.finally( () => {
+					// Cleanup. This is difficult as we don't have editor instance to destroy.
+					document.querySelector( '.ck-body-wrapper' ).remove();
+				} );
 		} );
 
 		function test( getElementOrData ) {
