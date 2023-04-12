@@ -59,7 +59,8 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 ```
 
-Thanks to this approach you will avoid problems with missing types during the compile time of your project.
+This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work. The previous method (importing via `@ckeditor/ckeditor5-*/src/*`) still works in most cases, but [it may randomly break](https://github.com/ckeditor/ckeditor5/issues/13433).
+
 ### Integrating CKEditor 5 from source in your TypeScript project
 
 If you want to integrate CKEditor 5 directly in your TypeScript project, follow the instructions for integrating from source using webpack and Vite:
