@@ -682,7 +682,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				 * This can happen for one of the two reasons:
 				 *
 				 * * Configuration error. `sourceElementsOrData` parameter in
-				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#create `MultiRootEditor.create()`} contains different
+				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} contains different
 				 * roots than {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
 				 * * As the editor was initialized, {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData`}
 				 * configuration value or the state of the editor roots has been changed.
