@@ -10,7 +10,7 @@ const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
-const { bundler, styles, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, loaders, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
@@ -474,28 +474,12 @@ function getWebpackConfig( snippets, config ) {
 
 		module: {
 			rules: [
-				{
-					test: /\.svg$/,
-					use: [ 'raw-loader' ]
-				},
-				{
-					test: /\.css$/,
-					use: [
-						MiniCssExtractPlugin.loader,
-						'css-loader',
-						{
-							loader: 'postcss-loader',
-							options: {
-								postcssOptions: styles.getPostCssConfig( {
-									themeImporter: {
-										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-									},
-									minify: config.production
-								} )
-							}
-						}
-					]
-				}
+				loaders.getIconsLoader( { useShortPattern: true } ),
+				loaders.getStylesLoader( {
+					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+					minify: config.production,
+					extractToSeparateFile: true
+				} )
 			]
 		}
 	};
@@ -701,13 +685,10 @@ function getWebpackConfigForAssets( config ) {
 
 		module: {
 			rules: [
-				{
-					test: /\.css$/,
-					use: [
-						MiniCssExtractPlugin.loader,
-						'css-loader'
-					]
-				}
+				loaders.getStylesLoader( {
+					skipPostCssLoader: true,
+					extractToSeparateFile: true
+				} )
 			]
 		}
 	};

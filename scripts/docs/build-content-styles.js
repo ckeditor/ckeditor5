@@ -10,6 +10,8 @@ const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
+const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
+
 const { writeFile, getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
@@ -161,6 +163,17 @@ function getWebpackConfig() {
 
 	postCssConfig.plugins.push( postCssContentStylesPlugin( contentRules ) );
 
+	const cssLoader = loaders.getStylesLoader( {
+		skipPostCssLoader: true
+	} );
+
+	cssLoader.use.push( {
+		loader: 'postcss-loader',
+		options: {
+			postcssOptions: postCssConfig
+		}
+	} );
+
 	const webpackConfig = {
 		mode: 'development',
 		devtool: 'source-map',
@@ -180,23 +193,8 @@ function getWebpackConfig() {
 		},
 		module: {
 			rules: [
-				{
-					test: /\.svg$/,
-					use: [ 'raw-loader' ]
-				},
-				{
-					test: /\.css$/,
-					use: [
-						'style-loader',
-						'css-loader',
-						{
-							loader: 'postcss-loader',
-							options: {
-								postcssOptions: postCssConfig
-							}
-						}
-					]
-				}
+				loaders.getIconsLoader(),
+				cssLoader
 			]
 		}
 	};
