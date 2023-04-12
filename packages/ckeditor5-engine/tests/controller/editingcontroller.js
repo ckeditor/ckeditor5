@@ -935,6 +935,28 @@ describe( 'EditingController', () => {
 			sinon.assert.calledOnce( enterSpy );
 		} );
 
+		it( 'should not crash while trying to fix null range while composing', () => {
+			setModelData( model, '<paragraph>a</paragraph>' );
+
+			const targetRanges = [ null ];
+
+			const eventData = {
+				inputType: 'insertCompositionText',
+				data: 'ab',
+				targetRanges
+			};
+
+			viewDocument.isComposing = true;
+			fireBeforeInputEvent( eventData );
+
+			// Verify beforeinput range.
+			sinon.assert.calledOnce( beforeInputSpy );
+
+			const inputData = beforeInputSpy.args[ 0 ][ 1 ];
+			expect( inputData.inputType ).to.equal( eventData.inputType );
+			expect( inputData.targetRanges[ 0 ] ).to.be.null;
+		} );
+
 		function fireBeforeInputEvent( eventData ) {
 			viewDocument.fire( 'beforeinput', {
 				domEvent: {
