@@ -254,6 +254,42 @@ describe( 'MultiRootEditor', () => {
 				.catch( done );
 		} );
 
+		it( 'throws error when initial roots are different than initial data - detached root', done => {
+			// Artificial fake plugin that simulates a root being removed as the editor is initialized.
+			class RemoveRoot {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				init() {
+					const rootFoo = this.editor.model.document.getRoot( 'foo' );
+
+					rootFoo._isAttached = false;
+				}
+			}
+
+			MultiRootEditor.create( {
+				foo: document.createElement( 'div' )
+			}, {
+				initialData: {
+					foo: '<p>Foo</p>'
+				},
+				extraPlugins: [
+					RemoveRoot
+				]
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when initital roots and initial data are mismatched.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-initial-data-mismatch', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
 		it( 'throws error when initial roots are different than initial data - missing root in initial data', done => {
 			MultiRootEditor.create( {
 				foo: document.createElement( 'div' ),
