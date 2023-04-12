@@ -175,13 +175,22 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		this.model.document.on( 'change:data', () => {
 			const changedRoots = this.model.document.differ.getChangedRoots();
 
+			// Fire detaches first. If there are multiple roots removed and added in one batch, it should be easier to handle if
+			// changes aren't mixed. Detaching will usually lead to just removing DOM elements. Detaching first will lead to a clean DOM
+			// when new editables are added in `addRoot` event.
+			for ( const changes of changedRoots ) {
+				const root = this.model.document.getRoot( changes.name )!;
+
+				if ( changes.state == 'detached' ) {
+					this.fire<DetachRootEvent>( 'detachRoot', root );
+				}
+			}
+
 			for ( const changes of changedRoots ) {
 				const root = this.model.document.getRoot( changes.name )!;
 
 				if ( changes.state == 'attached' ) {
 					this.fire<AddRootEvent>( 'addRoot', root );
-				} else if ( changes.state == 'detached' ) {
-					this.fire<DetachRootEvent>( 'detachRoot', root );
 				}
 			}
 		} );
