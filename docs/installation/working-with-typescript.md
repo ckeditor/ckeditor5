@@ -11,7 +11,7 @@ modified_at: 2023-04-03
 
 # TypeScript support in CKEditor 5
 
-CKEditor 5 is built using TypeScript and so has native types definition. All the official packages and builds distributed using NPM and CDN contain type definitions but their DLL versions aren't supported yet.
+CKEditor 5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor 5 do not provide built-in typings yet.
 
 <info-box hint>
 Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
@@ -34,6 +34,7 @@ Using TypeScript comes with some advantages:
 Running CKEditor 5 doesn't differ much when using Typescript compared to the JavaScript environment. You may consider using type assertion or type casting to satisfy the TypeScript compiler.
 
 ### Running the editor
+
 Here is an example of the classic editor build initialization:
 
 ```ts
@@ -46,9 +47,19 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 } );
 ```
 
-<info-box warning>
-Custom builds produced by online builder do not provide built-in type definitions yet.
-</info-box>
+### Installing CKEditor 5 packages in your TypeScript project
+
+When you use TypeScript you need to import all modules provided by CKEditor 5 using a package entry point instead of a path to a module.
+
+```ts
+// Instead of:
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+
+// Do:
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+```
+
+This approach ensures that TypeScript correctly loads all module augmentation code necessary to make certain types work. The previous method (importing via `@ckeditor/ckeditor5-*/src/*`) still works in most cases, but [it may randomly break](https://github.com/ckeditor/ckeditor5/issues/13433).
 
 ### Integrating CKEditor 5 from source in your TypeScript project
 
