@@ -12,7 +12,7 @@ The media embed feature lets you insert embeddable media such as YouTube or Vime
 
 ## Demo
 
-You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media like in the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
+You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media. You can also paste a media URL directly into the editor content, and it will be [automatically embedded](#automatic-media-embed-on-paste). Try both approaches with the following URLs:
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -227,7 +227,7 @@ You can take inspiration from the default configuration of this feature which yo
 
 To get around the limitations of showing media embed previews, you can use services like [Iframely](https://iframely.com/) - this will allow having a rich preview of the content inside CKEditor 5. By inserting an Iframely-hosted `<iframe>`, you are able to preview the content from hundreds of media providers.
 
-Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below (keep in mind that if you are using ad blocking software, it might also block the previews inside the editor):
+Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below. (Keep in mind that if you are using ad-blocking software, it might also block the previews inside the editor.)
 
 {@snippet features/media-embed-preview}
 

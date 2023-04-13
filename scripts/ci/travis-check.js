@@ -31,7 +31,9 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
-		const coverageExitCode = checkPackagesCodeCoverage();
+		const coverageExitCode = checkPackagesCodeCoverage( {
+			skipPackages: [ 'ckeditor5-minimap' ]
+		} );
 
 		if ( coverageExitCode ) {
 			process.exit( coverageExitCode );
@@ -60,9 +62,9 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
 
-	// Linters.
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
+	exec( 'yarn', 'run', 'check-dependencies' );
 
 	if ( shortFlow ) {
 		process.exit();

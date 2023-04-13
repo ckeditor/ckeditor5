@@ -19,7 +19,8 @@ import {
 	ViewCollection,
 	ColorPickerView,
 	ColorPaletteIcon,
-	type ColorDefinition
+	type ColorDefinition,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
@@ -166,7 +167,6 @@ export default class ColorTableView extends View {
 	constructor(
 		locale: Locale,
 		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
-
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
@@ -337,12 +337,16 @@ export default class ColorTableView extends View {
 		}
 	}
 
-	public appendColorPicker(): void {
+	/**
+	 * Appends {@link #colorPickerView} view.
+	 */
+	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
 		if ( this.colorPickerView ) {
 			return;
 		}
 
-		const colorPickerView = new ColorPickerView( this.locale );
+		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
+
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
@@ -351,6 +355,9 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this.colorPickerView );
+
+		this._addColorPickersElementsToFocusTracker();
+
 		this.items.add( this.actionBarView );
 
 		this.focusTracker.add( this.saveButtonView.element! );
@@ -358,6 +365,33 @@ export default class ColorTableView extends View {
 
 		this.focusTracker.add( this.cancelButtonView.element! );
 		this._focusables.add( this.cancelButtonView );
+
+		this._stopPropagationOnArrowsKeys();
+	}
+
+	/**
+	 * Adds color picker elements to focus tracker.
+	 */
+	private _addColorPickersElementsToFocusTracker(): void {
+		for ( const slider of this.colorPickerView!.slidersView ) {
+			this.focusTracker.add( slider.element! );
+			this._focusables.add( slider );
+		}
+
+		this.focusTracker.add( this.colorPickerView!.input.element! );
+		this._focusables.add( this.colorPickerView!.input );
+	}
+
+	/**
+	 * Remove default behavior of arrow keys in dropdown.
+	 */
+	private _stopPropagationOnArrowsKeys(): void {
+		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
+
+		this.keystrokes.set( 'arrowright', stopPropagation );
+		this.keystrokes.set( 'arrowleft', stopPropagation );
+		this.keystrokes.set( 'arrowup', stopPropagation );
+		this.keystrokes.set( 'arrowdown', stopPropagation );
 	}
 
 	/**

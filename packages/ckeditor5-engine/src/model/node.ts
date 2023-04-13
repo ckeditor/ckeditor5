@@ -87,7 +87,7 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Index of this node in it's parent or `null` if the node has no parent.
+	 * Index of this node in its parent or `null` if the node has no parent.
 	 *
 	 * Accessing this property throws an error if this node's parent element does not contain it.
 	 * This means that model tree got broken.
@@ -107,8 +107,8 @@ export default abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Offset at which this node starts in it's parent. It is equal to the sum of {@link #offsetSize offsetSize}
-	 * of all it's previous siblings. Equals to `null` if node has no parent.
+	 * Offset at which this node starts in its parent. It is equal to the sum of {@link #offsetSize offsetSize}
+	 * of all its previous siblings. Equals to `null` if node has no parent.
 	 *
 	 * Accessing this property throws an error if this node's parent element does not contain it.
 	 * This means that model tree got broken.
