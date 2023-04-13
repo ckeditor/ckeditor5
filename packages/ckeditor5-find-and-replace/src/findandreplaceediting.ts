@@ -156,7 +156,7 @@ export default class FindAndReplaceEditing extends Plugin {
 			} );
 		} );
 
-		/* istanbul ignore next */
+		/* istanbul ignore next -- @preserve */
 		const scrollToHighlightedResult: GetCallback<ObservableChangeEvent> = ( eventInfo, name, newValue ) => {
 			if ( newValue ) {
 				const domConverter = this.editor.editing.view.domConverter;

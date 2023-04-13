@@ -923,6 +923,33 @@ describe( 'DomConverter', () => {
 			expect( stringify( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br></p>' );
 		} );
 
+		it( 'should convert position after a block filler', () => {
+			const domFiller = BR_FILLER( document ); // eslint-disable-line new-cap
+			const domP = createElement( document, 'p', null, [ domFiller ] );
+
+			const viewP = parse( '<p></p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = converter.domPositionToView( domP, 1 );
+
+			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]</p>' );
+		} );
+
+		it( 'should not crash if offset does not exist', () => {
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domP = createElement( document, 'p', null, [ domFiller ] );
+
+			const viewP = parse( '<p></p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = converter.domPositionToView( domP, 100 );
+
+			expect( viewPosition ).to.be.null;
+			expect( stringify( viewP ) ).to.equal( '<p></p>' );
+		} );
+
 		it( 'should return null if there is no corresponding parent node', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domText );

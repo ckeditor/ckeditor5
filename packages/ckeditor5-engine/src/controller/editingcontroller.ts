@@ -7,7 +7,12 @@
  * @module engine/controller/editingcontroller
  */
 
-import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import {
+	CKEditorError,
+	ObservableMixin,
+	env,
+	type GetCallback
+} from '@ckeditor/ckeditor5-utils';
 
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
@@ -28,14 +33,18 @@ import {
 
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
+import { tryFixingRange } from '../model/utils/selection-post-fixer';
+
 import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model';
 import type ModelItem from '../model/item';
 import type ModelText from '../model/text';
 import type ModelTextProxy from '../model/textproxy';
+import type Schema from '../model/schema';
 import type { DocumentChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
 import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -113,6 +122,12 @@ export default class EditingController extends ObservableMixin() {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
+		);
+
+		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
+		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
+			fixTargetRanges( this.mapper, this.model.schema, this.view ),
+			{ priority: 'high' }
 		);
 
 		// Attach default model converters.
@@ -231,4 +246,31 @@ export default class EditingController extends ObservableMixin() {
 			this.model.document.differ._refreshItem( item );
 		} );
 	}
+}
+
+/**
+ * Checks whether the target ranges provided by the `beforeInput` event can be properly mapped to model ranges and fixes them if needed.
+ *
+ * This is using the same logic as the selection post-fixer.
+ */
+function fixTargetRanges( mapper: Mapper, schema: Schema, view: View ): GetCallback<ViewDocumentInputEvent> {
+	return ( evt, data ) => {
+		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
+		// could be properly mapped to view and model because the DOM and view tree drifted apart.
+		if ( view.document.isComposing && !env.isAndroid ) {
+			return;
+		}
+
+		for ( let i = 0; i < data.targetRanges.length; i++ ) {
+			const viewRange = data.targetRanges[ i ];
+			const modelRange = mapper.toModelRange( viewRange );
+			const correctedRange = tryFixingRange( modelRange, schema );
+
+			if ( !correctedRange || correctedRange.isEqual( modelRange ) ) {
+				continue;
+			}
+
+			data.targetRanges[ i ] = mapper.toViewRange( correctedRange );
+		}
+	};
 }

@@ -29,7 +29,6 @@ Promise.resolve()
 		cwd: process.cwd(),
 		packages: 'packages',
 		releaseBranch: 'release',
-		from: 'v36.0.1',
 		highlightsPlaceholder: true,
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {
@@ -38,6 +37,10 @@ Promise.resolve()
 
 			if ( name === 'build-*' ) {
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
+			}
+
+			if ( name === 'editor-*' ) {
+				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-editor%20maintainer%3Ackeditor';
 			}
 
 			if ( name === 'letters' ) {
@@ -50,14 +53,12 @@ Promise.resolve()
 			{
 				cwd: CKEDITOR5_INTERNAL_PATH,
 				packages: 'packages',
-				skipLinks: true,
-				from: 'v36.0.1' // TODO: To be removed once a new major version is live.
+				skipLinks: true
 			},
 			{
 				cwd: COLLABORATION_FEATURES_PATH,
 				packages: 'packages',
-				skipLinks: true,
-				from: 'v36.0.1' // TODO: To be removed once a new major version is live.
+				skipLinks: true
 			}
 		]
 	} ) )

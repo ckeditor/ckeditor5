@@ -1,11 +1,371 @@
 Changelog
 =========
 
-## [37.0.0-rc.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0-rc.0) (2023-04-03)
+## [37.0.1](https://github.com/ckeditor/ckeditor5/compare/v37.0.0...v37.0.1) (2023-04-05)
+
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+There was an invalid version of the `ckeditor5-collaboration` dependency in the following packages:
+
+* **[@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**
+* **[@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**
+* **[@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**
+* **[@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**
+
+Due to that and the [CKEditor 5 versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html), we release all packages once again.
+
+Check out the highlights of the [v37.0.0 original release](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
+
+### Released packages
+
+Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
+
+<details>
+<summary>Released packages (summary)</summary>
+
+Other releases:
+
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v37.0.0 => v37.0.1
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v37.0.0 => v37.0.1
+* [@ckeditor/letters](https://www.npmjs.com/package/@ckeditor/letters): v37.0.0 => v37.0.1
+* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration): v37.0.0 => v37.0.1
+</details>
+
+
+## [37.0.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0) (2023-04-05)
+
+### Known bugs
+
+**⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
+
+Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
+
+To solve this problem, make sure to set the permissions after the editor is initialized, for example:
+
+```js
+ClassicEditor.create( domElement, config ).then( editor => {
+	// Set the default permissions set.
+	editor.plugins.get( 'Permissions' ).setPermissions( [ 'document:write', 'comment:write', 'comment:admin' ] );
+} );
+```
+
+### Release highlights
+
+#### Migration to TypeScript
+
+We are excited to announce that CKEditor 5 has been completely migrated to TypeScript, making v37.0.0 the first major release with full TypeScript support. This migration has brought numerous improvements, including better code organization and enhanced stability:
+
+* **Full TypeScript support**: CKEditor now supports TypeScript in all its packages, making it easier for developers to write type-safe code and provide better code completion and error checking in IDEs.
+* **Improved code quality**: The migration to TypeScript has allowed us to improve the overall code quality of CKEditor, resulting in better stability and performance.
+* **Better documentation**: With TypeScript, we have been able to provide comprehensive and accurate type definitions for all the components in CKEditor, making it easier for developers to understand and use the API.
+* **Enhanced developer experience**: TypeScript provides better tooling support, including code completion and error checking, which improves the overall developer experience.
+
+Feel free to check our documentation to find out more about the [Using CKEditor 5 with a TypeScript setup](https://ckeditor.com/docs/ckeditor5/latest/installation/working-with-typescript.html) and read [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html).
+
+We believe this release will be a significant milestone for CKEditor 5 and will provide a better development experience for our users. Please try it out and let us know your feedback by leaving a comment in this [issue](https://github.com/ckeditor/ckeditor5/issues/12027).
+
+#### Comments archive
+
+We are excited to introduce the Comments archive feature! The new feature provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users are now able to resolve comment threads (instead of permanently removing them). Resolved comments are moved to the comments archive panel, which can be accessed from the toolbar. You can view and restore archived comment threads if necessary. This new feature will help simplify the feedback management process for our users.
+
+Make sure to add `commentsArchive` button to your toolbar configuration and review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html) to learn more about the feature from a technical point of view.
+
+#### Multi-root editor
+
+In this release, we added official support for [multi-root editor type](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html) and a new [multi-root editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#multi-root-editor). Additionally, we bring some fundamental improvements that make the multi-root editor more flexible and useful!
+
+* Add and detach document roots. The multi-root editor will allow you to add or remove editing fields in your application in a dynamic fashion (i.e. after the editor was initialised), without the need to create additional editor instances.
+* The multi-root editor will allow you to use root attributes to store additional metadata related to roots (editable fields). You can change these attributes and retrieve them when you save the document data. Finally, you can react to these changes to alter how your application looks or behaves. Root attributes are a tool that will help you customize the editing experience further according to your needs. To take advantage of root attributes, you will need to provide a custom feature. You will need to handle these attributes only if you provide custom features that use them.
+
+**The multi-root editor is still a project in progress!**
+
+While the new predefined build is readily available, **several features are not yet supported in the multi-root editor** as of this release. These include: revision history, pagination, PDF/Word export, table resize, word count, HTML comments, full-page editing, title, mini-map. Multi-root editor cannot be uploaded as an editor bundle to the Cloud Services. Multi-root editor is not compatible with framework integrations as of now. We will work on bringing support for these features in upcoming releases.
+
+#### Tables
+
+We expanded the General HTM Support feature with support for the `<colgroup>`’s and `<col>`’s attributes. We significantly refactored how these HTML elements are handled by the editor. They are now legit elements in the model instead of being kept as a `<table>` attribute.
+
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* Upgraded the minimal versions of Node.js to `16.0.0` due to the end of LTS.
+* Comments archive feature requires changes in the non-real time comments adapter integration. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html) and the updated API docs for comments adapter.
+
+### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The table columns' widths are stored as model elements instead of a model element attribute. See [#11479](https://github.com/ckeditor/ckeditor5/issues/11479).
+* The [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package is no longer available as a standalone DLL build. It is now included in the main `ckeditor5-dll.js` build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
+* It is no longer possible to undo creating or removing a comment thread.
+* UI in comment annotation has changed. Remove and edit buttons have been moved to a dropdown. A new button which resolves a comment thread was added.
+* Comments outside editor integration has to be updated due to the introduction of comments archive. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html). 
+* Comment and comment thread views has substantially changed due to the introduction of comments archive. These changes may be incompatible with your custom views or templates. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html).
+* Regarding Export to PDF and Export to Word features, if you use a custom callback to get the document data, make sure to pass `ignoreResolvedComments: true` in `editor.getData()` options. If not, the resolved comments may be visible in the converted document.
+
+### Features
+
+* **[build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root)**: Introduced a new editor build featuring the multi-root editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced comments archive. It is now possible to resolve a comment thread instead of removing it. Resolved comment threads can be reviewed in the comments archive and can be re-opened if the commented content is still available in the editor.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `comment:modify_all` permission that will allow the user to edit or remove all comments.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `model.Writer#addRoot()` and `model.Writer#detachRoot()`. Model roots can now be dynamically added to or detached from the document. All content gets removed from a detached root and new content cannot be inserted as long as the root is detached. Closes [#13388](https://github.com/ckeditor/ckeditor5/issues/13388). ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Differ.getChangedRoots()` which returns the roots added or detached since last the differ reset. `Differ#isEmpty` and `Differ#hasDataChanges()` will return `true` if a root was added or detached. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Limiting the dropdown on the singular feed level should now be possible. Closes [#13504](https://github.com/ckeditor/ckeditor5/issues/13504). ([commit](https://github.com/ckeditor/ckeditor5/commit/489b3fda402504cb0492fceb368af475c8dd85b6))
+* **[multi-root-editor](https://www.npmjs.com/package/@ckeditor/ckeditor5-multi-root-editor)**: Introduced the multi-root editor type that allows defining multiple editable areas handled by a single editor instance. Closes [#11493](https://github.com/ckeditor/ckeditor5/issues/11493). ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Added support for custom path prefixes in WebSocket URLs. Any path proceeding the required `/ws` part in the WebSocket URL is now preserved.
+
+### Bug fixes
+
+* **[build-*](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor)**: Typings from the CKEditor 5 builds contain types of loaded plugins. Closes [#13676](https://github.com/ckeditor/ckeditor5/issues/13676). ([commit](https://github.com/ckeditor/ckeditor5/commit/fea9b5a22259cb72525ef61a3c117c55ebdd62e4))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Dragging images in the editor should not lag in Firefox. Closes [#13366](https://github.com/ckeditor/ckeditor5/issues/13366). ([commit](https://github.com/ckeditor/ckeditor5/commit/04c7d47f6a35b3a866ce624a6b8e42510b5eefbd))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Dragging images in the editor should not lag in Firefox. Closes [#13366](https://github.com/ckeditor/ckeditor5/issues/13366). ([commit](https://github.com/ckeditor/ckeditor5/commit/04c7d47f6a35b3a866ce624a6b8e42510b5eefbd))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Renderer` should try to update existing DOM text nodes (instead of replacing them completely) so that external tools should not get lost if the watched DOM text node is removed and replaced with another one. Closes [#13051](https://github.com/ckeditor/ckeditor5/issues/13051). ([commit](https://github.com/ckeditor/ckeditor5/commit/617497a8ebe03a9f66f327479dff92c3dd10fe1c))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `elementToStructure()` downcast helper should not skip attribute changes that happened with the modification of the children list. ([commit](https://github.com/ckeditor/ckeditor5/commit/61debdca19f7a5166433220b819232d20d8b9f26))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Attributes on the `<colgroup>`, and `<col>` elements should be preserved in the data. Closes [#11479](https://github.com/ckeditor/ckeditor5/issues/11479). ([commit](https://github.com/ckeditor/ckeditor5/commit/61debdca19f7a5166433220b819232d20d8b9f26))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Fixed description lists with name-value groups wrapped in div elements when upcasting using the General HTML Support feature. Closes [#12240](https://github.com/ckeditor/ckeditor5/issues/12240). ([commit](https://github.com/ckeditor/ckeditor5/commit/cb96419897e114e40dbeeca902b7463af372866f))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Fixed the image resize handle displaying `NaN` in some scenarios. Closes [#10776](https://github.com/ckeditor/ckeditor5/issues/10776). ([commit](https://github.com/ckeditor/ckeditor5/commit/5d280fa041b43331c09a0db0f393f15c7b848f96))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link text should update along with the URL if they were the same in the first place. Closes [#12588](https://github.com/ckeditor/ckeditor5/issues/12588). ([commit](https://github.com/ckeditor/ckeditor5/commit/0beb8c638e10d69160219629b44e8bee00d6c744))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Mentions reexport the `MentionFeed` and `ItemRenderer` types. Closes [#13705](https://github.com/ckeditor/ckeditor5/issues/13705). ([commit](https://github.com/ckeditor/ckeditor5/commit/191f6cc9975f9055687fd963738b6eeba8727466))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Make a text property optional in the `MentionFeedObjectItem` type. Closes [#13550](https://github.com/ckeditor/ckeditor5/issues/13550). ([commit](https://github.com/ckeditor/ckeditor5/commit/7df46f84fba04280b3de3d98e4d666d4d046945c))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Mentions panel should be positioned left to the caret in editors with a right–to–left UI language. Closes [#13459](https://github.com/ckeditor/ckeditor5/issues/13459). ([commit](https://github.com/ckeditor/ckeditor5/commit/45ac9e29e87c02d5ce26fa461075c6f21c6d44a8))
+* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fixed handling of bold text in RTL lists pasted from MS Word. Closes [#13711](https://github.com/ckeditor/ckeditor5/issues/13711). ([commit](https://github.com/ckeditor/ckeditor5/commit/3abb8df5dfafbd31b432ada801e8878aff3b2eca))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Changed detection on heading rows and columns on table upcast. Closes [#3172](https://github.com/ckeditor/ckeditor5/issues/3172). ([commit](https://github.com/ckeditor/ckeditor5/commit/6f7e441d61fd1958f18740992e2bc8789cae302a))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestion annotation discard button state is now bound with the `DiscardSuggestionCommand` state, instead of `AcceptSuggestionCommand`.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed error thrown when a list item was created using autoformatting in the track changes mode.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: List style and document list style iss now applied directly to a non-list element when used in the track changes mode.
+
+### Other changes
+
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The `EditorConfig#initialData` and `EditorConfig#placeholder` options can now be set to `Record<string, string>` where the keys are root names and the values are settings for the related roots. ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[editor-*](https://www.npmjs.com/search?q=keywords%3Ackeditor5-editor%20maintainer%3Ackeditor)**: Exposed the `Context`, `EditorWatchdog`, and `ContextWatchdog` classes as static editor properties. Closes [#13707](https://github.com/ckeditor/ckeditor5/issues/13707). ([commit](https://github.com/ckeditor/ckeditor5/commit/8933c865f9e54e9dae5e94f1b8743ee169ab3456))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `RootAttributeOperation` is now correctly handled by `Differ`. Root attribute changes will be returned in `Differ#getChangedRoots()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/c121061db5bd02cdf3c088ea7a38ec0b4614b121))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `model.Document#getRootNames()` now returns only attached roots by default. The `includeDetached` parameter was introduced to enable returning detached roots as well. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `RootOperation`. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `model.DocumentFragment#isAttached` was introduced for compatibility reasons. It always returns `false`. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Introduced the `StyleUtils` plugin to make the style util functions accessible. Closes [#13484](https://github.com/ckeditor/ckeditor5/issues/13484). ([commit](https://github.com/ckeditor/ckeditor5/commit/ee181f9903b09701deba2d3d85dab25fb5fadfbf))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The table columns' widths are stored as model elements instead of model element attributes. See [#11479](https://github.com/ckeditor/ckeditor5/issues/11479). ([commit](https://github.com/ckeditor/ckeditor5/commit/61debdca19f7a5166433220b819232d20d8b9f26))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `CommentThread#attributes` as well as `#setAttribute()` and `#getAttribute()` methods.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced the `BaseSuggestionThreadView#canAccept` and `#canDiscard` observable properties. These properties are bound with related suggestions commands. `SuggestionThreadView#acceptButton.isEnabled` and `#discardButton.isEnabled` are bound to `#canAccept` an `#canDiscard`.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced `EditorUI#removeEditableElement()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added configuration to the `View#scrollToTheSelection()` helper allowing to scroll to the top of the boundary. Closes [#13688](https://github.com/ckeditor/ckeditor5/issues/13688). ([commit](https://github.com/ckeditor/ckeditor5/commit/75a5b122690c775cf55d61f3d80519cb85952ebb))
+* Introduced `Observer#stopObserving()` to allow for proper removal of DOM editable elements from the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
+* Improved augmentation in some packages. Related to [#13565](https://github.com/ckeditor/ckeditor5/issues/13565). ([commit](https://github.com/ckeditor/ckeditor5/commit/3869a1bdadc0aa9c83990ddbf20710b3eebb7e2b))
+* Updated the required version of Node.js to 16. See [#13671](https://github.com/ckeditor/ckeditor5/issues/13671). ([commit](https://github.com/ckeditor/ckeditor5/commit/b70d102dcb77067dbe744270221c707e681583fd))
+* The remaining CKEditor 5 packages have been rewritten to TypeScript:
+  * **[@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)**: closes [#12997](https://github.com/ckeditor/ckeditor5/issues/12997). ([commit](https://github.com/ckeditor/ckeditor5/commit/7dea975058cfa1bd0c6b6b42a96187c3706547d9))
+  * **[@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon)**: closes [#13000](https://github.com/ckeditor/ckeditor5/issues/13000). ([commit](https://github.com/ckeditor/ckeditor5/commit/4bf33ea3dc14b2354ec392bb34aa1bcce78b5ecc))
+  * **[@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block)**: closes [#13001](https://github.com/ckeditor/ckeditor5/issues/13001). ([commit](https://github.com/ckeditor/ckeditor5/commit/4bf33ea3dc14b2354ec392bb34aa1bcce78b5ecc))
+  * **[@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic)**: closes [#13002](https://github.com/ckeditor/ckeditor5/issues/13002). ([commit](https://github.com/ckeditor/ckeditor5/commit/4bf33ea3dc14b2354ec392bb34aa1bcce78b5ecc))
+  * **[@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: closes [#13003](https://github.com/ckeditor/ckeditor5/issues/13003). ([commit](https://github.com/ckeditor/ckeditor5/commit/4bf33ea3dc14b2354ec392bb34aa1bcce78b5ecc))
+  * **[@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline)**: closes [#13004](https://github.com/ckeditor/ckeditor5/issues/13004). ([commit](https://github.com/ckeditor/ckeditor5/commit/4bf33ea3dc14b2354ec392bb34aa1bcce78b5ecc))
+  * **[@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: closes [#13005](https://github.com/ckeditor/ckeditor5/issues/13005). ([commit](https://github.com/ckeditor/ckeditor5/commit/37dee8727bb44b2685a1e83285fd9d4fad0a04f7))
+  * **[@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)**: closes [#13006](https://github.com/ckeditor/ckeditor5/issues/13006). ([commit](https://github.com/ckeditor/ckeditor5/commit/fa105ac35c8666222967d5153b465d402d64d45a))
+  * **[@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)**: closes [#13007](https://github.com/ckeditor/ckeditor5/issues/13007). ([commit](https://github.com/ckeditor/ckeditor5/commit/37dee8727bb44b2685a1e83285fd9d4fad0a04f7))
+  * **[@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)**: closes [#13009](https://github.com/ckeditor/ckeditor5/issues/13009). ([commit](https://github.com/ckeditor/ckeditor5/commit/fc2381107156955346104ae59796b696711d9605))
+  * **[@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: closes [#13010](https://github.com/ckeditor/ckeditor5/issues/13010). ([commit](https://github.com/ckeditor/ckeditor5/commit/14fc8f2ed675ab531d3d9a27f7e2b6d8b2ade8a4))
+  * **[@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: closes [#13011](https://github.com/ckeditor/ckeditor5/issues/13011). ([commit](https://github.com/ckeditor/ckeditor5/commit/80ffea2dbe1911667a4246e253dd9d01626cfa49))
+  * **[@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed)**: closes [#13015](https://github.com/ckeditor/ckeditor5/issues/13015). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a90e4b137c1f850eec59c55ae2ff0faaa71efdc))
+  * **[@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: closes [#13016](https://github.com/ckeditor/ckeditor5/issues/13016). ([commit](https://github.com/ckeditor/ckeditor5/commit/7e601da88c9f6c9ac64316df3ddb7a9de28e3e2a))
+  * **[@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent)**: closes [#13018](https://github.com/ckeditor/ckeditor5/issues/13018). ([commit](https://github.com/ckeditor/ckeditor5/commit/9d57f22146022245b2873cf65759e76506cd3dc9))
+  * **[@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: closes [#13020](https://github.com/ckeditor/ckeditor5/issues/13020). ([commit](https://github.com/ckeditor/ckeditor5/commit/0c5cbc9af6226b3324464a269fa96909cf62586c))
+  * **[@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: closes [#13023](https://github.com/ckeditor/ckeditor5/issues/13023). ([commit](https://github.com/ckeditor/ckeditor5/commit/2a8f267f53315fdee1a4d2fd34b1c9819e986e3d))
+  * **[@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format)**: closes [#13028](https://github.com/ckeditor/ckeditor5/issues/13028). ([commit](https://github.com/ckeditor/ckeditor5/commit/8e66507d160fc2857278f4bfd7c0ea9a4e9f10a8))
+  * **[@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: closes [#13029](https://github.com/ckeditor/ckeditor5/issues/13029). ([commit](https://github.com/ckeditor/ckeditor5/commit/521078075b09f3f9378cc946ef6e57492aa32dec))
+  * **[@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: closes [#13030](https://github.com/ckeditor/ckeditor5/issues/13030). ([commit](https://github.com/ckeditor/ckeditor5/commit/bfe944ca9885e63407bdd67c55b3be60015f08ab))
+  * **[@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)**: closes [#13031](https://github.com/ckeditor/ckeditor5/issues/13031). ([commit](https://github.com/ckeditor/ckeditor5/commit/a195c6047e6f06f2402ce1b60eb1278472a511b2))
+  * **[@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: closes [#13032](https://github.com/ckeditor/ckeditor5/issues/13032). ([commit](https://github.com/ckeditor/ckeditor5/commit/b93dfa123390d836a37f9eaca8e4b3232db68e11))
+  * **[@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: closes [#13033](https://github.com/ckeditor/ckeditor5/issues/13033). ([commit](https://github.com/ckeditor/ckeditor5/commit/d634c413763a7b47840be096712359f0c0d0a97a))
+  * **[@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)**: closes [#13035](https://github.com/ckeditor/ckeditor5/issues/13035). ([commit](https://github.com/ckeditor/ckeditor5/commit/f42bedbe2cfedf43453e539ec3de03e84b1c2825))
+  * **[@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core)**
+  * **[@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**
+  * **[@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**
+  * **[@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word)**
+  * **[@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**
+  * **[@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor)**
+  * **[@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**
+  * **[@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**
+  * **[@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**
+  * **[@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**
+* Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/6fd3eddd3869e2ca9831f358dc97a101cef88882))
+
+### Released packages
+
+Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
+
+<details>
+<summary>Released packages (summary)</summary>
+
+New packages:
+
+* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root): v37.0.0
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root): v37.0.0
+
+Minor releases (contain minor breaking changes):
+
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v36.0.1 => v37.0.0
+
+Releases containing new features:
+
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v36.0.1 => v37.0.0
+
+Other releases:
+
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog): v36.0.1 => v37.0.0
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v36.0.1 => v37.0.0
+* [@ckeditor/letters](https://www.npmjs.com/package/@ckeditor/letters): v36.0.1 => v37.0.0
+* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration): v36.0.1 => v37.0.0
+</details>
+
+
+## [37.0.0-rc.0](https://github.com/ckeditor/ckeditor5/compare/v36.0.1...v37.0.0-rc.0) (2023-04-03)
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -25,6 +385,7 @@ Changelog
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Differ.getChangedRoots()` which returns the roots added or detached since last the differ reset. `Differ#isEmpty` and `Differ#hasDataChanges()` will return `true` if a root was added or detached. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
 * **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Limiting the dropdown on the singular feed level should now be possible. Closes [#13504](https://github.com/ckeditor/ckeditor5/issues/13504). ([commit](https://github.com/ckeditor/ckeditor5/commit/489b3fda402504cb0492fceb368af475c8dd85b6))
 * **[multi-root-editor](https://www.npmjs.com/package/@ckeditor/ckeditor5-multi-root-editor)**: Introduced the multi-root editor type that allows defining multiple editable areas handled by a single editor instance. Closes [#11493](https://github.com/ckeditor/ckeditor5/issues/11493). ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Added support for custom path prefixes in WebSocket URLs. Any path proceeding the required `/ws` part in the WebSocket URL is now preserved.  
 
 ### Bug fixes
 
