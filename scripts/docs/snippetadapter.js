@@ -474,7 +474,7 @@ function getWebpackConfig( snippets, config ) {
 
 		module: {
 			rules: [
-				loaders.getIconsLoader( { useShortPattern: true } ),
+				loaders.getIconsLoader( { matchExtensionOnly: true } ),
 				loaders.getStylesLoader( {
 					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
 					minify: config.production,
