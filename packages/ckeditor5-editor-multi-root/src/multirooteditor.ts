@@ -633,7 +633,13 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => {
+						// This is checked directly before setting the initial data,
+						// as plugins may change `EditorConfig#initialData` value.
+						editor._verifyRootsWithInitialData();
+
+						return editor.data.init( editor.config.get( 'initialData' )! );
+					} )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
@@ -660,6 +666,43 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
 	public static ContextWatchdog = ContextWatchdog;
+
+	/**
+	 * @internal
+	 */
+	private _verifyRootsWithInitialData(): void {
+		const initialData = this.config.get( 'initialData' ) as Record<string, string>;
+
+		// Roots that are not in the initial data.
+		for ( const rootName of this.model.document.getRootNames() ) {
+			if ( !( rootName in initialData ) ) {
+				/**
+				 * Editor roots do not match {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
+				 *
+				 * This can happen for one of the two reasons:
+				 *
+				 * * Configuration error. `sourceElementsOrData` parameter in
+				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} contains different
+				 * roots than {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
+				 * * As the editor was initialized, {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData`}
+				 * configuration value or the state of the editor roots has been changed.
+				 *
+				 * @error multi-root-editor-root-initial-data-mismatch
+				 */
+				throw new CKEditorError( 'multi-root-editor-root-initial-data-mismatch', null );
+			}
+		}
+
+		// Roots that are not in the editor.
+		for ( const rootName of Object.keys( initialData ) ) {
+			const root = this.model.document.getRoot( rootName );
+
+			if ( !root || !root.isAttached() ) {
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'multi-root-editor-root-initial-data-mismatch', null );
+			}
+		}
+	}
 }
 
 function getInitialData( sourceElementOrData: HTMLElement | string ): string {
