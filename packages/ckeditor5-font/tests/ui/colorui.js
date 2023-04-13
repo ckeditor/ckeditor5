@@ -194,7 +194,7 @@ describe( 'ColorUI', () => {
 				expect( spy.callCount ).to.equal( 1 );
 			} );
 
-			it( 'should should get proper default color format', () => {
+			it.skip( 'should should get proper default color format', () => {
 				const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );

@@ -63,7 +63,7 @@ describe( 'ColorPickerView', () => {
 		} );
 
 		// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
-		it.skip( 'should not update color property during input editing when focused', () => {
+		it( 'should not update color property during input editing when focused', () => {
 			view.color = '#000000';
 
 			view.input.isFocused = true;
@@ -255,6 +255,18 @@ describe( 'ColorPickerView', () => {
 
 				expect( view.color ).to.equal( '#f1e2a3' );
 			} );
+		} );
+	} );
+
+	describe( 'SliderView', () => {
+		it( 'focuses the slider in DOM', () => {
+			const slider = view.slidersView.first;
+
+			const spy = sinon.spy( slider.element, 'focus' );
+
+			slider.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );

@@ -163,8 +163,36 @@ describe( 'ColorTableView', () => {
 	} );
 
 	describe( 'appendColorPicker()', () => {
+		let dropdown, editor, element;
+
 		beforeEach( () => {
-			colorTableView.appendColorPicker();
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			colorTableView.appendColorPicker( {} );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: Object.assign( {
+						documentColors: 3
+					}, testColorConfig )
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					dropdown = editor.ui.componentFactory.create( 'testColor' );
+					dropdown.render();
+					global.document.body.appendChild( dropdown.element );
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+			dropdown.element.remove();
+			dropdown.destroy();
+
+			return editor.destroy();
 		} );
 
 		it( 'creates a color picker', () => {
@@ -181,9 +209,62 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
-			colorTableView.appendColorPicker();
-			colorTableView.appendColorPicker();
+			colorTableView.appendColorPicker( {} );
+			colorTableView.appendColorPicker( {} );
 			expect( colorTableView.items.length ).to.equal( 5 );
+		} );
+
+		it( 'should navigate forwards using the Tab key', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.tab,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			// Mock the remove color button is focused.
+			colorTableView.focusTracker.isFocused = true;
+			colorTableView.focusTracker.focusedElement = colorTableView.documentColorsGrid.element;
+
+			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.first, 'focus' );
+
+			colorTableView.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should navigate backwards using the Shift+Tab key', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.tab,
+				shiftKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			// Mock the remove color button is focused.
+			colorTableView.focusTracker.isFocused = true;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerView.slidersView.get( 1 ).element;
+
+			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.first, 'focus' );
+
+			colorTableView.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should stop propagation when use arrow keys', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.arrowright,
+				stopPropagation: sinon.spy()
+			};
+
+			dropdown.colorTableView.appendColorPicker( {} );
+
+			dropdown.colorTableView.focusTracker.isFocused = true;
+
+			dropdown.colorTableView.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
 	} );
 

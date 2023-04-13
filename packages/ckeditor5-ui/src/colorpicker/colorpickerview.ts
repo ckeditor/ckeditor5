@@ -13,6 +13,7 @@ import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
+import type ViewCollection from '../viewcollection';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
@@ -36,6 +37,11 @@ export default class ColorPickerView extends View {
 	 * Current color state in color picker.
 	 */
 	declare public color: string;
+
+	/**
+	 * List of sliders view of the color picker.
+	 */
+	declare public slidersView: ViewCollection;
 
 	/**
      * An internal representation of a color
@@ -75,7 +81,8 @@ export default class ColorPickerView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-color-picker' ]
+				class: [ 'ck', 'ck-color-picker' ],
+				tabindex: -1
 			},
 			children
 		} );
@@ -112,6 +119,9 @@ export default class ColorPickerView extends View {
 
 		this.picker = global.document.createElement( 'hex-color-picker' );
 		this.picker.setAttribute( 'class', 'hex-color-picker' );
+		this.picker.setAttribute( 'tabindex', '-1' );
+
+		this._createSlidersView();
 
 		if ( this.element ) {
 			this.element.insertBefore( this.picker, this.input.element );
@@ -124,13 +134,30 @@ export default class ColorPickerView extends View {
 		} );
 	}
 
+	private _createSlidersView(): void {
+		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
+		const sliders = colorPickersChildren.filter( item => item.role === 'slider' );
+
+		const slidersView = sliders.map( slider => {
+			const view = new SliderView( slider );
+
+			return view;
+		} );
+
+		this.slidersView = this.createCollection();
+
+		slidersView.forEach( item => {
+			this.slidersView.add( item );
+		} );
+	}
+
 	// Creates input for defining custom colors in color picker.
 	private _createInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
-		const locale = this.locale;
+		const { t } = this.locale!;
 
 		labeledInput.set( {
-			label: locale!.t( 'HEX' ),
+			label: t( 'HEX' ),
 			class: 'color-picker-hex-input'
 		} );
 
@@ -153,6 +180,20 @@ export default class ColorPickerView extends View {
 		} );
 
 		return labeledInput;
+	}
+}
+
+/**
+ * View abstraction over pointer in color picker.
+ */
+class SliderView extends View {
+	constructor( element: HTMLElement ) {
+		super();
+		this.element = element;
+	}
+
+	public focus(): void {
+		this.element!.focus();
 	}
 }
 
