@@ -80,6 +80,12 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param viewElementName A view element name.
 	 */
 	private getGhsAttributeNameForElement( viewElementName: string ): string {
+		if ( viewElementName == 'ol' || viewElementName == 'ul' ) {
+			return 'htmlListAttributes';
+		} else if ( viewElementName == 'li' ) {
+			return 'htmlLiAttributes';
+		}
+
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 

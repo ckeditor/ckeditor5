@@ -11,7 +11,12 @@ import type { Element, Node } from 'ckeditor5/src/engine';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 import { Plugin } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteList, isFirstBlockOfListItem, isListItemBlock } from './utils/model';
+import {
+	expandListBlocksToCompleteItems,
+	expandListBlocksToCompleteList,
+	isFirstBlockOfListItem,
+	isListItemBlock
+} from './utils/model';
 
 /**
  * A set of helpers related to document lists.
@@ -49,6 +54,13 @@ export default class DocumentListUtils extends Plugin {
 	 */
 	public isListItemBlock( node: Node ): boolean {
 		return isListItemBlock( node );
+	}
+
+	/**
+	 * TODO
+	 */
+	public expandListBlocksToCompleteItems( blocks: ArrayOrItem<Element>, options: { withNested?: boolean } = {} ): Array<Element> {
+		return expandListBlocksToCompleteItems( blocks, options );
 	}
 }
 

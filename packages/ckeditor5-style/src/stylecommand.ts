@@ -11,6 +11,7 @@ import type { Element, Schema } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
 import { isObject } from 'lodash-es';
 
 import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './styleutils';
@@ -67,6 +68,8 @@ export default class StyleCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
+			this.editor.plugins.get( 'DocumentListUtils' ) : null;
 
 		const value = new Set<string>();
 		const enabledStyles = new Set<string>();
@@ -101,20 +104,43 @@ export default class StyleCommand extends Command {
 					break;
 				}
 
-				if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
+				if (
+					!model.schema.checkAttribute( block, 'htmlAttributes' ) &&
+					!model.schema.checkAttribute( block, 'htmlListAttributes' ) &&
+					!model.schema.checkAttribute( block, 'htmlLiAttributes' )
+				) {
 					continue;
 				}
 
 				for ( const definition of this._styleDefinitions.block ) {
 					// Check if this block style is enabled.
-					if ( !definition.modelElements.includes( block.name ) ) {
+					if ( documentListUtils && documentListUtils.isListItemBlock( block ) ) {
+						if ( definition.element == 'ol' || definition.element == 'ul' ) {
+							const viewElementName = block.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+
+							if ( definition.element != viewElementName ) {
+								continue;
+							}
+						} else if ( definition.element != 'li' && !definition.modelElements.includes( block.name ) ) {
+							continue;
+						}
+					} else if ( !definition.modelElements.includes( block.name ) ) {
 						continue;
 					}
 
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					const ghsAttributeValue = block.getAttribute( 'htmlAttributes' );
+					let attributeName = 'htmlAttributes';
+
+					if (
+						[ 'ol', 'ul', 'li' ].includes( definition.element ) &&
+						documentListUtils && documentListUtils.isListItemBlock( block )
+					) {
+						attributeName = definition.element == 'li' ? 'htmlLiAttributes' : 'htmlListAttributes';
+					}
+
+					const ghsAttributeValue = block.getAttribute( attributeName );
 
 					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
 						value.add( definition.name );
@@ -181,11 +207,14 @@ export default class StyleCommand extends Command {
 
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
+		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
+			this.editor.plugins.get( 'DocumentListUtils' ) : null;
+
 		model.change( () => {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema );
+				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema, documentListUtils );
 			} else {
 				selectables = [ selection ];
 			}
@@ -243,7 +272,8 @@ function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): bo
 function getAffectedBlocks(
 	selectedBlocks: IterableIterator<Element>,
 	elementNames: Array<string>,
-	schema: Schema
+	schema: Schema,
+	documentListUtils: DocumentListUtils | null
 ): Set<Element> {
 	const blocks = new Set<Element>();
 
@@ -253,6 +283,23 @@ function getAffectedBlocks(
 		for ( const block of ancestorBlocks ) {
 			if ( schema.isLimit( block ) ) {
 				break;
+			}
+
+			if ( documentListUtils && documentListUtils.isListItemBlock( block ) ) {
+				// TODO make some precise option for this
+				if ( elementNames.includes( 'htmlOl' ) || elementNames.includes( 'htmlUl' ) ) {
+					for ( const element of documentListUtils.expandListBlocksToCompleteList( block ) ) {
+						blocks.add( element );
+					}
+
+					break;
+				} else if ( elementNames.includes( 'htmlLi' ) ) {
+					for ( const element of documentListUtils.expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
+						blocks.add( element );
+					}
+
+					break;
+				}
 			}
 
 			if ( elementNames.includes( block.name ) ) {
