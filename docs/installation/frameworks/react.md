@@ -20,7 +20,7 @@ The easiest way to use CKEditor 5 in your React application is by choosing one o
 
 ## Quick start
 
-This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with custom templates. For example, you can set up your project with TypeScript support.
+This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
 Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -98,6 +98,7 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 
 ```jsx
 // This sample assumes that the application is using a CKEditor 5 editor built from source.
+
 import React, { Component } from 'react';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
@@ -385,13 +386,13 @@ Create a sample application using `create-react-app@3+` first:
 npx create-react-app ckeditor5-react-example
 ```
 
-If you want to use TypeScript, choose the appropriate template.
+If you want to use TypeScript, choose the appropriate template:
 
 ```bash
 npx create-react-app ckeditor5-react-example --template typescript
 ```
 
-Then, move to your freshly created project.
+Then, move to your freshly created project:
 
 ```bash
 cd ckeditor5-react-example
@@ -596,7 +597,7 @@ npm install --save @types/node
 
 ### Using the editor from source
 
-Once your configuration is updated, you can use CKEditor 5 directly from source. Test it by editing `src/App.js`:
+Once your configuration is updated, you can use CKEditor 5 directly from source. Test it by editing `src/App.jsx` or `src/App.tsx`:
 
 ```tsx
 // App.jsx / App.tsx
