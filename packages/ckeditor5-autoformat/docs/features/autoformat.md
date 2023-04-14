@@ -81,7 +81,7 @@ ClassicEditor
 
 The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~blockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing} tools to create the autoformatters mentioned above.
 
-You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.js) as an example.
+You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.ts) as an example.
 
 ## Known issues
 
