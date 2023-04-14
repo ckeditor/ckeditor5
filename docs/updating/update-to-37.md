@@ -17,6 +17,10 @@ For the entire list of changes introduced in version 37.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v37.0.0.
 
+## Bump of minimal version of Node.js to 16.x
+
+[Node.js 14 ends its long-term support in April 2023](https://nodejs.org/en/about/releases/). Because of that, starting from v37.0.0, the minimal version of Node.js required by CKEditor 5 will be 16.
+
 ## TypeScript typings
 
 As of version 37.0.0 we provide native TypeScript types, hence community types are not longer needed. In order to address this, it may be necessary to replace these community types with native types provided by the package. Here is how to do it:
