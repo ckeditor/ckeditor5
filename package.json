@@ -171,7 +171,7 @@
     "translations:upload": "node ./scripts/translations/upload.js",
     "build": "tsc -p ./tsconfig.release-ckeditor5.json",
     "predll:build": "npm run build",
-    "dll:build": "node ./scripts/dll/build-dlls.js --base-dll-config ./scripts/dll/webpack.config.dll.js",
+    "dll:build": "node ./scripts/dll/build-dlls.js",
     "changelog": "node ./scripts/release/changelog.js",
     "postchangelog": "node ./scripts/release/update-version-references.js",
     "release:bump-version": "node ./scripts/release/bump-versions.js",

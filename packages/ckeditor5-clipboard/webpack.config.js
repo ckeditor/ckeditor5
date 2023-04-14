@@ -14,18 +14,9 @@ module.exports = builds.getDllPluginWebpackConfig( webpack, {
 	themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
 	packagePath: __dirname,
 	dependencies: [
-		'@ckeditor/ckeditor5-clipboard',
 		'@ckeditor/ckeditor5-core',
 		'@ckeditor/ckeditor5-engine',
-		'@ckeditor/ckeditor5-enter',
-		'@ckeditor/ckeditor5-paragraph',
-		'@ckeditor/ckeditor5-select-all',
-		'@ckeditor/ckeditor5-typing',
-		'@ckeditor/ckeditor5-ui',
-		'@ckeditor/ckeditor5-undo',
-		'@ckeditor/ckeditor5-upload',
 		'@ckeditor/ckeditor5-utils',
-		'@ckeditor/ckeditor5-watchdog',
 		'@ckeditor/ckeditor5-widget'
 	],
 	isDevelopmentMode: process.argv.includes( '--mode=development' ),

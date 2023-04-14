@@ -23,29 +23,55 @@ const VERBOSE_MODE = argv.verbose;
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
-if ( argv[ 'base-dll-config' ] ) {
-	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
-
-	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
-	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
-
-	const status = execute( {
-		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
-		cwd: baseDllPath
-	} );
-
-	if ( status ) {
-		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
-
-		process.exit( 1 );
-	}
-}
+// if ( argv[ 'base-dll-config' ] ) {
+// 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
+//
+// 	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
+// 	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
+//
+// 	const status = execute( {
+// 		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
+// 		cwd: baseDllPath
+// 	} );
+//
+// 	if ( status ) {
+// 		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
+//
+// 		process.exit( 1 );
+// 	}
+// }
 
 console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
 let exitCode = 0;
 
-getPackageNames( ROOT_DIRECTORY )
+const basePackages = [
+	// The base of the CKEditor 5 framework, in order of appearance:
+	'ckeditor5-utils',
+	'ckeditor5-engine',
+	'ckeditor5-core',
+	'ckeditor5-ui',
+
+	// The Essentials plugin contents:
+	'ckeditor5-clipboard',
+	'ckeditor5-enter',
+	'ckeditor5-paragraph',
+	'ckeditor5-select-all',
+	'ckeditor5-typing',
+	'ckeditor5-undo',
+
+	// Other, common packages:
+	'ckeditor5-upload',
+	'ckeditor5-widget',
+	'ckeditor5-watchdog'
+];
+
+const packages = [
+	...basePackages,
+	...getPackageNames( ROOT_DIRECTORY ).filter( packageName => !basePackages.includes( packageName ) )
+];
+
+packages
 	.filter( isNotBaseDll )
 	.filter( hasDLLBuildScript )
 	.forEach( fullPackageName => {
