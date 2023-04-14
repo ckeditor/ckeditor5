@@ -8,6 +8,7 @@
  */
 
 import Operation from './operation';
+import type { Selectable } from '../selection';
 
 /**
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop"). This is an operation,
@@ -38,6 +39,13 @@ export default class NoOperation extends Operation {
 
 	/** @internal */
 	public _execute(): void {
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return null;
 	}
 
 	/**

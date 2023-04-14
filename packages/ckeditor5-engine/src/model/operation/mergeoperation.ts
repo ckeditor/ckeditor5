@@ -15,6 +15,7 @@ import { _move } from './utils';
 
 import type Document from '../document';
 import type Element from '../element';
+import type { Selectable } from '../selection';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -189,6 +190,13 @@ export default class MergeOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MergeOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.targetPosition;
 	}
 
 	/**

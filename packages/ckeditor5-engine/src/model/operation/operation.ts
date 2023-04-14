@@ -7,6 +7,7 @@
 
 import type Batch from '../batch';
 import type Document from '../document';
+import type { Selectable } from '../selection';
 
 /**
  * @module engine/model/operation/operation
@@ -78,6 +79,11 @@ export default abstract class Operation {
 	 * @internal
 	 */
 	public abstract _execute(): void;
+
+	/**
+	 * Place on which operation is going to be applied.
+	 */
+	public abstract target(): Selectable;
 
 	/**
 	 * Checks whether the operation's parameters are correct and the operation can be correctly executed. Throws

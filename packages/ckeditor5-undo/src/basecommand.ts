@@ -206,6 +206,13 @@ export default abstract class BaseCommand extends Command {
 
 			// After reversed operation has been transformed by all history operations, apply it.
 			for ( const operation of reversedOperations ) {
+				console.log( 'ELO ', operation.type );
+				// Do not apply any operation on non-editable space.
+				if ( !this.editor.model.isSelectableEditable( operation.target() ) ) {
+					console.log( 'NOPE ', operation.type );
+					return;
+				}
+
 				// Before applying, add the operation to the `undoingBatch`.
 				undoingBatch.addOperation( operation );
 				model.applyOperation( operation );

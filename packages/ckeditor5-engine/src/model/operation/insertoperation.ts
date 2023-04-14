@@ -14,6 +14,7 @@ import MoveOperation from './moveoperation';
 import { _insert, _normalizeNodes, type NodeSet } from './utils';
 import Text from '../text';
 import Element from '../element';
+import type { Selectable } from '../selection';
 
 import type Document from '../document';
 
@@ -142,6 +143,13 @@ export default class InsertOperation extends Operation {
 		json.nodes = this.nodes.toJSON();
 
 		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.position;
 	}
 
 	/**

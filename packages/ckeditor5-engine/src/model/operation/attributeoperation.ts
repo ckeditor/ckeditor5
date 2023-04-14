@@ -15,6 +15,7 @@ import type Document from '../document';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'lodash-es';
+import type { Selectable } from '../selection';
 
 /**
  * Operation to change nodes' attribute.
@@ -174,6 +175,13 @@ export default class AttributeOperation extends Operation {
 			// Execution.
 			_setAttribute( this.range, this.key, this.newValue );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.range;
 	}
 
 	/**

@@ -14,6 +14,7 @@ import Position from '../position';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type Document from '../document';
+import type { Selectable } from '../selection';
 
 /**
  * Operation to change element's name.
@@ -135,6 +136,13 @@ export default class RenameOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'RenameOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.position;
 	}
 
 	/**

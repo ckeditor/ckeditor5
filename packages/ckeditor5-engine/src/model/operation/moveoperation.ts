@@ -11,6 +11,7 @@ import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
 import { _move } from './utils';
+import type { Selectable } from '../selection';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -182,6 +183,17 @@ export default class MoveOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MoveOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		if ( this.type === 'remove' ) {
+			return this.sourcePosition;
+		} else {
+			return this.targetPosition;
+		}
 	}
 
 	/**

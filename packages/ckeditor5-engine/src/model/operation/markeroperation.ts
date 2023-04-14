@@ -12,6 +12,7 @@ import Range from '../range';
 
 import type Document from '../document';
 import type MarkerCollection from '../markercollection';
+import type { Selectable } from '../selection';
 
 export default class MarkerOperation extends Operation {
 	/**
@@ -134,6 +135,13 @@ export default class MarkerOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MarkerOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.newRange;
 	}
 
 	/**

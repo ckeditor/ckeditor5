@@ -16,6 +16,7 @@ import { _insert, _move } from './utils';
 import type Document from '../document';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Selectable } from '../selection';
 
 /**
  * Operation to split {@link module:engine/model/element~Element an element} at given
@@ -223,6 +224,13 @@ export default class SplitOperation extends Operation {
 		path[ path.length - 1 ]++;
 
 		return new Position( splitPosition.root, path, 'toPrevious' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return this.moveTargetPosition;
 	}
 
 	/**

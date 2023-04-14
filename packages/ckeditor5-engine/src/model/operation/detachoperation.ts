@@ -14,6 +14,7 @@ import { _remove } from './utils';
 import type Position from '../position';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Selectable } from '../selection';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
@@ -89,6 +90,13 @@ export default class DetachOperation extends Operation {
 	 */
 	public _execute(): void {
 		_remove( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public target(): Selectable {
+		return null;
 	}
 
 	/**
