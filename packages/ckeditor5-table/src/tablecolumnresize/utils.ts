@@ -7,9 +7,9 @@
  * @module table/tablecolumnresize/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Element, Model, ViewElement, ViewNode, Writer } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 import type TableUtils from '../tableutils';
 import {
 	COLUMN_WIDTH_PRECISION,

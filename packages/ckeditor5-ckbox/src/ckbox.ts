@@ -7,7 +7,7 @@
  * @module ckbox/ckbox
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import CKBoxUI from './ckboxui';
 import CKBoxEditing from './ckboxediting';

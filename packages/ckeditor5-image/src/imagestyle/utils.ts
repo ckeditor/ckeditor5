@@ -7,8 +7,8 @@
  * @module image/imagestyle/utils
  */
 
-import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core';
-import { logWarning } from 'ckeditor5/src/utils';
+import { type Editor, icons, type PluginCollection } from '@ckeditor/ckeditor5-core';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
 
 const {

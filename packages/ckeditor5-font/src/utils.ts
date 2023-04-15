@@ -10,15 +10,15 @@
 import ColorTableView from './ui/colortableview';
 
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { ColorDefinition, DropdownView } from '@ckeditor/ckeditor5-ui';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type {
 	ViewAttributeElement,
 	ViewElement,
 	MatcherPattern,
 	ViewElementDefinition,
 	DowncastConversionApi
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * The name of the font size plugin.

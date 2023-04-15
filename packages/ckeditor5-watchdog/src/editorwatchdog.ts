@@ -10,14 +10,14 @@
 /* globals console */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CKEditorError } from 'ckeditor5/src/utils';
+import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type {
 	Editor,
 	EditorConfig,
 	Context
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';

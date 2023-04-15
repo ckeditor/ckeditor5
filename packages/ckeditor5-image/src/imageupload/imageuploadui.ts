@@ -7,9 +7,9 @@
  * @module image/imageupload/imageuploadui
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { FileDialogButtonView } from 'ckeditor5/src/upload';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { FileDialogButtonView } from '@ckeditor/ckeditor5-upload';
 import { createImageTypeRegExp } from './utils';
 import type UploadImageCommand from './uploadimagecommand';
 

@@ -11,7 +11,7 @@ import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 import type { Normalizer, NormalizerData } from '../normalizer';
 
-import type { ViewDocument } from 'ckeditor5/src/engine';
+import type { ViewDocument } from '@ckeditor/ckeditor5-engine';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;

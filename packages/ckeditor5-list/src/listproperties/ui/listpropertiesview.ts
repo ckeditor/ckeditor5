@@ -17,14 +17,14 @@ import {
 	addKeyboardHandlingForGrid,
 	type ButtonView,
 	type InputNumberView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
 import CollapsibleView from './collapsibleview';
 

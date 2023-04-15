@@ -13,7 +13,7 @@ import type {
 	Writer,
 	DiffItem,
 	DiffItemAttribute
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import TableWalker from './../tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';

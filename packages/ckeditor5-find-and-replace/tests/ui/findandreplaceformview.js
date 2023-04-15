@@ -34,7 +34,7 @@ import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
-import { icons } from 'ckeditor5/src/core';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;

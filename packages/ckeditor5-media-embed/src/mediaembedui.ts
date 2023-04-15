@@ -7,14 +7,14 @@
  * @module media-embed/mediaembedui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from '@ckeditor/ckeditor5-ui';
 
 import MediaFormView from './ui/mediaformview';
 import MediaEmbedEditing from './mediaembedediting';
 import mediaIcon from '../theme/icons/media.svg';
 import type MediaEmbedCommand from './mediaembedcommand';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+import type { LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 import type MediaRegistry from './mediaregistry';
 
 /**

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { CKEditorError, logWarning, type Locale } from 'ckeditor5/src/utils';
+import { CKEditorError, logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig';
 
 /**

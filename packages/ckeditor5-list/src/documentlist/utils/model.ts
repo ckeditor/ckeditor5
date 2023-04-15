@@ -14,9 +14,9 @@ import type {
 	Node,
 	Writer,
 	Item
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { uid, toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 

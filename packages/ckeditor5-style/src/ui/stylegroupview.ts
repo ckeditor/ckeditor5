@@ -10,11 +10,11 @@
 import {
 	LabelView,
 	View
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 import StyleGridView from './stylegridview';
 
 import '../../theme/stylegroup.css';
-import type { Locale } from 'ckeditor5/src/utils';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { StyleDefinition } from '../styleconfig';
 
 /**

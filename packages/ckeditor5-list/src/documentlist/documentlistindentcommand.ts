@@ -7,8 +7,8 @@
  * @module list/documentlist/documentlistindentcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { DocumentSelection, Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { DocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
 
 import {
 	expandListBlocksToCompleteItems,

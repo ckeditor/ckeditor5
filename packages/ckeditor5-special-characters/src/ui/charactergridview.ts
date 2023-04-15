@@ -12,13 +12,13 @@ import {
 	ButtonView,
 	addKeyboardHandlingForGrid,
 	type ViewCollection
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/charactergrid.css';
 

@@ -12,7 +12,7 @@ import { modelList } from '../_utils/utils';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { Paragraph } from 'ckeditor5/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
 	getData as getModelData,
 	setData as setModelData

@@ -7,8 +7,8 @@
  * @module table/table
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import TableEditing from './tableediting';
 import TableUI from './tableui';

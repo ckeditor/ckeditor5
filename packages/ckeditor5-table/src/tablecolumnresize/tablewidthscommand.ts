@@ -7,8 +7,8 @@
  * @module table/tablecolumnresize/tablewidthscommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { normalizeColumnWidths } from './utils';
 
 /**

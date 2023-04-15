@@ -7,7 +7,7 @@
  * @module html-support/conversionutils
  */
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import type { DowncastWriter, ViewElement } from '@ckeditor/ckeditor5-engine';
 import { cloneDeep } from 'lodash-es';
 
 export interface GHSViewAttributes {

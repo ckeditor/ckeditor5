@@ -7,7 +7,7 @@
  * @module ckfinder/ckfinder
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';

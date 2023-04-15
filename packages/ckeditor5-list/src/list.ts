@@ -10,7 +10,7 @@
 import ListEditing from './list/listediting';
 import ListUI from './list/listui';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**
  * The list feature.

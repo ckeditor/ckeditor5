@@ -7,9 +7,9 @@
  * @module image/imageinsert/utils
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import type { Editor } from 'ckeditor5/src/core';
-import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } from 'ckeditor5/src/ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import { LabeledFieldView, createLabeledInputText, type View, type ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import type ImageInsertUI from './imageinsertui';
 

@@ -25,7 +25,8 @@ import type Text from './text';
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 // To check if component is loaded more than once.
-// import '@ckeditor/ckeditor5-utils/src/version';
+// eslint-disable-next-line no-duplicate-imports
+import '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a position in the model tree.

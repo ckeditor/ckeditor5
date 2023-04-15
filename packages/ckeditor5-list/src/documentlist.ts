@@ -7,7 +7,7 @@
  * @module list/documentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import DocumentListEditing from './documentlist/documentlistediting';
 import ListUI from './list/listui';
 

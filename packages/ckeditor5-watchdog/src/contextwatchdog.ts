@@ -15,13 +15,13 @@ import type {
 	Editor,
 	EditorConfig,
 	ContextConfig
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type {
 	ArrayOrItem,
 	CKEditorError
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
 import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog';
 import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog';

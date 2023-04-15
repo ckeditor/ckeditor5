@@ -11,7 +11,7 @@ import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import { ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { global } from 'ckeditor5/src/utils';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 const DEFAULT_COLORS = [
 	{

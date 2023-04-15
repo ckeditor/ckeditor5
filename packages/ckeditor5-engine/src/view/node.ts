@@ -18,7 +18,8 @@ import {
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.
-// import '@ckeditor/ckeditor5-utils/src/version';
+// eslint-disable-next-line no-duplicate-imports
+import '@ckeditor/ckeditor5-utils';
 
 import type { default as Document, ChangeType } from './document';
 import type DocumentFragment from './documentfragment';

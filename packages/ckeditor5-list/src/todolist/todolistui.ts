@@ -9,7 +9,7 @@
 
 import { createUIComponent } from '../list/utils';
 import todoListIcon from '../../theme/icons/todolist.svg';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that

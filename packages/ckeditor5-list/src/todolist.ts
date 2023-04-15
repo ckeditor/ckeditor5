@@ -9,7 +9,7 @@
 
 import TodoListEditing from './todolist/todolistediting';
 import TodoListUI from './todolist/todolistui';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import '../theme/todolist.css';
 
 /**

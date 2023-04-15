@@ -10,9 +10,9 @@
 import type {
 	Element,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Command } from 'ckeditor5/src/core';
+import { Command } from '@ckeditor/ckeditor5-core';
 import TableUtils from '../tableutils';
 import { updateNumericAttribute } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';

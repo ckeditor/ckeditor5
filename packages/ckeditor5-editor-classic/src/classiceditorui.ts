@@ -7,10 +7,10 @@
  * @module editor-classic/classiceditorui
  */
 
-import type { Editor, ElementApi } from 'ckeditor5/src/core';
-import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
-import { enablePlaceholder } from 'ckeditor5/src/engine';
-import { ElementReplacer } from 'ckeditor5/src/utils';
+import type { Editor, ElementApi } from '@ckeditor/ckeditor5-core';
+import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from '@ckeditor/ckeditor5-ui';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
+import { ElementReplacer } from '@ckeditor/ckeditor5-utils';
 import type ClassicEditorUIView from './classiceditoruiview';
 
 /**

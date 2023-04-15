@@ -14,11 +14,11 @@ import {
 	type PendingAction,
 	type EditorDestroyEvent,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
-import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils';
+import { DomEmitterMixin, type DomEmitter } from '@ckeditor/ckeditor5-utils';
 
-import type { DocumentChangeEvent } from 'ckeditor5/src/engine';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 

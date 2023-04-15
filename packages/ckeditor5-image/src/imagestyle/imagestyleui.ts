@@ -7,8 +7,8 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { isObject, identity } from 'lodash-es';
 import ImageStyleEditing from './imagestyleediting';
 import utils from './utils';

@@ -7,10 +7,10 @@
  * @module list/documentlist/documentlistutils
  */
 
-import type { Element, Node } from 'ckeditor5/src/engine';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { Element, Node } from '@ckeditor/ckeditor5-engine';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { expandListBlocksToCompleteList, isFirstBlockOfListItem, isListItemBlock } from './utils/model';
 
 /**

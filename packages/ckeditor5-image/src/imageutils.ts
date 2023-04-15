@@ -20,9 +20,9 @@ import type {
 	DowncastWriter,
 	Model,
 	Position
-} from 'ckeditor5/src/engine';
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
+} from '@ckeditor/ckeditor5-engine';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { findOptimalInsertionRange, isWidget, toWidget } from '@ckeditor/ckeditor5-widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
 
 /**

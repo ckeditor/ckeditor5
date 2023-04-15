@@ -18,7 +18,8 @@ import type Element from './element';
 import { CKEditorError, compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
 // To check if component is loaded more than once.
-// import '@ckeditor/ckeditor5-utils/src/version';
+// eslint-disable-next-line no-duplicate-imports
+import '@ckeditor/ckeditor5-utils';
 
 /**
  * Model node. Most basic structure of model tree.

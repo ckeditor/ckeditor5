@@ -10,14 +10,14 @@
 import {
 	type Editor,
 	type ElementApi
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
 
 import type DecoupledEditorUIView from './decouplededitoruiview';
 

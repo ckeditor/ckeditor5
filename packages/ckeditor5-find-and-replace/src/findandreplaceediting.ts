@@ -7,9 +7,9 @@
  * @module find-and-replace/findandreplaceediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine';
-import type { Collection, GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { DiffItem, DiffItemAttribute, Element, Item, Node } from '@ckeditor/ckeditor5-engine';
+import type { Collection, GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 

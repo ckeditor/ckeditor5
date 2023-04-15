@@ -9,8 +9,8 @@
 
 /* globals document */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from '@ckeditor/ckeditor5-engine';
 
 import DataSchema from '../dataschema';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';

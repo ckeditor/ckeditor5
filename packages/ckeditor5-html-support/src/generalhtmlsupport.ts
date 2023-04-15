@@ -7,8 +7,8 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 import DataFilter from './datafilter';
 import CodeBlockElementSupport from './integrations/codeblock';
@@ -22,7 +22,7 @@ import StyleElementSupport from './integrations/style';
 import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
-import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
+import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from '@ckeditor/ckeditor5-engine';
 import type { GHSViewAttributes } from './conversionutils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';

@@ -7,10 +7,10 @@
  * @module list/list/listcommand
  */
 
-import type { Element, Node, Schema } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element, Node, Schema } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
-import { first } from 'ckeditor5/src/utils';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.

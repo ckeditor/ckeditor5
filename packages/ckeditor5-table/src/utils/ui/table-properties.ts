@@ -16,10 +16,10 @@ import {
 	type NormalizedColorOption,
 	type ToolbarView,
 	type View
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
-import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
-import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+import { Collection, type LocaleTranslate } from '@ckeditor/ckeditor5-utils';
+import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine';
 
 import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview';
 import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview';

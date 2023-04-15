@@ -7,8 +7,8 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from '@ckeditor/ckeditor5-engine';
 import HtmlPageDataProcessor from './htmlpagedataprocessor';
 
 /**

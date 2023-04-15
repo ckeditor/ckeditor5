@@ -7,8 +7,8 @@
  * @module code-block/converters
  */
 
-import type { GetCallback } from 'ckeditor5/src/utils';
-import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from 'ckeditor5/src/engine';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
+import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from '@ckeditor/ckeditor5-engine';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig';
 import { getPropertyAssociation } from './utils';
 

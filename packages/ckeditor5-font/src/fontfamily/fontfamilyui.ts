@@ -7,9 +7,9 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Collection } from '@ckeditor/ckeditor5-utils';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from '@ckeditor/ckeditor5-ui';
 
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';

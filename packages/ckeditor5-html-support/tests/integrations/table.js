@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
-import { priorities } from 'ckeditor5/src/utils';
+import { priorities } from '@ckeditor/ckeditor5-utils';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';

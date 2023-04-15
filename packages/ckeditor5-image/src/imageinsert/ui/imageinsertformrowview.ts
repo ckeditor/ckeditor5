@@ -7,8 +7,8 @@
  * @module image/imageinsert/ui/imageinsertformrowview
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
-import { View, type ViewCollection, type LabelView } from 'ckeditor5/src/ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { View, type ViewCollection, type LabelView } from '@ckeditor/ckeditor5-ui';
 
 import '../../../theme/imageinsertformrowview.css';
 

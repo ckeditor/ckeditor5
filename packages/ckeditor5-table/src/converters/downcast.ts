@@ -7,8 +7,8 @@
  * @module table/converters/downcast
  */
 
-import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
-import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from '@ckeditor/ckeditor5-engine';
 
 import TableWalker from './../tablewalker';
 import type TableUtils from '../tableutils';

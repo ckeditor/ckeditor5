@@ -7,13 +7,13 @@
  * @module link/linkimageui
  */
 
-import { ButtonView } from 'ckeditor5/src/ui';
-import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type {
 	DocumentSelection,
 	Selection,
 	ViewDocumentClickEvent
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 

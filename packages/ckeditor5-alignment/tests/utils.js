@@ -5,7 +5,7 @@
 
 /* globals console */
 
-import { CKEditorError } from 'ckeditor5/src/utils';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils';
 

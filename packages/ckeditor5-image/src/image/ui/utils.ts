@@ -7,9 +7,9 @@
  * @module image/image/ui/utils
  */
 
-import type { PositionOptions } from 'ckeditor5/src/utils';
-import type { Editor } from 'ckeditor5/src/core';
-import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui';
+import type { PositionOptions } from '@ckeditor/ckeditor5-utils';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import { BalloonPanelView, type ContextualBalloon } from '@ckeditor/ckeditor5-ui';
 
 import type ImageUtils from '../../imageutils';
 

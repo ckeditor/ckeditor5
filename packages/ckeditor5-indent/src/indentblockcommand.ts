@@ -7,9 +7,9 @@
  * @module indent/indentblockcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element, Model } from 'ckeditor5/src/engine';
-import { first } from 'ckeditor5/src/utils';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { Element, Model } from '@ckeditor/ckeditor5-engine';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
 

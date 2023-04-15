@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Command, Editor } from 'ckeditor5/src/core';
+import type { Command, Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	LiveRange,
 	type DocumentChangeEvent,
 	type Item,
 	type Text
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { first } from 'ckeditor5/src/utils';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import type Autoformat from './autoformat';
 
-import type { Delete } from 'ckeditor5/src/typing';
+import type { Delete } from '@ckeditor/ckeditor5-typing';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,

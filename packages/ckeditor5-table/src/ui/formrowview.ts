@@ -7,8 +7,8 @@
  * @module table/ui/formrowview
  */
 
-import { View, type LabelView, type ViewCollection } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
+import { View, type LabelView, type ViewCollection } from '@ckeditor/ckeditor5-ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/formrow.css';
 

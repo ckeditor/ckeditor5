@@ -16,7 +16,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import { keyCodes } from 'ckeditor5/src/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {

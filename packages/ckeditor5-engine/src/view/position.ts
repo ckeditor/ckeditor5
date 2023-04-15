@@ -14,7 +14,8 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 import EditableElement from './editableelement';
 
 // To check if component is loaded more than once.
-// import '@ckeditor/ckeditor5-utils/src/version';
+// eslint-disable-next-line no-duplicate-imports
+import '@ckeditor/ckeditor5-utils';
 
 import type DocumentFragment from './documentfragment';
 import type Element from './element';

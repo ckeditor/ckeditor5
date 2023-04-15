@@ -9,15 +9,15 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine';
 
 import type MultiRootEditorUIView from './multirooteditoruiview';
 

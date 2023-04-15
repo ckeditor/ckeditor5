@@ -9,7 +9,7 @@
 
 import TablePropertyCommand from './tablepropertycommand';
 import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * The table width command.

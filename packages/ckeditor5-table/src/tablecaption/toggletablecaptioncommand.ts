@@ -7,8 +7,8 @@
 * @module table/tablecaption/toggletablecaptioncommand
 */
 
-import { Command } from 'ckeditor5/src/core';
-import type { Writer } from 'ckeditor5/src/engine';
+import { Command } from '@ckeditor/ckeditor5-core';
+import type { Writer } from '@ckeditor/ckeditor5-engine';
 import type TableCaptionEditing from './tablecaptionediting';
 
 import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';

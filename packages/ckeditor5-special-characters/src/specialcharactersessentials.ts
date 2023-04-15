@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersessentials
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import SpecialCharactersCurrency from './specialcharacterscurrency';
 import SpecialCharactersMathematical from './specialcharactersmathematical';

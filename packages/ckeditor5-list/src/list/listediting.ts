@@ -11,10 +11,10 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 import ListUtils from './listutils';
 
-import { Plugin, type MultiCommand } from 'ckeditor5/src/core';
+import { Plugin, type MultiCommand } from '@ckeditor/ckeditor5-core';
 
-import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
-import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
+import { Enter, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
+import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
 
 import type {
 	DowncastAttributeEvent,
@@ -27,7 +27,7 @@ import type {
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	cleanList,

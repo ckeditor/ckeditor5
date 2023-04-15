@@ -7,7 +7,7 @@
  * @module restricted-editing/standardeditingmode
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import StandardEditingModeEditing from './standardeditingmodeediting';
 import StandardEditingModeUI from './standardeditingmodeui';

@@ -7,9 +7,9 @@
  * @module find-and-replace/findandreplaceutils
  */
 
-import type { Element, Item, Marker, Model, Range } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { Collection, uid } from 'ckeditor5/src/utils';
+import type { Element, Item, Marker, Model, Range } from '@ckeditor/ckeditor5-engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Collection, uid } from '@ckeditor/ckeditor5-utils';
 import { escapeRegExp } from 'lodash-es';
 import type { ResultType } from './findandreplace';
 

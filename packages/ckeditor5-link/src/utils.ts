@@ -16,8 +16,8 @@ import type {
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment
-} from 'ckeditor5/src/engine';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-engine';
+import type { LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	LinkDecoratorAutomaticDefinition,

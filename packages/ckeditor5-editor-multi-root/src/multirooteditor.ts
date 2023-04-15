@@ -14,20 +14,20 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	getDataFromElement,
 	setDataInElement
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import MultiRootEditorUI from './multirooteditorui';
 import MultiRootEditorUIView from './multirooteditoruiview';
 
 import { isElement as _isElement } from 'lodash-es';
-import { type RootElement, type Writer } from 'ckeditor5/src/engine';
+import { type RootElement, type Writer } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.

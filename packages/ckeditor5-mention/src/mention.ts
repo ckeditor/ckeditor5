@@ -7,8 +7,8 @@
  * @module mention/mention
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
 
 import MentionEditing, { _toMentionAttribute } from './mentionediting';
 import MentionUI from './mentionui';

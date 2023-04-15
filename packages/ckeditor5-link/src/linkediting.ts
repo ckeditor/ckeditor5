@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 import {
 	MouseObserver,
 	type Model,
@@ -23,19 +23,19 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentClickEvent,
 	type ViewDocumentSelectionChangeEvent
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 import {
 	Input,
 	TwoStepCaretMovement,
 	inlineHighlight,
 	findAttributeRange,
 	type ViewDocumentDeleteEvent
-} from 'ckeditor5/src/typing';
+} from '@ckeditor/ckeditor5-typing';
 import {
 	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
-} from 'ckeditor5/src/clipboard';
-import { keyCodes, env } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-clipboard';
+import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';

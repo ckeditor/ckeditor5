@@ -7,8 +7,8 @@
  * @module table/plaintableoutput
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { DowncastWriter, Element, Node, ViewContainerElement } from '@ckeditor/ckeditor5-engine';
 
 import Table from './table';
 

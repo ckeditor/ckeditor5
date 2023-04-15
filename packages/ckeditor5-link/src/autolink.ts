@@ -7,10 +7,10 @@
  * @module link/autolink
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
-import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
-import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { DocumentSelectionChangeEvent, Element, Model, Range } from '@ckeditor/ckeditor5-engine';
+import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from '@ckeditor/ckeditor5-typing';
+import type { EnterCommand, ShiftEnterCommand } from '@ckeditor/ckeditor5-enter';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 

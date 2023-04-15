@@ -7,7 +7,7 @@
  * @module image/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import ImageBlock from './imageblock';
 import ImageInline from './imageinline';
 

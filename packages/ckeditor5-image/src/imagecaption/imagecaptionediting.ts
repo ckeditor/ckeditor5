@@ -7,10 +7,10 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core';
-import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
-import { toWidgetEditable } from 'ckeditor5/src/widget';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import { type Editor, Plugin, type CommandExecuteEvent } from '@ckeditor/ckeditor5-core';
+import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from '@ckeditor/ckeditor5-engine';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 import ImageUtils from '../imageutils';

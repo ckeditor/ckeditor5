@@ -7,7 +7,7 @@
  * @module font/fontcolor
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import FontColorEditing from './fontcolor/fontcolorediting';
 import FontColorUI from './fontcolor/fontcolorui';
 

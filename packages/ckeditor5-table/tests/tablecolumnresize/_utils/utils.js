@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { global } from 'ckeditor5/src/utils';
+import { global } from '@ckeditor/ckeditor5-utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import TableColumnResizeEditing from '../../../src/tablecolumnresize/tablecolumnresizeediting';

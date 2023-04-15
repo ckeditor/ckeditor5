@@ -7,8 +7,8 @@
  * @module minimap/minimap
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { findClosestScrollableAncestor, global } from '@ckeditor/ckeditor5-utils';
 import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview';
 import {
 	cloneEditingViewDomRoot,

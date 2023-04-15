@@ -12,7 +12,7 @@ import {
 	type Command,
 	type Editor,
 	type EditingKeystrokeCallback
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 import type {
 	DocumentSelection,
 	Marker,
@@ -21,14 +21,14 @@ import type {
 	Range,
 	SchemaAttributeCheckCallback,
 	SchemaChildCheckCallback
-} from 'ckeditor5/src/engine';
-import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils';
-import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
+} from '@ckeditor/ckeditor5-engine';
+import type { BaseEvent, GetCallback } from '@ckeditor/ckeditor5-utils';
+import type { InsertTextCommand, InsertTextCommandExecuteEvent } from '@ckeditor/ckeditor5-typing';
 import type {
 	ClipboardContentInsertionEvent,
 	ViewDocumentClipboardOutputEvent,
 	ClipboardPipeline
-} from 'ckeditor5/src/clipboard';
+} from '@ckeditor/ckeditor5-clipboard';
 
 import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand';
 import {

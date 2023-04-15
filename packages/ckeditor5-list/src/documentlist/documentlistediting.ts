@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type MultiCommand
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 import type {
 	DowncastAttributeEvent,
@@ -24,11 +24,11 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
-import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
-import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
+import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
+import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
+import { CKEditorError, type GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';

@@ -7,8 +7,8 @@
  * @module alignment/alignmentediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { AttributeDescriptor } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { AttributeDescriptor } from '@ckeditor/ckeditor5-engine';
 
 import AlignmentCommand from './alignmentcommand';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';

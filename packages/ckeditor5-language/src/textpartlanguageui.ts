@@ -7,9 +7,9 @@
  * @module language/textpartlanguageui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 import { stringifyLanguageAttribute } from './utils';
 import type TextPartLanguageCommand from './textpartlanguagecommand';
 

@@ -7,8 +7,8 @@
  * @module image/imagecaption/toggleimagecaptioncommand
  */
 
-import type { Element, Writer } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
+import type { Element, Writer } from '@ckeditor/ckeditor5-engine';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 import ImageBlockEditing from '../image/imageblockediting';
 import type ImageCaptionUtils from './imagecaptionutils';

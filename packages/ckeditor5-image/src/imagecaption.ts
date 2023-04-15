@@ -7,7 +7,7 @@
  * @module image/imagecaption
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import ImageCaptionEditing from './imagecaption/imagecaptionediting';
 import ImageCaptionUI from './imagecaption/imagecaptionui';
 

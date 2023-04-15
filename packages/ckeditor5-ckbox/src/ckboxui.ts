@@ -7,8 +7,8 @@
  * @module ckbox/ckboxui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import browseFilesIcon from '../theme/icons/browse-files.svg';
 import type CKBoxCommand from './ckboxcommand';

@@ -7,8 +7,8 @@
  * @module basic-styles/bold/boldui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import type AttributeCommand from '../attributecommand';
 
 const BOLD = 'bold';

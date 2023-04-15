@@ -7,13 +7,13 @@
  * @module html-support/integrations/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
 	UpcastDispatcher,
-	ViewElement } from 'ckeditor5/src/engine';
+	ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../conversionutils';

@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -15,7 +15,7 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type LabeledFieldView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
 import { debounce } from 'lodash-es';
 
@@ -32,8 +32,8 @@ import {
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
-import type { Batch } from 'ckeditor5/src/engine';
-import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
+import type { EventInfo, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import type TableBorderStyleCommand from './commands/tableborderstylecommand';
 

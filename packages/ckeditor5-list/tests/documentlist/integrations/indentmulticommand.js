@@ -15,7 +15,7 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Paragraph } from 'ckeditor5/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
 	getData as getModelData,
 	setData as setModelData

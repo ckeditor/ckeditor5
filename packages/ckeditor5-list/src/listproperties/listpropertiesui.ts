@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	ButtonView,
@@ -15,9 +15,9 @@ import {
 	createDropdown,
 	focusChildOnDropdownOpen,
 	type DropdownView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
-import type { Locale } from 'ckeditor5/src/utils';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import ListPropertiesView from './ui/listpropertiesview';
 

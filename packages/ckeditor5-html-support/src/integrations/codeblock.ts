@@ -14,8 +14,8 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';

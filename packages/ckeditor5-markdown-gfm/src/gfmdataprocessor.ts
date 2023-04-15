@@ -13,7 +13,7 @@ import {
 	type ViewDocument,
 	type ViewDocumentFragment,
 	type MatcherPattern
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import markdown2html from './markdown2html/markdown2html';
 import html2markdown, { turndownService } from './html2markdown/html2markdown';

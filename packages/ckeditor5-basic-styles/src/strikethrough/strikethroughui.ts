@@ -7,8 +7,8 @@
  * @module basic-styles/strikethrough/strikethroughui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import type AttributeCommand from '../attributecommand';
 
 import strikethroughIcon from '../../theme/icons/strikethrough.svg';

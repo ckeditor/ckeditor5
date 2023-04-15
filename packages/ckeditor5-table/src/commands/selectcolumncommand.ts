@@ -7,8 +7,8 @@
  * @module table/commands/selectcolumncommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Range } from 'ckeditor5/src/engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { Range } from '@ckeditor/ckeditor5-engine';
 import type TableUtils from '../tableutils';
 
 import TableWalker from '../tablewalker';

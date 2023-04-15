@@ -7,8 +7,8 @@
  * @module table/tabletoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget';
 
 /**

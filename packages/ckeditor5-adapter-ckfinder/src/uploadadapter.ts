@@ -9,14 +9,14 @@
  * @module adapter-ckfinder/uploadadapter
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	FileRepository,
 	type UploadAdapter as UploadAdapterInterface,
 	type FileLoader,
 	type UploadResponse
-} from 'ckeditor5/src/upload';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-upload';
+import type { LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 import { getCsrfToken } from './utils';
 

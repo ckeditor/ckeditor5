@@ -7,7 +7,7 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 import DataSchema from '../dataschema';
