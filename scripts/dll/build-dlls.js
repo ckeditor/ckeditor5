@@ -23,9 +23,28 @@ const VERBOSE_MODE = argv.verbose;
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
-console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
-
 let exitCode = 0;
+
+// Building the main DLL is just a concatenation of some of DLL filed build above.
+if ( argv[ 'base-dll-config' ] ) {
+	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
+
+	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
+	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
+
+	const status = execute( {
+		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
+		cwd: baseDllPath
+	} );
+
+	if ( status ) {
+		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
+
+		exitCode = 1;
+	}
+}
+
+console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
 // It's important to build base packages in the order of dependency.
 const basePackages = [
@@ -72,25 +91,6 @@ packages
 			exitCode = 1;
 		}
 	} );
-
-// Building the main DLL is just a concatenation of some of DLL filed build above.
-if ( argv[ 'base-dll-config' ] ) {
-	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
-
-	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
-	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
-
-	const status = execute( {
-		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
-		cwd: baseDllPath
-	} );
-
-	if ( status ) {
-		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
-
-		exitCode = 1;
-	}
-}
 
 process.exit( exitCode );
 
