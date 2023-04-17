@@ -5,17 +5,19 @@ Changelog
 
 ### Release highlights
 
-We have released a productivity pack: five new premium features. The release includes:
+#### Productivity pack
 
-* Document outline &ndash; allows to display a navigable list of document sections next to the editor. 
-* Table of contents
-* Format painter &ndash; allows to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place.
-* Slash commands &ndash; allows to execute a predefined command by writing its name or alias directly in the editor.
-* Content templates &ndash; allows to insert predefined templates into editor content and speed up the editing process.
+We have released a productivity pack including five new premium features designed to boost productivity when working with an editor.
 
-Apart from that, we continue work on the multi-root editor. This release brings support for revision history and pagination features.
+* **[Content templates](https://ckeditor.com/docs/ckeditor5/latest/features/template.html)**: The template feature allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
+* **[Table of contents](https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html)**: The table of contents feature lets you insert a widget with a list of headings (section titles) that reflects the structure of the document. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
+* **[Document outline](https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html)**: The document outline feature displays the list of sections (headings) of the document next to the editor. The outline updates automatically as the user works on the document. It offers quick navigation to a specific section upon clicking.
+* **[Format painter](https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html)**: The format painter feature lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
+* **[Slash commands](https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html)**: The slash commands feature lets you execute a predefined command by writing its name or alias directly in the editor. When you type a slash (<kbd>/</kbd>), the suggested commands are displayed in a panel next to it. You can also type a phrase after the <kbd>/</kbd> to filter the results in the panel and to easily find the desired command.
 
-<!-- TODO: Add a link to the blog post. -->
+#### Other
+
+We continue to work on the multi-root editor. This release provides version history and pagination support. We also made some minor improvements and bug fixes.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -27,10 +29,13 @@ Apart from that, we continue work on the multi-root editor. This release brings 
 
 ### Features
 
+* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)** Introduced template feature. The feature allows to insert predefined templates into editor content and speed up the editing process.
+* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)** Introduced document outline and TOC features. The Document outline feature allows you to display a navigable list of sections (headings) of the document next to the editor and the table of contents feature allows inserting a widget with a list of headings (section titles) that reflects the structure of the document.
+* **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)** Introduced format painter feature. The feature allows you to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document.
+* **[slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command)** Introduced slash command feature. The feature allows to execute a predefined command by writing its name or alias directly in the editor.
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced revision history feature support for multi-root editor.
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Introduced basic pagination feature support for multi-root editor.
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Make `SourceEditing.updateEditorData` method public to allow saving source editing data independently of the UI. Closes [#11008](https://github.com/ckeditor/ckeditor5/issues/11008). ([commit](https://github.com/ckeditor/ckeditor5/commit/acc02f4b3bfd6b707432fa51bdb1e5f4bb505923))
-<!-- Add productivity feature here? -->
 
 ### Bug fixes
 
@@ -155,7 +160,7 @@ Other releases:
 
 **⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
 
-**Update: this issue was fixed in version 37.1.0.** 
+**Update: this issue was fixed in version 37.1.0.**
 
 Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
 
@@ -333,7 +338,7 @@ We expanded the General HTM Support feature with support for the `<colgroup>`’
 * The [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package is no longer available as a standalone DLL build. It is now included in the main `ckeditor5-dll.js` build. See [#13707](https://github.com/ckeditor/ckeditor5/issues/13707).
 * It is no longer possible to undo creating or removing a comment thread.
 * UI in comment annotation has changed. Remove and edit buttons have been moved to a dropdown. A new button which resolves a comment thread was added.
-* Comments outside editor integration has to be updated due to the introduction of comments archive. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html). 
+* Comments outside editor integration has to be updated due to the introduction of comments archive. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html).
 * Comment and comment thread views has substantially changed due to the introduction of comments archive. These changes may be incompatible with your custom views or templates. Please review [the migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-37.html).
 * Regarding Export to PDF and Export to Word features, if you use a custom callback to get the document data, make sure to pass `ignoreResolvedComments: true` in `editor.getData()` options. If not, the resolved comments may be visible in the converted document.
 
@@ -537,7 +542,7 @@ Other releases:
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Differ.getChangedRoots()` which returns the roots added or detached since last the differ reset. `Differ#isEmpty` and `Differ#hasDataChanges()` will return `true` if a root was added or detached. ([commit](https://github.com/ckeditor/ckeditor5/commit/927df409f73c7018eb5a34a9908daab9cc4f9946))
 * **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Limiting the dropdown on the singular feed level should now be possible. Closes [#13504](https://github.com/ckeditor/ckeditor5/issues/13504). ([commit](https://github.com/ckeditor/ckeditor5/commit/489b3fda402504cb0492fceb368af475c8dd85b6))
 * **[multi-root-editor](https://www.npmjs.com/package/@ckeditor/ckeditor5-multi-root-editor)**: Introduced the multi-root editor type that allows defining multiple editable areas handled by a single editor instance. Closes [#11493](https://github.com/ckeditor/ckeditor5/issues/11493). ([commit](https://github.com/ckeditor/ckeditor5/commit/50b9c4fe3dd8e22668f36c06af6cdc7af73d81cf))
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Added support for custom path prefixes in WebSocket URLs. Any path proceeding the required `/ws` part in the WebSocket URL is now preserved.  
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Added support for custom path prefixes in WebSocket URLs. Any path proceeding the required `/ws` part in the WebSocket URL is now preserved.
 
 ### Bug fixes
 
