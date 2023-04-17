@@ -21,7 +21,7 @@ We continue to work on the [multi-root editor](https://ckeditor.com/docs/ckedito
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: A text with language set is no longer styled as italic. To re-enable the previous behavior, add the following style definition to your css:
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: A text with language set is no longer styled as italic. To re-enable the previous behavior, add the following style definition to your CSS:
 
 	```css
 	.ck-content span[lang] { font-style: italic; }
