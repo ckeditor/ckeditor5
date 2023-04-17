@@ -7,10 +7,13 @@
  * @module style/styleutils
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
+import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
+import type { DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
+import { isObject } from 'lodash-es';
 
 export default class StyleUtils extends Plugin {
 	/**
@@ -18,6 +21,17 @@ export default class StyleUtils extends Plugin {
 	 */
 	public static get pluginName(): 'StyleUtils' {
 		return 'StyleUtils';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.decorate( 'isStyleEnabledForBlock' );
+		this.decorate( 'isStyleActiveForBlock' );
+		this.decorate( 'getAffectedBlocks' );
 	}
 
 	/**
@@ -70,6 +84,63 @@ export default class StyleUtils extends Plugin {
 		}
 		return normalizedDefinitions;
 	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+		const model = this.editor.model;
+
+		if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
+			return false;
+		}
+
+		return definition.modelElements.includes( block.name );
+	}
+
+	/**
+	 * TODO
+	 * @internal
+	 */
+	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
+		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const ghsAttributeValue = block.getAttribute( attributeName );
+
+		return this.hasAllClasses( ghsAttributeValue, definition.classes );
+	}
+
+	/**
+	 * TODO
+	 */
+	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Iterable<Element> | null {
+		if ( definition.modelElements.includes( block.name ) ) {
+			return [ block ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Verifies if all classes are present in the given GHS attribute.
+	 *
+	 * @internal
+	 */
+	public hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): boolean {
+		return isObject( ghsAttributeValue ) &&
+			hasClassesProperty( ghsAttributeValue ) &&
+			classes.every( className => ghsAttributeValue.classes.includes( className ) );
+	}
+}
+
+/**
+ * Checks if given object has `classes` property which is an array.
+ *
+ * @param obj Object to check.
+ */
+function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
+	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }
 
 export interface NormalizedStyleDefinitions {
@@ -85,3 +156,7 @@ export interface BlockStyleDefinition extends StyleDefinition {
 export interface InlineStyleDefinition extends StyleDefinition {
 	ghsAttributes: Array<string>;
 }
+
+export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
+export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;
+export type StyleUtilsGetAffectedBlocksEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedBlocks'>;

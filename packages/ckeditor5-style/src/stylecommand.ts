@@ -11,10 +11,12 @@ import type { Element, Schema } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
-import { isObject } from 'lodash-es';
 
-import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './styleutils';
+import StyleUtils, {
+	type BlockStyleDefinition,
+	type InlineStyleDefinition,
+	type NormalizedStyleDefinitions
+} from './styleutils';
 
 /**
  * Style command.
@@ -68,9 +70,7 @@ export default class StyleCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
-			this.editor.plugins.get( 'DocumentListUtils' ) : null;
+		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
 
 		const value = new Set<string>();
 		const enabledStyles = new Set<string>();
@@ -86,7 +86,7 @@ export default class StyleCommand extends Command {
 				// Check if this inline style is active.
 				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
 
-				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+				if ( styleUtils.hasAllClasses( ghsAttributeValue, definition.classes ) ) {
 					value.add( definition.name );
 				}
 			}
@@ -105,37 +105,16 @@ export default class StyleCommand extends Command {
 					break;
 				}
 
-				if (
-					!model.schema.checkAttribute( block, 'htmlAttributes' ) &&
-					!model.schema.checkAttribute( block, 'htmlListAttributes' ) &&
-					!model.schema.checkAttribute( block, 'htmlLiAttributes' )
-				) {
-					continue;
-				}
-
 				for ( const definition of this._styleDefinitions.block ) {
 					// Check if this block style is enabled.
-					if ( documentListUtils && documentListUtils.isListItemBlock( block ) ) {
-						if ( definition.element == 'ol' || definition.element == 'ul' ) {
-							const viewElementName = block.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-
-							if ( definition.element != viewElementName ) {
-								continue;
-							}
-						} else if ( definition.element != 'li' && !definition.modelElements.includes( block.name ) ) {
-							continue;
-						}
-					} else if ( !definition.modelElements.includes( block.name ) ) {
+					if ( !styleUtils.isStyleEnabledForBlock( definition, block ) ) {
 						continue;
 					}
 
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
-					const ghsAttributeValue = block.getAttribute( attributeName );
-
-					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					if ( styleUtils.isStyleActiveForBlock( definition, block ) ) {
 						value.add( definition.name );
 					}
 				}
@@ -192,8 +171,6 @@ export default class StyleCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
-			this.editor.plugins.get( 'DocumentListUtils' ) : null;
 
 		const definition: BlockStyleDefinition | InlineStyleDefinition = [
 			...this._styleDefinitions.inline,
@@ -206,15 +183,7 @@ export default class StyleCommand extends Command {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				const selector = [ 'ol', 'ul', 'li' ].includes( definition.element ) ? {
-					type: 'attribute' as const,
-					names: [ htmlSupport.getGhsAttributeNameForElement( definition.element ) ]
-				} : {
-					type: 'element' as const,
-					names: definition.modelElements
-				};
-
-				selectables = getAffectedBlocks( selection.getSelectedBlocks(), selector, model.schema, documentListUtils );
+				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition, model.schema );
 			} else {
 				selectables = [ selection ];
 			}
@@ -227,6 +196,40 @@ export default class StyleCommand extends Command {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Returns a set of elements that should be affected by the block-style change.
+	 */
+	private _findAffectedBlocks(
+		selectedBlocks: IterableIterator<Element>,
+		definition: BlockStyleDefinition,
+		schema: Schema
+	): Set<Element> {
+		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
+		const blocks = new Set<Element>();
+
+		for ( const selectedBlock of selectedBlocks ) {
+			const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+
+			for ( const block of ancestorBlocks ) {
+				if ( schema.isLimit( block ) ) {
+					break;
+				}
+
+				const affectedBlocks = styleUtils.getAffectedBlocks( definition, block );
+
+				if ( affectedBlocks ) {
+					for ( const affectedBlock of affectedBlocks ) {
+						blocks.add( affectedBlock );
+					}
+
+					break;
+				}
+			}
+		}
+
+		return blocks;
 	}
 
 	/**
@@ -258,73 +261,8 @@ export default class StyleCommand extends Command {
 }
 
 /**
- * Verifies if all classes are present in the given GHS attribute.
- */
-function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): boolean {
-	return isObject( ghsAttributeValue ) &&
-		hasClassesProperty( ghsAttributeValue ) &&
-		classes.every( className => ghsAttributeValue.classes.includes( className ) );
-}
-
-/**
- * Returns a set of elements that should be affected by the block-style change.
- */
-function getAffectedBlocks(
-	selectedBlocks: IterableIterator<Element>,
-	selector: {
-		type: 'element' | 'attribute';
-		names: Array<string>;
-	},
-	schema: Schema,
-	documentListUtils: DocumentListUtils | null
-): Set<Element> {
-	const blocks = new Set<Element>();
-
-	for ( const selectedBlock of selectedBlocks ) {
-		const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
-
-		for ( const block of ancestorBlocks ) {
-			if ( schema.isLimit( block ) ) {
-				break;
-			}
-
-			if ( selector.type == 'attribute' ) {
-				if ( documentListUtils && selector.names.includes( 'htmlListAttributes' ) ) {
-					for ( const element of documentListUtils.expandListBlocksToCompleteList( block ) ) {
-						blocks.add( element );
-					}
-
-					break;
-				} else if ( documentListUtils && selector.names.includes( 'htmlLiAttributes' ) ) {
-					for ( const element of documentListUtils.expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
-						blocks.add( element );
-					}
-
-					break;
-				}
-			} else if ( selector.names.includes( block.name ) ) {
-				blocks.add( block );
-
-				break;
-			}
-		}
-	}
-
-	return blocks;
-}
-
-/**
  * Checks if provided style definition is of type block.
  */
 function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
-}
-
-/**
- * Checks if given object has `classes` property which is an array.
- *
- * @param obj Object to check.
- */
-function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
-	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }

@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import StyleUI from './styleui';
 import StyleEditing from './styleediting';
+import DocumentListStyleSupport from './integrations/documentlist';
 
 /**
  * The style plugin.
@@ -30,6 +31,6 @@ export default class Style extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ StyleEditing, StyleUI ] as const;
+		return [ StyleEditing, StyleUI, DocumentListStyleSupport ] as const;
 	}
 }
