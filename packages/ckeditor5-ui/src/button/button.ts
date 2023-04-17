@@ -153,14 +153,14 @@ export default interface Button {
 	class: string | undefined;
 
 	/**
-	 * (Optional) TODO
+	 * (Optional) The ARIA property reflected by the `aria-label` DOM attribute used by assistive technologies.
 	 *
 	 * @observable
 	 */
 	ariaLabel?: string | undefined;
 
 	/**
-	 * (Optional) TODO
+	 * (Optional) The ARIA property reflected by the `aria-ariaLabelledBy` DOM attribute used by assistive technologies.
 	 *
 	 * @observable
 	 */

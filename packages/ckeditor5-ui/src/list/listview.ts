@@ -51,7 +51,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	declare public ariaLabel: string | undefined;
 
 	/**
-	 * TODO
+	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
 	 *
 	 * @observable
 	 */
