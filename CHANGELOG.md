@@ -5,7 +5,8 @@ Changelog
 
 ### Release highlights
 
-We have release a productivity pack: five new premium features. The release includes:
+We have released a productivity pack: five new premium features. The release includes:
+
 * Document outline &ndash; allows to display a navigable list of document sections next to the editor. 
 * Table of contents
 * Format painter &ndash; allows to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place.
