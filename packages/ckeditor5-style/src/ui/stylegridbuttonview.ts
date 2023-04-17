@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { ButtonView, View } from 'ckeditor5/src/ui';
+import { ButtonView, View, type TemplateDefinition } from 'ckeditor5/src/ui';
 
 import type { StyleDefinition } from '../styleconfig';
 
@@ -66,6 +66,51 @@ export default class StyleGridButtonView extends ButtonView {
 		const { element, classes } = this.styleDefinition;
 		const previewView = new View( this.locale );
 
+		const children: Array<TemplateDefinition> = [];
+		const text = 'AaBbCcDdEeFfGgHhIiJj';
+
+		if ( element == 'ol' || element == 'ul' ) {
+			children.push( {
+				tag: element,
+				attributes: {
+					class: classes
+				},
+				children: [
+					{
+						tag: 'li',
+						children: [
+							{ text }
+						]
+					}
+				]
+			} );
+		} else if ( element == 'li' ) {
+			children.push( {
+				tag: 'ol',
+				children: [
+					{
+						tag: element,
+						attributes: {
+							class: classes
+						},
+						children: [
+							{ text }
+						]
+					}
+				]
+			} );
+		} else {
+			children.push( {
+				tag: this._isPreviewable( element ) ? element : 'div',
+				attributes: {
+					class: classes
+				},
+				children: [
+					{ text }
+				]
+			} );
+		}
+
 		previewView.setTemplate( {
 			tag: 'div',
 
@@ -80,17 +125,7 @@ export default class StyleGridButtonView extends ButtonView {
 				'aria-hidden': 'true'
 			},
 
-			children: [
-				{
-					tag: this._isPreviewable( element ) ? element : 'div',
-					attributes: {
-						class: classes
-					},
-					children: [
-						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
-					]
-				}
-			]
+			children
 		} );
 
 		return previewView;
