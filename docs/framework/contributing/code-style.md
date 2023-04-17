@@ -520,7 +520,7 @@ There are some special rules and tips for tests.
 
 ### Test implementation
 
-* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make tests really slow.
+* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/latest/fake-timers/) instead **when possible**. Timeouts make tests really slow.
 * However &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
 * We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &mdash; it is a byproduct of covering real scenarios.
 

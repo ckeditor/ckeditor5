@@ -221,7 +221,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js)
+You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts)
 
 ## Using external services for preview
 
