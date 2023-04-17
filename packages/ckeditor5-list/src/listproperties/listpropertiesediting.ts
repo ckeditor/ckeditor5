@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import type {
 	DiffItem,
@@ -21,7 +21,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import ListEditing from '../list/listediting';
 import ListStyleCommand from './liststylecommand';

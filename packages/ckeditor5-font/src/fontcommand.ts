@@ -7,7 +7,7 @@
  * @module font/fontcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * The base font command.

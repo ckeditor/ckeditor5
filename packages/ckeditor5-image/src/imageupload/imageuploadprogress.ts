@@ -9,13 +9,13 @@
 
 /* globals setTimeout */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { FileRepository, type FileLoader } from 'ckeditor5/src/upload';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { FileRepository, type FileLoader } from '@ckeditor/ckeditor5-upload';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
 import '../../theme/imageuploadloader.css';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 import type {
 	DowncastWriter,
 	View,
@@ -24,7 +24,7 @@ import type {
 	ViewUIElement,
 	DowncastAttributeEvent,
 	Element
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 import type ImageUtils from '../imageutils';
 
 /**

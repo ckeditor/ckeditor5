@@ -14,7 +14,7 @@ import {
 	type ViewElement,
 	type ViewNode,
 	type ViewText
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Transforms Word specific list-like elements to the semantic HTML lists.

@@ -7,7 +7,7 @@
  * @module html-support/converters
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type {
 	AttributeElement,
 	DowncastAttributeEvent,
@@ -20,8 +20,8 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import { toWidget } from 'ckeditor5/src/widget';
+} from '@ckeditor/ckeditor5-engine';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
 import {
 	setViewAttributes,
 	mergeViewElementAttributes,

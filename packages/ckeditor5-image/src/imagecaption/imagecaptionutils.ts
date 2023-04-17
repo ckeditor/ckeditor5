@@ -7,8 +7,8 @@
  * @module image/imagecaption/imagecaptionutils
  */
 
-import type { DocumentSelection, Element, Selection, ViewElement, Match } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
+import type { DocumentSelection, Element, Selection, ViewElement, Match } from '@ckeditor/ckeditor5-engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import ImageUtils from '../imageutils';
 

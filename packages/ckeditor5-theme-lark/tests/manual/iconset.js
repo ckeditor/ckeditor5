@@ -20,7 +20,7 @@ import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.s
 
 import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
 
-import { icons as coreIcons } from 'ckeditor5/src/core';
+import { icons as coreIcons } from '@ckeditor/ckeditor5-core';
 
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
 import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';

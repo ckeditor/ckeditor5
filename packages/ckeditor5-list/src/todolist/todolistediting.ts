@@ -20,9 +20,9 @@ import type {
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	getCode,
@@ -30,7 +30,7 @@ import {
 	getLocalizedArrowKeyCodeDirection,
 	type Locale,
 	type GetCallback
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
 import ListCommand from '../list/listcommand';
 import ListEditing from '../list/listediting';

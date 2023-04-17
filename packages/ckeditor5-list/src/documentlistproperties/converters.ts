@@ -7,8 +7,8 @@
  * @module list/documentlistproperties/converters
  */
 
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import type { AttributeStrategy } from './documentlistpropertiesediting';
 

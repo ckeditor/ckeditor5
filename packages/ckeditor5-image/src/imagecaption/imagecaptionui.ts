@@ -7,8 +7,8 @@
  * @module image/imagecaption/imagecaptionui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import ImageCaptionUtils from './imagecaptionutils';
 import type ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 

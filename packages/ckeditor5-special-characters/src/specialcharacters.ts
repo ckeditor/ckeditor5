@@ -7,10 +7,10 @@
  * @module special-characters/specialcharacters
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
-import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
-import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Typing, type InsertTextCommand } from '@ckeditor/ckeditor5-typing';
+import { createDropdown, type DropdownView } from '@ckeditor/ckeditor5-ui';
+import { CKEditorError, type Locale } from '@ckeditor/ckeditor5-utils';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,

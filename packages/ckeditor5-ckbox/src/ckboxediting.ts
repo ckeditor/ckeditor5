@@ -10,7 +10,7 @@
  */
 
 import type { CloudServices, CloudServicesCore, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	Range,
 	type DocumentSelection,
@@ -22,8 +22,8 @@ import {
 	type UpcastElementEvent,
 	type ViewElement,
 	type Writer
-} from 'ckeditor5/src/engine';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-engine';
+import { CKEditorError, logError } from '@ckeditor/ckeditor5-utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig';
 

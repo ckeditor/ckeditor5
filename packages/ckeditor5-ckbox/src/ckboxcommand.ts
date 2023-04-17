@@ -10,9 +10,9 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import type { Writer } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement, toMap } from 'ckeditor5/src/utils';
+import type { Writer } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { createElement, toMap } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	CKBoxAssetDefinition,

@@ -7,9 +7,9 @@
  * @module mention/mentioncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { Range } from 'ckeditor5/src/engine';
-import { CKEditorError, toMap } from 'ckeditor5/src/utils';
+import { Command } from '@ckeditor/ckeditor5-core';
+import type { Range } from '@ckeditor/ckeditor5-engine';
+import { CKEditorError, toMap } from '@ckeditor/ckeditor5-utils';
 
 import { _addMentionAttributes } from './mentionediting';
 import type { MentionAttribute } from './mention';

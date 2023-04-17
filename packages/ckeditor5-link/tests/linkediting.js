@@ -24,7 +24,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
-import { env } from 'ckeditor5/src/utils';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 /* global document, window */
 

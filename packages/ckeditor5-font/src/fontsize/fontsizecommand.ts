@@ -7,7 +7,7 @@
  * @module font/fontsize/fontsizecommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import FontCommand from '../fontcommand';
 import { FONT_SIZE } from '../utils';
 

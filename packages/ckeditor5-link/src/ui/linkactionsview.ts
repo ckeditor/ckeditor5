@@ -7,9 +7,9 @@
  * @module link/ui/linkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+import { ButtonView, View, ViewCollection, FocusCycler } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import { ensureSafeUrl } from '../utils';
 

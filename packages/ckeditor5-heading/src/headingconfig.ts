@@ -7,7 +7,7 @@
  * @module heading/headingconfig
  */
 
-import type { ViewElementDefinition } from 'ckeditor5/src/engine';
+import type { ViewElementDefinition } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The configuration of the heading feature.

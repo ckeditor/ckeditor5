@@ -7,9 +7,9 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, icons, type Command } from 'ckeditor5/src/core';
-import type { Locale } from 'ckeditor5/src/utils';
-import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
+import { Plugin, icons, type Command } from '@ckeditor/ckeditor5-core';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from '@ckeditor/ckeditor5-ui';
 
 import ImageInsertPanelView from './ui/imageinsertpanelview';
 import { prepareIntegrations } from './utils';

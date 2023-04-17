@@ -9,9 +9,9 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
+import { type Editor, Plugin, PendingActions } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { createElement, ElementReplacer } from '@ckeditor/ckeditor5-utils';
 import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';

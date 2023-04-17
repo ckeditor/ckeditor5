@@ -7,7 +7,7 @@
  * @module html-support/htmlpagedataprocessor
  */
 
-import { HtmlDataProcessor, UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
+import { HtmlDataProcessor, UpcastWriter, type ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The full page HTML data processor class.

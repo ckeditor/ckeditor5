@@ -7,7 +7,7 @@
  * @module list/documentlist/utils/postfixers
  */
 
-import type { Position, Writer } from 'ckeditor5/src/engine';
+import type { Position, Writer } from '@ckeditor/ckeditor5-engine';
 import { iterateSiblingListBlocks, type ListIteratorValue } from './listwalker';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model';
 

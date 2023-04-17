@@ -7,7 +7,7 @@
  * @module list/listproperties/listreversedcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { getSelectedListItems } from '../list/utils';
 
 /**

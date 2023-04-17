@@ -7,9 +7,9 @@
  * @module find-and-replace/findcommand
 */
 
-import type { Item } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Collection } from 'ckeditor5/src/utils';
+import type { Item } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { Collection } from '@ckeditor/ckeditor5-utils';
 
 import type FindAndReplaceState from './findandreplacestate';
 import type { ResultType } from './findandreplace';

@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import TableColumnResizeEditing from './tablecolumnresize/tablecolumnresizeediting';
 import TableCellWidthEditing from './tablecellwidth/tablecellwidthediting';
 

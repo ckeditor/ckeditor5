@@ -7,8 +7,8 @@
  * @module cloud-services/cloudservices
  */
 
-import { ContextPlugin } from 'ckeditor5/src/core';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import { ContextPlugin } from '@ckeditor/ckeditor5-core';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import CloudServicesCore from './cloudservicescore';
 import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig';
 import type { InitializedToken } from './token/token';

@@ -7,7 +7,7 @@
  * @module image/pictureediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import ImageEditing from './image/imageediting';
 import ImageUtils from './imageutils';

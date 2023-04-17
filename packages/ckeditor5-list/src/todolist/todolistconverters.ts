@@ -19,9 +19,9 @@ import type {
 	UpcastElementEvent,
 	View,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { createElement, type GetCallback } from 'ckeditor5/src/utils';
+import { createElement, type GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils';
 

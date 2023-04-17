@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -15,8 +15,8 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type View
-} from 'ckeditor5/src/ui';
-import type { Batch } from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-ui';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import {
@@ -33,7 +33,7 @@ import { getBalloonCellPositionData, repositionContextualBalloon } from '../util
 
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
-import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
+import type { GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
 

@@ -16,10 +16,10 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
-import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-core';
+import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';

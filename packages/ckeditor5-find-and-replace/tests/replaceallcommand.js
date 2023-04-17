@@ -10,7 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-import { uid, Collection } from 'ckeditor5/src/utils';
+import { uid, Collection } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ReplaceAllCommand', () => {
 	let editor, model, command;

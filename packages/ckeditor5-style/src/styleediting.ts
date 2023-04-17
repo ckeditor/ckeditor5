@@ -7,8 +7,8 @@
  * @module style/styleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { MatcherPattern } from 'ckeditor5/src/engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { MatcherPattern } from '@ckeditor/ckeditor5-engine';
 import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StyleCommand from './stylecommand';

@@ -12,8 +12,8 @@ import type {
 	ViewDocumentClipboardOutputEvent,
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
-} from 'ckeditor5/src/clipboard';
-import { Plugin } from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-clipboard';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import type {
 	DocumentFragment,
@@ -26,9 +26,9 @@ import type {
 	Position,
 	Selection,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import type { EventInfo } from 'ckeditor5/src/utils';
+import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import TableSelection from './tableselection';
 import TableWalker, { type TableSlot } from './tablewalker';

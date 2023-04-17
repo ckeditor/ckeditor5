@@ -9,7 +9,7 @@
 
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
-import { ObservableMixin, CKEditorError } from 'ckeditor5/src/utils';
+import { ObservableMixin, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { TokenUrl } from '../cloudservicesconfig';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };

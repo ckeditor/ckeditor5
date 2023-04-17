@@ -9,7 +9,7 @@
 
 import FileUploader from './fileuploader';
 import type { InitializedToken } from '../token/token';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * UploadGateway abstracts file uploads to CKEditor Cloud Services.

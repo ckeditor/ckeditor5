@@ -17,9 +17,9 @@ import {
 	ViewCollection,
 	type ColorDefinition,
 	type DropdownView
-} from 'ckeditor5/src/ui';
-import { icons } from 'ckeditor5/src/core';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-ui';
+import { icons } from '@ckeditor/ckeditor5-core';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/colorinput.css';
 

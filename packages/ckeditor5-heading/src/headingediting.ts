@@ -7,9 +7,9 @@
  * @module heading/headingediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-import { priorities } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { priorities } from '@ckeditor/ckeditor5-utils';
 import type { HeadingOption } from './headingconfig';
 
 import HeadingCommand from './headingcommand';

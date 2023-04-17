@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { addBorderRules, addPaddingRules, addBackgroundRules, type Schema, type Conversion, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { addBorderRules, addPaddingRules, addBackgroundRules, type Schema, type Conversion, type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, upcastBorderStyles } from './../converters/tableproperties';
 import TableEditing from './../tableediting';

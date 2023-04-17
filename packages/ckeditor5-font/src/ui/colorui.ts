@@ -7,8 +7,8 @@
  * @module font/ui/colorui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from '@ckeditor/ckeditor5-ui';
 
 import {
 	addColorTableToDropdown,

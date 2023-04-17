@@ -9,8 +9,8 @@
 
 /* global fetch, File */
 
-import type { ViewElement } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 import type ImageUtils from '../imageutils';
 
 /**

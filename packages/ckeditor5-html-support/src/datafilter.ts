@@ -9,7 +9,7 @@
 
 /* globals document */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	Matcher,
 	type MatcherPattern,
@@ -17,9 +17,9 @@ import {
 	type ViewElement,
 	type MatchResult,
 	type ViewConsumable
-} from 'ckeditor5/src/engine';
-import { priorities, CKEditorError } from 'ckeditor5/src/utils';
-import { Widget } from 'ckeditor5/src/widget';
+} from '@ckeditor/ckeditor5-engine';
+import { priorities, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 import {
 	viewToModelObjectConverter,
 	toObjectWidgetConverter,

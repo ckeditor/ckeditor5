@@ -7,7 +7,7 @@
  * @module list/list/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	TreeWalker,
@@ -22,9 +22,9 @@ import {
 	type ViewElement,
 	type ViewItem,
 	type ViewPosition
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { ButtonView, type ButtonExecuteEvent } from 'ckeditor5/src/ui';
+import { ButtonView, type ButtonExecuteEvent } from '@ckeditor/ckeditor5-ui';
 
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.

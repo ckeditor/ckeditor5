@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentlistpropertiesediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import type {
 	Consumables,
@@ -16,7 +16,7 @@ import type {
 	Item,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import DocumentListEditing, {
 	type DocumentListEditingCheckAttributesEvent,

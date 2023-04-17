@@ -23,6 +23,9 @@ const VERBOSE_MODE = argv.verbose;
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
+let exitCode = 0;
+
+// Building the main DLL is just a concatenation of some of DLL filed build above.
 if ( argv[ 'base-dll-config' ] ) {
 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
@@ -37,15 +40,40 @@ if ( argv[ 'base-dll-config' ] ) {
 	if ( status ) {
 		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
 
-		process.exit( 1 );
+		exitCode = 1;
 	}
 }
 
 console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
-let exitCode = 0;
+// It's important to build base packages in the order of dependency.
+const basePackages = [
+	// The base of the CKEditor 5 framework.
+	'ckeditor5-utils',
+	'ckeditor5-engine',
+	'ckeditor5-core',
+	'ckeditor5-ui',
 
-getPackageNames( ROOT_DIRECTORY )
+	// The Essentials plugin contents:
+	'ckeditor5-typing',
+	'ckeditor5-enter',
+	'ckeditor5-widget',
+	'ckeditor5-clipboard',
+	'ckeditor5-undo',
+
+	// Other, common packages:
+	'ckeditor5-paragraph',
+	'ckeditor5-select-all',
+	'ckeditor5-upload',
+	'ckeditor5-watchdog'
+];
+
+const packages = [
+	...basePackages,
+	...getPackageNames( ROOT_DIRECTORY ).filter( packageName => !basePackages.includes( packageName ) )
+];
+
+packages
 	.filter( isNotBaseDll )
 	.filter( hasDLLBuildScript )
 	.forEach( fullPackageName => {

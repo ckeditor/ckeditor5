@@ -7,8 +7,8 @@
  * @module list/documentlist/documentlistmergecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { DocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { DocumentSelection, Element, Node, Selection } from '@ckeditor/ckeditor5-engine';
 
 import {
 	getNestedListBlocks,

@@ -7,7 +7,7 @@
  * @module link/link
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import LinkEditing from './linkediting';
 import LinkUI from './linkui';
 import AutoLink from './autolink';

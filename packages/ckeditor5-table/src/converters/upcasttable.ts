@@ -7,10 +7,10 @@
  * @module table/converters/upcasttable
  */
 
-import type { Element, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine';
+import type { Element, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from '@ckeditor/ckeditor5-engine';
 
 import { createEmptyTableCell } from '../utils/common';
-import { first } from 'ckeditor5/src/utils';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Returns a function that converts the table view representation:

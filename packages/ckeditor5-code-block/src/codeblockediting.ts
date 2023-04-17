@@ -7,8 +7,8 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Plugin, type Editor, type MultiCommand } from '@ckeditor/ckeditor5-core';
+import { ShiftEnter, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
 
 import {
 	UpcastWriter,
@@ -20,7 +20,7 @@ import {
 	type UpcastElementEvent,
 	type UpcastTextEvent,
 	type Element
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';

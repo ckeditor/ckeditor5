@@ -7,8 +7,8 @@
  * @module block-quote/blockquoteui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import type BlockQuoteCommand from './blockquotecommand';
 
 import '../theme/blockquote.css';

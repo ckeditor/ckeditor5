@@ -14,7 +14,7 @@ import type {
 	Position,
 	Schema,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
 import type TableUtils from '../tableutils';

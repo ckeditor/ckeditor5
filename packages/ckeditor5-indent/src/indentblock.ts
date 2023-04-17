@@ -7,8 +7,8 @@
  * @module indent/indentblock
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type MultiCommand } from '@ckeditor/ckeditor5-core';
+import { addMarginRules, type AttributeDescriptor, type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';

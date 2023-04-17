@@ -7,7 +7,7 @@
  * @module list/listproperties/liststylecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
 
 /**

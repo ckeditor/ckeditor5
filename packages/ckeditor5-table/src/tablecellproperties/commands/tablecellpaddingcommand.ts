@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellpaddingcommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
 
 import TableCellPropertyCommand from './tablecellpropertycommand';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties';

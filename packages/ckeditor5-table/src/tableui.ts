@@ -7,7 +7,7 @@
  * @module table/tableui
  */
 
-import { Plugin, type Command, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Command, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	addListToDropdown,
 	createDropdown,
@@ -16,8 +16,8 @@ import {
 	SwitchButtonView,
 	type DropdownView,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection, type Locale } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-ui';
+import { Collection, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import InsertTableView from './ui/inserttableview';
 

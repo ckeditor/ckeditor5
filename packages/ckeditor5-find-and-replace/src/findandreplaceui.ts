@@ -7,8 +7,8 @@
  * @module find-and-replace/findandreplaceui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { createDropdown, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from '@ckeditor/ckeditor5-ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';

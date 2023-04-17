@@ -7,9 +7,9 @@
  * @module style/stylecommand
  */
 
-import type { Element, Schema } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { logWarning, first } from 'ckeditor5/src/utils';
+import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { logWarning, first } from '@ckeditor/ckeditor5-utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { isObject } from 'lodash-es';
 

@@ -7,8 +7,8 @@
  * @module html-embed/htmlembedui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import type { RawHtmlApi } from './htmlembedediting';
 import type HtmlEmbedCommand from './htmlembedcommand';
 

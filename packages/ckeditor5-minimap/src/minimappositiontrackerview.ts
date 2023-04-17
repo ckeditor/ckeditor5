@@ -7,8 +7,8 @@
  * @module minimap/minimappositiontrackerview
  */
 
-import { View } from 'ckeditor5/src/ui';
-import { toUnit, global, type Locale } from 'ckeditor5/src/utils';
+import { View } from '@ckeditor/ckeditor5-ui';
+import { toUnit, global, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { MinimapDragEvent } from './minimapview';
 
 const toPx = toUnit( 'px' );

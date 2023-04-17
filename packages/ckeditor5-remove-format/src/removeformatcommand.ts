@@ -7,9 +7,9 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { DocumentSelection, Item, Schema } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import type { DocumentSelection, Item, Schema } from '@ckeditor/ckeditor5-engine';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The remove format command.

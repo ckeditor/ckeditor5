@@ -7,14 +7,14 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
-import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, type ViewElement } from 'ckeditor5/src/engine';
+import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, type ViewElement } from '@ckeditor/ckeditor5-engine';
 
-import { Notification } from 'ckeditor5/src/ui';
-import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
-import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload';
-import { env } from 'ckeditor5/src/utils';
+import { Notification } from '@ckeditor/ckeditor5-ui';
+import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from '@ckeditor/ckeditor5-clipboard';
+import { FileRepository, type UploadResponse, type FileLoader } from '@ckeditor/ckeditor5-upload';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';

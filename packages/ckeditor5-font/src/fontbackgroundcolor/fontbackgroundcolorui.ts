@@ -9,7 +9,7 @@
 
 import ColorUI from '../ui/colorui';
 import { FONT_BACKGROUND_COLOR } from '../utils';
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
 

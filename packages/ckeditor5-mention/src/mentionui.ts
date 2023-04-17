@@ -10,19 +10,19 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 
 import type {
 	ViewDocumentKeyDownEvent,
 	Marker,
 	Position
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	CKEditorError,
@@ -32,9 +32,9 @@ import {
 	keyCodes,
 	logWarning,
 	type PositionOptions
-} from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-utils';
 
-import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing';
+import { TextWatcher, type TextWatcherMatchedEvent } from '@ckeditor/ckeditor5-typing';
 
 import { debounce } from 'lodash-es';
 

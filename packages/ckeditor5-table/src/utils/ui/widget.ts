@@ -7,9 +7,9 @@
  * @module table/utils/ui/widget
  */
 
-import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode } from 'ckeditor5/src/engine';
+import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode } from '@ckeditor/ckeditor5-engine';
 
-import { isWidget } from 'ckeditor5/src/widget';
+import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 /**
  * Returns a table widget editing view element if one is selected.

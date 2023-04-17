@@ -23,9 +23,9 @@ import {
 	type DropdownView,
 	type InputTextView,
 	type NormalizedColorOption
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import {
 	fillToolbar,

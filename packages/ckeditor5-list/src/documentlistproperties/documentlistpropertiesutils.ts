@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentlistpropertiesutils
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	getAllSupportedStyleTypes,
 	getListStyleTypeFromTypeAttribute,

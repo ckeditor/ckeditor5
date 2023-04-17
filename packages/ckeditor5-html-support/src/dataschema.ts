@@ -7,11 +7,11 @@
  * @module html-support/dataschema
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { toArray } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { toArray } from '@ckeditor/ckeditor5-utils';
 import defaultConfig from './schemadefinitions';
 import { mergeWith } from 'lodash-es';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine';
+import type { AttributeProperties, SchemaItemDefinition } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the

@@ -14,7 +14,7 @@ import {
 	ViewDocument,
 	type StylesProcessor,
 	type ViewDocumentFragment
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 

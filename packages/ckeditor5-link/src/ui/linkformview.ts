@@ -17,14 +17,14 @@ import {
 	createLabeledInputText,
 	submitHandler,
 	type InputTextView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Collection,
 	type Locale
-} from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import type LinkCommand from '../linkcommand';
 import type ManualDecorator from '../utils/manualdecorator';

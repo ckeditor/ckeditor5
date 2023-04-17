@@ -7,12 +7,12 @@
  * @module media-embed/automediaembed
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
-import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
-import { Delete } from 'ckeditor5/src/typing';
-import { Undo, type UndoCommand } from 'ckeditor5/src/undo';
-import { global } from 'ckeditor5/src/utils';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { LiveRange, LivePosition } from '@ckeditor/ckeditor5-engine';
+import { Clipboard, type ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { Undo, type UndoCommand } from '@ckeditor/ckeditor5-undo';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';

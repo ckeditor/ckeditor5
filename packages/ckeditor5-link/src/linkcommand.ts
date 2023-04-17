@@ -7,10 +7,10 @@
  * @module link/linkcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { findAttributeRange } from 'ckeditor5/src/typing';
-import { Collection, first, toMap } from 'ckeditor5/src/utils';
-import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { findAttributeRange } from '@ckeditor/ckeditor5-typing';
+import { Collection, first, toMap } from '@ckeditor/ckeditor5-utils';
+import type { Range, DocumentSelection, Model, Writer } from '@ckeditor/ckeditor5-engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableElement } from './utils';

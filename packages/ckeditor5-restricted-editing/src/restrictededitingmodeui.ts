@@ -10,15 +10,15 @@
 import {
 	Plugin,
 	type Command
-} from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-core';
 import {
 	Model,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
+} from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 import lockIcon from '../theme/icons/contentlock.svg';
 

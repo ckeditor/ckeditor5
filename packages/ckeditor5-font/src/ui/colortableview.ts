@@ -7,7 +7,7 @@
  * @module font/ui/colortableview
  */
 
-import { icons } from 'ckeditor5/src/core';
+import { icons } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	ColorGridView,
@@ -18,9 +18,9 @@ import {
 	View,
 	ViewCollection,
 	type ColorDefinition
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import type { Model } from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
+import type { Model } from '@ckeditor/ckeditor5-engine';
 
 import DocumentColorCollection from '../documentcolorcollection';
 

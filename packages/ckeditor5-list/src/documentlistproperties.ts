@@ -7,7 +7,7 @@
  * @module list/documentlistproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting';
 import ListPropertiesUI from './listproperties/listpropertiesui';
 

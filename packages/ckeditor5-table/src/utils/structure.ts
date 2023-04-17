@@ -7,7 +7,7 @@
  * @module table/utils/structure
  */
 
-import type { Element, Node, Writer } from 'ckeditor5/src/engine';
+import type { Element, Node, Writer } from '@ckeditor/ckeditor5-engine';
 
 import { default as TableWalker, type TableSlot } from '../tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './common';

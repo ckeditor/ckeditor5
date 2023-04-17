@@ -12,7 +12,7 @@ import type {
 	DocumentSelection,
 	Element,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Checks if the provided model element is a `table`.

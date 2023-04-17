@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { icons } from 'ckeditor5/src/core';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageCaptionUI from '../../src/imagecaption/imagecaptionui';

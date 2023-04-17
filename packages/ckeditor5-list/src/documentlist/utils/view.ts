@@ -7,7 +7,7 @@
  * @module list/documentlist/utils/view
  */
 
-import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine';
+import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Checks if view element is a list type (ul or ol).

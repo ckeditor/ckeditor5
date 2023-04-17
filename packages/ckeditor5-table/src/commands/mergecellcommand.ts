@@ -11,13 +11,13 @@ import type {
 	Element,
 	Node,
 	Writer
-} from 'ckeditor5/src/engine';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import TableWalker from '../tablewalker';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
-import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import type { ArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils';
 
 import type TableUtils from '../tableutils';
 

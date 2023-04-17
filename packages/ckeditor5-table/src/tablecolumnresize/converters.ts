@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize/converters
  */
 
-import type { DowncastDispatcher, UpcastDispatcher, ViewElement } from 'ckeditor5/src/engine';
+import type { DowncastDispatcher, UpcastDispatcher, ViewElement } from '@ckeditor/ckeditor5-engine';
 import type TableUtils from '../tableutils';
 import {
 	normalizeColumnWidths,

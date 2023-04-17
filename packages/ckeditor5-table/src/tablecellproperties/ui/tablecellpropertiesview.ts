@@ -22,14 +22,14 @@ import {
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from '@ckeditor/ckeditor5-utils';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import {
 	fillToolbar,

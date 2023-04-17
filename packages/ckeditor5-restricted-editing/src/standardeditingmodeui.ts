@@ -7,8 +7,8 @@
  * @module restricted-editing/standardeditingmodeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import unlockIcon from '../theme/icons/contentunlock.svg';
 import type RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';

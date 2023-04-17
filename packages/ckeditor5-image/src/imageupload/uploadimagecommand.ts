@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { FileRepository } from 'ckeditor5/src/upload';
-import { Command } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
-import type { Position } from 'ckeditor5/src/engine';
+import { FileRepository } from '@ckeditor/ckeditor5-upload';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import type { Position } from '@ckeditor/ckeditor5-engine';
 
 import type ImageUtils from '../imageutils';
 

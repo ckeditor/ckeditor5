@@ -7,8 +7,8 @@
  * @module special-characters/ui/specialcharactersview
  */
 
-import { View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { View, FocusCycler, type ViewCollection } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import type CharacterGridView from './charactergridview';
 import type CharacterInfoView from './characterinfoview';
 import type SpecialCharactersNavigationView from './specialcharactersnavigationview';

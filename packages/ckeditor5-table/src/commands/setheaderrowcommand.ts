@@ -7,8 +7,8 @@
  * @module table/commands/setheaderrowcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Command } from '@ckeditor/ckeditor5-core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
 import type TableUtils from '../tableutils';
 
 import { updateNumericAttribute } from '../utils/common';

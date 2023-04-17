@@ -7,7 +7,7 @@
  * @module highlight/highlightui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	SplitButtonView,
@@ -15,7 +15,7 @@ import {
 	createDropdown,
 	addToolbarToDropdown,
 	type DropdownView
-} from 'ckeditor5/src/ui';
+} from '@ckeditor/ckeditor5-ui';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';

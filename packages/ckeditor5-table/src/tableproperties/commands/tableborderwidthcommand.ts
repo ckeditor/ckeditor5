@@ -7,8 +7,8 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import type { Editor } from 'ckeditor5/src/core';
+import type { Element } from '@ckeditor/ckeditor5-engine';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import TablePropertyCommand from './tablepropertycommand';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties';

@@ -22,7 +22,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import WidgetTypeAround from '@ckeditor/ckeditor5-widget/src/widgettypearound/widgettypearound';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { Paragraph } from 'ckeditor5/src/paragraph';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 import {
 	getData as getModelData,

@@ -7,7 +7,7 @@
  * @module html-support/integrations/mediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
@@ -18,8 +18,8 @@ import type {
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
+	ViewElement } from '@ckeditor/ckeditor5-engine';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 import { getDescendantElement } from './integrationutils';
 
 /**

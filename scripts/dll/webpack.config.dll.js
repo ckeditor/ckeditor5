@@ -21,70 +21,40 @@ if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
 }
 
-/**
- * Attaches exported modules to the global (`window`) scope.
- * The function assumes that `window.CKEditor5.dll()` is a webpack require function.
- * See #8521, and #8803.
- *
- * @param {Object} window
- */
-function loadCKEditor5modules( window ) {
-	window.CKEditor5 = window.CKEditor5 || {};
+const packages = [
+	// The base of the CKEditor 5 framework.
+	'utils',
+	'engine',
+	'core',
+	'ui',
 
-	const dllPackages = [
-		'utils',
-		'core',
-		'engine',
-		'ui',
-		'clipboard',
-		'enter',
-		'paragraph',
-		'select-all',
-		'typing',
-		'undo',
-		'upload',
-		'widget',
-		'watchdog'
-	];
+	// The Essentials plugin contents:
+	'typing',
+	'enter',
+	'widget',
+	'clipboard',
+	'undo',
 
-	for ( const item of dllPackages ) {
-		const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
-		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.js` );
-	}
-}
+	// Other, common packages:
+	'paragraph',
+	'select-all',
+	'upload',
+	'watchdog'
+];
 
 const webpackConfig = {
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	performance: { hints: false },
-	entry: [
-		// This list must be synced with the `loadCKEditor5modules()` function.
-		// The base of the CKEditor 5 framework, in order of appearance:
-		'./src/utils.js',
-		'./src/core.js',
-		'./src/engine.js',
-		'./src/ui.js',
-
-		// The Essentials plugin contents:
-		'./src/clipboard.js',
-		'./src/enter.js',
-		'./src/paragraph.js',
-		'./src/select-all.js',
-		'./src/typing.js',
-		'./src/undo.js',
-
-		// Other, common packages:
-		'./src/upload.js',
-		'./src/widget.js',
-		'./src/watchdog.js'
-	],
+	entry: packages.map( packageName => `./packages/ckeditor5-${ packageName }/src/index.ts` ),
 	optimization: {
 		minimize: false,
-		moduleIds: 'named'
+		moduleIds: false
 	},
 	output: {
+		library: [ 'CKEditor5', 'dll', 'mainBundle' ],
+
 		path: path.join( ROOT_DIRECTORY, 'build' ),
 		filename: 'ckeditor5-dll.js',
-		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'window'
 	},
 	plugins: [
@@ -98,15 +68,28 @@ const webpackConfig = {
 			banner: bundler.getLicenseBanner(),
 			raw: true
 		} ),
+		// Make sure that module ID include the 'ckeditor5-*' prefix (without '@ckeditor', it's used as a DLL scope).
+		new webpack.ids.NamedModuleIdsPlugin( {
+			context: path.join( ROOT_DIRECTORY, 'packages' )
+		} ),
 		new webpack.DllPlugin( {
-			name: 'CKEditor5.dll',
-			context: 'src',
+			name: 'CKEditor5.dll.mainBundle',
+			// Context in 'packages' directory so module IDs use 'ckeditor5-*' prefix.
+			context: path.join( ROOT_DIRECTORY, 'packages' ),
 			path: path.join( ROOT_DIRECTORY, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
 		} ),
+		// Expose contents of DLLs as global, for example `CKEditor5.editorClassic.ClassicEditor`
 		new WrapperPlugin( {
-			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
+			footer: packages.map( packageName => {
+				const globalPackageKey = packageName.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
+
+				return '(' +
+					`window.CKEditor5[ ${ JSON.stringify( globalPackageKey ) } ] = ` +
+						`window.CKEditor5.dll.mainBundle( './ckeditor5-${ packageName }/src/index.ts' )` +
+				');';
+			} ).join( '' )
 		} )
 	],
 	resolve: {
