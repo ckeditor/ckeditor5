@@ -17,7 +17,7 @@ We have released a productivity pack including five new premium features designe
 
 #### Other
 
-We continue to work on the multi-root editor. This release provides version history and pagination support. We also made some minor improvements and bug fixes.
+We continue to work on the [multi-root editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html). This release introduces their compatibility with reversion history and pagination. We also made some minor improvements and bug fixes.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
