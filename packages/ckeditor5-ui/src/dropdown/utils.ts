@@ -310,7 +310,7 @@ export function addListToDropdown(
 	itemsOrCallback: Collection<ListDropdownItemDefinition> | ( () => Collection<ListDropdownItemDefinition> ),
 	options: {
 		ariaLabel?: string;
-		role?: string
+		role?: string;
 	} = {}
 ): void {
 	if ( dropdownView.isOpen ) {
