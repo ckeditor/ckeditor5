@@ -19,9 +19,9 @@ We have released a productivity pack: five new premium features. The release inc
 
 * **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: A text with language set is no longer styled as italic. To re-enable the previous behavior, add the following style definition to your css:
 
-```css
-.ck-content span[lang] { font-style: italic; }
-```
+	```css
+	.ck-content span[lang] { font-style: italic; }
+	```
 
 ### Features
 
