@@ -889,7 +889,7 @@ export default class Writer {
 	 * @param element The element to rename.
 	 * @param newName New element name.
 	 */
-	public rename( element: Element, newName: string ): void {
+	public rename( element: Element | DocumentFragment, newName: string ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( !( element instanceof Element ) ) {

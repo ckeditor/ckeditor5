@@ -18,7 +18,7 @@ import type {
 	DocumentListIndentCommand
 } from '@ckeditor/ckeditor5-list';
 
-import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 
 /**

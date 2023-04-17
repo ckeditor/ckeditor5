@@ -10,6 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
+import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter';
 import type { HeadingOption } from './headingconfig';
 
 import HeadingCommand from './headingcommand';
@@ -94,7 +95,7 @@ export default class HeadingEditing extends Plugin {
 		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 
 		if ( enterCommand ) {
-			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
+			this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
 				const isHeading = options.some( option => positionParent.is( 'element', option.model ) );
 
