@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document,Event */
 
 import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -184,6 +184,21 @@ describe( 'ColorUI', () => {
 				dropdown.colorTableView.colorPickerView.color = '#a37474';
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+			} );
+
+			it( 'should cancel changes', () => {
+				dropdown.isOpen = false;
+
+				command = editor.commands.get( 'testColorCommand' );
+				command.value = '#ff0000';
+
+				dropdown.isOpen = true;
+
+				dropdown.colorTableView.selectedColor = '#123456';
+
+				dropdown.colorTableView.cancelButtonView.element.dispatchEvent( new Event( 'click' ) );
+
+				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
 			} );
 
 			it.skip( 'should avoid call the command multiple times', () => {

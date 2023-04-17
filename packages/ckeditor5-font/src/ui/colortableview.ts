@@ -115,6 +115,12 @@ export default class ColorTableView extends View {
 	declare public selectedColor?: string;
 
 	/**
+	 * Color in a moment when dropdown was opened. When "cancel" button is pressed we set
+	 * this value again.
+	 */
+	declare public initialColor?: string;
+
+	/**
 	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
 	 * the default (static) color set.
 	 *
@@ -480,6 +486,13 @@ export default class ColorTableView extends View {
 		} );
 
 		saveButtonView.on( 'execute', () => {
+			this.fire( 'execute', {
+				value: this.selectedColor
+			} );
+		} );
+
+		cancelButtonView.on( 'execute', () => {
+			this.selectedColor = this.initialColor;
 			this.fire( 'execute', {
 				value: this.selectedColor
 			} );

@@ -163,6 +163,10 @@ export default class ColorUI extends Plugin {
 				}
 
 				if ( isVisible ) {
+					if ( hasColorPicker ) {
+						dropdownView.colorTableView!.initialColor = dropdownView.colorTableView!.selectedColor;
+					}
+
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
