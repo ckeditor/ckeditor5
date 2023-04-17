@@ -49,13 +49,7 @@ export default class DataSchema extends Plugin {
 	/**
 	 * A map of registered data schema definitions.
 	 */
-	private readonly _definitions: Map<string, DataSchemaDefinition>;
-
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._definitions = new Map();
-	}
+	private readonly _definitions = new Map<string, DataSchemaDefinition>();
 
 	/**
 	 * @inheritDoc

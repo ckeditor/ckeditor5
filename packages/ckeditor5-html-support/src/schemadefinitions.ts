@@ -86,11 +86,11 @@ export default {
 		},
 		{
 			model: 'tableCell',
-			view: 'td'
+			view: 'th'
 		},
 		{
 			model: 'tableCell',
-			view: 'th'
+			view: 'td'
 		},
 		{
 			model: 'tableColumnGroup',
