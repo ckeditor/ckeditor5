@@ -77,9 +77,10 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Returns a GHS model attribute name related to a given view element name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 */
-	private getGhsAttributeNameForElement( viewElementName: string ): string {
+	public getGhsAttributeNameForElement( viewElementName: string ): string {
 		if ( viewElementName == 'ol' || viewElementName == 'ul' ) {
 			return 'htmlListAttributes';
 		} else if ( viewElementName == 'li' ) {

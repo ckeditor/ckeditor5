@@ -57,7 +57,10 @@ export default class DocumentListUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
+	 *
+	 * @param blocks The list of selected blocks.
+	 * @param options.withNested Whether should include nested list items.
 	 */
 	public expandListBlocksToCompleteItems( blocks: ArrayOrItem<Element>, options: { withNested?: boolean } = {} ): Array<Element> {
 		return expandListBlocksToCompleteItems( blocks, options );

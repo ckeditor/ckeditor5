@@ -68,6 +68,7 @@ export default class StyleCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
 			this.editor.plugins.get( 'DocumentListUtils' ) : null;
 
@@ -131,15 +132,7 @@ export default class StyleCommand extends Command {
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					let attributeName = 'htmlAttributes';
-
-					if (
-						[ 'ol', 'ul', 'li' ].includes( definition.element ) &&
-						documentListUtils && documentListUtils.isListItemBlock( block )
-					) {
-						attributeName = definition.element == 'li' ? 'htmlLiAttributes' : 'htmlListAttributes';
-					}
-
+					const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
 					const ghsAttributeValue = block.getAttribute( attributeName );
 
 					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
@@ -199,6 +192,8 @@ export default class StyleCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
+		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
+			this.editor.plugins.get( 'DocumentListUtils' ) : null;
 
 		const definition: BlockStyleDefinition | InlineStyleDefinition = [
 			...this._styleDefinitions.inline,
@@ -207,14 +202,19 @@ export default class StyleCommand extends Command {
 
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
-		const documentListUtils: DocumentListUtils | null = this.editor.plugins.has( 'DocumentListUtils' ) ?
-			this.editor.plugins.get( 'DocumentListUtils' ) : null;
-
 		model.change( () => {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema, documentListUtils );
+				const selector = [ 'ol', 'ul', 'li' ].includes( definition.element ) ? {
+					type: 'attribute' as const,
+					names: [ htmlSupport.getGhsAttributeNameForElement( definition.element ) ]
+				} : {
+					type: 'element' as const,
+					names: definition.modelElements
+				};
+
+				selectables = getAffectedBlocks( selection.getSelectedBlocks(), selector, model.schema, documentListUtils );
 			} else {
 				selectables = [ selection ];
 			}
@@ -271,7 +271,10 @@ function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): bo
  */
 function getAffectedBlocks(
 	selectedBlocks: IterableIterator<Element>,
-	elementNames: Array<string>,
+	selector: {
+		type: 'element' | 'attribute';
+		names: Array<string>;
+	},
 	schema: Schema,
 	documentListUtils: DocumentListUtils | null
 ): Set<Element> {
@@ -285,24 +288,21 @@ function getAffectedBlocks(
 				break;
 			}
 
-			if ( documentListUtils && documentListUtils.isListItemBlock( block ) ) {
-				// TODO make some precise option for this
-				if ( elementNames.includes( 'htmlOl' ) || elementNames.includes( 'htmlUl' ) ) {
+			if ( selector.type == 'attribute' ) {
+				if ( documentListUtils && selector.names.includes( 'htmlListAttributes' ) ) {
 					for ( const element of documentListUtils.expandListBlocksToCompleteList( block ) ) {
 						blocks.add( element );
 					}
 
 					break;
-				} else if ( elementNames.includes( 'htmlLi' ) ) {
+				} else if ( documentListUtils && selector.names.includes( 'htmlLiAttributes' ) ) {
 					for ( const element of documentListUtils.expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
 						blocks.add( element );
 					}
 
 					break;
 				}
-			}
-
-			if ( elementNames.includes( block.name ) ) {
+			} else if ( selector.names.includes( block.name ) ) {
 				blocks.add( block );
 
 				break;

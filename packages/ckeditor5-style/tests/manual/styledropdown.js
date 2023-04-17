@@ -347,9 +347,9 @@ ClassicEditor
 					classes: [ 'italic-list' ]
 				},
 				{
-					name: 'Underlined list item',
+					name: 'Background list item',
 					element: 'li',
-					classes: [ 'underlined-list-item' ]
+					classes: [ 'background-list-item' ]
 				}
 			]
 		}
