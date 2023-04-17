@@ -5,16 +5,28 @@ Changelog
 
 ### Release highlights
 
+We have release a productivity pack: five new premium features. The release includes:
+* Document outline &ndash; allows to display a navigable list of document sections next to the editor. 
+* Table of contents
+* Format painter &ndash; allows to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place.
+* Slash commands &ndash; allows to execute a predefined command by writing its name or alias directly in the editor.
+* Content tempaltes &ndash; allows to insert predefined templates into editor content and speed up the editing process.
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Text with language set is no longer styled as italic. To re-enable previous behavior, add the following style definition `.ck-content span[lang] { font-style: italic; }` to your css.
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: A text with language set is no longer styled as italic. To re-enable the previous behavior, add the following style definition to your css:
+
+```css
+.ck-content span[lang] { font-style: italic; }
+```
 
 ### Features
 
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced revision history feature support for multi-root editor.
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Make `SourceEditing.updateEditorData` method public to allow saving source editing data independently of the UI. Closes [#11008](https://github.com/ckeditor/ckeditor5/issues/11008). ([commit](https://github.com/ckeditor/ckeditor5/commit/acc02f4b3bfd6b707432fa51bdb1e5f4bb505923))
+<!-- Add productivity feature here? -->
 
 ### Bug fixes
 
