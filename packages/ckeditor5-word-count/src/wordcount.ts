@@ -7,7 +7,7 @@
  * @module word-count/wordcount
  */
 
-import { type DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { Template, View } from '@ckeditor/ckeditor5-ui';
 import { env } from '@ckeditor/ckeditor5-utils';

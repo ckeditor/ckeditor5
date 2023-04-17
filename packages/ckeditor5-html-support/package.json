@@ -16,6 +16,10 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
+    "@ckeditor/ckeditor5-utils": "^37.0.1",
+    "@ckeditor/ckeditor5-engine": "^37.0.1",
+    "@ckeditor/ckeditor5-core":  "^37.0.1",
+    "@ckeditor/ckeditor5-widget":  "^37.0.1",
     "ckeditor5": "^37.0.1",
     "lodash-es": "^4.17.15"
   },
@@ -26,11 +30,9 @@
     "@ckeditor/ckeditor5-clipboard": "^37.0.1",
     "@ckeditor/ckeditor5-cloud-services": "^37.0.1",
     "@ckeditor/ckeditor5-code-block": "^37.0.1",
-    "@ckeditor/ckeditor5-core": "^37.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
     "@ckeditor/ckeditor5-easy-image": "^37.0.1",
     "@ckeditor/ckeditor5-editor-classic": "^37.0.1",
-    "@ckeditor/ckeditor5-engine": "^37.0.1",
     "@ckeditor/ckeditor5-enter": "^37.0.1",
     "@ckeditor/ckeditor5-essentials": "^37.0.1",
     "@ckeditor/ckeditor5-font": "^37.0.1",
@@ -50,8 +52,6 @@
     "@ckeditor/ckeditor5-source-editing": "^37.0.1",
     "@ckeditor/ckeditor5-table": "^37.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^37.0.1",
-    "@ckeditor/ckeditor5-utils": "^37.0.1",
-    "@ckeditor/ckeditor5-widget": "^37.0.1",
     "typescript": "^4.8.4",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"

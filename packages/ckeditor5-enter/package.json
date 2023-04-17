@@ -18,10 +18,12 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^37.0.1",
+    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^37.0.1",
     "@ckeditor/ckeditor5-heading": "^37.0.1",
     "@ckeditor/ckeditor5-link": "^37.0.1",
     "@ckeditor/ckeditor5-paragraph": "^37.0.1",
+    "@ckeditor/ckeditor5-theme-lark": "^37.0.1",
     "@ckeditor/ckeditor5-typing": "^37.0.1",
     "@ckeditor/ckeditor5-undo": "^37.0.1",
     "typescript": "^4.8.4",
