@@ -8,6 +8,10 @@
 	display: flex;
 	align-items: center;
 	width: 100%;
+
+	@mixin ck-dir ltr {
+		justify-content: flex-start;
+	}
 }
 
 .ck .ck-button.ck-color-table__color-picker {
@@ -39,11 +43,11 @@ label.ck.ck-color-grid__label {
 
 	& .hex-color-picker {
 		height: 100px;
-		margin: 0 0 8px 0;
+		margin: 0 0 var(--ck-spacing-large) 0;
 
 		&::part(saturation),
 		&::part(hue) {
-			border-radius: 0;
+			border-radius: var(--ck-border-radius);
 		}
 
 		&::part(saturation-pointer),

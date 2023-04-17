@@ -396,12 +396,12 @@ describe( 'ColorTableView', () => {
 			cancelButton = colorTableView.cancelButtonView;
 		} );
 
-		it( 'should have proper class', () => {
+		it( 'should have a proper CSS class name', () => {
 			expect( actionBar.element.classList.contains( 'ck-color-table_action-bar' ) ).to.be.true;
 		} );
 
 		describe( 'save button', () => {
-			it( 'should have proper class', () => {
+			it( 'should have a proper CSS class name', () => {
 				expect( saveButton.element.classList.contains( 'ck-button-save' ) ).to.be.true;
 			} );
 
@@ -422,7 +422,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		describe( 'cancel button', () => {
-			it( 'should have proper class', () => {
+			it( 'should have a proper CSS class name', () => {
 				expect( cancelButton.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 			} );
 
