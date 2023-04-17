@@ -5,6 +5,7 @@
 # * Point to resources to learn plugin development.
 
 category: plugins
+menu-title: Concept
 order: 10
 ---
 
