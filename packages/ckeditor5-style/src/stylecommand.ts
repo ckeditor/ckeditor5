@@ -99,9 +99,7 @@ export default class StyleCommand extends Command {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
 			for ( const block of ancestorBlocks ) {
-				// E.g. reached a model table when the selection is in a cell. The command should not modify
-				// ancestors of a table.
-				if ( model.schema.isLimit( block ) ) {
+				if ( block.is( 'rootElement' ) ) {
 					break;
 				}
 
@@ -117,6 +115,12 @@ export default class StyleCommand extends Command {
 					if ( styleUtils.isStyleActiveForBlock( definition, block ) ) {
 						value.add( definition.name );
 					}
+				}
+
+				// E.g. reached a model table when the selection is in a cell. The command should not modify
+				// ancestors of a table.
+				if ( model.schema.isObject( block ) ) {
+					break;
 				}
 			}
 		}
@@ -183,7 +187,7 @@ export default class StyleCommand extends Command {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition, model.schema );
+				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition );
 			} else {
 				selectables = [ selection ];
 			}
@@ -203,17 +207,16 @@ export default class StyleCommand extends Command {
 	 */
 	private _findAffectedBlocks(
 		selectedBlocks: IterableIterator<Element>,
-		definition: BlockStyleDefinition,
-		schema: Schema
+		definition: BlockStyleDefinition
 	): Set<Element> {
 		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
 		const blocks = new Set<Element>();
 
 		for ( const selectedBlock of selectedBlocks ) {
-			const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
 			for ( const block of ancestorBlocks ) {
-				if ( schema.isLimit( block ) ) {
+				if ( block.is( 'rootElement' ) ) {
 					break;
 				}
 
