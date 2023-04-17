@@ -11,7 +11,9 @@ We have released a productivity pack: five new premium features. The release inc
 * Table of contents
 * Format painter &ndash; allows to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place.
 * Slash commands &ndash; allows to execute a predefined command by writing its name or alias directly in the editor.
-* Content tempaltes &ndash; allows to insert predefined templates into editor content and speed up the editing process.
+* Content templates &ndash; allows to insert predefined templates into editor content and speed up the editing process.
+
+Apart from that, we continue work on the multi-root editor. This release brings support for revision history and pagination features.
 
 <!-- TODO: Add a link to the blog post. -->
 
@@ -26,6 +28,7 @@ We have released a productivity pack: five new premium features. The release inc
 ### Features
 
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced revision history feature support for multi-root editor.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Introduced basic pagination feature support for multi-root editor.
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Make `SourceEditing.updateEditorData` method public to allow saving source editing data independently of the UI. Closes [#11008](https://github.com/ckeditor/ckeditor5/issues/11008). ([commit](https://github.com/ckeditor/ckeditor5/commit/acc02f4b3bfd6b707432fa51bdb1e5f4bb505923))
 <!-- Add productivity feature here? -->
 
@@ -152,6 +155,8 @@ Other releases:
 
 **⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
 
+**Update: this issue was fixed in version 37.1.0.** 
+
 Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
 
 To solve this problem, make sure to set the permissions after the editor is initialized, for example:
@@ -267,6 +272,8 @@ Other releases:
 ### Known bugs
 
 **⚠️ After the release we noticed a bug that may affect integrations which use comments feature without real-time collaboration ⚠️**
+
+**Update: this issue was fixed in version 37.1.0.**
 
 Default permissions for comments feature are not working correctly in integrations that do not use real-time collaboration. Users are not able to edit or remove their comments.
 
