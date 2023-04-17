@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [37.1.0](https://github.com/ckeditor/ckeditor5/compare/v37.0.1...v37.1.0) (2023-04-17)
+## [37.1.0](https://github.com/ckeditor/ckeditor5/compare/v37.0.1...v37.1.0) (2023-04-19)
 
 ### Release highlights
 
@@ -9,7 +9,7 @@ Changelog
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Text with language set is no longer styled as italic. To re-enable previous behavior, add style .ck-content span[lang] { font-style: italic;  } to your css.
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Text with language set is no longer styled as italic. To re-enable previous behavior, add the following style definition `.ck-content span[lang] { font-style: italic; }` to your css.
 
 ### Features
 
@@ -20,16 +20,16 @@ Changelog
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed the incorrect default permissions applied in non-real-time collaboration integrations.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Selection#getSelectedBlocks()` should ignore trailing blocks where no content is selected. The selection of such blocks is not visible to the content author and is usually there unintentionally. Closes [#11585](https://github.com/ckeditor/ckeditor5/issues/11585). ([commit](https://github.com/ckeditor/ckeditor5/commit/9d9604b969d4cc5d7fb27a6fddad408fda56f972))
-* **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: Pressing Shift+Enter in Safari should insert <br> instead of splitting block. Closes [#13321](https://github.com/ckeditor/ckeditor5/issues/13321). ([commit](https://github.com/ckeditor/ckeditor5/commit/90445f8269cfbcf481cabdf4b210b9815eca200d))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: ListPropertiesEditing should not crash if there was a list in an image caption element. Closes [#13858](https://github.com/ckeditor/ckeditor5/issues/13858). ([commit](https://github.com/ckeditor/ckeditor5/commit/8162741aa247568efc897e83787e224b3221b1a5))
+* **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: Pressing `Shift+Enter` in Safari should insert `<br>` instead of splitting block. Closes [#13321](https://github.com/ckeditor/ckeditor5/issues/13321). ([commit](https://github.com/ckeditor/ckeditor5/commit/90445f8269cfbcf481cabdf4b210b9815eca200d))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: `ListPropertiesEditing` should not crash if there was a list in an image caption element. Closes [#13858](https://github.com/ckeditor/ckeditor5/issues/13858). ([commit](https://github.com/ckeditor/ckeditor5/commit/8162741aa247568efc897e83787e224b3221b1a5))
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Fixed an issue when sometimes editor selection would not be moved pass other users selection when pressing arrow keys.
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Text suggestions should replace the whole words. Closes [#13583](https://github.com/ckeditor/ckeditor5/issues/13583). ([commit](https://github.com/ckeditor/ckeditor5/commit/c6a8e85b3876f9d716e01999d994dbbf9b20727b))
 
 ### Other changes
 
-* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: Multi-root editor will now throw if `EditorConfig#initialData` is mismatched with initial roots set in `MultiRootEditor#create()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/9fd594492dcf0b0110fb5d041bd89c59312e80c1))
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The multi-root editor will now throw if `EditorConfig#initialData` is mismatched with initial roots set in `MultiRootEditor#create()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/9fd594492dcf0b0110fb5d041bd89c59312e80c1))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `targetRanges` property of the `beforeInput` event data should be fixed to not cross limit elements' boundaries. See [#13583](https://github.com/ckeditor/ckeditor5/issues/13583). ([commit](https://github.com/ckeditor/ckeditor5/commit/c6a8e85b3876f9d716e01999d994dbbf9b20727b))
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: TextPartLanguage doesn't style text as italic when language is set. Closes [#12672](https://github.com/ckeditor/ckeditor5/issues/12672). ([commit](https://github.com/ckeditor/ckeditor5/commit/5be454a8948a10e2f4662b946daa5e2839bd0f8e))
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: `TextPartLanguage` doesn't style text as italic when language is set. Closes [#12672](https://github.com/ckeditor/ckeditor5/issues/12672). ([commit](https://github.com/ckeditor/ckeditor5/commit/5be454a8948a10e2f4662b946daa5e2839bd0f8e))
 * Switched from `ts-loader` to `esbuild-loader` when processing the TypeScript sources. It significantly reduces the build time when processing automated and manual tests or preparing snippets in the documentation. Closes [#13643](https://github.com/ckeditor/ckeditor5/issues/13643). ([commit](https://github.com/ckeditor/ckeditor5/commit/48e90dc3b8aec8adc333825d0c6e27295fc913cc))
 * `MultiRootEditor` will first fire all `detachRoot` events and then all `addRoot` events if there are detached and added roots in the same batch. ([commit](https://github.com/ckeditor/ckeditor5/commit/629f8ab55d75516eb8151cfc250952667d4427e6))
 * Updated translations.
