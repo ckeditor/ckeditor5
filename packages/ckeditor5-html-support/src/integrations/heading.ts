@@ -10,10 +10,14 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { Item } from 'ckeditor5/src/engine';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
-import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter';
+import {
+	Enter,
+	type EnterCommand,
+	type EnterCommandAfterExecuteEvent
+} from 'ckeditor5/src/enter';
 
 import DataSchema from '../dataschema';
-import { modifyGhsAttribute } from '../generalhtmlsupport';
+import { modifyGhsAttribute } from '../utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.
@@ -23,7 +27,7 @@ export default class HeadingElementSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ DataSchema ] as const;
+		return [ DataSchema, Enter ] as const;
 	}
 
 	/**
@@ -79,7 +83,7 @@ export default class HeadingElementSupport extends Plugin {
 	 * Removes css classes from "htmlAttributes" of new paragraph created when hitting "enter" in heading.
 	 */
 	private removeClassesOnEnter( editor: Editor, options: Array<HeadingOption> ): void {
-		const enterCommand = editor.commands.get( 'enter' )!;
+		const enterCommand: EnterCommand = editor.commands.get( 'enter' )!;
 
 		this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getFirstPosition()!.parent;

@@ -23,7 +23,7 @@ import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
 import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import type { GHSViewAttributes } from './conversionutils';
+import { modifyGhsAttribute } from './utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
 
@@ -265,65 +265,5 @@ function getValidRangesForSelectable(
 		}
 	} else {
 		return model.schema.getValidRanges( model.createSelection( selectable ).getRanges(), ghsAttributeName );
-	}
-}
-
-interface CallbackMap {
-	classes: ( t: Set<string> ) => void;
-	attributes: ( t: Map<string, unknown> ) => void;
-	styles: ( t: Map<string, string> ) => void;
-}
-
-/**
- * Updates a GHS attribute on a specified item.
- * @param callback That receives a map or set as an argument and should modify it (add or remove entries).
- */
-export function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
-	writer: Writer,
-	item: Item | DocumentSelection,
-	ghsAttributeName: string,
-	subject: T,
-	callback: CallbackMap[T]
-): void {
-	const oldValue = item.getAttribute( ghsAttributeName ) as Record<string, any>;
-	const newValue: Record<string, any> = {};
-
-	for ( const kind of [ 'attributes', 'styles', 'classes' ] as Array<T> ) {
-		// Properties other than `subject` should be assigned from `oldValue`.
-		if ( kind != subject ) {
-			if ( oldValue && oldValue[ kind ] ) {
-				newValue[ kind ] = oldValue[ kind ];
-			}
-			continue;
-		}
-		// `callback` should be applied on property [`subject`].
-		if ( subject == 'classes' ) {
-			const values = new Set<string>( oldValue && oldValue.classes || [] );
-			( callback as CallbackMap['classes'] )( values );
-			if ( values.size ) {
-				newValue[ kind ] = Array.from( values ) as GHSViewAttributes[T];
-			}
-			continue;
-		}
-
-		const values = new Map<string, unknown>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
-		( callback as CallbackMap['attributes'] )( values );
-		if ( values.size ) {
-			newValue[ kind ] = Object.fromEntries( values ) as GHSViewAttributes[T];
-		}
-	}
-
-	if ( Object.keys( newValue ).length ) {
-		if ( item.is( 'documentSelection' ) ) {
-			writer.setSelectionAttribute( ghsAttributeName, newValue );
-		} else {
-			writer.setAttribute( ghsAttributeName, newValue, item );
-		}
-	} else if ( oldValue ) {
-		if ( item.is( 'documentSelection' ) ) {
-			writer.removeSelectionAttribute( ghsAttributeName );
-		} else {
-			writer.removeAttribute( ghsAttributeName, item );
-		}
 	}
 }
