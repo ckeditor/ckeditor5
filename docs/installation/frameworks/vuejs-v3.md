@@ -861,6 +861,18 @@ It sets the initial read–only state of the editor and changes it during its li
 </script>
 ```
 
+### `disableTwoWayDataBinding`
+
+Allows disabling the two-way data binding mechanism. The default value is `false`.
+
+The reason for the introduction of this option are performance issues in large documents. After enabling this flag, the `v-model` directive, wil no longer update the connected value whenever editor's data is changed.
+
+This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
+
+```html
+<ckeditor :editor="editor" :disableTwoWayDataBinding="true"></ckeditor>
+```
+
 ## Component events
 
 ### `ready`
@@ -900,14 +912,6 @@ Corresponds to the {@link module:engine/model/document~Document#event:change:dat
 Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destroy`} editor event.
 
 **Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
-
-### `disableTwoWayDataBinding`
-
-Allows disabling the two-way data binding mechanism. The default value is `false`.
-
-The reason for the introduction of this option are performance issues in large documents. After enabling this flag, the `v-model` directive, wil no longer update the connected value whenever editor's data is changed.
-
-This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
 ```html
 <ckeditor :editor="editor" @destroy="onEditorDestroy"></ckeditor>
