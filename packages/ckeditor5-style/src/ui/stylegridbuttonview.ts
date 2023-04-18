@@ -10,7 +10,7 @@
 import type { Locale } from 'ckeditor5/src/utils';
 import { ButtonView, View } from 'ckeditor5/src/ui';
 
-import type { StyleDefinition } from '../styleconfig';
+import type { BlockStyleDefinition, InlineStyleDefinition } from '../styleutils';
 
 /**
  * A class representing an individual button (style) in the grid. Renders a rich preview of the style.
@@ -19,7 +19,7 @@ export default class StyleGridButtonView extends ButtonView {
 	/**
 	 * Definition of the style the button will apply when executed.
 	 */
-	public readonly styleDefinition: StyleDefinition;
+	public readonly styleDefinition: BlockStyleDefinition | InlineStyleDefinition;
 
 	/**
 	 * The view rendering the preview of the style.
@@ -32,7 +32,7 @@ export default class StyleGridButtonView extends ButtonView {
 	 * @param locale The localization services instance.
 	 * @param styleDefinition Definition of the style.
 	 */
-	constructor( locale: Locale, styleDefinition: StyleDefinition ) {
+	constructor( locale: Locale, styleDefinition: BlockStyleDefinition | InlineStyleDefinition ) {
 		super( locale );
 
 		this.styleDefinition = styleDefinition;
@@ -74,7 +74,7 @@ export default class StyleGridButtonView extends ButtonView {
 			},
 
 			children: [
-				this.styleDefinition.previewTemplate!
+				this.styleDefinition.previewTemplate
 			]
 		} );
 
