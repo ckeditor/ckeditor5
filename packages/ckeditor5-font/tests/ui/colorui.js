@@ -189,8 +189,7 @@ describe( 'ColorUI', () => {
 			it( 'should cancel changes', () => {
 				dropdown.isOpen = false;
 
-				command = editor.commands.get( 'testColorCommand' );
-				command.value = '#ff0000';
+				dropdown.colorTableView.selectedColor = '#ff0000';
 
 				dropdown.isOpen = true;
 

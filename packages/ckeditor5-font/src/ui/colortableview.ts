@@ -504,6 +504,7 @@ export default class ColorTableView extends View {
 		} );
 
 		cancelButtonView.on( 'execute', () => {
+			this.selectedColor = this.initialColor;
 			this.fire( 'execute', {
 				value: this.initialColor
 			} );
