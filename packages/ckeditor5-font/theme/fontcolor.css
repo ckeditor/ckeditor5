@@ -3,11 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
 .ck .ck-button.ck-color-table__remove-color,
 .ck .ck-button.ck-color-table__color-picker {
 	display: flex;
 	align-items: center;
 	width: 100%;
+
+	@mixin ck-dir rtl {
+		justify-content: flex-start;
+	}
 }
 
 .ck .ck-button.ck-color-table__color-picker {
@@ -39,11 +45,13 @@ label.ck.ck-color-grid__label {
 
 	& .hex-color-picker {
 		height: 100px;
-		margin: 0 0 8px 0;
+		margin: 0 0 var(--ck-spacing-large) 0;
 
-		&::part(saturation),
+		&::part(saturation) {
+			border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+		}
 		&::part(hue) {
-			border-radius: 0;
+			border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
 		}
 
 		&::part(saturation-pointer),
@@ -59,4 +67,9 @@ label.ck.ck-color-grid__label {
 	flex-direction: row;
 	justify-content: space-around;
 	padding: 8px;
+
+	& .ck-button-save,
+	& .ck-button-cancel {
+		flex: 1
+	}
 }

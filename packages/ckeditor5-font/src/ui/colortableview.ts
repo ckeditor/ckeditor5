@@ -63,6 +63,11 @@ export default class ColorTableView extends View {
 	public removeButtonLabel: string;
 
 	/**
+	 * The label of the button responsible for removing color attributes.
+	 */
+	public colorPickerLabel: string;
+
+	/**
 	 * The number of columns in the color grid.
 	 */
 	public columns: number;
@@ -172,10 +177,11 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel }: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
+			colorPickerLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
 		}
@@ -190,6 +196,7 @@ export default class ColorTableView extends View {
 		this.set( 'selectedColor', undefined );
 
 		this.removeButtonLabel = removeButtonLabel;
+		this.colorPickerLabel = colorPickerLabel;
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
@@ -471,18 +478,23 @@ export default class ColorTableView extends View {
 	 */
 	private _createActionButtons() {
 		const locale = this.locale;
+		const t = locale!.t;
 		const saveButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
 			icon: icons.check,
 			class: 'ck-button-save',
+			withText: false,
+			label: t( 'Accept' ),
 			type: 'submit'
 		} );
 
 		cancelButtonView.set( {
 			icon: icons.cancel,
-			class: 'ck-button-cancel'
+			class: 'ck-button-cancel',
+			withText: false,
+			label: t( 'Cancel' )
 		} );
 
 		saveButtonView.on( 'execute', () => {
@@ -506,11 +518,11 @@ export default class ColorTableView extends View {
 	/**
 	 * Creates "color picker" button.
 	 */
-	private _createColorPickerButton() {
+	private _createColorPickerButton(): ButtonView {
 		const children = this.createCollection();
 
 		this.colorPickerButtonView.set( {
-			label: 'Color picker',
+			label: this.colorPickerLabel,
 			withText: true,
 			icon: ColorPaletteIcon,
 			class: 'ck-color-table__color-picker'
