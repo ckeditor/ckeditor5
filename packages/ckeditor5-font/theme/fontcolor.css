@@ -11,7 +11,7 @@
 	align-items: center;
 	width: 100%;
 
-	@mixin ck-dir ltr {
+	@mixin ck-dir rtl {
 		justify-content: flex-start;
 	}
 }
@@ -47,9 +47,11 @@ label.ck.ck-color-grid__label {
 		height: 100px;
 		margin: 0 0 var(--ck-spacing-large) 0;
 
-		&::part(saturation),
+		&::part(saturation) {
+			border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+		}
 		&::part(hue) {
-			border-radius: var(--ck-border-radius);
+			border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
 		}
 
 		&::part(saturation-pointer),
@@ -65,4 +67,9 @@ label.ck.ck-color-grid__label {
 	flex-direction: row;
 	justify-content: space-around;
 	padding: 8px;
+
+	& .ck-button-save,
+	& .ck-button-cancel {
+		flex: 1
+	}
 }

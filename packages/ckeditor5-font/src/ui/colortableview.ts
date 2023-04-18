@@ -472,6 +472,7 @@ export default class ColorTableView extends View {
 	 */
 	private _createActionButtons() {
 		const locale = this.locale;
+		const t = locale!.t;
 		const saveButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
 
@@ -479,7 +480,7 @@ export default class ColorTableView extends View {
 			icon: icons.check,
 			class: 'ck-button-save',
 			withText: false,
-			label: 'hidden',
+			label: t( 'Accept' ),
 			type: 'submit'
 		} );
 
@@ -487,7 +488,7 @@ export default class ColorTableView extends View {
 			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			withText: false,
-			label: 'hidden'
+			label: t( 'Cancel' )
 		} );
 
 		saveButtonView.on( 'execute', () => {
