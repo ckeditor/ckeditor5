@@ -242,6 +242,31 @@ msgstr "Alinear a la izquierda"
 
 To build and configure a localized editor, follow the steps from the {@link features/ui-language Setting the UI language guide}.
 
+## Re-using translations from other packages
+
+If you want to re-use a *message* that already exists in other package, you should use the method `t()` on a `Locale` instance with a changed name instead of [using `t()` as a function](#writing-a-localizable-ui). This is because using `t()` as a method on the `Locale` is not processed by a static code analyzer. Therefore it allows to use *messages* already translated in other packages.
+
+We use this approach already in {@link features/collaboration Collaboration features} and {@link features/slash-commands Slash command featue}. You can find an example from the {@link module:slash-command/slashcommandconfig~SlashCommandConfig#getDefaultCommands list of default commands} that we used in Slash command feature below. Please note the difference between using `t()` and `translateVariableKey()`. `translateVariableKey( 'Block quote' )` will re-use a translation from other package whilst `t( 'Create a block quote' )` will be processed by a static code analyzer. As a result we make sure that the translation for the `title` is taken from the {@link features/block-quote Block quote} feature where the *message* "Block quote" is already translated. But for the `description` we create a new translation.
+
+```js
+public getDefaultCommands() {
+	const t = this.editor.t;
+	const translateVariableKey = this.editor.locale.t;
+
+	return [
+		{
+			id: 'blockQuote',
+			commandName: 'blockQuote',
+			icon: icons.quote,
+			title: translateVariableKey( 'Block quote' ),
+			description: t( 'Create a block quote' )
+		},
+		// More command definitions
+		// ...
+	]
+}
+```
+
 ## Known limitations
 
 - Currently it is impossible to change the chosen editor's language at runtime without destroying the editor.
