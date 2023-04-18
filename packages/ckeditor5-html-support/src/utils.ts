@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/conversionutils
+ * @module html-support/utils
  */
 
 import type {
