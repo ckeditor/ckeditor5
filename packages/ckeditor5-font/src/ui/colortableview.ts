@@ -120,8 +120,8 @@ export default class ColorTableView extends View {
 	declare public selectedColor?: string;
 
 	/**
-	 * Color in a moment when dropdown was opened. When "cancel" button is pressed we set
-	 * this value again.
+	 * We save color in a moment when dropdown was opened. When "cancel" button is pressed we apply
+	 * this color again.
 	 */
 	declare public initialColor?: string;
 
@@ -504,9 +504,8 @@ export default class ColorTableView extends View {
 		} );
 
 		cancelButtonView.on( 'execute', () => {
-			this.selectedColor = this.initialColor;
 			this.fire( 'execute', {
-				value: this.selectedColor
+				value: this.initialColor
 			} );
 		} );
 
