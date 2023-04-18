@@ -7,7 +7,7 @@ Changelog
 
 #### Productivity pack
 
-We have released a productivity pack including five new premium features designed to boost productivity when working with an editor.
+We have released a productivity pack including five new premium features designed to boost productivity when working with the editor.
 
 * **[Content templates](https://ckeditor.com/docs/ckeditor5/latest/features/template.html)**: The template feature allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
 * **[Table of contents](https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html)**: The table of contents feature lets you insert a widget with a list of headings (section titles) that reflects the structure of the document. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
@@ -15,7 +15,7 @@ We have released a productivity pack including five new premium features designe
 * **[Format painter](https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html)**: The format painter feature lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
 * **[Slash commands](https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html)**: The slash commands feature lets you execute a predefined command by writing its name or alias directly in the editor. When you type a slash (<kbd>/</kbd>), the suggested commands are displayed in a panel next to it. You can also type a phrase after the <kbd>/</kbd> to filter the results in the panel and to easily find the desired command.
 
-#### Other
+#### Other changes
 
 We continue to work on the [multi-root editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/multi-root-editor.html). This release introduces their compatibility with reversion history and pagination. We also made some minor improvements and bug fixes.
 
@@ -29,28 +29,28 @@ We continue to work on the [multi-root editor](https://ckeditor.com/docs/ckedito
 
 ### Features
 
-* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)** Introduced template feature. The feature allows to insert predefined templates into editor content and speed up the editing process.
-* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)** Introduced document outline and TOC features. The Document outline feature allows you to display a navigable list of sections (headings) of the document next to the editor and the table of contents feature allows inserting a widget with a list of headings (section titles) that reflects the structure of the document.
-* **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)** Introduced format painter feature. The feature allows you to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document.
-* **[slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command)** Introduced slash command feature. The feature allows to execute a predefined command by writing its name or alias directly in the editor.
-* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced revision history feature support for multi-root editor.
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Introduced basic pagination feature support for multi-root editor.
-* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Make `SourceEditing.updateEditorData` method public to allow saving source editing data independently of the UI. Closes [#11008](https://github.com/ckeditor/ckeditor5/issues/11008). ([commit](https://github.com/ckeditor/ckeditor5/commit/acc02f4b3bfd6b707432fa51bdb1e5f4bb505923))
+* **[template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template)** Introduced the content templates feature. It allows inserting predefined templates into editor content and speed up the editing process.
+* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)** Introduced the document outline and table of content features. The document outline feature allows the user to display a navigable list of sections (headings) of the document next to the editor and the table of contents feature lets them insert a widget with a list of headings (section titles) that reflects the structure of the document.
+* **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)** Introduced the format painter feature. It allows the user to copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document.
+* **[slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command)** Introduced the slash commands feature. The feature allows to execute a predefined command by writing its name or alias directly in the editor.
+* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Introduced the revision history feature support for multi-root editor.
+* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Introduced the basic pagination feature support for multi-root editor.
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Made the `SourceEditing.updateEditorData` method public to allow saving source editing data independently of the UI. Closes [#11008](https://github.com/ckeditor/ckeditor5/issues/11008). ([commit](https://github.com/ckeditor/ckeditor5/commit/acc02f4b3bfd6b707432fa51bdb1e5f4bb505923))
 
 ### Bug fixes
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed the incorrect default permissions applied in non-real-time collaboration integrations.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Selection#getSelectedBlocks()` should ignore trailing blocks where no content is selected. The selection of such blocks is not visible to the content author and is usually there unintentionally. Closes [#11585](https://github.com/ckeditor/ckeditor5/issues/11585). ([commit](https://github.com/ckeditor/ckeditor5/commit/9d9604b969d4cc5d7fb27a6fddad408fda56f972))
-* **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: Pressing `Shift+Enter` in Safari should insert `<br>` instead of splitting block. Closes [#13321](https://github.com/ckeditor/ckeditor5/issues/13321). ([commit](https://github.com/ckeditor/ckeditor5/commit/90445f8269cfbcf481cabdf4b210b9815eca200d))
+* **[enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)**: Pressing `Shift+Enter` in Safari should insert `<br>` instead of splitting a block. Closes [#13321](https://github.com/ckeditor/ckeditor5/issues/13321). ([commit](https://github.com/ckeditor/ckeditor5/commit/90445f8269cfbcf481cabdf4b210b9815eca200d))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: `ListPropertiesEditing` should not crash if there was a list in an image caption element. Closes [#13858](https://github.com/ckeditor/ckeditor5/issues/13858). ([commit](https://github.com/ckeditor/ckeditor5/commit/8162741aa247568efc897e83787e224b3221b1a5))
-* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Fixed an issue when sometimes editor selection would not be moved pass other users selection when pressing arrow keys.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Fixed an issue when editor selection would sometimes not be moved past other users selection when pressing arrow keys.
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Text suggestions should replace the whole words. Closes [#13583](https://github.com/ckeditor/ckeditor5/issues/13583). ([commit](https://github.com/ckeditor/ckeditor5/commit/c6a8e85b3876f9d716e01999d994dbbf9b20727b))
 
 ### Other changes
 
-* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The multi-root editor will now throw if `EditorConfig#initialData` is mismatched with initial roots set in `MultiRootEditor#create()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/9fd594492dcf0b0110fb5d041bd89c59312e80c1))
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The multi-root editor will now throw an error if `EditorConfig#initialData` is mismatched with initial roots set in `MultiRootEditor#create()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/9fd594492dcf0b0110fb5d041bd89c59312e80c1))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `targetRanges` property of the `beforeInput` event data should be fixed to not cross limit elements' boundaries. See [#13583](https://github.com/ckeditor/ckeditor5/issues/13583). ([commit](https://github.com/ckeditor/ckeditor5/commit/c6a8e85b3876f9d716e01999d994dbbf9b20727b))
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: `TextPartLanguage` doesn't style text as italic when language is set. Closes [#12672](https://github.com/ckeditor/ckeditor5/issues/12672). ([commit](https://github.com/ckeditor/ckeditor5/commit/5be454a8948a10e2f4662b946daa5e2839bd0f8e))
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: `TextPartLanguage` no longer styles text as italic when language is set. Closes [#12672](https://github.com/ckeditor/ckeditor5/issues/12672). ([commit](https://github.com/ckeditor/ckeditor5/commit/5be454a8948a10e2f4662b946daa5e2839bd0f8e))
 * Switched from `ts-loader` to `esbuild-loader` when processing the TypeScript sources. It significantly reduces the build time when processing automated and manual tests or preparing snippets in the documentation. Closes [#13643](https://github.com/ckeditor/ckeditor5/issues/13643). ([commit](https://github.com/ckeditor/ckeditor5/commit/48e90dc3b8aec8adc333825d0c6e27295fc913cc))
 * `MultiRootEditor` will first fire all `detachRoot` events and then all `addRoot` events if there are detached and added roots in the same batch. ([commit](https://github.com/ckeditor/ckeditor5/commit/629f8ab55d75516eb8151cfc250952667d4427e6))
 * Updated translations.
