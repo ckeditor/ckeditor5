@@ -14,11 +14,11 @@ modified_at: 2023-04-03
 CKEditor 5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor 5 do not provide built-in typings yet.
 
 <info-box hint>
-Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
+	Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
 </info-box>
 
 <info-box warning>
-Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. Our official integrations for {@link installation/frameworks/angular Angular}, {@link installation/frameworks/react React}, and {@link installation/frameworks/vuejs-v3 Vue 3} also support TypeScript. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
+	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
 </info-box>
 
 ## Why use CKEditor 5 with TypeScript?
@@ -67,6 +67,14 @@ If you want to integrate CKEditor 5 directly in your TypeScript project, follow 
 
 * {@link installation/advanced/integrating-from-source-webpack Integration from source using webpack}
 * {@link installation/advanced/integrating-from-source-vite Integration from source using Vite}
+
+### Integrating CKEditor 5 with frameworks and TypeScript
+
+If you want to integrate CKEditor 5 with TypeScript and a specific framework, follow the appropriate guide:
+
+* {@link installation/frameworks/angular Angular component}
+* {@link installation/frameworks/react React component}
+* {@link installation/frameworks/vuejs-v3 Vue.js 3+ component}
 
 ## Developing plugins using TypeScript
 

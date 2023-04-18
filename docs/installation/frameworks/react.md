@@ -18,8 +18,8 @@ CKEditor 5 consists of {@link installation/getting-started/predefined-builds rea
 
 The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
 
-<info-box warning>
-	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. Similarly, starting from the 6.0.0 version, the `@ckeditor/ckeditor5-react` package also supports TypeScript.
+<info-box hint>
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check details about {@link installation/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Quick start

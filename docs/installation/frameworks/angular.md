@@ -22,6 +22,10 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
+<info-box hint>
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check details about {@link installation/working-with-typescript TypeScript support}.
+</info-box>
+
 ## Supported Angular versions
 
 <info-box warning>
@@ -84,10 +88,6 @@ Because of the breaking changes in the Angular library output format, the `@cked
 </table>
 
 All available versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
-
-<info-box warning>
-	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. Similarly, starting from the 6.0.0 version, the `@ckeditor/ckeditor5-angular` package also supports TypeScript.
-</info-box>
 
 ## Quick start
 
