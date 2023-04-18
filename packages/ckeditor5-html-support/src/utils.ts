@@ -4,10 +4,16 @@
  */
 
 /**
- * @module html-support/conversionutils
+ * @module html-support/utils
  */
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import type {
+	DocumentSelection,
+	DowncastWriter,
+	Item,
+	ViewElement,
+	Writer
+} from 'ckeditor5/src/engine';
 import { cloneDeep } from 'lodash-es';
 
 export interface GHSViewAttributes {
@@ -106,4 +112,95 @@ export function mergeViewElementAttributes( target: GHSViewAttributes, source: G
 	}
 
 	return result;
+}
+
+type ModifyGhsAttributesCallback = ( t: Map<string, unknown> ) => void;
+type ModifyGhsClassesCallback = ( t: Set<string> ) => void;
+type ModifyGhsStylesCallback = ( t: Map<string, string> ) => void;
+
+/**
+ * Updates a GHS attribute on a specified item.
+ * @param callback That receives a map as an argument and should modify it (add or remove entries).
+ */
+export function modifyGhsAttribute(
+	writer: Writer,
+	item: Item | DocumentSelection,
+	ghsAttributeName: string,
+	subject: 'attributes',
+	callback: ModifyGhsAttributesCallback
+): void;
+
+/**
+ * Updates a GHS attribute on a specified item.
+ * @param callback That receives a set as an argument and should modify it (add or remove entries).
+ */
+export function modifyGhsAttribute(
+	writer: Writer,
+	item: Item | DocumentSelection,
+	ghsAttributeName: string,
+	subject: 'classes',
+	callback: ModifyGhsClassesCallback
+): void;
+
+/**
+ * Updates a GHS attribute on a specified item.
+ * @param callback That receives a map as an argument and should modify it (add or remove entries).
+ */
+export function modifyGhsAttribute(
+	writer: Writer,
+	item: Item | DocumentSelection,
+	ghsAttributeName: string,
+	subject: 'styles',
+	callback: ModifyGhsStylesCallback
+): void;
+
+export function modifyGhsAttribute(
+	writer: Writer,
+	item: Item | DocumentSelection,
+	ghsAttributeName: string,
+	subject: 'attributes' | 'styles' | 'classes',
+	callback: ModifyGhsClassesCallback | ModifyGhsAttributesCallback | ModifyGhsStylesCallback
+): void {
+	const oldValue = item.getAttribute( ghsAttributeName ) as Record<string, any>;
+	const newValue: Record<string, any> = {};
+
+	for ( const kind of [ 'attributes', 'styles', 'classes' ] ) {
+		// Properties other than `subject` should be assigned from `oldValue`.
+		if ( kind != subject ) {
+			if ( oldValue && oldValue[ kind ] ) {
+				newValue[ kind ] = oldValue[ kind ];
+			}
+			continue;
+		}
+
+		// `callback` should be applied on property [`subject`].
+		if ( subject == 'classes' ) {
+			const values = new Set<string>( oldValue && oldValue.classes || [] );
+			( callback as ModifyGhsClassesCallback )( values );
+			if ( values.size ) {
+				newValue[ kind ] = Array.from( values );
+			}
+			continue;
+		}
+
+		const values = new Map<string, any>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
+		( callback as ( ModifyGhsAttributesCallback | ModifyGhsStylesCallback ) )( values );
+		if ( values.size ) {
+			newValue[ kind ] = Object.fromEntries( values );
+		}
+	}
+
+	if ( Object.keys( newValue ).length ) {
+		if ( item.is( 'documentSelection' ) ) {
+			writer.setSelectionAttribute( ghsAttributeName, newValue );
+		} else {
+			writer.setAttribute( ghsAttributeName, newValue, item );
+		}
+	} else if ( oldValue ) {
+		if ( item.is( 'documentSelection' ) ) {
+			writer.removeSelectionAttribute( ghsAttributeName );
+		} else {
+			writer.removeAttribute( ghsAttributeName, item );
+		}
+	}
 }

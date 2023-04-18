@@ -262,13 +262,9 @@ export default class Position extends TypeCheckable {
 			case 'extension':
 				return 'after';
 
-			/* istanbul ignore next */
-			case 'same':
-				// Already covered by `this.isEqual` above. Added so TypeScript can infer `result` as number in `default` case.
-				return 'same';
-
 			default:
-				return thisPath[ result ] < otherPath[ result ] ? 'before' : 'after';
+				// Cast to number to avoid having 'same' as a type of `result`.
+				return thisPath[ result as number ] < otherPath[ result as number ] ? 'before' : 'after';
 		}
 	}
 

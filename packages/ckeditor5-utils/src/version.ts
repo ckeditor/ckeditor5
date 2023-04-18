@@ -15,7 +15,7 @@ const version = '37.0.1';
 
 export default version;
 
-/* istanbul ignore next */
+/* istanbul ignore next -- @preserve */
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
 declare global {
@@ -23,7 +23,7 @@ declare global {
 	var CKEDITOR_VERSION: string;
 }
 
-/* istanbul ignore next */
+/* istanbul ignore next -- @preserve */
 if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some

@@ -8,6 +8,7 @@
 const glob = require( 'glob' );
 const fs = require( 'fs' );
 const path = require( 'path' );
+const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
@@ -146,7 +147,7 @@ function normalizePath( modulePath ) {
 }
 
 /**
- * Adds the `ts-loader` with the proper configuration to the passed webpack configuration object
+ * Adds the TypeScript loader with the proper configuration to the passed webpack configuration object
  * only when CKEditor 5 sources are in TypeScript.
  *
  * The snippet adapter is used in different environments
@@ -155,7 +156,7 @@ function normalizePath( modulePath ) {
  *   installing packages from `npm`.
  *   * Locally: processing TypeScript directly from the `#master` branches.
  *
- * Hence, the `ts-loader` must be included only when processing `*.ts` files.
+ * Hence, the TypeScript loader must be included only when processing `*.ts` files.
  *
  * @param {Object} webpackConfig
  * @param {String} configFile
@@ -165,18 +166,10 @@ function addTypeScriptLoader( webpackConfig, configFile ) {
 	const tsconfigPath = path.join( __dirname, '..', '..', configFile );
 	const coreIndexFile = require.resolve( '@ckeditor/ckeditor5-core' );
 
-	// Do not include the `ts-loader` when processing CKEditor 5 installed as the JavaScript code.
+	// Do not include it when processing CKEditor 5 installed as the JavaScript code.
 	if ( coreIndexFile.endsWith( '.ts' ) ) {
-		webpackConfig.module.rules.push( {
-			test: /\.ts$/,
-			use: [
-				{
-					loader: 'ts-loader',
-					options: {
-						configFile: tsconfigPath
-					}
-				}
-			]
-		} );
+		webpackConfig.module.rules.push( loaders.getTypeScriptLoader( {
+			configFile: tsconfigPath
+		} ) );
 	}
 }

@@ -83,6 +83,21 @@ describe( 'MutationObserver', () => {
 		expect( domRoot.innerHTML ).to.equal( 'abcabc' );
 	} );
 
+	it( 'should not stop observing a DOM element when observer is disabled', () => {
+		const { domRoot: domAdditionalRoot } = setupRoot( 'additional' );
+
+		mutationObserver.disable();
+		mutationObserver.stopObserving( domRoot );
+
+		domAdditionalRoot.innerHTML = 'foobar';
+		domRoot.innerHTML = 'abcabc';
+
+		mutationObserver.flush();
+
+		expect( domAdditionalRoot.innerHTML ).to.equal( 'foobar' );
+		expect( domRoot.innerHTML ).to.equal( 'abcabc' );
+	} );
+
 	it( 'should handle bold', () => {
 		const domB = document.createElement( 'b' );
 

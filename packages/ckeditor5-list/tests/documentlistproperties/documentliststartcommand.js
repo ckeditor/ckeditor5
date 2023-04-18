@@ -142,9 +142,9 @@ describe( 'DocumentListStartCommand', () => {
 
 		it( 'should return the value of `listStart` attribute from a list where the selection starts (selection over nested list)', () => {
 			setData( model, modelList( `
-				# 1. {start:2}
-				  # 1.1.[ {start:3}
-				# 2.]
+				# 1. First {start:2}
+				  # 1.1. [Second {start:3}
+				# 2. Third]
 			` ) );
 
 			expect( listStartCommand.value ).to.equal( 3 );

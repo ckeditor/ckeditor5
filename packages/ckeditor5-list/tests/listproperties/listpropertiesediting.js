@@ -5405,6 +5405,25 @@ describe( 'ListPropertiesEditing', () => {
 						'</listItem>'
 					);
 				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/13858
+				it( 'should not convert if the schema does not allow it in the given context', () => {
+					editor.model.schema.register( 'disallowedContext', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					editor.conversion.elementToElement( {
+						model: 'disallowedContext',
+						view: {
+							name: 'div',
+							classes: 'disallowed-context'
+						}
+					} );
+
+					editor.setData( '<div class="disallowed-context"><ul><li>foo</li></ul></div>' );
+
+					expect( getModelData( editor.model ) ).to.equal( '[<disallowedContext></disallowedContext>]' );
+				} );
 			} );
 		} );
 

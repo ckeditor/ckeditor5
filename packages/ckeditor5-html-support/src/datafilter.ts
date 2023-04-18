@@ -37,7 +37,7 @@ import {
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
-import type { GHSViewAttributes } from './conversionutils';
+import type { GHSViewAttributes } from './utils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
@@ -468,7 +468,7 @@ export default class DataFilter extends Plugin {
 
 		schema.register( modelName, definition.modelSchema );
 
-		/* istanbul ignore next: paranoid check */
+		/* istanbul ignore next: paranoid check -- @preserve */
 		if ( !viewName ) {
 			return;
 		}

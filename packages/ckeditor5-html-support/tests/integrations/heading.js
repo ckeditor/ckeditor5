@@ -12,7 +12,7 @@ import { getModelDataWithAttributes } from '../_utils/utils';
 /* global document */
 
 describe( 'HeadingElementSupport', () => {
-	let editor, editorElement, model, dataSchema, dataFilter, htmlSupport;
+	let editor, editorElement, model, doc, dataSchema, dataFilter, htmlSupport;
 
 	afterEach( () => {
 		editorElement.remove();
@@ -40,6 +40,7 @@ describe( 'HeadingElementSupport', () => {
 
 			editor = newEditor;
 			model = editor.model;
+			doc = model.document;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
 			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
@@ -146,6 +147,53 @@ describe( 'HeadingElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should create a `paragraph` without html classes when pressing "enter" at the end of a heading block', () => {
+			editor.setData( '<h2 class="red-bg">foobar</h2>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<heading2 htmlAttributes="(1)">foobar</heading2><paragraph>[]</paragraph>',
+				attributes: {
+					1: {
+						classes: [
+							'red-bg'
+						]
+					}
+				}
+			} );
+		} );
+
+		it( 'should create identical block when pressing "enter" not at the end of a heading block', () => {
+			editor.setData( '<h2 class="red-bg">foobar</h2>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 3 );
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<heading2 htmlAttributes="(1)">foo</heading2><heading2 htmlAttributes="(2)">[]bar</heading2>',
+				attributes: {
+					1: {
+						classes: [
+							'red-bg'
+						]
+					},
+					2: {
+						classes: [
+							'red-bg'
+						]
+					}
+				}
+			} );
 		} );
 
 		describe( 'should allow', () => {
@@ -401,6 +449,7 @@ describe( 'HeadingElementSupport', () => {
 
 			editor = newEditor;
 			model = editor.model;
+			doc = model.document;
 			dataSchema = editor.plugins.get( 'DataSchema' );
 			dataFilter = editor.plugins.get( 'DataFilter' );
 			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
@@ -500,6 +549,58 @@ describe( 'HeadingElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should create identical block when pressing "enter" at the end of a heading block', () => {
+			editor.setData( '<h2 class="red-bg">foobar</h2>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 3 );
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<htmlH2 htmlAttributes="(1)">foo</htmlH2><htmlH2 htmlAttributes="(2)">[]bar</htmlH2>',
+				attributes: {
+					1: {
+						classes: [
+							'red-bg'
+						]
+					},
+					2: {
+						classes: [
+							'red-bg'
+						]
+					}
+				}
+			} );
+		} );
+
+		it( 'should create identical block when pressing "enter" not at the end of a heading block', () => {
+			editor.setData( '<h2 class="red-bg">foobar</h2>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 3 );
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<htmlH2 htmlAttributes="(1)">foo</htmlH2><htmlH2 htmlAttributes="(2)">[]bar</htmlH2>',
+				attributes: {
+					1: {
+						classes: [
+							'red-bg'
+						]
+					},
+					2: {
+						classes: [
+							'red-bg'
+						]
+					}
+				}
+			} );
 		} );
 
 		describe( 'should allow', () => {

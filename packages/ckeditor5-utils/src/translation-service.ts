@@ -21,7 +21,7 @@ declare global {
 	};
 }
 
-/* istanbul ignore else */
+/* istanbul ignore else -- @preserve */
 if ( !global.window.CKEDITOR_TRANSLATIONS ) {
 	global.window.CKEDITOR_TRANSLATIONS = {};
 }

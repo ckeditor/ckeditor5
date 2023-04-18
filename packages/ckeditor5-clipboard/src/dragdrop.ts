@@ -357,7 +357,7 @@ export default class DragDrop extends Plugin {
 				}
 			}
 
-			/* istanbul ignore else */
+			/* istanbul ignore else -- @preserve */
 			if ( targetRange ) {
 				this._updateDropMarkerThrottled( targetRange );
 			}
@@ -384,7 +384,7 @@ export default class DragDrop extends Plugin {
 			// the target lands on the marker itself.
 			this._removeDropMarker();
 
-			/* istanbul ignore if */
+			/* istanbul ignore if -- @preserve */
 			if ( !targetRange ) {
 				this._finalizeDragging( false );
 				evt.stop();
@@ -773,7 +773,7 @@ function findDropTargetRangeOnAncestorObject( editor: Editor, element: Element )
 		currentElement = currentElement.parent as Element | null;
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	return null;
 }
 

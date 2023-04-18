@@ -79,6 +79,28 @@ export function getText( element ) {
 }
 
 /**
+ * Maps all elements to names. If element contains child text node it will be appended to name with '#'.
+ *
+ * @param {Array.<engine.model.Element>} element Array of Element from which text will be returned.
+ * @returns {String} Text contents of the element.
+ */
+export function stringifyBlocks( elements ) {
+	return Array.from( elements ).map( el => {
+		const name = el.name;
+
+		let innerText = '';
+
+		for ( const child of el.getChildren() ) {
+			if ( child.is( '$text' ) ) {
+				innerText += child.data;
+			}
+		}
+
+		return innerText.length ? `${ name }#${ innerText }` : name;
+	} );
+}
+
+/**
  * Creates a range on given {@link engine.model.Element element} only. The range starts directly before that element
  * and ends before the first child of that element.
  *

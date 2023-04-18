@@ -219,11 +219,11 @@ describe( 'ParagraphCommand', () => {
 			it( 'converts all elements where selection is applied', () => {
 				schema.register( 'heading2', { inheritAllFrom: '$block' } );
 
-				setData( model, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>baz]</heading2>' );
+				setData( model, '<heading1>fo[o</heading1><heading2>bar</heading2><heading2>baz]</heading2>' );
 
 				command.execute();
 				expect( getData( model ) ).to.equal(
-					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>baz]</paragraph>'
+					'<paragraph>fo[o</paragraph><paragraph>bar</paragraph><paragraph>baz]</paragraph>'
 				);
 			} );
 

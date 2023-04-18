@@ -235,7 +235,7 @@ export default class TableKeyboard extends Plugin {
 		// Abort if we're not in a table cell.
 		const tableCell = selection.focus!.findAncestor( 'tableCell' );
 
-		/* istanbul ignore if: paranoid check */
+		/* istanbul ignore if: paranoid check -- @preserve */
 		if ( !tableCell ) {
 			return false;
 		}

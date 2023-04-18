@@ -102,8 +102,8 @@ export type Constructor<Instance = object> = abstract new ( ...args: Array<any> 
  * @typeParam Mixin An interface representing mixin.
  */
 export type Mixed<Base extends Constructor, Mixin extends object> = {
-	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Mixin;
-	prototype: InstanceType<Base> & Mixin;
+	new ( ...args: ConstructorParameters<Base> ): Mixin & InstanceType<Base>;
+	prototype: Mixin & InstanceType<Base>;
 } & {
 	// Include all static fields from Base.
 	[ K in keyof Base ]: Base[ K ];

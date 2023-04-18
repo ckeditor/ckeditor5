@@ -19,18 +19,20 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'Delete', () => {
 	describe( 'DeleteObserver', () => {
-		let view, domRoot, viewDocument;
+		let view, domRoot, viewRoot, viewDocument;
 		let deleteSpy;
 
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
+			domRoot.contenteditable = true;
+
 			document.body.appendChild( domRoot );
 
 			view = new View();
 			viewDocument = view.document;
-			createViewRoot( viewDocument );
+			viewRoot = createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
 			view.addObserver( DeleteObserver );
 
@@ -217,6 +219,28 @@ describe( 'Delete', () => {
 					} );
 				} );
 
+				it( 'should handle the deleteContentBackward event type and fire the delete event on Android', () => {
+					testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+					viewSetData( view, '<p>f{o}o</p>' );
+
+					const viewRange = view.document.selection.getFirstRange();
+					const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+					fireBeforeInputDomEvent( domRoot, {
+						inputType: 'deleteContentBackward',
+						ranges: [ domRange ]
+					} );
+
+					sinon.assert.calledOnce( deleteSpy );
+					sinon.assert.calledWithMatch( deleteSpy, {}, {
+						unit: 'codePoint',
+						direction: 'backward',
+						sequence: 1,
+						selectionToRemove: undefined
+					} );
+				} );
+
 				it( 'should handle the deleteWordBackward event type and fire the delete event', () => {
 					viewSetData( view, '<p>fo{}o</p>' );
 
@@ -373,163 +397,207 @@ describe( 'Delete', () => {
 			} );
 		} );
 
-		describe( 'in Android environment (with some quirks)', () => {
-			let domElement, viewRoot, viewText;
+		describe( 'using event target ranges (deleteContentBackward)', () => {
+			it( 'should not use target ranges if it should remove a single character', () => {
+				viewSetData( view, '<p>fo{o}</p>' );
 
-			beforeEach( () => {
-				// Force the the Android mode.
-				testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
-				domElement = document.createElement( 'div' );
-				domElement.contenteditable = true;
-
-				document.body.appendChild( domElement );
-
-				view = new View();
-				viewDocument = view.document;
-				view.addObserver( DeleteObserver );
-
-				viewRoot = createViewRoot( viewDocument );
-				view.attachDomRoot( domElement );
-
-				// <p>foo</p>
-				view.change( writer => {
-					const p = writer.createContainerElement( 'p' );
-					const text = writer.createText( 'foo' );
-
-					writer.insert( writer.createPositionAt( viewRoot, 0 ), p );
-					writer.insert( writer.createPositionAt( p, 0 ), text );
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
 				} );
 
-				viewText = viewRoot.getChild( 0 ).getChild( 0 );
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
 			} );
 
-			afterEach( () => {
-				domElement.remove();
+			it( 'should not use target ranges if it should remove a single code point from a combined symbol', () => {
+				viewSetData( view, '<p>foo{a&#771;}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
 			} );
 
-			describe( 'delete event', () => {
-				it( 'should be fired on beforeinput', () => {
-					const spy = sinon.spy();
+			it( 'should set selectionToRemove if target ranges include more than a single character', () => {
+				viewSetData( view, '<p>f{oo}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
-					viewDocument.on( 'delete', spy );
-
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'deleteContentBackward',
-						targetRanges: [
-							view.createRange( view.createPositionAt( viewText, 1 ), view.createPositionAt( viewText, 2 ) )
-						]
-					} ) );
-
-					expect( spy.calledOnce ).to.be.true;
-
-					const data = spy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'direction', 'backward' );
-					expect( data ).to.have.property( 'unit', 'codePoint' );
-					expect( data ).to.have.property( 'sequence', 1 );
-					expect( data ).not.to.have.property( 'selectionToRemove' );
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
 				} );
 
-				it( 'should set selectionToRemove if target ranges size is different than 1', () => {
-					// In real scenarios, before `beforeinput` is fired, browser changes DOM selection to a selection that contains
-					// all content that should be deleted. If the selection is big (> 1 character) we need to pass special parameter
-					// so that `DeleteCommand` will know what to delete. This test checks that case.
-					const spy = sinon.spy();
-
-					viewDocument.on( 'delete', spy );
-
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'deleteContentBackward',
-						targetRanges: [
-							view.createRange( view.createPositionAt( viewText, 0 ), view.createPositionAt( viewText, 3 ) )
-						]
-					} ) );
-
-					expect( spy.calledOnce ).to.be.true;
-
-					const data = spy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'selectionToRemove' );
-
-					const range = data.selectionToRemove.getFirstRange();
-
-					expect( range.start.offset ).to.equal( 0 );
-					expect( range.start.parent ).to.equal( viewText );
-					expect( range.end.offset ).to.equal( 3 );
-					expect( range.end.parent ).to.equal( viewText );
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'selection',
+					direction: 'backward',
+					sequence: 0
 				} );
 
-				it( 'should set selectionToRemove if target ranges spans different parent nodes', () => {
-					// In real scenarios, before `beforeinput` is fired, browser changes DOM selection to a selection that contains
-					// all content that should be deleted. If the selection is big (> 1 character) we need to pass special parameter
-					// so that `DeleteCommand` will know what to delete. This test checks that case.
-					const spy = sinon.spy();
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				const range = data.selectionToRemove.getFirstRange();
+				const viewText = viewRoot.getChild( 0 ).getChild( 0 );
 
-					viewDocument.on( 'delete', spy );
+				expect( range.start.offset ).to.equal( 1 );
+				expect( range.start.parent ).to.equal( viewText );
+				expect( range.end.offset ).to.equal( 3 );
+				expect( range.end.parent ).to.equal( viewText );
+			} );
 
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'deleteContentBackward',
-						targetRanges: [
-							view.createRange( view.createPositionAt( viewRoot.getChild( 0 ), 0 ), view.createPositionAt( viewText, 1 ) )
-						]
-					} ) );
+			it( 'should not use target ranges if it should remove a single emoji sequence', () => {
+				viewSetData( view, '<p>foo{👨‍👩‍👧‍👧}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
-					expect( spy.calledOnce ).to.be.true;
-
-					const data = spy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'selectionToRemove' );
-
-					const range = data.selectionToRemove.getFirstRange();
-
-					expect( range.start.offset ).to.equal( 0 );
-					expect( range.start.parent ).to.equal( viewRoot.getChild( 0 ) );
-					expect( range.end.offset ).to.equal( 1 );
-					expect( range.end.parent ).to.equal( viewText );
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
 				} );
 
-				it( 'should not fired be on beforeinput when event type is other than deleteContentBackward', () => {
-					const spy = sinon.spy();
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
+			} );
 
-					viewDocument.on( 'delete', spy );
+			it( 'should use target ranges if it should remove more than a emoji sequence', () => {
+				viewSetData( view, '<p>foo{👨‍👩‍👧‍👧👨‍👩‍👧‍👧}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'insertText',
-						targetRanges: []
-					} ) );
-
-					expect( spy.calledOnce ).to.be.false;
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
 				} );
 
-				it( 'should stop the beforeinput event when delete event is stopped', () => {
-					const keydownSpy = sinon.spy();
-					viewDocument.on( 'beforeinput', keydownSpy );
-					viewDocument.on( 'delete', evt => evt.stop() );
-
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'deleteContentBackward',
-						targetRanges: []
-					} ) );
-
-					sinon.assert.notCalled( keydownSpy );
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'selection',
+					direction: 'backward',
+					sequence: 0
 				} );
 
-				it( 'should not stop keydown event when delete event is not stopped', () => {
-					const keydownSpy = sinon.spy();
-					viewDocument.on( 'beforeinput', keydownSpy );
-					viewDocument.on( 'delete', evt => evt.stop() );
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				const range = data.selectionToRemove.getFirstRange();
+				const viewText = viewRoot.getChild( 0 ).getChild( 0 );
 
-					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
-						domTarget: domElement,
-						inputType: 'insertText',
-						targetRanges: []
-					} ) );
+				expect( range.start.offset ).to.equal( 3 );
+				expect( range.start.parent ).to.equal( viewText );
+				expect( range.end.offset ).to.equal( 25 );
+				expect( range.end.parent ).to.equal( viewText );
+			} );
 
-					sinon.assert.calledOnce( keydownSpy );
+			it( 'should not use target ranges if it is collapsed', () => {
+				viewSetData( view, '<p>foo{}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
 				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
+			} );
+
+			it( 'should not use target ranges if there is more than one range', () => {
+				viewSetData( view, '<p>foo{}</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange, domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'codePoint',
+					direction: 'backward',
+					sequence: 0,
+					selectionToRemove: undefined
+				} );
+			} );
+
+			it( 'should set selectionToRemove if target ranges spans different parent nodes', () => {
+				viewSetData( view, '<p>fo{o</p><p>]bar</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'selection',
+					direction: 'backward',
+					sequence: 0
+				} );
+
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				const range = data.selectionToRemove.getFirstRange();
+
+				expect( range.start.offset ).to.equal( 2 );
+				expect( range.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( range.end.offset ).to.equal( 0 );
+				expect( range.end.parent ).to.equal( viewRoot.getChild( 1 ) );
+			} );
+
+			it( 'should set selectionToRemove if target ranges spans a single character and an element', () => {
+				viewSetData( view, '<p>fo{o<br/>]</p>' );
+				const viewRange = view.document.selection.getFirstRange();
+				const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteSpy );
+				sinon.assert.calledWithMatch( deleteSpy, {}, {
+					unit: 'selection',
+					direction: 'backward',
+					sequence: 0
+				} );
+
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				const range = data.selectionToRemove.getFirstRange();
+
+				expect( range.start.offset ).to.equal( 2 );
+				expect( range.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( range.end.offset ).to.equal( 2 );
+				expect( range.end.parent ).to.equal( viewRoot.getChild( 0 ) );
 			} );
 		} );
 

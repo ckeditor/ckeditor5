@@ -240,7 +240,7 @@ class Adapter implements UploadAdapter {
 			url: uploadUrl,
 			data: formData,
 			onUploadProgress: ( evt: ProgressEvent ) => {
-				/* istanbul ignore else */
+				/* istanbul ignore else -- @preserve */
 				if ( evt.lengthComputable ) {
 					this.loader.uploadTotal = evt.total;
 					this.loader.uploaded = evt.loaded;
@@ -338,7 +338,7 @@ class Adapter implements UploadAdapter {
 				return resolve( response );
 			} );
 
-			/* istanbul ignore else */
+			/* istanbul ignore else -- @preserve */
 			if ( onUploadProgress ) {
 				xhr.upload.addEventListener( 'progress', evt => {
 					onUploadProgress( evt );
