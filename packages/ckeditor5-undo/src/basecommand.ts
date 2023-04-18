@@ -14,7 +14,8 @@ import {
 	type Batch,
 	type Operation,
 	type DataControllerSetEvent,
-	type Range
+	type Range,
+	NoOperation
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -205,12 +206,10 @@ export default abstract class BaseCommand extends Command {
 			const reversedOperations = transformedSets.operationsA;
 
 			// After reversed operation has been transformed by all history operations, apply it.
-			for ( const operation of reversedOperations ) {
-				console.log( 'ELO ', operation.type );
+			for ( let operation of reversedOperations ) {
 				// Do not apply any operation on non-editable space.
 				if ( !this.editor.model.isSelectableEditable( operation.target() ) ) {
-					console.log( 'NOPE ', operation.type );
-					return;
+					operation = new NoOperation( operation.baseVersion );
 				}
 
 				// Before applying, add the operation to the `undoingBatch`.

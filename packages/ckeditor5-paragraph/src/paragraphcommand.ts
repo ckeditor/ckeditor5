@@ -58,14 +58,14 @@ export default class ParagraphCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 
+		const selection = options.selection || document.selection;
+
+		// Don't execute command if selection is in non-editable place.
+		if ( !model.isSelectableEditable( selection ) ) {
+			return;
+		}
+
 		model.change( writer => {
-			const selection = options.selection || document.selection;
-
-			// Don't execute command if selection is in non-editable place.
-			if ( !model.isSelectableEditable( selection ) ) {
-				return;
-			}
-
 			const blocks = selection.getSelectedBlocks();
 
 			for ( const block of blocks ) {

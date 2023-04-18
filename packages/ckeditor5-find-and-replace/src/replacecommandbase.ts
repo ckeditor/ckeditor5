@@ -46,14 +46,14 @@ export abstract class ReplaceCommandBase extends Command {
 	protected _replace( replacementText: string, result: ResultType ): void {
 		const { model } = this.editor;
 
+		const range = result.marker!.getRange();
+
+		// Don't replace a result that is in non-editable place.
+		if ( !model.isSelectableEditable( range ) ) {
+			return;
+		}
+
 		model.change( writer => {
-			const range = result.marker!.getRange();
-
-			// Don't replace a result that is in non-editable place.
-			if ( !model.isSelectableEditable( range ) ) {
-				return;
-			}
-
 			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
 			if ( range.root.rootName === '$graveyard' ) {
 				this._state.results.remove( result );

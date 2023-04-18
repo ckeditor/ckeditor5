@@ -18,7 +18,6 @@ import {
 import {
 	CKEditorError,
 	getDataFromElement, isIterable,
-	type ObservableChangeEvent,
 	setDataInElement
 } from 'ckeditor5/src/utils';
 
@@ -37,7 +36,8 @@ import {
 	type RootElement,
 	type Selectable,
 	type Writer,
-	type ModelIsSelectableEditableEvent
+	type ModelIsSelectableEditableEvent,
+	type DocumentSelectionChangeEvent
 } from 'ckeditor5/src/engine';
 
 /**
@@ -89,10 +89,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 	/**
 	 * A set of lock IDs for enabling or disabling particular root.
-	 *
-	 * @observable
 	 */
-	declare public readOnlyRootLocks: Map<string, Set<symbol | string>>;
+	private readonly readOnlyRootLocks: Map<string, Set<symbol | string>>;
 
 	/**
 	 * Creates an instance of the multi-root editor.
@@ -123,7 +121,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this.sourceElements = {};
 		}
 
-		this.set( 'readOnlyRootLocks', new Map() );
+		this.readOnlyRootLocks = new Map();
 
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			// Create initial data object containing data from all roots.
@@ -146,13 +144,14 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			// Create root and `UIView` element for each editable container.
 			this.model.document.createRoot( '$root', rootName );
 
+			// Here we change the standard binding of readOnly flag by adding
+			// additional constraint that multi-root has (enabling / disabling particular root).
 			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
 
 			editableRootElement.unbind( 'isReadOnly' );
-			editableRootElement.bind( 'isReadOnly' ).to( this, 'isReadOnly', this, 'readOnlyRootLocks',
-				( isReadOnly, readOnlyRootLocks ) => {
-					return isReadOnly || readOnlyRootLocks.has( rootName );
-				} );
+			editableRootElement.bind( 'isReadOnly' ).to( this, 'isReadOnly', isReadOnly => {
+				return isReadOnly || this.readOnlyRootLocks.has( rootName );
+			} );
 		}
 
 		if ( this.config.get( 'rootsAttributes' ) ) {
@@ -518,40 +517,33 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * Overloaded function of {@link module:engine/model/model~Model#isSelectableEditable} to work with multiple roots.
 	 */
 	public isSelectableEditable( selectable: Selectable ): boolean {
-		const rootNamesToCheck: Set<string | undefined> = new Set();
+		// All elements of a particular selectable should consist of same rootName.
+		let rootName: string | undefined;
 
 		if ( this.isReadOnly ) {
 			return false;
 		}
 
 		if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
-			rootNamesToCheck.add( selectable.getFirstPosition() ? selectable.getFirstPosition()!.root.rootName : undefined );
-			rootNamesToCheck.add( selectable.getLastPosition() ? selectable.getLastPosition()!.root.rootName : undefined );
+			rootName = selectable.getFirstPosition() ? selectable.getFirstPosition()!.root.rootName : undefined;
 		} else if ( selectable instanceof Range ) {
-			rootNamesToCheck.add( selectable.start.root.rootName );
-			rootNamesToCheck.add( selectable.end.root.rootName );
+			rootName = selectable.start.root.rootName;
 		} else if ( selectable instanceof Position ) {
-			rootNamesToCheck.add( selectable.root.rootName );
+			rootName = selectable.root.rootName;
 		} else if ( selectable instanceof Node ) {
-			rootNamesToCheck.add( selectable.rootName );
+			rootName = selectable.rootName;
 		} else if ( isIterable( selectable ) ) {
 			for ( const range of selectable as Iterable<Range> ) {
-				rootNamesToCheck.add( range.start.root.rootName );
-				rootNamesToCheck.add( range.end.root.rootName );
+				rootName = range.start.root.rootName;
+				break; // Since all ranges should have same root we can only check the first element.
 			}
 		} else {
 			// selectable is null
 			return false;
 		}
 
-		for ( const rootName of rootNamesToCheck ) {
-			if ( rootName === undefined ) {
-				continue;
-			}
-
-			if ( this.readOnlyRootLocks.has( rootName ) ) {
-				return false;
-			}
+		if ( rootName && this.readOnlyRootLocks.has( rootName ) ) {
+			return false;
 		}
 
 		return true;
@@ -569,8 +561,12 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 		if ( locksForGivenRoot.size === 1 ) {
 			this.readOnlyRootLocks.delete( rootName );
-			this.fire<ObservableChangeEvent>( 'change:readOnlyRootLocks', 'readOnlyRootLocks',
-				this.readOnlyRootLocks, this.readOnlyRootLocks );
+
+			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+			editableRootElement.isReadOnly = this.isReadOnly;
+
+			// We are forcing the selection change notification, so that commands may refresh the state.
+			this.model.document.selection.fire<DocumentSelectionChangeEvent>( 'change', { directChange: false } );
 		} else {
 			locksForGivenRoot.delete( lockId );
 		}
@@ -588,8 +584,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			}
 		} else {
 			this.readOnlyRootLocks.set( rootName, new Set( [ lockId ] ) );
-			this.fire<ObservableChangeEvent>( 'change:readOnlyRootLocks', 'readOnlyRootLocks',
-				this.readOnlyRootLocks, this.readOnlyRootLocks );
+			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+			editableRootElement.isReadOnly = true;
+
+			// We are forcing the selection change notification, so that commands may refresh the state.
+			this.model.document.selection.fire<DocumentSelectionChangeEvent>( 'change', { directChange: false } );
 		}
 	}
 

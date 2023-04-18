@@ -89,6 +89,9 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
 	private _hasSelectionChangedFromTheLastChangeBlock: boolean;
 
 	/**
+	 * Defines whether the document is in a read-only mode.
+	 * When the document is read-only, then all roots are automatically in read-only mode as well.
+	 *
 	 * @observable
 	 */
 	declare public isReadOnly: boolean;
