@@ -88,6 +88,10 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTableElement = data.viewItem;
 
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {

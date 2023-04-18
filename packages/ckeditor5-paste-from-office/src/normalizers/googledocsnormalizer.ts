@@ -9,12 +9,16 @@
 
 import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
 
+import removeXmlns from '../filters/removexmlns';
 import removeBoldWrapper from '../filters/removeboldwrapper';
 import transformBlockBrsToParagraphs from '../filters/br';
 import { unwrapParagraphInListItem } from '../filters/list';
+import removeGoogleSheetsTag from '../filters/removegooglesheetstag';
 import type { Normalizer, NormalizerData } from '../normalizer';
+import removeInvalidTableWidth from '../filters/removeinvalidtablewidth';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
+const googleSheetsMatch = /<google-sheets-html-origin/i;
 
 /**
  * Normalizer for the content pasted from Google Docs.
@@ -35,7 +39,7 @@ export default class GoogleDocsNormalizer implements Normalizer {
 	 * @inheritDoc
 	 */
 	public isActive( htmlString: string ): boolean {
-		return googleDocsMatch.test( htmlString );
+		return googleDocsMatch.test( htmlString ) || googleSheetsMatch.test( htmlString );
 	}
 
 	/**
@@ -45,6 +49,9 @@ export default class GoogleDocsNormalizer implements Normalizer {
 		const writer = new UpcastWriter( this.document );
 		const { body: documentFragment } = data._parsedData;
 
+		removeGoogleSheetsTag( documentFragment, writer );
+		removeXmlns( documentFragment, writer );
+		removeInvalidTableWidth( documentFragment, writer );
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
 		transformBlockBrsToParagraphs( documentFragment, writer );
