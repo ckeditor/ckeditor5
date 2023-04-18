@@ -12,12 +12,18 @@
 // There are no available types for 'color-parse' module.
 // @ts-ignore
 import { default as parse } from 'color-parse';
-import * as convert from 'color-convert';
+import { hex, rgb, hsl, hwb, lab, lch } from 'color-convert';
 
 /**
  * Color formats handled by color converter.
  */
 export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+
+type colorObject = {
+	space: 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+	values: string;
+	alpha: number;
+};
 
 /**
  * Configuration of the color picker feature.
@@ -30,6 +36,19 @@ export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
  */
 export type ColorPickerConfig = {
 	format?: ColorPickerFormat;
+};
+
+/**
+ * TODO
+ */
+
+const convert: any = {
+	hex,
+	rgb,
+	hsl,
+	hwb,
+	lab,
+	lch
 };
 
 /**
@@ -46,7 +65,7 @@ export function convertColor( color: string, outputFormat: ColorPickerFormat ): 
 
 	// Parser library treats `hex` format as belonging to `rgb` space, which messes up further conversion.
 	// Let's parse such strings on our own.
-	const colorObject = color.startsWith( '#' ) ? { space: 'hex', values: color.substring( 1 ) } : parse( color );
+	const colorObject = color.startsWith( '#' ) ? { space: 'hex', values: color.substring( 1 ) } : parse( color ) as colorObject;
 
 	if ( !colorObject.space ) {
 		return '';
@@ -56,7 +75,6 @@ export function convertColor( color: string, outputFormat: ColorPickerFormat ): 
 		return color;
 	}
 
-	// @ts-ignore
 	const conversionFunction = convert[ colorObject.space ][ outputFormat ];
 
 	if ( !conversionFunction ) {
@@ -89,7 +107,6 @@ export function convertToHex( color: string ): string {
 		return '#000';
 	}
 
-	// @ts-ignore
 	return '#' + convert[ colorObject.space ].hex( colorObject.values );
 }
 
