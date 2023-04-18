@@ -90,5 +90,4 @@ export interface StyleDefinition {
 	name: string;
 	element: string;
 	classes: Array<string>;
-	previewTemplate?: TemplateDefinition;
 }

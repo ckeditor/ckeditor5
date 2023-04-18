@@ -85,16 +85,23 @@ export default class StyleUtils extends Plugin {
 				}
 			}
 
-			if ( !definition.previewTemplate ) {
-				definition.previewTemplate = this.getStylePreview( definition, [
-					{ text: 'AaBbCcDdEeFfGgHhIiJj' }
-				] );
-			}
+			const previewTemplate = this.getStylePreview( definition, [
+				{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+			] );
 
 			if ( modelElements.length ) {
-				normalizedDefinitions.block.push( { ...definition, modelElements, isBlock: true } );
+				normalizedDefinitions.block.push( {
+					...definition,
+					previewTemplate,
+					modelElements,
+					isBlock: true
+				} );
 			} else {
-				normalizedDefinitions.inline.push( { ...definition, ghsAttributes } );
+				normalizedDefinitions.inline.push( {
+					...definition,
+					previewTemplate,
+					ghsAttributes
+				} );
 			}
 		}
 
@@ -131,6 +138,8 @@ export default class StyleUtils extends Plugin {
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
 		if ( definition.modelElements.includes( block.name ) ) {
@@ -197,10 +206,12 @@ export interface NormalizedStyleDefinitions {
 export interface BlockStyleDefinition extends StyleDefinition {
 	isBlock: true;
 	modelElements: Array<string>;
+	previewTemplate: TemplateDefinition;
 }
 
 export interface InlineStyleDefinition extends StyleDefinition {
 	ghsAttributes: Array<string>;
+	previewTemplate: TemplateDefinition;
 }
 
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
