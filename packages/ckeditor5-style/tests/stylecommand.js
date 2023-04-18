@@ -218,7 +218,7 @@ describe( 'StyleCommand', () => {
 				] );
 			} );
 
-			it( 'should not enable styles for elements outside a limit element', () => {
+			it( 'should not enable styles for elements outside an object element', () => {
 				setData( model,
 					'<blockQuote>' +
 						'<table>' +
@@ -235,7 +235,8 @@ describe( 'StyleCommand', () => {
 
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
-					...blockParagraphStyles.map( ( { name } ) => name )
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockWidgetStyles.map( ( { name } ) => name )
 				] );
 			} );
 

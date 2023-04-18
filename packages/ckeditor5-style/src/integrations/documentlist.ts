@@ -6,14 +6,19 @@
 import { Plugin } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
+import type { TemplateDefinition } from 'ckeditor5/src/ui';
+
+import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import StyleUtils, {
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsActiveForBlockEvent,
-	type StyleUtilsIsEnabledForBlockEvent
+	type StyleUtilsIsEnabledForBlockEvent,
+	type StyleUtilsGetStylePreviewEvent
 } from '../styleutils';
-import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+
+import type { StyleDefinition } from '../styleconfig';
 
 /**
  * @module style/integrations/documentliststylesupport
@@ -43,7 +48,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		if ( !editor.plugins.has( 'DocumentList' ) ) {
+		if ( !editor.plugins.has( 'DocumentListEditing' ) ) {
 			return;
 		}
 
@@ -72,6 +77,15 @@ export default class DocumentListStyleSupport extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+
+		this.listenTo<StyleUtilsGetStylePreviewEvent>( this._styleUtils, 'getStylePreview', ( evt, [ definition, children ] ) => {
+			const templateDefinition = this._getStylePreview( definition, children );
+
+			if ( templateDefinition ) {
+				evt.return = templateDefinition;
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -79,6 +93,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	 */
 	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
 		const model = this.editor.model;
+		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		if ( ![ 'ol', 'ul', 'li' ].includes( definition.element ) ) {
 			return false;
@@ -88,8 +103,10 @@ export default class DocumentListStyleSupport extends Plugin {
 			return false;
 		}
 
+		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+
 		if ( definition.element == 'ol' || definition.element == 'ul' ) {
-			if ( !model.schema.checkAttribute( block, 'htmlListAttributes' ) ) {
+			if ( !model.schema.checkAttribute( block, attributeName ) ) {
 				return false;
 			}
 
@@ -97,7 +114,7 @@ export default class DocumentListStyleSupport extends Plugin {
 
 			return definition.element == viewElementName;
 		} else {
-			return model.schema.checkAttribute( block, 'htmlLiAttributes' );
+			return model.schema.checkAttribute( block, attributeName );
 		}
 	}
 
@@ -116,7 +133,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Iterable<Element> | null {
+	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
 			return null;
 		}
@@ -126,5 +143,42 @@ export default class DocumentListStyleSupport extends Plugin {
 		} else {
 			return this._documentListUtils.expandListBlocksToCompleteList( block );
 		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getStylePreview( definition: StyleDefinition, children: Iterable<TemplateDefinition> ): TemplateDefinition | null {
+		const { element, classes } = definition;
+
+		if ( element == 'ol' || element == 'ul' ) {
+			return {
+				tag: element,
+				attributes: {
+					class: classes
+				},
+				children: [
+					{
+						tag: 'li',
+						children
+					}
+				]
+			};
+		} else if ( element == 'li' ) {
+			return {
+				tag: 'ol',
+				children: [
+					{
+						tag: element,
+						attributes: {
+							class: classes
+						},
+						children
+					}
+				]
+			};
+		}
+
+		return null;
 	}
 }

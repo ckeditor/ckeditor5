@@ -10,10 +10,18 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
+import type { TemplateDefinition } from 'ckeditor5/src/ui';
+
 import type { DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
+
+// These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
+const NON_PREVIEWABLE_ELEMENT_NAMES = [
+	'caption', 'colgroup', 'dd', 'dt', 'figcaption', 'legend', 'li', 'optgroup', 'option', 'rp',
+	'rt', 'summary', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'
+];
 
 export default class StyleUtils extends Plugin {
 	/**
@@ -32,6 +40,7 @@ export default class StyleUtils extends Plugin {
 		this.decorate( 'isStyleEnabledForBlock' );
 		this.decorate( 'isStyleActiveForBlock' );
 		this.decorate( 'getAffectedBlocks' );
+		this.decorate( 'getStylePreview' );
 	}
 
 	/**
@@ -76,12 +85,19 @@ export default class StyleUtils extends Plugin {
 				}
 			}
 
+			if ( !definition.previewTemplate ) {
+				definition.previewTemplate = this.getStylePreview( definition, [
+					{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+				] );
+			}
+
 			if ( modelElements.length ) {
 				normalizedDefinitions.block.push( { ...definition, modelElements, isBlock: true } );
 			} else {
 				normalizedDefinitions.inline.push( { ...definition, ghsAttributes } );
 			}
 		}
+
 		return normalizedDefinitions;
 	}
 
@@ -91,8 +107,10 @@ export default class StyleUtils extends Plugin {
 	 */
 	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
 		const model = this.editor.model;
+		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
+		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
 
-		if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
+		if ( !model.schema.checkAttribute( block, attributeName ) ) {
 			return false;
 		}
 
@@ -114,12 +132,29 @@ export default class StyleUtils extends Plugin {
 	/**
 	 * TODO
 	 */
-	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Iterable<Element> | null {
+	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
 		if ( definition.modelElements.includes( block.name ) ) {
 			return [ block ];
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns the `TemplateDefinition` used by styles dropdown to render style preview.
+	 *
+	 * @internal
+	 */
+	public getStylePreview( definition: StyleDefinition, children: Iterable<TemplateDefinition> ): TemplateDefinition {
+		const { element, classes } = definition;
+
+		return {
+			tag: isPreviewable( element ) ? element : 'div',
+			attributes: {
+				class: classes
+			},
+			children
+		};
 	}
 
 	/**
@@ -143,6 +178,17 @@ function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): o
 	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }
 
+/**
+ * Decides whether an element should be created in the preview or a substitute `<div>` should
+ * be used instead. This avoids previewing a standalone `<td>`, `<li>`, etc. without a parent.
+ *
+ * @param elementName Name of the element
+ * @returns Boolean indicating whether the element can be rendered.
+ */
+function isPreviewable( elementName: string ): boolean {
+	return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
+}
+
 export interface NormalizedStyleDefinitions {
 	block: Array<BlockStyleDefinition>;
 	inline: Array<InlineStyleDefinition>;
@@ -160,3 +206,4 @@ export interface InlineStyleDefinition extends StyleDefinition {
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;
 export type StyleUtilsGetAffectedBlocksEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedBlocks'>;
+export type StyleUtilsGetStylePreviewEvent = DecoratedMethodEvent<StyleUtils, 'getStylePreview'>;

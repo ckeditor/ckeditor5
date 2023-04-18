@@ -8,15 +8,9 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { ButtonView, View, type TemplateDefinition } from 'ckeditor5/src/ui';
+import { ButtonView, View } from 'ckeditor5/src/ui';
 
 import type { StyleDefinition } from '../styleconfig';
-
-// These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
-const NON_PREVIEWABLE_ELEMENT_NAMES = [
-	'caption', 'colgroup', 'dd', 'dt', 'figcaption', 'legend', 'li', 'optgroup', 'option', 'rp',
-	'rt', 'summary', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'
-];
 
 /**
  * A class representing an individual button (style) in the grid. Renders a rich preview of the style.
@@ -63,53 +57,7 @@ export default class StyleGridButtonView extends ButtonView {
 	 * Creates the view representing the preview of the style.
 	 */
 	private _createPreview(): View {
-		const { element, classes } = this.styleDefinition;
 		const previewView = new View( this.locale );
-
-		const children: Array<TemplateDefinition> = [];
-		const text = 'AaBbCcDdEeFfGgHhIiJj';
-
-		if ( element == 'ol' || element == 'ul' ) {
-			children.push( {
-				tag: element,
-				attributes: {
-					class: classes
-				},
-				children: [
-					{
-						tag: 'li',
-						children: [
-							{ text }
-						]
-					}
-				]
-			} );
-		} else if ( element == 'li' ) {
-			children.push( {
-				tag: 'ol',
-				children: [
-					{
-						tag: element,
-						attributes: {
-							class: classes
-						},
-						children: [
-							{ text }
-						]
-					}
-				]
-			} );
-		} else {
-			children.push( {
-				tag: this._isPreviewable( element ) ? element : 'div',
-				attributes: {
-					class: classes
-				},
-				children: [
-					{ text }
-				]
-			} );
-		}
 
 		previewView.setTemplate( {
 			tag: 'div',
@@ -125,20 +73,11 @@ export default class StyleGridButtonView extends ButtonView {
 				'aria-hidden': 'true'
 			},
 
-			children
+			children: [
+				this.styleDefinition.previewTemplate!
+			]
 		} );
 
 		return previewView;
-	}
-
-	/**
-	 * Decides whether an element should be created in the preview or a substitute `<div>` should
-	 * be used instead. This avoids previewing a standalone `<td>`, `<li>`, etc. without a parent.
-	 *
-	 * @param elementName Name of the element
-	 * @returns Boolean indicating whether the element can be rendered.
-	 */
-	private _isPreviewable( elementName: string ): boolean {
-		return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
 	}
 }
