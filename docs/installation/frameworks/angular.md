@@ -85,6 +85,10 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 All available versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
+<info-box warning>
+	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. Similarly, starting from the 6.0.0 version, the `@ckeditor/ckeditor5-angular` package also supports TypeScript.
+</info-box>
+
 ## Quick start
 
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):

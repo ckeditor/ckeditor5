@@ -28,6 +28,10 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-5-from-
 	The {@link features/watchdog watchdog feature} is available for the {@link installation/frameworks/react React} and {@link installation/frameworks/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
+<info-box warning>
+	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. Similarly, starting from the 5.0.0 version, the `@ckeditor/ckeditor5-vue` package also supports TypeScript.
+</info-box>
+
 ## Quick start
 
 Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}.
