@@ -871,6 +871,7 @@ This option allows the integrator to disable the default behavior and only call 
 
 ```html
 <ckeditor :editor="editor" :disableTwoWayDataBinding="true"></ckeditor>
+```
 
 ## Component events
 
