@@ -48,7 +48,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
     "postversion": "npm run build"
   }

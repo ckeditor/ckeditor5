@@ -35,7 +35,7 @@ module.exports = {
 			}
 		},
 		{
-			files: [ '**/docs/**/*.js', './src/*.ts', './packages/**/*.ts' ],
+			files: [ '**/docs/**/*.js', './src/*.ts', './packages/*/src/**/*.ts' ],
 			rules: {
 				'ckeditor5-rules/ckeditor-imports': 'off'
 			}

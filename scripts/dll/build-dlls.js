@@ -40,13 +40,13 @@ if ( argv[ 'base-dll-config' ] ) {
 	if ( status ) {
 		console.log( chalk.bold.red( 'Halting the script due to failed base DLL build.' ) );
 
-		exitCode = 1;
+		process.exit( 1 );
 	}
 }
 
 console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
 
-// It's important to build base packages in the order of dependency.
+// Exclude packages included in the main module.
 const basePackages = [
 	// The base of the CKEditor 5 framework.
 	'ckeditor5-utils',
@@ -68,10 +68,8 @@ const basePackages = [
 	'ckeditor5-watchdog'
 ];
 
-const packages = [
-	...basePackages,
-	...getPackageNames( ROOT_DIRECTORY ).filter( packageName => !basePackages.includes( packageName ) )
-];
+// TODO this should be sorted to resolve package dependencies (for now there are no dependencies between packages).
+const packages = getPackageNames( ROOT_DIRECTORY ).filter( packageName => !basePackages.includes( packageName ) );
 
 packages
 	.filter( isNotBaseDll )
