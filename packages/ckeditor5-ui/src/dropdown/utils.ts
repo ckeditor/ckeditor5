@@ -304,6 +304,7 @@ function addToolbarToOpenDropdown(
  * @param dropdownView A dropdown instance to which `ListVIew` will be added.
  * @param itemsOrCallback A collection of the list item definitions or a callback returning a list item definitions to populate the list.
  * @param options.ariaLabel Label used by assistive technologies to describe list element.
+ * @param options.role Will be reflected by the `role` DOM attribute in `ListVIew` and used by assistive technologies.
  */
 export function addListToDropdown(
 	dropdownView: DropdownView,
