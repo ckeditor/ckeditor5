@@ -86,11 +86,11 @@ export default class TableElementSupport extends Plugin {
 function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
-			const viewTableElement = data.viewItem;
-
 			if ( !data.modelRange ) {
 				return;
 			}
+
+			const viewTableElement = data.viewItem;
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
 
