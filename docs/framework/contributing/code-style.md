@@ -346,7 +346,7 @@ CKEditor 5 development environment uses [ESLint](https://eslint.org) and [stylel
 
 A couple of useful links:
 
-* [Disabling ESLint with inline comments](https://eslint.org/docs/2.13.1/user-guide/configuring#disabling-rules-with-inline-comments).
+* [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
 * [CKEditor 5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
 * [CKEditor 5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
