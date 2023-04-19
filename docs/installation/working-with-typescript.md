@@ -47,7 +47,7 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 } );
 ```
 
-### Installing CKEditor 5 packages in your TypeScript project
+### Installing plugins
 
 When you use TypeScript you need to import all modules provided by CKEditor 5 using a package entry point instead of a path to a module.
 
@@ -68,9 +68,9 @@ If you want to integrate CKEditor 5 directly in your TypeScript project, follow 
 * {@link installation/advanced/integrating-from-source-webpack Integration from source using webpack}
 * {@link installation/advanced/integrating-from-source-vite Integration from source using Vite}
 
-### Integrating CKEditor 5 with frameworks and TypeScript
+### Typings for Angular, React, and Vue 3 components
 
-If you want to integrate CKEditor 5 with TypeScript and a specific framework, follow the appropriate guide:
+The latest versions of our official components for Angular, React, and Vue 3 are migrated to TypeScript and use native CKEditor 5's type definitions. You don't need to provide custom definitions anymore. You can use the following guides:
 
 * {@link installation/frameworks/angular Angular component}
 * {@link installation/frameworks/react React component}

@@ -29,7 +29,7 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-5-from-
 </info-box>
 
 <info-box hint>
-	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check details about {@link installation/working-with-typescript TypeScript support}.
+	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check the details about {@link installation/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Quick start
