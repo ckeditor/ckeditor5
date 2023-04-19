@@ -690,7 +690,7 @@ Please refer to the {@link installation/getting-started/quick-start#running-a-fu
 
 ## List of plugins included in the CKEditor 5 predefined builds
 
-The table below presents the list of all plugins included in various builds. <!-- update -->
+The table below presents the list of all plugins included in various builds. <!-- update each release -->
 
 <figure class="table">
 	<table border="1" cellpadding="1" cellspacing="1">
@@ -705,7 +705,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">Multi-root</td>
 				<td style="text-align:center; width:70px">Superbuild</td>
 			</tr>
-			<tr>
+			<tr><!-- these kinda links are forced by nightly use -->
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html">Alignment</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -836,7 +836,27 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/template.html">ContentTemplates</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+			</tr>
+			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/document-lists.html">DocumentList</a> +</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/document-outline.html">DocumentOutline</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -904,6 +924,15 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/format-painter.html">FormatPainter</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html">GeneralHtmlSupport</a></td>
@@ -1235,8 +1264,17 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html">SlashCommand</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">StandardEditingMode</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">SpecialCharacters</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -1246,7 +1284,7 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
 			<tr>
-				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html">SpecialCharacters</a></td>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html">StandardEditingMode</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
@@ -1294,6 +1332,15 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
 				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/table-of-contents.html">TableOfContents</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/language.html">TextPartLanguage</a></td>

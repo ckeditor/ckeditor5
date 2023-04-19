@@ -37,7 +37,7 @@ import {
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
-import type { GHSViewAttributes } from './conversionutils';
+import type { GHSViewAttributes } from './utils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
