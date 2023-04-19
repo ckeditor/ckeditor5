@@ -275,6 +275,52 @@ describe( 'CustomElementSupport', () => {
 			expect( editor.getData() ).to.equal( '<custom-foo-element data-foo="foo">bar</custom-foo-element>' );
 		} );
 
+		it( 'should allow attributes without `data-` prefix', () => {
+			dataFilter.allowElement( /.*/ );
+			dataFilter.allowAttributes( { attributes: { 'foo': /.*/ } } );
+
+			editor.setData( '<custom-foo-element foo="bar">baz</custom-foo-element>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
+				data: '<htmlCustomElement' +
+					' htmlAttributes="(1)"' +
+					' htmlContent="<custom-foo-element foo="bar">baz</custom-foo-element>"' +
+					' htmlElementName="custom-foo-element"></htmlCustomElement>',
+				attributes: {
+					1: {
+						attributes: {
+							'foo': 'bar'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<custom-foo-element foo="bar">baz</custom-foo-element>' );
+		} );
+
+		it( 'should ignore attributes with invalid name', () => {
+			dataFilter.allowElement( /.*/ );
+			dataFilter.allowAttributes( { attributes: /.*/ } );
+
+			editor.setData( '<custom-foo-element 200-abc="invalid" data-foo="bar">baz</custom-foo-element>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
+				data: '<htmlCustomElement' +
+					' htmlAttributes="(1)"' +
+					' htmlContent="<custom-foo-element data-foo="bar">baz</custom-foo-element>"' +
+					' htmlElementName="custom-foo-element"></htmlCustomElement>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<custom-foo-element data-foo="bar">baz</custom-foo-element>' );
+		} );
+
 		it( 'should allow attributes (classes)', () => {
 			dataFilter.allowElement( /.*/ );
 			dataFilter.allowAttributes( { classes: 'foo' } );
