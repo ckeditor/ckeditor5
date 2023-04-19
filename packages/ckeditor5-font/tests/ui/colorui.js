@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document,Event */
+/* global document */
 
 import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -195,7 +195,7 @@ describe( 'ColorUI', () => {
 
 				dropdown.colorTableView.selectedColor = '#123456';
 
-				dropdown.colorTableView.cancelButtonView.element.dispatchEvent( new Event( 'click' ) );
+				dropdown.colorTableView.cancelButtonView.fire( 'execute' );
 
 				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
 			} );
