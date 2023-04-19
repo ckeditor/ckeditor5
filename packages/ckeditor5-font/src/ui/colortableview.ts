@@ -120,6 +120,11 @@ export default class ColorTableView extends View {
 	declare public selectedColor?: string;
 
 	/**
+	 * Keeps the original color value from current selection which is assign while dropdown is opening.
+	 */
+	declare public originalColor?: string;
+
+	/**
 	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
 	 * the default (static) color set.
 	 *
@@ -494,6 +499,13 @@ export default class ColorTableView extends View {
 		saveButtonView.on( 'execute', () => {
 			this.fire( 'execute', {
 				value: this.selectedColor
+			} );
+		} );
+
+		cancelButtonView.on( 'execute', () => {
+			this.selectedColor = this.originalColor;
+			this.fire( 'execute', {
+				value: this.originalColor
 			} );
 		} );
 

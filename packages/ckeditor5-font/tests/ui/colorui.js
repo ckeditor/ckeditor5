@@ -186,6 +186,20 @@ describe( 'ColorUI', () => {
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
 			} );
 
+			it( 'should cancel changes', () => {
+				dropdown.isOpen = false;
+
+				dropdown.colorTableView.selectedColor = '#ff0000';
+
+				dropdown.isOpen = true;
+
+				dropdown.colorTableView.selectedColor = '#123456';
+
+				dropdown.colorTableView.cancelButtonView.fire( 'execute' );
+
+				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
+			} );
+
 			it.skip( 'should avoid call the command multiple times', () => {
 				const spy = sinon.spy( editor, 'execute' );
 				// Color format normalization could result with command being called multiple times.

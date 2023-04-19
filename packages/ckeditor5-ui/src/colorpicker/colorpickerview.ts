@@ -89,7 +89,9 @@ export default class ColorPickerView extends View {
 
 		this._debounceColorPickerEvent = debounce( ( color: string ) => {
 			this.set( 'color', color );
-		}, waitingTime );
+		}, waitingTime, {
+			leading: true
+		} );
 
 		// Sets color in the picker if color was updated.
 		this.on( 'change:color', () => {
