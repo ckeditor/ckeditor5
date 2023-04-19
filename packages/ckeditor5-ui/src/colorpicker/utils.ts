@@ -39,7 +39,7 @@ export type ColorPickerConfig = {
 };
 
 /**
- * TODO
+ * Color converter object that "returns" dedicated function to convert color based on object `key`.
  */
 
 const convert: any = {
