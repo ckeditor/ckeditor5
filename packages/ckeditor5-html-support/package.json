@@ -50,6 +50,7 @@
     "@ckeditor/ckeditor5-source-editing": "^37.0.1",
     "@ckeditor/ckeditor5-table": "^37.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^37.0.1",
+    "@ckeditor/ckeditor5-typing": "^37.1.0",
     "@ckeditor/ckeditor5-utils": "^37.0.1",
     "@ckeditor/ckeditor5-widget": "^37.0.1",
     "typescript": "^4.8.4",
