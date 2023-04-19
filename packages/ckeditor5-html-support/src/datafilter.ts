@@ -564,6 +564,11 @@ export default class DataFilter extends Plugin {
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
 
+		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		if ( definition.isBlockAttribute ) {
+			return;
+		}
+
 		schema.extend( '$text', {
 			allowAttributes: attributeKey
 		} );

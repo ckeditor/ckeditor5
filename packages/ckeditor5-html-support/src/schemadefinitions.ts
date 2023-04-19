@@ -516,6 +516,21 @@ export default {
 	] as Array<DataSchemaBlockElementDefinition>,
 	inline: [
 		{
+			model: 'htmlLiAttributes',
+			view: 'li',
+			isBlockAttribute: true
+		},
+		{
+			model: 'htmlListAttributes',
+			view: 'ol',
+			isBlockAttribute: true
+		},
+		{
+			model: 'htmlListAttributes',
+			view: 'ul',
+			isBlockAttribute: true
+		},
+		{
 			model: 'htmlAcronym',
 			view: 'acronym',
 			attributeProperties: {

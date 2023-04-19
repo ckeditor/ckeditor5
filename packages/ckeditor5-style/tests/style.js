@@ -3,22 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import Style from '../src/style';
 import StyleEditing from '../src/styleediting';
 import StyleUI from '../src/styleui';
 
 describe( 'Style', () => {
-	let editor;
+	let editor, editorElement;
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
-			plugins: [ Style ]
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Style, GeneralHtmlSupport ]
 		} );
 	} );
 
 	afterEach( async () => {
+		editorElement.remove();
+
 		await editor.destroy();
 	} );
 
