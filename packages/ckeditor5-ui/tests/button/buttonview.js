@@ -261,6 +261,12 @@ describe( 'ButtonView', () => {
 					.to.match( /^ck-editor__aria-label_\w+$/ );
 			} );
 
+			it( '-labelledby reacts to #ariaLabelledBy', () => {
+				view.ariaLabelledBy = 'foo';
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.to.equal( 'foo' );
+			} );
+
 			it( '-disabled reacts to #isEnabled', () => {
 				view.isEnabled = true;
 				expect( view.element.attributes[ 'aria-disabled' ] ).to.be.undefined;
