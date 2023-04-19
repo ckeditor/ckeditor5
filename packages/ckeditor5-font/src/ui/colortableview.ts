@@ -163,11 +163,14 @@ export default class ColorTableView extends View {
 	 */
 	public colorPickerButtonView: ButtonView;
 
+	public removeColorButtonView: ButtonView;
+
 	public colorPickerComponent: View;
 
 	public colorTableComponent: View;
 
-	public visibleComponent?: 'ColorPicker' | 'ColorTable';
+	declare public isColorTableVisible: boolean;
+	declare public isColorPickerVisible: boolean;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -198,7 +201,8 @@ export default class ColorTableView extends View {
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.set( 'visibleComponent', 'ColorTable' );
+		this.set( 'isColorTableVisible', true );
+		this.set( 'isColorPickerVisible', false );
 
 		this.set( 'selectedColor', undefined );
 
@@ -245,7 +249,8 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
-		this.colorTableComponentChildren.add( this._createRemoveColorButton() );
+		this.removeColorButtonView = this._createRemoveColorButton();
+		this.colorTableComponentChildren.add( this.removeColorButtonView );
 		this.items.add( this.colorTableComponent );
 	}
 
@@ -369,8 +374,7 @@ export default class ColorTableView extends View {
 		this._focusables.add( colorPaletteButton );
 
 		colorPaletteButton.on( 'execute', () => {
-			this.set( 'visibleComponent', 'ColorPicker' );
-			this.focusTracker.focusedElement = this.cancelButtonView.element!;
+			this.showColorPicker();
 		} );
 
 		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
@@ -397,6 +401,25 @@ export default class ColorTableView extends View {
 		this._focusables.add( this.cancelButtonView );
 
 		this._stopPropagationOnArrowsKeys();
+	}
+
+	public showColorPicker(): void {
+		this.set( 'isColorPickerVisible', true );
+
+		/**
+		 * Focuses the first pointer in color picker.
+		 */
+		if ( this.colorPickerView ) {
+			const firstSlider = [ ...this.colorPickerView.slidersView ][ 0 ] as View & { focus: () => void };
+			firstSlider.focus();
+		}
+		this.set( 'isColorTableVisible', false );
+	}
+
+	public showColorTable(): void {
+		this.set( 'isColorTableVisible', true );
+		this.removeColorButtonView.focus();
+		this.set( 'isColorPickerVisible', false );
 	}
 
 	/**
@@ -562,7 +585,7 @@ export default class ColorTableView extends View {
 			attributes: {
 				class: [
 					'ck-color-picker-component',
-					bind.if( 'visibleComponent', 'ck-hidden', value => value !== 'ColorPicker' )
+					bind.if( 'isColorPickerVisible', 'ck-hidden', value => !value )
 				]
 			},
 			children: this.colorPickerComponentChildren
@@ -580,7 +603,7 @@ export default class ColorTableView extends View {
 			attributes: {
 				class: [
 					'ck-color-table-component',
-					bind.if( 'visibleComponent', 'ck-hidden', value => value !== 'ColorTable' )
+					bind.if( 'isColorTableVisible', 'ck-hidden', value => !value )
 				]
 			},
 			children: this.colorTableComponentChildren

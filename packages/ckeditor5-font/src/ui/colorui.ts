@@ -169,6 +169,10 @@ export default class ColorUI extends Plugin {
 					}
 					this.colorTableView!.updateSelectedColors();
 				}
+
+				if ( !isVisible ) {
+					this.colorTableView!.showColorTable();
+				}
 			} );
 
 			// Accessibility: focus the first active color when opening the dropdown.
