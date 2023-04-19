@@ -4,26 +4,26 @@
  */
 
 /**
- * @module paste-from-office/normalizers/googledocsnormalizer
+ * @module paste-from-office/normalizers/googlesheetsnormalizer
  */
 
 import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
 
-import removeBoldWrapper from '../filters/removeboldwrapper';
-import transformBlockBrsToParagraphs from '../filters/br';
-import { unwrapParagraphInListItem } from '../filters/list';
+import removeXmlns from '../filters/removexmlns';
+import removeGoogleSheetsTag from '../filters/removegooglesheetstag';
+import removeInvalidTableWidth from '../filters/removeinvalidtablewidth';
 import type { Normalizer, NormalizerData } from '../normalizer';
 
-const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
+const googleSheetsMatch = /<google-sheets-html-origin/i;
 
 /**
- * Normalizer for the content pasted from Google Docs.
+ * Normalizer for the content pasted from Google Sheets.
  */
-export default class GoogleDocsNormalizer implements Normalizer {
+export default class GoogleSheetsNormalizer implements Normalizer {
 	public readonly document: ViewDocument;
 
 	/**
-	 * Creates a new `GoogleDocsNormalizer` instance.
+	 * Creates a new `GoogleSheetsNormalizer` instance.
 	 *
 	 * @param document View document.
 	 */
@@ -35,7 +35,7 @@ export default class GoogleDocsNormalizer implements Normalizer {
 	 * @inheritDoc
 	 */
 	public isActive( htmlString: string ): boolean {
-		return googleDocsMatch.test( htmlString );
+		return googleSheetsMatch.test( htmlString );
 	}
 
 	/**
@@ -45,9 +45,9 @@ export default class GoogleDocsNormalizer implements Normalizer {
 		const writer = new UpcastWriter( this.document );
 		const { body: documentFragment } = data._parsedData;
 
-		removeBoldWrapper( documentFragment, writer );
-		unwrapParagraphInListItem( documentFragment, writer );
-		transformBlockBrsToParagraphs( documentFragment, writer );
+		removeGoogleSheetsTag( documentFragment, writer );
+		removeXmlns( documentFragment, writer );
+		removeInvalidTableWidth( documentFragment, writer );
 
 		data.content = documentFragment;
 	}
