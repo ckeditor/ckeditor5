@@ -1315,6 +1315,22 @@ describe( 'DataFilter', () => {
 			editor.getData( '<p>foobar</p>' );
 		} );
 
+		it( 'should not register default converters for isBlockAttribute', () => {
+			dataSchema.registerInlineElement( {
+				view: 'xyz',
+				model: 'htmlXyz',
+				isBlockAttribute: true
+			} );
+
+			dataFilter.allowElement( 'xyz' );
+
+			editor.setData( '<p><xyz>foobar</xyz></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			editor.getData( '<p>foobar</p>' );
+		} );
+
 		it( 'should use correct priority level for existing features', () => {
 			// 'a' element is registered by data schema with priority 5.
 			// We are checking if this element will be correctly nested due to different
