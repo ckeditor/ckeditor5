@@ -4,7 +4,7 @@
  */
 
 /**
- * @module paste-from-office/filters/removexmlns
+ * @module paste-from-office/filters/removeinvalidtablewidth
  */
 
 import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
