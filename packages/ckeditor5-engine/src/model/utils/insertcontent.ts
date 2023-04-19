@@ -203,7 +203,7 @@ export default function insertContent(
 			}
 		}
 
-		/* istanbul ignore else */
+		/* istanbul ignore else -- @preserve */
 		if ( newRange ) {
 			if ( selection instanceof DocumentSelection ) {
 				writer.setSelection( newRange );
@@ -354,7 +354,7 @@ class Insertion {
 		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
 			this._lastNode = node;
 
-			/* istanbul ignore if */
+			/* istanbul ignore if -- @preserve */
 			if ( this.position.parent != node || !this.position.isAtEnd ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be at the end of the last auto paragraph.
@@ -516,7 +516,7 @@ class Insertion {
 	 * @param node The node to insert.
 	 */
 	private _appendToFragment( node: Node ): void {
-		/* istanbul ignore if */
+		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
@@ -674,7 +674,7 @@ class Insertion {
 		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
-		/* istanbul ignore if */
+		/* istanbul ignore if -- @preserve */
 		if ( !this.position.isEqual( mergePosRight ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// At this point the insertion position should be after the node we'll merge. If it isn't,

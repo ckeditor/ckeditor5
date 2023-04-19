@@ -1974,6 +1974,20 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'should not delete changedRoots for a custom root', () => {
+			model.change( writer => {
+				const customRoot = writer.addRoot( 'customRoot' );
+				writer.setAttribute( 'key', 'foo', customRoot );
+				writer.removeAttribute( 'key', customRoot );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 1 );
+				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
 		it( 'add then change attribute', () => {
 			const root = model.document.getRoot();
 

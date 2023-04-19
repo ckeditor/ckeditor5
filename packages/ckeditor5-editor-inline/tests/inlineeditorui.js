@@ -207,6 +207,21 @@ describe( 'InlineEditorUI', () => {
 						return newEditor.destroy();
 					} );
 			} );
+
+			it( 'sets placeholder from editor.config.placeholder - object (invalid root name)', () => {
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
+						placeholder: { 'root-name-that-not-exists': 'placeholder-text' }
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.hasAttribute( 'data-placeholder' ) ).to.equal( false );
+
+						return newEditor.destroy();
+					} );
+			} );
 		} );
 
 		describe( 'view.toolbar#items', () => {

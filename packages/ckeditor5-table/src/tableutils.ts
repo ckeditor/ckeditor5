@@ -91,7 +91,7 @@ export default class TableUtils extends Plugin {
 		}
 
 		// Should be unreachable code.
-		/* istanbul ignore next */
+		/* istanbul ignore next -- @preserve */
 		return undefined as any;
 	}
 

@@ -41,7 +41,7 @@ try {
 	globalVar = { window, document };
 } catch ( e ) {
 	// It's not possible to mock a window object to simulate lack of a window object without writing extremely convoluted code.
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 
 	// Let's cast it to not change module's API.
 	// We only handle this so loading editor in environments without window and document doesn't fail.

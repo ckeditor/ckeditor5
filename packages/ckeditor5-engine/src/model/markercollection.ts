@@ -279,7 +279,7 @@ export interface MarkerData {
 }
 
 /**
- * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
+ * `Marker` is a continuous part of model (like a range), is named and represent some kind of information about marked
  * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
  * model document tree, markers are not stored directly in document tree but in
  * {@link module:engine/model/model~Model#markers model markers' collection}. Still, they are document data, by giving

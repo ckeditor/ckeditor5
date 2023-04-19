@@ -2677,6 +2677,22 @@ describe( 'Writer', () => {
 			expect( model.markers.get( 'newMarker' ) ).to.be.null;
 		} );
 
+		it( 'should not remove markers when root in range is different than the detached root', () => {
+			let root;
+
+			model.change( writer => {
+				root = writer.addRoot( 'new' );
+				const otherRoot = writer.addRoot( 'otherRoot' );
+				writer.addMarker( 'newMarker', { usingOperation: true, affectsData: true, range: writer.createRangeIn( otherRoot ) } );
+			} );
+
+			model.change( writer => {
+				writer.detachRoot( root );
+			} );
+
+			expect( model.markers.get( 'newMarker' ) ).not.to.be.null;
+		} );
+
 		it( 'should accept root name as a parameter', () => {
 			model.change( writer => {
 				writer.addRoot( 'new' );

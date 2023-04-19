@@ -100,6 +100,7 @@ ClassicEditor
 CKEditor 5 has more features that can help you format your content:
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/text-alignment Text alignment} &ndash; Align your content left, align it right, center it, or justify.
 
 ## Common API

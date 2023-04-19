@@ -527,7 +527,7 @@ export default class View extends ObservableMixin() {
 			return callbackResult;
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next */
+			/* istanbul ignore next -- @preserve */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}

@@ -865,7 +865,8 @@ export default class DomConverter {
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
 
-				if ( isText( domBefore ) && isInlineFiller( domBefore ) ) {
+				// Jump over an inline filler (and also on Firefox jump over a block filler while pressing backspace in an empty paragraph).
+				if ( isText( domBefore ) && isInlineFiller( domBefore ) || domBefore && this.isBlockFiller( domBefore ) ) {
 					return this.domPositionToView( domBefore.parentNode!, indexOf( domBefore ) );
 				}
 

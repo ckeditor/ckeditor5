@@ -180,7 +180,7 @@ class Adapter implements UploadAdapter {
 		} );
 
 		// Upload progress when it is supported.
-		/* istanbul ignore else */
+		/* istanbul ignore else -- @preserve */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', evt => {
 				if ( evt.lengthComputable ) {

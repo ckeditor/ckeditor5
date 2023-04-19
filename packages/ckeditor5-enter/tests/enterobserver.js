@@ -10,6 +10,7 @@ import EnterObserver from '../src/enterobserver';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils';
+import { getCode, env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EnterObserver', () => {
 	let view, viewDocument, enterSpy;
@@ -84,6 +85,49 @@ describe( 'EnterObserver', () => {
 		sinon.assert.notCalled( enterSpy );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/13321.
+	it( 'should handle the insertParagraph input type and fire the soft enter event if shift key is pressed in Safari', () => {
+		sinon.stub( env, 'isSafari' ).value( true );
+
+		fireKeyEvent( 'enter', { shiftKey: true } );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.calledOnce( enterSpy );
+		sinon.assert.calledWithMatch( enterSpy, {}, { isSoft: true } );
+		expect( enterSpy.firstCall.args[ 1 ] ).to.have.property( 'isSoft', true );
+
+		// Verify if the effect is not persistent.
+		fireKeyEvent( 'enter', { shiftKey: false } );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.calledTwice( enterSpy );
+		expect( enterSpy.firstCall.args[ 1 ] ).to.have.property( 'isSoft', true );
+		expect( enterSpy.secondCall.args[ 1 ] ).to.have.property( 'isSoft', false );
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5/issues/13321.
+	it( 'should handle the insertParagraph input type and fire the enter event if shift key was pressed before in Safari', () => {
+		sinon.stub( env, 'isSafari' ).value( true );
+
+		fireKeyEvent( 'shift', { shiftKey: true }, 'keydown' );
+		fireKeyEvent( 'shift', { shiftKey: false }, 'keyup' );
+		fireKeyEvent( 'enter', { shiftKey: false }, 'keydown' );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.calledOnce( enterSpy );
+		sinon.assert.calledWithMatch( enterSpy, {}, { isSoft: false } );
+		expect( enterSpy.firstCall.args[ 1 ] ).to.have.property( 'isSoft', false );
+	} );
+
 	it( 'should never preventDefault() the beforeinput event', () => {
 		let interceptedEventData;
 
@@ -136,4 +180,13 @@ describe( 'EnterObserver', () => {
 			view.getObserver( EnterObserver ).stopObserving();
 		} ).to.not.throw();
 	} );
+
+	function fireKeyEvent( key, options, type = 'keydown' ) {
+		viewDocument.fire( type, {
+			keyCode: getCode( key ),
+			preventDefault: () => {},
+			domTarget: document.body,
+			...options
+		} );
+	}
 } );
