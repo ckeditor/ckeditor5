@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  └─ ckeditor.ts          # The editor initialization script.
 ├─ src
 │  ├─ pluginname.ts        # The plugin with example functionality.
-│  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` module. Read more in <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_plugincollection-PluginsMap.html">PluginsMap</a> and <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_commandcollection-CommandsMap.html">CommandsMap</a>.
+│  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` module.
 │  ├─ index.ts             # The modules exported by the package when using the DLL builds.
 │  └─ **/*.ts              # All TypeScript source files should be saved here.
 ├─ tests
@@ -58,6 +58,7 @@ Guides for developing some of the files:
 * {@link framework/contributing/package-metadata ckeditor5-metadata.json}
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
 * [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+* augmentation.ts - Read more in <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_plugincollection-PluginsMap.html">PluginsMap</a> and <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_commandcollection-CommandsMap.html">CommandsMap</a>
 
 ## Npm scripts
 
