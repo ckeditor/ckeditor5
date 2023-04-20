@@ -14,11 +14,11 @@ modified_at: 2023-04-03
 CKEditor 5 is built using TypeScript and has native type definitions. All the official packages and builds distributed using NPM and CDN contain type definitions. Custom builds produced by the **online builder** and **DLL** versions of packages provided by CKEditor 5 do not provide built-in typings yet.
 
 <info-box hint>
-Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
+	Using TypeScript is just an option. If you don't need its features, you can continue using CKEditor 5 in JavaScript.
 </info-box>
 
 <info-box warning>
-Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
+	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
 </info-box>
 
 ## Why use CKEditor 5 with TypeScript?
@@ -47,7 +47,7 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 } );
 ```
 
-### Installing CKEditor 5 packages in your TypeScript project
+### Installing plugins
 
 When using TypeScript you need to import all modules provided by CKEditor 5 using a package entry point instead of a path to a module.
 
@@ -67,6 +67,14 @@ If you want to integrate CKEditor 5 directly in your TypeScript project, follow 
 
 * {@link installation/advanced/integrating-from-source-webpack Integration from source using webpack}
 * {@link installation/advanced/integrating-from-source-vite Integration from source using Vite}
+
+### Typings for Angular, React, and Vue 3 components
+
+The latest versions of our official components for Angular, React, and Vue 3 are migrated to TypeScript and use native CKEditor 5's type definitions. You don't need to provide custom definitions anymore. You can use the following guides:
+
+* {@link installation/frameworks/angular Angular component}
+* {@link installation/frameworks/react React component}
+* {@link installation/frameworks/vuejs-v3 Vue.js 3+ component}
 
 ## Developing plugins using TypeScript
 
