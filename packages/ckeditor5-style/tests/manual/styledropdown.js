@@ -236,6 +236,26 @@ ClassicEditor
 		style: {
 			definitions: [
 				{
+					name: 'Fancy list',
+					element: 'ol',
+					classes: [ 'fancy-list' ]
+				},
+				{
+					name: 'Italic list',
+					element: 'ul',
+					classes: [ 'italic-list' ]
+				},
+				{
+					name: 'Background list item',
+					element: 'li',
+					classes: [ 'background-list-item' ]
+				},
+				{
+					name: 'Figure',
+					element: 'figure',
+					classes: [ 'figure-style' ]
+				},
+				{
 					name: 'Red heading',
 					element: 'h2',
 					classes: [ 'red-heading' ]
@@ -335,21 +355,6 @@ ClassicEditor
 					name: 'code.Qux',
 					element: 'code',
 					classes: [ 'Qux' ]
-				},
-				{
-					name: 'Fancy list',
-					element: 'ol',
-					classes: [ 'fancy-list' ]
-				},
-				{
-					name: 'Italic list',
-					element: 'ul',
-					classes: [ 'italic-list' ]
-				},
-				{
-					name: 'Background list item',
-					element: 'li',
-					classes: [ 'background-list-item' ]
 				}
 			]
 		}

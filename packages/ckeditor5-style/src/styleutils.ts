@@ -74,12 +74,18 @@ export default class StyleUtils extends Plugin {
 		};
 
 		for ( const definition of styleDefinitions ) {
-			const modelElements = [];
-			const ghsAttributes = [];
+			const modelElements: Array<string> = [];
+			const ghsAttributes: Array<string> = [];
 
 			for ( const ghsDefinition of dataSchema.getDefinitionsForView( definition.element ) ) {
-				if ( ghsDefinition.isBlock ) {
-					modelElements.push( ghsDefinition.model );
+				const appliesToBlock = 'appliesToBlock' in ghsDefinition ? ghsDefinition.appliesToBlock : false;
+
+				if ( ghsDefinition.isBlock || appliesToBlock ) {
+					if ( typeof appliesToBlock == 'string' ) {
+						modelElements.push( appliesToBlock );
+					} else if ( ghsDefinition.isBlock ) {
+						modelElements.push( ghsDefinition.model );
+					}
 				} else {
 					ghsAttributes.push( ghsDefinition.model );
 				}
