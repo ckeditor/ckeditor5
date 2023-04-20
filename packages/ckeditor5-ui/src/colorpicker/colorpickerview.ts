@@ -44,23 +44,23 @@ export default class ColorPickerView extends View {
 	declare public slidersView: ViewCollection;
 
 	/**
-     * An internal representation of a color
-     *
-     * Since the picker uses a hex, we store it in that format.
+	 * An internal representation of a color
+	 *
+	 * Since the picker uses a hex, we store it in that format.
 	 *
 	 * Since this is unified color format it won't fire a change event if color is changed
 	 * from `#f00` to `#ff0000` (same value, different format).
-     *
-     * @observable
-     * @private
-     */
+	 *
+	 * @observable
+	 * @private
+	 */
 	declare public _hexColor: string;
 
 	/**
 	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
 	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
 	*/
-	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
+	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
 	declare private _format: ColorPickerFormat;
 
@@ -161,7 +161,7 @@ export default class ColorPickerView extends View {
 			class: 'color-picker-hex-input'
 		} );
 
-		labeledInput.fieldView.bind( 'value' ).to( this, 'color', pickerColor => {
+		labeledInput.fieldView.bind( 'value' ).to( this, '_hexColor', pickerColor => {
 			if ( labeledInput.isFocused ) {
 				// Text field shouldn't be updated with color change if the text field is focused.
 				// Imagine user typing hex code and getting the value of field changed.
@@ -175,7 +175,18 @@ export default class ColorPickerView extends View {
 			const inputValue = labeledInput.fieldView.element!.value;
 
 			if ( inputValue ) {
-				this._debounceColorPickerEvent( inputValue );
+				// Trim the whitespace.
+				const trimmedValue = inputValue.trim();
+
+				// Drop the `#` from the beginning if present.
+				const hashlessInput = trimmedValue.startsWith( '#' ) ? trimmedValue.substring( 1 ) : trimmedValue;
+
+				// Check if it's a hex color (3,4,6 or 8 chars long and with proper characters).
+				if ( /(?:[0-9a-fA-F]{3,4}){1,2}$/.test( hashlessInput ) ) {
+					// If so, set the color.
+					// Otherwise, do nothing.
+					this._debounceColorPickerEvent( '#' + hashlessInput );
+				}
 			}
 		} );
 
