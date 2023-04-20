@@ -49,7 +49,7 @@ ClassicEditor.create( editorPlaceholder ).catch( error => {
 
 ### Installing plugins
 
-When you use TypeScript you need to import all modules provided by CKEditor 5 using a package entry point instead of a path to a module.
+When using TypeScript you need to import all modules provided by CKEditor 5 using a package entry point instead of a path to a module.
 
 ```ts
 // Instead of:
