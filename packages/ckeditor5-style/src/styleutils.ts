@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, MatcherPattern } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
-import type { DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
@@ -41,6 +41,7 @@ export default class StyleUtils extends Plugin {
 		this.decorate( 'isStyleActiveForBlock' );
 		this.decorate( 'getAffectedBlocks' );
 		this.decorate( 'getStylePreview' );
+		this.decorate( 'configureGHSDataFilter' );
 	}
 
 	/**
@@ -176,6 +177,19 @@ export default class StyleUtils extends Plugin {
 			hasClassesProperty( ghsAttributeValue ) &&
 			classes.every( className => ghsAttributeValue.classes.includes( className ) );
 	}
+
+	/**
+	* This is where the styles feature configures the GHS feature. This method translates normalized
+	* {@link module:style/styleconfig~StyleDefinition style definitions} to
+	* {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	* {@link module:html-support/datafilter~DataFilter} plugin.
+	*/
+	public configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
+		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
+		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );
+	}
 }
 
 /**
@@ -198,6 +212,16 @@ function isPreviewable( elementName: string ): boolean {
 	return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
 }
 
+/**
+ * Translates a normalized style definition to a view matcher pattern.
+ */
+function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
+	return {
+		name: element,
+		classes
+	};
+}
+
 export interface NormalizedStyleDefinitions {
 	block: Array<BlockStyleDefinition>;
 	inline: Array<InlineStyleDefinition>;
@@ -218,3 +242,4 @@ export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;
 export type StyleUtilsGetAffectedBlocksEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedBlocks'>;
 export type StyleUtilsGetStylePreviewEvent = DecoratedMethodEvent<StyleUtils, 'getStylePreview'>;
+export type StyleUtilsConfigureGHSDataFilterEvent = DecoratedMethodEvent<StyleUtils, 'configureGHSDataFilter'>;

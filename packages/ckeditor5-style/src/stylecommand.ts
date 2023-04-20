@@ -7,7 +7,7 @@
  * @module style/stylecommand
  */
 
-import type { Element, Schema } from 'ckeditor5/src/engine';
+import type { DocumentSelection, Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -93,7 +93,7 @@ export default class StyleCommand extends Command {
 		}
 
 		// Block styles.
-		const firstBlock = first( selection.getSelectedBlocks() );
+		const firstBlock = first( selection.getSelectedBlocks() ) || selection.getFirstPosition()!.parent;
 
 		if ( firstBlock ) {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
@@ -187,7 +187,9 @@ export default class StyleCommand extends Command {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition );
+				selectables = this._findAffectedBlocks( getBlocksFromSelection( selection ),
+					definition
+				);
 			} else {
 				selectables = [ selection ];
 			}
@@ -206,7 +208,7 @@ export default class StyleCommand extends Command {
 	 * Returns a set of elements that should be affected by the block-style change.
 	 */
 	private _findAffectedBlocks(
-		selectedBlocks: IterableIterator<Element>,
+		selectedBlocks: Iterable<Element>,
 		definition: BlockStyleDefinition
 	): Set<Element> {
 		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
@@ -268,4 +270,17 @@ export default class StyleCommand extends Command {
  */
 function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
+}
+
+/**
+ * TODO
+ * @param selection
+ * @returns
+ */
+function getBlocksFromSelection( selection: DocumentSelection ) {
+	const blocks = Array.from( selection.getSelectedBlocks() );
+	if ( blocks.length ) {
+		return blocks;
+	}
+	return [ selection.getFirstPosition()!.parent as Element ];
 }

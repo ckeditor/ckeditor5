@@ -15,6 +15,7 @@ import StyleCommand from './stylecommand';
 import StyleUtils, { type NormalizedStyleDefinitions } from './styleutils';
 import type { StyleConfig, StyleDefinition } from './styleconfig';
 import DocumentListStyleSupport from './integrations/documentlist';
+import TableStyleSupport from './integrations/table';
 
 /**
  * The style engine feature.
@@ -35,7 +36,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport ] as const;
+		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport ] as const;
 	}
 
 	/**
@@ -50,29 +51,6 @@ export default class StyleEditing extends Plugin {
 
 		editor.commands.add( 'style', new StyleCommand( editor, normalizedStyleDefinitions ) );
 
-		this._configureGHSDataFilter( normalizedStyleDefinitions );
+		styleUtils.configureGHSDataFilter( normalizedStyleDefinitions );
 	}
-
-	/**
-	 * This is where the styles feature configures the GHS feature. This method translates normalized
-	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
-	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
-	 * {@link module:html-support/datafilter~DataFilter} plugin.
-	 */
-	private _configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
-		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
-
-		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
-		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );
-	}
-}
-
-/**
- * Translates a normalized style definition to a view matcher pattern.
- */
-function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
-	return {
-		name: element,
-		classes
-	};
 }
