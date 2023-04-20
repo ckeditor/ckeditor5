@@ -285,9 +285,9 @@ Here is the full source code of the `ProductPreviewEditing` editor plugin:
 ```js
 // ckeditor/productpreviewediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
+
 import InsertProductPreviewCommand from './insertproductpreviewcommand';
 
 export default class ProductPreviewEditing extends Plugin {
@@ -399,7 +399,7 @@ Learn more about widget commands in the {@link framework/tutorials/implementing-
 ```js
 // ckeditor/insertproductpreviewcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class InsertProductPreviewCommand extends Command {
 	execute( id ) {
@@ -515,16 +515,13 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 // CKEditor plugin implementing a product widget to be used in the editor content.
 import ProductPreviewEditing from './ckeditor/productpreviewediting';
@@ -892,16 +889,13 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 // CKEditor plugin implementing a product widget to be used in the editor content.
 import ProductPreviewEditing from './ckeditor/productpreviewediting';
@@ -1101,9 +1095,9 @@ ReactDOM.render(
 ```js
 // ckeditor/productpreviewediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
+
 import InsertProductPreviewCommand from './insertproductpreviewcommand';
 
 export default class ProductPreviewEditing extends Plugin {
@@ -1211,7 +1205,7 @@ export default class ProductPreviewEditing extends Plugin {
 ```js
 // ckeditor/insertproductpreviewcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class InsertProductPreviewCommand extends Command {
 	execute( id ) {
@@ -1289,7 +1283,7 @@ export default class ProductPreview extends React.Component {
 			</div>
 	}
 }
-````
+```
 
 ### `index.html`
 
