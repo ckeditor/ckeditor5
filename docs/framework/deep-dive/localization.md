@@ -126,10 +126,10 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 class FileRepository {
 	// More methods.
 	// ...
-	
+
 	updatePendingAction() {
 		const pendingActions = this.editor.plugins.get( PendingActions );
-		
+
 		const t = this.editor.t;
 		const getMessage = value => t( 'Upload in progress (%0%).', value ); // Upload in progress (12%).
 
@@ -248,7 +248,7 @@ If you want to re-use a *message* that already exists in other package, you shou
 
 We use this approach already in {@link features/collaboration Collaboration features} and {@link features/slash-commands Slash command featue}. You can find an example from the {@link module:slash-command/slashcommandconfig~SlashCommandConfig#getDefaultCommands list of default commands} that we used in Slash command feature below. Please note the difference between using `t()` and `translateVariableKey()`. `translateVariableKey( 'Block quote' )` will re-use a translation from other package whilst `t( 'Create a block quote' )` will be processed by a static code analyzer. As a result we make sure that the translation for the `title` is taken from the {@link features/block-quote Block quote} feature where the *message* "Block quote" is already translated. But for the `description` we create a new translation.
 
-```js
+```ts
 public getDefaultCommands() {
 	const t = this.editor.t;
 	const translateVariableKey = this.editor.locale.t;
