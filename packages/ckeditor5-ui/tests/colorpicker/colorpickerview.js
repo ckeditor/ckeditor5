@@ -62,19 +62,167 @@ describe( 'ColorPickerView', () => {
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
 
-		// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
-		it( 'should not update color property during input editing when focused', () => {
-			view.color = '#000000';
+		describe( 'should update color property', () => {
+			describe( 'when hex color was passed', () => {
+				describe( 'in 3-character format', () => {
+					it( 'with `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: '#abc',
+							expectedInput: '#abc',
+							expectedColorProperty: '#abc'
+						} );
+					} );
 
-			view.input.isFocused = true;
-			view.input.fieldView.value = '#ffffff';
-			view.input.fieldView.fire( 'input' );
+					it( 'without `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'abc',
+							expectedInput: 'abc',
+							expectedColorProperty: '#abc'
+						} );
+					} );
+				} );
 
-			view.color = '#aaaaaa';
+				describe( 'in 4-character format', () => {
+					it( 'with `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: '#abcd',
+							expectedInput: '#abcd',
+							expectedColorProperty: '#abcd'
+						} );
+					} );
 
-			clock.tick( 200 );
+					it( 'without `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'abcd',
+							expectedInput: 'abcd',
+							expectedColorProperty: '#abcd'
+						} );
+					} );
+				} );
 
-			expect( view.input.fieldView.value ).to.equal( '#ffffff' );
+				describe( 'in 6-character format', () => {
+					it( 'with `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: '#abcdef',
+							expectedInput: '#abcdef',
+							expectedColorProperty: '#abcdef'
+						} );
+					} );
+
+					it( 'without `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'abcdef',
+							expectedInput: 'abcdef',
+							expectedColorProperty: '#abcdef'
+						} );
+					} );
+				} );
+
+				describe( 'in 8-character format', () => {
+					it( 'with `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: '#abcdefab',
+							expectedInput: '#abcdefab',
+							expectedColorProperty: '#abcdefab'
+						} );
+					} );
+
+					it( 'without `#` at the beginning', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'abcdefab',
+							expectedInput: 'abcdefab',
+							expectedColorProperty: '#abcdefab'
+						} );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'should not update color property', () => {
+			// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
+			it( 'during input editing when focused', () => {
+				view.color = '#000000';
+
+				view.input.isFocused = true;
+				view.input.fieldView.value = '#ffffff';
+				view.input.fieldView.fire( 'input' );
+
+				view.color = '#aaaaaa';
+
+				clock.tick( 200 );
+
+				expect( view.input.fieldView.value ).to.equal( '#ffffff' );
+			} );
+
+			describe( 'when set incorrect color', () => {
+				describe( 'wrong input length', () => {
+					it( '1 character', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'f',
+							expectedInput: 'f',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( '2 characters', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'ff',
+							expectedInput: 'ff',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( '5 characters', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'ffaaa',
+							expectedInput: 'ffaaa',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( '7 characters', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'ffaaaaa',
+							expectedInput: 'ffaaaaa',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( 'more than 8 characters', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'ffaaffaaff',
+							expectedInput: 'ffaaffaaff',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+				} );
+
+				describe( 'wrong color format', () => {
+					it( 'rgb', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'rgb( 100, 100, 100 )',
+							expectedInput: 'rgb( 100, 100, 100 )',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( 'hsl', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'hsl( 30, 75%, 60 % )',
+							expectedInput: 'hsl( 30, 75%, 60 % )',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+
+					it( 'color name', () => {
+						testColorUpdateFromInput( {
+							inputValue: 'red',
+							expectedInput: 'red',
+							expectedColorProperty: '#000000'
+						} );
+					} );
+				} );
+			} );
 		} );
 	} );
 
@@ -269,4 +417,17 @@ describe( 'ColorPickerView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	function testColorUpdateFromInput( options ) {
+		view.color = '#000000';
+
+		view.input.isFocused = true;
+		view.input.fieldView.value = options.inputValue;
+		view.input.fieldView.fire( 'input' );
+
+		clock.tick( 200 );
+
+		expect( view.input.fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
+		expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
+	}
 } );

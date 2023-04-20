@@ -182,7 +182,8 @@ export default class ColorPickerView extends View {
 				const hashlessInput = trimmedValue.startsWith( '#' ) ? trimmedValue.substring( 1 ) : trimmedValue;
 
 				// Check if it's a hex color (3,4,6 or 8 chars long and with proper characters).
-				if ( /(?:[0-9a-fA-F]{3,4}){1,2}$/.test( hashlessInput ) ) {
+				if ( [ 3, 4, 6, 8 ].includes( hashlessInput.length ) &&
+					/(([0-9a-fA-F]{2}){3,4}|([0-9a-fA-F]){3,4})/.test( hashlessInput ) ) {
 					// If so, set the color.
 					// Otherwise, do nothing.
 					this._debounceColorPickerEvent( '#' + hashlessInput );
