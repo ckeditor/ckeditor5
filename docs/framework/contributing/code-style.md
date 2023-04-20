@@ -1045,7 +1045,7 @@ While importing a predefined build, only this build is allowed to be imported, l
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 ```
 
-Importing anything from the `src` directory, in order to extend a CKEditor 5 build, is not allowed. Other directories from a predefined builds are not published on npm, so such imports will not work.
+Importing anything from the `src` directory, in order to extend a CKEditor 5 build, is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
 
 👎&nbsp; Examples of an incorrect code for this rule:
 
