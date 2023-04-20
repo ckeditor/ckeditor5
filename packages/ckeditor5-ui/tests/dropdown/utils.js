@@ -831,6 +831,17 @@ describe( 'utils', () => {
 				expect( listItems.length ).to.equal( 0 );
 			} );
 
+			it( 'should set optional attributes for listview if provided', () => {
+				const dropdownView = createDropdown( locale );
+
+				addListToDropdown( dropdownView, definitions, { ariaLabel: 'foo', role: 'bar' } );
+
+				dropdownView.isOpen = true;
+
+				expect( dropdownView.listView.element.ariaLabel ).to.equal( 'foo' );
+				expect( dropdownView.listView.element.role ).to.equal( 'bar' );
+			} );
+
 			describe( 'with ButtonView', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {
