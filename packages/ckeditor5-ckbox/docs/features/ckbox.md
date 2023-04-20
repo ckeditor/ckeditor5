@@ -79,7 +79,7 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 
 These plugins are, by default, loaded with the predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
 
-Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, `LinkImageEditing`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefine builds, these need to be added manually.
+Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, `LinkImageEditing`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
