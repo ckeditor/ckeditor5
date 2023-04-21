@@ -34,7 +34,7 @@ describe( 'ColorPickerView', () => {
 		} );
 
 		it( 'should create input', () => {
-			const input = view.element.children[ 1 ];
+			const input = view.element.children[ 1 ].children[ 1 ];
 			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
 		} );
 
@@ -50,12 +50,12 @@ describe( 'ColorPickerView', () => {
 
 			clock.tick( 200 );
 
-			expect( view.input.fieldView.value ).to.equal( '#0000ff' );
+			expect( view.inputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
 		} );
 
 		it( 'should update color property after getting an input', () => {
-			view.input.fieldView.value = '#ff0000';
-			view.input.fieldView.fire( 'input' );
+			view.inputRow.children.get( 1 ).fieldView.value = '#ff0000';
+			view.inputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 			clock.tick( 200 );
 
@@ -143,15 +143,15 @@ describe( 'ColorPickerView', () => {
 			it( 'during input editing when focused', () => {
 				view.color = '#000000';
 
-				view.input.isFocused = true;
-				view.input.fieldView.value = '#ffffff';
-				view.input.fieldView.fire( 'input' );
+				view.inputRow.children.get( 1 ).isFocused = true;
+				view.inputRow.children.get( 1 ).fieldView.value = '#ffffff';
+				view.inputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 				view.color = '#aaaaaa';
 
 				clock.tick( 200 );
 
-				expect( view.input.fieldView.value ).to.equal( '#ffffff' );
+				expect( view.inputRow.children.get( 1 ).fieldView.value ).to.equal( '#ffffff' );
 			} );
 
 			describe( 'when set incorrect color', () => {
@@ -419,15 +419,16 @@ describe( 'ColorPickerView', () => {
 	} );
 
 	function testColorUpdateFromInput( options ) {
+		const fieldView = view.inputRow.children.get( 1 ).fieldView;
 		view.color = '#000000';
 
-		view.input.isFocused = true;
-		view.input.fieldView.value = options.inputValue;
-		view.input.fieldView.fire( 'input' );
+		fieldView.isFocused = true;
+		fieldView.value = options.inputValue;
+		fieldView.fire( 'input' );
 
 		clock.tick( 200 );
 
-		expect( view.input.fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
+		expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
 		expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
 	}
 } );

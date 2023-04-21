@@ -180,7 +180,7 @@ export default class ColorPickerView extends View {
 				// Imagine user typing hex code and getting the value of field changed.
 				return labeledInput.fieldView.value;
 			} else {
-				return pickerColor;
+				return pickerColor.startsWith( '#' ) ? pickerColor.substring( 1 ) : pickerColor;
 			}
 		} );
 
