@@ -32,6 +32,8 @@ Doing that will spare the users the pain of manually removing formatting every t
 
 To make it possible for the remove formatting feature to work with your custom content, you must first mark it in the {@link framework/architecture/editing-engine#schema schema}. All you need to do is set the `isFormatting` property on your custom {@link framework/architecture/editing-engine#text-attributes text attribute}.
 
+This is already done for most inline elements supported by the {@link features/html/general-html-support General HTML Support} plugin and its derivatives like {@link features/style Style} plugin.
+
 For instance, if you want the feature to remove {@link features/link links} as well (not supported by default), you need to create a {@link installation/getting-started/configuration#adding-simple-standalone-features simple plugin} that will extend the schema and tell the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
