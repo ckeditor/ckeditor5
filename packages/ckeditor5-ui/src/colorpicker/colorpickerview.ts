@@ -312,29 +312,16 @@ class ColorPickerInputRowView extends View {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
+	constructor( locale: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
-		this.set( 'class', options.class || null );
-
 		this.children = this.createCollection();
-
-		if ( options.children ) {
-			options.children.forEach( child => this.children.add( child ) );
-		}
 
 		this.set( '_role', null );
 
 		this.set( '_ariaLabelledBy', null );
-
-		if ( options.labelView ) {
-			this.set( {
-				_role: 'group',
-				_ariaLabelledBy: options.labelView.id
-			} );
-		}
 
 		this.setTemplate( {
 			tag: 'div',
