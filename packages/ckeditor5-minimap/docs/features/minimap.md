@@ -194,7 +194,7 @@ The minimap feature uses `<iframe>` internally. For a proper look and operation,
 
 The {@link module:minimap/minimap~Minimap} plugin registers:
 
-* The {@link module:minimap/minimap~MinimapConfig} &ndash; handles the configuration of the feature.
+* The {@link module:minimap/minimapconfig~MinimapConfig} &ndash; handles the configuration of the feature.
 * `minimapiframeview`
 * `minimappositiontrackerview`
 * `minimapview`
