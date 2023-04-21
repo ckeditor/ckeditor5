@@ -28,6 +28,10 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-5-from-
 	The {@link features/watchdog watchdog feature} is available for the {@link installation/frameworks/react React} and {@link installation/frameworks/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
+<info-box hint>
+	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check the details about {@link installation/working-with-typescript TypeScript support}.
+</info-box>
+
 ## Quick start
 
 Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}.
@@ -859,6 +863,18 @@ It sets the initial read–only state of the editor and changes it during its li
 		}
 	}
 </script>
+```
+
+### `disableTwoWayDataBinding`
+
+Allows disabling the two-way data binding mechanism. The default value is `false`.
+
+The reason for introducing this option is performance issues in large documents. After enabling this flag, the `v-model` directive will no longer update the connected value whenever the editor's data is changed.
+
+This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
+
+```html
+<ckeditor :editor="editor" :disableTwoWayDataBinding="true"></ckeditor>
 ```
 
 ## Component events

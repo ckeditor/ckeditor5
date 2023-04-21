@@ -78,6 +78,16 @@ describe( 'StyleCommand', () => {
 			name: 'Vibrant code block',
 			element: 'pre',
 			classes: [ 'vibrant-code' ]
+		},
+		{
+			name: 'Code (dark)',
+			element: 'pre',
+			classes: [ 'fancy-code', 'fancy-code-dark' ]
+		},
+		{
+			name: 'Code (bright)',
+			element: 'pre',
+			classes: [ 'fancy-code', 'fancy-code-bright' ]
 		}
 	];
 
@@ -479,6 +489,26 @@ describe( 'StyleCommand', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 			sinon.assert.calledWithMatch( stub, 'style-command-executed-with-incorrect-style-name' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11748
+		it( 'should keep classes of removed style if other active styles also use them', () => {
+			setData( model, '<codeBlock language="typescript">[]</codeBlock>' );
+
+			// Add light and dark themes
+			command.execute( { styleName: 'Code (bright)' } );
+			command.execute( { styleName: 'Code (dark)' } );
+
+			// Remove light theme
+			command.execute( { styleName: 'Code (bright)' } );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock ' +
+					'htmlAttributes="{"classes":["fancy-code","fancy-code-dark"]}" ' +
+					'language="typescript"' +
+				'>' +
+				'</codeBlock>'
+			);
 		} );
 
 		describe( 'inline styles', () => {

@@ -111,6 +111,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
 * {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 

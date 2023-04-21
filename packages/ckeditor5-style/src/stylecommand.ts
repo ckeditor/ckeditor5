@@ -18,6 +18,8 @@ import StyleUtils, {
 	type NormalizedStyleDefinitions
 } from './styleutils';
 
+type Definition = BlockStyleDefinition | InlineStyleDefinition;
+
 /**
  * Style command.
  *
@@ -176,11 +178,13 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		const definition: BlockStyleDefinition | InlineStyleDefinition = [
+		const allDefinitions: Array<Definition> = [
 			...this._styleDefinitions.inline,
 			...this._styleDefinitions.block
-		].find( ( { name } ) => name == styleName )!;
+		];
 
+		const activeDefinitions = allDefinitions.filter( ( { name } ) => this.value.includes( name ) );
+		const definition: Definition = allDefinitions.find( ( { name } ) => name == styleName )!;
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
 		model.change( () => {
@@ -196,7 +200,11 @@ export default class StyleCommand extends Command {
 				if ( shouldAddStyle ) {
 					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
 				} else {
-					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
+					htmlSupport.removeModelHtmlClass(
+						definition.element,
+						getDefinitionExclusiveClasses( activeDefinitions, definition ),
+						selectable
+					);
 				}
 			}
 		} );
@@ -264,8 +272,26 @@ export default class StyleCommand extends Command {
 }
 
 /**
+ * Returns classes that are defined only in the supplied definition and not in any other active definition. It's used
+ * to ensure that classes used by other definitions are preserved when a style is removed. See #11748.
+ *
+ * @param activeDefinitions All currently active definitions affecting selected element(s).
+ * @param definition Definition whose classes will be compared with all other active definition classes.
+ * @returns Array of classes exclusive to the supplied definition.
+ */
+function getDefinitionExclusiveClasses( activeDefinitions: Array<Definition>, definition: Definition ): Array<string> {
+	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: Definition ) => {
+		if ( currentDefinition.name === definition.name ) {
+			return classes;
+		}
+
+		return classes.filter( className => !currentDefinition.classes.includes( className ) );
+	}, definition.classes );
+}
+
+/**
  * Checks if provided style definition is of type block.
  */
-function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleDefinition ): definition is BlockStyleDefinition {
+function isBlockStyleDefinition( definition: Definition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
 }
