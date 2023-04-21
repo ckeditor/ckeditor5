@@ -150,20 +150,20 @@ export default class DataSchema extends Plugin {
 	 * @param modelName Data schema model name.
 	 */
 	private* _getReferences( modelName: string ): Iterable<DataSchemaDefinition> {
+		const inheritProperties = [
+			'inheritAllFrom',
+			'inheritTypesFrom',
+			'allowWhere',
+			'allowContentOf',
+			'allowAttributesOf'
+		] as const;
+
 		const definitions = this._definitions.filter( definition => definition.model == modelName );
 
 		for ( const { modelSchema } of definitions ) {
 			if ( !modelSchema ) {
 				continue;
 			}
-
-			const inheritProperties = [
-				'inheritAllFrom',
-				'inheritTypesFrom',
-				'allowWhere',
-				'allowContentOf',
-				'allowAttributesOf'
-			] as const;
 
 			for ( const property of inheritProperties ) {
 				for ( const referenceName of toArray( modelSchema[ property ] || [] ) ) {
