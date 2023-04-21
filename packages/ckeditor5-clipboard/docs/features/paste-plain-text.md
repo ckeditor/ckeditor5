@@ -43,7 +43,7 @@ npm install --save @ckeditor/ckeditor5-clipboard
 Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
 
 ```js
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

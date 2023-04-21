@@ -36,9 +36,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import { Table, TableCaption, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

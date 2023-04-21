@@ -58,7 +58,7 @@ npm install --save @ckeditor/ckeditor5-autoformat
 And add it to your plugin list:
 
 ```js
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

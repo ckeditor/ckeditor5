@@ -237,7 +237,7 @@ npm install --save @ckeditor/ckeditor5-style
 Then add it to the editor configuration:
 
 ```js
-import Style from '@ckeditor/ckeditor5-style/src/style';
+import { Style } from '@ckeditor/ckeditor5-style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

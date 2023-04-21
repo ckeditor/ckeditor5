@@ -109,8 +109,8 @@ Employ the following CSS:
 Finally, the JavaScript to run the editor (learn how to [install](#installation) the feature):
 
 ```js
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Minimap } from '@ckeditor/ckeditor5-minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
@@ -142,8 +142,8 @@ npm install --save @ckeditor/ckeditor5-minimap
 Then add the `Minimap` plugin to your plugin list and [configure](#configuration) it:
 
 ```js
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Minimap } from '@ckeditor/ckeditor5-minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
@@ -172,8 +172,8 @@ DecoupledEditor
 The container element is essential for the minimap to render. You should pass the reference to the container element in {@link module:minimap/minimapconfig~MinimapConfig#container `config.minimap.container`}. Note that it must have a fixed `width` and `overflow: hidden` when the editor is created:
 
 ```js
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Minimap } from '@ckeditor/ckeditor5-minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
