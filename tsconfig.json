@@ -11,6 +11,7 @@
     ],
     "noImplicitAny": true,
     "noImplicitOverride": true,
+	"noErrorTruncation": true,
     "strict": true,
     "module": "es6",
     "target": "es2019",

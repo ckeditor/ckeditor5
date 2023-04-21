@@ -24,7 +24,7 @@ export { default as ColorGridView, type ColorDefinition } from './colorgrid/colo
 export { default as ColorTileView } from './colorgrid/colortileview';
 
 export { default as ColorPickerView } from './colorpicker/colorpickerview';
-export type { ColorPickerConfig, ColorPickerFormat } from './colorpicker/utils';
+export type { ColorPickerConfig, ColorPickerOutputFormat as ColorPickerFormat } from './colorpicker/utils';
 
 export { default as ComponentFactory } from './componentfactory';
 

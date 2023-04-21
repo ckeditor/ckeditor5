@@ -13,11 +13,12 @@
 // @ts-ignore
 import { default as parse } from 'color-parse';
 import * as convert from 'color-convert';
+import type { RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY } from 'color-convert/conversions';
 
 /**
  * Color formats handled by color converter.
  */
-export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
+export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
 
 /**
  * Configuration of the color picker feature.
@@ -29,7 +30,7 @@ export type ColorPickerFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
  * }`
  */
 export type ColorPickerConfig = {
-	format?: ColorPickerFormat;
+	format?: ColorPickerOutputFormat;
 };
 
 /**
@@ -39,16 +40,14 @@ export type ColorPickerConfig = {
  * @param color
  * @returns A color string.
  */
-export function convertColor( color: string, outputFormat: ColorPickerFormat ): string {
+export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
 	if ( !color ) {
 		return '';
 	}
 
-	// Parser library treats `hex` format as belonging to `rgb` space, which messes up further conversion.
-	// Let's parse such strings on our own.
-	const colorObject = color.startsWith( '#' ) ? { space: 'hex', values: color.substring( 1 ) } : parse( color );
+	const colorObject = parseColorString( color );
 
-	if ( !colorObject.space ) {
+	if ( !colorObject ) {
 		return '';
 	}
 
@@ -56,14 +55,20 @@ export function convertColor( color: string, outputFormat: ColorPickerFormat ): 
 		return color;
 	}
 
-	// @ts-ignore
-	const conversionFunction = convert[ colorObject.space ][ outputFormat ];
-
-	if ( !conversionFunction ) {
+	if ( !canConvertParsedColor( colorObject ) ) {
 		return '';
 	}
 
-	const convertedColorChannels: Array<number> = conversionFunction( colorObject.values );
+	const fromColorSpace = convert[ colorObject.space ] as any;
+	const toColorSpace = fromColorSpace[ outputFormat ] as ConversionFunction;
+
+	if ( !toColorSpace ) {
+		return '';
+	}
+
+	const convertedColorChannels = toColorSpace(
+		colorObject.space === 'hex' ? colorObject.hexValue : colorObject.values
+	) as FormattableColor;
 
 	return formatColorOutput( convertedColorChannels, outputFormat );
 }
@@ -79,18 +84,17 @@ export function convertToHex( color: string ): string {
 		return '';
 	}
 
-	if ( color.startsWith( '#' ) ) {
-		return color;
-	}
+	const colorObject = parseColorString( color );
 
-	const colorObject = parse( color );
-
-	if ( !colorObject.space ) {
+	if ( !colorObject ) {
 		return '#000';
 	}
 
-	// @ts-ignore
-	return '#' + convert[ colorObject.space ].hex( colorObject.values );
+	if ( colorObject.space === 'hex' ) {
+		return colorObject.hexValue;
+	}
+
+	return convertColor( color, 'hex' );
 }
 
 /**
@@ -100,7 +104,7 @@ export function convertToHex( color: string ): string {
  * @param format
  * @returns A color string.
  */
-function formatColorOutput( values: Array<number> | string, format: ColorPickerFormat ): string {
+function formatColorOutput( values: FormattableColor, format: ColorPickerOutputFormat ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
 		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
@@ -111,4 +115,52 @@ function formatColorOutput( values: Array<number> | string, format: ColorPickerF
 
 		default: return '';
 	}
+}
+
+type ConverterInput = RGB | HSL | HSV | HWB | CMYK | XYZ | LAB | LCH | HEX | KEYWORD | ANSI16 | ANSI256 | HCG | APPLE | GRAY;
+type FormattableColor = HEX | RGB | HSL | HWB | LAB | LCH;
+
+type CoverterInputSpaces = typeof convert;
+type ConversionFunction = ( value: ConverterInput ) => FormattableColor;
+
+type ParserColorSpaces =
+	'rgb' | 'hsl' | 'hsv' | 'hsb' | 'hwb' | 'cmy' | 'cmyk' | 'xyz' | 'xyy' | 'gray' | 'lab' | 'lch' | 'lchu' | 'lchv' | 'lchuv' |
+	'luv' | 'yuv' | 'lms' | 'hex';
+
+type ParsedColor<T extends ParserColorSpaces> = {
+	readonly space: T;
+	readonly alpha: number;
+	readonly values: T extends 'cmyk' ? [ number, number, number, number ] : [ number, number, number ];
+	readonly hexValue: T extends 'hex' ? string : never;
+};
+
+type ConvertableParsedColor = ParsedColor<ParserColorSpaces> & {
+	readonly space: keyof CoverterInputSpaces;
+};
+
+function parseColorString( colorString: string ): ParsedColor<ParserColorSpaces> | null {
+	// Parser library treats `hex` format as belonging to `rgb` space | which messes up further conversion.
+	// Let's parse such strings on our own.
+	if ( colorString.startsWith( '#' ) ) {
+		const parsedHex = parse( colorString );
+
+		return {
+			space: 'hex',
+			values: parsedHex.values,
+			hexValue: colorString,
+			alpha: parsedHex.alpha
+		};
+	}
+
+	const parsed = parse( colorString );
+
+	if ( !parsed.space ) {
+		return null;
+	}
+
+	return parsed;
+}
+
+function canConvertParsedColor( parsedColor: ParsedColor<ParserColorSpaces> ): parsedColor is ConvertableParsedColor {
+	return Object.keys( convert ).includes( parsedColor.space );
 }
