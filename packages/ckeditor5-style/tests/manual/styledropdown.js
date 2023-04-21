@@ -310,6 +310,16 @@ ClassicEditor
 					name: 'code.Qux',
 					element: 'code',
 					classes: [ 'Qux' ]
+				},
+				{
+					name: 'Code (dark)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
 				}
 			]
 		}
