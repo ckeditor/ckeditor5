@@ -15,6 +15,7 @@ import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
 import type ViewCollection from '../viewcollection';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
+import type LabelView from '../label/labelview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
 import 'vanilla-colorful/hex-color-picker.js';
@@ -31,7 +32,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * Input to defining custom colors in HEX.
 	 */
-	declare public input: LabeledFieldView<InputTextView>;
+	declare public inputRow: ColorPickerInputRowView;
 
 	/**
 	 * Current color state in color picker.
@@ -73,10 +74,10 @@ export default class ColorPickerView extends View {
 
 		this._format = config.format || 'hsl';
 
-		this.input = this._createInput();
+		this.inputRow = this._createInputRow();
 
 		const children = this.createCollection();
-		children.add( this.input );
+		children.add( this.inputRow );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -124,7 +125,7 @@ export default class ColorPickerView extends View {
 		this._createSlidersView();
 
 		if ( this.element ) {
-			this.element.insertBefore( this.picker, this.input.element );
+			this.element.insertBefore( this.picker, this.inputRow.element );
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
@@ -151,8 +152,20 @@ export default class ColorPickerView extends View {
 		} );
 	}
 
-	// Creates input for defining custom colors in color picker.
-	private _createInput(): LabeledFieldView<InputTextView> {
+	// Creates input row for defining custom colors in color picker.
+	private _createInputRow(): ColorPickerInputRowView {
+		const row = new ColorPickerInputRowView( this.locale! );
+		const hashView = new HashView();
+		const colorInput = this._createColorInput();
+
+		row.children.add( hashView );
+		row.children.add( colorInput );
+
+		return row;
+	}
+
+	// Creates the input where user can type or paste the color in hex format.
+	private _createColorInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const { t } = this.locale!;
 
@@ -171,6 +184,7 @@ export default class ColorPickerView extends View {
 			}
 		} );
 
+		// Only accept valid hex colors as input.
 		labeledInput.fieldView.on( 'input', () => {
 			const inputValue = labeledInput.fieldView.element!.value;
 
@@ -196,20 +210,6 @@ export default class ColorPickerView extends View {
 }
 
 /**
- * View abstraction over pointer in color picker.
- */
-class SliderView extends View {
-	constructor( element: HTMLElement ) {
-		super();
-		this.element = element;
-	}
-
-	public focus(): void {
-		this.element!.focus();
-	}
-}
-
-/**
  * Converts any color format to a unified hex format.
  *
  * @param inputColor
@@ -228,4 +228,126 @@ function convertColorToCommonHexFormat( inputColor: string ): string {
 	}
 
 	return ret.toLowerCase();
+}
+
+/**
+ * View abstraction over pointer in color picker.
+ */
+class SliderView extends View {
+	constructor( element: HTMLElement ) {
+		super();
+		this.element = element;
+	}
+
+	public focus(): void {
+		this.element!.focus();
+	}
+}
+
+/**
+ * View abstaction over the `#` character before color input.
+ */
+class HashView extends View {
+	constructor( locale?: Locale ) {
+		super( locale );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-color-picker__hash-view'
+				]
+			},
+			children: '#'
+		} );
+	}
+}
+
+/**
+ * The class representing a single row in a complex form.
+ *
+ * **Note**: For now this class is private. When more use cases appear (beyond `ckeditor5-table` and `ckeditor5-image`),
+ * it will become a component in `ckeditor5-ui`.
+ *
+ * @private
+ */
+class ColorPickerInputRowView extends View {
+	/**
+	 * An additional CSS class added to the {@link #element}.
+	 *
+	 * @observable
+	 */
+	declare public class: string | null;
+
+	/**
+	 * A collection of row items (buttons, dropdowns, etc.).
+	 */
+	public readonly children: ViewCollection;
+
+	/**
+	 * The role property reflected by the `role` DOM attribute of the {@link #element}.
+	 *
+	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
+	 *
+	 * @observable
+	 * @private
+	 */
+	declare public _role: string | null;
+
+	/**
+	 * The ARIA property reflected by the `aria-labelledby` DOM attribute of the {@link #element}.
+	 *
+	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
+	 *
+	 * @observable
+	 * @private
+	 */
+	declare public _ariaLabelledBy: string | null;
+
+	/**
+	 * Creates an instance of the form row class.
+	 *
+	 * @param locale The locale instance.
+	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
+	 * DOM attributes and gets described by the label.
+	 */
+	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
+		super( locale );
+
+		const bind = this.bindTemplate;
+
+		this.set( 'class', options.class || null );
+
+		this.children = this.createCollection();
+
+		if ( options.children ) {
+			options.children.forEach( child => this.children.add( child ) );
+		}
+
+		this.set( '_role', null );
+
+		this.set( '_ariaLabelledBy', null );
+
+		if ( options.labelView ) {
+			this.set( {
+				_role: 'group',
+				_ariaLabelledBy: options.labelView.id
+			} );
+		}
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-color-picker__row',
+					bind.to( 'class' )
+				],
+				role: bind.to( '_role' ),
+				'aria-labelledby': bind.to( '_ariaLabelledBy' )
+			},
+			children: this.children
+		} );
+	}
 }
