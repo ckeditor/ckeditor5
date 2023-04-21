@@ -158,7 +158,7 @@ describe( 'ColorUI', () => {
 			const localDropdown = editor.ui.componentFactory.create( 'testColor' );
 			localDropdown.render();
 
-			for ( const item of localDropdown.colorTableView.items ) {
+			for ( const item of localDropdown.colorTableView.colorTableComponentChildren ) {
 				expect( item ).not.to.be.instanceOf( ColorGridView );
 			}
 		} );
@@ -368,7 +368,7 @@ describe( 'ColorUI', () => {
 				const colorTableView = dropdown.colorTableView;
 
 				expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
-				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
+				expect( colorTableView.colorTableComponentChildren.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
 			describe( 'works for', () => {
@@ -398,7 +398,7 @@ describe( 'ColorUI', () => {
 				colors.forEach( test => {
 					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
 						dropdown.isOpen = true;
-						const colorGrid = dropdown.colorTableView.items.get( 1 );
+						const colorGrid = dropdown.colorTableView.colorTableComponentChildren.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
 						expect( tile.label ).to.equal( test.label );

@@ -101,7 +101,7 @@ describe( 'ColorTableView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create items collection', () => {
-			expect( colorTableView.items ).to.be.instanceOf( ViewCollection );
+			expect( colorTableView.colorTableComponentChildren ).to.be.instanceOf( ViewCollection );
 		} );
 
 		it( 'should store colors\' definitions', () => {
@@ -151,7 +151,94 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 5 );
+			expect( colorTableView.colorTableComponentChildren.length ).to.equal( 4 );
+		} );
+
+		it( 'should have 1 component if there is no color picker', () => {
+			expect( colorTableView.components.length ).to.equal( 1 );
+		} );
+
+		it( 'should have 2 component if there is color picker', () => {
+			colorTableView.appendColorPicker( {} );
+			expect( colorTableView.components.length ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'ColorTableView components', () => {
+		beforeEach( () => {
+			colorTableView.appendColorPicker( {} );
+		} );
+
+		describe( 'ColorTableComponent', () => {
+			it( 'should have proper classname', () => {
+				const colorTable = colorTableView.colorTableComponent;
+				expect( colorTable.element.classList.contains( 'ck-color-table-component' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'ColorPickerComponent', () => {
+			it( 'should have proper classname', () => {
+				const colorPicker = colorTableView.colorPickerComponent;
+				expect( colorPicker.element.classList.contains( 'ck-color-picker-component' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'showColorTable()', () => {
+			it( 'color picker should be hidden', () => {
+				colorTableView.showColorTable();
+
+				expect( colorTableView.colorPickerComponent.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			it( 'color picker should be hidden by default', () => {
+				expect( colorTableView.colorPickerComponent.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			describe( '#isColorTableVisible', () => {
+				it( 'should be set on true', () => {
+					// should be set on true by defualt
+					expect( colorTableView.isColorTableVisible ).to.be.true;
+
+					colorTableView.showColorTable();
+
+					expect( colorTableView.isColorTableVisible ).to.be.true;
+				} );
+			} );
+
+			describe( '#isColorPickerVisible', () => {
+				it( 'should be set on false', () => {
+					// should be set on false by defualt
+					expect( colorTableView.isColorPickerVisible ).to.be.false;
+
+					colorTableView.showColorTable();
+
+					expect( colorTableView.isColorPickerVisible ).to.be.false;
+				} );
+			} );
+		} );
+
+		describe( 'showColorPicker()', () => {
+			it( 'color table should be hidden', () => {
+				colorTableView.showColorPicker();
+
+				expect( colorTableView.colorTableComponent.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			describe( '#isColorPickerVisible', () => {
+				it( 'should be set on true', () => {
+					colorTableView.showColorPicker();
+
+					expect( colorTableView.isColorPickerVisible ).to.be.true;
+				} );
+			} );
+
+			describe( '#isColorTableVisible', () => {
+				it( 'should be set on false', () => {
+					colorTableView.showColorPicker();
+
+					expect( colorTableView.isColorTableVisible ).to.be.false;
+				} );
+			} );
 		} );
 	} );
 
@@ -159,7 +246,7 @@ describe( 'ColorTableView', () => {
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendGrids();
 			colorTableView.appendGrids();
-			expect( colorTableView.items.length ).to.equal( 5 );
+			expect( colorTableView.colorTableComponentChildren.length ).to.equal( 4 );
 		} );
 	} );
 
@@ -200,10 +287,6 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
 		} );
 
-		it( 'adds a color picker to items list', () => {
-			expect( colorTableView.items.length ).to.equal( 7 );
-		} );
-
 		it( 'binds container\'s selected color to the color picker\'s color', () => {
 			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
 			expect( colorTableView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
@@ -212,7 +295,8 @@ describe( 'ColorTableView', () => {
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendColorPicker( {} );
 			colorTableView.appendColorPicker( {} );
-			expect( colorTableView.items.length ).to.equal( 7 );
+
+			expect( colorTableView.colorPickerComponentChildren.length ).to.equal( 2 );
 		} );
 
 		it( 'should navigate forwards using the Tab key', () => {
@@ -222,11 +306,13 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
+			colorTableView.colorPickerButtonView.fire( 'execute' );
+
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
-			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerButtonView.element;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerView.slidersView.first.element;
 
-			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.first, 'focus' );
+			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.get( 1 ), 'focus' );
 
 			colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -241,6 +327,8 @@ describe( 'ColorTableView', () => {
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
+
+			colorTableView.colorPickerButtonView.fire( 'execute' );
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
@@ -325,7 +413,7 @@ describe( 'ColorTableView', () => {
 
 				// Mock the remove color button is focused.
 				colorTableView.focusTracker.isFocused = true;
-				colorTableView.focusTracker.focusedElement = colorTableView.items.get( 0 ).element;
+				colorTableView.focusTracker.focusedElement = colorTableView.removeColorButtonView.element;
 
 				const spy = sinon.spy( colorTableView.staticColorsGrid, 'focus' );
 
@@ -345,9 +433,9 @@ describe( 'ColorTableView', () => {
 
 				// Mock the remove color button is focused.
 				colorTableView.focusTracker.isFocused = true;
-				colorTableView.focusTracker.focusedElement = colorTableView.items.get( 0 ).element;
+				colorTableView.focusTracker.focusedElement = colorTableView.removeColorButtonView.element;
 
-				const spy = sinon.spy( colorTableView.colorPickerButtonView, 'focus' );
+				const spy = sinon.spy( colorTableView.documentColorsGrid, 'focus' );
 
 				colorTableView.keystrokes.press( keyEvtData );
 
@@ -362,7 +450,7 @@ describe( 'ColorTableView', () => {
 		let removeButton;
 
 		beforeEach( () => {
-			removeButton = colorTableView.items.first;
+			removeButton = colorTableView.colorTableComponentChildren.first;
 		} );
 
 		it( 'should have proper class', () => {
@@ -437,7 +525,7 @@ describe( 'ColorTableView', () => {
 		let staticColorTable;
 
 		beforeEach( () => {
-			staticColorTable = colorTableView.items.get( 1 );
+			staticColorTable = colorTableView.colorTableComponentChildren.get( 1 );
 		} );
 
 		it( 'should have added 3 children from definition', () => {
@@ -494,7 +582,7 @@ describe( 'ColorTableView', () => {
 
 			beforeEach( () => {
 				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.items.get( 3 );
+				documentColorsGridView = colorTableView.documentColorsGrid;
 			} );
 
 			describe( 'model manipulation', () => {
@@ -615,7 +703,7 @@ describe( 'ColorTableView', () => {
 			} );
 
 			it( 'should not add document colors grid to the view', () => {
-				expect( colorTableView.items.length ).to.equal( 2 );
+				expect( colorTableView.colorTableComponentChildren.length ).to.equal( 2 );
 				expect( colorTableView.documentColors.length ).to.equal( 0 );
 				expect( colorTableView.documentColorsCount ).to.equal( 0 );
 			} );
