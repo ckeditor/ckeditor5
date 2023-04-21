@@ -21,121 +21,99 @@ import type DowncastWriter from './downcastwriter';
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
- *
- * @mixes module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Document extends BubblingEmitterMixin( ObservableMixin() ) {
+	/**
+	 * Selection done on this document.
+	 */
 	public readonly selection: DocumentSelection;
+
+	/**
+	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
+	 *
+	 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
+	 * {@link module:engine/model/document~Document#roots} and this is handled by
+	 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
+	 * model root using {@link module:engine/model/document~Document#createRoot}.
+	 */
 	public readonly roots: Collection<RootEditableElement>;
+
+	/**
+	 * The styles processor instance used by this document when normalizing styles.
+	 */
 	public readonly stylesProcessor: StylesProcessor;
 
+	/**
+	 * Defines whether document is in read-only mode.
+	 *
+	 * When document is read-ony then all roots are read-only as well and caret placed inside this root is hidden.
+	 *
+	 * @observable
+	 */
 	declare public isReadOnly: boolean;
+
+	/**
+	 * True if document is focused.
+	 *
+	 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
+	 * If the {@link module:engine/view/observer/focusobserver~FocusObserver} is disabled this property will not change.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isFocused: boolean;
+
+	/**
+	 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
+	 * When they stop selecting, the property goes back to `false`.
+	 *
+	 * This property is updated by the {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isSelecting: boolean;
+
+	/**
+	 * True if composition is in progress inside the document.
+	 *
+	 * This property is updated by the {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+	 * If the {@link module:engine/view/observer/compositionobserver~CompositionObserver} is disabled this property will not change.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public isComposing: boolean;
 
-	private readonly _postFixers: Set<ViewDocumentPostFixer>;
+	/**
+	 * Post-fixer callbacks registered to the view document.
+	 */
+	private readonly _postFixers = new Set<ViewDocumentPostFixer>();
 
 	/**
 	 * Creates a Document instance.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
+	 * @param stylesProcessor The styles processor instance.
 	 */
 	constructor( stylesProcessor: StylesProcessor ) {
 		super();
 
-		/**
-		 * Selection done on this document.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/documentselection~DocumentSelection} module:engine/view/document~Document#selection
-		 */
 		this.selection = new DocumentSelection();
-
-		/**
-		 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
-		 *
-		 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
-		 * {@link module:engine/model/document~Document#roots} and this is handled by
-		 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
-		 * model root using {@link module:engine/model/document~Document#createRoot}.
-		 *
-		 * @readonly
-		 * @member {module:utils/collection~Collection} module:engine/view/document~Document#roots
-		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
-
-		/**
-		 * The styles processor instance used by this document when normalizing styles.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
 		this.stylesProcessor = stylesProcessor;
 
-		/**
-		 * Defines whether document is in read-only mode.
-		 *
-		 * When document is read-ony then all roots are read-only as well and caret placed inside this root is hidden.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
 		this.set( 'isReadOnly', false );
-
-		/**
-		 * True if document is focused.
-		 *
-		 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
-		 * If the {@link module:engine/view/observer/focusobserver~FocusObserver} is disabled this property will not change.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} module:engine/view/document~Document#isFocused
-		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
-		 * When they stop selecting, the property goes back to `false`.
-		 *
-		 * This property is updated by the {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} module:engine/view/document~Document#isSelecting
-		 */
 		this.set( 'isSelecting', false );
-
-		/**
-		 * True if composition is in progress inside the document.
-		 *
-		 * This property is updated by the {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
-		 * If the {@link module:engine/view/observer/compositionobserver~CompositionObserver} is disabled this property will not change.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} module:engine/view/document~Document#isComposing
-		 */
 		this.set( 'isComposing', false );
-
-		/**
-		 * Post-fixer callbacks registered to the view document.
-		 *
-		 * @private
-		 * @member {Set}
-		 */
-		this._postFixers = new Set();
 	}
 
 	/**
 	 * Gets a {@link module:engine/view/document~Document#roots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
-	 * @param {String} [name='main'] Name of the root.
-	 * @returns {module:engine/view/rooteditableelement~RootEditableElement|null} The view root element with the specified name
-	 * or null when there is no root of given name.
+	 * @param name Name of the root.
+	 * @returns The view root element with the specified name or null when there is no root of given name.
 	 */
 	public getRoot( name: string = 'main' ): RootEditableElement | null {
 		return this.roots.get( name );
@@ -169,14 +147,16 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 *
 	 * Typically, a post-fixer will look like this:
 	 *
-	 *		editor.editing.view.document.registerPostFixer( writer => {
-	 *			if ( checkSomeCondition() ) {
-	 *				writer.doSomething();
+	 * ```ts
+	 * editor.editing.view.document.registerPostFixer( writer => {
+	 * 	if ( checkSomeCondition() ) {
+	 * 		writer.doSomething();
 	 *
-	 *				// Let other post-fixers know that something changed.
-	 *				return true;
-	 *			}
-	 *		} );
+	 * 		// Let other post-fixers know that something changed.
+	 * 		return true;
+	 * 	}
+	 * } );
+	 * ```
 	 *
 	 * Note that nothing happens right after you register a post-fixer (e.g. execute such a code in the console).
 	 * That is because adding a post-fixer does not execute it.
@@ -186,8 +166,6 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 *
 	 * If you need to register a callback which is executed when DOM elements are already updated,
 	 * use {@link module:engine/view/view~View#event:render render event}.
-	 *
-	 * @param {Function} postFixer
 	 */
 	public registerPostFixer( postFixer: ViewDocumentPostFixer ): void {
 		this._postFixers.add( postFixer );
@@ -204,8 +182,7 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	/**
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
-	 * @protected
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @internal
 	 */
 	public _callPostFixers( writer: DowncastWriter ): void {
 		let wasFixed = false;
@@ -221,19 +198,16 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 		} while ( wasFixed );
 	}
 
-	/**
-	 * Event fired whenever document content layout changes. It is fired whenever content is
-	 * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
-	 * other actions which may change layout, for instance when image loads.
-	 *
-	 * @event layoutChanged
-	 */
-
-	// @if CK_DEBUG_ENGINE // log( version ) {
-	// @if CK_DEBUG_ENGINE //	logDocument( this, version );
+	// @if CK_DEBUG_ENGINE // public log( version: any ): void {
+	// @if CK_DEBUG_ENGINE // 	logDocument( this, version );
 	// @if CK_DEBUG_ENGINE // }
 }
 
+/**
+ * Document PostFixer.
+ *
+ * @see module:engine/view/document~Document#registerPostFixer
+ */
 export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
 
 /**
@@ -249,6 +223,13 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  */
 export type ChangeType = 'children' | 'attributes' | 'text';
 
+/**
+ * Event fired whenever document content layout changes. It is fired whenever content is
+ * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
+ * other actions which may change layout, for instance when image loads.
+ *
+ * @eventName ~Document#layoutChanged
+ */
 export type ViewDocumentLayoutChangedEvent = {
 	name: 'layoutChanged';
 	args: [];

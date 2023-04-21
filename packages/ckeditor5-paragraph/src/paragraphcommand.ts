@@ -14,8 +14,6 @@ import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ck
 
 /**
  * The paragraph command.
- *
- * @extends module:core/command~Command
  */
 export default class ParagraphCommand extends Command {
 	/**
@@ -23,7 +21,6 @@ export default class ParagraphCommand extends Command {
 	 *
 	 * @readonly
 	 * @observable
-	 * @member {Boolean} #value
 	 */
 	declare public value: boolean;
 
@@ -44,10 +41,9 @@ export default class ParagraphCommand extends Command {
 	 * will be turned to paragraphs.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} [options.selection]
-	 * The selection that the command should be applied to.
-	 * By default, if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
+	 * @param options Options for the executed command.
+	 * @param options.selection The selection that the command should be applied to. By default,
+	 * if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
 	 */
 	public override execute( options: {
 		selection?: Selection | DocumentSelection;
@@ -67,12 +63,12 @@ export default class ParagraphCommand extends Command {
 	}
 }
 
-// Checks whether the given block can be replaced by a paragraph.
-//
-// @private
-// @param {module:engine/model/element~Element} block A block to be tested.
-// @param {module:engine/model/schema~Schema} schema The schema of the document.
-// @returns {Boolean}
-function checkCanBecomeParagraph( block: Element, schema: Schema ) {
+/**
+ * Checks whether the given block can be replaced by a paragraph.
+ *
+ * @param block A block to be tested.
+ * @param schema The schema of the document.
+ */
+function checkCanBecomeParagraph( block: Element, schema: Schema ): boolean {
 	return schema.checkChild( block.parent as Element, 'paragraph' ) && !schema.isObject( block );
 }

@@ -9,10 +9,10 @@ The basic styles feature lets you apply the most essential formatting such as bo
 
 ## Demo
 
-You may apply basic formatting options with toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one of these to format the text:
-* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`
-* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`
-* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
+You may apply basic formatting options with toolbar buttons. You can also make use of the {@link features/autoformat autoformatting feature} that changes Markdown code to formatted text as you type. Use one of these to format text:
+* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`.
+* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`.
+* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```.
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
 {@snippet features/basic-styles}
@@ -111,6 +111,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
 * {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 

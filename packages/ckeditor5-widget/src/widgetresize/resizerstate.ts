@@ -13,139 +13,143 @@ import type { ResizerOptions } from '../widgetresize';
 
 /**
  * Stores the internal state of a single resizable object.
- *
  */
 export default class ResizeState extends ObservableMixin() {
+	/**
+	 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
+	 * if unknown.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public activeHandlePosition: string | null;
+
+	/**
+	 * The width (percents) proposed, but not committed yet, in the current resize process.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public proposedWidthPercents: number | null;
+
+	/**
+	 * The width (pixels) proposed, but not committed yet, in the current resize process.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public proposedWidth: number | null;
+
+	/**
+	 * The height (pixels) proposed, but not committed yet, in the current resize process.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public proposedHeight: number | null;
+
+	/**
+	 * @readonly
+	 * @observable
+	 */
 	declare public proposedHandleHostWidth: number | null;
+
+	/**
+	 * @readonly
+	 * @observable
+	 */
 	declare public proposedHandleHostHeight: number | null;
 
 	/**
+	 * The reference point of the resizer where the dragging started. It is used to measure the distance the user cursor
+	 * traveled, so how much the image should be enlarged.
+	 * This information is only known after the DOM was rendered, so it will be updated later.
+	 *
 	 * @internal
 	 */
 	public _referenceCoordinates: { x: number; y: number } | null;
 
+	/**
+	 * Resizer options.
+	 */
 	private readonly _options: ResizerOptions;
+
+	/**
+	 * The original width (pixels) of the resized object when the resize process was started.
+	 *
+	 * @readonly
+	 */
 	private _originalWidth?: number;
+
+	/**
+	 * The original height (pixels) of the resized object when the resize process was started.
+	 *
+	 * @readonly
+	 */
 	private _originalHeight?: number;
+
+	/**
+	 * The original width (percents) of the resized object when the resize process was started.
+	 *
+	 * @readonly
+	 */
 	private _originalWidthPercents?: number;
+
+	/**
+	 * A width to height ratio of the resized image.
+	 *
+	 * @readonly
+	 */
 	private _aspectRatio?: number;
 
 	/**
-	 * @param {module:widget/widgetresize~ResizerOptions} options Resizer options.
+	 * @param options Resizer options.
 	 */
 	constructor( options: ResizerOptions ) {
 		super();
 
-		/**
-		 * The original width (pixels) of the resized object when the resize process was started.
-		 *
-		 * @readonly
-		 * @member {Number} #originalWidth
-		 */
-
-		/**
-		 * The original height (pixels) of the resized object when the resize process was started.
-		 *
-		 * @readonly
-		 * @member {Number} #originalHeight
-		 */
-
-		/**
-		 * The original width (percents) of the resized object when the resize process was started.
-		 *
-		 * @readonly
-		 * @member {Number} #originalWidthPercents
-		 */
-
-		/**
-		 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
-		 * if unknown.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {String|null} #activeHandlePosition
-		 */
 		this.set( 'activeHandlePosition', null );
-
-		/**
-		 * The width (percents) proposed, but not committed yet, in the current resize process.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #proposedWidthPercents
-		 */
 		this.set( 'proposedWidthPercents', null );
-
-		/**
-		 * The width (pixels) proposed, but not committed yet, in the current resize process.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #proposedWidthPixels
-		 */
 		this.set( 'proposedWidth', null );
-
-		/**
-		 * The height (pixels) proposed, but not committed yet, in the current resize process.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #proposedHeightPixels
-		 */
 		this.set( 'proposedHeight', null );
-
 		this.set( 'proposedHandleHostWidth', null );
 		this.set( 'proposedHandleHostHeight', null );
 
-		/**
-		 * A width to height ratio of the resized image.
-		 *
-		 * @readonly
-		 * @member {Number} #aspectRatio
-		 */
-
-		/**
-		 * @private
-		 * @type {module:widget/widgetresize~ResizerOptions}
-		 */
 		this._options = options;
-
-		/**
-		 * The reference point of the resizer where the dragging started. It is used to measure the distance the user cursor
-		 * traveled, so how much the image should be enlarged.
-		 * This information is only known after the DOM was rendered, so it will be updated later.
-		 *
-		 * @private
-		 * @type {Object}
-		 */
 		this._referenceCoordinates = null;
 	}
 
+	/**
+	 * The original width (pixels) of the resized object when the resize process was started.
+	 */
 	public get originalWidth(): number | undefined {
 		return this._originalWidth;
 	}
 
+	/**
+	 * The original height (pixels) of the resized object when the resize process was started.
+	 */
 	public get originalHeight(): number | undefined {
 		return this._originalHeight;
 	}
 
+	/**
+	 * The original width (percents) of the resized object when the resize process was started.
+	 */
 	public get originalWidthPercents(): number | undefined {
 		return this._originalWidthPercents;
 	}
 
+	/**
+	 * A width to height ratio of the resized image.
+	 */
 	public get aspectRatio(): number | undefined {
 		return this._aspectRatio;
 	}
 
 	/**
 	 *
-	 * @param {HTMLElement} domResizeHandle The handle used to calculate the reference point.
-	 * @param {HTMLElement} domHandleHost
-	 * @param {HTMLElement} domResizeHost
+	 * @param domResizeHandle The handle used to calculate the reference point.
 	 */
 	public begin( domResizeHandle: HTMLElement, domHandleHost: HTMLElement, domResizeHost: HTMLElement ): void {
 		const clientRect = new Rect( domHandleHost );
@@ -184,28 +188,43 @@ export default class ResizeState extends ObservableMixin() {
 	}
 }
 
-// Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
-//
-// @private
-// @param {HTMLElement} domResizeHost
-// @param {module:utils/dom/rect~Rect} resizeHostRect
-// @returns {Number}
+/**
+ * Calculates a relative width of a `domResizeHost` compared to its ancestor in percents.
+ */
 function calculateHostPercentageWidth( domResizeHost: HTMLElement, resizeHostRect: Rect ) {
 	const domResizeHostParent = domResizeHost.parentElement;
+
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
-	const parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
+	let parentWidth = parseFloat( domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( domResizeHostParent! ).width );
+
+	// Sometimes parent width cannot be accessed. If that happens we should go up in the elements tree
+	// and try to get width from next ancestor.
+	// https://github.com/ckeditor/ckeditor5/issues/10776
+	const ancestorLevelLimit = 5;
+	let currentLevel = 0;
+
+	let checkedElement = domResizeHostParent!;
+
+	while ( isNaN( parentWidth ) ) {
+		checkedElement = checkedElement.parentElement!;
+
+		if ( ++currentLevel > ancestorLevelLimit ) {
+			return 0;
+		}
+
+		parentWidth = parseFloat(
+				domResizeHostParent!.ownerDocument.defaultView!.getComputedStyle( checkedElement ).width
+		);
+	}
 
 	return resizeHostRect.width / parentWidth * 100;
 }
 
-// Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
-//
-// @private
-// @param {HTMLElement} element
-// @param {String} resizerPosition The position of the resize handle, e.g. `"top-left"`, `"bottom-right"`.
-// @returns {Object} return
-// @returns {Number} return.x
-// @returns {Number} return.y
+/**
+ * Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
+ *
+ * @param resizerPosition The position of the resize handle, e.g. `"top-left"`, `"bottom-right"`.
+ */
 function getAbsoluteBoundaryPoint( element: HTMLElement, resizerPosition: string ) {
 	const elementRect = new Rect( element );
 	const positionParts = resizerPosition.split( '-' );
@@ -220,18 +239,20 @@ function getAbsoluteBoundaryPoint( element: HTMLElement, resizerPosition: string
 	return ret;
 }
 
-// @private
-// @param {String} resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
-// @returns {String} A prefixed HTML class name for the resizer element.
+/**
+ * @param resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
+ * @returns A prefixed HTML class name for the resizer element.
+ */
 function getResizerHandleClass( resizerPosition: string ) {
 	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
-// Determines the position of a given resize handle.
-//
-// @private
-// @param {HTMLElement} domHandle Handle used to calculate the reference point.
-// @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
+/**
+ * Determines the position of a given resize handle.
+ *
+ * @param domHandle Handle used to calculate the reference point.
+ * @returns Returns a string like `"top-left"` or `undefined` if not matched.
+ */
 function getHandlePosition( domHandle: HTMLElement ) {
 	const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
@@ -242,9 +263,10 @@ function getHandlePosition( domHandle: HTMLElement ) {
 	}
 }
 
-// @private
-// @param {String} position Like `"top-left"`.
-// @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
+/**
+ * @param position Like `"top-left"`.
+ * @returns Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
+ */
 function getOppositePosition( position: string ) {
 	const parts = position.split( '-' );
 	const replacements: Record<string, string> = {

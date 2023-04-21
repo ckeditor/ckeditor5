@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-
 /**
  * @module ui/colorgrid/utils
  */
+
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 export type ColorOption = string | {
 	color: string;
@@ -35,9 +35,7 @@ export interface NormalizedColorOption {
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
  * when the user configuration is defined because the editor does not exist yet.
  *
- * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
- * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options
- * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}.
+ * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
  */
 export function getLocalizedColorOptions(
 	locale: Locale,
@@ -76,9 +74,6 @@ export function getLocalizedColorOptions(
 /**
  * Creates a unified color definition object from color configuration options.
  * The object contains the information necessary to both render the UI and initialize the conversion.
- *
- * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options
- * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
 export function normalizeColorOptions( options: Array<ColorOption> ): Array<NormalizedColorOption> {
 	return options
@@ -86,13 +81,12 @@ export function normalizeColorOptions( options: Array<ColorOption> ): Array<Norm
 		.filter( option => !!option );
 }
 
-// Creates a normalized color definition from the user-defined configuration.
-// The "normalization" means it will create full
-// {@link module:ui/colorgrid/colorgrid~ColorDefinition `ColorDefinition-like`}
-// object for string values, and add a `view` property, for each definition.
-//
-// @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
-// @returns {module:ui/colorgrid/colorgrid~ColorDefinition}
+/**
+ * Creates a normalized color definition from the user-defined configuration.
+ * The "normalization" means it will create full
+ * {@link module:ui/colorgrid/colorgridview~ColorDefinition `ColorDefinition-like`}
+ * object for string values, and add a `view` property, for each definition.
+ */
 export function normalizeSingleColorDefinition( color: ColorOption ): NormalizedColorOption {
 	if ( typeof color === 'string' ) {
 		return {

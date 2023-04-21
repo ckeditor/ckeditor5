@@ -11,7 +11,7 @@ The text transformation feature enables autocorrection. It automatically changes
 
 ## Demo
 
-Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
 
@@ -62,13 +62,13 @@ You may find additional interesting details and usage examples in the [Automatic
 
 ## Configuring transformations
 
-This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
 
 By using the options defined below you can extend, limit or override this list:
 
-* {@link module:typing/texttransformation~TextTransformationConfig#include `typing.transformations.include`} &ndash; Overrides the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names that can be found in the {@link module:typing/texttransformation~TextTransformationConfig} documentation) and write your own transformations.
-* {@link module:typing/texttransformation~TextTransformationConfig#remove `typing.transformations.remove`} &ndash; Removes predefined transformations.
-* {@link module:typing/texttransformation~TextTransformationConfig#extra `typing.transformations.extra`} &ndash; Adds your custom transformations to the predefined ones.
+* {@link module:typing/typingconfig~TextTransformationConfig#include `typing.transformations.include`} &ndash; Overrides the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names that can be found in the {@link module:typing/typingconfig~TextTransformationConfig} documentation) and write your own transformations.
+* {@link module:typing/typingconfig~TextTransformationConfig#remove `typing.transformations.remove`} &ndash; Removes predefined transformations.
+* {@link module:typing/typingconfig~TextTransformationConfig#extra `typing.transformations.extra`} &ndash; Adds your custom transformations to the predefined ones.
 
 ### Example: Using `transformations.include`
 
@@ -143,9 +143,9 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
+You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTransformationDescription}.
 
-You can test the custom rules defined above in the demo. Try the emojis and see the editor automatically capitalize words after a full stop, a quotation mark, and an exclamation mark.
+You can test the custom rules defined above in the demo. Try typing `:)` or `:+1:` and see how the text gets transformed into emojis. You can also write some sentences to test how the editor capitalizes words after a period, a quotation mark, or an exclamation mark.
 
 {@snippet features/text-transformation-extended}
 
@@ -184,6 +184,7 @@ In addition to enabling automatic text transformations, you may want to check th
 
 * {@link features/autoformat Autoformatting} &ndash; Lets you quickly apply formatting to the content you are writing.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/slash-commands Slash commands} &ndash; Allows to execute a predefined command by writing its name or alias directly in the editor.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 
 ## Common API

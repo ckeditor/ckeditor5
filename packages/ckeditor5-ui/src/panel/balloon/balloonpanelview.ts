@@ -8,6 +8,7 @@
  */
 
 import View from '../../view';
+import type ViewCollection from '../../viewcollection';
 
 import {
 	getOptimalPosition,
@@ -22,8 +23,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
-
-import type ViewCollection from '../../viewcollection';
 
 import '../../../theme/components/panel/balloonpanel.css';
 
@@ -48,37 +47,95 @@ const defaultLimiterElement = global.document.body;
  * accept any custom position set provided by the user compatible with the
  * {@link module:utils/dom/position~Options options}.
  *
- *		const panel = new BalloonPanelView( locale );
- *		const childView = new ChildView();
- *		const positions = BalloonPanelView.defaultPositions;
+ * ```ts
+ * const panel = new BalloonPanelView( locale );
+ * const childView = new ChildView();
+ * const positions = BalloonPanelView.defaultPositions;
  *
- *		panel.render();
+ * panel.render();
  *
- *		// Add a child view to the panel's content collection.
- *		panel.content.add( childView );
+ * // Add a child view to the panel's content collection.
+ * panel.content.add( childView );
  *
- *		// Start pinning the panel to an element with the "target" id DOM.
- *		// The balloon will remain pinned until unpin() is called.
- *		panel.pin( {
- *			target: document.querySelector( '#target' ),
- *			positions: [
- *				positions.northArrowSouth,
- *				positions.southArrowNorth
- *			]
- *		} );
- *
- * @extends module:ui/view~View
+ * // Start pinning the panel to an element with the "target" id DOM.
+ * // The balloon will remain pinned until unpin() is called.
+ * panel.pin( {
+ * 	target: document.querySelector( '#target' ),
+ * 	positions: [
+ * 		positions.northArrowSouth,
+ * 		positions.southArrowNorth
+ * 	]
+ * } );
+ * ```
  */
 export default class BalloonPanelView extends View {
+	/**
+	 * A collection of the child views that creates the balloon panel contents.
+	 */
 	public readonly content: ViewCollection;
 
+	/**
+	 * The absolute top position of the balloon panel in pixels.
+	 *
+	 * @observable
+	 * @default 0
+	 */
 	declare public top: number;
+
+	/**
+	 * The absolute left position of the balloon panel in pixels.
+	 *
+	 * @observable
+	 * @default 0
+	 */
 	declare public left: number;
+
+	/**
+	 * The balloon panel's current position. The position name is reflected in the CSS class set
+	 * to the balloon, i.e. `.ck-balloon-panel_arrow_nw` for the "arrow_nw" position. The class
+	 * controls the minor aspects of the balloon's visual appearance like the placement
+	 * of an {@link #withArrow arrow}. To support a new position, an additional CSS must be created.
+	 *
+	 * Default position names correspond with
+	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 *
+	 * See the {@link #attachTo} and {@link #pin} methods to learn about custom balloon positions.
+	 *
+	 * @observable
+	 * @default 'arrow_nw'
+	 */
 	declare public position: 'arrow_nw' | 'arrow_ne' | 'arrow_sw' | 'arrow_se';
+
+	/**
+	 * Controls whether the balloon panel is visible or not.
+	 *
+	 * @observable
+	 * @default false
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * Controls whether the balloon panel has an arrow. The presence of the arrow
+	 * is reflected in the `ck-balloon-panel_with-arrow` CSS class.
+	 *
+	 * @observable
+	 * @default true
+	 */
 	declare public withArrow: boolean;
+
+	/**
+	 * An additional CSS class added to the {@link #element}.
+	 *
+	 * @observable
+	 */
 	declare public class: string | undefined;
 
+	/**
+	 * A callback that starts pinning the panel when {@link #isVisible} gets
+	 * `true`. Used by {@link #pin}.
+	 *
+	 * @private
+	 */
 	private _pinWhenIsVisibleCallback: ( () => void ) | null;
 
 	/**
@@ -89,83 +146,14 @@ export default class BalloonPanelView extends View {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The absolute top position of the balloon panel in pixels.
-		 *
-		 * @observable
-		 * @default 0
-		 * @member {Number} #top
-		 */
 		this.set( 'top', 0 );
-
-		/**
-		 * The absolute left position of the balloon panel in pixels.
-		 *
-		 * @observable
-		 * @default 0
-		 * @member {Number} #left
-		 */
 		this.set( 'left', 0 );
-
-		/**
-		 * The balloon panel's current position. The position name is reflected in the CSS class set
-		 * to the balloon, i.e. `.ck-balloon-panel_arrow_nw` for the "arrow_nw" position. The class
-		 * controls the minor aspects of the balloon's visual appearance like the placement
-		 * of an {@link #withArrow arrow}. To support a new position, an additional CSS must be created.
-		 *
-		 * Default position names correspond with
-		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
-		 *
-		 * See the {@link #attachTo} and {@link #pin} methods to learn about custom balloon positions.
-		 *
-		 * @observable
-		 * @default 'arrow_nw'
-		 * @member {'arrow_nw'|'arrow_ne'|'arrow_sw'|'arrow_se'} #position
-		 */
 		this.set( 'position', 'arrow_nw' );
-
-		/**
-		 * Controls whether the balloon panel is visible or not.
-		 *
-		 * @observable
-		 * @default false
-		 * @member {Boolean} #isVisible
-		 */
 		this.set( 'isVisible', false );
-
-		/**
-		 * Controls whether the balloon panel has an arrow. The presence of the arrow
-		 * is reflected in the `ck-balloon-panel_with-arrow` CSS class.
-		 *
-		 * @observable
-		 * @default true
-		 * @member {Boolean} #withArrow
-		 */
 		this.set( 'withArrow', true );
-
-		/**
-		 * An additional CSS class added to the {@link #element}.
-		 *
-		 * @observable
-		 * @member {String} #class
-		 */
 		this.set( 'class', undefined );
 
-		/**
-		 * A callback that starts pinning the panel when {@link #isVisible} gets
-		 * `true`. Used by {@link #pin}.
-		 *
-		 * @private
-		 * @member {Function} #_pinWhenIsVisibleCallback
-		 */
 		this._pinWhenIsVisibleCallback = null;
-
-		/**
-		 * A collection of the child views that creates the balloon panel contents.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -216,28 +204,29 @@ export default class BalloonPanelView extends View {
 	 * This method accepts configuration {@link module:utils/dom/position~Options options}
 	 * to set the `target`, optional `limiter` and `positions` the balloon should choose from.
 	 *
-	 *		const panel = new BalloonPanelView( locale );
-	 *		const positions = BalloonPanelView.defaultPositions;
+	 * ```ts
+	 * const panel = new BalloonPanelView( locale );
+	 * const positions = BalloonPanelView.defaultPositions;
 	 *
-	 *		panel.render();
+	 * panel.render();
 	 *
-	 *		// Attach the panel to an element with the "target" id DOM.
-	 *		panel.attachTo( {
-	 *			target: document.querySelector( '#target' ),
-	 *			positions: [
-	 *				positions.northArrowSouth,
-	 *				positions.southArrowNorth
-	 *			]
-	 *		} );
+	 * // Attach the panel to an element with the "target" id DOM.
+	 * panel.attachTo( {
+	 * 	target: document.querySelector( '#target' ),
+	 * 	positions: [
+	 * 		positions.northArrowSouth,
+	 * 		positions.southArrowNorth
+	 * 	]
+	 * } );
+	 * ```
 	 *
 	 * **Note**: Attaching the panel will also automatically {@link #show} it.
 	 *
 	 * **Note**: An attached panel will not follow its target when the window is scrolled or resized.
 	 * See the {@link #pin} method for a more permanent positioning strategy.
 	 *
-	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
-	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
-	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
 	public attachTo( options: Partial<PositionOptions> ): void {
 		this.show();
@@ -290,27 +279,28 @@ export default class BalloonPanelView extends View {
 	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~Options#target}
 	 * and is immune to the changing environment.
 	 *
-	 *		const panel = new BalloonPanelView( locale );
-	 *		const positions = BalloonPanelView.defaultPositions;
+	 * ```ts
+	 * const panel = new BalloonPanelView( locale );
+	 * const positions = BalloonPanelView.defaultPositions;
 	 *
-	 *		panel.render();
+	 * panel.render();
 	 *
-	 *		// Pin the panel to an element with the "target" id DOM.
-	 *		panel.pin( {
-	 *			target: document.querySelector( '#target' ),
-	 *			positions: [
-	 *				positions.northArrowSouth,
-	 *				positions.southArrowNorth
-	 *			]
-	 *		} );
+	 * // Pin the panel to an element with the "target" id DOM.
+	 * panel.pin( {
+	 * 	target: document.querySelector( '#target' ),
+	 * 	positions: [
+	 * 		positions.northArrowSouth,
+	 * 		positions.southArrowNorth
+	 * 	]
+	 * } );
+	 * ```
 	 *
 	 * To leave the pinned state, use the {@link #unpin} method.
 	 *
 	 * **Note**: Pinning the panel will also automatically {@link #show} it.
 	 *
-	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
-	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
-	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
 	public pin( options: Partial<PositionOptions> ): void {
 		this.unpin();
@@ -352,9 +342,7 @@ export default class BalloonPanelView extends View {
 	/**
 	 * Starts managing the pinned state of the panel. See {@link #pin}.
 	 *
-	 * @private
-	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
-	 * {@link module:utils/dom/position~getOptimalPosition}.
+	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 */
 	private _startPinning( options: Partial<PositionOptions> ) {
 		this.attachTo( options );
@@ -387,8 +375,6 @@ export default class BalloonPanelView extends View {
 
 	/**
 	 * Stops managing the pinned state of the panel. See {@link #pin}.
-	 *
-	 * @private
 	 */
 	private _stopPinning(): void {
 		this.stopListening( global.document, 'scroll' );
@@ -398,6 +384,7 @@ export default class BalloonPanelView extends View {
 	/**
 	 * A side offset of the arrow tip from the edge of the balloon. Controlled by CSS.
 	 *
+	 * ```
 	 *		 ┌───────────────────────┐
 	 *		 │                       │
 	 *		 │         Balloon       │
@@ -408,15 +395,16 @@ export default class BalloonPanelView extends View {
 	 *		 |    \/
 	 *		>┼─────┼< ─────────────────────── side offset
 	 *
+	 * ```
 	 *
 	 * @default 25
-	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowSideOffset
 	 */
 	public static arrowSideOffset = 25;
 
 	/**
 	 * A height offset of the arrow from the edge of the balloon. Controlled by CSS.
 	 *
+	 * ```
 	 *		 ┌───────────────────────┐
 	 *		 │                       │
 	 *		 │         Balloon       │
@@ -439,10 +427,9 @@ export default class BalloonPanelView extends View {
 	 *		 │   ╲                         │
 	 *		 │    │                        │
 	 *		 │    └────────────────────────┘
-	 *
+	 * ```
 	 *
 	 * @default 10
-	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHeightOffset
 	*/
 	public static arrowHeightOffset = 10;
 
@@ -450,6 +437,7 @@ export default class BalloonPanelView extends View {
 	 * A vertical offset of the balloon panel from the edge of the viewport if sticky.
 	 * It helps in accessing toolbar buttons underneath the balloon panel.
 	 *
+	 * ```
 	 *		  ┌───────────────────────────────────────────────────┐
 	 *		  │                      Target                       │
 	 *		  │                                                   │
@@ -464,17 +452,14 @@ export default class BalloonPanelView extends View {
 	 *		│ └───────────────────────────────────────────────────┘ │
 	 *		│                        Viewport                       │
 	 *		└───────────────────────────────────────────────────────┘
+	 * ```
 	 *
 	 * @default 20
-	 * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset
 	 */
 	public static stickyVerticalOffset = 20;
 
 	/**
 	 * Function used to calculate the optimal position for the balloon.
-	 *
-	 * @protected
-	 * @member {Function} module:ui/panel/balloon/balloonpanelview~BalloonPanelView._getOptimalPosition
 	 */
 	private static _getOptimalPosition = getOptimalPosition;
 
@@ -484,293 +469,343 @@ export default class BalloonPanelView extends View {
 	 *
 	 * The available positioning functions are as follows:
 	 *
-	 *
-	 *
 	 * **North west**
 	 *
 	 * * `northWestArrowSouthWest`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		 V
 	 *		 [ Target ]
+	 * ```
 	 *
 	 * * `northWestArrowSouthMiddleWest`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		    V
 	 *		    [ Target ]
+	 * ```
 	 *
 	 * * `northWestArrowSouth`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		         V
 	 *		         [ Target ]
+	 * ```
 	 *
 	 * * `northWestArrowSouthMiddleEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		             V
 	 *		             [ Target ]
+	 * ```
 	 *
 	 * * `northWestArrowSouthEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		                 V
 	 *		                 [ Target ]
-	 *
-	 *
+	 * ```
 	 *
 	 * **North**
 	 *
 	 * * `northArrowSouthWest`
 	 *
+	 * ```
 	 *		    +-----------------+
 	 *		    |     Balloon     |
 	 *		    +-----------------+
 	 *		     V
 	 *		[ Target ]
+	 * ```
 	 *
 	 * * `northArrowSouthMiddleWest`
 	 *
+	 * ```
 	 *		 +-----------------+
 	 *		 |     Balloon     |
 	 *		 +-----------------+
 	 *		     V
 	 *		[ Target ]
-	 *
+	 * ```
 	 * * `northArrowSouth`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		         V
 	 *		    [ Target ]
+	 * ```
 	 *
 	 * * `northArrowSouthMiddleEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		             V
 	 *		        [ Target ]
+	 * ```
 	 *
 	 * * `northArrowSouthEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		                V
 	 *		           [ Target ]
+	 * ```
 	 *
 	 * **North east**
 	 *
 	 * * `northEastArrowSouthWest`
 	 *
+	 * ```
 	 *		        +-----------------+
 	 *		        |     Balloon     |
 	 *		        +-----------------+
 	 *		         V
 	 *		[ Target ]
-	 *
+	 * ```
 	 *
 	 * * `northEastArrowSouthMiddleWest`
 	 *
+	 * ```
 	 *		     +-----------------+
 	 *		     |     Balloon     |
 	 *		     +-----------------+
 	 *		         V
 	 *		[ Target ]
+	 * ```
 	 *
 	 * * `northEastArrowSouth`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		         V
 	 *		[ Target ]
+	 * ```
 	 *
 	 * * `northEastArrowSouthMiddleEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		             V
 	 *		    [ Target ]
+	 * ```
 	 *
 	 * * `northEastArrowSouthEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
 	 *		                 V
 	 *		        [ Target ]
-	 *
-	 *
+	 * ```
 	 *
 	 * **South**
 	 *
-	 *
 	 * * `southArrowNorthWest`
 	 *
+	 * ```
 	 *		[ Target ]
 	 *		     ^
 	 *		    +-----------------+
 	 *		    |     Balloon     |
 	 *		    +-----------------+
+	 * ```
 	 *
 	 * * `southArrowNorthMiddleWest`
 	 *
+	 * ```
 	 *		   [ Target ]
 	 *		        ^
 	 *		    +-----------------+
 	 *		    |     Balloon     |
 	 *		    +-----------------+
+	 * ```
 	 *
 	 * * `southArrowNorth`
 	 *
+	 * ```
 	 *		    [ Target ]
 	 *		         ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southArrowNorthMiddleEast`
 	 *
+	 * ```
 	 *		            [ Target ]
 	 *		                 ^
 	 *		   +-----------------+
 	 *		   |     Balloon     |
 	 *		   +-----------------+
+	 * ```
 	 *
 	 * * `southArrowNorthEast`
 	 *
+	 * ```
 	 *		            [ Target ]
 	 *		                 ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
-	 *
-	 *
+	 * ```
 	 *
 	 * **South west**
 	 *
 	 * * `southWestArrowNorthWest`
 	 *
+	 *
+	 * ```
 	 *		 [ Target ]
 	 *		 ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southWestArrowNorthMiddleWest`
 	 *
+	 * ```
 	 *		     [ Target ]
 	 *		     ^
 	 *		 +-----------------+
 	 *		 |     Balloon     |
 	 *		 +-----------------+
+	 * ```
 	 *
 	 * * `southWestArrowNorth`
 	 *
+	 * ```
 	 *		         [ Target ]
 	 *		         ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southWestArrowNorthMiddleEast`
 	 *
+	 * ```
 	 *		              [ Target ]
 	 *		              ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southWestArrowNorthEast`
 	 *
+	 * ```
 	 *		                 [ Target ]
 	 *		                 ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
-	 *
-	 *
+	 * ```
 	 *
 	 * **South east**
 	 *
 	 * * `southEastArrowNorthWest`
 	 *
+	 * ```
 	 *		[ Target ]
 	 *		         ^
 	 *		        +-----------------+
 	 *		        |     Balloon     |
 	 *		        +-----------------+
+	 * ```
+	 *
 	 * * `southEastArrowNorthMiddleWest`
 	 *
+	 * ```
 	 *		   [ Target ]
 	 *		            ^
 	 *		        +-----------------+
 	 *		        |     Balloon     |
 	 *		        +-----------------+
+	 * ```
 	 *
 	 * * `southEastArrowNorth`
 	 *
+	 * ```
 	 *		[ Target ]
 	 *		         ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southEastArrowNorthMiddleEast`
 	 *
+	 * ```
 	 *		     [ Target ]
 	 *		              ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
+	 * ```
 	 *
 	 * * `southEastArrowNorthEast`
 	 *
+	 * ```
 	 *		        [ Target ]
 	 *		                 ^
 	 *		+-----------------+
 	 *		|     Balloon     |
 	 *		+-----------------+
-	 *
-	 *
+	 * ```
 	 *
 	 * **West**
 	 *
 	 * * `westArrowEast`
 	 *
+	 * ```
 	 *		+-----------------+
 	 *		|     Balloon     |>[ Target ]
 	 *		+-----------------+
+	 * ```
 	 *
 	 * **East**
 	 *
 	 * * `eastArrowWest`
 	 *
+	 * ```
 	 *		           +-----------------+
 	 *		[ Target ]<|     Balloon     |
 	 *		           +-----------------+
-	 *
-	 *
+	 * ```
 	 *
 	 * **Sticky**
 	 *
 	 * * `viewportStickyNorth`
 	 *
+	 * ```
 	 *		    +---------------------------+
 	 *		    |        [ Target ]         |
 	 *		    |                           |
@@ -785,6 +820,7 @@ export default class BalloonPanelView extends View {
 	 *		|   +---------------------------+   |
 	 *		|             Viewport              |
 	 *		+-----------------------------------+
+	 * ```
 	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
@@ -795,19 +831,14 @@ export default class BalloonPanelView extends View {
 	 *
 	 * The name that the position function returns will be reflected in the balloon panel's class that
 	 * controls the placement of the "arrow". See {@link #position} to learn more.
-	 *
-	 * @member {Object.<String,module:utils/dom/position~PositioningFunction>}
-	 * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
 	 */
 	public static defaultPositions = generatePositions();
 }
 
-// Returns the DOM element for given object or null, if there is none,
-// e.g. when the passed object is a Rect instance or so.
-//
-// @private
-// @param {*} object
-// @returns {HTMLElement|null}
+/**
+ * Returns the DOM element for given object or null, if there is none,
+ * e.g. when the passed object is a Rect instance or so.
+ */
 function getDomElement( object: any ): HTMLElement | null {
 	if ( isElement( object ) ) {
 		return object;
@@ -828,22 +859,21 @@ function getDomElement( object: any ): HTMLElement | null {
  * Returns available {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
  * {@link module:utils/dom/position~PositioningFunction positioning functions} adjusted by the specific offsets.
  *
- * @protected
- * @param {Object} [options] Options to generate positions. If not specified, this helper will simply return
+ * @internal
+ * @param options Options to generate positions. If not specified, this helper will simply return
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
- * @param {Number} [options.sideOffset] A custom side offset (in pixels) of each position. If
+ * @param options.sideOffset A custom side offset (in pixels) of each position. If
  * not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowSideOffset the default value}
  * will be used.
- * @param {Number} [options.heightOffset] A custom height offset (in pixels) of each position. If
+ * @param options.heightOffset A custom height offset (in pixels) of each position. If
  * not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHeightOffset the default value}
  * will be used.
- * @param {Number} [options.stickyVerticalOffset] A custom offset (in pixels) of the `viewportStickyNorth` positioning function.
+ * @param options.stickyVerticalOffset A custom offset (in pixels) of the `viewportStickyNorth` positioning function.
  * If not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset the default value}
  * will be used.
- * @param {Object} [options.config] Additional configuration of the balloon balloon panel view.
+ * @param options.config Additional configuration of the balloon balloon panel view.
  * Currently only {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#withArrow} is supported. Learn more
  * about {@link module:utils/dom/position~PositioningFunction positioning functions}.
- * @returns {Object.<String,module:utils/dom/position~PositioningFunction>}
  */
 export function generatePositions( options: {
 	sideOffset?: number;
@@ -1118,22 +1148,21 @@ export function generatePositions( options: {
 		}
 	};
 
-	// Returns the top coordinate for positions starting with `north*`.
-	//
-	// @private
-	// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
-	// @returns {Number}
+	/**
+	 * Returns the top coordinate for positions starting with `north*`.
+	 *
+	 * @param targetRect A rect of the target.
+	 * @param balloonRect A rect of the balloon.
+	 */
 	function getNorthTop( targetRect: Rect, balloonRect: Rect ) {
 		return targetRect.top - balloonRect.height - heightOffset;
 	}
 
-	// Returns the top coordinate for positions starting with `south*`.
-	//
-	// @private
-	// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
-	// @returns {Number}
+	/**
+	 * Returns the top coordinate for positions starting with `south*`.
+	 *
+	 * @param targetRect A rect of the target.
+	 */
 	function getSouthTop( targetRect: Rect ) {
 		return targetRect.bottom + heightOffset;
 	}

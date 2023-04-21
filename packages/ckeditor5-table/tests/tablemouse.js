@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
+/* globals document */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -214,7 +214,6 @@ describe( 'TableMouse', () => {
 		} );
 
 		it( 'should ignore `selectionChange` event when selecting cells', () => {
-			const consoleLog = sinon.stub( console, 'log' );
 			const preventDefault = sinon.spy();
 			const selectionChangeCallback = sinon.spy();
 
@@ -239,8 +238,6 @@ describe( 'TableMouse', () => {
 			// The callback shouldn't be executed because
 			// `selectionChange` event should be canceled.
 			expect( selectionChangeCallback.called ).to.equal( false );
-			expect( consoleLog.called ).to.equal( true );
-			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -250,8 +247,6 @@ describe( 'TableMouse', () => {
 			} );
 
 			expect( selectionChangeCallback.called ).to.equal( true );
-
-			consoleLog.restore();
 		} );
 	} );
 
@@ -515,7 +510,6 @@ describe( 'TableMouse', () => {
 		} );
 
 		it( 'should ignore `selectionChange` event when selecting cells ', () => {
-			const consoleLog = sinon.stub( console, 'log' );
 			const preventDefault = sinon.spy();
 			const selectionChangeCallback = sinon.spy();
 
@@ -545,8 +539,6 @@ describe( 'TableMouse', () => {
 
 			// `selectionChange` event should be canceled.
 			expect( selectionChangeCallback.called ).to.equal( false );
-			expect( consoleLog.called ).to.equal( true );
-			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -556,8 +548,6 @@ describe( 'TableMouse', () => {
 			} );
 
 			expect( selectionChangeCallback.called ).to.equal( true );
-
-			consoleLog.restore();
 		} );
 	} );
 

@@ -19,7 +19,8 @@ import {
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import type { HighlightOption } from './highlight';
+import type { HighlightOption } from './highlightconfig';
+import type HighlightCommand from './highlightcommand';
 
 import './../theme/highlight.css';
 
@@ -38,7 +39,7 @@ import './../theme/highlight.css';
  * * `'highlight:redPen'`
  * * `'highlight:greenPen'`
  *
- * See the {@link module:highlight/highlight~HighlightConfig#options configuration} to learn more
+ * See the {@link module:highlight/highlightconfig~HighlightConfig#options configuration} to learn more
  * about the defaults.
  */
 export default class HighlightUI extends Plugin {
@@ -46,7 +47,7 @@ export default class HighlightUI extends Plugin {
 	 * Returns the localized option titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with default
-	 * {@link module:highlight/highlight~HighlightConfig#options} are available:
+	 * {@link module:highlight/highlightconfig~HighlightConfig#options} are available:
 	 *
 	 * * `'Yellow marker'`,
 	 * * `'Green marker'`,
@@ -95,7 +96,7 @@ export default class HighlightUI extends Plugin {
 	 */
 	private _addRemoveHighlightButton(): void {
 		const t = this.editor.t;
-		const command = this.editor.commands.get( 'highlight' )!;
+		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
 		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -106,7 +107,7 @@ export default class HighlightUI extends Plugin {
 	 * Creates a toolbar button from the provided highlight option.
 	 */
 	private _addHighlighterButton( option: HighlightOption ) {
-		const command = this.editor.commands.get( 'highlight' )!;
+		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
 		// TODO: change naming
 		this._addButton( 'highlight:' + option.model, option.title, getIconForType( option.type ), option.model, decorateHighlightButton );
@@ -171,7 +172,7 @@ export default class HighlightUI extends Plugin {
 		}, {} as Record<string, HighlightOption> );
 
 		componentFactory.add( 'highlight', locale => {
-			const command = editor.commands.get( 'highlight' )!;
+			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView as HighlightSplitButtonView;
 
@@ -274,9 +275,3 @@ type HighlightSplitButtonView = SplitButtonView & {
 	commandValue: string;
 	color: string;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HighlightUI.pluginName ]: HighlightUI;
-	}
-}

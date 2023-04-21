@@ -147,8 +147,8 @@ export default class RenameOperation extends Operation {
 		return new RenameOperation( Position.fromJSON( json.position, document ), json.oldName, json.newName, json.baseVersion );
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return `RenameOperation( ${ this.baseVersion } ): ` +
-	// @if CK_DEBUG_ENGINE //		`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
+	// @if CK_DEBUG_ENGINE // 		`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
 	// @if CK_DEBUG_ENGINE // }
 }

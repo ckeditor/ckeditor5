@@ -98,11 +98,11 @@ export default class DetachOperation extends Operation {
 		return 'DetachOperation';
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
-	// @if CK_DEBUG_ENGINE // const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
-	// @if CK_DEBUG_ENGINE //	const nodes = Array.from( range.getItems() );
-	// @if CK_DEBUG_ENGINE //	const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
+	// @if CK_DEBUG_ENGINE // 	const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
+	// @if CK_DEBUG_ENGINE // 	const nodes = Array.from( range.getItems() );
+	// @if CK_DEBUG_ENGINE // 	const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
 
-	// @if CK_DEBUG_ENGINE //	return `DetachOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
+	// @if CK_DEBUG_ENGINE // 	return `DetachOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
 	// @if CK_DEBUG_ENGINE // }
 }

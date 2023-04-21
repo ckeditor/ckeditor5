@@ -7,7 +7,12 @@
  * @module engine/controller/editingcontroller
  */
 
-import { CKEditorError, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import {
+	CKEditorError,
+	ObservableMixin,
+	env,
+	type GetCallback
+} from '@ckeditor/ckeditor5-utils';
 
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
@@ -28,14 +33,18 @@ import {
 
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
-import type Model from '../model/model';
+import { tryFixingRange } from '../model/utils/selection-post-fixer';
+
+import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model';
 import type ModelItem from '../model/item';
 import type ModelText from '../model/text';
 import type ModelTextProxy from '../model/textproxy';
+import type Schema from '../model/schema';
 import type { DocumentChangeEvent } from '../model/document';
 import type { Marker } from '../model/markercollection';
 import type { StylesProcessor } from '../view/stylesmap';
-import type { ViewDocumentSelectionEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
+import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -43,54 +52,41 @@ import type { ViewDocumentSelectionEvent } from '../view/observer/selectionobser
  * A controller for the editing pipeline. The editing pipeline controls the {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
- *
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController extends ObservableMixin() {
+	/**
+	 * Editor model.
+	 */
 	public readonly model: Model;
+
+	/**
+	 * Editing view controller.
+	 */
 	public readonly view: View;
+
+	/**
+	 * A mapper that describes the model-view binding.
+	 */
 	public readonly mapper: Mapper;
+
+	/**
+	 * Downcast dispatcher that converts changes from the model to the {@link #view editing view}.
+	 */
 	public readonly downcastDispatcher: DowncastDispatcher;
 
 	/**
 	 * Creates an editing controller instance.
 	 *
-	 * @param {module:engine/model/model~Model} model Editing model.
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
+	 * @param model Editing model.
+	 * @param stylesProcessor The styles processor instance.
 	 */
 	constructor( model: Model, stylesProcessor: StylesProcessor ) {
 		super();
 
-		/**
-		 * Editor model.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model}
-		 */
 		this.model = model;
-
-		/**
-		 * Editing view controller.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/view~View}
-		 */
 		this.view = new View( stylesProcessor );
-
-		/**
-		 * A mapper that describes the model-view binding.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/mapper~Mapper}
-		 */
 		this.mapper = new Mapper();
 
-		/**
-		 * Downcast dispatcher that converts changes from the model to the {@link #view editing view}.
-		 *
-		 * @readonly
-		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
-		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
 			mapper: this.mapper,
 			schema: model.schema
@@ -105,11 +101,11 @@ export default class EditingController extends ObservableMixin() {
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
 		//
 		// See https://github.com/ckeditor/ckeditor5-engine/issues/1528
-		this.listenTo( this.model, '_beforeChanges', () => {
+		this.listenTo<BeforeChangesEvent>( this.model, '_beforeChanges', () => {
 			this.view._disableRendering( true );
 		}, { priority: 'highest' } );
 
-		this.listenTo( this.model, '_afterChanges', () => {
+		this.listenTo<AfterChangesEvent>( this.model, '_afterChanges', () => {
 			this.view._disableRendering( false );
 		}, { priority: 'lowest' } );
 
@@ -124,8 +120,14 @@ export default class EditingController extends ObservableMixin() {
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo<ViewDocumentSelectionEvent>( this.view.document, 'selectionChange',
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
+		);
+
+		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
+		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
+			fixTargetRanges( this.mapper, this.model.schema, this.view ),
+			{ priority: 'high' }
 		);
 
 		// Attach default model converters.
@@ -181,32 +183,34 @@ export default class EditingController extends ObservableMixin() {
 	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~Element view element}
 	 * without changing any marker data. For instance:
 	 *
-	 *		let isCommentActive = false;
+	 * ```ts
+	 * let isCommentActive = false;
 	 *
-	 *		model.conversion.markerToHighlight( {
-	 *			model: 'comment',
-	 *			view: data => {
-	 *				const classes = [ 'comment-marker' ];
+	 * model.conversion.markerToHighlight( {
+	 * 	model: 'comment',
+	 * 	view: data => {
+	 * 		const classes = [ 'comment-marker' ];
 	 *
-	 *				if ( isCommentActive ) {
-	 *					classes.push( 'comment-marker--active' );
-	 *				}
+	 * 		if ( isCommentActive ) {
+	 * 			classes.push( 'comment-marker--active' );
+	 * 		}
 	 *
-	 *				return { classes };
-	 *			}
-	 *		} );
+	 * 		return { classes };
+	 * 	}
+	 * } );
 	 *
-	 *		// ...
+	 * // ...
 	 *
-	 *		// Change the property that indicates if marker is displayed as active or not.
-	 *		isCommentActive = true;
+	 * // Change the property that indicates if marker is displayed as active or not.
+	 * isCommentActive = true;
 	 *
-	 *		// Reconverting will downcast and synchronize the marker with the new isCommentActive state value.
-	 *		editor.editing.reconvertMarker( 'comment' );
+	 * // Reconverting will downcast and synchronize the marker with the new isCommentActive state value.
+	 * editor.editing.reconvertMarker( 'comment' );
+	 * ```
 	 *
 	 * **Note**: If you want to reconvert a model item, use {@link #reconvertItem} instead.
 	 *
-	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of a marker to update, or a marker instance.
+	 * @param markerOrName Name of a marker to update, or a marker instance.
 	 */
 	public reconvertMarker( markerOrName: Marker | string ): void {
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -235,11 +239,38 @@ export default class EditingController extends ObservableMixin() {
 	 *
 	 * **Note**: If you want to reconvert a model marker, use {@link #reconvertMarker} instead.
 	 *
-	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 * @param item Item to refresh.
 	 */
 	public reconvertItem( item: ModelItem ): void {
 		this.model.change( () => {
 			this.model.document.differ._refreshItem( item );
 		} );
 	}
+}
+
+/**
+ * Checks whether the target ranges provided by the `beforeInput` event can be properly mapped to model ranges and fixes them if needed.
+ *
+ * This is using the same logic as the selection post-fixer.
+ */
+function fixTargetRanges( mapper: Mapper, schema: Schema, view: View ): GetCallback<ViewDocumentInputEvent> {
+	return ( evt, data ) => {
+		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
+		// could be properly mapped to view and model because the DOM and view tree drifted apart.
+		if ( view.document.isComposing && !env.isAndroid ) {
+			return;
+		}
+
+		for ( let i = 0; i < data.targetRanges.length; i++ ) {
+			const viewRange = data.targetRanges[ i ];
+			const modelRange = mapper.toModelRange( viewRange );
+			const correctedRange = tryFixingRange( modelRange, schema );
+
+			if ( !correctedRange || correctedRange.isEqual( modelRange ) ) {
+				continue;
+			}
+
+			data.targetRanges[ i ] = mapper.toViewRange( correctedRange );
+		}
+	};
 }

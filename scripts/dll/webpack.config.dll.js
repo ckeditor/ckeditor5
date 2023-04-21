@@ -9,8 +9,9 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const WrapperPlugin = require( 'wrapper-webpack-plugin' );
-const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
+const { addTypeScriptLoader } = require( '../docs/utils' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
@@ -42,7 +43,8 @@ function loadCKEditor5modules( window ) {
 		'typing',
 		'undo',
 		'upload',
-		'widget'
+		'widget',
+		'watchdog'
 	];
 
 	for ( const item of dllPackages ) {
@@ -72,7 +74,8 @@ const webpackConfig = {
 
 		// Other, common packages:
 		'./src/upload.js',
-		'./src/widget.js'
+		'./src/widget.js',
+		'./src/watchdog.js'
 	],
 	optimization: {
 		minimize: false,
@@ -111,43 +114,17 @@ const webpackConfig = {
 	},
 	module: {
 		rules: [
-			{
-				test: /\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			},
-			{
-				test: /\.ts$/,
-				use: [ 'ts-loader' ]
-			}
+			loaders.getIconsLoader( { matchExtensionOnly: true } ),
+			loaders.getStylesLoader( {
+				themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+				minify: true
+			} )
+			// TypeScript is injected by the `addTypeScriptLoader()` function.
 		]
 	}
 };
+
+addTypeScriptLoader( webpackConfig, 'tsconfig.dll.json' );
 
 if ( !IS_DEVELOPMENT_MODE ) {
 	webpackConfig.optimization.minimize = true;

@@ -29,38 +29,51 @@ import {
  *
  * Adding and updating a pending action:
  *
- * 		const pendingActions = editor.plugins.get( 'PendingActions' );
- * 		const action = pendingActions.add( 'Upload in progress: 0%.' );
+ * ```ts
+ * const pendingActions = editor.plugins.get( 'PendingActions' );
+ * const action = pendingActions.add( 'Upload in progress: 0%.' );
  *
- *		// You can update the message:
- * 		action.message = 'Upload in progress: 10%.';
+ * // You can update the message:
+ * action.message = 'Upload in progress: 10%.';
+ * ```
  *
  * Removing a pending action:
  *
- * 		const pendingActions = editor.plugins.get( 'PendingActions' );
- * 		const action = pendingActions.add( 'Unsaved changes.' );
+ * ```ts
+ * const pendingActions = editor.plugins.get( 'PendingActions' );
+ * const action = pendingActions.add( 'Unsaved changes.' );
  *
- * 		pendingActions.remove( action );
+ * pendingActions.remove( action );
+ * ```
  *
  * Getting pending actions:
  *
- * 		const pendingActions = editor.plugins.get( 'PendingActions' );
+ * ```ts
+ * const pendingActions = editor.plugins.get( 'PendingActions' );
  *
- * 		const action1 = pendingActions.add( 'Action 1' );
- * 		const action2 = pendingActions.add( 'Action 2' );
+ * const action1 = pendingActions.add( 'Action 1' );
+ * const action2 = pendingActions.add( 'Action 2' );
  *
- * 		pendingActions.first; // Returns action1
- * 		Array.from( pendingActions ); // Returns [ action1, action2 ]
+ * pendingActions.first; // Returns action1
+ * Array.from( pendingActions ); // Returns [ action1, action2 ]
+ * ```
  *
  * This plugin is used by features like {@link module:upload/filerepository~FileRepository} to register their ongoing actions
  * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
  * Read more about saving the data in the {@glink installation/getting-started/getting-and-setting-data Saving and getting data} guide.
- *
- * @extends module:core/contextplugin~ContextPlugin
  */
 export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
+	/**
+	 * Defines whether there is any registered pending action.
+	 *
+	 * @readonly
+	 * @observable
+	 */
 	declare public hasAny: boolean;
 
+	/**
+	 * A list of pending actions.
+	 */
 	private _actions!: Collection<PendingAction>;
 
 	/**
@@ -74,21 +87,8 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	 * @inheritDoc
 	 */
 	public init(): void {
-		/**
-		 * Defines whether there is any registered pending action.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #hasAny
-		 */
 		this.set( 'hasAny', false );
 
-		/**
-		 * A list of pending actions.
-		 *
-		 * @private
-		 * @type {module:utils/collection~Collection}
-		 */
 		this._actions = new Collection( { idProperty: '_id' } );
 		this._actions.delegate( 'add', 'remove' ).to( this );
 	}
@@ -99,8 +99,8 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	 * This method returns an action object with an observable message property.
 	 * The action object can be later used in the {@link #remove} method. It also allows you to change the message.
 	 *
-	 * @param {String} message The action message.
-	 * @returns {Object} An observable object that represents a pending action.
+	 * @param message The action message.
+	 * @returns An observable object that represents a pending action.
 	 */
 	public add( message: string ): PendingAction {
 		if ( typeof message !== 'string' ) {
@@ -124,7 +124,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * Removes an action from the list of pending actions.
 	 *
-	 * @param {Object} action An action object.
+	 * @param action An action object.
 	 */
 	public remove( action: PendingAction ): void {
 		this._actions.remove( action );
@@ -134,7 +134,7 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * Returns the first action from the list or null if the list is empty
 	 *
-	 * returns {Object|null} The pending action object.
+	 * @returns The pending action object.
 	 */
 	public get first(): PendingAction | null {
 		return this._actions.get( 0 );
@@ -142,37 +142,28 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 
 	/**
 	 * Iterable interface.
-	 *
-	 * @returns {Iterable.<*>}
 	 */
 	public [ Symbol.iterator ](): Iterator<PendingAction> {
 		return this._actions[ Symbol.iterator ]();
 	}
-
-	/**
-	 * Fired when an action is added to the list.
-	 *
-	 * @event add
-	 * @param {Object} action The added action.
-	 */
-
-	/**
-	 * Fired when an action is removed from the list.
-	 *
-	 * @event remove
-	 * @param {Object} action The removed action.
-	 */
 }
 
 export interface PendingAction extends Observable {
 	message: string;
 }
 
+/**
+ * Fired when an action is added to the list.
+ *
+ * @eventName ~PendingActions#add
+ * @param action The added action.
+ */
 export type PendingActionsAddEvent = CollectionAddEvent<PendingAction>;
-export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PendingActions.pluginName ]: PendingActions;
-	}
-}
+/**
+ * Fired when an action is removed from the list.
+ *
+ * @eventName ~PendingActions#remove
+ * @param action The removed action.
+ */
+export type PendingActionsRemoveEvent = CollectionRemoveEvent<PendingAction>;

@@ -29,6 +29,11 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla
 	NPM 6 and below doesn't require an extra double-dash in the command above.
 </info-box>
 
+Select the appropriate Vite template to use TypeScript in your project.
+
+```bash
+npm create vite@latest ckeditor5-vite-example -- --template vanilla-ts
+```
 
  ## Installing necessary dependencies
 
@@ -39,27 +44,19 @@ After initializing the project, you can start installing packages. Fundamentally
 
 This example will use Classic Editor as an editor base and the default CKEditor 5 theme - lark. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There is a list of packages in the [classic build's](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json) `package.json` file. But remember that all packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 
-You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repo and type `npm install`. The `dependencies` section of your `package.json` should look similar to this:
+You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repo and type `npm install`. An example list of plugins may look like this:
 
-```js
-"dependencies": {
-	// Dependencies.
-	// ...
-
-    "@ckeditor/ckeditor5-autoformat": "^x.y.z",
-    "@ckeditor/ckeditor5-basic-styles": "^x.y.z",
-    "@ckeditor/ckeditor5-block-quote": "^x.y.z",
-    "@ckeditor/ckeditor5-editor-classic": "^x.y.z",
-    "@ckeditor/ckeditor5-essentials": "^x.y.z",
-    "@ckeditor/ckeditor5-heading": "^x.y.z",
-    "@ckeditor/ckeditor5-link": "^x.y.z",
-    "@ckeditor/ckeditor5-list": "^x.y.z",
-    "@ckeditor/ckeditor5-paragraph": "^x.y.z",
-    "@ckeditor/ckeditor5-theme-lark": "^x.y.z",
-
-    // More dependencies.
-	// ...
-}
+```bash
+npm install --save @ckeditor/ckeditor5-theme-lark \
+  @ckeditor/ckeditor5-autoformat \
+  @ckeditor/ckeditor5-basic-styles \
+  @ckeditor/ckeditor5-block-quote \
+  @ckeditor/ckeditor5-editor-classic \
+  @ckeditor/ckeditor5-essentials \
+  @ckeditor/ckeditor5-heading \
+  @ckeditor/ckeditor5-link \
+  @ckeditor/ckeditor5-list \
+  @ckeditor/ckeditor5-paragraph
 ```
 
 ## Vite configuration
@@ -95,7 +92,9 @@ npm run dev
 
 ## Running the editor – method 1
 
-You can now import all the needed plugins and configurations into your code. If you scaffolded your project using a Vite template, add `ckeditor.js` file at the root of your project. Then, modify the file by adding the following lines of code.
+### JavaScript
+
+You can now import all the needed plugins and configurations into your code. If you scaffolded your project using a Vite template, add the `ckeditor.js` file in the `src` folder. Then, modify the file by adding the following lines of code.
 
 ```js
 // ckeditor.js
@@ -144,7 +143,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}. If you scaffolded your project using a Vite template, replace the content of `main.js` with the following code:
+This module will export an editor creator class which has all the plugins and configurations that you need already built-in. To use such an editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}. Then, replace the content of `main.js` with the following code:
 
 ```js
 // main.js
@@ -162,7 +161,78 @@ ClassicEditor
 	} );
 ```
 
+### TypeScript
+
+If you scaffolded your project using a Vite template with TypeScript, add the `ckeditor.ts` file in the `src` folder. Then, modify the file by adding the following lines of code.
+
+```ts
+// ckeditor.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+export default class CustomEditor extends ClassicEditor {}
+
+CustomEditor.builtinPlugins = [
+    Essentials,
+    Autoformat,
+    Bold,
+    Italic,
+    BlockQuote,
+    Heading,
+    Link,
+    List,
+    Paragraph
+];
+
+CustomEditor.defaultConfig = {
+    toolbar: {
+        items: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    },
+    language: 'en'
+};
+```
+
+Then, you can use the configured editor. Replace the content of `main.ts` with the following code.
+
+```ts
+// main.ts
+
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+    // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
+    .create( document.querySelector( '#app' ) as HTMLElement )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
 ## Running the editor – method 2
+
+### JavaScript
 
 The second variant of how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
@@ -181,7 +251,7 @@ import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 ClassicEditor
-    .create( document.querySelector( '#app'), {
+    .create( document.querySelector( '#app' ), {
         // The plugins are now passed directly to .create().
         plugins: [
             EssentialsPlugin,
@@ -215,6 +285,60 @@ ClassicEditor
         console.error( error );
     } );
 
+```
+
+### TypeScript
+
+You can also translate the above code using TypeScript.
+
+```ts
+// main.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+ClassicEditor
+    .create( document.querySelector( '#app') as HTMLElement, {
+        // The plugins are now passed directly to .create().
+        plugins: [
+            Essentials,
+            Autoformat,
+            Bold,
+            Italic,
+            BlockQuote,
+            Heading,
+            Link,
+            List,
+            Paragraph,
+        ],
+
+        // So is the rest of the default configuration.
+        toolbar: [
+            'heading',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'undo',
+            'redo'
+        ]
+    } )
+    .then( editor => {
+        console.log( editor );
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
 ```
 
 ## Building

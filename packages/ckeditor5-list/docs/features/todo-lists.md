@@ -10,7 +10,7 @@ The to-do list feature lets you create a list of interactive checkboxes with lab
 
 ## Demo
 
-Use the Insert to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg Insert a to-do list} to add a list to the editor content.
+Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to add a list to the editor content.
 
 {@snippet features/todo-list}
 

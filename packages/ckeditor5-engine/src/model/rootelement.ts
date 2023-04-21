@@ -26,6 +26,11 @@ export default class RootElement extends Element {
 	private readonly _document: Document;
 
 	/**
+	 * @internal
+	 */
+	public _isAttached = true;
+
+	/**
 	 * Creates root element.
 	 *
 	 * @param document Document that is an owner of this root.
@@ -47,7 +52,20 @@ export default class RootElement extends Element {
 	}
 
 	/**
-	 * Converts `RootElement` instance to `string` containing it's name.
+	 * Informs if the root element is currently attached to the document, or not.
+	 *
+	 * A detached root is equivalent to being removed and cannot contain any children or markers.
+	 *
+	 * By default, a newly added root is attached. It can be detached using
+	 * {@link module:engine/model/writer~Writer#detachRoot `Writer#detachRoot`}. A detached root can be re-attached again using
+	 * {@link module:engine/model/writer~Writer#addRoot `Writer#addRoot`}.
+	 */
+	public override isAttached(): boolean {
+		return this._isAttached;
+	}
+
+	/**
+	 * Converts `RootElement` instance to `string` containing its name.
 	 *
 	 * @returns `RootElement` instance converted to `string`.
 	 */
@@ -55,11 +73,11 @@ export default class RootElement extends Element {
 		return this.rootName;
 	}
 
-	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // public override toString(): string {
 	// @if CK_DEBUG_ENGINE // 	return this.rootName;
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // public override log(): void {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelRootElement: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }

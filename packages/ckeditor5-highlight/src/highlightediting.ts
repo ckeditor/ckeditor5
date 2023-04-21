@@ -10,13 +10,13 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import HighlightCommand from './highlightcommand';
-import type { HighlightOption } from './highlight';
+import type { HighlightOption } from './highlightconfig';
 
 /**
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
  * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
- * on the {@link module:highlight/highlight~HighlightConfig configuration}.
+ * on the {@link module:highlight/highlightconfig~HighlightConfig configuration}.
  */
 export default class HighlightEditing extends Plugin {
 	/**
@@ -127,13 +127,3 @@ type HighlightConverterDefinition = {
 	model: { key: string; values: Array<string> };
 	view: Record<string, { name: string; classes: string }>;
 };
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface CommandsMap {
-		highlight: HighlightCommand;
-	}
-
-	interface PluginsMap {
-		[ HighlightEditing.pluginName ]: HighlightEditing;
-	}
-}

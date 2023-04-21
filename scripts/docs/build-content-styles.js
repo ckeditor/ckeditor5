@@ -10,7 +10,9 @@ const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
+const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+const { writeFile, getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
@@ -161,7 +163,18 @@ function getWebpackConfig() {
 
 	postCssConfig.plugins.push( postCssContentStylesPlugin( contentRules ) );
 
-	return {
+	const cssLoader = loaders.getStylesLoader( {
+		skipPostCssLoader: true
+	} );
+
+	cssLoader.use.push( {
+		loader: 'postcss-loader',
+		options: {
+			postcssOptions: postCssConfig
+		}
+	} );
+
+	const webpackConfig = {
 		mode: 'development',
 		devtool: 'source-map',
 		entry: {
@@ -180,30 +193,15 @@ function getWebpackConfig() {
 		},
 		module: {
 			rules: [
-				{
-					test: /\.svg$/,
-					use: [ 'raw-loader' ]
-				},
-				{
-					test: /\.css$/,
-					use: [
-						'style-loader',
-						'css-loader',
-						{
-							loader: 'postcss-loader',
-							options: {
-								postcssOptions: postCssConfig
-							}
-						}
-					]
-				},
-				{
-					test: /\.ts$/,
-					use: [ 'ts-loader' ]
-				}
+				loaders.getIconsLoader(),
+				cssLoader
 			]
 		}
 	};
+
+	addTypeScriptLoader( webpackConfig, 'tsconfig.docs.json' );
+
+	return webpackConfig;
 }
 
 /**

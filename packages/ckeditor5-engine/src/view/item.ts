@@ -12,8 +12,6 @@ import type TextProxy from './textproxy';
 
 /**
  * Item is a {@link module:engine/view/node~Node Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
- *
- * @typedef {module:engine/view/node~Node|module:engine/view/textproxy~TextProxy} module:engine/view/item~Item
  */
 type Item = Node | TextProxy;
 

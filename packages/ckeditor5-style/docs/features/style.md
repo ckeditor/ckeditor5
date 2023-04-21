@@ -6,11 +6,11 @@ modified_at: 2022-07-22
 
 # Styles
 
-The style feature lets you apply pre-configured styles to elements in your content. It works by adding one or more HTML classes to an element to change its appearance or add semantic information.
+The style feature lets you apply pre-configured styles to elements in your content. It works by adding one or more CSS classes to an element to change its appearance or add semantic information.
 
 ## Demo
 
-Use the demo below to test the styles feature. Select a passage or a header and try applying various styles to the content.
+Use the demo below to test the styles feature. Select a passage or a header and try applying various styles.
 
 {@snippet features/styles}
 
@@ -251,7 +251,7 @@ ClassicEditor
 		},
 		style: {
 			definitions: [
-				// Styles definitions. 
+				// Styles definitions.
 				// ...
 			]
 		}
@@ -333,6 +333,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling additional HTML, such as `<style>` and `<classes>` attributes.
 

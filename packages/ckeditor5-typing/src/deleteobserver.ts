@@ -7,16 +7,24 @@
  * @module typing/deleteobserver
  */
 
-import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	keyCodes,
+	isInsideCombinedSymbol,
+	isInsideEmojiSequence,
+	isInsideSurrogatePair
+} from '@ckeditor/ckeditor5-utils';
 import {
 	BubblingEventInfo,
 	DomEventData,
 	Observer,
 	type BubblingEvent,
 	type ViewDocumentInputEvent,
-	type ViewDocumentKeyEvent,
+	type ViewDocumentKeyDownEvent,
+	type ViewDocumentKeyUpEvent,
 	type ViewDocumentSelection,
 	type ViewSelection,
+	type ViewRange,
 	type View
 } from '@ckeditor/ckeditor5-engine';
 
@@ -118,8 +126,6 @@ const DELETE_EVENT_TYPES: Record<string, DeleteEventSpec> = {
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
- *
- * @extends module:engine/view/observer/observer~Observer
  */
 export default class DeleteObserver extends Observer {
 	/**
@@ -169,19 +175,15 @@ export default class DeleteObserver extends Observer {
 			}
 
 			// The default deletion unit for deleteContentBackward is a single code point
-			// but on Android it sometimes passes a wider target range, so we need to change
-			// the unit of deletion to include the whole range to be removed and not a single code point.
-			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
+			// but if the browser provides a wider target range then we should use it.
+			if ( inputType === 'deleteContentBackward' ) {
 				// On Android, deleteContentBackward has sequence 1 by default.
-				deleteData.sequence = 1;
+				if ( env.isAndroid ) {
+					deleteData.sequence = 1;
+				}
 
-				// IME wants more than a single character to be removed.
-				if (
-					targetRanges.length == 1 && (
-						targetRanges[ 0 ].start.parent != targetRanges[ 0 ].end.parent ||
-						targetRanges[ 0 ].start.offset + 1 != targetRanges[ 0 ].end.offset
-					)
-				) {
+				// The beforeInput event wants more than a single character to be removed.
+				if ( shouldUseTargetRanges( targetRanges ) ) {
 					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.createSelection( targetRanges );
 				}
@@ -208,6 +210,11 @@ export default class DeleteObserver extends Observer {
 	 * @inheritDoc
 	 */
 	public observe(): void {}
+
+	/**
+	 * @inheritDoc
+	 */
+	public stopObserving(): void {}
 }
 
 /**
@@ -216,15 +223,8 @@ export default class DeleteObserver extends Observer {
  * Note: This event is fired by the {@link module:typing/deleteobserver~DeleteObserver delete observer}
  * (usually registered by the {@link module:typing/delete~Delete delete feature}).
  *
- * @event module:engine/view/document~Document#event:delete
- * @param {module:engine/view/observer/domeventdata~DomEventData} data
- * @param {'forward'|'backward'} data.direction The direction in which the deletion should happen.
- * @param {'character'|'word'|'codePoint'|'selection'} data.unit The "amount" of content that should be deleted.
- * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
- * If it's 2 or more it means that the key was pressed and hold.
- * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
- * current selection should be used.
- * @param {String} data.inputType The `beforeinput` event type that caused the deletion.
+ * @eventName module:engine/view/document~Document#delete
+ * @param data The event data.
  */
 export type ViewDocumentDeleteEvent = BubblingEvent<{
 	name: 'delete';
@@ -232,13 +232,33 @@ export type ViewDocumentDeleteEvent = BubblingEvent<{
 }>;
 
 export interface DeleteEventData extends DomEventData<InputEvent> {
+
+	/**
+	 * The direction in which the deletion should happen.
+	 */
 	direction: 'backward' | 'forward';
+
+	/**
+	 * The "amount" of content that should be deleted.
+	 */
 	unit: 'selection' | 'codePoint' | 'character' | 'word';
+
+	/**
+	 * A number describing which subsequent delete event it is without the key being released.
+	 * If it's 2 or more it means that the key was pressed and hold.
+	 */
 	sequence: number;
+
+	/**
+	 * View selection which content should be removed. If not set,
+	 * current selection should be used.
+	 */
 	selectionToRemove?: ViewSelection | ViewDocumentSelection;
 }
 
-// Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
+/**
+ * Enables workaround for the issue https://github.com/ckeditor/ckeditor5/issues/11904.
+ */
 function enableChromeWorkaround( observer: DeleteObserver ) {
 	const view = observer.view;
 	const document = view.document;
@@ -246,12 +266,12 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	let pressedKeyCode: number | null = null;
 	let beforeInputReceived = false;
 
-	document.on<ViewDocumentKeyEvent>( 'keydown', ( evt, { keyCode } ) => {
+	document.on<ViewDocumentKeyDownEvent>( 'keydown', ( evt, { keyCode } ) => {
 		pressedKeyCode = keyCode;
 		beforeInputReceived = false;
 	} );
 
-	document.on<ViewDocumentKeyEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
+	document.on<ViewDocumentKeyUpEvent>( 'keyup', ( evt, { keyCode, domEvent } ) => {
 		const selection = document.selection;
 		const shouldFireDeleteEvent = observer.isEnabled &&
 			keyCode == pressedKeyCode &&
@@ -302,4 +322,50 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 	function getDeleteDirection( keyCode: number | null ): 'backward' | 'forward' {
 		return keyCode == keyCodes.backspace ? DELETE_BACKWARD : DELETE_FORWARD;
 	}
+}
+
+/**
+ * Verifies whether the given target ranges cover more than a single character and should be used instead of a single code-point deletion.
+ */
+function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
+	// The collapsed target range could happen for example while deleting inside an inline filler
+	// (it's mapped to collapsed position before an inline filler).
+	if ( targetRanges.length != 1 || targetRanges[ 0 ].isCollapsed ) {
+		return false;
+	}
+
+	const walker = targetRanges[ 0 ].getWalker( {
+		direction: 'backward',
+		singleCharacters: true,
+		ignoreElementEnd: true
+	} );
+
+	let count = 0;
+
+	for ( const { nextPosition } of walker ) {
+		// There is some element in the range so count it as a single character.
+		if ( !nextPosition.parent.is( '$text' ) ) {
+			count++;
+		} else {
+			const data = nextPosition.parent.data;
+			const offset = nextPosition.offset;
+
+			// Count combined symbols and emoji sequences as a single character.
+			if (
+				isInsideSurrogatePair( data, offset ) ||
+				isInsideCombinedSymbol( data, offset ) ||
+				isInsideEmojiSequence( data, offset )
+			) {
+				continue;
+			}
+
+			count++;
+		}
+
+		if ( count > 1 ) {
+			return true;
+		}
+	}
+
+	return false;
 }

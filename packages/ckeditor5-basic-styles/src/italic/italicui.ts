@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
+import type AttributeCommand from '../attributecommand';
 
 import italicIcon from '../../theme/icons/italic.svg';
 
@@ -34,7 +35,7 @@ export default class ItalicUI extends Plugin {
 
 		// Add bold button to feature components.
 		editor.ui.componentFactory.add( ITALIC, locale => {
-			const command = editor.commands.get( ITALIC )!;
+			const command: AttributeCommand = editor.commands.get( ITALIC )!;
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -55,11 +56,5 @@ export default class ItalicUI extends Plugin {
 
 			return view;
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ItalicUI.pluginName ]: ItalicUI;
 	}
 }

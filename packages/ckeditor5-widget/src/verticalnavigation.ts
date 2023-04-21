@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module widget/verticalnavigation
+ */
+
 import {
 	keyCodes,
 	Rect,
@@ -21,14 +25,9 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 /**
- * @module widget/verticalnavigationhandler
- */
-
-/**
  * Returns 'keydown' handler for up/down arrow keys that modifies the caret movement if it's in a text line next to an object.
  *
- * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @returns {Function}
+ * @param editing The editing controller.
  */
 export default function verticalNavigationHandler(
 	editing: EditingController
@@ -99,16 +98,16 @@ export default function verticalNavigationHandler(
 	};
 }
 
-// Finds the range between selection and closest limit element (in the direction of navigation).
-// The position next to limit element is adjusted to the closest allowed `$text` position.
-//
-// Returns `null` if, according to the schema, the resulting range cannot contain a `$text` element.
-//
-// @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
-// @param {module:engine/model/selection~Selection} selection The current selection.
-// @param {Boolean} isForward The expected navigation direction.
-// @returns {module:engine/model/range~Range|null}
-//
+/**
+ * Finds the range between selection and closest limit element (in the direction of navigation).
+ * The position next to limit element is adjusted to the closest allowed `$text` position.
+ *
+ * Returns `null` if, according to the schema, the resulting range cannot contain a `$text` element.
+ *
+ * @param editing The editing controller.
+ * @param selection The current selection.
+ * @param isForward The expected navigation direction.
+ */
 function findTextRangeFromSelection( editing: EditingController, selection: Selection | DocumentSelection, isForward: boolean ) {
 	const model = editing.model;
 
@@ -149,13 +148,11 @@ function findTextRangeFromSelection( editing: EditingController, selection: Sele
 	}
 }
 
-// Finds the limit element position that is closest to startPosition.
-//
-// @param {module:engine/model/model~Model} model
-// @param {<module:engine/model/position~Position>} startPosition
-// @param {'forward'|'backward'} direction Search direction.
-// @returns {<module:engine/model/position~Position>|null}
-//
+/**
+ * Finds the limit element position that is closest to startPosition.
+ *
+ * @param direction Search direction.
+ */
 function getNearestNonInlineLimit( model: Model, startPosition: Position, direction: 'forward' | 'backward' ) {
 	const schema = model.schema;
 	const range = model.createRangeIn( startPosition.root );
@@ -176,14 +173,16 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
 	return null;
 }
 
-// Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
-// that can contain `$text` (according to schema).
-//
-// @param {module:engine/model/schema~Schema} schema The schema.
-// @param {module:engine/model/range~Range} range The range to find the position in.
-// @param {'forward'|'backward'} direction Search direction.
-// @returns {module:engine/model/position~Position|null} The nearest selection position.
-//
+/**
+ * Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
+ * that can contain `$text` (according to schema).
+ *
+ * @param schema The schema.
+ * @param range The range to find the position in.
+ * @param direction Search direction.
+ * @returns The nearest selection position.
+ *
+ */
 function getNearestTextPosition( schema: Schema, range: Range, direction: 'forward' | 'backward' ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
@@ -200,14 +199,14 @@ function getNearestTextPosition( schema: Schema, range: Range, direction: 'forwa
 	return null;
 }
 
-// Checks if the DOM range corresponding to the provided model range renders as a single line by analyzing DOMRects
-// (verifying if they visually wrap content to the next line).
-//
-// @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
-// @param {module:engine/model/range~Range} modelRange The current table cell content range.
-// @param {Boolean} isForward The expected navigation direction.
-// @returns {Boolean}
-//
+/**
+ * Checks if the DOM range corresponding to the provided model range renders as a single line by analyzing DOMRects
+ * (verifying if they visually wrap content to the next line).
+ *
+ * @param editing The editing controller.
+ * @param modelRange The current table cell content range.
+ * @param isForward The expected navigation direction.
+ */
 function isSingleLineRange( editing: EditingController, modelRange: Range, isForward: boolean ) {
 	const model = editing.model;
 	const domConverter = editing.view.domConverter;

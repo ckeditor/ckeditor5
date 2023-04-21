@@ -12,3 +12,26 @@
 	max-height: 400px;
 	border-bottom: 1px solid var(--ck-color-base-border);
 }
+
+/* Custom styles for colums in the content. */
+.ck-content .columns {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.ck-content .column {
+	flex: 33.33%;
+}
+
+/* Using "@media not print" to exclude this responsive from export to PDF. */
+@media not print {
+	@media all and (max-width: 768px) {
+		.ck-content .columns {
+			flex-wrap: wrap;
+		}
+		.ck-content .column {
+			flex: 100%;
+		}
+	}
+}

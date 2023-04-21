@@ -19,14 +19,14 @@ The main package's GitHub repository also [hosts all other CKEditor5 sub-package
 You can find all the official packages listed in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="/docs/ckeditor5/19.0.0/framework/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
+	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="https://ckeditor.com/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 14.0.0+
+* [Node.js](https://nodejs.org/en/) 16.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment

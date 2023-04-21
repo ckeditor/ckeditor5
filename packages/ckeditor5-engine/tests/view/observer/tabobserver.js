@@ -96,4 +96,10 @@ describe( 'TabObserver', () => {
 			sinon.assert.notCalled( tabSpy );
 		} );
 	} );
+
+	it( 'should implement empty #stopObserving() method', () => {
+		expect( () => {
+			view.getObserver( TabObserver ).stopObserving();
+		} ).to.not.throw();
+	} );
 } );

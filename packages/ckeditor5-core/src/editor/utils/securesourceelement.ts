@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module core/editor/utils/securesourceelement
+ */
+
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type { default as Editor, EditorDestroyEvent } from '../editor';
 import type { ElementApi } from './elementapimixin';
-
-/**
- * @module core/editor/utils/securesourceelement
- */
 
 /**
  * Marks the source element on which the editor was initialized. This prevents other editor instances from using this element.
@@ -18,16 +18,10 @@ import type { ElementApi } from './elementapimixin';
  * Running multiple editor instances on the same source element causes various issues and it is
  * crucial this helper is called as soon as the source element is known to prevent collisions.
  *
- * @param {module:core/editor/editor~Editor} editor Editor instance.
+ * @param editor Editor instance.
+ * @param sourceElement Element to bind with the editor instance.
  */
-export default function secureSourceElement( editor: Editor & ElementApi ): void {
-	const sourceElement: any = editor.sourceElement;
-
-	// If the editor was initialized without specifying an element, we don't need to secure anything.
-	if ( !sourceElement ) {
-		return;
-	}
-
+export default function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
 	if ( sourceElement.ckeditorInstance ) {
 		/**
 		 * A DOM element used to create the editor (e.g.
@@ -36,7 +30,7 @@ export default function secureSourceElement( editor: Editor & ElementApi ): void
 		 * created with an unique DOM element.
 		 *
 		 * @error editor-source-element-already-used
-		 * @param {HTMLElement} element DOM element that caused the collision.
+		 * @param element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
 			'editor-source-element-already-used',

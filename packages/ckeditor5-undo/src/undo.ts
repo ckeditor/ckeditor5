@@ -7,7 +7,7 @@
  * @module undo/undo
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import UndoEditing from './undoediting';
 import UndoUI from './undoui';
 
@@ -28,15 +28,17 @@ import UndoUI from './undoui';
  *
  * After changes happen to the document, the `History` and `UndoCommand` stack can be represented as follows:
  *
- *		    History                            Undo stack
- *		==============             ==================================
- *		[operation A1]                         [batch A]
- *		[operation B1]                         [batch B]
- *		[operation B2]                         [batch C]
- *		[operation C1]
- *		[operation C2]
- *		[operation B3]
- *		[operation C3]
+ * ```
+ *    History                            Undo stack
+ * ==============             ==================================
+ * [operation A1]                      [  batch A  ]
+ * [operation B1]                      [  batch B  ]
+ * [operation B2]                      [  batch C  ]
+ * [operation C1]
+ * [operation C2]
+ * [operation B3]
+ * [operation C3]
+ * ```
  *
  * Where operations starting with the same letter are from same batch.
  *
@@ -50,33 +52,37 @@ import UndoUI from './undoui';
  * one needs to make sure if they are ready to be applied. In the scenario above, operation `C3` is the last operation and `C3r`
  * bases on up-to-date document state, so it can be applied to the document.
  *
- *		     History                             Undo stack
- *		=================             ==================================
- *		[ operation A1  ]                      [  batch A  ]
- *		[ operation B1  ]                      [  batch B  ]
- *		[ operation B2  ]             [   processing undoing batch C   ]
- *		[ operation C1  ]
- *		[ operation C2  ]
- *		[ operation B3  ]
- *		[ operation C3  ]
- *		[ operation C3r ]
+ * ```
+ *      History                             Undo stack
+ * =================             ==================================
+ * [ operation A1  ]                      [  batch A  ]
+ * [ operation B1  ]                      [  batch B  ]
+ * [ operation B2  ]             [   processing undoing batch C   ]
+ * [ operation C1  ]
+ * [ operation C2  ]
+ * [ operation B3  ]
+ * [ operation C3  ]
+ * [ operation C3r ]
+ * ```
  *
  * Next is operation `C2`, reversed to `C2r`. `C2r` bases on `C2`, so it bases on the wrong document state. It needs to be
  * transformed by operations from history that happened after it, so it "knows" about them. Let us assume that `C2' = C2r * B3 * C3 * C3r`,
  * where `*` means "transformed by". Rest of operations from that batch are processed in the same fashion.
  *
- *		     History                             Undo stack                                      Redo stack
- *		=================             ==================================             ==================================
- *		[ operation A1  ]                      [  batch A  ]                                    [ batch Cr ]
- *		[ operation B1  ]                      [  batch B  ]
- *		[ operation B2  ]
- *		[ operation C1  ]
- *		[ operation C2  ]
- *		[ operation B3  ]
- *		[ operation C3  ]
- *		[ operation C3r ]
- *		[ operation C2' ]
- *		[ operation C1' ]
+ * ```
+ *      History                             Undo stack                                      Redo stack
+ * =================             ==================================             ==================================
+ * [ operation A1  ]                      [  batch A  ]                                    [ batch Cr ]
+ * [ operation B1  ]                      [  batch B  ]
+ * [ operation B2  ]
+ * [ operation C1  ]
+ * [ operation C2  ]
+ * [ operation B3  ]
+ * [ operation C3  ]
+ * [ operation C3r ]
+ * [ operation C2' ]
+ * [ operation C1' ]
+ * ```
  *
  * Selective undo works on the same basis, however, instead of undoing the last batch in the undo stack, any batch can be undone.
  * The same algorithm applies: operations from a batch (i.e. `A1`) are reversed and then transformed by operations stored in history.
@@ -84,30 +90,30 @@ import UndoUI from './undoui';
  * Redo also is very similar to undo. It has its own stack that is filled with undoing (reversed batches). Operations from
  * the batch that is re-done are reversed-back, transformed in proper order and applied to the document.
  *
- *		     History                             Undo stack                                      Redo stack
- *		=================             ==================================             ==================================
- *		[ operation A1  ]                      [  batch A  ]
- *		[ operation B1  ]                      [  batch B  ]
- *		[ operation B2  ]                      [ batch Crr ]
- *		[ operation C1  ]
- *		[ operation C2  ]
- *		[ operation B3  ]
- *		[ operation C3  ]
- *		[ operation C3r ]
- *		[ operation C2' ]
- *		[ operation C1' ]
- *		[ operation C1'r]
- *		[ operation C2'r]
- *		[ operation C3rr]
- *
- * @extends module:core/plugin~Plugin
+ * ```
+ *      History                             Undo stack                                      Redo stack
+ * =================             ==================================             ==================================
+ * [ operation A1  ]                      [  batch A  ]
+ * [ operation B1  ]                      [  batch B  ]
+ * [ operation B2  ]                      [ batch Crr ]
+ * [ operation C1  ]
+ * [ operation C2  ]
+ * [ operation B3  ]
+ * [ operation C3  ]
+ * [ operation C3r ]
+ * [ operation C2' ]
+ * [ operation C1' ]
+ * [ operation C1'r]
+ * [ operation C2'r]
+ * [ operation C3rr]
+ * ```
  */
 export default class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ UndoEditing, UndoUI ];
+	public static get requires() {
+		return [ UndoEditing, UndoUI ] as const;
 	}
 
 	/**
@@ -115,11 +121,5 @@ export default class Undo extends Plugin {
 	 */
 	public static get pluginName(): 'Undo' {
 		return 'Undo';
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Undo.pluginName ]: Undo;
 	}
 }

@@ -17,6 +17,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
+import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
@@ -392,6 +393,16 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input type="number"/></p>' );
 
 			expect( consumable.test( model.document.getRoot().getChild( 0 ).getChild( 0 ), 'attribute:htmlAttributes' ) ).to.be.false;
+		} );
+
+		it( 'should add widget label', () => {
+			dataFilter.allowElement( 'input' );
+
+			editor.setData( '<p><input></p>' );
+
+			const element = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			expect( getLabel( element ) ).to.equal( 'HTML object' );
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {

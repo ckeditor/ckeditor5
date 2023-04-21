@@ -7,11 +7,12 @@ The autoformat feature lets you quickly format your content with Markdown-like s
 
 ## Demo
 
-Use the editor provided below to test the autoformatting feature. Try using Markdown shortcodes while typing, for example:
+Test the autoformatting feature in the editor below. Try using Markdown shortcodes while typing. For example:
 
-1. Delete all editor content.
+1. Start a new line.
 2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
-3. The current line will be instantly turned into a heading and you can keep on typing without interruption.
+
+The line will automatically turn into a heading.
 
 If needed, you can revert the automatic change by pressing <kbd>Backspace</kbd>.
 
@@ -28,7 +29,7 @@ The following block formatting options are available:
 * {@link features/lists Bulleted list} &ndash; Start a line with `*` or `-` followed by a space.
 * {@link features/lists Numbered list} &ndash; Start a line with `1.` or `1)` followed by a space.
 * {@link features/todo-lists To-do list} &ndash; Start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
-* {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2, or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
+* {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2, or heading 3 (up to heading 6 if {@link module:heading/headingconfig~HeadingConfig#options} defines more headings).
 * {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
 * {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
 * {@link features/horizontal-line Horizontal line} &ndash; Start a line with `---`.
@@ -80,7 +81,7 @@ ClassicEditor
 
 The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~blockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing} tools to create the autoformatters mentioned above.
 
-You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.js) as an example.
+You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.ts) as an example.
 
 ## Known issues
 
@@ -95,6 +96,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/slash-commands Slash commands} &ndash; Allows to execute a predefined command by writing its name or alias directly in the editor.
 * {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
 * {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 

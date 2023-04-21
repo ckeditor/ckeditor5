@@ -11,7 +11,7 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 import ListUtils from './listutils';
 
-import { Plugin, type MultiCommand, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type MultiCommand } from 'ckeditor5/src/core';
 
 import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
@@ -64,8 +64,8 @@ export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Enter, Delete, ListUtils ];
+	public static get requires() {
+		return [ Enter, Delete, ListUtils ] as const;
 	}
 
 	/**
@@ -232,10 +232,4 @@ function getViewListItemLength( element: ViewElement ) {
 	}
 
 	return length;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListEditing.pluginName ]: ListEditing;
-	}
 }

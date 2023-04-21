@@ -137,6 +137,22 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledOnce( destroySpy );
 		} );
 
+		it( 'should remove elements from keystroke handler', () => {
+			const fooElement = document.createElement( 'foo' );
+			const barElement = document.createElement( 'bar' );
+
+			ui.setEditableElement( 'foo', fooElement );
+			ui.setEditableElement( 'bar', barElement );
+
+			const keystrokesSpy = sinon.spy( editor.keystrokes, 'stopListening' );
+
+			ui.destroy();
+
+			sinon.assert.calledTwice( keystrokesSpy );
+			sinon.assert.calledWithExactly( keystrokesSpy, fooElement );
+			sinon.assert.calledWithExactly( keystrokesSpy, barElement );
+		} );
+
 		it( 'should destroy #tooltipManager', () => {
 			const destroySpy = sinon.spy( ui.tooltipManager, 'destroy' );
 
@@ -181,7 +197,7 @@ describe( 'EditorUI', () => {
 		} );
 
 		describe( 'Focus tracking and accessibility', () => {
-			it( 'should add the passed DOM element to EditorUI#focusTracker ', () => {
+			it( 'should add the passed DOM element to EditorUI#focusTracker', () => {
 				const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
 
 				ui.setEditableElement( 'main', element );
@@ -201,14 +217,11 @@ describe( 'EditorUI', () => {
 			} );
 
 			it( 'should not add a DOM element to Editor#keystokeHandler if an editing DOM root (to avoid duplication)', () => {
-				const keystorkesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
+				const keystrokesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
 
 				ui.setEditableElement( 'main', element );
-				editor.model.document.createRoot();
-				editor.editing.view.attachDomRoot( element );
-				ui.fire( 'ready' );
 
-				sinon.assert.notCalled( keystorkesSpy );
+				sinon.assert.notCalled( keystrokesSpy );
 			} );
 
 			it( 'should enable accessibility features after the editor UI was ready', () => {
@@ -253,6 +266,58 @@ describe( 'EditorUI', () => {
 			const ui = new EditorUI( editor );
 
 			expect( ui.getEditableElement() ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'removeEditableElement()', () => {
+		let ui, editableMock;
+
+		beforeEach( () => {
+			ui = new EditorUI( editor );
+			const element = document.createElement( 'div' );
+			editableMock = { name: 'root1', element };
+
+			ui.setEditableElement( editableMock.name, editableMock.element );
+		} );
+
+		it( 'should remove the element from the editor ui', () => {
+			ui.removeEditableElement( editableMock.name );
+
+			expect( ui.getEditableElement( editableMock.name ) ).to.be.undefined;
+		} );
+
+		it( 'should remove the element from focus tracker', () => {
+			const spy = testUtils.sinon.spy( ui.focusTracker, 'remove' );
+
+			ui.removeEditableElement( editableMock.name );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, editableMock.element );
+		} );
+
+		it( 'should remove the element from the keystroke handler', () => {
+			const keystrokesSpy = sinon.spy( editor.keystrokes, 'stopListening' );
+
+			ui.removeEditableElement( editableMock.name );
+
+			sinon.assert.calledOnce( keystrokesSpy );
+			sinon.assert.calledWithExactly( keystrokesSpy, editableMock.element );
+		} );
+
+		it( 'should remove editor instance reference from the element', () => {
+			expect( editableMock.element.ckeditorInstance ).not.to.be.undefined;
+
+			ui.removeEditableElement( editableMock.name );
+
+			expect( editableMock.element.ckeditorInstance ).to.be.null;
+		} );
+
+		it( 'should not crash if called twice for the same editable', () => {
+			ui.removeEditableElement( editableMock.name );
+
+			expect( () => {
+				ui.removeEditableElement( editableMock.name );
+			} ).not.to.throw();
 		} );
 	} );
 

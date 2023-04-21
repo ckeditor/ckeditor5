@@ -31,7 +31,7 @@ export class ListItemUid {
 	 *
 	 * @internal
 	 */
-	/* istanbul ignore next: static function definition */
+	/* istanbul ignore next: static function definition -- @preserve */
 	public static next(): string {
 		return uid();
 	}

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for opening a file browser that allows inserting an image or a file to the editor."
 msgid "Open file manager"
-msgstr "Otvori upravljač datotekama"
+msgstr "Oтвори управљач датотекама."
 
 msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
 msgid "Cannot determine a category for the uploaded file."
-msgstr "Nije moguće odrediti kategoriju za otpremljenu datoteku."
+msgstr "Није могуће одредити категорију за отпремлјену датотеку."

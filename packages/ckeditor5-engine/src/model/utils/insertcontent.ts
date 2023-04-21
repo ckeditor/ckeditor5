@@ -13,14 +13,14 @@ import LivePosition from '../liveposition';
 import LiveRange from '../liverange';
 import Position from '../position';
 import Range from '../range';
-import Selection, { type PlaceOrOffset, type Selectable } from '../selection';
 
 import type DocumentFragment from '../documentfragment';
 import type Item from '../item';
 import type Model from '../model';
-import type Node from '../node';
 import type Schema from '../schema';
 import type Writer from '../writer';
+import type Node from '../node';
+import type Selection from '../selection';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -59,19 +59,10 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export default function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
-	selectable?: Selectable,
-	placeOrOffset?: PlaceOrOffset
+	selectable?: Selection | DocumentSelection
 ): Range {
 	return model.change( writer => {
-		let selection: Selection | DocumentSelection;
-
-		if ( !selectable ) {
-			selection = model.document.selection;
-		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
-			selection = selectable;
-		} else {
-			selection = writer.createSelection( selectable, placeOrOffset );
-		}
+		const selection: Selection | DocumentSelection = selectable ? selectable : model.document.selection;
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
@@ -212,7 +203,7 @@ export default function insertContent(
 			}
 		}
 
-		/* istanbul ignore else */
+		/* istanbul ignore else -- @preserve */
 		if ( newRange ) {
 			if ( selection instanceof DocumentSelection ) {
 				writer.setSelection( newRange );
@@ -363,7 +354,7 @@ class Insertion {
 		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
 			this._lastNode = node;
 
-			/* istanbul ignore if */
+			/* istanbul ignore if -- @preserve */
 			if ( this.position.parent != node || !this.position.isAtEnd ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be at the end of the last auto paragraph.
@@ -525,7 +516,7 @@ class Insertion {
 	 * @param node The node to insert.
 	 */
 	private _appendToFragment( node: Node ): void {
-		/* istanbul ignore if */
+		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
@@ -683,7 +674,7 @@ class Insertion {
 		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
-		/* istanbul ignore if */
+		/* istanbul ignore if -- @preserve */
 		if ( !this.position.isEqual( mergePosRight ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// At this point the insertion position should be after the node we'll merge. If it isn't,

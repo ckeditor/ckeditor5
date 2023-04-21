@@ -7,7 +7,7 @@
  * @module horizontal-line/horizontalline
  */
 
-import { Plugin, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 import HorizontalLineEditing from './horizontallineediting';
 import HorizontalLineUI from './horizontallineui';
@@ -23,8 +23,8 @@ export default class HorizontalLine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ HorizontalLineEditing, HorizontalLineUI, Widget ];
+	public static get requires() {
+		return [ HorizontalLineEditing, HorizontalLineUI, Widget ] as const;
 	}
 
 	/**
@@ -34,10 +34,3 @@ export default class HorizontalLine extends Plugin {
 		return 'HorizontalLine';
 	}
 }
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ HorizontalLine.pluginName ]: HorizontalLine;
-	}
-}
-

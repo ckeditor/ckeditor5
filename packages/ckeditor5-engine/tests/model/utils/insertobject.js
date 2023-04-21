@@ -74,7 +74,7 @@ describe( 'insertObject()', () => {
 
 				setData( model, '[<blockWidget></blockWidget>]' );
 
-				insertObject( model, widget, undefined, undefined, { findOptimalPosition: 'before' } );
+				insertObject( model, widget, undefined, { findOptimalPosition: 'before' } );
 
 				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
 
@@ -87,7 +87,7 @@ describe( 'insertObject()', () => {
 
 				setData( model, '[<blockWidget></blockWidget>]' );
 
-				insertObject( model, widget, undefined, undefined, { findOptimalPosition: 'after' } );
+				insertObject( model, widget, undefined, { findOptimalPosition: 'after' } );
 
 				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
 
@@ -100,7 +100,7 @@ describe( 'insertObject()', () => {
 
 				setData( model, '[<blockWidget></blockWidget>]' );
 
-				insertObject( model, widget, undefined, undefined, { findOptimalPosition: 'auto' } );
+				insertObject( model, widget, undefined, { findOptimalPosition: 'auto' } );
 
 				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
 
@@ -133,21 +133,6 @@ describe( 'insertObject()', () => {
 				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
 
 				expect( selectableArg ).to.equal( selection );
-			} );
-
-			it( 'should create a selection from a selectable it was called with', () => {
-				const widget = new Element( 'blockWidget', [], [] );
-
-				setData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
-
-				const position = model.createPositionAfter( root.getChild( 0 ) );
-
-				insertObject( model, widget, position );
-
-				const selectableArg = insertContentSpy.getCall( 0 ).args[ 1 ];
-
-				expect( selectableArg.is( 'selection' ) ).to.equal( true );
-				expect( position.compareWith( selectableArg.anchor ) ).to.equal( 'same' );
 			} );
 		} );
 	} );
@@ -271,7 +256,7 @@ describe( 'insertObject()', () => {
 		it( 'should create paragraph after inserted block object and set selection inside', () => {
 			const widget = new Element( 'blockWidget', [], [] );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<blockWidget></blockWidget>' +
@@ -284,7 +269,7 @@ describe( 'insertObject()', () => {
 
 			setData( model, '[]<paragraph>Foo</paragraph>' );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<blockWidget></blockWidget>' +
@@ -295,7 +280,7 @@ describe( 'insertObject()', () => {
 		it( 'should set selection after inserted inline object', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<paragraph>' +
@@ -309,7 +294,7 @@ describe( 'insertObject()', () => {
 
 			setData( model, '<paragraph>Fo[]o</paragraph>' );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<paragraph>Fo' +
@@ -321,7 +306,7 @@ describe( 'insertObject()', () => {
 		it( 'should set selection on inserted block object', () => {
 			const widget = new Element( 'blockWidget', [], [] );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'on' } );
+			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'[<blockWidget></blockWidget>]'
@@ -339,7 +324,7 @@ describe( 'insertObject()', () => {
 
 			setData( model, '<nonParagraph>[]</nonParagraph>' );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'after' } );
+			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<nonParagraph>[<blockWidget></blockWidget>]</nonParagraph>'
@@ -349,7 +334,7 @@ describe( 'insertObject()', () => {
 		it( 'should set selection on inserted inline object', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
 
-			insertObject( model, widget, undefined, undefined, { setSelection: 'on' } );
+			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
 			expect( getData( model ) ).to.equalMarkup(
 				'<paragraph>' +
@@ -362,7 +347,7 @@ describe( 'insertObject()', () => {
 			const widget = new Element( 'inlineWidget', [], [] );
 
 			expectToThrowCKEditorError(
-				() => insertObject( model, widget, undefined, undefined, { setSelection: 'above' } ),
+				() => insertObject( model, widget, undefined, { setSelection: 'above' } ),
 				'insertobject-invalid-place-parameter-value'
 			);
 		} );
@@ -370,7 +355,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'returned affected range of insert operation', () => {
 		it( 'should return collapsed range when object could not be inserted', () => {
-			const stub = testUtils.sinon.stub( console, 'warn' );
+			testUtils.sinon.stub( console, 'warn' );
 
 			schema.register( 'disallowedBlockWidget', {
 				isObject: true
@@ -382,8 +367,6 @@ describe( 'insertObject()', () => {
 
 			expect( affectedRange.isCollapsed ).to.be.true;
 			expect( getData( model ) ).to.equalMarkup( '[]' );
-
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should return affected range when inserting block object', () => {
@@ -494,7 +477,8 @@ describe( 'insertObject()', () => {
 				isObject: true
 			} );
 
-			const stub = testUtils.sinon.stub( console, 'warn' );
+			testUtils.sinon.stub( console, 'warn' );
+
 			const widget = new Element( 'anotherBlockWidget', [], [] );
 
 			model.insertObject( widget );
@@ -503,7 +487,6 @@ describe( 'insertObject()', () => {
 
 			sinon.assert.calledOnce( insertContentSpy );
 			sinon.assert.calledWith( insertContentSpy, widget, model.document.selection );
-			sinon.assert.calledWithMatch( stub, 'Cannot determine a proper selection range after insertion.' );
 		} );
 
 		it( 'should insert an object in an empty document', () => {

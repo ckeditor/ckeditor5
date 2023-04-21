@@ -8,7 +8,7 @@
  */
 import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
-import { Plugin, type PluginDependencies, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { Range, Writer } from 'ckeditor5/src/engine';
 import { Delete } from 'ckeditor5/src/typing';
 
@@ -23,10 +23,10 @@ import inlineAutoformatEditing from './inlineautoformatediting';
  */
 export default class Autoformat extends Plugin {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ Delete ];
+	public static get requires() {
+		return [ Delete ] as const;
 	}
 
 	/**
@@ -224,10 +224,4 @@ function getCallbackFunctionForInlineAutoformat( editor: Editor, attributeKey: s
 		// This way user is able to type a text without attribute used by auto formatter.
 		writer.removeSelectionAttribute( attributeKey );
 	};
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Autoformat.pluginName ]: Autoformat;
-	}
 }
