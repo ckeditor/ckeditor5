@@ -7,7 +7,7 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerFormat } from './utils';
+import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerOutputFormat } from './utils';
 
 import { type Locale, global } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -62,7 +62,7 @@ export default class ColorPickerView extends View {
 	*/
 	declare private _debounceColorPickerEvent: DebouncedFunc< ( arg: string ) => void >;
 
-	declare private _format: ColorPickerFormat;
+	declare private _format: ColorPickerOutputFormat;
 
 	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
 		super( locale );
