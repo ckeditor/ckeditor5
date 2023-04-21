@@ -6,7 +6,7 @@ category: features
 
 # Editor placeholder
 
-You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs.
+You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) used by inputs. Not to be confused with {@link examples/framework/content-placeholder content placeholder}.
 
 ## Demo
 
