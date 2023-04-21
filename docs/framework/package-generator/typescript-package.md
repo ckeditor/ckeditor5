@@ -58,7 +58,7 @@ Guides for developing some of the files:
 * {@link framework/contributing/package-metadata ckeditor5-metadata.json}
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
 * [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
-* augmentation.ts - Read more in <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_plugincollection-PluginsMap.html">PluginsMap</a> and <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_core_commandcollection-CommandsMap.html">CommandsMap</a>
+* augmentation.ts - Read more in the [relevant issue](https://github.com/ckeditor/ckeditor5/issues/13433), {@link module:core/plugincollection~PluginsMap} and {@link module:core/commandcollection~CommandsMap}.
 
 ## Npm scripts
 
