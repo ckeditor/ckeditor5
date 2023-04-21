@@ -5,10 +5,13 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { priorities } from 'ckeditor5/src/utils';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
@@ -988,6 +991,57 @@ describe( 'TableElementSupport', () => {
 		await editor.destroy();
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/13876
+	it( 'should not throw error when pasting table inside the custom element', async () => {
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [
+				Typing,
+				Paragraph,
+				ClipboardPipeline,
+				Table,
+				TableCaption,
+				TableColumnResize,
+				GeneralHtmlSupport
+			],
+			htmlSupport: {
+				allow: [
+					{
+						name: /^.*$/,
+						styles: true,
+						attributes: true,
+						classes: true
+					}
+				]
+			}
+		} );
+
+		setData( editor.model, '<paragraph>[]</paragraph>' );
+
+		pasteHtml( editor,
+			'<custom-element>' +
+				'<table dir="ltr">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>Foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</custom-element>'
+		);
+
+		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			'<paragraph>' +
+				'<htmlCustomElement ' +
+					'htmlContent="<custom-element><table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table></custom-element>" ' +
+					'htmlElementName="custom-element"' +
+				'>' +
+				'</htmlCustomElement>' +
+			'</paragraph>'
+		);
+
+		await editor.destroy();
+	} );
+
 	it( 'should upcast GHS attributes at the low priority (feature attribute converter at low + 1 priority)', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /.*/,
@@ -1591,3 +1645,19 @@ describe( 'TableElementSupport', () => {
 		} );
 	} );
 } );
+
+function pasteHtml( editor, html ) {
+	editor.editing.view.document.fire( 'paste', {
+		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		stopPropagation() { },
+		preventDefault() { }
+	} );
+}
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
+}
