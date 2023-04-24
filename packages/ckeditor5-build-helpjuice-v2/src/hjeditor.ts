@@ -31,6 +31,7 @@ import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Style } from '@ckeditor/ckeditor5-style';
+import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, ImageEditing } from '@ckeditor/ckeditor5-image';
 
 // Custom Plugins
 import { Heading } from './plugins/heading';
@@ -42,12 +43,11 @@ import InternalBlock from './plugins/internalblock/internalblock';
 import DecisionTree from './plugins/decisiontree/decisiontree';
 import InsertArticle from './plugins/insertarticle/insertarticle';
 import FilesManager from './plugins/filesmanager/filesmanager';
-// import Mention from './plugins/mention/src/mention';
+import Mention from './plugins/mention/src/mention';
 import Comments from './plugins/comments/comments';
 import Glossary from './plugins/glossary/glossary';
 import CmdDelete from './plugins/cmddelete/cmddelete';
 import { FontFamily, FontSize, FontColor, FontBackgroundColor } from './plugins/font';
-import { Image, ImageCaption, ImageStyle, ImageResize, ImageToolbar, ImageUpload } from './plugins/image';
 
 const { objectInline, objectLeft, objectRight, objectCenter } = icons;
 
@@ -79,8 +79,9 @@ HelpjuiceEditor.builtinPlugins = [
 	ImageStyle,
 	ImageResize,
 	ImageToolbar,
-	LinkImage,
 	ImageUpload,
+	LinkImage,
+	ImageEditing,
 	Indent,
 	IndentBlock,
 	Link,
@@ -109,6 +110,7 @@ HelpjuiceEditor.builtinPlugins = [
 	DecisionTree,
 	InsertArticle,
 	FilesManager,
+	Mention,
 	MentionCustomization,
 	Style,
 	Comments,

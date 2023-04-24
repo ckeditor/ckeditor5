@@ -1,15 +1,4 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/image/imageblockediting
- */
-import { Plugin } from 'ckeditor5/src/core';
-import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
-import ImageEditing from './imageediting';
-import ImageUtils from '../imageutils';
-/**
  * The image block plugin.
  *
  * It registers:
@@ -18,16 +7,18 @@ import ImageUtils from '../imageutils';
  * * converters for editing and data pipelines.,
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeBlock'`} command that converts inline images into
  * block images.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageBlockEditing extends Plugin {
+export default class ImageBlockEditing {
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof ImageEditing, typeof ImageUtils, typeof ClipboardPipeline];
+    static get requires(): (typeof ClipboardPipeline | typeof ImageUtils | typeof ImageEditing)[];
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageBlockEditing';
+    static get pluginName(): string;
     /**
      * @inheritDoc
      */
@@ -35,6 +26,8 @@ export default class ImageBlockEditing extends Plugin {
     /**
      * Configures conversion pipelines to support upcasting and downcasting
      * block images (block image widgets) and their attributes.
+     *
+     * @private
      */
     private _setupConversion;
     /**
@@ -50,6 +43,11 @@ export default class ImageBlockEditing extends Plugin {
      * if they decided to put their image there.
      *
      * See the `ImageInlineEditing` for the similar integration that works in the opposite direction.
+     *
+     * @private
      */
     private _setupClipboardIntegration;
 }
+import { ClipboardPipeline } from "@ckeditor/ckeditor5-clipboard";
+import ImageUtils from "../imageutils";
+import ImageEditing from "./imageediting";

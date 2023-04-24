@@ -1,25 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/imageinsert/utils
- */
-import type { Locale } from 'ckeditor5/src/utils';
-import type { Editor } from 'ckeditor5/src/core';
-import { LabeledFieldView, type View } from 'ckeditor5/src/ui';
-/**
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
- * @param editor Editor instance.
+ * @param {module:core/editor/editor~Editor} editor Editor instance.
  *
- * @returns Integrations object.
+ * @returns {Object.<String, module:ui/view~View>} Integrations object.
  */
-export declare function prepareIntegrations(editor: Editor): Record<string, View>;
+export function prepareIntegrations(editor: any): any;
 /**
  * Creates labeled field view.
  *
- * @param locale The localization services instance.
+ * @param {module:utils/locale~Locale} locale The localization services instance.
+ *
+ * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
  */
-export declare function createLabeledInputView(locale: Locale): LabeledFieldView;
+export function createLabeledInputView(locale: any): any;

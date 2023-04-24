@@ -1,12 +1,6 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
  * @module image/image/insertimagecommand
  */
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { type ArrayOrItem } from 'ckeditor5/src/utils';
 /**
  * Insert image command.
  *
@@ -17,50 +11,47 @@ import { type ArrayOrItem } from 'ckeditor5/src/utils';
  * (according to the {@link module:widget/utils~findOptimalInsertionRange} algorithm),
  * execute the command and specify the image source:
  *
- * ```ts
- * editor.execute( 'insertImage', { source: 'http://url.to.the/image' } );
- * ```
+ *		editor.execute( 'insertImage', { source: 'http://url.to.the/image' } );
  *
  * It is also possible to insert multiple images at once:
  *
- * ```ts
- * editor.execute( 'insertImage', {
- * 	source:  [
- * 		'path/to/image.jpg',
- * 		'path/to/other-image.jpg'
- * 	]
- * } );
- * ```
+ *		editor.execute( 'insertImage', {
+ *			source:  [
+ *				'path/to/image.jpg',
+ *				'path/to/other-image.jpg'
+ *			]
+ *		} );
  *
  * If you want to take the full control over the process, you can specify individual model attributes:
  *
- * ```ts
- * editor.execute( 'insertImage', {
- * 	source:  [
- * 		{ src: 'path/to/image.jpg', alt: 'First alt text' },
- * 		{ src: 'path/to/other-image.jpg', alt: 'Second alt text', customAttribute: 'My attribute value' }
- * 	]
- * } );
- * ```
+ *		editor.execute( 'insertImage', {
+ *			source:  [
+ *				{ src: 'path/to/image.jpg', alt: 'First alt text' },
+ *				{ src: 'path/to/other-image.jpg', alt: 'Second alt text', customAttribute: 'My attribute value' }
+ *			]
+ *		} );
+ *
+ * @extends module:core/command~Command
  */
-export default class InsertImageCommand extends Command {
+export default class InsertImageCommand {
     /**
      * @inheritDoc
      */
-    constructor(editor: Editor);
+    constructor(editor: any);
     /**
      * @inheritDoc
      */
     refresh(): void;
+    isEnabled: any;
     /**
      * Executes the command.
      *
      * @fires execute
-     * @param options Options for the executed command.
-     * @param options.source The image source or an array of image sources to insert.
+     * @param {Object} options Options for the executed command.
+     * @param {String|Array.<String>|Array.<Object>} options.source The image source or an array of image sources to insert.
      * See the documentation of the command to learn more about accepted formats.
      */
     execute(options: {
-        source: ArrayOrItem<string | Record<string, unknown>>;
+        source: string | Array<string> | Array<Object>;
     }): void;
 }

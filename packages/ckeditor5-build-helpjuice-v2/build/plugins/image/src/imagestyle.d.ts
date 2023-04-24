@@ -1,14 +1,4 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/imagestyle
- */
-import { Plugin } from 'ckeditor5/src/core';
-import ImageStyleEditing from './imagestyle/imagestyleediting';
-import ImageStyleUI from './imagestyle/imagestyleui';
-/**
  * The image style plugin.
  *
  * For a detailed overview of the image styles feature, check the {@glink features/images/images-styles documentation}.
@@ -18,15 +8,23 @@ import ImageStyleUI from './imagestyle/imagestyleui';
  * * {@link module:image/imagestyle/imagestyleui~ImageStyleUI}
  *
  * It provides a default configuration, which can be extended or overwritten.
- * Read more about the {@link module:image/imageconfig~ImageConfig#styles image styles configuration}.
+ * Read more about the {@link module:image/image~ImageConfig#styles image styles configuration}.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageStyle extends Plugin {
+export default class ImageStyle {
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof ImageStyleEditing, typeof ImageStyleUI];
+    static get requires(): (typeof ImageStyleEditing | typeof ImageStyleUI)[];
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageStyle';
+    static get pluginName(): string;
 }
+/**
+ * :image/imagestyle~ImageStyleOptionDefinition
+ */
+export type module = Object;
+import ImageStyleEditing from "./imagestyle/imagestyleediting";
+import ImageStyleUI from "./imagestyle/imagestyleui";

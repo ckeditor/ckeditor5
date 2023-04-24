@@ -1,30 +1,19 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/imageinsert/imageinsertui
- */
-import { Plugin } from 'ckeditor5/src/core';
-import { type DropdownView } from 'ckeditor5/src/ui';
-/**
  * The image insert dropdown plugin.
  *
  * For a detailed overview, check the {@glink features/images/image-upload/image-upload Image upload feature}
- * and {@glink features/images/images-inserting Insert images via source URL} documentation.
+ * and {@glink features/images/image-upload/images-inserting#inserting-images-via-source-url Insert images via source URL} documentation.
  *
  * Adds the `'insertImage'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
  * and also the `imageInsert` dropdown as an alias for backward compatibility.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageInsertUI extends Plugin {
+export default class ImageInsertUI {
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageInsertUI';
-    /**
-     * The dropdown view responsible for displaying the image insert UI.
-     */
-    dropdownView?: DropdownView;
+    static get pluginName(): string;
     /**
      * @inheritDoc
      */
@@ -32,13 +21,21 @@ export default class ImageInsertUI extends Plugin {
     /**
      * Creates the dropdown view.
      *
-     * @param locale The localization services instance.
+     * @param {module:utils/locale~Locale} locale The localization services instance.
+     *
+     * @private
+     * @returns {module:ui/dropdown/dropdownview~DropdownView}
      */
     private _createDropdownView;
     /**
      * Sets up the dropdown view.
      *
-     * @param command An uploadImage or insertImage command.
+     * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
+     * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView} imageInsertView An imageInsertView.
+     * @param {module:core/command~Command} command An insertImage command
+     *
+     * @private
+     * @returns {module:ui/dropdown/dropdownview~DropdownView}
      */
     private _setUpDropdown;
 }

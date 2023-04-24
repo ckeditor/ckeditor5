@@ -1,15 +1,4 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/imageupload
- */
-import { Plugin } from 'ckeditor5/src/core';
-import ImageUploadUI from './imageupload/imageuploadui';
-import ImageUploadProgress from './imageupload/imageuploadprogress';
-import ImageUploadEditing from './imageupload/imageuploadediting';
-/**
  * The image upload plugin.
  *
  * For a detailed overview, check the {@glink features/images/image-upload/image-upload image upload feature} documentation.
@@ -19,14 +8,19 @@ import ImageUploadEditing from './imageupload/imageuploadediting';
  * * {@link module:image/imageupload/imageuploadediting~ImageUploadEditing},
  * * {@link module:image/imageupload/imageuploadui~ImageUploadUI},
  * * {@link module:image/imageupload/imageuploadprogress~ImageUploadProgress}.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageUpload extends Plugin {
+export default class ImageUpload {
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageUpload';
+    static get pluginName(): string;
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof ImageUploadEditing, typeof ImageUploadUI, typeof ImageUploadProgress];
+    static get requires(): (typeof ImageUploadUI | typeof ImageUploadProgress | typeof ImageUploadEditing)[];
 }
+import ImageUploadUI from "./imageupload/imageuploadui";
+import ImageUploadProgress from "./imageupload/imageuploadprogress";
+import ImageUploadEditing from "./imageupload/imageuploadediting";

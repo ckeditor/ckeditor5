@@ -1,37 +1,38 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import ImageUtils from '../imageutils';
-/**
  * The image resize editing feature.
  *
  * It adds the ability to resize each image using handles or manually by
  * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageResizeEditing extends Plugin {
+export default class ImageResizeEditing {
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof ImageUtils];
+    static get requires(): (typeof ImageUtils)[];
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageResizeEditing';
+    static get pluginName(): string;
     /**
      * @inheritDoc
      */
-    constructor(editor: Editor);
+    constructor(editor: any);
     /**
      * @inheritDoc
      */
     init(): void;
+    /**
+     * @private
+     */
     private _registerSchema;
     /**
      * Registers image resize converters.
      *
-     * @param imageType The type of the image.
+     * @private
+     * @param {'imageBlock'|'imageInline'} imageType The type of the image.
      */
     private _registerConverters;
 }
+import ImageUtils from "../imageutils";

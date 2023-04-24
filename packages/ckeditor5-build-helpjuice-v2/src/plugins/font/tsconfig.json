@@ -6,8 +6,5 @@
 	],
 	"exclude": [
 		"tests"
-	],
-	"compilerOptions":{
-		"skipLibCheck": true
-	}
+	]
 }

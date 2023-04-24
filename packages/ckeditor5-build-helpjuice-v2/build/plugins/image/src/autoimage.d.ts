@@ -1,42 +1,38 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/autoimage
- */
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Clipboard } from 'ckeditor5/src/clipboard';
-import { Undo } from 'ckeditor5/src/undo';
-import { Delete } from 'ckeditor5/src/typing';
-import ImageUtils from './imageutils';
-/**
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
  * them shortly after they are injected into the document.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class AutoImage extends Plugin {
+export default class AutoImage {
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof Clipboard, typeof ImageUtils, typeof Undo, typeof Delete];
+    static get requires(): (typeof Delete | typeof Clipboard | typeof Undo | typeof ImageUtils)[];
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'AutoImage';
+    static get pluginName(): string;
+    /**
+     * @inheritDoc
+     */
+    constructor(editor: any);
     /**
      * The paste–to–embed `setTimeout` ID. Stored as a property to allow
      * cleaning of the timeout.
+     *
+     * @private
+     * @member {Number} #_timeoutId
      */
     private _timeoutId;
     /**
      * The position where the `<imageBlock>` element will be inserted after the timeout,
      * determined each time a new content is pasted into the document.
+     *
+     * @private
+     * @member {module:engine/model/liveposition~LivePosition} #_positionToInsert
      */
     private _positionToInsert;
-    /**
-     * @inheritDoc
-     */
-    constructor(editor: Editor);
     /**
      * @inheritDoc
      */
@@ -45,8 +41,13 @@ export default class AutoImage extends Plugin {
      * Analyzes the part of the document between provided positions in search for a URL representing an image.
      * When the URL is found, it is automatically converted into an image.
      *
-     * @param leftPosition Left position of the selection.
-     * @param rightPosition Right position of the selection.
+     * @protected
+     * @param {module:engine/model/liveposition~LivePosition} leftPosition Left position of the selection.
+     * @param {module:engine/model/liveposition~LivePosition} rightPosition Right position of the selection.
      */
-    private _embedImageBetweenPositions;
+    protected _embedImageBetweenPositions(leftPosition: any, rightPosition: any): void;
 }
+import { Delete } from "@ckeditor/ckeditor5-typing";
+import { Clipboard } from "@ckeditor/ckeditor5-clipboard";
+import { Undo } from "@ckeditor/ckeditor5-undo";
+import ImageUtils from "./imageutils";

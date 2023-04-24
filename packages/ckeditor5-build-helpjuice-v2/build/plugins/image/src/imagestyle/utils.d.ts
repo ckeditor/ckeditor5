@@ -1,14 +1,60 @@
+declare namespace _default {
+    export { normalizeStyles };
+    export { getDefaultStylesConfiguration };
+    export { getDefaultDropdownDefinitions };
+    export { warnInvalidStyle };
+    export { DEFAULT_OPTIONS };
+    export { DEFAULT_ICONS };
+    export { DEFAULT_DROPDOWN_DEFINITIONS };
+}
+export default _default;
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Returns a list of the normalized and validated image style options.
+ *
+ * @protected
+ * @param {Object} config
+ * @param {Boolean} config.isInlinePluginLoaded
+ * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
+ * @param {Boolean} config.isBlockPluginLoaded
+ * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
+ * @param {module:image/imagestyle~ImageStyleConfig} config.configuredStyles
+ * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
+ * as a default or custom value.
+ * @returns {module:image/imagestyle~ImageStyleConfig}
+ * * Each of options contains a complete icon markup.
+ * * The image style options not supported by any of the loaded plugins are filtered out.
  */
+declare function normalizeStyles(config: {
+    isInlinePluginLoaded: boolean;
+    isBlockPluginLoaded: boolean;
+    configuredStyles: any;
+}): any;
 /**
- * @module image/imagestyle/utils
+ * Returns the default image styles configuration depending on the loaded image editing plugins.
+ * @protected
+ *
+ * @param {Boolean} isInlinePluginLoaded
+ * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
+ *
+ * @param {Boolean} isBlockPluginLoaded
+ * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
+ *
+ * @returns {Object<String,Array>}
+ * It returns an object with the lists of the image style options and groups defined as strings related to the
+ * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
  */
-import { type Editor, type PluginCollection } from 'ckeditor5/src/core';
-import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
+declare function getDefaultStylesConfiguration(isBlockPluginLoaded: boolean, isInlinePluginLoaded: boolean): any;
 /**
- * Default image style options provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
+ * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
+ * @protected
+ *
+ * @param {module:core/plugincollection~PluginCollection} pluginCollection
+ * @returns {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
+ */
+declare function getDefaultDropdownDefinitions(pluginCollection: any): Array<NodeModule>;
+declare function warnInvalidStyle(info: any): void;
+/**
+ * Default image style options provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
  *
  * There are available 5 styles focused on formatting:
@@ -24,20 +70,26 @@ import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDe
  * * **`'inline'`** is an inline image without any CSS class,
  * * **`'block'`** is a block image without any CSS class,
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
+ *
+ * @readonly
+ * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition>}
  */
-export declare const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition>;
+declare const DEFAULT_OPTIONS: any;
 /**
- * Default image style icons provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
+ * Default image style icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
  *
- * See {@link module:image/imageconfig~ImageStyleOptionDefinition#icon} to learn more.
+ * See {@link module:image/imagestyle~ImageStyleOptionDefinition#icon} to learn more.
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
+ *
+ * @readonly
+ * @type {Object.<String,String>}
  */
-export declare const DEFAULT_ICONS: Record<string, string>;
+declare const DEFAULT_ICONS: any;
 /**
- * Default drop-downs provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#toolbar}
- * configuration. The drop-downs are containers for the {@link module:image/imageconfig~ImageStyleConfig#options image style options}.
+ * Default drop-downs provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#toolbar}
+ * configuration. The drop-downs are containers for the {@link module:image/imagestyle~ImageStyleConfig#options image style options}.
  *
  * If both of the `ImageEditing` plugins are loaded, there are 2 predefined drop-downs available:
  *
@@ -45,57 +97,8 @@ export declare const DEFAULT_ICONS: Record<string, string>;
  * those that wraps the text around the image,
  * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
  * those that breaks the text around the image.
- */
-export declare const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition>;
-/**
- * Returns a list of the normalized and validated image style options.
  *
- * @param config
- * @param config.isInlinePluginLoaded
- * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
- * @param config.isBlockPluginLoaded
- * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
- * @param config.configuredStyles
- * The image styles configuration provided in the image styles {@link module:image/imageconfig~ImageConfig#styles configuration}
- * as a default or custom value.
- * @returns
- * * Each of options contains a complete icon markup.
- * * The image style options not supported by any of the loaded plugins are filtered out.
+ * @readonly
+ * @type {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
  */
-declare function normalizeStyles(config: {
-    isInlinePluginLoaded: boolean;
-    isBlockPluginLoaded: boolean;
-    configuredStyles: ImageStyleConfig;
-}): Array<ImageStyleOptionDefinition>;
-/**
- * Returns the default image styles configuration depending on the loaded image editing plugins.
- *
- * @param isInlinePluginLoaded
- * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
- *
- * @param isBlockPluginLoaded
- * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
- *
- * @returns
- * It returns an object with the lists of the image style options and groups defined as strings related to the
- * {@link module:image/imagestyle/utils#DEFAULT_OPTIONS default options}
- */
-declare function getDefaultStylesConfiguration(isBlockPluginLoaded: boolean, isInlinePluginLoaded: boolean): ImageStyleConfig;
-/**
- * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
- */
-declare function getDefaultDropdownDefinitions(pluginCollection: PluginCollection<Editor>): Array<ImageStyleDropdownDefinition>;
-/**
- * Displays a console warning with the 'image-style-configuration-definition-invalid' error.
- */
-declare function warnInvalidStyle(info: object): void;
-declare const _default: {
-    normalizeStyles: typeof normalizeStyles;
-    getDefaultStylesConfiguration: typeof getDefaultStylesConfiguration;
-    getDefaultDropdownDefinitions: typeof getDefaultDropdownDefinitions;
-    warnInvalidStyle: typeof warnInvalidStyle;
-    DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition>;
-    DEFAULT_ICONS: Record<string, string>;
-    DEFAULT_DROPDOWN_DEFINITIONS: ImageStyleDropdownDefinition[];
-};
-export default _default;
+declare const DEFAULT_DROPDOWN_DEFINITIONS: Array<NodeModule>;

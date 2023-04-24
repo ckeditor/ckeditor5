@@ -1,17 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module image/imageblock
- */
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
-import ImageTextAlternative from './imagetextalternative';
-import ImageBlockEditing from './image/imageblockediting';
-import '../theme/image.css';
-/**
- * The image block plugin.
+ * The image inline plugin.
  *
  * This is a "glue" plugin which loads the following plugins:
  *
@@ -20,14 +8,19 @@ import '../theme/image.css';
  *
  * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
  * for more information.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ImageBlock extends Plugin {
+export default class ImageBlock {
     /**
      * @inheritDoc
      */
-    static get requires(): readonly [typeof ImageBlockEditing, typeof Widget, typeof ImageTextAlternative];
+    static get requires(): (typeof Widget | typeof ImageTextAlternative | typeof ImageBlockEditing)[];
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'ImageBlock';
+    static get pluginName(): string;
 }
+import { Widget } from "@ckeditor/ckeditor5-widget";
+import ImageTextAlternative from "./imagetextalternative";
+import ImageBlockEditing from "./image/imageblockediting";

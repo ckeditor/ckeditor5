@@ -1,62 +1,68 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { Collection, FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import '../../../theme/imageinsert.css';
-export type ViewWithName = View & {
-    name: string;
-};
-/**
  * The insert an image via URL view controller class.
  *
  * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
+ *
+ * @extends module:ui/view~View
  */
-export default class ImageInsertPanelView extends View {
+export default class ImageInsertPanelView {
+    /**
+     * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
+     *
+     * @param {module:utils/locale~Locale} [locale] The localization services instance.
+     * @param {Object} [integrations] An integrations object that contains
+     * components (or tokens for components) to be shown in the panel view.
+     */
+    constructor(locale?: any, integrations?: Object | undefined);
     /**
      * The "insert/update" button view.
+     *
+     * @member {module:ui/button/buttonview~ButtonView}
      */
-    insertButtonView: ButtonView;
+    insertButtonView: any;
     /**
      * The "cancel" button view.
-     */
-    cancelButtonView: ButtonView;
-    /**
-     * The value of the URL input.
      *
-     * @observable
+     * @member {module:ui/button/buttonview~ButtonView}
      */
-    imageURLInputValue: string;
+    cancelButtonView: any;
+    /**
+     * The dropdown view.
+     *
+     * @member {module:ui/dropdown/dropdownview~DropdownView}
+     */
+    dropdownView: any;
     /**
      * Tracks information about DOM focus in the form.
+     *
+     * @readonly
+     * @member {module:utils/focustracker~FocusTracker}
      */
     readonly focusTracker: FocusTracker;
     /**
      * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+     *
+     * @readonly
+     * @member {module:utils/keystrokehandler~KeystrokeHandler}
      */
     readonly keystrokes: KeystrokeHandler;
     /**
      * A collection of views that can be focused in the form.
+     *
+     * @readonly
+     * @protected
+     * @member {module:ui/viewcollection~ViewCollection}
      */
-    protected readonly _focusables: ViewCollection;
+    protected readonly _focusables: ViewCollection<View<HTMLElement>>;
     /**
      * Helps cycling over {@link #_focusables} in the form.
+     *
+     * @readonly
+     * @protected
+     * @member {module:ui/focuscycler~FocusCycler}
      */
     protected readonly _focusCycler: FocusCycler;
-    /**
-     * A collection of the defined integrations for inserting the images.
-     *
-     * @private
-     */
-    _integrations: Collection<ViewWithName>;
-    /**
-     * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
-     *
-     * @param locale The localization services instance.
-     * @param integrations An integrations object that contains components (or tokens for components) to be shown in the panel view.
-     */
-    constructor(locale: Locale, integrations?: Record<string, View>);
+    imageURLInputValue: any;
     /**
      * @inheritDoc
      */
@@ -68,16 +74,29 @@ export default class ImageInsertPanelView extends View {
     /**
      * Returns a view of the integration.
      *
-     * @param name The name of the integration.
+     * @param {String} name The name of the integration.
+     * @returns {module:ui/view~View}
      */
-    getIntegration(name: string): View;
+    getIntegration(name: string): any;
+    /**
+     * Creates the dropdown view.
+     *
+     * @param {module:utils/locale~Locale} locale The localization services instance.
+     *
+     * @private
+     * @returns {module:ui/dropdown/dropdownview~DropdownView}
+     */
+    private _createDropdownView;
     /**
      * Creates the following form controls:
      *
      * * {@link #insertButtonView},
      * * {@link #cancelButtonView}.
      *
-     * @param locale The localization services instance.
+     * @param {module:utils/locale~Locale} locale The localization services instance.
+     *
+     * @private
+     * @returns {Object.<String,module:ui/view~View>}
      */
     private _createActionButtons;
     /**
@@ -85,22 +104,8 @@ export default class ImageInsertPanelView extends View {
      */
     focus(): void;
 }
-/**
- * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. by a click on {@link ~ImageInsertPanelView#insertButtonView}.
- *
- * @eventName ~ImageInsertPanelView#submit
- */
-export type SubmitEvent = {
-    name: 'submit';
-    args: [];
-};
-/**
- * Fired when the form view is canceled, e.g. by a click on {@link ~ImageInsertPanelView#cancelButtonView}.
- *
- * @eventName ~ImageInsertPanelView#cancel
- */
-export type CancelEvent = {
-    name: 'cancel';
-    args: [];
-};
+import { FocusTracker } from "@ckeditor/ckeditor5-utils";
+import { KeystrokeHandler } from "@ckeditor/ckeditor5-utils";
+import { View } from "@ckeditor/ckeditor5-ui";
+import { ViewCollection } from "@ckeditor/ckeditor5-ui";
+import { FocusCycler } from "@ckeditor/ckeditor5-ui";
