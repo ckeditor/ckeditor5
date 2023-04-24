@@ -194,6 +194,13 @@ The minimap feature uses `<iframe>` internally. For a proper look and operation,
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Related features
+
+Here are some other CKEditor 5 features that you can use to navigate content better:
+
+* {@link features/document-outline Document outline}  &ndash; Display a navigable list of sections (headings) of the document next to the editor.
+* {@link features/table-of-contents Table of contents} &ndash; Insert a table of contents into the document with a single click.
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-minimap).

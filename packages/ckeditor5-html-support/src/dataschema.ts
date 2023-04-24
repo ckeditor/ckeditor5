@@ -131,6 +131,13 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
+	 * Returns definitions matching the given model name.
+	 */
+	public getDefinitionsForModel( modelName: string ): Array<DataSchemaDefinition> {
+		return this._definitions.filter( definition => definition.model == modelName );
+	}
+
+	/**
 	 * Returns definitions matching the given view name.
 	 */
 	private _getMatchingViewDefinitions( viewName: string | RegExp ): Array<DataSchemaDefinition> {
@@ -143,20 +150,20 @@ export default class DataSchema extends Plugin {
 	 * @param modelName Data schema model name.
 	 */
 	private* _getReferences( modelName: string ): Iterable<DataSchemaDefinition> {
+		const inheritProperties = [
+			'inheritAllFrom',
+			'inheritTypesFrom',
+			'allowWhere',
+			'allowContentOf',
+			'allowAttributesOf'
+		] as const;
+
 		const definitions = this._definitions.filter( definition => definition.model == modelName );
 
 		for ( const { modelSchema } of definitions ) {
 			if ( !modelSchema ) {
 				continue;
 			}
-
-			const inheritProperties = [
-				'inheritAllFrom',
-				'inheritTypesFrom',
-				'allowWhere',
-				'allowContentOf',
-				'allowAttributesOf'
-			] as const;
 
 			for ( const property of inheritProperties ) {
 				for ( const referenceName of toArray( modelSchema[ property ] || [] ) ) {
@@ -289,7 +296,10 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	coupledAttribute?: string;
 
 	/**
-	 * TODO
+	 * Indicates that element should not be converted as a model text attribute.
+	 * It is used to map view elements that do not have a separate model element but their data is stored in a model attribute.
+	 * For example `<tbody>` element does not have a dedicated model element and GHS stores attributes of `<tbody>`
+	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
 	 */
-	isBlockAttribute?: boolean;
+	appliesToBlock?: boolean | string;
 }

@@ -677,14 +677,15 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		for ( const rootName of this.model.document.getRootNames() ) {
 			if ( !( rootName in initialData ) ) {
 				/**
-				 * Editor roots do not match {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
+				 * Editor roots do not match the
+				 * {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
 				 *
-				 * This can happen for one of the two reasons:
+				 * This may happen for one of the two reasons:
 				 *
-				 * * Configuration error. `sourceElementsOrData` parameter in
+				 * * Configuration error. The `sourceElementsOrData` parameter in
 				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} contains different
 				 * roots than {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData` configuration}.
-				 * * As the editor was initialized, {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData`}
+				 * * As the editor was initialized, the {@link module:core/editor/editorconfig~EditorConfig#initialData `initialData`}
 				 * configuration value or the state of the editor roots has been changed.
 				 *
 				 * @error multi-root-editor-root-initial-data-mismatch

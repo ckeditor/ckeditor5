@@ -1315,11 +1315,11 @@ describe( 'DataFilter', () => {
 			editor.getData( '<p>foobar</p>' );
 		} );
 
-		it( 'should not register default converters for isBlockAttribute', () => {
+		it( 'should not register default converters for appliesToBlock', () => {
 			dataSchema.registerInlineElement( {
 				view: 'xyz',
 				model: 'htmlXyz',
-				isBlockAttribute: true
+				appliesToBlock: true
 			} );
 
 			dataFilter.allowElement( 'xyz' );

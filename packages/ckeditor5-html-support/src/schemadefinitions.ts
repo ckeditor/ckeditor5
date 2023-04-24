@@ -51,7 +51,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinitio
 
 export default {
 	block: [
-		// Existing features
+		// Existing features.
 		{
 			model: 'codeBlock',
 			view: 'pre'
@@ -86,11 +86,11 @@ export default {
 		},
 		{
 			model: 'tableCell',
-			view: 'th'
+			view: 'td'
 		},
 		{
 			model: 'tableCell',
-			view: 'td'
+			view: 'th'
 		},
 		{
 			model: 'tableColumnGroup',
@@ -117,7 +117,7 @@ export default {
 			view: 'img'
 		},
 
-		// Compatibility features
+		// Compatibility features.
 		{
 			model: 'htmlP',
 			view: 'p',
@@ -514,22 +514,46 @@ export default {
 			}
 		}
 	] as Array<DataSchemaBlockElementDefinition>,
+
 	inline: [
+		// Existing features (attribute set on an existing model element).
 		{
 			model: 'htmlLiAttributes',
 			view: 'li',
-			isBlockAttribute: true
+			appliesToBlock: true
 		},
 		{
 			model: 'htmlListAttributes',
 			view: 'ol',
-			isBlockAttribute: true
+			appliesToBlock: true
 		},
 		{
 			model: 'htmlListAttributes',
 			view: 'ul',
-			isBlockAttribute: true
+			appliesToBlock: true
 		},
+		{
+			model: 'htmlFigureAttributes',
+			view: 'figure',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlTheadAttributes',
+			view: 'thead',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlTbodyAttributes',
+			view: 'tbody',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlFigureAttributes',
+			view: 'figure',
+			appliesToBlock: 'imageBlock'
+		},
+
+		// Compatibility features.
 		{
 			model: 'htmlAcronym',
 			view: 'acronym',
@@ -771,7 +795,7 @@ export default {
 			}
 		},
 
-		// Objects
+		// Objects.
 		{
 			model: 'htmlObject',
 			view: 'object',

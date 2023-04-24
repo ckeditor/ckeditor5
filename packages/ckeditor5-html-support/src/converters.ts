@@ -27,7 +27,7 @@ import {
 	mergeViewElementAttributes,
 	updateViewAttributes,
 	type GHSViewAttributes
-} from './conversionutils';
+} from './utils';
 import type DataFilter from './datafilter';
 import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema';
 

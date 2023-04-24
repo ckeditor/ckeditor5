@@ -17,7 +17,7 @@ import type {
 } from 'ckeditor5/src/engine';
 import { Plugin } from 'ckeditor5/src/core';
 
-import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 
 /**

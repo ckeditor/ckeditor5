@@ -211,26 +211,26 @@ Finally, import the build in your application:
 
 ```html
 <template>
-    <div id="app">
-        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
-    </div>
+	<div id="app">
+		<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+	</div>
 </template>
 
 <script>
-    import Editor from 'ckeditor5-custom-build/build/ckeditor';
+	import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
-    export default {
-        name: 'app',
-        data() {
-            return {
-                editor: Editor,
-                editorData: '<p>Content of the editor.</p>',
-                editorConfig: {
-                    // The configuration of the editor.
-                }
-            };
-        }
-    }
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: Editor,
+				editorData: '<p>Content of the editor.</p>',
+				editorConfig: {
+					// The configuration of the editor.
+				}
+			};
+		}
+	}
 </script>
 ```
 
@@ -271,8 +271,8 @@ import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
   plugins: [
-    vue(),
-    ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+	vue(),
+	ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
   ],
 } );
 ```
@@ -316,11 +316,11 @@ First, install the necessary dependencies:
 
 ```bash
 npm install --save \
-    @ckeditor/ckeditor5-vue2 \
-    @ckeditor/ckeditor5-dev-translations \
-    @ckeditor/ckeditor5-dev-utils \
-    postcss-loader@4 \
-    raw-loader@4
+	@ckeditor/ckeditor5-vue2 \
+	@ckeditor/ckeditor5-dev-translations \
+	@ckeditor/ckeditor5-dev-utils \
+	postcss-loader@4 \
+	raw-loader@4
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
@@ -404,7 +404,7 @@ module.exports = {
 ```
 
 <info-box>
-    By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
+	By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
 </info-box>
 
 ### Installing plugins

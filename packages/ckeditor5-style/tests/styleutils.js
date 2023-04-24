@@ -109,6 +109,38 @@ describe( 'StyleUtils', () => {
 				block: []
 			} );
 		} );
+
+		it( 'should normalize inline style that applies to model element', () => {
+			sinon.stub( styleUtils, 'getStylePreview' ).callsFake( definition => ( {
+				fake: 'preview for ' + definition.name
+			} ) );
+
+			const styleDefinitions = styleUtils.normalizeConfig( dataSchema, [ {
+				name: 'Bar',
+				element: 'figure',
+				classes: 'foo'
+			} ] );
+
+			expect( styleDefinitions ).to.deep.equal( {
+				block: [
+					{
+						name: 'Bar',
+						element: 'figure',
+						classes: 'foo',
+						isBlock: true,
+						modelElements: [
+							'htmlFigure',
+							'table',
+							'imageBlock'
+						],
+						previewTemplate: {
+							fake: 'preview for Bar'
+						}
+					}
+				],
+				inline: []
+			} );
+		} );
 	} );
 
 	describe( 'getStylePreview()', () => {

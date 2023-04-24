@@ -109,6 +109,34 @@
 			color: hsl(0, 0%, 40%);
 		}
 
+		.ck.ck-content pre.fancy-code {
+			border: 0;
+			margin-left: 2em;
+			margin-right: 2em;
+			border-radius: 10px;
+		}
+
+		.ck.ck-content pre.fancy-code::before {
+			content: "";
+			display: block;
+			height: 13px;
+			background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+			margin-bottom: 8px;
+			background-repeat: no-repeat;
+		}
+
+		.ck.ck-content pre.fancy-code-dark {
+			background: #272822;
+			color: #fff;
+			box-shadow: 5px 5px 0 #0000001f;
+		}
+
+		.ck.ck-content pre.fancy-code-bright {
+			background: #dddfe0;
+			color: #000;
+			box-shadow: 5px 5px 0 #b3b3b3;
+		}
+
 		.ck.ck-content ol.fancy-list {
 			padding-left: 30px;
 		}
@@ -176,55 +204,17 @@
 		.ck.ck-content li.background-list-item {
 			background-color: #FFAE7F;
 		}
-	</style>
 
+		.ck.ck-content figure.figure-style {
+			outline: 4px solid #ff0000;
+		}
+	</style>
 
 </head>
 
 <h2>Lots of styles: block + inline</h2>
 
 <div id="editor-full">
-	<h2>Top five places to visit this summer</h2>
-	<h3>...and stay on the budget.</h3>
-	<ol>
-		<li>
-			<h4>Gran Canaria, Spain</h4>
-			<p>Gran Canaria is a popular tourist destination. The island is often called &ldquo;a miniature continent&rdquo;. This is because it offers a great variety of climates and landscapes, from golden sandy beaches through rocky ravines and white dunes to charming villages. In the mid-2010s, over 3.5&nbsp;million tourists visited Gran Canaria each year.</p>
-		</li>
-		<li>
-			<h4>Florence, Italy</h4>
-			<p>Florence, established in 59&nbsp;BC by Julius Caesar himself got its name from two rivers that surrounded the settlement. Thanks to centuries of history, the capital of Tuscany has plenty to offer to tourists hungry for sightseeing. Some of the most interesting places to visit include:</p>
-			<ul style="list-style-type:square">
-				<li><a href="https://en.wikipedia.org/wiki/Piazza_della_Signoria">Piazza della Signoria</a></li>
-				<li><a href="https://en.wikipedia.org/wiki/Mercato_Centrale_(Florence)">Mercato Centrale and the San Lorenzo Market</a></li>
-				<li><a href="https://en.wikipedia.org/wiki/La_Specola">Museum of Zoology and Natural History &ldquo;La Specola&rdquo;</a></li>
-			</ul>
-			<p>Florence is also regarded as one of the top 15 fashion capitals of the world.</p>
-		</li>
-		<li>
-			<h4>Porto, Portugal</h4>
-			<p>Porto, located at the Duero river estuary in northern Portugal, is the country’s second-largest city. It is regarded as one of the oldest European centers, which was recognized in 1996 when deemed the city’s historic center a World Heritage Site.</p>
-			<figure class="image">
-				<img src="sample.jpg" alt="bar">
-				<figcaption>Caption</figcaption>
-			</figure>
-			<p>In 2014 and 2017, Porto was elected The Best European Destination by the Best European Destinations Agency. The city is also home to the Porto School of Architecture, one of the most prestigious architecture schools in the world.</p>
-		</li>
-		<li>
-			<h4>Budapest, Hungary</h4>
-			<p>The capital of Hungary, a spa city sitting across the Danube river, is alive with Roman, Turkish, and European history and cultural heritage. Thermal baths, the picturesque river, and the Gellért Hill citadel are only a few things worth considering while planning your trip to Hungary.</p>
-			<blockquote>
-				<p><strong>They said that, of course, Budapest is beautiful. But it is in fact almost ludicrously beautiful.</strong> &ndash; Anthony Bourdain</p>
-			</blockquote>
-		</li>
-		<li>
-			<h4>The Peloponnese, Greece</h4>
-			<p>The Peloponnese peninsula was already inhabited in prehistoric times. During the bronze age, the first European highly developed culture &ndash; the Mycenaean civilization &ndash; started there. Roman, Byzantine, Slavic, and Ottoman rules left a significant mark on the place with numerous architectural and cultural relics worth visiting to this day.</p>
-		</li>
-	</ol>
-
-	<hr>
-
 	<h2>Heading 1</h2>
 	<p>Pa<span class="marker">ragrap</span>h</p>
 	<pre><code class="language-plaintext">Foobar</code></pre>
@@ -247,14 +237,7 @@
 		</p>
 	</blockquote>
 	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-	<ul>
-		<li>UL List item 1</li>
-		<li>UL List item 2</li>
-	</ul>
-	<ol>
-		<li>OL List item 1</li>
-		<li>OL List item 2</li>
-	</ol>
+
 	<blockquote>
 		<p>Quote</p>
 		<ul>
@@ -263,6 +246,28 @@
 		</ul>
 		<p>Quote</p>
 	</blockquote>
+
+	<ol class="fancy-list">
+		<li class="background-list-item">
+			<h4>Gran Canaria, Spain</h4>
+			<p>Gran Canaria is a popular tourist destination. The island is often called “a miniature continent”. This is because it offers
+				a great variety of climates and landscapes, from golden sandy beaches through rocky ravines and white dunes to charming
+				villages. In the mid-2010s, over 3.5&nbsp;million tourists visited Gran Canaria each year.</p>
+		</li>
+		<li>
+			<h4>Florence, Italy</h4>
+			<p>Florence, established in 59&nbsp;BC by Julius Caesar himself got its name from two rivers that surrounded the settlement.
+				Thanks to centuries of history, the capital of Tuscany has plenty to offer to tourists hungry for sightseeing. Some of the
+				most interesting places to visit include:</p>
+			<ul class="italic-list" style="list-style-type:square;">
+				<li>Piazza della Signoria</li>
+				<li>Mercato Centrale and the San Lorenzo Market</li>
+				<li>Museum of Zoology and Natural History “La Specola”</li>
+			</ul>
+			<p>Florence is also regarded as one of the top 15 fashion capitals of the world.</p>
+		</li>
+	</ol>
+
 </div>
 
 <h2>Just a few inline styles</h2>
