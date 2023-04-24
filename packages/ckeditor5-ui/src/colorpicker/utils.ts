@@ -20,12 +20,6 @@ import type { RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANS
  */
 export type ColorPickerOutputFormat = 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
 
-type colorObject = {
-	space: 'hex' | 'rgb' | 'hsl' | 'hwb' | 'lab' | 'lch';
-	values: string;
-	alpha: number;
-};
-
 /**
  * Configuration of the color picker feature.
  *
@@ -136,7 +130,7 @@ type ParserColorSpaces =
 type ParsedColor<T extends ParserColorSpaces> = {
 	readonly space: T;
 	readonly alpha: number;
-	readonly values: T extends 'cmyk' ? [ number, number, number, number ] : T extends 'hex' ? string : [ number, number, number ];
+	readonly values: T extends 'cmyk' ? [ number, number, number, number ] : [ number, number, number ];
 	readonly hexValue: T extends 'hex' ? string : never;
 };
 
