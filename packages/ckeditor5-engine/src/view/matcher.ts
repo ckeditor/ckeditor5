@@ -487,7 +487,7 @@ function matchAttributes(
  */
 function matchClasses( patterns: ClassPatterns, element: Element ): Array<string> | undefined {
 	// We don't need `getter` here because patterns for classes are always normalized to `[ className, true ]`.
-	return matchPatterns( patterns, element.getClassNames(), /* istanbul ignore next */ () => {} );
+	return matchPatterns( patterns, element.getClassNames(), /* istanbul ignore next -- @preserve */ () => {} );
 }
 
 /**

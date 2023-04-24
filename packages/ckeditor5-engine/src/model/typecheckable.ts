@@ -296,7 +296,7 @@ export default abstract class TypeCheckable {
 	 */
 	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	public is(): boolean {
 		// There are a lot of overloads above.
 		// Overriding method in derived classes remove them and only `is( type: string ): boolean` is visible which we don't want.

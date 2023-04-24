@@ -158,7 +158,7 @@ class UploadAdapter implements UploadAdapterInterface {
 		} );
 
 		// Upload progress when it's supported.
-		/* istanbul ignore else */
+		/* istanbul ignore else -- @preserve */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', evt => {
 				if ( evt.lengthComputable ) {

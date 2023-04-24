@@ -9,7 +9,7 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const WrapperPlugin = require( 'wrapper-webpack-plugin' );
-const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { addTypeScriptLoader } = require( '../docs/utils' );
 
@@ -114,37 +114,12 @@ const webpackConfig = {
 	},
 	module: {
 		rules: [
-			{
-				test: /\.svg$/,
-				use: [ 'raw-loader' ]
-			},
-			{
-				test: /\.css$/,
-				use: [
-					{
-						loader: 'style-loader',
-						options: {
-							injectType: 'singletonStyleTag',
-							attributes: {
-								'data-cke': true
-							}
-						}
-					},
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					}
-				]
-			}
-			// ts-loader is injected by the `addTypeScriptLoader()` function.
+			loaders.getIconsLoader( { matchExtensionOnly: true } ),
+			loaders.getStylesLoader( {
+				themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+				minify: true
+			} )
+			// TypeScript is injected by the `addTypeScriptLoader()` function.
 		]
 	}
 };

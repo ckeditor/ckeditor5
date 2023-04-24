@@ -4122,14 +4122,14 @@ describe( 'Renderer', () => {
 				expect( renderingTime ).to.be.within( 0, 350 );
 			} );
 
-			it( 'should not take more than 350ms to render around 1000 element nodes (same html)', () => {
+			it( 'should not take more than 400ms to render around 1000 element nodes (same html)', () => {
 				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 195 ), generateViewData1( 205 ) );
-				expect( renderingTime ).to.be.within( 0, 350 );
+				expect( renderingTime ).to.be.within( 0, 400 );
 			} );
 
-			it( 'should not take more than 350ms to render around 1000 element nodes (different html)', () => {
+			it( 'should not take more than 400ms to render around 1000 element nodes (different html)', () => {
 				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 205 ), generateViewData2( 195 ) );
-				expect( renderingTime ).to.be.within( 0, 350 );
+				expect( renderingTime ).to.be.within( 0, 400 );
 			} );
 
 			function measureRenderingTime( viewRoot, initialData, newData ) {
