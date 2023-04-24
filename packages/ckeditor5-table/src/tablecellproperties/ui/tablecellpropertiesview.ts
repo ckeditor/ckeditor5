@@ -458,6 +458,7 @@ export default class TableCellPropertiesView extends View {
 		} );
 		const locale = this.locale;
 		const t = this.t!;
+		const accessibleLabel = t( 'Style' );
 
 		// -- Group label ---------------------------------------------
 
@@ -469,14 +470,16 @@ export default class TableCellPropertiesView extends View {
 		const styleLabels = getBorderStyleLabels( t );
 		const borderStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
 		borderStyleDropdown.set( {
-			label: t( 'Style' ),
+			label: accessibleLabel,
 			class: 'ck-table-form__border-style'
 		} );
 
 		borderStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: accessibleLabel,
+			ariaLabelledBy: undefined,
 			isOn: false,
 			withText: true,
-			tooltip: t( 'Style' )
+			tooltip: accessibleLabel
 		} );
 
 		borderStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
@@ -489,7 +492,10 @@ export default class TableCellPropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: accessibleLabel
+		} );
 
 		// -- Width ---------------------------------------------------
 
