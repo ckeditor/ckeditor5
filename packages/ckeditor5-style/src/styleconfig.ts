@@ -7,8 +7,6 @@
  * @module style/styleconfig
  */
 
-import type { TemplateDefinition } from 'ckeditor5/src/ui';
-
 /**
  * The configuration of the style feature.
  *
