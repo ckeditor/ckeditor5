@@ -309,8 +309,6 @@ class ColorPickerInputRowView extends View {
 	 * Creates an instance of the form row class.
 	 *
 	 * @param locale The locale instance.
-	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
-	 * DOM attributes and gets described by the label.
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
@@ -319,10 +317,6 @@ class ColorPickerInputRowView extends View {
 
 		this.children = this.createCollection();
 
-		this.set( '_role', null );
-
-		this.set( '_ariaLabelledBy', null );
-
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -330,9 +324,7 @@ class ColorPickerInputRowView extends View {
 					'ck',
 					'ck-color-picker__row',
 					bind.to( 'class' )
-				],
-				role: bind.to( '_role' ),
-				'aria-labelledby': bind.to( '_ariaLabelledBy' )
+				]
 			},
 			children: this.children
 		} );
