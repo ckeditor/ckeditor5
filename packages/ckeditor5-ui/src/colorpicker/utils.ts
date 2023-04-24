@@ -74,7 +74,7 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 
 	const convertedColorChannels = toColorSpace(
 		colorObject.space === 'hex' ? colorObject.hexValue : colorObject.values
-	) as FormattableColor;
+	) as FormatTableColor;
 
 	return formatColorOutput( convertedColorChannels, outputFormat );
 }
@@ -110,7 +110,7 @@ export function convertToHex( color: string ): string {
  * @param format
  * @returns A color string.
  */
-function formatColorOutput( values: FormattableColor, format: ColorPickerOutputFormat ): string {
+function formatColorOutput( values: FormatTableColor, format: ColorPickerOutputFormat ): string {
 	switch ( format ) {
 		case 'hex': return `#${ values }`;
 		case 'rgb': return `rgb( ${ values[ 0 ] }, ${ values[ 1 ] }, ${ values[ 2 ] } )`;
@@ -124,10 +124,10 @@ function formatColorOutput( values: FormattableColor, format: ColorPickerOutputF
 }
 
 type ConverterInput = RGB | HSL | HSV | HWB | CMYK | XYZ | LAB | LCH | HEX | KEYWORD | ANSI16 | ANSI256 | HCG | APPLE | GRAY;
-type FormattableColor = HEX | RGB | HSL | HWB | LAB | LCH;
+type FormatTableColor = HEX | RGB | HSL | HWB | LAB | LCH;
 
 type CoverterInputSpaces = typeof convert;
-type ConversionFunction = ( value: ConverterInput ) => FormattableColor;
+type ConversionFunction = ( value: ConverterInput ) => FormatTableColor;
 
 type ParserColorSpaces =
 	'rgb' | 'hsl' | 'hsv' | 'hsb' | 'hwb' | 'cmy' | 'cmyk' | 'xyz' | 'xyy' | 'gray' | 'lab' | 'lch' | 'lchu' | 'lchv' | 'lchuv' |
