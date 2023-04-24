@@ -299,9 +299,9 @@ function isBlockStyleDefinition( definition: Definition ): definition is BlockSt
 }
 
 /**
- * TODO
- * @param selection
- * @returns
+ * Gets block elements from selection. If there are none, returns first selected element.
+ * @param selection Current document's selection.
+ * @returns Selected blocks if there are any, first selected element otherwise.
  */
 function getBlocksFromSelection( selection: DocumentSelection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );

@@ -19,7 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Style from '../../src/style';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'table', () => {
+describe( 'TableStyleSupport', () => {
 	let editor, editorElement, command, model;
 
 	testUtils.createSinonSandbox();
@@ -296,6 +296,50 @@ describe( 'table', () => {
 					'</tableCell>' +
 				'</tableRow>' +
 				'<caption htmlAttributes="{"classes":["test-caption-style","test-figcaption-style"]}">abc</caption>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should apply th style only to th elements even if other cells are selected', () => {
+		setData( model,
+			'<table headingRows="1">' +
+				'<tableRow>' +
+					'[<tableCell>' +
+						'<paragraph>header</paragraph>' +
+					'</tableCell>]' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'[<tableCell>' +
+						'<paragraph>regular</paragraph>' +
+					'</tableCell>]' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'[<tableCell>' +
+						'<paragraph>regular</paragraph>' +
+					'</tableCell>]' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		command.execute( { styleName: 'Test th style' } );
+
+		expect( getData( model, { withoutSelection: true } ) ).to.equal(
+			'<table headingRows="1">' +
+				'<tableRow>' +
+					'<tableCell htmlAttributes="{"classes":["test-th-style"]}">' +
+						'<paragraph>header</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>regular</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>regular</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
 			'</table>'
 		);
 	} );
