@@ -187,7 +187,7 @@ export default class ColorTableView extends View {
 
 	/**
 	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
-	 * grid" view. Also depanding on is color picker turn on or off, could be appeared the "color picker"
+	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
 	 * button.
 	 */
 	public colorTableComponent: View;
@@ -429,15 +429,12 @@ export default class ColorTableView extends View {
 	 * Show "Color picker" and hide "Color table".
 	 */
 	public showColorPicker(): void {
-		this.set( 'isColorPickerVisible', true );
-
-		/**
-		 * Focuses the first pointer in color picker.
-		 */
-		if ( this.colorPickerView ) {
-			const firstSlider = this.colorPickerView.slidersView.get( 0 ) as View & { focus: () => void };
-			firstSlider.focus();
+		if ( !this.colorPickerView ) {
+			return;
 		}
+
+		this.set( 'isColorPickerVisible', true );
+		this.colorPickerView.focus();
 		this.set( 'isColorTableVisible', false );
 	}
 

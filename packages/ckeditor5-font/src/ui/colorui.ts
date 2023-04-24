@@ -172,9 +172,7 @@ export default class ColorUI extends Plugin {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
 					this.colorTableView!.updateSelectedColors();
-				}
-
-				if ( !isVisible ) {
+				} else {
 					this.colorTableView!.showColorTable();
 				}
 			} );

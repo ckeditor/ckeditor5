@@ -41,7 +41,7 @@ export default class ColorPickerView extends View {
 	/**
 	 * List of sliders view of the color picker.
 	 */
-	declare public slidersView: ViewCollection;
+	declare public slidersView: ViewCollection<SliderView>;
 
 	/**
      * An internal representation of a color
@@ -134,6 +134,12 @@ export default class ColorPickerView extends View {
 			const color = customEvent.detail.value;
 			this._debounceColorPickerEvent( color );
 		} );
+	}
+
+	public focus(): void {
+		const firstSlider = this.slidersView.first!;
+
+		firstSlider.focus();
 	}
 
 	private _createSlidersView(): void {
