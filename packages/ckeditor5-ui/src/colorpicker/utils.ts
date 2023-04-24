@@ -59,16 +59,14 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
 		return '';
 	}
 
-	const fromColorSpace = convert[ colorObject.space ] as any;
-	const toColorSpace = fromColorSpace[ outputFormat ] as ConversionFunction;
+	const fromColorSpace = ( convert as Conversion )[ colorObject.space ];
+	const toColorSpace = fromColorSpace[ outputFormat ];
 
 	if ( !toColorSpace ) {
 		return '';
 	}
 
-	const convertedColorChannels = toColorSpace(
-		colorObject.space === 'hex' ? colorObject.hexValue : colorObject.values
-	) as FormatTableColor;
+	const convertedColorChannels = toColorSpace( colorObject.space === 'hex' ? colorObject.hexValue : colorObject.values );
 
 	return formatColorOutput( convertedColorChannels, outputFormat );
 }
@@ -117,11 +115,11 @@ function formatColorOutput( values: FormatTableColor, format: ColorPickerOutputF
 	}
 }
 
-type ConverterInput = RGB | HSL | HSV | HWB | CMYK | XYZ | LAB | LCH | HEX | KEYWORD | ANSI16 | ANSI256 | HCG | APPLE | GRAY;
 type FormatTableColor = HEX | RGB | HSL | HWB | LAB | LCH;
-
-type CoverterInputSpaces = typeof convert;
-type ConversionFunction = ( value: ConverterInput ) => FormatTableColor;
+type ConversionFunctionInput = RGB | HSL | HSV | HWB | CMYK | XYZ | LAB | LCH | HEX | KEYWORD | ANSI16 | ANSI256 | HCG | APPLE | GRAY;
+type ConversionInputSpaces = typeof convert;
+type ConversionFunction = ( value: ConversionFunctionInput ) => FormatTableColor;
+type Conversion = Record<keyof ConversionInputSpaces, Partial<Record<ColorPickerOutputFormat, ConversionFunction>>>;
 
 type ParserColorSpaces =
 	'rgb' | 'hsl' | 'hsv' | 'hsb' | 'hwb' | 'cmy' | 'cmyk' | 'xyz' | 'xyy' | 'gray' | 'lab' | 'lch' | 'lchu' | 'lchv' | 'lchuv' |
@@ -135,7 +133,7 @@ type ParsedColor<T extends ParserColorSpaces> = {
 };
 
 type ConvertableParsedColor = ParsedColor<ParserColorSpaces> & {
-	readonly space: keyof CoverterInputSpaces;
+	readonly space: keyof ConversionInputSpaces;
 };
 
 function parseColorString( colorString: string ): ParsedColor<ParserColorSpaces> | null {
