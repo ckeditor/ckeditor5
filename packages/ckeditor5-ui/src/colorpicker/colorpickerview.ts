@@ -15,7 +15,6 @@ import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
 import type ViewCollection from '../viewcollection';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
-import type LabelView from '../label/labelview';
 import { createLabeledInputText } from '../labeledfield/utils';
 
 import 'vanilla-colorful/hex-color-picker.js';
