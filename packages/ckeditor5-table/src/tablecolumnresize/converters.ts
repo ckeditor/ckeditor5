@@ -7,7 +7,14 @@
  * @module table/tablecolumnresize/converters
  */
 
-import type { DowncastDispatcher, UpcastDispatcher, ViewElement } from 'ckeditor5/src/engine';
+import type {
+	DowncastDispatcher,
+	DowncastInsertEvent,
+	Element,
+	UpcastDispatcher,
+	UpcastElementEvent,
+	ViewElement
+} from 'ckeditor5/src/engine';
 import type TableUtils from '../tableutils';
 import {
 	normalizeColumnWidths,
@@ -22,8 +29,8 @@ import {
  * because the input data might have too few or too many <col> elements.
  */
 export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatcher: UpcastDispatcher ) => void {
-	return dispatcher => dispatcher.on( 'element:colgroup', ( evt, data, conversionApi ) => {
-		const modelTable = data.modelCursor.findAncestor( 'table' );
+	return dispatcher => dispatcher.on<UpcastElementEvent>( 'element:colgroup', ( evt, data, conversionApi ) => {
+		const modelTable = data.modelCursor.findAncestor( 'table' )!;
 		const tableColumnGroup = getColumnGroupElement( modelTable );
 
 		if ( !tableColumnGroup ) {
@@ -46,21 +53,21 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
  * Returns downcast helper for adding `ck-table-resized` class if there is a `<tableColumnGroup>` element inside the table.
  */
 export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) => void {
-	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+	return dispatcher => dispatcher.on<DowncastInsertEvent>( 'insert:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
-		const modelTable = data.item;
-		const viewElement: ViewElement = conversionApi.mapper.toViewElement( modelTable );
+		const modelTable = data.item as Element;
+		const viewElement: ViewElement = conversionApi.mapper.toViewElement( modelTable )!;
 
 		const viewTable = viewElement.is( 'element', 'table' ) ?
 			viewElement :
-			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) );
+			Array.from( viewElement.getChildren() ).find( viewChild => viewChild.is( 'element', 'table' ) )!;
 
-		const tableColumnGroup = getColumnGroupElement( data.item );
+		const tableColumnGroup = getColumnGroupElement( modelTable );
 
 		if ( tableColumnGroup ) {
-			viewWriter.addClass( 'ck-table-resized', viewTable );
+			viewWriter.addClass( 'ck-table-resized', viewTable as ViewElement );
 		} else {
-			viewWriter.removeClass( 'ck-table-resized', viewTable );
+			viewWriter.removeClass( 'ck-table-resized', viewTable as ViewElement );
 		}
 	}, { priority: 'low' } );
 }

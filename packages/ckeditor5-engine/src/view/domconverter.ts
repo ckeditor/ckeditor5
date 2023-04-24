@@ -30,6 +30,7 @@ import {
 	getAncestors,
 	isText,
 	isComment,
+	isValidAttributeName,
 	first
 } from '@ckeditor/ckeditor5-utils';
 
@@ -451,6 +452,17 @@ export default class DomConverter {
 
 		if ( !shouldRenderAttribute ) {
 			logWarning( 'domconverter-unsafe-attribute-detected', { domElement, key, value } );
+		}
+
+		if ( !isValidAttributeName( key ) ) {
+			/**
+			 * Invalid attribute name was ignored during rendering.
+			 *
+			 * @error domconverter-invalid-attribute-detected
+			 */
+			logWarning( 'domconverter-invalid-attribute-detected', { domElement, key, value } );
+
+			return;
 		}
 
 		// The old value was safe but the new value is unsafe.

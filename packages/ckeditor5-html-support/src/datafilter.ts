@@ -7,9 +7,8 @@
  * @module html-support/datafilter
  */
 
-/* globals document */
-
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+
 import {
 	Matcher,
 	type MatcherPattern,
@@ -18,8 +17,15 @@ import {
 	type MatchResult,
 	type ViewConsumable
 } from 'ckeditor5/src/engine';
-import { priorities, CKEditorError } from 'ckeditor5/src/utils';
+
+import {
+	CKEditorError,
+	priorities,
+	isValidAttributeName
+} from 'ckeditor5/src/utils';
+
 import { Widget } from 'ckeditor5/src/widget';
+
 import {
 	viewToModelObjectConverter,
 	toObjectWidgetConverter,
@@ -31,12 +37,14 @@ import {
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
 } from './converters';
+
 import {
 	default as DataSchema,
 	type DataSchemaBlockElementDefinition,
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
+
 import type { GHSViewAttributes } from './utils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
@@ -790,17 +798,4 @@ function splitRules( rules: MatcherPatternWithName ): Array<MatcherPattern> {
 	}
 
 	return splittedRules;
-}
-
-/**
- * Returns true if name is valid for a DOM attribute name.
- */
-function isValidAttributeName( name: string ): boolean {
-	try {
-		document.createAttribute( name );
-	} catch ( error ) {
-		return false;
-	}
-
-	return true;
 }
