@@ -65,6 +65,10 @@ describe( 'utils', () => {
 			expect( convertColor( '#001100', 'cmyk' ) ).to.equal( '' );
 		} );
 
+		it( 'should return an empty string if a `converted` object doens\'t have `space` attr value acceptable by`parsed` function', () => {
+			expect( convertColor( 'lchu( 10%, 10, 10)', 'lch' ) ).to.equal( '' );
+		} );
+
 		it( 'should return the same string if color space is in the passed format (integration)', () => {
 			expect( convertColor( '#123123', 'hex' ) ).to.equal( '#123123' );
 			expect( convertColor( 'rgb( 10, 10, 10)', 'rgb' ) ).to.equal( 'rgb( 10, 10, 10)' );
