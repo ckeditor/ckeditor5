@@ -362,6 +362,10 @@ export default class ColorTableView extends View {
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
 
+		if ( this.selectedColor ) {
+			colorPickerView.color = this.selectedColor;
+		}
+
 		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
 			colorPickerView.color = value;
 		} );

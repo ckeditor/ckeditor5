@@ -267,6 +267,21 @@ describe( 'ColorTableView', () => {
 			dropdown.colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
+
+		it( 'should set the current color when color picker is created', () => {
+			dropdown.colorTableView.selectedColor = '#660000';
+			dropdown.colorTableView.appendColorPicker( {} );
+
+			expect( dropdown.colorTableView.colorPickerView.color ).to.equal( '#660000' );
+		} );
+
+		it( 'should propagate the selected color to color picker if it changes', () => {
+			dropdown.colorTableView.selectedColor = '#660000';
+			dropdown.colorTableView.appendColorPicker( {} );
+			dropdown.colorTableView.selectedColor = '#660055';
+
+			expect( dropdown.colorTableView.colorPickerView.color ).to.equal( '#660055' );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
