@@ -38,26 +38,6 @@ import '../../theme/fontcolor.css';
  */
 export default class ColorTableView extends View {
 	/**
-	 * A collection of components.
-	 */
-	public readonly components: ViewCollection;
-
-	/**
-	 * A collection of the children of the color picker component.
-	 */
-	public readonly colorPickerComponentChildren: ViewCollection;
-
-	/**
-	 * A collection of the children of the color table component.
-	 */
-	public readonly colorTableComponentChildren: ViewCollection;
-
-	/**
-	 * An array with objects representing colors to be displayed in the grid.
-	 */
-	public colorDefinitions: Array<ColorDefinition>;
-
-	/**
 	 * Tracks information about the DOM focus in the list.
 	 */
 	public readonly focusTracker: FocusTracker;
@@ -66,6 +46,354 @@ export default class ColorTableView extends View {
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
 	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * A collection of components.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * Keeps the value of the command associated with the table for the current selection.
+	 */
+	declare public selectedColor?: string;
+
+	/**
+	 * Keeps the original color value from current selection which is assign while dropdown is opening.
+	 */
+	declare public originalColor?: string;
+
+	/**
+	 * The "Color picker" component. Contains color picker itself with input and action buttons as
+	 * "save" and "cancel" buttons.
+	 */
+	public colorPickerComponent: ColorPickerComponentView;
+
+	/**
+	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
+	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
+	 * button.
+	 */
+	public colorTableComponent: ColorGridComponentView;
+
+	/**
+	 * State of the "Color table" component visibility.
+	 */
+	declare public isColorTableVisible: boolean;
+
+	/**
+	 * State of the "Color picker" component visibility.
+	 */
+	declare public isColorPickerVisible: boolean;
+
+	/**
+	 * Color picker allows to select custom colors.
+	 *
+	 */
+	public colorPickerView?: ColorPickerView;
+
+	/**
+	 * The "Remove color" button view.
+	 */
+	public removeColorButtonView: ButtonView;
+
+	/**
+	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
+	 * the default (static) color set.
+	 *
+	 * The property is loaded once the the parent dropdown is opened the first time.
+	 *
+	 * @readonly
+	 */
+	public staticColorsGrid: ColorGridView | undefined;
+
+	/**
+	 * Helps cycling over focusable {@link #items} in the list.
+	 *
+	 * @readonly
+	 */
+	protected _focusCycler: FocusCycler;
+
+	/**
+	 * A collection of views that can be focused in the view.
+	 *
+	 * @readonly
+	 */
+	protected _focusables: ViewCollection;
+
+	/**
+	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
+	 *
+	 * @param locale The localization services instance.
+	 * @param colors An array with definitions of colors to be displayed in the table.
+	 * @param columns The number of columns in the color grid.
+	 * @param removeButtonLabel The label of the button responsible for removing the color.
+	 * @param documentColorsLabel The label for the section with the document colors.
+	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
+	 */
+	constructor(
+		locale: Locale,
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel }: {
+			colors: Array<ColorDefinition>;
+			columns: number;
+			removeButtonLabel: string;
+			colorPickerLabel: string;
+			documentColorsLabel?: string;
+			documentColorsCount?: number;
+		}
+	) {
+		super( locale );
+		this.items = this.createCollection();
+
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
+
+		this._focusables = new ViewCollection();
+
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate list items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate list items forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
+			}
+		} );
+
+		const colorGridComponentView = new ColorGridComponentView( locale, {
+			colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel
+		} );
+
+		this.removeColorButtonView = colorGridComponentView.removeColorButtonView;
+
+		const colorPickerComponentView = new ColorPickerComponentView( locale );
+
+		this.colorTableComponent = colorGridComponentView;
+		this.colorPickerComponent = colorPickerComponentView;
+
+		this.set( 'isColorTableVisible', true );
+		this.set( 'isColorPickerVisible', false );
+
+		this.set( 'selectedColor', undefined );
+		this.set( 'originalColor', undefined );
+
+		const colorTableBind = Template.bind( this, this.colorTableComponent );
+		const colorPickerBind = Template.bind( this, this.colorPickerComponent );
+
+		this.colorTableComponent.extendTemplate( {
+			attributes: {
+				class: colorTableBind.if( 'isColorTableVisible', 'ck-hidden', value => !value )
+			}
+		} );
+
+		this.colorPickerComponent.extendTemplate( {
+			attributes: {
+				class: colorPickerBind.if( 'isColorPickerVisible', 'ck-hidden', value => !value )
+			}
+		} );
+
+		/**
+		 * This is kind of bindings. Unfortunately we could not use this.bind() method because the same property
+		 * can not be binded twice. So this is work around how to bind 'selectedColor' and 'originalColor'
+		 * properties between components.
+		 */
+		this.on( 'change:selectedColor', ( evt, evtName, data ) => {
+			this.colorTableComponent.set( 'selectedColor', data );
+			this.colorPickerComponent.set( 'selectedColor', data );
+		} );
+
+		this.on( 'change:originalColor', ( evt, evtName, data ) => {
+			this.colorPickerComponent.set( 'originalColor', data );
+		} );
+
+		this.colorTableComponent.on( 'change:selectedColor', ( evt, evtName, data ) => {
+			this.set( 'selectedColor', data );
+		} );
+
+		this.colorPickerComponent.on( 'change:selectedColor', ( evt, evtName, data ) => {
+			this.set( 'selectedColor', data );
+		} );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-color-table'
+				]
+			},
+			children: this.items
+		} );
+
+		this.items.add( this.colorTableComponent );
+		this.items.add( this.colorPickerComponent );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+
+		// Start listening for the keystrokes coming from #element.
+		this.keystrokes.listenTo( this.element! );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	public appendGrids(): void {
+		this.colorTableComponent.appendGrids();
+		this.staticColorsGrid = this.colorTableComponent.staticColorsGrid;
+		this.colorTableComponent.delegate( 'execute' ).to( this );
+
+		if ( !this._focusables.length ) {
+			this._addColorTablesElementsToFocusTracker();
+			this.focus();
+		}
+	}
+
+	public appendColorPicker( isColorPicker: ColorPickerConfig ): void {
+		const colorPickerView = this.colorPickerComponent.appendColorPicker( isColorPicker );
+
+		if ( !colorPickerView ) {
+			return;
+		}
+
+		this.colorPickerView = colorPickerView;
+
+		if ( this.colorTableComponent.colorPickerButtonView ) {
+			this.colorTableComponent.colorPickerButtonView.on( 'execute', () => {
+				this.showColorPicker();
+			} );
+		}
+
+		this.colorPickerComponent.delegate( 'execute' ).to( this );
+
+		this.colorTableComponent.addColorPickerButton();
+
+		if ( this.colorTableComponent.colorPickerButtonView ) {
+			this.focusTracker.add( this.colorTableComponent.colorPickerButtonView.element! );
+			this._focusables.add( this.colorTableComponent.colorPickerButtonView );
+		}
+
+		this._addColorPickersElementsToFocusTracker();
+		this._stopPropagationOnArrowsKeys();
+	}
+
+	public updateDocumentColors( model: Model, componentName: string ): void {
+		this.colorTableComponent.updateDocumentColors( model, componentName );
+	}
+
+	public updateSelectedColors(): void {
+		this.colorTableComponent.updateSelectedColors();
+	}
+
+	/**
+	 * Show "Color picker" and hide "Color table".
+	 */
+	public showColorPicker(): void {
+		if ( !this.colorPickerView ) {
+			return;
+		}
+
+		this.set( 'isColorPickerVisible', true );
+		this.colorPickerView.focus();
+		this.set( 'isColorTableVisible', false );
+	}
+
+	/**
+	 * Show "Color table" and hide "Color picker".
+	 */
+	public showColorTable(): void {
+		this.set( 'isColorTableVisible', true );
+		this.removeColorButtonView.focus();
+		this.set( 'isColorPickerVisible', false );
+	}
+
+	/**
+	 * Adds color picker elements to focus tracker.
+	 */
+	private _addColorPickersElementsToFocusTracker(): void {
+		for ( const slider of this.colorPickerView!.slidersView ) {
+			this.focusTracker.add( slider.element! );
+			this._focusables.add( slider );
+		}
+
+		this.focusTracker.add( this.colorPickerView!.input.element! );
+		this._focusables.add( this.colorPickerView!.input );
+
+		this.focusTracker.add( this.colorPickerComponent.saveButtonView.element! );
+		this._focusables.add( this.colorPickerComponent.saveButtonView );
+
+		this.focusTracker.add( this.colorPickerComponent.cancelButtonView.element! );
+		this._focusables.add( this.colorPickerComponent.cancelButtonView );
+	}
+
+	/**
+	 * Adds color picker elements to focus tracker.
+	 */
+	private _addColorTablesElementsToFocusTracker(): void {
+		this.focusTracker.add( this.colorTableComponent.removeColorButtonView.element! );
+		this._focusables.add( this.colorTableComponent.removeColorButtonView );
+
+		if ( this.colorTableComponent.staticColorsGrid ) {
+			this.focusTracker.add( this.colorTableComponent.staticColorsGrid.element! );
+			this._focusables.add( this.colorTableComponent.staticColorsGrid );
+		}
+
+		if ( this.colorTableComponent.documentColorsGrid ) {
+			this.focusTracker.add( this.colorTableComponent.documentColorsGrid.element! );
+			this._focusables.add( this.colorTableComponent.documentColorsGrid );
+		}
+	}
+
+	/**
+	 * Remove default behavior of arrow keys in dropdown.
+	 */
+	private _stopPropagationOnArrowsKeys(): void {
+		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
+
+		this.keystrokes.set( 'arrowright', stopPropagation );
+		this.keystrokes.set( 'arrowleft', stopPropagation );
+		this.keystrokes.set( 'arrowup', stopPropagation );
+		this.keystrokes.set( 'arrowdown', stopPropagation );
+	}
+
+	/**
+	 * Focuses the first focusable element in {@link #items}.
+	 */
+	public focus(): void {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Focuses the last focusable element in {@link #items}.
+	 */
+	public focusLast(): void {
+		this._focusCycler.focusLast();
+	}
+}
+
+class ColorGridComponentView extends View {
+	/**
+	 * A collection of the children of the table.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * An array with objects representing colors to be displayed in the grid.
+	 */
+	public colorDefinitions: Array<ColorDefinition>;
 
 	/**
 	 * The label of the button responsible for removing color attributes.
@@ -98,26 +426,6 @@ export default class ColorTableView extends View {
 	public documentColorsCount?: number;
 
 	/**
-	 * Color picker allows to select custom colors.
-	 *
-	 */
-	public colorPickerView?: ColorPickerView;
-
-	/**
-	 * A collection of views that can be focused in the view.
-	 *
-	 * @readonly
-	 */
-	protected _focusables: ViewCollection;
-
-	/**
-	 * Helps cycling over focusable {@link #items} in the list.
-	 *
-	 * @readonly
-	 */
-	protected _focusCycler: FocusCycler;
-
-	/**
 	 * Document color section's label.
 	 *
 	 * @readonly
@@ -127,12 +435,7 @@ export default class ColorTableView extends View {
 	/**
 	 * Keeps the value of the command associated with the table for the current selection.
 	 */
-	declare public selectedColor?: string;
-
-	/**
-	 * Keeps the original color value from current selection which is assign while dropdown is opening.
-	 */
-	declare public originalColor?: string;
+	declare public selectedColor: string;
 
 	/**
 	 * Preserves the reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
@@ -155,52 +458,14 @@ export default class ColorTableView extends View {
 	public documentColorsGrid: ColorGridView | undefined;
 
 	/**
-	 * The "Save" button view.
+	 * The "Color picker" button view.
 	 */
-	public saveButtonView: ButtonView;
-
-	/**
-	 * The "Cancel" button view.
-	 */
-	public cancelButtonView: ButtonView;
-
-	/**
-	 * The action bar where are "save button" and "cancel button".
-	 */
-	public actionBarView: View;
-
-	/**
-	 * The "Color picker" button view. When you click on it, appeares color picker view.
-	 */
-	public colorPickerButtonView: ButtonView;
+	public colorPickerButtonView?: ButtonView;
 
 	/**
 	 * The "Remove color" button view.
 	 */
 	public removeColorButtonView: ButtonView;
-
-	/**
-	 * The "Color picker" component. Contains color picker itself with input and action buttons as
-	 * "save" and "cancel" buttons.
-	 */
-	public colorPickerComponent: View;
-
-	/**
-	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
-	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
-	 * button.
-	 */
-	public colorTableComponent: View;
-
-	/**
-	 * State of the "Color table" component visibility.
-	 */
-	declare public isColorTableVisible: boolean;
-
-	/**
-	 * State of the "Color picker" component visibility.
-	 */
-	declare public isColorPickerVisible: boolean;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -224,47 +489,14 @@ export default class ColorTableView extends View {
 		}
 	) {
 		super( locale );
-		this.components = this.createCollection();
-		this.colorPickerComponentChildren = this.createCollection();
-		this.colorTableComponentChildren = this.createCollection();
+
+		this.items = this.createCollection();
 		this.colorDefinitions = colors;
-		this.focusTracker = new FocusTracker();
-		this.keystrokes = new KeystrokeHandler();
-
-		this.set( 'isColorTableVisible', true );
-		this.set( 'isColorPickerVisible', false );
-
-		this.set( 'selectedColor', undefined );
-
-		this.colorTableComponent = this._createColorTableComponent();
 		this.removeButtonLabel = removeButtonLabel;
 		this.colorPickerLabel = colorPickerLabel;
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
-
-		// Color picker elements
-		const { saveButtonView, cancelButtonView } = this._createActionButtons();
-		this.saveButtonView = saveButtonView;
-		this.cancelButtonView = cancelButtonView;
-		this.actionBarView = this._createAtionBarView( { saveButtonView, cancelButtonView } );
-		this.colorPickerButtonView = new ButtonView();
-		this.colorPickerComponent = this._createColorPickerComponent();
-
-		this._focusables = new ViewCollection();
-
-		this._focusCycler = new FocusCycler( {
-			focusables: this._focusables,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate list items backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
-				focusPrevious: 'shift + tab',
-
-				// Navigate list items forwards using the <kbd>Tab</kbd> key.
-				focusNext: 'tab'
-			}
-		} );
 
 		this._documentColorsLabel = documentColorsLabel;
 
@@ -272,16 +504,15 @@ export default class ColorTableView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck',
-					'ck-color-table'
+					'ck-color-table-component'
 				]
 			},
-			children: this.components
+			children: this.items
 		} );
 
 		this.removeColorButtonView = this._createRemoveColorButton();
-		this.colorTableComponentChildren.add( this.removeColorButtonView );
-		this.components.add( this.colorTableComponent );
+
+		this.items.add( this.removeColorButtonView );
 	}
 
 	/**
@@ -337,9 +568,6 @@ export default class ColorTableView extends View {
 	 */
 	public override render(): void {
 		super.render();
-
-		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -347,9 +575,6 @@ export default class ColorTableView extends View {
 	 */
 	public override destroy(): void {
 		super.destroy();
-
-		this.focusTracker.destroy();
-		this.keystrokes.destroy();
 	}
 
 	/**
@@ -362,9 +587,7 @@ export default class ColorTableView extends View {
 
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
-		this.colorTableComponentChildren.add( this.staticColorsGrid );
-		this.focusTracker.add( this.staticColorsGrid.element! );
-		this._focusables.add( this.staticColorsGrid );
+		this.items.add( this.staticColorsGrid );
 
 		if ( this.documentColorsCount ) {
 			// Create a label for document colors.
@@ -380,110 +603,36 @@ export default class ColorTableView extends View {
 					]
 				}
 			} );
-			this.colorTableComponentChildren.add( label );
+			this.items.add( label );
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 
-			this.colorTableComponentChildren.add( this.documentColorsGrid );
-			this.focusTracker.add( this.documentColorsGrid.element! );
-			this._focusables.add( this.documentColorsGrid );
+			this.items.add( this.documentColorsGrid );
+
+			this._createColorPickerButton();
 		}
 	}
 
 	/**
-	 * Appends {@link #colorPickerView} view.
+	 * Creates "color picker" button.
 	 */
-	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
-		if ( this.colorPickerView ) {
-			return;
-		}
+	private _createColorPickerButton(): void {
+		this.colorPickerButtonView = new ButtonView();
 
-		this._createColorPickerButton();
-
-		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
-
-		this.colorPickerView = colorPickerView;
-		this.colorPickerView.render();
-
-		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
-			colorPickerView.color = value;
+		this.colorPickerButtonView.set( {
+			label: this.colorPickerLabel,
+			withText: true,
+			icon: ColorPaletteIcon,
+			class: 'ck-color-table__color-picker'
 		} );
-
-		this.colorPickerComponentChildren.add( this.colorPickerView );
-
-		this._addColorPickersElementsToFocusTracker();
-
-		this.colorPickerComponentChildren.add( this.actionBarView );
-
-		this.components.add( this.colorPickerComponent );
-
-		this.focusTracker.add( this.saveButtonView.element! );
-		this._focusables.add( this.saveButtonView );
-
-		this.focusTracker.add( this.cancelButtonView.element! );
-		this._focusables.add( this.cancelButtonView );
-
-		this._stopPropagationOnArrowsKeys();
 	}
 
 	/**
-	 * Show "Color picker" and hide "Color table".
+	 * Creates "color picker" button.
 	 */
-	public showColorPicker(): void {
-		if ( !this.colorPickerView ) {
-			return;
+	public addColorPickerButton(): void {
+		if ( this.colorPickerButtonView ) {
+			this.items.add( this.colorPickerButtonView );
 		}
-
-		this.set( 'isColorPickerVisible', true );
-		this.colorPickerView.focus();
-		this.set( 'isColorTableVisible', false );
-	}
-
-	/**
-	 * Show "Color table" and hide "Color picker".
-	 */
-	public showColorTable(): void {
-		this.set( 'isColorTableVisible', true );
-		this.removeColorButtonView.focus();
-		this.set( 'isColorPickerVisible', false );
-	}
-
-	/**
-	 * Adds color picker elements to focus tracker.
-	 */
-	private _addColorPickersElementsToFocusTracker(): void {
-		for ( const slider of this.colorPickerView!.slidersView ) {
-			this.focusTracker.add( slider.element! );
-			this._focusables.add( slider );
-		}
-
-		this.focusTracker.add( this.colorPickerView!.input.element! );
-		this._focusables.add( this.colorPickerView!.input );
-	}
-
-	/**
-	 * Remove default behavior of arrow keys in dropdown.
-	 */
-	private _stopPropagationOnArrowsKeys(): void {
-		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
-
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
-	}
-
-	/**
-	 * Focuses the first focusable element in {@link #items}.
-	 */
-	public focus(): void {
-		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Focuses the last focusable element in {@link #items}.
-	 */
-	public focusLast(): void {
-		this._focusCycler.focusLast();
 	}
 
 	/**
@@ -505,99 +654,7 @@ export default class ColorTableView extends View {
 
 		buttonView.render();
 
-		this.focusTracker.add( buttonView.element! );
-		this._focusables.add( buttonView );
-
 		return buttonView;
-	}
-
-	/**
-	 * Creates bar with "save" and "cancel" buttons in it.
-	 */
-	private _createAtionBarView( { saveButtonView, cancelButtonView }: {
-		saveButtonView: ButtonView;
-		cancelButtonView: ButtonView;
-	} ): View {
-		const actionBarRow = new View();
-		const children = this.createCollection();
-
-		children.add( saveButtonView );
-		children.add( cancelButtonView );
-
-		actionBarRow.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-color-table_action-bar'
-				]
-			},
-			children
-		} );
-
-		return actionBarRow;
-	}
-
-	/**
-	 * Creates "save" and "cancel" buttons.
-	 */
-	private _createActionButtons() {
-		const locale = this.locale;
-		const t = locale!.t;
-		const saveButtonView = new ButtonView( locale );
-		const cancelButtonView = new ButtonView( locale );
-
-		saveButtonView.set( {
-			icon: icons.check,
-			class: 'ck-button-save',
-			withText: false,
-			label: t( 'Accept' ),
-			type: 'submit'
-		} );
-
-		cancelButtonView.set( {
-			icon: icons.cancel,
-			class: 'ck-button-cancel',
-			withText: false,
-			label: t( 'Cancel' )
-		} );
-
-		saveButtonView.on( 'execute', () => {
-			this.fire( 'execute', {
-				value: this.selectedColor
-			} );
-		} );
-
-		cancelButtonView.on( 'execute', () => {
-			this.selectedColor = this.originalColor;
-			this.fire( 'execute', {
-				value: this.originalColor
-			} );
-		} );
-
-		return {
-			saveButtonView, cancelButtonView
-		};
-	}
-
-	/**
-	 * Creates "color picker" button.
-	 */
-	private _createColorPickerButton(): void {
-		this.colorPickerButtonView.set( {
-			label: this.colorPickerLabel,
-			withText: true,
-			icon: ColorPaletteIcon,
-			class: 'ck-color-table__color-picker'
-		} );
-
-		this.colorTableComponentChildren.add( this.colorPickerButtonView );
-		this.focusTracker.add( this.colorPickerButtonView.element! );
-		this._focusables.add( this.colorPickerButtonView );
-
-		this.colorPickerButtonView.on( 'execute', () => {
-			this.showColorPicker();
-		} );
 	}
 
 	/**
@@ -612,48 +669,6 @@ export default class ColorTableView extends View {
 		colorGrid.delegate( 'execute' ).to( this );
 
 		return colorGrid;
-	}
-
-	/**
-	 * Creates a "Color picker" component.
-	 */
-	private _createColorPickerComponent(): View {
-		const view = new View();
-		const bind = Template.bind( this, view );
-
-		view.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck-color-picker-component',
-					bind.if( 'isColorPickerVisible', 'ck-hidden', value => !value )
-				]
-			},
-			children: this.colorPickerComponentChildren
-		} );
-
-		return view;
-	}
-
-	/**
-	 * Creates a "Color table" component.
-	 */
-	private _createColorTableComponent(): View {
-		const view = new View();
-		const bind = Template.bind( this, view );
-
-		view.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck-color-table-component',
-					bind.if( 'isColorTableVisible', 'ck-hidden', value => !value )
-				]
-			},
-			children: this.colorTableComponentChildren
-		} );
-
-		return view;
 	}
 
 	/**
@@ -730,5 +745,175 @@ export default class ColorTableView extends View {
 		} else {
 			this.documentColors.add( Object.assign( {}, predefinedColor ) );
 		}
+	}
+}
+
+class ColorPickerComponentView extends View {
+	/**
+	 * A collection of the children of the table.
+	 */
+	public readonly items: ViewCollection;
+
+	/**
+	 * Color picker allows to select custom colors.
+	 *
+	 */
+	public colorPickerView?: ColorPickerView;
+
+	/**
+	 * Keeps the value of the command associated with the table for the current selection.
+	 */
+	declare public selectedColor?: string;
+
+	/**
+	 * Keeps the original color value from current selection which is assign while dropdown is opening.
+	 */
+	declare public originalColor?: string;
+
+	/**
+	 * The "Save" button view.
+	 */
+	public saveButtonView: ButtonView;
+
+	/**
+	 * The "Cancel" button view.
+	 */
+	public cancelButtonView: ButtonView;
+
+	/**
+	 * The action bar where are "save button" and "cancel button".
+	 */
+	public actionBarView: View;
+
+	constructor(
+		locale: Locale
+	) {
+		super( locale );
+
+		this.items = this.createCollection();
+
+		this.set( 'selectedColor', undefined );
+
+		const { saveButtonView, cancelButtonView } = this._createActionButtons();
+		this.saveButtonView = saveButtonView;
+		this.cancelButtonView = cancelButtonView;
+
+		this.actionBarView = this._createAtionBarView( { saveButtonView, cancelButtonView } );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck-color-picker-component'
+				]
+			},
+			children: this.items
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+	}
+
+	/**
+	 * Appends {@link #colorPickerView} view.
+	 */
+	public appendColorPicker( pickerConfig: ColorPickerConfig ): ColorPickerView | undefined {
+		if ( this.colorPickerView ) {
+			return;
+		}
+
+		const colorPickerView = new ColorPickerView( this.locale, pickerConfig );
+
+		this.colorPickerView = colorPickerView;
+		this.colorPickerView.render();
+
+		this.listenTo( this, 'change:selectedColor', ( evt, name, value ) => {
+			colorPickerView.color = value;
+		} );
+
+		this.items.add( this.colorPickerView );
+		this.items.add( this.actionBarView );
+
+		return colorPickerView;
+	}
+
+	/**
+	 * Creates bar with "save" and "cancel" buttons in it.
+	 */
+	private _createAtionBarView( { saveButtonView, cancelButtonView }: {
+		saveButtonView: ButtonView;
+		cancelButtonView: ButtonView;
+	} ): View {
+		const actionBarRow = new View();
+		const children = this.createCollection();
+
+		children.add( saveButtonView );
+		children.add( cancelButtonView );
+
+		actionBarRow.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-color-table_action-bar'
+				]
+			},
+			children
+		} );
+
+		return actionBarRow;
+	}
+
+	/**
+	 * Creates "save" and "cancel" buttons.
+	 */
+	private _createActionButtons() {
+		const locale = this.locale;
+		const t = locale!.t;
+		const saveButtonView = new ButtonView( locale );
+		const cancelButtonView = new ButtonView( locale );
+
+		saveButtonView.set( {
+			icon: icons.check,
+			class: 'ck-button-save',
+			withText: false,
+			label: t( 'Accept' ),
+			type: 'submit'
+		} );
+
+		cancelButtonView.set( {
+			icon: icons.cancel,
+			class: 'ck-button-cancel',
+			withText: false,
+			label: t( 'Cancel' )
+		} );
+
+		saveButtonView.on( 'execute', () => {
+			this.fire( 'execute', {
+				value: this.selectedColor
+			} );
+		} );
+
+		cancelButtonView.on( 'execute', () => {
+			this.selectedColor = this.originalColor;
+			this.fire( 'execute', {
+				value: this.originalColor
+			} );
+		} );
+
+		return {
+			saveButtonView, cancelButtonView
+		};
 	}
 }

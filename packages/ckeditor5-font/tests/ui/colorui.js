@@ -149,7 +149,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'colorTableView has set proper default attributes', () => {
-			const colorTableView = dropdown.colorTableView;
+			const colorTableView = dropdown.colorTableView.colorTableComponent;
 
 			expect( colorTableView.documentColorsCount ).to.equal( 3 );
 		} );
@@ -158,7 +158,7 @@ describe( 'ColorUI', () => {
 			const localDropdown = editor.ui.componentFactory.create( 'testColor' );
 			localDropdown.render();
 
-			for ( const item of localDropdown.colorTableView.colorTableComponentChildren ) {
+			for ( const item of localDropdown.colorTableView.colorTableComponent.items ) {
 				expect( item ).not.to.be.instanceOf( ColorGridView );
 			}
 		} );
@@ -195,7 +195,7 @@ describe( 'ColorUI', () => {
 
 				dropdown.colorTableView.selectedColor = '#123456';
 
-				dropdown.colorTableView.cancelButtonView.fire( 'execute' );
+				dropdown.colorTableView.colorPickerComponent.cancelButtonView.fire( 'execute' );
 
 				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
 			} );
@@ -271,7 +271,7 @@ describe( 'ColorUI', () => {
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown.render();
-				documentColorsModel = dropdown.colorTableView.documentColors;
+				documentColorsModel = dropdown.colorTableView.colorTableComponent.documentColors;
 				global.document.body.appendChild( dropdown.element );
 			} );
 			afterEach( () => {
@@ -379,10 +379,10 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'works for the colorTableView#items in the panel', () => {
-				const colorTableView = dropdown.colorTableView;
+				const colorTableView = dropdown.colorTableView.colorTableComponent;
 
 				expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
-				expect( colorTableView.colorTableComponentChildren.first.label ).to.equal( 'Usuń kolor' );
+				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
 			describe( 'works for', () => {
@@ -412,7 +412,7 @@ describe( 'ColorUI', () => {
 				colors.forEach( test => {
 					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
 						dropdown.isOpen = true;
-						const colorGrid = dropdown.colorTableView.colorTableComponentChildren.get( 1 );
+						const colorGrid = dropdown.colorTableView.colorTableComponent.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
 						expect( tile.label ).to.equal( test.label );

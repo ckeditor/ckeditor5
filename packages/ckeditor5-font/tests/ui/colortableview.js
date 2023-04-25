@@ -12,7 +12,6 @@ import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import { icons } from 'ckeditor5/src/core';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -100,13 +99,9 @@ describe( 'ColorTableView', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
-		it( 'should create items collection', () => {
-			expect( colorTableView.colorTableComponentChildren ).to.be.instanceOf( ViewCollection );
-		} );
-
 		it( 'should store colors\' definitions', () => {
-			expect( colorTableView.colorDefinitions ).to.be.instanceOf( Array );
-			expect( colorTableView.colorDefinitions ).to.deep.equal( colorDefinitions );
+			expect( colorTableView.colorTableComponent.colorDefinitions ).to.be.instanceOf( Array );
+			expect( colorTableView.colorTableComponent.colorDefinitions ).to.deep.equal( colorDefinitions );
 		} );
 
 		it( 'should create focus tracker', () => {
@@ -126,19 +121,19 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should set label for the remove color button', () => {
-			expect( colorTableView.removeButtonLabel ).to.equal( 'Remove color' );
+			expect( colorTableView.colorTableComponent.removeButtonLabel ).to.equal( 'Remove color' );
 		} );
 
 		it( 'should set number of drawn columns', () => {
-			expect( colorTableView.columns ).to.equal( 5 );
+			expect( colorTableView.colorTableComponent.columns ).to.equal( 5 );
 		} );
 
 		it( 'should create collection of document colors', () => {
-			expect( colorTableView.documentColors ).to.be.instanceOf( Collection );
+			expect( colorTableView.colorTableComponent.documentColors ).to.be.instanceOf( Collection );
 		} );
 
 		it( 'should set maximum number of document colors', () => {
-			expect( colorTableView.documentColorsCount ).to.equal( 4 );
+			expect( colorTableView.colorTableComponent.documentColorsCount ).to.equal( 4 );
 		} );
 
 		it( 'should create focus cycler', () => {
@@ -151,16 +146,11 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should have correct amount of children', () => {
-			expect( colorTableView.colorTableComponentChildren.length ).to.equal( 4 );
+			expect( colorTableView.colorTableComponent.items.length ).to.equal( 4 );
 		} );
 
-		it( 'should have 1 component if there is no color picker', () => {
-			expect( colorTableView.components.length ).to.equal( 1 );
-		} );
-
-		it( 'should have 2 component if there is color picker', () => {
-			colorTableView.appendColorPicker( {} );
-			expect( colorTableView.components.length ).to.equal( 2 );
+		it( 'should have 2 items', () => {
+			expect( colorTableView.items.length ).to.equal( 2 );
 		} );
 	} );
 
@@ -240,13 +230,21 @@ describe( 'ColorTableView', () => {
 				} );
 			} );
 		} );
+
+		it( 'should not to show the color picker', () => {
+			colorTableView.colorPickerView = null;
+			colorTableView.showColorPicker();
+
+			expect( colorTableView.isColorPickerVisible ).to.be.false;
+			expect( colorTableView.isColorTableVisible ).to.be.true;
+		} );
 	} );
 
 	describe( 'appendGrids()', () => {
 		it( 'shouldn\'t duplicate views if called more than once', () => {
 			colorTableView.appendGrids();
 			colorTableView.appendGrids();
-			expect( colorTableView.colorTableComponentChildren.length ).to.equal( 4 );
+			expect( colorTableView.colorTableComponent.items.length ).to.equal( 4 );
 		} );
 	} );
 
@@ -296,7 +294,7 @@ describe( 'ColorTableView', () => {
 			colorTableView.appendColorPicker( {} );
 			colorTableView.appendColorPicker( {} );
 
-			expect( colorTableView.colorPickerComponentChildren.length ).to.equal( 2 );
+			expect( colorTableView.colorPickerComponent.items.length ).to.equal( 2 );
 		} );
 
 		it( 'should navigate forwards using the Tab key', () => {
@@ -306,7 +304,7 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			colorTableView.colorPickerButtonView.fire( 'execute' );
+			colorTableView.colorTableComponent.colorPickerButtonView.fire( 'execute' );
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
@@ -328,7 +326,7 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			colorTableView.colorPickerButtonView.fire( 'execute' );
+			colorTableView.colorTableComponent.colorPickerButtonView.fire( 'execute' );
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
@@ -350,7 +348,10 @@ describe( 'ColorTableView', () => {
 
 			dropdown.colorTableView.appendColorPicker( {} );
 
+			dropdown.colorTableView.focusTracker.focusedElement = colorTableView.colorTableComponent.removeColorButtonView;
 			dropdown.colorTableView.focusTracker.isFocused = true;
+
+			// console.log( dropdown.colorTableView.focusTracker );
 
 			dropdown.colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
@@ -395,7 +396,7 @@ describe( 'ColorTableView', () => {
 		describe( 'navigation across table controls using Tab and Shift+Tab keys', () => {
 			beforeEach( () => {
 				// Needed for the document colors grid to show up in the view.
-				colorTableView.documentColors.add( {
+				colorTableView.colorTableComponent.documentColors.add( {
 					color: '#000000',
 					label: 'Black',
 					options: {
@@ -433,9 +434,9 @@ describe( 'ColorTableView', () => {
 
 				// Mock the remove color button is focused.
 				colorTableView.focusTracker.isFocused = true;
-				colorTableView.focusTracker.focusedElement = colorTableView.removeColorButtonView.element;
+				colorTableView.focusTracker.focusedElement = colorTableView.colorTableComponent.removeColorButtonView.element;
 
-				const spy = sinon.spy( colorTableView.documentColorsGrid, 'focus' );
+				const spy = sinon.spy( colorTableView.colorTableComponent.documentColorsGrid, 'focus' );
 
 				colorTableView.keystrokes.press( keyEvtData );
 
@@ -450,7 +451,7 @@ describe( 'ColorTableView', () => {
 		let removeButton;
 
 		beforeEach( () => {
-			removeButton = colorTableView.colorTableComponentChildren.first;
+			removeButton = colorTableView.colorTableComponent.items.first;
 		} );
 
 		it( 'should have proper class', () => {
@@ -479,9 +480,9 @@ describe( 'ColorTableView', () => {
 
 		beforeEach( () => {
 			colorTableView.appendColorPicker( {} );
-			actionBar = colorTableView.actionBarView;
-			saveButton = colorTableView.saveButtonView;
-			cancelButton = colorTableView.cancelButtonView;
+			actionBar = colorTableView.colorPickerComponent.actionBarView;
+			saveButton = colorTableView.colorPickerComponent.saveButtonView;
+			cancelButton = colorTableView.colorPickerComponent.cancelButtonView;
 		} );
 
 		it( 'should have a proper CSS class name', () => {
@@ -525,7 +526,7 @@ describe( 'ColorTableView', () => {
 		let staticColorTable;
 
 		beforeEach( () => {
-			staticColorTable = colorTableView.colorTableComponentChildren.get( 1 );
+			staticColorTable = colorTableView.colorTableComponent.items.get( 1 );
 		} );
 
 		it( 'should have added 3 children from definition', () => {
@@ -581,8 +582,8 @@ describe( 'ColorTableView', () => {
 			let documentColorsGridView, documentColors;
 
 			beforeEach( () => {
-				documentColors = colorTableView.documentColors;
-				documentColorsGridView = colorTableView.documentColorsGrid;
+				documentColors = colorTableView.colorTableComponent.documentColors;
+				documentColorsGridView = colorTableView.colorTableComponent.documentColorsGrid;
 			} );
 
 			describe( 'model manipulation', () => {
@@ -703,17 +704,17 @@ describe( 'ColorTableView', () => {
 			} );
 
 			it( 'should not add document colors grid to the view', () => {
-				expect( colorTableView.colorTableComponentChildren.length ).to.equal( 2 );
-				expect( colorTableView.documentColors.length ).to.equal( 0 );
-				expect( colorTableView.documentColorsCount ).to.equal( 0 );
+				expect( colorTableView.colorTableComponent.items.length ).to.equal( 2 );
+				expect( colorTableView.colorTableComponent.documentColors.length ).to.equal( 0 );
+				expect( colorTableView.colorTableComponent.documentColorsCount ).to.equal( 0 );
 			} );
 		} );
 	} );
 
 	describe( '_addColorToDocumentColors', () => {
 		it( 'should add custom color', () => {
-			colorTableView._addColorToDocumentColors( '#123456' );
-			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+			colorTableView.colorTableComponent._addColorToDocumentColors( '#123456' );
+			expect( colorTableView.colorTableComponent.documentColors.get( 0 ) ).to.deep.include( {
 				color: '#123456',
 				label: '#123456',
 				options: {
@@ -723,9 +724,9 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should detect already define color based on color value and use', () => {
-			colorTableView._addColorToDocumentColors( 'rgb(255,255,255)' );
+			colorTableView.colorTableComponent._addColorToDocumentColors( 'rgb(255,255,255)' );
 			// Color values are kept without spaces.
-			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+			expect( colorTableView.colorTableComponent.documentColors.get( 0 ) ).to.deep.include( {
 				color: 'rgb(255,255,255)'
 			} );
 		} );
@@ -756,8 +757,8 @@ describe( 'ColorTableView', () => {
 					dropdown.isOpen = true;
 					dropdown.isOpen = false;
 
-					staticColorsGrid = dropdown.colorTableView.staticColorsGrid;
-					documentColorsGrid = dropdown.colorTableView.documentColorsGrid;
+					staticColorsGrid = dropdown.colorTableView.colorTableComponent.staticColorsGrid;
+					documentColorsGrid = dropdown.colorTableView.colorTableComponent.documentColorsGrid;
 				} );
 		} );
 
@@ -869,7 +870,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should not create document colors section', () => {
-			const colorTableView = dropdown.colorTableView;
+			const colorTableView = dropdown.colorTableView.colorTableComponent;
 
 			setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
