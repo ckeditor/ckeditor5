@@ -3,21 +3,41 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 // The editor creator to use.
 import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import {
+	FontSize,
+	FontFamily,
+	FontColor,
+	FontBackgroundColor
+} from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import {
+	Bold,
+	Italic,
+	Strikethrough,
+	Underline
+} from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import {
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing
+} from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
@@ -27,6 +47,13 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+
+// @ts-ignore
+import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
+// @ts-ignore
+import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
+// @ts-ignore
+import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -65,19 +92,47 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		Iframe,
+		ContentTemplates,
+		ScratchBlocks
 	];
 
 	public static override defaultConfig = {
 		toolbar: {
 			items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'alignment',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'heading',
+				'|',
+				'fontfamily',
+				'fontsize',
+				'fontColor',
+				'fontBackgroundColor',
+				'|',
+				'bold',
+				'italic',
+				'underline',
+				'strikethrough',
+				'|',
+				'alignment',
+				'|',
+				'numberedList',
+				'bulletedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'link',
+				'blockquote',
+				'uploadImage',
+				'insertTable',
+				'mediaEmbed',
+				'|',
+				'undo',
+				'redo',
+				'|',
+				'iframe',
+				'contentTemplates',
+				'scratchBlocks'
 			]
 		},
 		image: {
@@ -92,11 +147,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 			]
 		},
 		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
 		list: {
 			properties: {
