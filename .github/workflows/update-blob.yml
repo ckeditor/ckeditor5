@@ -1,0 +1,20 @@
+name: Update CKEditor 5 blob
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: build editor
+        run: ./build.sh
+      - name: upload to storage
+        env:
+          AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
+        run: az storage blob upload-batch -s ./build/4.14.2/full-all/ckeditor -d \ckeditor5 --overwrite
