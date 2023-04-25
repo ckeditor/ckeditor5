@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
@@ -40,6 +40,11 @@ export default class StyleUtils extends Plugin {
 		this.decorate( 'isStyleEnabledForBlock' );
 		this.decorate( 'isStyleActiveForBlock' );
 		this.decorate( 'getAffectedBlocks' );
+
+		this.decorate( 'isStyleEnabledForInlineSelection' );
+		this.decorate( 'isStyleActiveForInlineSelection' );
+		this.decorate( 'getAffectedInlineSelectable' );
+
 		this.decorate( 'getStylePreview' );
 	}
 
@@ -158,6 +163,49 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @internal
+	 */
+	public isStyleEnabledForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		const model = this.editor.model;
+
+		for ( const ghsAttributeName of definition.ghsAttributes ) {
+			if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @internal
+	 */
+	public isStyleActiveForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		for ( const ghsAttributeName of definition.ghsAttributes ) {
+			const ghsAttributeValue = this._getValueFromFirstAllowedNode( selection, ghsAttributeName );
+
+			if ( this.hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @internal
+	 */
+	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: DocumentSelection ): Selectable {
+		return selection;
+	}
+
+	/**
 	 * Returns the `TemplateDefinition` used by styles dropdown to render style preview.
 	 *
 	 * @internal
@@ -183,6 +231,33 @@ export default class StyleUtils extends Plugin {
 		return isObject( ghsAttributeValue ) &&
 			hasClassesProperty( ghsAttributeValue ) &&
 			classes.every( className => ghsAttributeValue.classes.includes( className ) );
+	}
+
+	/**
+	 * Checks the attribute value of the first node in the selection that allows the attribute.
+	 * For the collapsed selection, returns the selection attribute.
+	 *
+	 * @param selection The document selection.
+	 * @param attributeName Name of the GHS attribute.
+	 * @returns The attribute value.
+	 */
+	private _getValueFromFirstAllowedNode( selection: DocumentSelection, attributeName: string ): unknown | null {
+		const model = this.editor.model;
+		const schema = model.schema;
+
+		if ( selection.isCollapsed ) {
+			return selection.getAttribute( attributeName );
+		}
+
+		for ( const range of selection.getRanges() ) {
+			for ( const item of range.getItems() ) {
+				if ( schema.checkAttribute( item, attributeName ) ) {
+					return item.getAttribute( attributeName );
+				}
+			}
+		}
+
+		return null;
 	}
 }
 
@@ -227,4 +302,9 @@ export type NormalizedStyleDefinition = BlockStyleDefinition | InlineStyleDefini
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;
 export type StyleUtilsGetAffectedBlocksEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedBlocks'>;
+
+export type StyleUtilsIsStyleEnabledForInlineSelectionEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForInlineSelection'>;
+export type StyleUtilsIsStyleActiveForInlineSelectionEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForInlineSelection'>;
+export type StyleUtilsGetAffectedInlineSelectableEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedInlineSelectable'>;
+
 export type StyleUtilsGetStylePreviewEvent = DecoratedMethodEvent<StyleUtils, 'getStylePreview'>;

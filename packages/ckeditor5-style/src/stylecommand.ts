@@ -50,6 +50,11 @@ export default class StyleCommand extends Command {
 	private readonly _styleDefinitions: NormalizedStyleDefinitions;
 
 	/**
+	 * The StyleUtils plugin.
+	 */
+	private _styleUtils: StyleUtils;
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor Editor on which this command will be used.
@@ -62,6 +67,7 @@ export default class StyleCommand extends Command {
 		this.set( 'enabledStyles', [] );
 
 		this._styleDefinitions = styleDefinitions;
+		this._styleUtils = this.editor.plugins.get( StyleUtils );
 	}
 
 	/**
@@ -70,25 +76,20 @@ export default class StyleCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
 
 		const value = new Set<string>();
 		const enabledStyles = new Set<string>();
 
 		// Inline styles.
 		for ( const definition of this._styleDefinitions.inline ) {
-			for ( const ghsAttributeName of definition.ghsAttributes ) {
-				// Check if this inline style is enabled.
-				if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
-					enabledStyles.add( definition.name );
-				}
+			// Check if this inline style is enabled.
+			if ( this._styleUtils.isStyleEnabledForInlineSelection( definition, selection ) ) {
+				enabledStyles.add( definition.name );
+			}
 
-				// Check if this inline style is active.
-				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
-
-				if ( styleUtils.hasAllClasses( ghsAttributeValue, definition.classes ) ) {
-					value.add( definition.name );
-				}
+			// Check if this inline style is active.
+			if ( this._styleUtils.isStyleActiveForInlineSelection( definition, selection ) ) {
+				value.add( definition.name );
 			}
 		}
 
@@ -105,14 +106,14 @@ export default class StyleCommand extends Command {
 
 				for ( const definition of this._styleDefinitions.block ) {
 					// Check if this block style is enabled.
-					if ( !styleUtils.isStyleEnabledForBlock( definition, block ) ) {
+					if ( !this._styleUtils.isStyleEnabledForBlock( definition, block ) ) {
 						continue;
 					}
 
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					if ( styleUtils.isStyleActiveForBlock( definition, block ) ) {
+					if ( this._styleUtils.isStyleActiveForBlock( definition, block ) ) {
 						value.add( definition.name );
 					}
 				}
@@ -191,7 +192,7 @@ export default class StyleCommand extends Command {
 			if ( isBlockStyleDefinition( definition ) ) {
 				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition );
 			} else {
-				selectables = [ selection ];
+				selectables = [ this._styleUtils.getAffectedInlineSelectable( definition, selection ) ];
 			}
 
 			for ( const selectable of selectables ) {
@@ -215,7 +216,6 @@ export default class StyleCommand extends Command {
 		selectedBlocks: IterableIterator<Element>,
 		definition: BlockStyleDefinition
 	): Set<Element> {
-		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
 		const blocks = new Set<Element>();
 
 		for ( const selectedBlock of selectedBlocks ) {
@@ -226,7 +226,7 @@ export default class StyleCommand extends Command {
 					break;
 				}
 
-				const affectedBlocks = styleUtils.getAffectedBlocks( definition, block );
+				const affectedBlocks = this._styleUtils.getAffectedBlocks( definition, block );
 
 				if ( affectedBlocks ) {
 					for ( const affectedBlock of affectedBlocks ) {
@@ -239,33 +239,6 @@ export default class StyleCommand extends Command {
 		}
 
 		return blocks;
-	}
-
-	/**
-	 * Checks the attribute value of the first node in the selection that allows the attribute.
-	 * For the collapsed selection, returns the selection attribute.
-	 *
-	 * @param attributeName Name of the GHS attribute.
-	 * @returns The attribute value.
-	 */
-	private _getValueFromFirstAllowedNode( attributeName: string ): unknown | null {
-		const model = this.editor.model;
-		const schema = model.schema;
-		const selection = model.document.selection;
-
-		if ( selection.isCollapsed ) {
-			return selection.getAttribute( attributeName );
-		}
-
-		for ( const range of selection.getRanges() ) {
-			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, attributeName ) ) {
-					return item.getAttribute( attributeName );
-				}
-			}
-		}
-
-		return null;
 	}
 }
 

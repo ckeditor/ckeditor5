@@ -15,6 +15,7 @@ import StyleCommand from './stylecommand';
 import StyleUtils, { type NormalizedStyleDefinitions } from './styleutils';
 import type { StyleConfig, StyleDefinition } from './styleconfig';
 import DocumentListStyleSupport from './integrations/documentlist';
+import LinkStyleSupport from './integrations/link';
 
 /**
  * The style engine feature.
@@ -35,7 +36,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport ] as const;
+		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, LinkStyleSupport ] as const;
 	}
 
 	/**
