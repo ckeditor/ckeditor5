@@ -21,6 +21,8 @@ mrgit.json
 .idea
 .vscode
 
+build 
+
 # Ignore yalc
 .yalc
 yalc.lock

@@ -50,7 +50,6 @@
     "@ckeditor/ckeditor5-paste-from-office": "^37.1.0",
     "@ckeditor/ckeditor5-table": "^37.1.0",
     "@ckeditor/ckeditor5-typing": "^37.1.0",
-    "@ftrprf/ckeditor5-content-templates": "https://github.com/FTRPRF/ckeditor5-content-templates.git",
     "@ftrprf/ckeditor5-iframe": "https://github.com/FTRPRF/ckeditor5-iframe.git",
     "@ftrprf/ckeditor5-scratch-blocks": "https://github.com/FTRPRF/ckeditor5-scratch-blocks.git"
   },
