@@ -101,12 +101,15 @@
 		"features/image.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/easy-image.html": "features/images/image-upload/easy-image.html",
+		"features/export-pdf.html": "features/converters/export-pdf.html",
+		"features/export-word.html": "features/converters/export-word.html",
 		"features/image-upload/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/easy-image.html": "features/images/image-upload/easy-image.html",
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/simple-upload-adapter.html": "features/images/image-upload/simple-upload-adapter.html",
 		"features/images/image-upload/images-inserting.html": "features/images/images-inserting.html",
+		"features/import-word/import-word.html": "features/converters/import-word/import-word.html",
 		"features/lists.html": "features/lists/lists.html",
 		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/general-html-support.html": "features/html/general-html-support.html",
@@ -415,14 +418,29 @@
 					]
 				},
 				{
-					"name": "HTML advanced support",
-					"id": "features-html",
-					"slug": "html"
+					"name": "Document conversion",
+					"id": "features-converters",
+					"slug": "converters",
+					"categories": [
+						{
+							"name": "Import from Word",
+							"id": "import-word",
+							"slug": "import-word",
+							"badges": [
+								"premium"
+							]
+						}
+					]
 				},
 				{
 					"name": "File management",
 					"id": "features-file-management",
 					"slug": "file-management"
+				},
+				{
+					"name": "HTML advanced support",
+					"id": "features-html",
+					"slug": "html"
 				},
 				{
 					"name": "Images",
@@ -435,14 +453,6 @@
 							"slug": "image-upload",
 							"order": 80
 						}
-					]
-				},
-				{
-					"name": "Import from Word",
-					"id": "import-word",
-					"slug": "import-word",
-					"badges": [
-						"premium"
 					]
 				},
 				{
