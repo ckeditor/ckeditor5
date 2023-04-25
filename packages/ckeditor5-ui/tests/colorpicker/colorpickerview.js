@@ -98,6 +98,18 @@ describe( 'ColorPickerView', () => {
 		} );
 	} );
 
+	describe( 'focus()', () => {
+		it( 'should focus slider', () => {
+			const slider = view.slidersView.first;
+
+			const spy = sinon.spy( slider.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'color property', () => {
 		it( 'should be initialized with a proper value', () => {
 			expect( view.color ).to.be.equal( '' );
