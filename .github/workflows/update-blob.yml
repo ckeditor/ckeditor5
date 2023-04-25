@@ -11,6 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.7.0
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: build editor
         run: cd ./packages/ckeditor5-build-decoupled-document && yarn && yarn build
       - name: upload to storage
