@@ -110,6 +110,7 @@ HelpjuiceEditor.builtinPlugins = [
 	DecisionTree,
 	InsertArticle,
 	FilesManager,
+	// @ts-ignore
 	Mention,
 	MentionCustomization,
 	Style,

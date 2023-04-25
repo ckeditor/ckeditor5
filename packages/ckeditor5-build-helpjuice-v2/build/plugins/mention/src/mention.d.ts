@@ -1,59 +1,56 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-/**
- * @module mention/mention
- */
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
-import MentionEditing from './mentionediting';
-import MentionUI from './mentionui';
-import '../theme/mention.css';
-/**
  * The mention plugin.
  *
- * For a detailed overview, check the {@glink features/mentions Mention feature} guide.
+ * For a detailed overview, check the {@glink features/mentions Mention feature documentation}.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class Mention extends Plugin {
+export default class Mention {
+    /**
+     * @inheritDoc
+     */
+    static get pluginName(): string;
+    /**
+     * @inheritDoc
+     */
+    static get requires(): (typeof MentionEditing | typeof MentionUI)[];
     /**
      * Creates a mention attribute value from the provided view element and optional data.
      *
-     * ```ts
-     * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
+     *		editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
      *
-     * // For a view element: <span data-mention="@joe">@John Doe</span>
-     * // it will return:
-     * // { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
-     * ```
+     *		// For a view element: <span data-mention="@joe">@John Doe</span>
+     *		// it will return:
+     *		// { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
      *
-     * @param viewElement
-     * @param data Additional data to be stored in the mention attribute.
+     * @param {module:engine/view/element~Element} viewElement
+     * @param {String|Object} [data] Additional data to be stored in the mention attribute.
+     * @returns {module:mention/mention~MentionAttribute}
      */
-    toMentionAttribute(viewElement: Element, data?: MentionAttribute): MentionAttribute | undefined;
-    /**
-     * @inheritDoc
-     */
-    static get pluginName(): 'Mention';
-    /**
-     * @inheritDoc
-     */
-    static get requires(): readonly [typeof MentionEditing, typeof MentionUI];
+    toMentionAttribute(viewElement: any, data?: string | Object | undefined): any;
 }
 /**
- * Represents a mention in the model.
- *
- * See {@link module:mention/mention~Mention#toMentionAttribute `Mention#toMentionAttribute()`}.
+ * :mention/mention~MentionFeed
  */
-export type MentionAttribute = {
+export type module = {
     /**
-     * The ID of a mention. It identifies the mention item in the mention feed. There can be multiple mentions
-     * in the document with the same ID (e.g. the same hashtag being mentioned).
+     * The character which triggers autocompletion for mention. It must be a single character.
      */
-    id: string;
+    marker?: string | undefined;
     /**
-     * A unique ID of this mention instance. Should be passed as an `option.id` when using
-     * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
+     * :mention/mention~MentionFeedItem>|Function} feed Autocomplete items. Provide an array for
+     * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
+     * matching items (directly, or via a promise). If a function is passed, it is executed in the context of the editor instance.
      */
-    uid?: string;
+    "": Array<module>;
+    /**
+     * Specifies after how many characters the autocomplete panel should be shown.
+     */
+    minimumCharacters?: number | undefined;
+    /**
+     * A function that renders a {@link module :mention/mention~MentionFeedItem}to the autocomplete panel.
+     */
+    itemRenderer?: Function | undefined;
 };
+import MentionEditing from "./mentionediting";
+import MentionUI from "./mentionui";

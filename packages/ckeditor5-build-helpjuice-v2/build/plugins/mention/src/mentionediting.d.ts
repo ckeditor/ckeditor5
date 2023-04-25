@@ -1,23 +1,30 @@
+export function _addMentionAttributes(baseMentionData: any, data: any): any;
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Creates a mention attribute value from the provided view element and optional data.
+ *
+ * This function is exposed as
+ * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
+ *
+ * @protected
+ * @param {module:engine/view/element~Element} viewElementOrMention
+ * @param {String|Object} [data] Mention data to be extended.
+ * @returns {module:mention/mention~MentionAttribute}
  */
-/**
- * @module mention/mentionediting
- */
-import { Plugin } from 'ckeditor5/src/core';
+export function _toMentionAttribute(viewElementOrMention: any, data?: string | Object | undefined): any;
 /**
  * The mention editing feature.
  *
  * It introduces the {@link module:mention/mentioncommand~MentionCommand command} and the `mention`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
  * as a `<span class="mention" data-mention="@mention">`.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class MentionEditing extends Plugin {
+export default class MentionEditing {
     /**
      * @inheritDoc
      */
-    static get pluginName(): 'MentionEditing';
+    static get pluginName(): string;
     /**
      * @inheritDoc
      */
