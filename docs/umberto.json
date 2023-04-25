@@ -433,14 +433,14 @@
 					]
 				},
 				{
-					"name": "HTML advanced support",
-					"id": "features-html",
-					"slug": "html"
-				},
-				{
 					"name": "File management",
 					"id": "features-file-management",
 					"slug": "file-management"
+				},
+				{
+					"name": "HTML advanced support",
+					"id": "features-html",
+					"slug": "html"
 				},
 				{
 					"name": "Images",
