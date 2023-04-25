@@ -1,23 +1,22 @@
 name: Update CKEditor 5 blob
 
 on:
-  push:
-    branches:
-      - master
+    push:
+        branches:
+            - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: build editor
-        run: cd ./packages/ckeditor5-build-decoupled-document && yarn && yarn build
-      - name: upload to storage
-        env:
-          AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
-        run: az storage blob upload-batch -s ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -d \ckeditor5.js --overwrite
+        steps:
+            - uses: actions/checkout@v2
+            - name: Add package token
+              run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_REPO_TOKEN }}" >> .npmrc
+            - name: build editor
+              run: cd ./packages/ckeditor5-build-decoupled-document && yarn && yarn build
+            - name: upload to storage
+              env:
+                  AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
+                  AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
+              run: az storage blob upload-batch -s ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -d \ckeditor5.js --overwrite
