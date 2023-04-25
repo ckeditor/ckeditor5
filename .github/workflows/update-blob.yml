@@ -15,8 +15,6 @@ jobs:
               run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_REPO_TOKEN }}" >> .npmrc
             - name: build editor
               run: cd ./packages/ckeditor5-build-decoupled-document && yarn && yarn build
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
             - name: upload to storage
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
