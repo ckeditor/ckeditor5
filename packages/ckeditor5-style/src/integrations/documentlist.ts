@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module style/integrations/documentliststylesupport
+ */
+
 import { Plugin } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
@@ -19,10 +23,6 @@ import StyleUtils, {
 } from '../styleutils';
 
 import type { StyleDefinition } from '../styleconfig';
-
-/**
- * @module style/integrations/documentliststylesupport
- */
 
 export default class DocumentListStyleSupport extends Plugin {
 	private _documentListUtils!: DocumentListUtils;
