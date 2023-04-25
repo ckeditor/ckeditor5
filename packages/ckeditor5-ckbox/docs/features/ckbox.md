@@ -77,16 +77,21 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 * {@link module:image/imageinline~ImageInline The `ImageInline` feature}
 * {@link module:image/image~Image The `Image` feature} (a glue plugin that loads both the `ImageBlock` and `ImageInline` features)
 
-If you do not have any of them in your editor, install one and add it to your plugin list.
+These plugins are, by default, loaded with the predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
+
+Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CKBox } from "@ckeditor/ckeditor5-ckbox";
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKBox, /* ... */ ],
+		plugins: [  ArticlePluginSet, PictureEditing, ImageUpload, CloudServices, CKBox, /* ... */ ],
 		toolbar: [ 'ckbox', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Feature configuration.
@@ -96,6 +101,8 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+Further in the document the dependency plugins will be ommitted in code listings for clarity.
 
 ## Configuration
 
