@@ -21,8 +21,7 @@ mrgit.json
 .idea
 .vscode
 
-build 
-
+build
 # Ignore yalc
 .yalc
 yalc.lock
@@ -34,3 +33,4 @@ packages/*/src/**/*.js.map
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
+
