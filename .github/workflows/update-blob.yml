@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build editor
-        run: ./build.sh
+        run: cd ./packages/ckeditor5-build-decoupled-document && yarn && yarn build
       - name: upload to storage
         env:
           AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
