@@ -116,7 +116,8 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Verifies if the given style is applicable to the provided block element.
+	 *
 	 * @internal
 	 */
 	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
@@ -132,7 +133,8 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns true if the given style is applied to the specified block element.
+	 *
 	 * @internal
 	 */
 	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
@@ -144,7 +146,7 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns an array of block elements that style should be applied to.
 	 *
 	 * @internal
 	 */
@@ -243,6 +245,8 @@ export interface InlineStyleDefinition extends StyleDefinition {
 	ghsAttributes: Array<string>;
 	previewTemplate: TemplateDefinition;
 }
+
+export type NormalizedStyleDefinition = BlockStyleDefinition | InlineStyleDefinition;
 
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;

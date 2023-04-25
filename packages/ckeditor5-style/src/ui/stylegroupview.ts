@@ -11,7 +11,7 @@ import { LabelView, View } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 import StyleGridView from './stylegridview';
-import type { BlockStyleDefinition, InlineStyleDefinition } from '../styleutils';
+import type { NormalizedStyleDefinition } from '../styleutils';
 
 import '../../theme/stylegroup.css';
 
@@ -38,7 +38,7 @@ export default class StyleGroupView extends View<HTMLDivElement> {
 	 * @param label The localized label of the group.
 	 * @param styleDefinitions Definitions of the styles in the group.
 	 */
-	constructor( locale: Locale, label: string, styleDefinitions: Array<BlockStyleDefinition | InlineStyleDefinition> ) {
+	constructor( locale: Locale, label: string, styleDefinitions: Array<NormalizedStyleDefinition> ) {
 		super( locale );
 
 		this.labelView = new LabelView( locale );

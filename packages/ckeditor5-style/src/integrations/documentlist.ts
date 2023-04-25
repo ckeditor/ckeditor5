@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module style/integrations/documentliststylesupport
+ */
+
 import { Plugin } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
@@ -20,13 +24,10 @@ import StyleUtils, {
 
 import type { StyleDefinition } from '../styleconfig';
 
-/**
- * @module style/integrations/documentliststylesupport
- */
-
 export default class DocumentListStyleSupport extends Plugin {
 	private _documentListUtils!: DocumentListUtils;
 	private _styleUtils!: StyleUtils;
+	private _htmlSupport!: GeneralHtmlSupport;
 
 	/**
 	 * @inheritDoc
@@ -39,7 +40,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ StyleUtils ] as const;
+		return [ StyleUtils, 'GeneralHtmlSupport' ] as const;
 	}
 
 	/**
@@ -54,6 +55,7 @@ export default class DocumentListStyleSupport extends Plugin {
 
 		this._styleUtils = editor.plugins.get( StyleUtils );
 		this._documentListUtils = this.editor.plugins.get( 'DocumentListUtils' );
+		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		this.listenTo<StyleUtilsIsEnabledForBlockEvent>( this._styleUtils, 'isStyleEnabledForBlock', ( evt, [ definition, block ] ) => {
 			if ( this._isStyleEnabledForBlock( definition, block ) ) {
@@ -89,11 +91,10 @@ export default class DocumentListStyleSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Verifies if the given style is applicable to the provided block element.
 	 */
 	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
 		const model = this.editor.model;
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		if ( ![ 'ol', 'ul', 'li' ].includes( definition.element ) ) {
 			return false;
@@ -103,7 +104,7 @@ export default class DocumentListStyleSupport extends Plugin {
 			return false;
 		}
 
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
 		if ( definition.element == 'ol' || definition.element == 'ul' ) {
 			if ( !model.schema.checkAttribute( block, attributeName ) ) {
@@ -119,19 +120,17 @@ export default class DocumentListStyleSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns true if the given style is applied to the specified block element.
 	 */
 	private _isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
 		return this._styleUtils.hasAllClasses( ghsAttributeValue, definition.classes );
 	}
 
 	/**
-	 * TODO
+	 * Returns an array of block elements that style should be applied to.
 	 */
 	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
@@ -146,7 +145,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns a view template definition for the style preview.
 	 */
 	private _getStylePreview( definition: StyleDefinition, children: Iterable<TemplateDefinition> ): TemplateDefinition | null {
 		const { element, classes } = definition;

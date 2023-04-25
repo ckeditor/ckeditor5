@@ -14,11 +14,9 @@ import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import StyleUtils, {
 	type BlockStyleDefinition,
-	type InlineStyleDefinition,
+	type NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions
 } from './styleutils';
-
-type Definition = BlockStyleDefinition | InlineStyleDefinition;
 
 /**
  * Style command.
@@ -178,13 +176,13 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		const allDefinitions: Array<Definition> = [
+		const allDefinitions: Array<NormalizedStyleDefinition> = [
 			...this._styleDefinitions.inline,
 			...this._styleDefinitions.block
 		];
 
 		const activeDefinitions = allDefinitions.filter( ( { name } ) => this.value.includes( name ) );
-		const definition: Definition = allDefinitions.find( ( { name } ) => name == styleName )!;
+		const definition: NormalizedStyleDefinition = allDefinitions.find( ( { name } ) => name == styleName )!;
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
 		model.change( () => {
@@ -281,8 +279,11 @@ export default class StyleCommand extends Command {
  * @param definition Definition whose classes will be compared with all other active definition classes.
  * @returns Array of classes exclusive to the supplied definition.
  */
-function getDefinitionExclusiveClasses( activeDefinitions: Array<Definition>, definition: Definition ): Array<string> {
-	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: Definition ) => {
+function getDefinitionExclusiveClasses(
+	activeDefinitions: Array<NormalizedStyleDefinition>,
+	definition: NormalizedStyleDefinition
+): Array<string> {
+	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: NormalizedStyleDefinition ) => {
 		if ( currentDefinition.name === definition.name ) {
 			return classes;
 		}
@@ -294,7 +295,7 @@ function getDefinitionExclusiveClasses( activeDefinitions: Array<Definition>, de
 /**
  * Checks if provided style definition is of type block.
  */
-function isBlockStyleDefinition( definition: Definition ): definition is BlockStyleDefinition {
+function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
 }
 
