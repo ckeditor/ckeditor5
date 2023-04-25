@@ -4,7 +4,7 @@
  */
 
 /**
- * @module style/integrations/documentliststylesupport
+ * @module style/integrations/documentlist
  */
 
 import { Plugin } from 'ckeditor5/src/core';
