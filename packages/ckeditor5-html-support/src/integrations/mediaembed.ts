@@ -150,7 +150,8 @@ function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 					conversionApi.writer,
 					attributeOldValue as GHSViewAttributes,
 					attributeNewValue as GHSViewAttributes,
-					viewElement! );
+					viewElement!
+				);
 			} );
 		}
 	};

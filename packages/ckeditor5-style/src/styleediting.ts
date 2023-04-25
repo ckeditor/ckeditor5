@@ -14,6 +14,7 @@ import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
 import StyleCommand from './stylecommand';
 import StyleUtils, { type NormalizedStyleDefinitions } from './styleutils';
 import type { StyleConfig, StyleDefinition } from './styleconfig';
+import DocumentListStyleSupport from './integrations/documentlist';
 
 /**
  * The style engine feature.
@@ -34,7 +35,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'GeneralHtmlSupport', StyleUtils ] as const;
+		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport ] as const;
 	}
 
 	/**

@@ -216,27 +216,7 @@ export default class DataFilter extends Plugin {
 	 */
 	public allowElement( viewName: string | RegExp ): void {
 		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, true ) ) {
-			if ( this._allowedElements.has( definition ) ) {
-				continue;
-			}
-
-			this._allowedElements.add( definition );
-
-			// We need to wait for all features to be initialized before we can register
-			// element, so we can access existing features model schemas.
-			// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
-			// registering elements.
-			if ( this._dataInitialized ) {
-				// Defer registration to the next data pipeline data set so any disallow rules could be applied
-				// even if added after allow rule (disallowElement).
-				this.editor.data.once( 'set', () => {
-					this._fireRegisterEvent( definition );
-				}, {
-					// With the highest priority listener we are able to register elements right before
-					// running data conversion.
-					priority: priorities.get( 'highest' ) + 1
-				} );
-			}
+			this._addAllowedElement( definition );
 
 			// Reset cached map to recalculate it on the next usage.
 			this._coupledAttributes = null;
@@ -306,6 +286,42 @@ export default class DataFilter extends Plugin {
 		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
 
 		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
+	}
+
+	/**
+	 * Adds allowed element definition and fires registration event.
+	 */
+	private _addAllowedElement( definition: DataSchemaDefinition ): void {
+		if ( this._allowedElements.has( definition ) ) {
+			return;
+		}
+
+		this._allowedElements.add( definition );
+
+		// For attribute based integrations (table figure, document lists, etc.) register related element definitions.
+		if ( 'appliesToBlock' in definition && typeof definition.appliesToBlock == 'string' ) {
+			for ( const relatedDefinition of this._dataSchema.getDefinitionsForModel( definition.appliesToBlock ) ) {
+				if ( relatedDefinition.isBlock ) {
+					this._addAllowedElement( relatedDefinition );
+				}
+			}
+		}
+
+		// We need to wait for all features to be initialized before we can register
+		// element, so we can access existing features model schemas.
+		// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
+		// registering elements.
+		if ( this._dataInitialized ) {
+			// Defer registration to the next data pipeline data set so any disallow rules could be applied
+			// even if added after allow rule (disallowElement).
+			this.editor.data.once( 'set', () => {
+				this._fireRegisterEvent( definition );
+			}, {
+				// With the highest priority listener we are able to register elements right before
+				// running data conversion.
+				priority: priorities.get( 'highest' ) + 1
+			} );
+		}
 	}
 
 	/**
@@ -571,6 +587,11 @@ export default class DataFilter extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
+
+		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		if ( definition.appliesToBlock ) {
+			return;
+		}
 
 		schema.extend( '$text', {
 			allowAttributes: attributeKey
