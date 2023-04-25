@@ -17,4 +17,4 @@ jobs:
         env:
           AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
-        run: az storage blob upload-batch -s ./build/4.14.2/full-all/ckeditor -d \ckeditor5 --overwrite
+        run: az storage blob upload-batch -s ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -d \ckeditor5.js --overwrite
