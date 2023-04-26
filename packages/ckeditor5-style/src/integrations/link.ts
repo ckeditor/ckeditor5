@@ -98,6 +98,8 @@ export default class LinkStyleSupport extends Plugin {
 	 * Verifies if the given style is applicable to the provided document selection.
 	 */
 	private _isStyleEnabled( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		const model = this.editor.model;
+
 		// Handle collapsed selection.
 		if ( selection.isCollapsed ) {
 			return selection.hasAttribute( 'linkHref' );
@@ -106,7 +108,7 @@ export default class LinkStyleSupport extends Plugin {
 		// Non-collapsed selection.
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
+				if ( ( item.is( '$textProxy' ) || model.schema.isInline( item ) ) && item.hasAttribute( 'linkHref' ) ) {
 					return true;
 				}
 			}
@@ -119,6 +121,7 @@ export default class LinkStyleSupport extends Plugin {
 	 * Returns true if the given style is applied to the specified document selection.
 	 */
 	private _isStyleActive( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		const model = this.editor.model;
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
 		// Handle collapsed selection.
@@ -137,7 +140,7 @@ export default class LinkStyleSupport extends Plugin {
 		// Non-collapsed selection.
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
+				if ( ( item.is( '$textProxy' ) || model.schema.isInline( item ) ) && item.hasAttribute( 'linkHref' ) ) {
 					const ghsAttributeValue = item.getAttribute( attributeName );
 
 					return this._styleUtils.hasAllClasses( ghsAttributeValue, definition.classes );
@@ -177,7 +180,7 @@ export default class LinkStyleSupport extends Plugin {
 
 			// Pick only ranges on links.
 			for ( const item of expandedRange.getItems() ) {
-				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
+				if ( ( item.is( '$textProxy' ) || model.schema.isInline( item ) ) && item.hasAttribute( 'linkHref' ) ) {
 					ranges.push( this.editor.model.createRangeOn( item ) );
 				}
 			}
