@@ -156,9 +156,13 @@ export default class ColorUI extends Plugin {
 						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
 
 						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
-							editor.execute( this.commandName, {
-								value: newValue
-							} );
+							// Color picker's internal color changes also when text with font color is selected.
+							// But the command should only be executed if color was picked in the dropdown.
+							if ( dropdownView.isOpen ) {
+								editor.execute( this.commandName, {
+									value: newValue
+								} );
+							}
 						} );
 					}
 				}
