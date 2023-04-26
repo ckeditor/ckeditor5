@@ -940,7 +940,10 @@ describe( 'LinkImageEditing', () => {
 						'src="sample.jpg">' +
 					'</imageBlock>' +
 					'<paragraph>' +
-						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+						'<$text linkHref="https://cksource.com" ' +
+						'linkIsDownloadable="true" ' +
+						'linkRel="noopener noreferrer" ' +
+						'linkTarget="_blank">' +
 							'https://cksource.com' +
 						'</$text>' +
 					'</paragraph>'
@@ -963,15 +966,18 @@ describe( 'LinkImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<imageBlock alt="bar" ' +
-						'linkHref="https://cksource.com" ' +
-						'linkIsDownloadable="true" ' +
-						'linkIsExternal="true" ' +
-						'linkIsGallery="true" ' +
-						'linkIsHighlighted="true" ' +
-						'src="sample.jpg">' +
+					'linkHref="https://cksource.com" ' +
+					'linkIsDownloadable="true" ' +
+					'linkIsExternal="true" ' +
+					'linkIsGallery="true" ' +
+					'linkIsHighlighted="true" ' +
+					'src="sample.jpg">' +
 					'</imageBlock>' +
 					'<paragraph>' +
-						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+						'<$text linkHref="https://cksource.com" ' +
+							'linkIsDownloadable="true" ' +
+							'linkRel="noopener noreferrer" ' +
+							'linkTarget="_blank">' +
 							'https://cksource.com' +
 						'</$text>' +
 					'</paragraph>'
@@ -1094,15 +1100,18 @@ describe( 'LinkImageEditing', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image">' +
-						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
-						'download="download" target="_blank" rel="noopener noreferrer">' +
-							'<img alt="bar" src="sample.jpg">' +
-						'</a>' +
-					'</figure>' +
+					'<a target="_blank" ' +
+					'rel="noopener noreferrer">' +
+						'<figure class="image">' +
+							'<a href="https://cksource.com">' +
+								'<img alt="bar" src="sample.jpg">' +
+							'</a>' +
+						'</figure>' +
+					'</a>' +
 					'<p>' +
-						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
-						'download="download" target="_blank" rel="noopener noreferrer">' +
+						'<a href="https://cksource.com" ' +
+						'target="_blank" ' +
+						'rel="noopener noreferrer">' +
 							'https://cksource.com' +
 						'</a>' +
 					'</p>'
@@ -1134,9 +1143,7 @@ describe( 'LinkImageEditing', () => {
 				} ).to.not.throw();
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image">' +
-						'<img alt="bar" src="sample.jpg">' +
-					'</figure>'
+					'<a target="_blank" rel="noopener noreferrer"><figure class="image"><img alt="bar" src="sample.jpg"></figure></a>'
 				);
 			} );
 

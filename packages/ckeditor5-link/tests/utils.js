@@ -20,14 +20,22 @@ import {
 	isLinkableElement,
 	isEmail,
 	addLinkProtocolIfApplicable,
-	openLink
+	openLink,
+	// --- issue 13985
+	ensureSafeTarget,
+	ensureSafeRel,
+	htmlAttributeNameToModelAttributeName,
+	modelAttributeNameToHtmlAttributeName,
+	getLinkAttributeName,
+	isMultiValueAttribute,
+	mergeMultiValueAttributes
 } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
 		it( 'should return true for elements created by createLinkElement', () => {
 			const writer = new ViewDowncastWriter( new ViewDocument() );
-			const element = createLinkElement( 'http://ckeditor.com', { writer } );
+			const element = createLinkElement( { href: 'http://ckeditor.com' }, { writer } );
 
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
@@ -48,7 +56,7 @@ describe( 'utils', () => {
 	describe( 'createLinkElement()', () => {
 		it( 'should create link AttributeElement', () => {
 			const writer = new ViewDowncastWriter( new ViewDocument() );
-			const element = createLinkElement( 'http://cksource.com', { writer } );
+			const element = createLinkElement( { href: 'http://cksource.com' }, { writer } );
 
 			expect( isLinkElement( element ) ).to.be.true;
 			expect( element.priority ).to.equal( 5 );
@@ -174,7 +182,7 @@ describe( 'utils', () => {
 
 	describe( 'normalizeDecorators()', () => {
 		it( 'should transform an entry object to a normalized array', () => {
-			const callback = () => {};
+			const callback = () => { };
 			const entryObject = {
 				foo: {
 					mode: 'manual',
@@ -328,6 +336,82 @@ describe( 'utils', () => {
 			expect( stub.calledOnce ).to.be.true;
 			expect( stub.calledOn( window ) ).to.be.true;
 			expect( stub.calledWith( url, '_blank', 'noopener' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'ensureSafeTarget()', () => {
+		it( 'ensure a safe target value', () => {
+			expect( ensureSafeTarget( '_self' ) ).to.equal( '_self' );
+			expect( ensureSafeTarget( 'foo' ) ).to.be.null;
+			expect( ensureSafeTarget( null ) ).to.be.null;
+			expect( ensureSafeTarget() ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'ensureSafeRel()', () => {
+		it( 'ensure a safe rel value', () => {
+			expect( ensureSafeRel( 'noopener noreferrer' ) ).to.equal( 'noopener noreferrer' );
+			expect( ensureSafeRel( 'sponsored sponsored foo' ) ).to.equal( 'sponsored' );
+			expect( ensureSafeRel( '' ) ).to.equal( '' );
+			expect( ensureSafeRel( null ) ).to.be.null;
+			expect( ensureSafeRel() ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'getLinkAttributeName()', () => {
+		it( 'gets a valid link attribute name', () => {
+			expect( getLinkAttributeName( 'download' ) ).to.equal( 'linkDownload' );
+			expect( getLinkAttributeName( 'hreflang' ) ).to.equal( 'linkHreflang' );
+			expect( getLinkAttributeName( 'ping' ) ).to.equal( 'linkPing' );
+			expect( getLinkAttributeName( 'referrerpolicy' ) ).to.equal( 'linkReferrerpolicy' );
+			expect( getLinkAttributeName( 'rel' ) ).to.equal( 'linkRel' );
+			expect( getLinkAttributeName( 'target' ) ).to.equal( 'linkTarget' );
+			expect( getLinkAttributeName( 'invalid' ) ).to.equal( 'invalid' );
+		} );
+	} );
+
+	describe( 'htmlAttributeNameToModelAttributeName()', () => {
+		it( 'should convert html attribute to model attribute', () => {
+			expect( htmlAttributeNameToModelAttributeName( 'rel' ) ).to.equal( 'linkRel' );
+		} );
+	} );
+
+	describe( 'modelAttributeNameToHtmlAttributeName()', () => {
+		it( 'should convert model attribute to html attribute', () => {
+			expect( modelAttributeNameToHtmlAttributeName( 'linkRel' ) ).to.equal( 'rel' );
+		} );
+	} );
+
+	describe( 'isMultiValueAttribute()', () => {
+		it( 'should return true for multivalue attributes', () => {
+			expect( isMultiValueAttribute( 'class' ) ).to.be.true;
+			expect( isMultiValueAttribute( 'ping' ) ).to.be.true;
+			expect( isMultiValueAttribute( 'rel' ) ).to.be.true;
+		} );
+
+		it( 'should return true for single-value attributes', () => {
+			expect( isMultiValueAttribute( 'href' ) ).to.be.false;
+			expect( isMultiValueAttribute( 'target' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'mergeMultiValueAttributes()', () => {
+		it( 'should merge attributes correctly', () => {
+			expect( mergeMultiValueAttributes(
+				[
+					[ 'target', '_blank' ],
+					[ 'rel', 'noopener noreferrer' ],
+					[ 'lang', 'fr' ]
+				],
+				[
+					[ 'rel', 'nofollow' ],
+					[ 'lang', 'en' ]
+				]
+			) ).to.eql( [
+				[ 'target', '_blank' ],
+				[ 'rel', 'noopener noreferrer nofollow' ],
+				[ 'lang', 'en' ]
+			] );
 		} );
 	} );
 } );

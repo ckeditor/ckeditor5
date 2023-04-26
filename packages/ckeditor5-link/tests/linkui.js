@@ -1734,12 +1734,12 @@ describe( 'LinkUI', () => {
 
 					setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
 					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
-					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: true } );
+					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: false } );
 
 					formView.fire( 'submit' );
 
 					expect( executeSpy.calledOnce ).to.be.true;
-					expect( executeSpy.calledWithExactly( 'link', 'url', { linkIsFoo: true } ) ).to.be.true;
+					expect( executeSpy.calledWithExactly( 'link', 'url', { linkIsFoo: true } ) ).to.be.false;
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {
@@ -1749,16 +1749,16 @@ describe( 'LinkUI', () => {
 					const firstDecoratorModel = manualDecorators.first;
 					const firstDecoratorSwitch = formView._manualDecoratorSwitches.first;
 
-					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.true;
-					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.true;
+					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.undefined;
+					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.false;
 
 					firstDecoratorSwitch.fire( 'execute' );
-					expect( firstDecoratorModel.value, 'Pressing button toggles value' ).to.be.false;
-					expect( firstDecoratorSwitch.isOn, 'Pressing button toggles value' ).to.be.false;
+					expect( firstDecoratorModel.value, 'Pressing button toggles value' ).to.be.true;
+					expect( firstDecoratorSwitch.isOn, 'Pressing button toggles value' ).to.be.true;
 
 					linkUIFeature._closeFormView();
-					expect( firstDecoratorModel.value, 'Close form view without submit resets value to initial state' ).to.be.true;
-					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.true;
+					expect( firstDecoratorModel.value, 'Close form view without submit resets value to initial state' ).to.be.undefined;
+					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.false;
 				} );
 			} );
 		} );

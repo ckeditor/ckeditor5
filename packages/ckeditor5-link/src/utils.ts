@@ -50,11 +50,14 @@ export function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean 
 }
 
 /**
- * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided attribute.
  */
-export function createLinkElement( href: string, { writer }: DowncastConversionApi ): ViewAttributeElement {
+export function createLinkElement(
+	attr: { [key: string]: string | null | undefined },
+	{ writer }: DowncastConversionApi
+): ViewAttributeElement {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
-	const linkElement = writer.createAttributeElement( 'a', { href }, { priority: 5 } );
+	const linkElement = writer.createAttributeElement( 'a', attr, { priority: 5 } );
 
 	writer.setCustomProperty( 'link', true, linkElement );
 
@@ -187,3 +190,203 @@ export function openLink( link: string ): void {
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };
 export type NormalizedLinkDecoratorManualDefinition = LinkDecoratorManualDefinition & { id: string };
 export type NormalizedLinkDecoratorDefinition = NormalizedLinkDecoratorAutomaticDefinition | NormalizedLinkDecoratorManualDefinition;
+
+// --- issue 13985
+
+/**
+ * Check the target is valid according to values defined
+ * in https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attributes
+ * @param target
+ * @returns
+ */
+export function isValidTarget( target: string ): boolean {
+	const TARGET_VALUES = [ '_self', '_blank', '_parent', '_top' ];
+	return TARGET_VALUES.includes( target );
+}
+
+/**
+ * Normalize target
+ * @param target
+ * @returns
+ */
+export function ensureSafeTarget( target: string | null | undefined ): string | null | undefined {
+	if ( typeof target === 'string' ) {
+		return isValidTarget( target ) ?
+			target :
+			null;
+	}
+	else {
+		return target;
+	}
+}
+
+/**
+ * Check the rel string contains valid values as per
+ * https://www.w3schools.com/tags/att_a_rel.asp
+ * and https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links?hl=en
+ * @param rel
+ * @returns
+ */
+export function isValidRel( rel: string ): boolean {
+	const REL_VALUES = [
+		'alternate',
+		'author',
+		'bookmark',
+		'external',
+		'help',
+		'license',
+		'next',
+		'nofollow',
+		'noopener',
+		'noreferrer',
+		'prev',
+		'search',
+		'sponsored',
+		'tag',
+		'ugc'
+	];
+	return REL_VALUES.includes( rel );
+}
+
+/**
+ * Normalize rel, avoiding duplicates
+ * @param rel
+ * @returns
+ */
+export function ensureSafeRel( rel: string | null | undefined ): string | null | undefined {
+	return typeof rel !== 'string' ?
+		rel :
+		Array.from( new Set( rel.split( ' ' ).filter( isValidRel ) ) ).join( ' ' );
+}
+
+/**
+ * Check if attribute is valid according to
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attributes
+ * @param attribute
+ * @returns
+ */
+export function isValidLinkAttribute( attribute: string ): boolean {
+	// all execpt href
+	const LINK_ATTRIBUTES = [
+		'download',
+		'hreflang',
+		'ping',
+		'referrerpolicy',
+		'rel',
+		'target'
+	];
+	return LINK_ATTRIBUTES.includes( attribute );
+}
+
+/**
+ * Capitalize word
+ * @see https://www.freecodecamp.org/news/javascript-capitalize-first-letter-of-word/
+ * @param word
+ * @returns
+ */
+export function capitalize( word: string ): string {
+	return word.charAt( 0 ).toUpperCase() + word.slice( 1 );
+}
+
+/**
+ * Convert to model attribute using this naming convention
+ * attributename -> `linkAttributename`
+ * @example
+ * const attr =htmlAttributeNameToModelAttributeName('rel')
+ * console.log(attr==='linkRel') // true
+ * @param modelAttributeName
+ * @returns
+ */
+export function htmlAttributeNameToModelAttributeName(
+	modelAttributeName: string
+): string {
+	return `link${ capitalize( modelAttributeName ) }`;
+}
+
+/**
+ * Convert html link attribute name to model attribute name
+ *
+ * `linkAttributename` -> attributename
+ * @example
+ * const attr =modelAttributeNameToLinkAttributeName('linkRel')
+ * console.log(attr==='rel') // true
+ * @param linkAttributeName
+ * @returns
+ */
+export function modelAttributeNameToHtmlAttributeName(
+	linkAttributeName: string
+): string {
+	return linkAttributeName.replace( /^link/, '' ).toLowerCase();
+}
+
+/**
+ * Transform valid attributes to link attributes, e.g. rel -> linkRel
+ * Invalid attributes will be rejected by the model
+ * @param attribute
+ * @returns
+ */
+export function getLinkAttributeName( attribute: string ): string {
+	return isValidLinkAttribute( attribute ) ?
+		htmlAttributeNameToModelAttributeName( attribute ) :
+		attribute;
+}
+
+/**
+ * Check for attributes whose value is a space-separated list
+ * e.g. rel="noopener noreferrer" or class="my-class-1 my-class-2"
+ * These should be treated as string arrays
+ * while others can be handled as simple strings
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attributes
+ *
+ * @param linkAttributeName
+ * @returns
+ */
+export function isMultiValueAttribute( linkAttributeName: string ): boolean {
+	return [ 'class', 'rel', 'ping' ].includes( linkAttributeName );
+}
+
+/**
+ * Merge multi-value attributes such as class, rel, ...
+ * multi-value attributes will be merged
+ * single-value attributes will be overridden by the last decorator in line
+ * Decorator definition in config should take this behavior into account
+ * @param leftAttributes array of entries [attributeName, attributeValue], assumed to have unique names
+ * @param rightAttributes array of entries [attributeName, attributeValue]
+ * @internal
+ * @returns
+ */
+export function mergeMultiValueAttributes(
+	leftAttributes: Array<[string, string]>,
+	rightAttributes: Array<[string, string]>
+): Array<[string, string]> {
+	// Take values only in left attributes
+	const onlyInLeftAttributes = leftAttributes.filter(
+		( [ lAttrName/* , lAttrValue */ ] ) =>
+			rightAttributes.findIndex(
+				( [ rAttrName/* , rAttrValue */ ] ) => rAttrName === lAttrName
+			) === -1
+	);
+
+	// override or merge
+	const mergedAttributes = rightAttributes.map<[string, string]>(
+		( [ rAttrName, rAttrValue ] ) => {
+			if ( isMultiValueAttribute( rAttrName ) ) {
+				// merge values
+				const currentValues = leftAttributes.find(
+					( [ lAttrName/* , lAttrValue */ ] ) => lAttrName == rAttrName
+				);
+				return Array.isArray( currentValues ) ?
+					[
+						rAttrName,
+						[ currentValues[ 1 ], rAttrValue ].join( ' ' ) // merge values
+					] :
+					[ rAttrName, rAttrValue ]; // will be added (exists only in right)
+			} else {
+				// will override any existing value in leftAttributes
+				return [ rAttrName, rAttrValue ];
+			}
+		}
+	);
+
+	return [ ...onlyInLeftAttributes, ...mergedAttributes ];
+}

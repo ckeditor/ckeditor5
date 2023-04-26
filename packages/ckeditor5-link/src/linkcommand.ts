@@ -13,7 +13,13 @@ import { Collection, first, toMap } from 'ckeditor5/src/utils';
 import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine';
 
 import AutomaticDecorators from './utils/automaticdecorators';
-import { isLinkableElement } from './utils';
+import {
+	getLinkAttributeName,
+	isLinkableElement,
+	htmlAttributeNameToModelAttributeName,
+	mergeMultiValueAttributes,
+	modelAttributeNameToHtmlAttributeName
+} from './utils';
 import type ManualDecorator from './utils/manualdecorator';
 
 /**
@@ -171,13 +177,54 @@ export default class LinkCommand extends Command {
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
+					const attributesToBeAdded: Array<[string, string]> =
+						truthyManualDecorators.reduce<Array<[string, string]>>(
+							( attrsToAdd, decoratorName ) => {
+								const manualDecorator =
+									this.manualDecorators.get( decoratorName );
+								const decoratorAttributes = Object.entries(
+									manualDecorator?.attributes ?? {}
+								);
+								return mergeMultiValueAttributes(
+									attrsToAdd,
+									decoratorAttributes
+								);
+							},
+							[]
+						);
 
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
+					// attributes exclusively to be removed
+					const attributesToBeRemoved: Array<string> = falsyManualDecorators
+						.reduce<Array<string>>( ( attrsToRemove, decoratorName ) => {
+							const manualDecorator = this.manualDecorators.get( decoratorName );
+							const decoratorAttributes = Object.keys(
+								manualDecorator?.attributes ?? {}
+							);
+							return [ ...attrsToRemove, ...decoratorAttributes ];
+						}, [] )
+						.filter(
+							attributeName =>
+								attributesToBeAdded.findIndex(
+									( [ name ] ) => name === attributeName
+								) === -1
+						)
+						.map( htmlAttributeNameToModelAttributeName );
+
+					// 2. add attributes in attributesToBeAdde
+					writer.setAttributes(
+						Object.fromEntries(
+							attributesToBeAdded.map( ( [ attr, value ] ) => [
+								htmlAttributeNameToModelAttributeName( attr ),
+								value
+							] )
+						),
+						linkRange
+					);
+
+					for ( const attributeName of attributesToBeRemoved ) {
+						const linkAttributeName = getLinkAttributeName( attributeName );
+						writer.removeAttribute( linkAttributeName, linkRange );
+					}
 
 					// Put the selection at the end of the updated link.
 					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
@@ -246,13 +293,54 @@ export default class LinkCommand extends Command {
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
+					const attributesToBeAdded: Array<[string, string]> =
+						truthyManualDecorators.reduce<Array<[string, string]>>(
+							( attrsToAdd, decoratorName ) => {
+								const manualDecorator =
+									this.manualDecorators.get( decoratorName );
+								const decoratorAttributes = Object.entries(
+									manualDecorator?.attributes ?? {}
+								);
+								return mergeMultiValueAttributes(
+									attrsToAdd,
+									decoratorAttributes
+								);
+							},
+							[]
+						);
 
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
+					// attributes exclusively to be removed
+					const attributesToBeRemoved: Array<string> = falsyManualDecorators
+						.reduce<Array<string>>( ( attrsToRemove, decoratorName ) => {
+							const manualDecorator = this.manualDecorators.get( decoratorName );
+							const decoratorAttributes = Object.keys(
+								manualDecorator?.attributes ?? {}
+							);
+							return [ ...attrsToRemove, ...decoratorAttributes ];
+						}, [] )
+						.filter(
+							attributeName =>
+								attributesToBeAdded.findIndex(
+									( [ name ] ) => name === attributeName
+								) === -1
+						)
+						.map( htmlAttributeNameToModelAttributeName );
+
+					// 2. add attributes in attributesToBeAdde
+					writer.setAttributes(
+						Object.fromEntries(
+							attributesToBeAdded.map( ( [ attr, value ] ) => [
+								htmlAttributeNameToModelAttributeName( attr ),
+								value
+							] )
+						),
+						linkRange
+					);
+
+					for ( const attributeName of attributesToBeRemoved ) {
+						const linkAttributeName = getLinkAttributeName( attributeName );
+						writer.removeAttribute( linkAttributeName, linkRange );
+					}
 				}
 			}
 		} );
@@ -264,18 +352,46 @@ export default class LinkCommand extends Command {
 	 * @param decoratorName The name of the manual decorator used in the model
 	 * @returns The information whether a given decorator is currently present in the selection.
 	 */
-	private _getDecoratorStateFromModel( decoratorName: string ): boolean | undefined {
+	/**
+	 * Provides information whether a decorator with a given name is present in the currently processed selection.
+	 *
+	 * @param decoratorName The name of the manual decorator used in the model
+	 * @returns The information whether a given decorator is currently present in the selection.
+	 */
+	private _getDecoratorStateFromModel(
+		decoratorName: string
+	): boolean | undefined {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement();
+
+		const manualDecorator = this.manualDecorators.get( decoratorName );
+		const decoratorAttributes = manualDecorator?.attributes ?? {};
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
 			return selectedElement.getAttribute( decoratorName ) as boolean | undefined;
 		}
+		// TODO 1. get decorator by name
+		// 2 Check attributes one by one (maybe use hasAttribute?)
+		// 3 return as boolean (AND?)
+		const attributes = Array.from( selection.getAttributes() ).filter(
+			( [ ename ] ) => ename !== 'linkHref' // skip href special case
+		) as Array<[string, string]>;
+		return attributes.reduce<boolean | undefined>(
+			( state, [ selectionAttrName, selectionAttrValue ] ) => {
+				const decoratorAttrName =
+					modelAttributeNameToHtmlAttributeName( selectionAttrName );
+				const decoratorAttrValue = decoratorAttributes[ decoratorAttrName ];
+				if ( typeof decoratorAttrValue === 'string' ) {
+					state = selectionAttrValue.includes( decoratorAttrValue );
+				}
 
-		return selection.getAttribute( decoratorName ) as boolean | undefined;
+				return state;
+			},
+			undefined
+		);
 	}
 
 	/**
