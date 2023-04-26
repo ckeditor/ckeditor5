@@ -163,7 +163,7 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Verifies if the given style is applicable to the provided document selection.
 	 *
 	 * @internal
 	 */
@@ -180,7 +180,7 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns true if the given style is applied to the specified document selection.
 	 *
 	 * @internal
 	 */
@@ -197,7 +197,7 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns a selectable that given style should be applied to.
 	 *
 	 * @internal
 	 */
