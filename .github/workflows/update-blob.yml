@@ -25,6 +25,8 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
             - name: Build Editor
               run: npm run build
+            - name: Log directory
+              run: pwd
             - name: upload to storage
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
