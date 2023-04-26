@@ -14,19 +14,13 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v3
               with:
-                node-version: 16
-                registry-url: 'https://npm.pkg.github.com'
-                scope: '@ftrprf'
-            - name: Go into right package
-              run: cd ./packages/ckeditor5-build-decoupled-document
-            - name: Install Dependencies
-              run: npm install
+                  node-version: 16
+                  registry-url: "https://npm.pkg.github.com"
+                  scope: "@ftrprf"
+            - name: Build editor
+              run: cd ./packages/ckeditor5-build-decoupled-document && pwd && npm install && npm run build 
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-            - name: Build Editor
-              run: npm run build
-            - name: Log directory
-              run: pwd
             - name: upload to storage
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
