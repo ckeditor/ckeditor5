@@ -178,12 +178,21 @@ describe( 'ColorUI', () => {
 		} );
 
 		describe( 'color picker', () => {
-			it( 'should execute command if the color gets changed', () => {
+			it( 'should execute command if the color gets changed when dropdown is open', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				dropdown.colorTableView.colorPickerView.color = '#a37474';
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+			} );
+
+			it( 'should not execute command if the color gets changed when dropdown is closed', () => {
+				const spy = sinon.spy( editor, 'execute' );
+
+				dropdown.isOpen = false;
+				dropdown.colorTableView.colorPickerView.color = '#a37474';
+
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should cancel changes', () => {
