@@ -316,11 +316,10 @@ Inside a dropdown, you can put a list. To do so, you can use the `addListToDropd
 ```js
 import { 
     addListToDropdown,
-    ButtonView,
-    createDropdown
+    createDropdown,
+    Model
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
-import { Model } from '@ckeditor/ckeditor5-engine';
 
 const locale = new Locale();
 
