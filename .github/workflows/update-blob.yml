@@ -17,12 +17,14 @@ jobs:
                 node-version: 16
                 registry-url: 'https://npm.pkg.github.com'
                 scope: '@ftrprf'
-            - name: Add package token
-              run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_REGISTRY_PACKAGES }}" >> .npmrc
-            - name: build editor
-              run: cd ./packages/ckeditor5-build-decoupled-document && npm install && npm run build
+            - name: Go into right package
+              run: cd ./packages/ckeditor5-build-decoupled-document
+            - name: Install Dependencies
+              run: npm install
               env:
-                NODE_AUTH_TOKEN: ${{ secrets.GH_REGISTRY_PACKAGES }}
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+            - name: Build Editor
+              run: npm run build
             - name: upload to storage
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
