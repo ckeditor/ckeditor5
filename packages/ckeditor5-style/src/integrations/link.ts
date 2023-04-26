@@ -98,10 +98,12 @@ export default class LinkStyleSupport extends Plugin {
 	 * Verifies if the given style is applicable to the provided document selection.
 	 */
 	private _isStyleEnabled( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		// Handle collapsed selection.
 		if ( selection.isCollapsed ) {
 			return selection.hasAttribute( 'linkHref' );
 		}
 
+		// Non-collapsed selection.
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
 				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
@@ -119,6 +121,7 @@ export default class LinkStyleSupport extends Plugin {
 	private _isStyleActive( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
+		// Handle collapsed selection.
 		if ( selection.isCollapsed ) {
 			if ( selection.hasAttribute( 'linkHref' ) ) {
 				const ghsAttributeValue = selection.getAttribute( attributeName );
@@ -131,6 +134,7 @@ export default class LinkStyleSupport extends Plugin {
 			return false;
 		}
 
+		// Non-collapsed selection.
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
 				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
@@ -150,6 +154,7 @@ export default class LinkStyleSupport extends Plugin {
 	private _getAffectedSelectable( definition: InlineStyleDefinition, selection: DocumentSelection ): Selectable {
 		const model = this.editor.model;
 
+		// Handle collapsed selection.
 		if ( selection.isCollapsed ) {
 			const linkHref = selection.getAttribute( 'linkHref' );
 
@@ -160,14 +165,17 @@ export default class LinkStyleSupport extends Plugin {
 			return null;
 		}
 
+		// Non-collapsed selection.
 		const ranges: Array<Range> = [];
 
 		for ( const range of selection.getRanges() ) {
+			// First expand range to include the whole link.
 			const expandedRange = model.createRange(
-				expandAttributePosition( range.start, true, model ),
-				expandAttributePosition( range.end, false, model )
+				expandAttributePosition( range.start, 'linkHref', true, model ),
+				expandAttributePosition( range.end, 'linkHref', false, model )
 			);
 
+			// Pick only ranges on links.
 			for ( const item of expandedRange.getItems() ) {
 				if ( item.is( '$textProxy' ) && item.hasAttribute( 'linkHref' ) ) {
 					ranges.push( this.editor.model.createRangeOn( item ) );
@@ -175,6 +183,8 @@ export default class LinkStyleSupport extends Plugin {
 			}
 		}
 
+		// Make sure that we have a continuous range on a link
+		// (not split between text nodes with mixed attributes like bold etc.)
 		return normalizeRanges( ranges );
 	}
 }
@@ -183,7 +193,7 @@ export default class LinkStyleSupport extends Plugin {
  * Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same attribute value
  * and returns a position just before or after (depends on the `lookBack` flag) the last matched node.
  */
-function expandAttributePosition( position: Position, lookBack: boolean, model: Model, attributeName: string = 'linkHref' ): Position {
+function expandAttributePosition( position: Position, attributeName: string, lookBack: boolean, model: Model ): Position {
 	const referenceNode = position.textNode || ( lookBack ? position.nodeAfter : position.nodeBefore );
 
 	if ( !referenceNode || !referenceNode.hasAttribute( attributeName ) ) {

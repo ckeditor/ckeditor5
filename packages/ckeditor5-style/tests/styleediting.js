@@ -12,6 +12,7 @@ import StyleEditing from '../src/styleediting';
 import StyleCommand from '../src/stylecommand';
 import StyleUtils from '../src/styleutils';
 import DocumentListStyleSupport from '../src/integrations/documentlist';
+import LinkStyleSupport from '../src/integrations/link';
 
 describe( 'StyleEditing', () => {
 	let editor, editorElement;
@@ -70,7 +71,7 @@ describe( 'StyleEditing', () => {
 	} );
 
 	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
-		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport ] );
+		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, LinkStyleSupport ] );
 	} );
 
 	it( 'should register the "style" command', () => {
