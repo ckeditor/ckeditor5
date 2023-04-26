@@ -149,8 +149,8 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.colorTableComponent.items.length ).to.equal( 4 );
 		} );
 
-		it( 'should have 2 items', () => {
-			expect( colorTableView.items.length ).to.equal( 2 );
+		it( 'should have 1 item', () => {
+			expect( colorTableView.items.length ).to.equal( 1 );
 		} );
 	} );
 
@@ -232,7 +232,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should not to show the color picker', () => {
-			colorTableView.colorPickerView = null;
+			colorTableView.colorPickerComponent.colorPickerView = null;
 			colorTableView.showColorPicker();
 
 			expect( colorTableView.isColorPickerVisible ).to.be.false;
@@ -282,12 +282,12 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'creates a color picker', () => {
-			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
+			expect( colorTableView.colorPickerComponent.colorPickerView ).to.be.instanceOf( ColorPickerView );
 		} );
 
 		it( 'binds container\'s selected color to the color picker\'s color', () => {
 			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
-			expect( colorTableView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
+			expect( colorTableView.colorPickerComponent.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
@@ -308,9 +308,9 @@ describe( 'ColorTableView', () => {
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
-			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerView.slidersView.first.element;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerComponent.colorPickerView.slidersView.first.element;
 
-			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.get( 1 ), 'focus' );
+			const spy = sinon.spy( colorTableView.colorPickerComponent.colorPickerView.slidersView.get( 1 ), 'focus' );
 
 			colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -330,9 +330,9 @@ describe( 'ColorTableView', () => {
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
-			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerView.slidersView.get( 1 ).element;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerComponent.colorPickerView.slidersView.get( 1 ).element;
 
-			const spy = sinon.spy( colorTableView.colorPickerView.slidersView.first, 'focus' );
+			const spy = sinon.spy( colorTableView.colorPickerComponent.colorPickerView.slidersView.first, 'focus' );
 
 			colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -414,9 +414,9 @@ describe( 'ColorTableView', () => {
 
 				// Mock the remove color button is focused.
 				colorTableView.focusTracker.isFocused = true;
-				colorTableView.focusTracker.focusedElement = colorTableView.removeColorButtonView.element;
+				colorTableView.focusTracker.focusedElement = colorTableView.colorTableComponent.removeColorButtonView.element;
 
-				const spy = sinon.spy( colorTableView.staticColorsGrid, 'focus' );
+				const spy = sinon.spy( colorTableView.colorTableComponent.staticColorsGrid, 'focus' );
 
 				colorTableView.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );

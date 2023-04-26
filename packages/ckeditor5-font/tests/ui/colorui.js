@@ -166,7 +166,7 @@ describe( 'ColorUI', () => {
 		it( 'should focus the first active button when dropdown is opened', () => {
 			global.document.body.appendChild( dropdown.element );
 
-			const secondButton = dropdown.colorTableView.staticColorsGrid.items.get( 1 );
+			const secondButton = dropdown.colorTableView.colorTableComponent.staticColorsGrid.items.get( 1 );
 			const spy = sinon.spy( secondButton, 'focus' );
 
 			secondButton.isOn = true;
@@ -181,7 +181,7 @@ describe( 'ColorUI', () => {
 			it( 'should execute command if the color gets changed', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				dropdown.colorTableView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerComponent.colorPickerView.color = '#a37474';
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
 			} );

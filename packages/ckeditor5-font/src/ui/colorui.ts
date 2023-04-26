@@ -155,7 +155,8 @@ export default class ColorUI extends Plugin {
 					if ( hasColorPicker ) {
 						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
 
-						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+						dropdownView.colorTableView!.colorPickerComponent.colorPickerView!.on( 'change:color', ( evt, evtName, newValue
+						) => {
 							editor.execute( this.commandName, {
 								value: newValue
 							} );
@@ -169,9 +170,9 @@ export default class ColorUI extends Plugin {
 					}
 
 					if ( documentColorsCount !== 0 ) {
-						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
+						this.colorTableView!.colorTableComponent.updateDocumentColors( editor.model, this.componentName );
 					}
-					this.colorTableView!.updateSelectedColors();
+					this.colorTableView!.colorTableComponent.updateSelectedColors();
 				} else {
 					this.colorTableView!.showColorTable();
 				}
@@ -180,7 +181,7 @@ export default class ColorUI extends Plugin {
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(
 				dropdownView,
-				() => dropdownView.colorTableView!.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
+				() => dropdownView.colorTableView!.colorTableComponent.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
 			);
 
 			return dropdownView;
