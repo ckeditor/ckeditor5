@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
 /* global document */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -176,6 +177,8 @@ describe( 'TableStyleSupport', () => {
 
 		expect( command.enabledStyles ).to.deep.include( tdStyle.name );
 		expect( command.enabledStyles ).to.not.deep.include( thStyle.name );
+
+		sinon.stub( console, 'warn' );
 		command.execute( { styleName: 'Test th style' } );
 
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
