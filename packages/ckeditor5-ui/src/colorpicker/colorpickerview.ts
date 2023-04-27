@@ -29,9 +29,10 @@ export default class ColorPickerView extends View {
 	declare public picker: HTMLElement;
 
 	/**
-	 * Input to defining custom colors in HEX.
+	 * Container for a `#` sign prefix and an input for displaying and defining custom colors
+	 * in HEX format.
 	 */
-	declare public inputRow: ColorPickerInputRowView;
+	declare public hexInputRow: ColorPickerInputRowView;
 
 	/**
 	 * Current color state in color picker.
@@ -73,10 +74,10 @@ export default class ColorPickerView extends View {
 
 		this._format = config.format || 'hsl';
 
-		this.inputRow = this._createInputRow();
+		this.hexInputRow = this._createInputRow();
 
 		const children = this.createCollection();
-		children.add( this.inputRow );
+		children.add( this.hexInputRow );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -124,7 +125,7 @@ export default class ColorPickerView extends View {
 		this._createSlidersView();
 
 		if ( this.element ) {
-			this.element.insertBefore( this.picker, this.inputRow.element );
+			this.element.insertBefore( this.picker, this.hexInputRow.element );
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
@@ -151,7 +152,11 @@ export default class ColorPickerView extends View {
 		} );
 	}
 
-	// Creates input row for defining custom colors in color picker.
+	/**
+	 * Creates input row for defining custom colors in color picker.
+	 *
+	 * @private
+	 */
 	private _createInputRow(): ColorPickerInputRowView {
 		const row = new ColorPickerInputRowView( this.locale! );
 		const hashView = new HashView();
@@ -163,7 +168,11 @@ export default class ColorPickerView extends View {
 		return row;
 	}
 
-	// Creates the input where user can type or paste the color in hex format.
+	/**
+	 * Creates the input where user can type or paste the color in hex format.
+	 *
+	 * @private
+	 */
 	private _createColorInput(): LabeledFieldView<InputTextView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const { t } = this.locale!;
@@ -273,36 +282,9 @@ class HashView extends View {
  */
 class ColorPickerInputRowView extends View {
 	/**
-	 * An additional CSS class added to the {@link #element}.
-	 *
-	 * @observable
-	 */
-	declare public class: string | null;
-
-	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
 	 */
 	public readonly children: ViewCollection;
-
-	/**
-	 * The role property reflected by the `role` DOM attribute of the {@link #element}.
-	 *
-	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
-	 *
-	 * @observable
-	 * @private
-	 */
-	declare public _role: string | null;
-
-	/**
-	 * The ARIA property reflected by the `aria-labelledby` DOM attribute of the {@link #element}.
-	 *
-	 * **Note**: Used only when a `labelView` is passed to constructor `options`.
-	 *
-	 * @observable
-	 * @private
-	 */
-	declare public _ariaLabelledBy: string | null;
 
 	/**
 	 * Creates an instance of the form row class.
@@ -312,8 +294,6 @@ class ColorPickerInputRowView extends View {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		const bind = this.bindTemplate;
-
 		this.children = this.createCollection();
 
 		this.setTemplate( {
@@ -321,8 +301,7 @@ class ColorPickerInputRowView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-color-picker__row',
-					bind.to( 'class' )
+					'ck-color-picker__row'
 				]
 			},
 			children: this.children

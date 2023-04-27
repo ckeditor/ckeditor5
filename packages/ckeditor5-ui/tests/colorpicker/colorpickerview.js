@@ -50,12 +50,12 @@ describe( 'ColorPickerView', () => {
 
 			clock.tick( 200 );
 
-			expect( view.inputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
+			expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
 		} );
 
 		it( 'should update color property after getting an input', () => {
-			view.inputRow.children.get( 1 ).fieldView.value = '#ff0000';
-			view.inputRow.children.get( 1 ).fieldView.fire( 'input' );
+			view.hexInputRow.children.get( 1 ).fieldView.value = '#ff0000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 			clock.tick( 200 );
 
@@ -139,19 +139,18 @@ describe( 'ColorPickerView', () => {
 		} );
 
 		describe( 'should not update color property', () => {
-			// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
 			it( 'during input editing when focused', () => {
 				view.color = '#000000';
 
-				view.inputRow.children.get( 1 ).isFocused = true;
-				view.inputRow.children.get( 1 ).fieldView.value = '#ffffff';
-				view.inputRow.children.get( 1 ).fieldView.fire( 'input' );
+				view.hexInputRow.children.get( 1 ).isFocused = true;
+				view.hexInputRow.children.get( 1 ).fieldView.value = '#ffffff';
+				view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 				view.color = '#aaaaaa';
 
 				clock.tick( 200 );
 
-				expect( view.inputRow.children.get( 1 ).fieldView.value ).to.equal( '#ffffff' );
+				expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '#ffffff' );
 			} );
 
 			describe( 'when set incorrect color', () => {
@@ -419,7 +418,7 @@ describe( 'ColorPickerView', () => {
 	} );
 
 	function testColorUpdateFromInput( options ) {
-		const fieldView = view.inputRow.children.get( 1 ).fieldView;
+		const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
 		view.color = '#000000';
 
 		fieldView.isFocused = true;
