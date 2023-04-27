@@ -273,7 +273,7 @@ class HashView extends View {
 }
 
 /**
- * The class representing a single row in a complex form.
+ * The class representing a row containing hex color input field.
  *
  * **Note**: For now this class is private. When more use cases appear (beyond `ckeditor5-table` and `ckeditor5-image`),
  * it will become a component in `ckeditor5-ui`.
