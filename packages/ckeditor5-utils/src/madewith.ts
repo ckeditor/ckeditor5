@@ -36,7 +36,7 @@ export default function verify( stringToCheck: string ): VerifiedKeyStatus {
 	if ( !secondElement ) {
 		const isFirstElementMatchingThePattern = firstElement.match( /^[a-zA-Z0-9+/=$]+$/g );
 
-		if ( isFirstElementMatchingThePattern && ( firstElement.length >= 40 && firstElement.length <= 255 ) ) {
+		if ( isFirstElementMatchingThePattern && ( firstElement.length >= 0x28 && firstElement.length <= 0xff ) ) {
 			return 'VALID';
 		} else {
 			return 'INVALID';
@@ -49,7 +49,7 @@ export default function verify( stringToCheck: string ): VerifiedKeyStatus {
 		return 'INVALID';
 	}
 
-	if ( decryptedSecondElement.length !== 8 ) {
+	if ( decryptedSecondElement.length !== 0x8 ) {
 		return 'INVALID';
 	}
 
