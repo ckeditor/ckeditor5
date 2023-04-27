@@ -24,7 +24,11 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
+import {
+	DataTransfer,
+	DomEventData,
+	type DocumentSelectionChangeRangeEvent
+} from '@ckeditor/ckeditor5-engine';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
@@ -289,17 +293,38 @@ export default class BlockToolbar extends Plugin {
 		// Note that this piece over here overrides the default mousedown logic in ButtonView
 		// to make it work with BlockToolbar. See the implementation of the ButtonView class to learn more.
 		buttonView.extendTemplate( {
+			attributes: {
+				draggable: true
+			},
 			on: {
-				mousedown: bind.to( evt => {
-					// On Safari we have to force the focus on a button on click as it's the only browser
-					// that doesn't do that automatically. See #12115.
-					if ( env.isSafari && this.panelView.isVisible ) {
-						this.toolbarView.focus();
-					}
+				dragstart: bind.to( evt => {
+					const dragEvent = evt as DragEvent;
 
-					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
-					evt.preventDefault();
+					const model = editor.model;
+					const selection = model.document.selection;
+					const blocks = Array.from( selection.getSelectedBlocks() );
+					const draggedRange = model.createRange(
+						model.createPositionBefore( blocks[ 0 ] ),
+						model.createPositionAfter( blocks[ blocks.length - 1 ] )
+					);
+
+					model.change( writer => writer.setSelection( draggedRange ) );
+					editor.editing.view.document.fire( 'dragstart',
+						new DomEventData( editor.editing.view, dragEvent, {
+							dataTransfer: new DataTransfer( dragEvent.dataTransfer! )
+						} )
+					);
 				} )
+				// mousedown: bind.to( evt => {
+				// 	// On Safari we have to force the focus on a button on click as it's the only browser
+				// 	// that doesn't do that automatically. See #12115.
+				// 	if ( env.isSafari && this.panelView.isVisible ) {
+				// 		this.toolbarView.focus();
+				// 	}
+				//
+				// 	// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
+				// 	evt.preventDefault();
+				// } )
 			}
 		} );
 

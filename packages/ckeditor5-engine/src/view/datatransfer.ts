@@ -100,6 +100,13 @@ export default class DataTransfer {
 	}
 
 	/**
+	 * TODO
+	 */
+	public setDragImage( image: Element, x: number, y: number ): void {
+		this._native.setDragImage( image, x, y );
+	}
+
+	/**
 	 * Whether the dragging operation was canceled.
 	 */
 	public get isCanceled(): boolean {
