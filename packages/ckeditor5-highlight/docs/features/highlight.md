@@ -205,6 +205,7 @@ CKEditor 5 has more features that can help you style your content:
 * {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 

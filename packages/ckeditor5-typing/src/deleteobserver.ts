@@ -325,7 +325,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 }
 
 /**
- * Verifies if the given target ranges cover more than a single character and should be used instead of single code-point deletion.
+ * Verifies whether the given target ranges cover more than a single character and should be used instead of a single code-point deletion.
  */
 function shouldUseTargetRanges( targetRanges: Array<ViewRange> ): boolean {
 	// The collapsed target range could happen for example while deleting inside an inline filler

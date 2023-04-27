@@ -80,8 +80,8 @@ describe( '#984', () => {
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
 	} );
 
-	// Like a super edge case, we can live with this behavior as I don't even know what we could expect here
-	// since only the innermost block is considerd a block to return (so the <nB>b...</nB> needs to be ignored).
+	// As a super edge case, we can live with this behavior as I don't even know what we could expect here
+	// since only the innermost block is considered a block to return (so the <nB>b...</nB> needs to be ignored).
 	it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
 		setData( model, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
 

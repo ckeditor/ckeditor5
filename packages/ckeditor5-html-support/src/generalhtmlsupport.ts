@@ -77,19 +77,19 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Returns a GHS model attribute name related to a given view element name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 */
-	private getGhsAttributeNameForElement( viewElementName: string ): string {
+	public getGhsAttributeNameForElement( viewElementName: string ): string {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if (
-			definitions &&
-			definitions.length &&
-			( definitions[ 0 ] as DataSchemaInlineElementDefinition ).isInline &&
-			!definitions[ 0 ].isObject
-		) {
-			return definitions[ 0 ].model;
+		const inlineDefinition = definitions.find( definition => (
+			( definition as DataSchemaInlineElementDefinition ).isInline && !definitions[ 0 ].isObject
+		) );
+
+		if ( inlineDefinition ) {
+			return inlineDefinition.model;
 		}
 
 		return 'htmlAttributes';

@@ -81,7 +81,7 @@ ClassicEditor
 
 The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~blockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing} tools to create the autoformatters mentioned above.
 
-You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.js) as an example.
+You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.ts) as an example.
 
 ## Known issues
 
@@ -96,6 +96,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/slash-commands Slash commands} &ndash; Allows to execute a predefined command by writing its name or alias directly in the editor.
 * {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
 * {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 
