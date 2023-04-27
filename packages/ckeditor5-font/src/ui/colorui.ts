@@ -175,10 +175,10 @@ export default class ColorUI extends Plugin {
 					}
 
 					if ( documentColorsCount !== 0 ) {
-						this.colorTableView!.colorGridsPageView.updateDocumentColors( editor.model, this.componentName );
+						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
 
-					this.colorTableView!.colorGridsPageView.updateSelectedColors();
+					this.colorTableView!.updateSelectedColors();
 				} else {
 					this.colorTableView!.showColorGrids();
 				}

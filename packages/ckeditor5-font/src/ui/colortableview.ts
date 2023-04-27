@@ -70,11 +70,6 @@ export default class ColorTableView extends View {
 	declare public selectedColor?: string;
 
 	/**
-	 * Keeps the original color value from current selection which is assign while dropdown is opening.
-	 */
-	declare public originalColor?: string;
-
-	/**
 	 * State of the "Color table" component visibility.
 	 */
 	declare public isColorGridsPageVisible: boolean;
@@ -156,23 +151,17 @@ export default class ColorTableView extends View {
 		this.set( 'isColorPickerPageVisible', false );
 
 		this.set( 'selectedColor', undefined );
-		this.set( 'originalColor', undefined );
 
 		this.colorGridsPageView.bind( 'isVisible' ).to( this, 'isColorGridsPageVisible' );
 		this.colorPickerPageView.bind( 'isVisible' ).to( this, 'isColorPickerPageVisible' );
 
 		/**
 		 * This is kind of bindings. Unfortunately we could not use this.bind() method because the same property
-		 * can not be binded twice. So this is work around how to bind 'selectedColor' and 'originalColor'
-		 * properties between components.
+		 * can not be binded twice. So this is work around how to bind 'selectedColor' property between components.
 		 */
 		this.on( 'change:selectedColor', ( evt, evtName, data ) => {
 			this.colorGridsPageView.set( 'selectedColor', data );
 			this.colorPickerPageView.set( 'selectedColor', data );
-		} );
-
-		this.on( 'change:originalColor', ( evt, evtName, data ) => {
-			this.colorPickerPageView.set( 'originalColor', data );
 		} );
 
 		this.colorGridsPageView.on( 'change:selectedColor', ( evt, evtName, data ) => {
@@ -276,6 +265,23 @@ export default class ColorTableView extends View {
 	 */
 	public focusLast(): void {
 		this._focusCycler.focusLast();
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param model
+	 * @param attributeName
+	 */
+	public updateDocumentColors( model: Model, attributeName: string ): void {
+		this.colorGridsPageView.updateDocumentColors( model, attributeName );
+	}
+
+	/**
+	 * TODO
+	 */
+	public updateSelectedColors(): void {
+		this.colorGridsPageView.updateSelectedColors();
 	}
 
 	/**
@@ -791,11 +797,6 @@ class ColorPickerPageView extends View {
 	declare public selectedColor?: string;
 
 	/**
-	 * Keeps the original color value from current selection which is assign while dropdown is opening.
-	 */
-	declare public originalColor?: string;
-
-	/**
 	  * A collection of views that can be focused in the view.
 	  *
 	  * @readonly
@@ -978,7 +979,6 @@ class ColorPickerPageView extends View {
 		} );
 
 		cancelButtonView.on( 'execute', () => {
-			this.selectedColor = this.originalColor;
 			this.fire<ColorTableCancelEvent>( 'cancel' );
 		} );
 
