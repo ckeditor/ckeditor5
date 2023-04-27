@@ -16,7 +16,10 @@ import {
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils';
-import type ColorTableView from './colortableview';
+import {
+	type default as ColorTableView,
+	type ColorTableExecuteEvent
+} from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
 import type { FontColorConfig } from '../fontconfig';
@@ -138,9 +141,12 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			dropdownView.on( 'execute', ( evt, data ) => {
+			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 				editor.execute( this.commandName, data );
-				editor.editing.view.focus();
+
+				if ( data.source !== 'colorPicker' ) {
+					editor.editing.view.focus();
+				}
 			} );
 
 			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
@@ -154,10 +160,6 @@ export default class ColorUI extends Plugin {
 
 					if ( hasColorPicker ) {
 						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
-
-						// TODO: Why not dropdownView.on( 'execute', ( evt, data ) => {} ?
-						dropdownView.colorTableView!.colorPickerPageView.colorPickerView!.on( 'change:color',
-							( evt, evtName, newValue ) => editor.execute( this.commandName, { value: newValue } ) );
 					}
 				}
 

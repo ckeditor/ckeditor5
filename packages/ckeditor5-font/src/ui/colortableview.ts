@@ -265,7 +265,6 @@ export default class ColorTableView extends View {
 	 */
 	public showColorGrids(): void {
 		this.set( 'isColorGridsPageVisible', true );
-		this.colorGridsPageView.focus();
 		this.set( 'isColorPickerPageVisible', false );
 	}
 
@@ -606,7 +605,10 @@ class ColorGridsPageView extends View {
 
 		buttonView.class = 'ck-color-table__remove-color';
 		buttonView.on( 'execute', () => {
-			this.fire( 'execute', { value: null } );
+			this.fire( 'execute', {
+				value: null,
+				source: 'removeColorButton'
+			} );
 		} );
 
 		buttonView.render();
@@ -623,7 +625,12 @@ class ColorGridsPageView extends View {
 			columns: this.columns
 		} );
 
-		colorGrid.delegate( 'execute' ).to( this );
+		colorGrid.on( 'execute', ( evt, data ) => {
+			this.fire<ColorTableExecuteEvent>( 'execute', {
+				value: data.value,
+				source: 'staticColorsGrid'
+			} );
+		} );
 
 		return colorGrid;
 	}
@@ -637,7 +644,7 @@ class ColorGridsPageView extends View {
 			columns: this.columns
 		} );
 
-		documentColorsGrid.delegate( 'execute' ).to( this );
+		// documentColorsGrid.delegate( 'execute' ).to( this );
 
 		documentColorsGrid.extendTemplate( {
 			attributes: {
@@ -662,8 +669,9 @@ class ColorGridsPageView extends View {
 				}
 
 				colorTile.on( 'execute', () => {
-					this.fire( 'execute', {
-						value: colorObj.color
+					this.fire<ColorTableExecuteEvent>( 'execute', {
+						value: colorObj.color,
+						source: 'documentColorsGrid'
 					} );
 				} );
 
@@ -845,6 +853,7 @@ class ColorPickerPageView extends View {
 
 		this._addColorPickersElementsToFocusTracker();
 		this._stopPropagationOnArrowsKeys();
+		this._executeUponColorChange();
 	}
 
 	/**
@@ -944,15 +953,17 @@ class ColorPickerPageView extends View {
 		} );
 
 		saveButtonView.on( 'execute', () => {
-			this.fire( 'execute', {
-				value: this.selectedColor
+			this.fire<ColorTableExecuteEvent>( 'execute', {
+				source: 'saveButton',
+				value: this.selectedColor!
 			} );
 		} );
 
 		cancelButtonView.on( 'execute', () => {
 			this.selectedColor = this.originalColor;
-			this.fire( 'execute', {
-				value: this.originalColor
+			this.fire<ColorTableExecuteEvent>( 'execute', {
+				source: 'cancelButton',
+				value: this.originalColor!
 			} );
 		} );
 
@@ -960,4 +971,29 @@ class ColorPickerPageView extends View {
 			saveButtonView, cancelButtonView
 		};
 	}
+
+	/**
+	 * TODO
+	 */
+	private _executeUponColorChange() {
+		this.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+			this.fire<ColorTableExecuteEvent>( 'execute', {
+				value: newValue,
+				source: 'colorPicker'
+			} );
+		} );
+	}
 }
+
+/**
+ * TODO
+ *
+ * @eventName ~ColorTableView#execute
+ */
+export type ColorTableExecuteEvent = {
+	name: 'execute';
+	args: [ {
+		value: string;
+		source: 'staticColorsGrid' | 'documentColorsGrid' | 'removeColorButton' | 'colorPicker' | 'saveButton' | 'cancelButton';
+	} ];
+};
