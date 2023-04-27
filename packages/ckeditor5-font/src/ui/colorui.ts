@@ -164,11 +164,9 @@ export default class ColorUI extends Plugin {
 				if ( !dropdownContentRendered ) {
 					dropdownContentRendered = true;
 
-					dropdownView.colorTableView!.appendGrids();
-
-					if ( hasColorPicker ) {
-						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
-					}
+					dropdownView.colorTableView!.appendUI( {
+						colorPicker: hasColorPicker ? ( componentConfig.colorPicker || true ) : false
+					} );
 				}
 
 				if ( isVisible ) {

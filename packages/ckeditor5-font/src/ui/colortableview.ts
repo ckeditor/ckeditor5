@@ -227,25 +227,20 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Appends {@link #colorPickerView} view.
+	 * TODO
+	 *
+	 * @param param0
 	 */
-	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
-		if ( this.items.length === 2 ) {
-			return;
+	public appendUI( { colorPicker }: { colorPicker: boolean | ColorPickerConfig } ): void {
+		this.appendGrids();
+
+		if ( colorPicker ) {
+			if ( colorPicker === true ) {
+				colorPicker = {};
+			}
+
+			this._appendColorPicker( colorPicker );
 		}
-
-		this.colorPickerPageView.pickerConfig = pickerConfig;
-		this.items.add( this.colorPickerPageView );
-
-		if ( this.colorGridsPageView.colorPickerButtonView ) {
-			this.colorGridsPageView.colorPickerButtonView.on( 'execute', () => {
-				this.showColorPicker();
-			} );
-		}
-
-		this.colorGridsPageView.addColorPickerButton();
-		this.colorPickerPageView.delegate( 'execute' ).to( this );
-		this.colorPickerPageView.delegate( 'cancel' ).to( this );
 	}
 
 	/**
@@ -281,6 +276,28 @@ export default class ColorTableView extends View {
 	 */
 	public focusLast(): void {
 		this._focusCycler.focusLast();
+	}
+
+	/**
+	 * Appends {@link #colorPickerView} view.
+	 */
+	private _appendColorPicker( pickerConfig: ColorPickerConfig ): void {
+		if ( this.items.length === 2 ) {
+			return;
+		}
+
+		this.colorPickerPageView.pickerConfig = pickerConfig;
+		this.items.add( this.colorPickerPageView );
+
+		if ( this.colorGridsPageView.colorPickerButtonView ) {
+			this.colorGridsPageView.colorPickerButtonView.on( 'execute', () => {
+				this.showColorPicker();
+			} );
+		}
+
+		this.colorGridsPageView.addColorPickerButton();
+		this.colorPickerPageView.delegate( 'execute' ).to( this );
+		this.colorPickerPageView.delegate( 'cancel' ).to( this );
 	}
 }
 
