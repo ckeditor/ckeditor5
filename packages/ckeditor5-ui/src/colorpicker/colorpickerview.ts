@@ -158,14 +158,10 @@ export default class ColorPickerView extends View {
 	 * @private
 	 */
 	private _createInputRow(): ColorPickerInputRowView {
-		const row = new ColorPickerInputRowView( this.locale! );
 		const hashView = new HashView();
 		const colorInput = this._createColorInput();
 
-		row.children.add( hashView );
-		row.children.add( colorInput );
-
-		return row;
+		return new ColorPickerInputRowView( this.locale!, [ hashView, colorInput ] );
 	}
 
 	/**
@@ -293,10 +289,10 @@ class ColorPickerInputRowView extends View {
 	 *
 	 * @param locale The locale instance.
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, children?: Array<View> ) {
 		super( locale );
 
-		this.children = this.createCollection();
+		this.children = this.createCollection( children );
 
 		this.setTemplate( {
 			tag: 'div',
