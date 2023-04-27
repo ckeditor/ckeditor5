@@ -150,6 +150,8 @@ describe( 'table properties', () => {
 							expect(	labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
 							expect(	labeledDropdown.fieldView.buttonView.withText ).to.be.true;
 							expect(	labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Style' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Style' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
 						} );
 
 						it( 'should bind button\'s label to #borderStyle property', () => {
@@ -196,6 +198,15 @@ describe( 'table properties', () => {
 
 							expect( view.borderColor ).to.equal( '' );
 							expect( view.borderWidth ).to.equal( '' );
+						} );
+
+						it( 'listView should have properties set', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							const listView = labeledDropdown.fieldView.listView;
+
+							expect( listView.element.role ).to.equal( 'menu' );
+							expect( listView.element.ariaLabel ).to.equal( 'Style' );
 						} );
 					} );
 

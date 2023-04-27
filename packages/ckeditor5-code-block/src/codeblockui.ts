@@ -45,9 +45,10 @@ export default class CodeBlockUI extends Plugin {
 			const command: CodeBlockCommand = editor.commands.get( 'codeBlock' )!;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
+			const accessibleLabel = t( 'Insert code block' );
 
 			splitButtonView.set( {
-				label: t( 'Insert code block' ),
+				label: accessibleLabel,
 				tooltip: true,
 				icon: codeBlockIcon,
 				isToggleable: true
@@ -75,7 +76,10 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
+			addListToDropdown( dropdownView, () => this._getLanguageListItemDefinitions( normalizedLanguageDefs ), {
+				role: 'menu',
+				ariaLabel: accessibleLabel
+			} );
 
 			return dropdownView;
 		} );
@@ -98,6 +102,7 @@ export default class CodeBlockUI extends Plugin {
 				model: new Model( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
+					role: 'menuitemradio',
 					withText: true
 				} )
 			};

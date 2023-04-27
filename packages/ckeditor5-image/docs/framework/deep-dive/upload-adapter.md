@@ -220,7 +220,7 @@ Let's see what the `_initRequest()` method looks like in your custom upload adap
 <info-box>
 	Note that for the sake of keeping the code simple, in this example implementation no particular security mechanism is used that would prevent your application and services from being abused.
 
-	We **strongly recommend** using both authentication and [<abbr title="Cross-site request forgery">CSRF</abbr> protection](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) mechanisms (i.e. CSRF tokens) in your application. For instance, they can be implemented as [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) headers.
+	We **strongly recommend** using both authentication and [<abbr title="Cross-site request forgery">CSRF</abbr> protection](https://owasp.org/www-community/attacks/csrf) mechanisms (i.e. CSRF tokens) in your application. For instance, they can be implemented as [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) headers.
 </info-box>
 
 ```js

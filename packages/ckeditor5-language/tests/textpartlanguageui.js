@@ -54,6 +54,8 @@ describe( 'TextPartLanguageUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
+			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Language' );
+			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
 			expect( dropdown.listView ).to.be.undefined;
 		} );
 
@@ -110,6 +112,18 @@ describe( 'TextPartLanguageUI', () => {
 			dropdown.render();
 
 			expect( dropdown.element.classList.contains( 'ck-text-fragment-language-dropdown' ) ).to.be.true;
+		} );
+
+		describe( 'listview', () => {
+			it( 'should have properties set', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
+				const listView = dropdown.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Language' );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {

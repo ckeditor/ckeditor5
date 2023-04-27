@@ -124,6 +124,7 @@ export function getBorderStyleDefinitions(
 			model: new Model( {
 				_borderStyleValue: style,
 				label: styleLabels[ style ],
+				role: 'menuitemradio',
 				withText: true
 			} )
 		};
