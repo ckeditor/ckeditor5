@@ -10,7 +10,7 @@
 import ColorTableView from './ui/colortableview';
 
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
+import type { ColorDefinition, ColorPickerConfig, DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type {
 	ViewAttributeElement,
@@ -110,7 +110,7 @@ export function renderDowncastElement( styleAttr: string ) {
  * @returns The new color table view.
  */
 export function addColorTableToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, colorPickerLabel, documentColorsLabel, documentColorsCount }: {
+	{ dropdownView, colors, columns, removeButtonLabel, colorPickerLabel, documentColorsLabel, documentColorsCount, colorPickerConfig }: {
 		dropdownView: ColorTableDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
@@ -118,6 +118,7 @@ export function addColorTableToDropdown(
 		colorPickerLabel: string;
 		documentColorsLabel?: string;
 		documentColorsCount?: number;
+		colorPickerConfig: ColorPickerConfig | false;
 	}
 ): ColorTableView {
 	const locale = dropdownView.locale!;
@@ -127,7 +128,8 @@ export function addColorTableToDropdown(
 		removeButtonLabel,
 		colorPickerLabel,
 		documentColorsLabel,
-		documentColorsCount
+		documentColorsCount,
+		colorPickerConfig
 	} );
 
 	dropdownView.colorTableView = colorTableView;

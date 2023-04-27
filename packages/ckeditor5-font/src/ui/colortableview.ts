@@ -98,6 +98,11 @@ export default class ColorTableView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
+	 * TODO
+	 */
+	private _colorPickerConfig: ColorPickerConfig | false;
+
+	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
@@ -107,16 +112,18 @@ export default class ColorTableView extends View {
 	 * @param colorPickerLabel The label of the button responsible for color picker appearing.
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
+	 * @param colorPickerConfig TODO
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel }: {
+		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel, colorPickerConfig }: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			colorPickerLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
+			colorPickerConfig: ColorPickerConfig | false;
 		}
 	) {
 		super( locale );
@@ -126,7 +133,7 @@ export default class ColorTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		this._focusables = new ViewCollection();
-
+		this._colorPickerConfig = colorPickerConfig;
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -142,13 +149,15 @@ export default class ColorTableView extends View {
 
 		this.colorGridsPageView = new ColorGridsPageView( locale, {
 			colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel,
-			focusTracker: this.focusTracker, focusables: this._focusables
+			focusTracker: this.focusTracker,
+			focusables: this._focusables
 		} );
 
 		this.colorPickerPageView = new ColorPickerPageView( locale, {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
-			keystrokes: this.keystrokes
+			keystrokes: this.keystrokes,
+			colorPickerConfig
 		} );
 
 		this.set( '_isColorGridsPageVisible', true );
@@ -224,15 +233,11 @@ export default class ColorTableView extends View {
 	 *
 	 * @param param0
 	 */
-	public appendUI( { colorPicker }: { colorPicker: boolean | ColorPickerConfig } ): void {
+	public appendUI(): void {
 		this.appendGrids();
 
-		if ( colorPicker ) {
-			if ( colorPicker === true ) {
-				colorPicker = {};
-			}
-
-			this._appendColorPicker( colorPicker );
+		if ( this._colorPickerConfig ) {
+			this._appendColorPicker();
 		}
 	}
 
@@ -291,12 +296,11 @@ export default class ColorTableView extends View {
 	/**
 	 * Appends the color picker view.
 	 */
-	private _appendColorPicker( pickerConfig: ColorPickerConfig ): void {
+	private _appendColorPicker(): void {
 		if ( this.items.length === 2 ) {
 			return;
 		}
 
-		this.colorPickerPageView.pickerConfig = pickerConfig;
 		this.items.add( this.colorPickerPageView );
 
 		if ( this.colorGridsPageView.colorPickerButtonView ) {
@@ -330,19 +334,9 @@ class ColorGridsPageView extends View {
 	public colorDefinitions: Array<ColorDefinition>;
 
 	/**
-	 * The label of the button responsible for removing color attributes.
-	 */
-	public removeButtonLabel: string;
-
-	/**
 	 * Tracks information about the DOM focus in the list.
 	 */
 	public readonly focusTracker: FocusTracker;
-
-	/**
-	 * The label of the button responsible for removing color attributes.
-	 */
-	public colorPickerLabel: string;
 
 	/**
 	 * The number of columns in the color grid.
@@ -419,6 +413,16 @@ class ColorGridsPageView extends View {
 	private _documentColorsLabel?: string;
 
 	/**
+	 * The label of the button responsible for removing color attributes.
+	 */
+	private _removeButtonLabel: string;
+
+	/**
+	 * The label of the button responsible for removing color attributes.
+	 */
+	public _colorPickerLabel: string;
+
+	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
@@ -433,7 +437,10 @@ class ColorGridsPageView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel, focusTracker, focusables }: {
+		{
+			colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount,
+			colorPickerLabel, focusTracker, focusables
+		}: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
@@ -454,8 +461,8 @@ class ColorGridsPageView extends View {
 		this._focusables = focusables;
 		this.items = this.createCollection();
 		this.colorDefinitions = colors;
-		this.removeButtonLabel = removeButtonLabel;
-		this.colorPickerLabel = colorPickerLabel;
+		this._removeButtonLabel = removeButtonLabel;
+		this._colorPickerLabel = colorPickerLabel;
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
@@ -612,7 +619,7 @@ class ColorGridsPageView extends View {
 		this.colorPickerButtonView = new ButtonView();
 
 		this.colorPickerButtonView.set( {
-			label: this.colorPickerLabel,
+			label: this._colorPickerLabel,
 			withText: true,
 			icon: ColorPaletteIcon,
 			class: 'ck-color-table__color-picker'
@@ -628,7 +635,7 @@ class ColorGridsPageView extends View {
 		buttonView.set( {
 			withText: true,
 			icon: icons.eraser,
-			label: this.removeButtonLabel
+			label: this._removeButtonLabel
 		} );
 
 		buttonView.class = 'ck-color-table__remove-color';
@@ -786,11 +793,6 @@ class ColorPickerPageView extends View {
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * Color picker's config.
-	 */
-	declare public pickerConfig: ColorPickerConfig;
-
-	/**
 	 * The property which is responsible for is component visible or not.
 	 */
 	declare public isVisible: boolean;
@@ -808,22 +810,30 @@ class ColorPickerPageView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
+	 * Color picker's config.
+	 */
+	private _pickerConfig: ColorPickerConfig | false;
+
+	/**
 	 * @param locale The localization services instance.
 	 * @param focusTracker Tracks information about the DOM focus in the list.
 	 * @param focusables A collection of views that can be focused in the view..
 	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}..
+	 * @param config TODO
 	 */
 	constructor(
 		locale: Locale,
 		{
 			focusTracker,
 			focusables,
-			keystrokes
+			keystrokes,
+			colorPickerConfig
 		}:
 		{
 			focusTracker: FocusTracker;
 			focusables: ViewCollection;
 			keystrokes: KeystrokeHandler;
+			colorPickerConfig: ColorPickerConfig | false;
 		}
 	) {
 		super( locale );
@@ -831,6 +841,7 @@ class ColorPickerPageView extends View {
 		this.items = this.createCollection();
 		this.focusTracker = focusTracker;
 		this._focusables = focusables;
+		this._pickerConfig = colorPickerConfig;
 		this.keystrokes = keystrokes;
 
 		const bind = this.bindTemplate;
@@ -862,7 +873,7 @@ class ColorPickerPageView extends View {
 	public override render(): void {
 		super.render();
 
-		const colorPickerView = new ColorPickerView( this.locale, this.pickerConfig );
+		const colorPickerView = new ColorPickerView( this.locale, this._pickerConfig as ColorPickerConfig );
 
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
