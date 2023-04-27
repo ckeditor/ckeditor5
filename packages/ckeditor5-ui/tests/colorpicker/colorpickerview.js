@@ -62,6 +62,54 @@ describe( 'ColorPickerView', () => {
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
 
+		it( 'should trim whitespace from the beginning of the string', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace from the end of the string', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '000000   ';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace from both the beginning and the end of the string', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000   ';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace before the hash if it was passed', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   #000000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
 		describe( 'should update color property', () => {
 			describe( 'when hex color was passed', () => {
 				describe( 'in 3-character format', () => {
