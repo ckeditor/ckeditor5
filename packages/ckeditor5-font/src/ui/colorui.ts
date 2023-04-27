@@ -18,7 +18,8 @@ import {
 } from '../utils';
 import {
 	type default as ColorTableView,
-	type ColorTableExecuteEvent
+	type ColorTableExecuteEvent,
+	type ColorTableCancelEvent
 } from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
@@ -153,7 +154,7 @@ export default class ColorUI extends Plugin {
 				}
 			} );
 
-			this.colorTableView.on( 'cancel', () => {
+			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
 				editor.execute( this.commandName, {
 					value: colorSavedUponDropdownOpen
 				} );
