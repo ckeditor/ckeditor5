@@ -64,6 +64,12 @@ export default class ColorPickerView extends View {
 
 	declare private _format: ColorPickerOutputFormat;
 
+	/**
+	 * TODO
+	 *
+	 * @param locale
+	 * @param config
+	 */
 	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
 		super( locale );
 
@@ -115,7 +121,9 @@ export default class ColorPickerView extends View {
 		} );
 	}
 
-	// Renders color picker in the view.
+	/**
+	 * Renders color picker in the view.
+	 */
 	public override render(): void {
 		super.render();
 
@@ -142,12 +150,18 @@ export default class ColorPickerView extends View {
 		}, { priority: 'high' } );
 	}
 
+	/**
+	 * TODO
+	 */
 	public focus(): void {
 		const firstSlider = this.slidersView.first!;
 
 		firstSlider.focus();
 	}
 
+	/**
+	 * TODO
+	 */
 	private _createSlidersView(): void {
 		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
 		const sliders = colorPickersChildren.filter( item => item.role === 'slider' );
@@ -201,11 +215,19 @@ export default class ColorPickerView extends View {
  * View abstraction over pointer in color picker.
  */
 class SliderView extends View {
+	/**
+	 * TODO
+	 *
+	 * @param element TODO
+	 */
 	constructor( element: HTMLElement ) {
 		super();
 		this.element = element;
 	}
 
+	/**
+	 * TODO
+	 */
 	public focus(): void {
 		this.element!.focus();
 	}

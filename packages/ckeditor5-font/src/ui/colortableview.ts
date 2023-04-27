@@ -458,15 +458,15 @@ class ColorGridsPageView extends View {
 		this.set( 'isVisible', true );
 
 		this.focusTracker = focusTracker;
-		this._focusables = focusables;
 		this.items = this.createCollection();
 		this.colorDefinitions = colors;
-		this._removeButtonLabel = removeButtonLabel;
-		this._colorPickerLabel = colorPickerLabel;
 		this.columns = columns;
 		this.documentColors = new DocumentColorCollection();
 		this.documentColorsCount = documentColorsCount;
 
+		this._focusables = focusables;
+		this._removeButtonLabel = removeButtonLabel;
+		this._colorPickerLabel = colorPickerLabel;
 		this._documentColorsLabel = documentColorsLabel;
 
 		this.setTemplate( {
@@ -679,8 +679,6 @@ class ColorGridsPageView extends View {
 			columns: this.columns
 		} );
 
-		// documentColorsGrid.delegate( 'execute' ).to( this );
-
 		documentColorsGrid.extendTemplate( {
 			attributes: {
 				class: bind.if( 'isEmpty', 'ck-hidden' )
@@ -840,19 +838,19 @@ class ColorPickerPageView extends View {
 
 		this.items = this.createCollection();
 		this.focusTracker = focusTracker;
-		this._focusables = focusables;
-		this._pickerConfig = colorPickerConfig;
 		this.keystrokes = keystrokes;
-
-		const bind = this.bindTemplate;
 
 		this.set( 'isVisible', false );
 		this.set( 'selectedColor', undefined );
 
+		this._focusables = focusables;
+		this._pickerConfig = colorPickerConfig;
+
+		const bind = this.bindTemplate;
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
+
 		this.saveButtonView = saveButtonView;
 		this.cancelButtonView = cancelButtonView;
-
 		this.actionBarView = this._createActionBarView( { saveButtonView, cancelButtonView } );
 
 		this.setTemplate( {
