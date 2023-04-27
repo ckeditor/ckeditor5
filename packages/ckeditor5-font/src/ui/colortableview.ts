@@ -205,7 +205,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
+	 * Appends static and document color grid views.
 	 */
 	public appendGrids(): void {
 		if ( this.items.length ) {
@@ -285,7 +285,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Appends {@link #colorPickerView} view.
+	 * Appends the color picker view.
 	 */
 	private _appendColorPicker( pickerConfig: ColorPickerConfig ): void {
 		if ( this.items.length === 2 ) {
