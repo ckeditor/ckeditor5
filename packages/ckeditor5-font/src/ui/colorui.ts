@@ -108,6 +108,9 @@ export default class ColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
+			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
+			let dropdownContentRendered = false;
+			let colorSavedUponDropdownOpen: string;
 
 			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
@@ -149,8 +152,13 @@ export default class ColorUI extends Plugin {
 				}
 			} );
 
-			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
-			let dropdownContentRendered = false;
+			this.colorTableView.on( 'cancel', () => {
+				editor.execute( this.commandName, {
+					value: colorSavedUponDropdownOpen
+				} );
+
+				editor.editing.view.focus();
+			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				if ( !dropdownContentRendered ) {
@@ -165,8 +173,7 @@ export default class ColorUI extends Plugin {
 
 				if ( isVisible ) {
 					if ( hasColorPicker ) {
-						// Why is this a state of the ColorTableView? Seems a controller logic.
-						dropdownView.colorTableView!.originalColor = dropdownView.colorTableView!.selectedColor;
+						colorSavedUponDropdownOpen = dropdownView.colorTableView!.selectedColor!;
 					}
 
 					if ( documentColorsCount !== 0 ) {

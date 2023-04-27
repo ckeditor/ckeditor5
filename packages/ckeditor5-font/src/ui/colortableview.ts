@@ -245,6 +245,7 @@ export default class ColorTableView extends View {
 
 		this.colorGridsPageView.addColorPickerButton();
 		this.colorPickerPageView.delegate( 'execute' ).to( this );
+		this.colorPickerPageView.delegate( 'cancel' ).to( this );
 	}
 
 	/**
@@ -961,10 +962,7 @@ class ColorPickerPageView extends View {
 
 		cancelButtonView.on( 'execute', () => {
 			this.selectedColor = this.originalColor;
-			this.fire<ColorTableExecuteEvent>( 'execute', {
-				source: 'cancelButton',
-				value: this.originalColor!
-			} );
+			this.fire<ColorTableCancelEvent>( 'cancel' );
 		} );
 
 		return {
@@ -994,6 +992,16 @@ export type ColorTableExecuteEvent = {
 	name: 'execute';
 	args: [ {
 		value: string;
-		source: 'staticColorsGrid' | 'documentColorsGrid' | 'removeColorButton' | 'colorPicker' | 'saveButton' | 'cancelButton';
+		source: 'staticColorsGrid' | 'documentColorsGrid' | 'removeColorButton' | 'colorPicker' | 'saveButton';
 	} ];
+};
+
+/**
+ * TODO
+ *
+ * @eventName ~ColorTableView#cancel
+ */
+export type ColorTableCancelEvent = {
+	name: 'cancel';
+	args: [];
 };
