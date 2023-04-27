@@ -65,74 +65,66 @@ describe( 'ColorPickerView', () => {
 		describe( 'should update color property', () => {
 			describe( 'when hex color was passed', () => {
 				describe( 'in 3-character format', () => {
-					it( 'with `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: '#abc',
-							expectedInput: '#abc',
-							expectedColorProperty: '#abc'
-						} );
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abc',
+						expectedInput: '#abc',
+						expectedColorProperty: '#abc'
 					} );
 
-					it( 'without `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'abc',
-							expectedInput: 'abc',
-							expectedColorProperty: '#abc'
-						} );
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abc',
+						expectedInput: 'abc',
+						expectedColorProperty: '#abc'
 					} );
 				} );
 
 				describe( 'in 4-character format', () => {
-					it( 'with `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: '#abcd',
-							expectedInput: '#abcd',
-							expectedColorProperty: '#abcd'
-						} );
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcd',
+						expectedInput: '#abcd',
+						expectedColorProperty: '#abcd'
 					} );
 
-					it( 'without `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'abcd',
-							expectedInput: 'abcd',
-							expectedColorProperty: '#abcd'
-						} );
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcd',
+						expectedInput: 'abcd',
+						expectedColorProperty: '#abcd'
 					} );
 				} );
 
 				describe( 'in 6-character format', () => {
-					it( 'with `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: '#abcdef',
-							expectedInput: '#abcdef',
-							expectedColorProperty: '#abcdef'
-						} );
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcdef',
+						expectedInput: '#abcdef',
+						expectedColorProperty: '#abcdef'
 					} );
 
-					it( 'without `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'abcdef',
-							expectedInput: 'abcdef',
-							expectedColorProperty: '#abcdef'
-						} );
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcdef',
+						expectedInput: 'abcdef',
+						expectedColorProperty: '#abcdef'
 					} );
 				} );
 
 				describe( 'in 8-character format', () => {
-					it( 'with `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: '#abcdefab',
-							expectedInput: '#abcdefab',
-							expectedColorProperty: '#abcdefab'
-						} );
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcdefab',
+						expectedInput: '#abcdefab',
+						expectedColorProperty: '#abcdefab'
 					} );
 
-					it( 'without `#` at the beginning', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'abcdefab',
-							expectedInput: 'abcdefab',
-							expectedColorProperty: '#abcdefab'
-						} );
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcdefab',
+						expectedInput: 'abcdefab',
+						expectedColorProperty: '#abcdefab'
 					} );
 				} );
 			} );
@@ -155,70 +147,62 @@ describe( 'ColorPickerView', () => {
 
 			describe( 'when set incorrect color', () => {
 				describe( 'wrong input length', () => {
-					it( '1 character', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'f',
-							expectedInput: 'f',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: '1 character',
+						inputValue: 'f',
+						expectedInput: 'f',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( '2 characters', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'ff',
-							expectedInput: 'ff',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: '2 characters',
+						inputValue: 'ff',
+						expectedInput: 'ff',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( '5 characters', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'ffaaa',
-							expectedInput: 'ffaaa',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: '5 characters',
+						inputValue: 'ffaaa',
+						expectedInput: 'ffaaa',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( '7 characters', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'ffaaaaa',
-							expectedInput: 'ffaaaaa',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: '7 characters',
+						inputValue: 'ffaaaaa',
+						expectedInput: 'ffaaaaa',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( 'more than 8 characters', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'ffaaffaaff',
-							expectedInput: 'ffaaffaaff',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: 'more than 8 characters',
+						inputValue: 'ffaaffaaff',
+						expectedInput: 'ffaaffaaff',
+						expectedColorProperty: '#000000'
 					} );
 				} );
 
 				describe( 'wrong color format', () => {
-					it( 'rgb', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'rgb( 100, 100, 100 )',
-							expectedInput: 'rgb( 100, 100, 100 )',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: 'rgb',
+						inputValue: 'rgb( 100, 100, 100 )',
+						expectedInput: 'rgb( 100, 100, 100 )',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( 'hsl', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'hsl( 30, 75%, 60 % )',
-							expectedInput: 'hsl( 30, 75%, 60 % )',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: 'hsl',
+						inputValue: 'hsl( 30, 75%, 60 % )',
+						expectedInput: 'hsl( 30, 75%, 60 % )',
+						expectedColorProperty: '#000000'
 					} );
 
-					it( 'color name', () => {
-						testColorUpdateFromInput( {
-							inputValue: 'red',
-							expectedInput: 'red',
-							expectedColorProperty: '#000000'
-						} );
+					testColorUpdateFromInput( {
+						name: 'color name',
+						inputValue: 'red',
+						expectedInput: 'red',
+						expectedColorProperty: '#000000'
 					} );
 				} );
 			} );
@@ -418,16 +402,18 @@ describe( 'ColorPickerView', () => {
 	} );
 
 	function testColorUpdateFromInput( options ) {
-		const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
-		view.color = '#000000';
+		it( options.name, () => {
+			const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
+			view.color = '#000000';
 
-		fieldView.isFocused = true;
-		fieldView.value = options.inputValue;
-		fieldView.fire( 'input' );
+			fieldView.isFocused = true;
+			fieldView.value = options.inputValue;
+			fieldView.fire( 'input' );
 
-		clock.tick( 200 );
+			clock.tick( 200 );
 
-		expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
-		expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
+			expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
+			expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
+		} );
 	}
 } );
