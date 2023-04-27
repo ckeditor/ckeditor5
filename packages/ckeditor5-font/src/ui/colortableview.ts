@@ -71,13 +71,17 @@ export default class ColorTableView extends View {
 
 	/**
 	 * State of the "Color table" component visibility.
+	 *
+	 * @internal
 	 */
-	declare public isColorGridsPageVisible: boolean;
+	declare public _isColorGridsPageVisible: boolean;
 
 	/**
 	 * State of the "Color picker" component visibility.
+	 *
+	 * @internal
 	 */
-	declare public isColorPickerPageVisible: boolean;
+	declare public _isColorPickerPageVisible: boolean;
 
 	/**
 	 * Helps cycling over focusable {@link #items} in the list.
@@ -147,13 +151,13 @@ export default class ColorTableView extends View {
 			keystrokes: this.keystrokes
 		} );
 
-		this.set( 'isColorGridsPageVisible', true );
-		this.set( 'isColorPickerPageVisible', false );
+		this.set( '_isColorGridsPageVisible', true );
+		this.set( '_isColorPickerPageVisible', false );
 
 		this.set( 'selectedColor', undefined );
 
-		this.colorGridsPageView.bind( 'isVisible' ).to( this, 'isColorGridsPageVisible' );
-		this.colorPickerPageView.bind( 'isVisible' ).to( this, 'isColorPickerPageVisible' );
+		this.colorGridsPageView.bind( 'isVisible' ).to( this, '_isColorGridsPageVisible' );
+		this.colorPickerPageView.bind( 'isVisible' ).to( this, '_isColorPickerPageVisible' );
 
 		/**
 		 * This is kind of bindings. Unfortunately we could not use this.bind() method because the same property
@@ -240,17 +244,17 @@ export default class ColorTableView extends View {
 			return;
 		}
 
-		this.set( 'isColorPickerPageVisible', true );
+		this.set( '_isColorPickerPageVisible', true );
 		this.colorPickerPageView.focus();
-		this.set( 'isColorGridsPageVisible', false );
+		this.set( '_isColorGridsPageVisible', false );
 	}
 
 	/**
 	 * Show "Color table" and hide "Color picker".
 	 */
 	public showColorGrids(): void {
-		this.set( 'isColorGridsPageVisible', true );
-		this.set( 'isColorPickerPageVisible', false );
+		this.set( '_isColorGridsPageVisible', true );
+		this.set( '_isColorPickerPageVisible', false );
 	}
 
 	/**
