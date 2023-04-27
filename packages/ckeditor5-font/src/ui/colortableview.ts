@@ -52,6 +52,19 @@ export default class ColorTableView extends View {
 	public readonly items: ViewCollection;
 
 	/**
+	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
+	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
+	 * button.
+	 */
+	public colorGridsPageView: ColorGridsPageView;
+
+	/**
+	 * The "Color picker" component. Contains color picker itself with input and action buttons as
+	 * "save" and "cancel" buttons.
+	 */
+	public colorPickerPageView: ColorPickerPageView;
+
+	/**
 	 * Keeps the value of the command associated with the table for the current selection.
 	 */
 	declare public selectedColor?: string;
@@ -62,27 +75,14 @@ export default class ColorTableView extends View {
 	declare public originalColor?: string;
 
 	/**
-	 * The "Color picker" component. Contains color picker itself with input and action buttons as
-	 * "save" and "cancel" buttons.
-	 */
-	public colorPickerComponent: ColorPickerComponentView;
-
-	/**
-	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
-	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
-	 * button.
-	 */
-	public colorTableComponent: ColorGridComponentView;
-
-	/**
 	 * State of the "Color table" component visibility.
 	 */
-	declare public isColorTableVisible: boolean;
+	declare public isColorGridsPageVisible: boolean;
 
 	/**
 	 * State of the "Color picker" component visibility.
 	 */
-	declare public isColorPickerVisible: boolean;
+	declare public isColorPickerPageVisible: boolean;
 
 	/**
 	 * Helps cycling over focusable {@link #items} in the list.
@@ -141,28 +141,25 @@ export default class ColorTableView extends View {
 			}
 		} );
 
-		const colorGridComponentView = new ColorGridComponentView( locale, {
+		this.colorGridsPageView = new ColorGridsPageView( locale, {
 			colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel,
 			focusTracker: this.focusTracker, focusables: this._focusables
 		} );
 
-		const colorPickerComponentView = new ColorPickerComponentView( locale, {
+		this.colorPickerPageView = new ColorPickerPageView( locale, {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokes: this.keystrokes
 		} );
 
-		this.colorTableComponent = colorGridComponentView;
-		this.colorPickerComponent = colorPickerComponentView;
-
-		this.set( 'isColorTableVisible', true );
-		this.set( 'isColorPickerVisible', false );
+		this.set( 'isColorGridsPageVisible', true );
+		this.set( 'isColorPickerPageVisible', false );
 
 		this.set( 'selectedColor', undefined );
 		this.set( 'originalColor', undefined );
 
-		this.colorTableComponent.bind( 'isVisible' ).to( this, 'isColorTableVisible' );
-		this.colorPickerComponent.bind( 'isVisible' ).to( this, 'isColorPickerVisible' );
+		this.colorGridsPageView.bind( 'isVisible' ).to( this, 'isColorGridsPageVisible' );
+		this.colorPickerPageView.bind( 'isVisible' ).to( this, 'isColorPickerPageVisible' );
 
 		/**
 		 * This is kind of bindings. Unfortunately we could not use this.bind() method because the same property
@@ -170,19 +167,19 @@ export default class ColorTableView extends View {
 		 * properties between components.
 		 */
 		this.on( 'change:selectedColor', ( evt, evtName, data ) => {
-			this.colorTableComponent.set( 'selectedColor', data );
-			this.colorPickerComponent.set( 'selectedColor', data );
+			this.colorGridsPageView.set( 'selectedColor', data );
+			this.colorPickerPageView.set( 'selectedColor', data );
 		} );
 
 		this.on( 'change:originalColor', ( evt, evtName, data ) => {
-			this.colorPickerComponent.set( 'originalColor', data );
+			this.colorPickerPageView.set( 'originalColor', data );
 		} );
 
-		this.colorTableComponent.on( 'change:selectedColor', ( evt, evtName, data ) => {
+		this.colorGridsPageView.on( 'change:selectedColor', ( evt, evtName, data ) => {
 			this.set( 'selectedColor', data );
 		} );
 
-		this.colorPickerComponent.on( 'change:selectedColor', ( evt, evtName, data ) => {
+		this.colorPickerPageView.on( 'change:selectedColor', ( evt, evtName, data ) => {
 			this.set( 'selectedColor', data );
 		} );
 
@@ -225,51 +222,51 @@ export default class ColorTableView extends View {
 		if ( this.items.length ) {
 			return;
 		}
-		this.items.add( this.colorTableComponent );
-		this.colorTableComponent.delegate( 'execute' ).to( this );
+		this.items.add( this.colorGridsPageView );
+		this.colorGridsPageView.delegate( 'execute' ).to( this );
 	}
 
 	/**
 	 * Appends {@link #colorPickerView} view.
 	 */
-	public appendColorPicker( isColorPicker: ColorPickerConfig ): void {
+	public appendColorPicker( pickerConfig: ColorPickerConfig ): void {
 		if ( this.items.length === 2 ) {
 			return;
 		}
 
-		this.colorPickerComponent.pickerConfig = isColorPicker;
-		this.items.add( this.colorPickerComponent );
+		this.colorPickerPageView.pickerConfig = pickerConfig;
+		this.items.add( this.colorPickerPageView );
 
-		if ( this.colorTableComponent.colorPickerButtonView ) {
-			this.colorTableComponent.colorPickerButtonView.on( 'execute', () => {
+		if ( this.colorGridsPageView.colorPickerButtonView ) {
+			this.colorGridsPageView.colorPickerButtonView.on( 'execute', () => {
 				this.showColorPicker();
 			} );
 		}
 
-		this.colorTableComponent.addColorPickerButton();
-		this.colorPickerComponent.delegate( 'execute' ).to( this );
+		this.colorGridsPageView.addColorPickerButton();
+		this.colorPickerPageView.delegate( 'execute' ).to( this );
 	}
 
 	/**
 	 * Show "Color picker" and hide "Color table".
 	 */
 	public showColorPicker(): void {
-		if ( !this.colorPickerComponent.colorPickerView ) {
+		if ( !this.colorPickerPageView.colorPickerView ) {
 			return;
 		}
 
-		this.set( 'isColorPickerVisible', true );
-		this.colorPickerComponent.colorPickerView.focus();
-		this.set( 'isColorTableVisible', false );
+		this.set( 'isColorPickerPageVisible', true );
+		this.colorPickerPageView.focus();
+		this.set( 'isColorGridsPageVisible', false );
 	}
 
 	/**
 	 * Show "Color table" and hide "Color picker".
 	 */
-	public showColorTable(): void {
-		this.set( 'isColorTableVisible', true );
-		this.colorTableComponent.removeColorButtonView.focus();
-		this.set( 'isColorPickerVisible', false );
+	public showColorGrids(): void {
+		this.set( 'isColorGridsPageVisible', true );
+		this.colorGridsPageView.focus();
+		this.set( 'isColorPickerPageVisible', false );
 	}
 
 	/**
@@ -294,7 +291,7 @@ export default class ColorTableView extends View {
  * * A static {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors defined in the configuration,
  * * A dynamic {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors used in the document.
  */
-class ColorGridComponentView extends View {
+class ColorGridsPageView extends View {
 	/**
 	 * A collection of the children of the table.
 	 */
@@ -314,13 +311,6 @@ class ColorGridComponentView extends View {
 	 * Tracks information about the DOM focus in the list.
 	 */
 	public readonly focusTracker: FocusTracker;
-
-	/**
-	 * A collection of views that can be focused in the view.
-	 *
-	 * @readonly
-	 */
-	protected _focusables: ViewCollection;
 
 	/**
 	 * The label of the button responsible for removing color attributes.
@@ -346,13 +336,6 @@ class ColorGridComponentView extends View {
 	 * @readonly
 	 */
 	public documentColorsCount?: number;
-
-	/**
-	 * Document color section's label.
-	 *
-	 * @readonly
-	 */
-	private _documentColorsLabel?: string;
 
 	/**
 	 * Keeps the value of the command associated with the table for the current selection.
@@ -393,6 +376,20 @@ class ColorGridComponentView extends View {
 	 * The property which is responsible for is component visible or not.
 	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * A collection of views that can be focused in the view.
+	 *
+	 * @readonly
+	 */
+	protected _focusables: ViewCollection;
+
+	/**
+	 * Document color section's label.
+	 *
+	 * @readonly
+	 */
+	private _documentColorsLabel?: string;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -539,10 +536,28 @@ class ColorGridComponentView extends View {
 	}
 
 	/**
+	 * Focuses the component.
+	 */
+	public focus(): void {
+		this.removeColorButtonView.focus();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
 		super.destroy();
+	}
+
+	/**
+	 * Creates "color picker" button.
+	 */
+	public addColorPickerButton(): void {
+		if ( this.colorPickerButtonView ) {
+			this.items.add( this.colorPickerButtonView );
+			this.focusTracker.add( this.colorPickerButtonView.element! );
+			this._focusables.add( this.colorPickerButtonView );
+		}
 	}
 
 	/**
@@ -575,17 +590,6 @@ class ColorGridComponentView extends View {
 			icon: ColorPaletteIcon,
 			class: 'ck-color-table__color-picker'
 		} );
-	}
-
-	/**
-	 * Creates "color picker" button.
-	 */
-	public addColorPickerButton(): void {
-		if ( this.colorPickerButtonView ) {
-			this.items.add( this.colorPickerButtonView );
-			this.focusTracker.add( this.colorPickerButtonView.element! );
-			this._focusables.add( this.colorPickerButtonView );
-		}
 	}
 
 	/**
@@ -708,7 +712,7 @@ class ColorGridComponentView extends View {
  * * Input in HEX format,
  * * Action buttons as "save" and "cancel".
  */
-class ColorPickerComponentView extends View {
+class ColorPickerPageView extends View {
 	/**
 	 * A collection of the children of the table.
 	 */
@@ -719,16 +723,6 @@ class ColorPickerComponentView extends View {
 	 *
 	 */
 	public colorPickerView?: ColorPickerView;
-
-	/**
-	 * Keeps the value of the command associated with the table for the current selection.
-	 */
-	declare public selectedColor?: string;
-
-	/**
-	 * Keeps the original color value from current selection which is assign while dropdown is opening.
-	 */
-	declare public originalColor?: string;
 
 	/**
 	 * The "Save" button view.
@@ -751,13 +745,6 @@ class ColorPickerComponentView extends View {
 	public readonly focusTracker: FocusTracker;
 
 	/**
-	  * A collection of views that can be focused in the view.
-	  *
-	  * @readonly
-	  */
-	protected _focusables: ViewCollection;
-
-	/**
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
 	public readonly keystrokes: KeystrokeHandler;
@@ -771,6 +758,23 @@ class ColorPickerComponentView extends View {
 	 * The property which is responsible for is component visible or not.
 	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * Keeps the value of the command associated with the table for the current selection.
+	 */
+	declare public selectedColor?: string;
+
+	/**
+	 * Keeps the original color value from current selection which is assign while dropdown is opening.
+	 */
+	declare public originalColor?: string;
+
+	/**
+	  * A collection of views that can be focused in the view.
+	  *
+	  * @readonly
+	  */
+	protected _focusables: ViewCollection;
 
 	/**
 	 * @param locale The localization services instance.
@@ -848,6 +852,13 @@ class ColorPickerComponentView extends View {
 	 */
 	public override destroy(): void {
 		super.destroy();
+	}
+
+	/**
+	 * Focuses the color picker.
+	 */
+	public focus(): void {
+		this.colorPickerView!.focus();
 	}
 
 	/**

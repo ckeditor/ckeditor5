@@ -155,33 +155,32 @@ export default class ColorUI extends Plugin {
 					if ( hasColorPicker ) {
 						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
 
-						dropdownView.colorTableView!.colorPickerComponent.colorPickerView!.on( 'change:color', ( evt, evtName, newValue
-						) => {
-							editor.execute( this.commandName, {
-								value: newValue
-							} );
-						} );
+						// TODO: Why not dropdownView.on( 'execute', ( evt, data ) => {} ?
+						dropdownView.colorTableView!.colorPickerPageView.colorPickerView!.on( 'change:color',
+							( evt, evtName, newValue ) => editor.execute( this.commandName, { value: newValue } ) );
 					}
 				}
 
 				if ( isVisible ) {
 					if ( hasColorPicker ) {
+						// Why is this a state of the ColorTableView? Seems a controller logic.
 						dropdownView.colorTableView!.originalColor = dropdownView.colorTableView!.selectedColor;
 					}
 
 					if ( documentColorsCount !== 0 ) {
-						this.colorTableView!.colorTableComponent.updateDocumentColors( editor.model, this.componentName );
+						this.colorTableView!.colorGridsPageView.updateDocumentColors( editor.model, this.componentName );
 					}
-					this.colorTableView!.colorTableComponent.updateSelectedColors();
+
+					this.colorTableView!.colorGridsPageView.updateSelectedColors();
 				} else {
-					this.colorTableView!.showColorTable();
+					this.colorTableView!.showColorGrids();
 				}
 			} );
 
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(
 				dropdownView,
-				() => dropdownView.colorTableView!.colorTableComponent.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
+				() => dropdownView.colorTableView!.colorGridsPageView.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
 			);
 
 			return dropdownView;
