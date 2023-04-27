@@ -9,6 +9,7 @@ import ViewCollection from '../../src/viewcollection';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { LabeledFieldView, createLabeledInputText } from '@ckeditor/ckeditor5-ui';
 
 describe( 'DropdownPanelView', () => {
 	let view, locale;
@@ -72,6 +73,25 @@ describe( 'DropdownPanelView', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'intercepts the "selectstart" event for the input field', () => {
+			const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
+
+			view.children.add( labeledInput );
+
+			const spy = sinon.spy();
+			const event = new Event( 'selectstart', {
+				bubbles: true,
+				cancelable: true
+			} );
+
+			event.stopPropagation = spy;
+
+			labeledInput.fieldView.element.dispatchEvent( event );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

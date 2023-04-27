@@ -83,6 +83,19 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+
+		this.listenTo( this.element!, 'selectstart', ( evt, domEvt ) => {
+			if ( ( domEvt.target as HTMLElement ).tagName.toLocaleLowerCase() === 'input' ) {
+				domEvt.stopPropagation();
+			}
+		}, { useCapture: true } );
+	}
+
+	/**
 	 * Focuses the first view in the {@link #children} collection.
 	 *
 	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
