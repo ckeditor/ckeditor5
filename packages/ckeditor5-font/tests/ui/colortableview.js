@@ -164,49 +164,16 @@ describe( 'ColorTableView', () => {
 	} );
 
 	describe( 'appendColorPicker()', () => {
-		let dropdown, editor, element;
-
-		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
+		it( 'creates a color picker', () => {
 			colorTableView.appendColorPicker( {} );
 
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, TestColorPlugin ],
-					testColor: Object.assign( {
-						documentColors: 3
-					}, testColorConfig )
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					dropdown = editor.ui.componentFactory.create( 'testColor' );
-					dropdown.render();
-					global.document.body.appendChild( dropdown.element );
-				} );
-		} );
-
-		afterEach( () => {
-			element.remove();
-			dropdown.element.remove();
-			dropdown.destroy();
-
-			return editor.destroy();
-		} );
-
-		it( 'creates a color picker', () => {
 			expect( colorTableView.colorPickerView ).to.be.instanceOf( ColorPickerView );
 		} );
 
 		it( 'adds a color picker to items list', () => {
-			expect( colorTableView.items.length ).to.equal( 7 );
-		} );
+			colorTableView.appendColorPicker( {} );
 
-		it( 'binds container\'s selected color to the color picker\'s color', () => {
-			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
-			expect( colorTableView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
+			expect( colorTableView.items.length ).to.equal( 7 );
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
@@ -215,12 +182,31 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.items.length ).to.equal( 7 );
 		} );
 
+		it( 'should set the current color when color picker is created', () => {
+			colorTableView.selectedColor = '#660000';
+			colorTableView.appendColorPicker( {} );
+
+			expect( colorTableView.colorPickerView.color, '`color` property value is incorrect' ).to.equal( 'hsl( 0, 100%, 20% )' );
+			expect( colorTableView.colorPickerView._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660000' );
+		} );
+
+		it( 'should propagate the selected color to color picker if it changes', () => {
+			colorTableView.selectedColor = '#660000';
+			colorTableView.appendColorPicker( {} );
+			colorTableView.selectedColor = '#660055';
+
+			expect( colorTableView.colorPickerView.color, '`color` property value is incorrect' ).to.equal( 'hsl( 310, 100%, 20% )' );
+			expect( colorTableView.colorPickerView._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660055' );
+		} );
+
 		it( 'should navigate forwards using the Tab key', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.tab,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
+
+			colorTableView.appendColorPicker( {} );
 
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
@@ -242,6 +228,8 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
+			colorTableView.appendColorPicker( {} );
+
 			// Mock the remove color button is focused.
 			colorTableView.focusTracker.isFocused = true;
 			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerView.slidersView.get( 1 ).element;
@@ -260,27 +248,11 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			dropdown.colorTableView.appendColorPicker( {} );
+			colorTableView.appendColorPicker( {} );
+			colorTableView.focusTracker.isFocused = true;
+			colorTableView.keystrokes.press( keyEvtData );
 
-			dropdown.colorTableView.focusTracker.isFocused = true;
-
-			dropdown.colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
-		} );
-
-		it( 'should set the current color when color picker is created', () => {
-			dropdown.colorTableView.selectedColor = '#660000';
-			dropdown.colorTableView.appendColorPicker( {} );
-
-			expect( dropdown.colorTableView.colorPickerView.color ).to.equal( '#660000' );
-		} );
-
-		it( 'should propagate the selected color to color picker if it changes', () => {
-			dropdown.colorTableView.selectedColor = '#660000';
-			dropdown.colorTableView.appendColorPicker( {} );
-			dropdown.colorTableView.selectedColor = '#660055';
-
-			expect( dropdown.colorTableView.colorPickerView.color ).to.equal( '#660055' );
 		} );
 	} );
 

@@ -138,7 +138,7 @@ export default class ColorPickerView extends View {
 
 		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView. This blocking prevents the native select all on Ctrl+A.
-		this.listenTo( this.input.element!, 'selectstart', ( evt, domEvt ) => {
+		this.listenTo( this.hexInputRow.children!.get( 1 )!.element!, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
 	}

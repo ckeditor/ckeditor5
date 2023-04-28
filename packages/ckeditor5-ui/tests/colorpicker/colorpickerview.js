@@ -285,7 +285,7 @@ describe( 'ColorPickerView', () => {
 
 			event.stopPropagation = spy;
 
-			view.input.element.dispatchEvent( event );
+			view.hexInputRow.children.get( 1 ).element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
