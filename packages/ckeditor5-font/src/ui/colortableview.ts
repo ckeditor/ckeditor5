@@ -390,8 +390,8 @@ export default class ColorTableView extends View {
 			this._focusables.add( slider );
 		}
 
-		this.focusTracker.add( this.colorPickerView!.input.element! );
-		this._focusables.add( this.colorPickerView!.input );
+		this.focusTracker.add( this.colorPickerView!.hexInputRow.element! );
+		this._focusables.add( this.colorPickerView!.hexInputRow );
 	}
 
 	/**
