@@ -265,9 +265,17 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		// On Safari we have to force the focus on a button on click as it's the only browser
 		// that doesn't do that automatically. See #12115.
 		if ( env.isSafari ) {
+			let timeout: ReturnType<typeof setTimeout> | null = null;
+
 			template.on.mousedown = bind.to( evt => {
-				this.focus();
-				evt.preventDefault();
+				if ( timeout ) {
+					clearTimeout( timeout );
+				}
+
+				timeout = setTimeout( () => {
+					this.focus();
+					timeout = null;
+				}, 0 );
 			} );
 		}
 

@@ -240,13 +240,6 @@ export default class BlockToolbar extends Plugin {
 
 		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
-		// When toolbar lost focus then panel should hide.
-		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
-			if ( !is ) {
-				this._hidePanel();
-			}
-		} );
-
 		return toolbarView;
 	}
 
