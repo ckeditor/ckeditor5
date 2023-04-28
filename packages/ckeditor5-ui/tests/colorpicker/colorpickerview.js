@@ -285,7 +285,19 @@ describe( 'ColorPickerView', () => {
 
 			event.stopPropagation = spy;
 
-			view.input.element.dispatchEvent( event );
+			view.hexInputRow.children.get( 1 ).element.dispatchEvent( event );
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'should focus slider', () => {
+			const slider = view.slidersView.first;
+
+			const spy = sinon.spy( slider.element, 'focus' );
+
+			view.focus();
+
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
