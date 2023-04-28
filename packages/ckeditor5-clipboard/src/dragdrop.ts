@@ -26,7 +26,18 @@ import {
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
-import { env, uid, type ObservableChangeEvent, global, Rect, createElement } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	uid,
+	global,
+	Rect,
+	DomEmitterMixin,
+	createElement,
+	type ObservableChangeEvent,
+	type DomEmitter
+} from '@ckeditor/ckeditor5-utils';
+
+import type { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 
 import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, {
@@ -168,12 +179,24 @@ export default class DragDrop extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _blockMode: boolean = true;
+	// TODO handle drag from other editor instance
+	// TODO configure to use block, inline or both
+	private _blockMode: boolean = false;
 
 	/**
 	 * TODO
 	 */
 	private _previewContainer?: HTMLElement;
+
+	/**
+	 * TODO
+	 */
+	private _isBlockDragging = false;
+
+	/**
+	 * TODO
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
 
 	/**
 	 * @inheritDoc
@@ -229,6 +252,18 @@ export default class DragDrop extends Plugin {
 		if ( env.isAndroid ) {
 			this.forceDisabled( 'noAndroidSupport' );
 		}
+
+		if ( editor.plugins.has( 'BlockToolbar' ) ) {
+			const blockToolbar: BlockToolbar = editor.plugins.get( 'BlockToolbar' );
+			const element = blockToolbar.buttonView.element!;
+
+			element.setAttribute( 'draggable', 'true' );
+
+			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
+			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
+			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
+			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
+		}
 	}
 
 	/**
@@ -239,6 +274,8 @@ export default class DragDrop extends Plugin {
 			this._draggedRange.detach();
 			this._draggedRange = null;
 		}
+
+		this._domEmitter.stopListening();
 
 		this._updateDropMarkerThrottled.cancel();
 		this._removeDropMarkerDelayed.cancel();
@@ -286,42 +323,35 @@ export default class DragDrop extends Plugin {
 			}
 
 			// If this was not a widget we should check if we need to drag some text content.
-			else if (
-				!viewDocument.selection.isCollapsed ||
-				( viewDocument.selection.getFirstPosition()!.parent as ViewElement ).isEmpty
-			) {
-				const selectedElement = viewDocument.selection.getSelectedElement();
+			else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+				const blocks = Array.from( selection.getSelectedBlocks() );
 
-				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					const blocks = Array.from( selection.getSelectedBlocks() );
+				if ( blocks.length > 1 ) {
+					this._draggedRange = LiveRange.fromRange( model.createRange(
+						model.createPositionBefore( blocks[ 0 ] ),
+						model.createPositionAfter( blocks[ blocks.length - 1 ] )
+					) );
 
-					if ( blocks.length > 1 ) {
-						this._draggedRange = LiveRange.fromRange( model.createRange(
-							model.createPositionBefore( blocks[ 0 ] ),
-							model.createPositionAfter( blocks[ blocks.length - 1 ] )
-						) );
+					model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
+					this._blockMode = true;
+					// TODO block mode for dragging from outside editor? or inline? or both?
+				}
+				else if ( blocks.length == 1 ) {
+					const draggedRange = selection.getFirstRange()!;
+					const blockRange = model.createRange(
+						model.createPositionBefore( blocks[ 0 ] ),
+						model.createPositionAfter( blocks[ 0 ] )
+					);
 
-						model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
+					if (
+						draggedRange.start.isTouching( blockRange.start ) &&
+						draggedRange.end.isTouching( blockRange.end )
+					) {
+						this._draggedRange = LiveRange.fromRange( blockRange );
 						this._blockMode = true;
-						// TODO block mode for dragging from outside editor? or inline? or both?
-					}
-					else if ( blocks.length == 1 ) {
-						const draggedRange = selection.getFirstRange()!;
-						const blockRange = model.createRange(
-							model.createPositionBefore( blocks[ 0 ] ),
-							model.createPositionAfter( blocks[ 0 ] )
-						);
-
-						if (
-							draggedRange.start.isTouching( blockRange.start ) &&
-							draggedRange.end.isTouching( blockRange.end )
-						) {
-							this._draggedRange = LiveRange.fromRange( blockRange );
-							this._blockMode = true;
-						} else {
-							this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
-							this._blockMode = false;
-						}
+					} else {
+						this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
+						this._blockMode = false;
 					}
 				}
 			}
@@ -346,29 +376,9 @@ export default class DragDrop extends Plugin {
 				method: 'dragstart'
 			} );
 
-			// Generate custom preview.
-			const editable = editor.editing.view.document.selection.editableElement!;
-			const domEditable = editor.editing.view.domConverter.mapViewToDom( editable )!;
-			const computedStyle = global.window.getComputedStyle( domEditable );
+			this._updatePreview( data.dataTransfer );
 
-			if ( !this._previewContainer ) {
-				this._previewContainer = createElement( global.document, 'div', {
-					style: 'position: absolute; left: -999999px;'
-				} );
-
-				global.document.body.appendChild( this._previewContainer );
-			}
-
-			const preview = createElement( global.document, 'div' );
-
-			preview.className = 'ck ck-content';
-			preview.style.width = computedStyle.width;
-
-			preview.innerHTML = data.dataTransfer.getData( 'text/html' );
-			data.dataTransfer.setDragImage( preview, 0, 0 );
-			// TODO set x to make dragged widget stick to the mouse cursor
-
-			this._previewContainer.appendChild( preview );
+			data.stopPropagation();
 
 			if ( !this.isEnabled ) {
 				this._draggedRange.detach();
@@ -431,6 +441,8 @@ export default class DragDrop extends Plugin {
 			if ( targetRange ) {
 				this._updateDropMarkerThrottled( targetRange );
 			}
+
+			evt.stop();
 		}, { priority: 'low' } );
 	}
 
@@ -764,6 +776,91 @@ export default class DragDrop extends Plugin {
 
 		this._draggedRange.detach();
 		this._draggedRange = null;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _updatePreview( dataTransfer: DataTransfer ): void {
+		const view = this.editor.editing.view;
+		const editable = view.document.selection.editableElement!;
+		const domEditable = view.domConverter.mapViewToDom( editable )!;
+		const computedStyle = global.window.getComputedStyle( domEditable );
+
+		if ( !this._previewContainer ) {
+			this._previewContainer = createElement( global.document, 'div', {
+				style: 'position: absolute; left: -999999px;'
+			} );
+
+			global.document.body.appendChild( this._previewContainer );
+		} else {
+			this._previewContainer.removeChild( this._previewContainer.firstElementChild! );
+		}
+
+		const preview = createElement( global.document, 'div' );
+
+		preview.className = 'ck ck-content';
+		preview.style.width = computedStyle.width;
+
+		preview.innerHTML = dataTransfer.getData( 'text/html' );
+		dataTransfer.setDragImage( preview, 0, 0 );
+		// TODO set x to make dragged widget stick to the mouse cursor
+
+		this._previewContainer.appendChild( preview );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _handleBlockDragStart( domEvent: DragEvent ): void {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		const blocks = Array.from( selection.getSelectedBlocks() );
+		const draggedRange = model.createRange(
+			model.createPositionBefore( blocks[ 0 ] ),
+			model.createPositionAfter( blocks[ blocks.length - 1 ] )
+		);
+
+		model.change( writer => writer.setSelection( draggedRange ) );
+
+		this._isBlockDragging = true;
+
+		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( domEvent );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _handleBlockDragging( domEvent: DragEvent ): void {
+		const clientX = domEvent.clientX + 100;
+		const clientY = domEvent.clientY;
+		const target = document.elementFromPoint( clientX, clientY );
+
+		if ( !target || !target.closest( '.ck-editor__editable' ) || !this._isBlockDragging ) {
+			return;
+		}
+
+		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( {
+			...domEvent,
+			type: domEvent.type,
+			dataTransfer: domEvent.dataTransfer,
+			target,
+			clientX,
+			clientY,
+			preventDefault: () => domEvent.preventDefault(),
+			stopPropagation: () => domEvent.stopPropagation()
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _handleBlockDragEnd(): void {
+		this._isBlockDragging = false;
+
+		// Reset dragging mode even if it started outside the editor (for example dragging image from disc).
+		this._blockMode = false;
 	}
 }
 
