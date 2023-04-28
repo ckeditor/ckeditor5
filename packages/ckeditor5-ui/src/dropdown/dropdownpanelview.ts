@@ -89,6 +89,10 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 		super.render();
 
 		this.listenTo( this.element!, 'selectstart', ( evt, domEvt ) => {
+			if ( ( domEvt.target as Node ).nodeType !== Node.ELEMENT_NODE ) {
+				return;
+			}
+
 			if ( ( domEvt.target as HTMLElement ).tagName.toLocaleLowerCase() === 'input' ) {
 				domEvt.stopPropagation();
 			}
