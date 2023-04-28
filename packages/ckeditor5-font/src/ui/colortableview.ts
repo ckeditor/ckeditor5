@@ -473,7 +473,7 @@ class ColorGridsPageView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-color-table-component',
+					'ck-color-grids-page-view',
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			},
@@ -566,7 +566,7 @@ class ColorGridsPageView extends View {
 		}
 
 		this._addColorTablesElementsToFocusTracker();
-		this.removeColorButtonView.element!.focus();
+		this.focus();
 	}
 
 	/**
@@ -857,7 +857,7 @@ class ColorPickerPageView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-color-picker-component',
+					'ck-color-picker-page-view',
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			},

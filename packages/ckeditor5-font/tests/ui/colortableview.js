@@ -82,7 +82,10 @@ describe( 'ColorTableView', () => {
 			columns: 5,
 			removeButtonLabel: 'Remove color',
 			documentColorsLabel: 'Document colors',
-			documentColorsCount: 4
+			documentColorsCount: 4,
+			colorPickerConfig: {
+				format: 'hsl'
+			}
 		} );
 		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
 		colorTableView.render();
@@ -121,7 +124,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should set label for the remove color button', () => {
-			expect( colorTableView.colorGridsPageView.removeButtonLabel ).to.equal( 'Remove color' );
+			expect( colorTableView.colorGridsPageView._removeButtonLabel ).to.equal( 'Remove color' );
 		} );
 
 		it( 'should set number of drawn columns', () => {
@@ -156,20 +159,20 @@ describe( 'ColorTableView', () => {
 
 	describe( 'ColorTableView components', () => {
 		beforeEach( () => {
-			colorTableView.appendColorPicker( {} );
+			colorTableView._appendColorPicker();
 		} );
 
-		describe( 'ColorTableComponent', () => {
+		describe( 'ColorGridsPageView', () => {
 			it( 'should have proper classname', () => {
 				const colorTable = colorTableView.colorGridsPageView;
-				expect( colorTable.element.classList.contains( 'ck-color-table-component' ) ).to.be.true;
+				expect( colorTable.element.classList.contains( 'ck-color-grids-page-view' ) ).to.be.true;
 			} );
 		} );
 
-		describe( 'ColorPickerComponent', () => {
+		describe( 'ColorPickerPageView', () => {
 			it( 'should have proper classname', () => {
 				const colorPicker = colorTableView.colorPickerPageView;
-				expect( colorPicker.element.classList.contains( 'ck-color-picker-component' ) ).to.be.true;
+				expect( colorPicker.element.classList.contains( 'ck-color-picker-page-view' ) ).to.be.true;
 			} );
 		} );
 
@@ -187,22 +190,22 @@ describe( 'ColorTableView', () => {
 			describe( '#isColorGridsPageVisible', () => {
 				it( 'should be set on true', () => {
 					// should be set on true by defualt
-					expect( colorTableView.isColorGridsPageVisible ).to.be.true;
+					expect( colorTableView._isColorGridsPageVisible ).to.be.true;
 
 					colorTableView.showColorGrids();
 
-					expect( colorTableView.isColorGridsPageVisible ).to.be.true;
+					expect( colorTableView._isColorGridsPageVisible ).to.be.true;
 				} );
 			} );
 
 			describe( '#isColorPickerPageVisible', () => {
 				it( 'should be set on false', () => {
 					// should be set on false by defualt
-					expect( colorTableView.isColorPickerPageVisible ).to.be.false;
+					expect( colorTableView._isColorPickerPageVisible ).to.be.false;
 
 					colorTableView.showColorGrids();
 
-					expect( colorTableView.isColorPickerPageVisible ).to.be.false;
+					expect( colorTableView._isColorPickerPageVisible ).to.be.false;
 				} );
 			} );
 		} );
@@ -218,7 +221,7 @@ describe( 'ColorTableView', () => {
 				it( 'should be set on true', () => {
 					colorTableView.showColorPicker();
 
-					expect( colorTableView.isColorPickerPageVisible ).to.be.true;
+					expect( colorTableView._isColorPickerPageVisible ).to.be.true;
 				} );
 			} );
 
@@ -226,17 +229,17 @@ describe( 'ColorTableView', () => {
 				it( 'should be set on false', () => {
 					colorTableView.showColorPicker();
 
-					expect( colorTableView.isColorGridsPageVisible ).to.be.false;
+					expect( colorTableView._isColorGridsPageVisible ).to.be.false;
 				} );
 			} );
-		} );
 
-		it( 'should not to show the color picker', () => {
-			colorTableView.colorPickerPageView.colorPickerView = null;
-			colorTableView.showColorPicker();
+			it( 'should not to show the color picker', () => {
+				colorTableView.colorPickerPageView.colorPickerView = null;
+				colorTableView.showColorPicker();
 
-			expect( colorTableView.isColorPickerPageVisible ).to.be.false;
-			expect( colorTableView.isColorGridsPageVisible ).to.be.true;
+				expect( colorTableView._isColorPickerPageVisible ).to.be.false;
+				expect( colorTableView._isColorGridsPageVisible ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -255,7 +258,7 @@ describe( 'ColorTableView', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			colorTableView.appendColorPicker( {} );
+			colorTableView._appendColorPicker();
 
 			return ClassicTestEditor
 				.create( element, {
@@ -291,8 +294,8 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
-			colorTableView.appendColorPicker( {} );
-			colorTableView.appendColorPicker( {} );
+			colorTableView._appendColorPicker();
+			colorTableView._appendColorPicker();
 
 			expect( colorTableView.colorPickerPageView.items.length ).to.equal( 2 );
 		} );
@@ -346,12 +349,10 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			dropdown.colorTableView.appendColorPicker( {} );
+			dropdown.colorTableView._appendColorPicker();
 
 			dropdown.colorTableView.focusTracker.focusedElement = colorTableView.colorGridsPageView.removeColorButtonView;
 			dropdown.colorTableView.focusTracker.isFocused = true;
-
-			// console.log( dropdown.colorTableView.focusTracker );
 
 			dropdown.colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
@@ -471,7 +472,7 @@ describe( 'ColorTableView', () => {
 			removeButton.element.dispatchEvent( new Event( 'click' ) );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWith( spy, sinon.match.any, { value: null } );
+			sinon.assert.calledWith( spy, sinon.match.any, { value: null, source: 'removeColorButton' } );
 		} );
 	} );
 
@@ -479,18 +480,18 @@ describe( 'ColorTableView', () => {
 		let actionBar, saveButton, cancelButton;
 
 		beforeEach( () => {
-			colorTableView.appendColorPicker( {} );
+			colorTableView._appendColorPicker();
 			actionBar = colorTableView.colorPickerPageView.actionBarView;
 			saveButton = colorTableView.colorPickerPageView.saveButtonView;
 			cancelButton = colorTableView.colorPickerPageView.cancelButtonView;
 		} );
 
-		it( 'should have a proper CSS class name', () => {
+		it( 'should have a proper class name', () => {
 			expect( actionBar.element.classList.contains( 'ck-color-table_action-bar' ) ).to.be.true;
 		} );
 
 		describe( 'save button', () => {
-			it( 'should have a proper CSS class name', () => {
+			it( 'should have a proper class name', () => {
 				expect( saveButton.element.classList.contains( 'ck-button-save' ) ).to.be.true;
 			} );
 
@@ -506,7 +507,7 @@ describe( 'ColorTableView', () => {
 				saveButton.element.dispatchEvent( new Event( 'click' ) );
 
 				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWith( spy, sinon.match.any, { value: colorTableView.selectedColor } );
+				sinon.assert.calledWith( spy, sinon.match.any, { value: colorTableView.selectedColor, source: 'saveButton' } );
 			} );
 		} );
 
@@ -543,8 +544,7 @@ describe( 'ColorTableView', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWith( spy, sinon.match.any, {
 					value: item.color,
-					label: item.label,
-					hasBorder: item.options.hasBorder
+					source: 'staticColorsGrid'
 				} );
 			} );
 		} );
@@ -653,7 +653,8 @@ describe( 'ColorTableView', () => {
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledWith( spy, sinon.match.any, {
-						value: '#000000'
+						value: '#000000',
+						source: 'documentColorsGrid'
 					} );
 				} );
 			} );

@@ -158,6 +158,7 @@ export default class ColorUI extends Plugin {
 				editor.execute( this.commandName, {
 					value: colorSavedUponDropdownOpen
 				} );
+				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
 
 				editor.editing.view.focus();
 			} );
