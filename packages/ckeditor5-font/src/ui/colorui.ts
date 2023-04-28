@@ -147,7 +147,9 @@ export default class ColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
-				editor.execute( this.commandName, data );
+				if ( dropdownView.isOpen ) {
+					editor.execute( this.commandName, data );
+				}
 
 				if ( data.source !== 'colorPicker' ) {
 					editor.editing.view.focus();
