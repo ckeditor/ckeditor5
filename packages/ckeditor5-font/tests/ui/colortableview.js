@@ -252,45 +252,10 @@ describe( 'ColorTableView', () => {
 	} );
 
 	describe( 'appendColorPicker()', () => {
-		let dropdown, editor, element;
-
-		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
+		it( 'creates a color picker', () => {
 			colorTableView._appendColorPicker();
 
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, TestColorPlugin ],
-					testColor: Object.assign( {
-						documentColors: 3
-					}, testColorConfig )
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					dropdown = editor.ui.componentFactory.create( 'testColor' );
-					dropdown.render();
-					global.document.body.appendChild( dropdown.element );
-				} );
-		} );
-
-		afterEach( () => {
-			element.remove();
-			dropdown.element.remove();
-			dropdown.destroy();
-
-			return editor.destroy();
-		} );
-
-		it( 'creates a color picker', () => {
 			expect( colorTableView.colorPickerPageView.colorPickerView ).to.be.instanceOf( ColorPickerView );
-		} );
-
-		it( 'binds container\'s selected color to the color picker\'s color', () => {
-			colorTableView.selectedColor = 'hsl( 120, 100%, 50% )';
-			expect( colorTableView.colorPickerPageView.colorPickerView.color ).to.equal( 'hsl( 120, 100%, 50% )' );
 		} );
 
 		it( 'shouldn\'t duplicate views if called more than once', () => {
@@ -300,12 +265,35 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.colorPickerPageView.items.length ).to.equal( 2 );
 		} );
 
+		it( 'should set the current color when color picker is created', () => {
+			colorTableView.selectedColor = '#660000';
+			colorTableView._appendColorPicker();
+
+			const colorPicker = colorTableView.colorPickerPageView.colorPickerView;
+
+			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl( 0, 100%, 20% )' );
+			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660000' );
+		} );
+
+		it( 'should propagate the selected color to color picker if it changes', () => {
+			colorTableView.selectedColor = '#660000';
+			colorTableView._appendColorPicker();
+			colorTableView.selectedColor = '#660055';
+
+			const colorPicker = colorTableView.colorPickerPageView.colorPickerView;
+
+			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl( 310, 100%, 20% )' );
+			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660055' );
+		} );
+
 		it( 'should navigate forwards using the Tab key', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.tab,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
+
+			colorTableView._appendColorPicker();
 
 			colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
 
@@ -329,6 +317,8 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
+			colorTableView._appendColorPicker();
+
 			colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
 
 			// Mock the remove color button is focused.
@@ -349,12 +339,12 @@ describe( 'ColorTableView', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			dropdown.colorTableView._appendColorPicker();
+			colorTableView._appendColorPicker();
 
-			dropdown.colorTableView.focusTracker.focusedElement = colorTableView.colorGridsPageView.removeColorButtonView;
-			dropdown.colorTableView.focusTracker.isFocused = true;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorGridsPageView.removeColorButtonView;
+			colorTableView.focusTracker.isFocused = true;
 
-			dropdown.colorTableView.keystrokes.press( keyEvtData );
+			colorTableView.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
 	} );
