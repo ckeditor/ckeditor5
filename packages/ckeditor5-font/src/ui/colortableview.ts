@@ -112,7 +112,7 @@ export default class ColorTableView extends View {
 	 * @param colorPickerLabel The label of the button responsible for color picker appearing.
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
-	 * @param colorPickerConfig The object with format of color which color picker should understand.
+	 * @param colorPickerConfig The configuration of color picker feature.
 	 */
 	constructor(
 		locale: Locale,
@@ -600,7 +600,7 @@ class ColorGridsPageView extends View {
 	}
 
 	/**
-	 * Adds color picker elements to focus tracker.
+	 * Adds color table elements to focus tracker.
 	 */
 	private _addColorTablesElementsToFocusTracker(): void {
 		this.focusTracker.add( this.removeColorButtonView.element! );
@@ -821,8 +821,8 @@ class ColorPickerPageView extends View {
 	 * @param locale The localization services instance.
 	 * @param focusTracker Tracks information about the DOM focus in the list.
 	 * @param focusables A collection of views that can be focused in the view..
-	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}..
-	 * @param colorPickerConfig The object with format of color which color picker should understand.
+	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 * @param colorPickerConfig The configuration of color picker feature.
 	 */
 	constructor(
 		locale: Locale,
@@ -928,8 +928,8 @@ class ColorPickerPageView extends View {
 			this._focusables.add( slider );
 		}
 
-		this.focusTracker.add( this.colorPickerView!.input.element! );
-		this._focusables.add( this.colorPickerView!.input );
+		this.focusTracker.add( this.colorPickerView!.hexInputRow.children.get( 1 )!.element! );
+		this._focusables.add( this.colorPickerView!.hexInputRow.children.get( 1 )! );
 
 		this.focusTracker.add( this.saveButtonView.element! );
 		this._focusables.add( this.saveButtonView );

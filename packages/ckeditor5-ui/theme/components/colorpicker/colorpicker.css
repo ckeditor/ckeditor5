@@ -10,3 +10,15 @@
 .color-picker-hex-input {
 	width: max-content;
 }
+
+.ck.ck-color-picker__row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+
+	& .ck-color-picker__hash-view {
+		padding-top: var(--ck-spacing-tiny);
+		padding-right: var(--ck-spacing-medium);
+	}
+}
