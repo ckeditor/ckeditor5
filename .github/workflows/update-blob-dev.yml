@@ -1,4 +1,4 @@
-name: Update CKEditor 5 blob
+name: Update CKEditor 5 blob dev
 
 on:
     push:
