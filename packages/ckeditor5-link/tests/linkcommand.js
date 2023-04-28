@@ -649,6 +649,12 @@ describe( 'LinkCommand', () => {
 						},
 						defaultValue: true
 					} ) );
+					command.manualDecorators.add( new ManualDecorator( {
+						id: 'linkIsNoattr',
+						label: 'NoAttr',
+						classes: [ 'noattr' ],
+						defaultValue: true
+					} ) );
 
 					model.schema.extend( '$text', {
 						allowIn: '$root',
@@ -703,6 +709,15 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
 				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
+			} );
+
+			it( 'should handle attribute conflicts', () => {
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
+
+				command.execute( 'url', { linkIsFoo: false, linkIsBar: false, linkIsSth: true, linkIsNoattr: false } );
+
+				expect( getData( model ) ).to
+					.equal( 'foo<$text linkClass="sth" linkHref="url">url</$text><$text linkClass="sth">[]</$text>bar' );
 			} );
 
 			it( 'should update content if href is equal to content', () => {
@@ -845,6 +860,7 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: undefined,
 					linkIsBar: undefined,
+					linkIsNoattr: undefined,
 					linkIsSth: undefined
 				} );
 
@@ -853,6 +869,7 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: false,
 					linkIsBar: undefined,
+					linkIsNoattr: undefined,
 					linkIsSth: undefined
 				} );
 
@@ -861,6 +878,7 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: undefined,
 					linkIsBar: undefined,
+					linkIsNoattr: undefined,
 					linkIsSth: undefined
 				} );
 			} );
@@ -871,6 +889,7 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: undefined,
 					linkIsBar: undefined,
+					linkIsNoattr: undefined,
 					linkIsSth: undefined
 				} );
 
@@ -879,7 +898,8 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: undefined,
 					linkIsBar: undefined,
-					linkIsSth: true
+					linkIsNoattr: true,
+					linkIsSth: undefined
 				} );
 
 				command.restoreManualDecoratorStates();
@@ -887,6 +907,7 @@ describe( 'LinkCommand', () => {
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: undefined,
 					linkIsBar: undefined,
+					linkIsNoattr: undefined,
 					linkIsSth: undefined
 				} );
 			} );

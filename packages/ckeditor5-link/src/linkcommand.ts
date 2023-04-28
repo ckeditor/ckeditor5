@@ -81,6 +81,55 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
+	 * Merges the decorators
+	 * @param truthyManualDecorators decorators whose state value is true
+	 * @param falsyManualDecorators decorators whose state value is falsy
+	 * @returns
+	 */
+	private _mergeAttributes(
+		truthyManualDecorators: Array<string>,
+		falsyManualDecorators: Array<string> ):
+		{ attributesToBeAdded: Array<[string, string]>; attributesToBeRemoved: Array<string> } {
+		// attributes to be added or updated
+		const attributesToBeAdded: Array<[string, string]> =
+		truthyManualDecorators.reduce<Array<[string, string]>>(
+			( attrsToAdd, decoratorName ) => {
+				// can never null since it's a reduce on truthyManualDecorators
+				const manualDecorator =
+					this.manualDecorators.get( decoratorName ) as ManualDecorator;
+				const decoratorAttributes = Object.entries(
+					manualDecorator.attributes ?? {}
+				);
+				return mergeMultiValueAttributes(
+					attrsToAdd,
+					decoratorAttributes
+				);
+			},
+			[]
+		);
+
+		// attributes exclusively to be removed
+		const attributesToBeRemoved: Array<string> = falsyManualDecorators
+			.reduce<Array<string>>( ( attrsToRemove, decoratorName ) => {
+				// can never null since it's a reduce on falsyManualDecorators
+				const manualDecorator = this.manualDecorators.get( decoratorName ) as ManualDecorator;
+				const decoratorAttributes = Object.keys(
+					manualDecorator.attributes ?? {}
+				);
+				return [ ...attrsToRemove, ...decoratorAttributes ];
+			}, [] )
+			.filter(
+				attributeName =>
+					attributesToBeAdded.findIndex(
+						( [ name ] ) => name === attributeName
+					) === -1
+			)
+			.map( htmlAttributeNameToModelAttributeName );
+
+		return { attributesToBeAdded, attributesToBeRemoved };
+	}
+
+	/**
 	 * Executes the command.
 	 *
 	 * When the selection is non-collapsed, the `linkHref` attribute will be applied to nodes inside the selection, but only to
@@ -177,38 +226,10 @@ export default class LinkCommand extends Command {
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
-					const attributesToBeAdded: Array<[string, string]> =
-						truthyManualDecorators.reduce<Array<[string, string]>>(
-							( attrsToAdd, decoratorName ) => {
-								const manualDecorator =
-									this.manualDecorators.get( decoratorName );
-								const decoratorAttributes = Object.entries(
-									manualDecorator?.attributes ?? {}
-								);
-								return mergeMultiValueAttributes(
-									attrsToAdd,
-									decoratorAttributes
-								);
-							},
-							[]
-						);
-
-					// attributes exclusively to be removed
-					const attributesToBeRemoved: Array<string> = falsyManualDecorators
-						.reduce<Array<string>>( ( attrsToRemove, decoratorName ) => {
-							const manualDecorator = this.manualDecorators.get( decoratorName );
-							const decoratorAttributes = Object.keys(
-								manualDecorator?.attributes ?? {}
-							);
-							return [ ...attrsToRemove, ...decoratorAttributes ];
-						}, [] )
-						.filter(
-							attributeName =>
-								attributesToBeAdded.findIndex(
-									( [ name ] ) => name === attributeName
-								) === -1
-						)
-						.map( htmlAttributeNameToModelAttributeName );
+					const { attributesToBeAdded, attributesToBeRemoved } = this._mergeAttributes(
+						truthyManualDecorators,
+						falsyManualDecorators
+					);
 
 					// 2. add attributes in attributesToBeAdde
 					writer.setAttributes(
@@ -293,38 +314,10 @@ export default class LinkCommand extends Command {
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
-					const attributesToBeAdded: Array<[string, string]> =
-						truthyManualDecorators.reduce<Array<[string, string]>>(
-							( attrsToAdd, decoratorName ) => {
-								const manualDecorator =
-									this.manualDecorators.get( decoratorName );
-								const decoratorAttributes = Object.entries(
-									manualDecorator?.attributes ?? {}
-								);
-								return mergeMultiValueAttributes(
-									attrsToAdd,
-									decoratorAttributes
-								);
-							},
-							[]
-						);
-
-					// attributes exclusively to be removed
-					const attributesToBeRemoved: Array<string> = falsyManualDecorators
-						.reduce<Array<string>>( ( attrsToRemove, decoratorName ) => {
-							const manualDecorator = this.manualDecorators.get( decoratorName );
-							const decoratorAttributes = Object.keys(
-								manualDecorator?.attributes ?? {}
-							);
-							return [ ...attrsToRemove, ...decoratorAttributes ];
-						}, [] )
-						.filter(
-							attributeName =>
-								attributesToBeAdded.findIndex(
-									( [ name ] ) => name === attributeName
-								) === -1
-						)
-						.map( htmlAttributeNameToModelAttributeName );
+					const { attributesToBeAdded, attributesToBeRemoved } = this._mergeAttributes(
+						truthyManualDecorators,
+						falsyManualDecorators
+					);
 
 					// 2. add attributes in attributesToBeAdde
 					writer.setAttributes(
@@ -364,9 +357,9 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedElement = selection.getSelectedElement();
-
-		const manualDecorator = this.manualDecorators.get( decoratorName );
-		const decoratorAttributes = manualDecorator?.attributes ?? {};
+		// manualDecorator can never be null
+		const manualDecorator = this.manualDecorators.get( decoratorName ) as ManualDecorator;
+		const decoratorAttributes = manualDecorator.attributes ?? {};
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
