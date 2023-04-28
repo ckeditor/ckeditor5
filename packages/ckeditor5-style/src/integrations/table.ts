@@ -4,7 +4,7 @@
  */
 
 /**
- * @module style/integrations/tablestylesupport
+ * @module style/integrations/table
  */
 
 import { Plugin } from 'ckeditor5/src/core';
