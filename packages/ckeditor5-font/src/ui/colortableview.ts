@@ -567,9 +567,8 @@ class ColorGridsPageView extends View {
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 
 			this.items.add( this.documentColorsGrid );
-
-			this._createColorPickerButton();
 		}
+		this._createColorPickerButton();
 
 		this._addColorTablesElementsToFocusTracker();
 		this.focus();
