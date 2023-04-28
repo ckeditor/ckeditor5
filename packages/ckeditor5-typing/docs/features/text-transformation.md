@@ -184,6 +184,7 @@ In addition to enabling automatic text transformations, you may want to check th
 
 * {@link features/autoformat Autoformatting} &ndash; Lets you quickly apply formatting to the content you are writing.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/slash-commands Slash commands} &ndash; Allows to execute a predefined command by writing its name or alias directly in the editor.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 
 ## Contribute

@@ -886,7 +886,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
 }
 
 /**
- * If a selection starts at the end of a block, that block is not returned as from user perspective this block wasn't selected.
+ * If a selection starts at the end of a block, that block is not returned as from the user's perspective this block wasn't selected.
  * See [#11585](https://github.com/ckeditor/ckeditor5/issues/11585) for more details.
  *
  * ```xml
@@ -918,7 +918,7 @@ function isStartBlockSelected( startBlock: Element | undefined, range: Range ): 
 }
 
 /**
- * If a selection ends at the beginning of a block, that block is not returned as from user perspective this block wasn't selected.
+ * If a selection ends at the beginning of a block, that block is not returned as from the user's perspective this block wasn't selected.
  * See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
  *
  * ```xml

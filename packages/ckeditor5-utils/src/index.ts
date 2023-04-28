@@ -62,6 +62,7 @@ export { default as insertAt } from './dom/insertat';
 export { default as isComment } from './dom/iscomment';
 export { default as isNode } from './dom/isnode';
 export { default as isRange } from './dom/isrange';
+export { default as isValidAttributeName } from './dom/isvalidattributename';
 export { default as isVisible } from './dom/isvisible';
 export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction } from './dom/position';
 export { default as remove } from './dom/remove';
