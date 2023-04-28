@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals CustomEvent, document */
+/* globals CustomEvent, Event, document */
 
 import ColorPickerView from './../../src/colorpicker/colorpickerview';
 import 'vanilla-colorful/hex-color-picker.js';
@@ -34,7 +34,7 @@ describe( 'ColorPickerView', () => {
 		} );
 
 		it( 'should create input', () => {
-			const input = view.element.children[ 1 ];
+			const input = view.element.children[ 1 ].children[ 1 ];
 			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
 		} );
 
@@ -50,31 +50,210 @@ describe( 'ColorPickerView', () => {
 
 			clock.tick( 200 );
 
-			expect( view.input.fieldView.value ).to.equal( '#0000ff' );
+			expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
 		} );
 
 		it( 'should update color property after getting an input', () => {
-			view.input.fieldView.value = '#ff0000';
-			view.input.fieldView.fire( 'input' );
+			view.hexInputRow.children.get( 1 ).fieldView.value = '#ff0000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 			clock.tick( 200 );
 
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
 
-		// Requires https://github.com/ckeditor/ckeditor5/pull/13819 - text input should be properly registered as a focusable.
-		it( 'should not update color property during input editing when focused', () => {
-			view.color = '#000000';
+		it( 'should trim whitespace from the beginning of the string', () => {
+			view.color = '#222222';
 
-			view.input.isFocused = true;
-			view.input.fieldView.value = '#ffffff';
-			view.input.fieldView.fire( 'input' );
-
-			view.color = '#aaaaaa';
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
 
 			clock.tick( 200 );
 
-			expect( view.input.fieldView.value ).to.equal( '#ffffff' );
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace from the end of the string', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '000000   ';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace from both the beginning and the end of the string', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   000000   ';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		it( 'should trim whitespace before the hash if it was passed', () => {
+			view.color = '#222222';
+
+			view.hexInputRow.children.get( 1 ).isFocused = true;
+			view.hexInputRow.children.get( 1 ).fieldView.value = '   #000000';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '#000000' );
+		} );
+
+		describe( 'should update color property', () => {
+			describe( 'when hex color was passed', () => {
+				describe( 'in 3-character format', () => {
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abc',
+						expectedInput: '#abc',
+						expectedColorProperty: '#abc'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abc',
+						expectedInput: 'abc',
+						expectedColorProperty: '#abc'
+					} );
+				} );
+
+				describe( 'in 4-character format', () => {
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcd',
+						expectedInput: '#abcd',
+						expectedColorProperty: '#abcd'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcd',
+						expectedInput: 'abcd',
+						expectedColorProperty: '#abcd'
+					} );
+				} );
+
+				describe( 'in 6-character format', () => {
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcdef',
+						expectedInput: '#abcdef',
+						expectedColorProperty: '#abcdef'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcdef',
+						expectedInput: 'abcdef',
+						expectedColorProperty: '#abcdef'
+					} );
+				} );
+
+				describe( 'in 8-character format', () => {
+					testColorUpdateFromInput( {
+						name: 'with `#` at the beginning',
+						inputValue: '#abcdefab',
+						expectedInput: '#abcdefab',
+						expectedColorProperty: '#abcdefab'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'without `#` at the beginning',
+						inputValue: 'abcdefab',
+						expectedInput: 'abcdefab',
+						expectedColorProperty: '#abcdefab'
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'should not update color property', () => {
+			it( 'during input editing when focused', () => {
+				view.color = '#000000';
+
+				view.hexInputRow.children.get( 1 ).isFocused = true;
+				view.hexInputRow.children.get( 1 ).fieldView.value = '#ffffff';
+				view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+				view.color = '#aaaaaa';
+
+				clock.tick( 200 );
+
+				expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '#ffffff' );
+			} );
+
+			describe( 'when set incorrect color', () => {
+				describe( 'wrong input length', () => {
+					testColorUpdateFromInput( {
+						name: '1 character',
+						inputValue: 'f',
+						expectedInput: 'f',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: '2 characters',
+						inputValue: 'ff',
+						expectedInput: 'ff',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: '5 characters',
+						inputValue: 'ffaaa',
+						expectedInput: 'ffaaa',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: '7 characters',
+						inputValue: 'ffaaaaa',
+						expectedInput: 'ffaaaaa',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'more than 8 characters',
+						inputValue: 'ffaaffaaff',
+						expectedInput: 'ffaaffaaff',
+						expectedColorProperty: '#000000'
+					} );
+				} );
+
+				describe( 'wrong color format', () => {
+					testColorUpdateFromInput( {
+						name: 'rgb',
+						inputValue: 'rgb( 100, 100, 100 )',
+						expectedInput: 'rgb( 100, 100, 100 )',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'hsl',
+						inputValue: 'hsl( 30, 75%, 60 % )',
+						expectedInput: 'hsl( 30, 75%, 60 % )',
+						expectedColorProperty: '#000000'
+					} );
+
+					testColorUpdateFromInput( {
+						name: 'color name',
+						inputValue: 'red',
+						expectedInput: 'red',
+						expectedColorProperty: '#000000'
+					} );
+				} );
+			} );
 		} );
 	} );
 
@@ -95,6 +274,31 @@ describe( 'ColorPickerView', () => {
 			clock.tick( 200 );
 
 			expect( view.color ).to.equal( '#ff0000' );
+		} );
+
+		it( 'intercepts the "selectstart" in the #input with the high priority to unlock select all', () => {
+			const spy = sinon.spy();
+			const event = new Event( 'selectstart', {
+				bubbles: true,
+				cancelable: true
+			} );
+
+			event.stopPropagation = spy;
+
+			view.hexInputRow.children.get( 1 ).element.dispatchEvent( event );
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'should focus slider', () => {
+			const slider = view.slidersView.first;
+
+			const spy = sinon.spy( slider.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -269,4 +473,20 @@ describe( 'ColorPickerView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	function testColorUpdateFromInput( options ) {
+		it( options.name, () => {
+			const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
+			view.color = '#000000';
+
+			fieldView.isFocused = true;
+			fieldView.value = options.inputValue;
+			fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
+			expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
+		} );
+	}
 } );

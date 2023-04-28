@@ -51,6 +51,13 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	declare public ariaLabel: string | undefined;
 
 	/**
+	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
+	 *
+	 * @observable
+	 */
+	declare public role: string | undefined;
+
+	/**
 	 * Helps cycling over focusable {@link #items} in the list.
 	 */
 	private readonly _focusCycler: FocusCycler;
@@ -81,6 +88,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		} );
 
 		this.set( 'ariaLabel', undefined );
+		this.set( 'role', undefined );
 
 		this.setTemplate( {
 			tag: 'ul',
@@ -91,6 +99,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 					'ck-reset',
 					'ck-list'
 				],
+				role: bind.to( 'role' ),
 				'aria-label': bind.to( 'ariaLabel' )
 			},
 

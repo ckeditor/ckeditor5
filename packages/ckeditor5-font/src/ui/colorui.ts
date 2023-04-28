@@ -16,7 +16,11 @@ import {
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils';
-import type ColorTableView from './colortableview';
+import {
+	type default as ColorTableView,
+	type ColorTableExecuteEvent,
+	type ColorTableCancelEvent
+} from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
 import type { FontColorConfig } from '../fontconfig';
@@ -105,6 +109,9 @@ export default class ColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
+			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
+			let dropdownContentRendered = false;
+			let colorSavedUponDropdownOpen: string;
 
 			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
@@ -119,7 +126,8 @@ export default class ColorUI extends Plugin {
 				removeButtonLabel: t( 'Remove color' ),
 				colorPickerLabel: t( 'Color picker' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
-				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
+				colorPickerConfig: hasColorPicker ? ( componentConfig.colorPicker || {} ) : false
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
@@ -138,51 +146,51 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			dropdownView.on( 'execute', ( evt, data ) => {
-				editor.execute( this.commandName, data );
-				editor.editing.view.focus();
+			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
+				if ( dropdownView.isOpen ) {
+					editor.execute( this.commandName, data );
+				}
+
+				if ( data.source !== 'colorPicker' ) {
+					editor.editing.view.focus();
+				}
 			} );
 
-			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
-			let dropdownContentRendered = false;
+			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
+				editor.execute( this.commandName, {
+					value: colorSavedUponDropdownOpen
+				} );
+				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
+
+				editor.editing.view.focus();
+			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				if ( !dropdownContentRendered ) {
 					dropdownContentRendered = true;
 
-					dropdownView.colorTableView!.appendGrids();
-
-					if ( hasColorPicker ) {
-						dropdownView.colorTableView!.appendColorPicker( componentConfig.colorPicker || {} );
-
-						dropdownView.colorTableView!.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
-							// Color picker's internal color changes also when text with font color is selected.
-							// But the command should only be executed if color was picked in the dropdown.
-							if ( dropdownView.isOpen ) {
-								editor.execute( this.commandName, {
-									value: newValue
-								} );
-							}
-						} );
-					}
+					dropdownView.colorTableView!.appendUI();
 				}
 
 				if ( isVisible ) {
 					if ( hasColorPicker ) {
-						dropdownView.colorTableView!.originalColor = dropdownView.colorTableView!.selectedColor;
+						colorSavedUponDropdownOpen = dropdownView.colorTableView!.selectedColor!;
 					}
 
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
+
 					this.colorTableView!.updateSelectedColors();
+				} else {
+					this.colorTableView!.showColorGrids();
 				}
 			} );
 
 			// Accessibility: focus the first active color when opening the dropdown.
 			focusChildOnDropdownOpen(
 				dropdownView,
-				() => dropdownView.colorTableView!.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
+				() => dropdownView.colorTableView!.colorGridsPageView.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
 			);
 
 			return dropdownView;

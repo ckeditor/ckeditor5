@@ -218,6 +218,18 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
+		describe( 'role', () => {
+			it( 'is not initially set ', () => {
+				expect( view.element.attributes.role ).to.equal( undefined );
+			} );
+
+			it( 'reacts on view#role', () => {
+				view.role = 'foo';
+
+				expect( view.element.attributes.role.value ).to.equal( 'foo' );
+			} );
+		} );
+
 		describe( 'text', () => {
 			it( 'is not initially set ', () => {
 				expect( view.element.textContent ).to.equal( '' );
@@ -249,6 +261,12 @@ describe( 'ButtonView', () => {
 					.to.match( /^ck-editor__aria-label_\w+$/ );
 			} );
 
+			it( '-labelledby reacts to #ariaLabelledBy', () => {
+				view.ariaLabelledBy = 'foo';
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.to.equal( 'foo' );
+			} );
+
 			it( '-disabled reacts to #isEnabled', () => {
 				view.isEnabled = true;
 				expect( view.element.attributes[ 'aria-disabled' ] ).to.be.undefined;
@@ -278,6 +296,22 @@ describe( 'ButtonView', () => {
 
 				view.isOn = false;
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+			} );
+
+			it( '-checked reacts on #isOn', () => {
+				view.isOn = true;
+				expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+
+				view.isOn = false;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+			} );
+
+			it( '-label reacts on #ariaLabel', () => {
+				view.ariaLabel = undefined;
+				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
+
+				view.ariaLabel = 'Foo';
+				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
 			} );
 		} );
 

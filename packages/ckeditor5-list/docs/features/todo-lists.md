@@ -106,9 +106,11 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 <listItem listType="todo" todoListChecked="true">Bar</listItem>
 ```
 
-## Ordered and unordered lists
+## Related features
 
-You can read more about these features in the {@link features/lists lists feature guide}.
+These features provide similar functionality:
+* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered list with configurable markers.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Contribute
 

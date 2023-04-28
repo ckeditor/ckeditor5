@@ -7,13 +7,16 @@
  * @module style/stylecommand
  */
 
-import type { Element, Schema } from 'ckeditor5/src/engine';
+import type { Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { logWarning, first } from 'ckeditor5/src/utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { isObject } from 'lodash-es';
 
-import type { BlockStyleDefinition, InlineStyleDefinition, NormalizedStyleDefinitions } from './styleutils';
+import StyleUtils, {
+	type BlockStyleDefinition,
+	type NormalizedStyleDefinition,
+	type NormalizedStyleDefinitions
+} from './styleutils';
 
 /**
  * Style command.
@@ -67,6 +70,7 @@ export default class StyleCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
 
 		const value = new Set<string>();
 		const enabledStyles = new Set<string>();
@@ -82,7 +86,7 @@ export default class StyleCommand extends Command {
 				// Check if this inline style is active.
 				const ghsAttributeValue = this._getValueFromFirstAllowedNode( ghsAttributeName );
 
-				if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+				if ( styleUtils.hasAllClasses( ghsAttributeValue, definition.classes ) ) {
 					value.add( definition.name );
 				}
 			}
@@ -95,30 +99,28 @@ export default class StyleCommand extends Command {
 			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
 
 			for ( const block of ancestorBlocks ) {
-				// E.g. reached a model table when the selection is in a cell. The command should not modify
-				// ancestors of a table.
-				if ( model.schema.isLimit( block ) ) {
+				if ( block.is( 'rootElement' ) ) {
 					break;
-				}
-
-				if ( !model.schema.checkAttribute( block, 'htmlAttributes' ) ) {
-					continue;
 				}
 
 				for ( const definition of this._styleDefinitions.block ) {
 					// Check if this block style is enabled.
-					if ( !definition.modelElements.includes( block.name ) ) {
+					if ( !styleUtils.isStyleEnabledForBlock( definition, block ) ) {
 						continue;
 					}
 
 					enabledStyles.add( definition.name );
 
 					// Check if this block style is active.
-					const ghsAttributeValue = block.getAttribute( 'htmlAttributes' );
-
-					if ( hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+					if ( styleUtils.isStyleActiveForBlock( definition, block ) ) {
 						value.add( definition.name );
 					}
+				}
+
+				// E.g. reached a model table when the selection is in a cell. The command should not modify
+				// ancestors of a table.
+				if ( model.schema.isObject( block ) ) {
+					break;
 				}
 			}
 		}
@@ -174,18 +176,20 @@ export default class StyleCommand extends Command {
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		const definition: BlockStyleDefinition | InlineStyleDefinition = [
+		const allDefinitions: Array<NormalizedStyleDefinition> = [
 			...this._styleDefinitions.inline,
 			...this._styleDefinitions.block
-		].find( ( { name } ) => name == styleName )!;
+		];
 
+		const activeDefinitions = allDefinitions.filter( ( { name } ) => this.value.includes( name ) );
+		const definition: NormalizedStyleDefinition = allDefinitions.find( ( { name } ) => name == styleName )!;
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
 		model.change( () => {
 			let selectables;
 
 			if ( isBlockStyleDefinition( definition ) ) {
-				selectables = getAffectedBlocks( selection.getSelectedBlocks(), definition.modelElements, model.schema );
+				selectables = this._findAffectedBlocks( selection.getSelectedBlocks(), definition );
 			} else {
 				selectables = [ selection ];
 			}
@@ -194,10 +198,47 @@ export default class StyleCommand extends Command {
 				if ( shouldAddStyle ) {
 					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
 				} else {
-					htmlSupport.removeModelHtmlClass( definition.element, definition.classes, selectable );
+					htmlSupport.removeModelHtmlClass(
+						definition.element,
+						getDefinitionExclusiveClasses( activeDefinitions, definition ),
+						selectable
+					);
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Returns a set of elements that should be affected by the block-style change.
+	 */
+	private _findAffectedBlocks(
+		selectedBlocks: IterableIterator<Element>,
+		definition: BlockStyleDefinition
+	): Set<Element> {
+		const styleUtils: StyleUtils = this.editor.plugins.get( StyleUtils );
+		const blocks = new Set<Element>();
+
+		for ( const selectedBlock of selectedBlocks ) {
+			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+
+			for ( const block of ancestorBlocks ) {
+				if ( block.is( 'rootElement' ) ) {
+					break;
+				}
+
+				const affectedBlocks = styleUtils.getAffectedBlocks( definition, block );
+
+				if ( affectedBlocks ) {
+					for ( const affectedBlock of affectedBlocks ) {
+						blocks.add( affectedBlock );
+					}
+
+					break;
+				}
+			}
+		}
+
+		return blocks;
 	}
 
 	/**
@@ -229,55 +270,29 @@ export default class StyleCommand extends Command {
 }
 
 /**
- * Verifies if all classes are present in the given GHS attribute.
+ * Returns classes that are defined only in the supplied definition and not in any other active definition. It's used
+ * to ensure that classes used by other definitions are preserved when a style is removed. See #11748.
+ *
+ * @param activeDefinitions All currently active definitions affecting selected element(s).
+ * @param definition Definition whose classes will be compared with all other active definition classes.
+ * @returns Array of classes exclusive to the supplied definition.
  */
-function hasAllClasses( ghsAttributeValue: unknown, classes: Array<string> ): boolean {
-	return isObject( ghsAttributeValue ) &&
-		hasClassesProperty( ghsAttributeValue ) &&
-		classes.every( className => ghsAttributeValue.classes.includes( className ) );
-}
-
-/**
- * Returns a set of elements that should be affected by the block-style change.
- */
-function getAffectedBlocks(
-	selectedBlocks: IterableIterator<Element>,
-	elementNames: Array<string>,
-	schema: Schema
-): Set<Element> {
-	const blocks = new Set<Element>();
-
-	for ( const selectedBlock of selectedBlocks ) {
-		const ancestorBlocks: Array<Element> = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
-
-		for ( const block of ancestorBlocks ) {
-			if ( schema.isLimit( block ) ) {
-				break;
-			}
-
-			if ( elementNames.includes( block.name ) ) {
-				blocks.add( block );
-
-				break;
-			}
+function getDefinitionExclusiveClasses(
+	activeDefinitions: Array<NormalizedStyleDefinition>,
+	definition: NormalizedStyleDefinition
+): Array<string> {
+	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: NormalizedStyleDefinition ) => {
+		if ( currentDefinition.name === definition.name ) {
+			return classes;
 		}
-	}
 
-	return blocks;
+		return classes.filter( className => !currentDefinition.classes.includes( className ) );
+	}, definition.classes );
 }
 
 /**
  * Checks if provided style definition is of type block.
  */
-function isBlockStyleDefinition( definition: BlockStyleDefinition | InlineStyleDefinition ): definition is BlockStyleDefinition {
+function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
-}
-
-/**
- * Checks if given object has `classes` property which is an array.
- *
- * @param obj Object to check.
- */
-function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): obj is T & { classes: Array<unknown> } {
-	return Boolean( obj.classes ) && Array.isArray( obj.classes );
 }

@@ -35,5 +35,10 @@ describe( 'DocumentListUtils', () => {
 			const mock = false;
 			expect( plugin.isListItemBlock( mock ) ).to.be.false;
 		} );
+
+		it( 'expandListBlocksToCompleteItems', () => {
+			const mock = [];
+			expect( plugin.expandListBlocksToCompleteItems( mock ) ).to.be.an( 'array' );
+		} );
 	} );
 } );

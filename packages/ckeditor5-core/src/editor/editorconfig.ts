@@ -488,6 +488,14 @@ export interface EditorConfig {
 	 * {@glink features/html/html-embed HTML embed} features.
 	 */
 	updateSourceElementOnDestroy?: boolean;
+
+	/**
+	 * The license key for the CKEditor 5 premium features.
+	 *
+	 * If you do not have a key yet, please [contact us](https://ckeditor.com/contact/) or
+	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
+	 */
+	licenseKey?: string;
 }
 
 /**

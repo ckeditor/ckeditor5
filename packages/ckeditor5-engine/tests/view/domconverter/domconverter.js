@@ -784,7 +784,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			warnStub = testUtils.sinon.stub( console, 'warn' )
-				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected|domconverter-invalid-attribute-detected/ ) )
 				.callsFake( () => {} );
 
 			console.warn.callThrough();
@@ -875,6 +875,30 @@ describe( 'DomConverter', () => {
 					domElement,
 					key: 'onclick',
 					value: 'bar'
+				},
+				sinon.match.string // Link to the documentation
+			);
+		} );
+
+		it( 'should not render the attribute with invalid name', () => {
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, '200', 'foo' );
+			expect( domElement.outerHTML ).to.equal( '<p></p>' );
+		} );
+
+		it( 'should warn when the attribute has invalid name', () => {
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, '200', 'foo' );
+
+			sinon.assert.calledOnce( warnStub );
+			sinon.assert.calledWithExactly( warnStub,
+				sinon.match( /^domconverter-invalid-attribute-detected/ ),
+				{
+					domElement,
+					key: '200',
+					value: 'foo'
 				},
 				sinon.match.string // Link to the documentation
 			);

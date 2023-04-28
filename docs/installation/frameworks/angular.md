@@ -14,7 +14,7 @@ order: 20
 	</a>
 </p>
 
-CKEditor 5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor 5 Framework} upon which the builds are based.
 
 Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
@@ -22,68 +22,68 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
-## Supported Angular versions
-
-<info-box warning>
-	There is a [known issue](https://github.com/ckeditor/ckeditor5/issues/13838) related to using types from predefined builds in event handlers.
+<info-box hint>
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check the details about {@link installation/working-with-typescript TypeScript support}.
 </info-box>
+
+## Supported Angular versions
 
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
 
 <table>
   <thead>
-    <tr>
-      <th>CKEditor&nbsp;5&nbsp;version</th>
-      <th>Angular&nbsp;version</th>
-      <th>Details</th>
-    </tr>
+	<tr>
+	  <th>CKEditor&nbsp;5&nbsp;version</th>
+	  <th>Angular&nbsp;version</th>
+	  <th>Details</th>
+	</tr>
   </thead>
   <tbody>
-    <tr>
-      <td colspan="3">Actively supported versions</td>
-    </tr>
-    <tr>
-      <td><code>^6</code></td>
-      <td><code>13+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a>.</td>
-    </tr>
-    <tr>
-      <td colspan="3">Past releases (no longer maintained)</td>
-    </tr>
 	<tr>
-      <td><code>^5</code></td>
-      <td><code>13+</code></td>
-      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
-    </tr>
-    <tr>
-      <td><code>^5</code></td>
-      <td><code>13+</code></td>
-      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
-    </tr>
-    <tr>
-      <td><code>^4</code></td>
-      <td><code>9.1+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a>.</td>
-    </tr>
-    <tr>
-      <td><code>^3</code></td>
-      <td><code>9.1+</code></td>
-      <td>Requires Node.js at least in version 14.</td>
-    </tr>
-    <tr>
-      <td><code>^2</code></td>
-      <td><code>9.1+</code></td>
-      <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
-    </tr>
-    <tr>
-      <td><code>^1</code></td>
-      <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-      <td>Angular versions are no longer maintained.</td>
-    </tr>
+	  <td colspan="3">Actively supported versions</td>
+	</tr>
+	<tr>
+	  <td><code>^6</code></td>
+	  <td><code>13+</code></td>
+	  <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	</tr>
+	<tr>
+	  <td colspan="3">Past releases (no longer maintained)</td>
+	</tr>
+	<tr>
+	  <td><code>^5</code></td>
+	  <td><code>13+</code></td>
+	  <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	  <td><code>^5</code></td>
+	  <td><code>13+</code></td>
+	  <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	</tr>
+	<tr>
+	  <td><code>^4</code></td>
+	  <td><code>9.1+</code></td>
+	  <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
+	</tr>
+	<tr>
+	  <td><code>^3</code></td>
+	  <td><code>9.1+</code></td>
+	  <td>Requires Node.js in version 14 or higher.</td>
+	</tr>
+	<tr>
+	  <td><code>^2</code></td>
+	  <td><code>9.1+</code></td>
+	  <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
+	</tr>
+	<tr>
+	  <td><code>^1</code></td>
+	  <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
+	  <td>Angular versions are no longer maintained.</td>
+	</tr>
   </tbody>
 </table>
 
-All available versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
+All available Angular versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
 ## Quick start
 
@@ -94,12 +94,12 @@ npm install --save @ckeditor/ckeditor5-angular
 ```
 
 <info-box>
-	If you don't have an existing project, you can use [Angular CLI](https://angular.io/cli) to create a new one.
+	If you don't have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
-Install one of the {@link installation/getting-started/predefined-builds predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link installation/getting-started/predefined-builds CKEditor 5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
-Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
@@ -118,11 +118,11 @@ import { AppComponent } from './app.component';
 
 @NgModule( {
   declarations: [
-    AppComponent
+	AppComponent
   ],
   imports: [
-    BrowserModule,
-    CKEditorModule
+	BrowserModule,
+	CKEditorModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
@@ -158,7 +158,7 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
+Rebuild your application and CKEditor 5 should greet you with a "Hello, world!".
 
 ### Using the Document editor build
 
@@ -179,15 +179,15 @@ export class AppComponent {
   title = 'angular';
   public Editor = DecoupledEditor;
 
-  public onReady( editor: any ): void { //using `any` is temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
-    const decoupledEditor = editor as DecoupledEditor;
-    const element = decoupledEditor.ui.getEditableElement()!;
-    const parent = element.parentElement!;
+  public onReady( editor: any ): void { //using `any` is a temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
+	const decoupledEditor = editor as DecoupledEditor;
+	const element = decoupledEditor.ui.getEditableElement()!;
+	const parent = element.parentElement!;
 
-    parent.insertBefore(
-      decoupledEditor.ui.view.toolbar.element!,
-      element
-    );
+	parent.insertBefore(
+	  decoupledEditor.ui.view.toolbar.element!,
+	  element
+	);
   }
 }
 ```
@@ -202,9 +202,9 @@ And then, in the template:
 
 ### Using a custom CKEditor 5 build
 
-If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you should create a custom build first, using the {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build guide}.
+If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
 
-You should finish the above tutorial with the generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
+By completing the above tutorial you should get a generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 
 ```ts
 // app.component.ts
@@ -220,7 +220,7 @@ export class MyComponent {
 }
 ```
 
-Note that to allow importing JavaScript files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you target `ES6` or higher, otherwise you are likely to end up with [a weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
+Note that to allow importing JavaScript files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you target `ES6` or higher, otherwise you are likely to end up with a [weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
 
 ```json
 // tsconfig.json
@@ -240,7 +240,7 @@ Note that to allow importing JavaScript files without providing their correspond
 
 This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-Unpack it into you application main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+Unpack it into you application's main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
 
 ```
 ├── ckeditor5
@@ -291,7 +291,7 @@ For such a scenario we provide a few ready-to-use integrations featuring collabo
 
 - [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+It is not mandatory to build applications on top of the above samples, however, they should help you to get started.
 
 ## Integration with `ngModel`
 

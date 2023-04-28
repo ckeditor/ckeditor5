@@ -66,7 +66,7 @@ label.ck.ck-color-grid__label {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	padding: 8px;
+	padding: 0 8px 8px;
 
 	& .ck-button-save,
 	& .ck-button-cancel {

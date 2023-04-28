@@ -40,15 +40,19 @@ export default class FontFamilyUI extends Plugin {
 		const options = this._getLocalizedOptions();
 
 		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
+		const accessibleLabel = t( 'Font Family' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), {
+				role: 'menu',
+				ariaLabel: accessibleLabel
+			} );
 
 			dropdownView.buttonView.set( {
-				label: t( 'Font Family' ),
+				label: accessibleLabel,
 				icon: fontFamilyIcon,
 				tooltip: true
 			} );
@@ -110,6 +114,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,
+				role: 'menuitemradio',
 				withText: true
 			} )
 		};

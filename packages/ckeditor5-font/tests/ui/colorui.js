@@ -143,13 +143,13 @@ describe( 'ColorUI', () => {
 			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 			dropdown.commandName = 'testColorCommand';
-			dropdown.fire( 'execute', { value: null } );
+			dropdown.colorTableView.fire( 'execute', { value: null } );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
 		it( 'colorTableView has set proper default attributes', () => {
-			const colorTableView = dropdown.colorTableView;
+			const colorTableView = dropdown.colorTableView.colorGridsPageView;
 
 			expect( colorTableView.documentColorsCount ).to.equal( 3 );
 		} );
@@ -158,7 +158,7 @@ describe( 'ColorUI', () => {
 			const localDropdown = editor.ui.componentFactory.create( 'testColor' );
 			localDropdown.render();
 
-			for ( const item of localDropdown.colorTableView.items ) {
+			for ( const item of localDropdown.colorTableView.colorGridsPageView.items ) {
 				expect( item ).not.to.be.instanceOf( ColorGridView );
 			}
 		} );
@@ -166,7 +166,7 @@ describe( 'ColorUI', () => {
 		it( 'should focus the first active button when dropdown is opened', () => {
 			global.document.body.appendChild( dropdown.element );
 
-			const secondButton = dropdown.colorTableView.staticColorsGrid.items.get( 1 );
+			const secondButton = dropdown.colorTableView.colorGridsPageView.staticColorsGrid.items.get( 1 );
 			const spy = sinon.spy( secondButton, 'focus' );
 
 			secondButton.isOn = true;
@@ -181,7 +181,7 @@ describe( 'ColorUI', () => {
 			it( 'should execute command if the color gets changed when dropdown is open', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				dropdown.colorTableView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
 			} );
@@ -190,7 +190,7 @@ describe( 'ColorUI', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				dropdown.isOpen = false;
-				dropdown.colorTableView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
 
 				sinon.assert.notCalled( spy );
 			} );
@@ -204,7 +204,7 @@ describe( 'ColorUI', () => {
 
 				dropdown.colorTableView.selectedColor = '#123456';
 
-				dropdown.colorTableView.cancelButtonView.fire( 'execute' );
+				dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
 
 				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
 			} );
@@ -229,7 +229,7 @@ describe( 'ColorUI', () => {
 				} ) );
 			} );
 
-			it( 'should pass proper color format from the config', async () => {
+			it( 'should call appendColorPicker when dropdown is opened', async () => {
 				// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
 				const element = document.createElement( 'div' );
 				document.body.appendChild( element );
@@ -248,7 +248,7 @@ describe( 'ColorUI', () => {
 					} );
 
 				const dropdown = editor.ui.componentFactory.create( 'testColor' );
-				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
+				const spy = sinon.spy( dropdown.colorTableView, '_appendColorPicker' );
 
 				dropdown.isOpen = true;
 
@@ -258,9 +258,7 @@ describe( 'ColorUI', () => {
 				dropdown.destroy();
 				await editor.destroy();
 
-				sinon.assert.calledWithExactly( spy, sinon.match( {
-					format: 'rgb'
-				} ) );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 
@@ -280,7 +278,7 @@ describe( 'ColorUI', () => {
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown.render();
-				documentColorsModel = dropdown.colorTableView.documentColors;
+				documentColorsModel = dropdown.colorTableView.colorGridsPageView.documentColors;
 				global.document.body.appendChild( dropdown.element );
 			} );
 			afterEach( () => {
@@ -388,9 +386,9 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'works for the colorTableView#items in the panel', () => {
-				const colorTableView = dropdown.colorTableView;
+				const colorTableView = dropdown.colorTableView.colorGridsPageView;
 
-				expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
+				// expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
 				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
@@ -421,7 +419,7 @@ describe( 'ColorUI', () => {
 				colors.forEach( test => {
 					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
 						dropdown.isOpen = true;
-						const colorGrid = dropdown.colorTableView.items.get( 1 );
+						const colorGrid = dropdown.colorTableView.colorGridsPageView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
 						expect( tile.label ).to.equal( test.label );
