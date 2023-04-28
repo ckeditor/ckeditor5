@@ -77,6 +77,24 @@ describe( 'DropdownPanelView', () => {
 	} );
 
 	describe( 'render()', () => {
+		it( 'should not intercept the "selectstart" event for the text node', () => {
+			const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
+			labeledInput.label = 'foo';
+
+			view.children.add( labeledInput );
+
+			const spy = sinon.spy();
+			const event = new Event( 'selectstart', {
+				bubbles: true,
+				cancelable: true
+			} );
+
+			event.stopPropagation = spy;
+
+			labeledInput.element.children[ 0 ].children[ 1 ].childNodes[ 0 ].dispatchEvent( event ); // text node 'foo'
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'intercepts the "selectstart" event for the input field', () => {
 			const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
 
