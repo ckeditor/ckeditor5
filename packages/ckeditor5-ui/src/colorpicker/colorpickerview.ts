@@ -24,7 +24,7 @@ const waitingTime = 150;
 
 export default class ColorPickerView extends View {
 	/**
-	 * Color picker component.
+	 * Element with saturation and hue sliders.
 	 */
 	declare public picker: HTMLElement;
 
@@ -40,14 +40,14 @@ export default class ColorPickerView extends View {
 	declare public color: string;
 
 	/**
-	 * List of sliders view of the color picker.
+	 * List of slider views of the color picker.
 	 */
 	declare public slidersView: ViewCollection<SliderView>;
 
 	/**
-	 * An internal representation of a color
+	 * An internal representation of a color.
 	 *
-	 * Since the picker uses a hex, we store it in that format.
+	 * Since the picker uses a hex format, that's how we store it.
 	 *
 	 * Since this is unified color format it won't fire a change event if color is changed
 	 * from `#f00` to `#ff0000` (same value, different format).
@@ -63,10 +63,13 @@ export default class ColorPickerView extends View {
 	*/
 	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
+	/**
+	 * The output format (the one in which colors are applied in the model) of color picker.
+	 */
 	declare private _format: ColorPickerOutputFormat;
 
 	/**
-	 * Creates a view of Color Picker.
+	 * Creates a view of color picker.
 	 *
 	 * @param locale
 	 * @param config
@@ -152,7 +155,8 @@ export default class ColorPickerView extends View {
 	}
 
 	/**
-	 * Focuses the first pointer in color picker
+	 * Focuses the first pointer in color picker.
+	 *
 	 */
 	public focus(): void {
 		const firstSlider = this.slidersView.first!;
@@ -162,6 +166,8 @@ export default class ColorPickerView extends View {
 
 	/**
 	 * Creates collection of sliders in color picker.
+	 *
+	 * @private
 	 */
 	private _createSlidersView(): void {
 		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
@@ -243,12 +249,10 @@ export default class ColorPickerView extends View {
 	}
 }
 
-/**
- * Converts any color format to a unified hex format.
- *
- * @param inputColor
- * @returns An unified hex string.
- */
+// Converts any color format to a unified hex format.
+//
+// @param inputColor
+// @returns An unified hex string.
 function convertColorToCommonHexFormat( inputColor: string ): string {
 	let ret = convertToHex( inputColor );
 
@@ -264,9 +268,7 @@ function convertColorToCommonHexFormat( inputColor: string ): string {
 	return ret.toLowerCase();
 }
 
-/**
- * View abstraction over pointer in color picker.
- */
+// View abstraction over pointer in color picker.
 class SliderView extends View {
 	/**
 	 * @param element HTML elemnt of slider in color picker.
@@ -284,9 +286,7 @@ class SliderView extends View {
 	}
 }
 
-/**
- * View abstaction over the `#` character before color input.
- */
+// View abstaction over the `#` character before color input.
 class HashView extends View {
 	constructor( locale?: Locale ) {
 		super( locale );
@@ -304,14 +304,11 @@ class HashView extends View {
 	}
 }
 
-/**
- * The class representing a row containing hex color input field.
- *
- * **Note**: For now this class is private. When more use cases appear (beyond `ckeditor5-table` and `ckeditor5-image`),
- * it will become a component in `ckeditor5-ui`.
- *
- * @private
- */
+// The class representing a row containing hex color input field.
+// **Note**: For now this class is private. When more use cases appear (beyond `ckeditor5-table` and `ckeditor5-image`),
+// it will become a component in `ckeditor5-ui`.
+//
+// @private
 class ColorPickerInputRowView extends View {
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).

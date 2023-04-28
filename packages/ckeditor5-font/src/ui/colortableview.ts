@@ -32,8 +32,8 @@ import '../../theme/fontcolor.css';
 /**
  * A class which represents a view with the following sub–components:
  *
- * * Color table component,
- * * Color Picker component
+ * * A {@link module:font/ui/colortableview~ColorTableView#colorGridsPageView color grids component},
+ * * A {@link module:font/ui/colortableview~ColorTableView#colorPickerPageView color picker component}.
  */
 export default class ColorTableView extends View {
 	/**
@@ -52,25 +52,22 @@ export default class ColorTableView extends View {
 	public readonly items: ViewCollection;
 
 	/**
-	 * The "Color table" component. Contains "remove color" button ,"color grid" view, "document color
-	 * grid" view. Also depending on is color picker turn on or off, could be appeared the "color picker"
-	 * button.
+	 * The "Color grids" component.
 	 */
 	public colorGridsPageView: ColorGridsPageView;
 
 	/**
-	 * The "Color picker" component. Contains color picker itself with input and action buttons as
-	 * "save" and "cancel" buttons.
+	 * The "Color picker" component.
 	 */
 	public colorPickerPageView: ColorPickerPageView;
 
 	/**
-	 * Keeps the value of the command associated with the table for the current selection.
+	 * Keeps the value of the command associated with the component for the current selection.
 	 */
 	declare public selectedColor?: string;
 
 	/**
-	 * State of the "Color table" component visibility.
+	 * State of the "Color grids" component visibility.
 	 *
 	 * @internal
 	 */
@@ -98,7 +95,7 @@ export default class ColorTableView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
-	 * Color picker's config with defined format.
+	 * The configuration of color picker feature.
 	 */
 	private _colorPickerConfig: ColorPickerConfig | false;
 
@@ -229,10 +226,8 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Renders UI in dropdown. If color picker is defined in config, then color picker is
-	 * rendered as well.
-	 *
-	 * @param param0
+	 * Renders UI in dropdown. Which sub-components are rendered
+	 * depends on the component configuration.
 	 */
 	public appendUI(): void {
 		this.appendGrids();
@@ -243,7 +238,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Show "Color picker" and hide "Color table".
+	 * Show "Color picker" and hide "Color grids".
 	 */
 	public showColorPicker(): void {
 		if ( !this.colorPickerPageView.colorPickerView ) {
@@ -256,7 +251,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Show "Color table" and hide "Color picker".
+	 * Show "Color grids" and hide "Color picker".
 	 */
 	public showColorGrids(): void {
 		this.set( '_isColorGridsPageVisible', true );
@@ -327,6 +322,7 @@ export default class ColorTableView extends View {
  * * A remove color button,
  * * A static {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors defined in the configuration,
  * * A dynamic {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors used in the document.
+ * * If color picker is configured, the "Color Picker" button is visible too.
  */
 class ColorGridsPageView extends View {
 	/**
@@ -424,7 +420,7 @@ class ColorGridsPageView extends View {
 	private _removeButtonLabel: string;
 
 	/**
-	 * The label of the button responsible for removing color attributes.
+	 * The label of the button responsible for switching to the color picker component.
 	 */
 	public _colorPickerLabel: string;
 
@@ -589,7 +585,7 @@ class ColorGridsPageView extends View {
 	}
 
 	/**
-	 * Creates "color picker" button.
+	 * Handles displaying the color picker button (if it was previously created) and making it focusable.
 	 */
 	public addColorPickerButton(): void {
 		if ( this.colorPickerButtonView ) {
@@ -618,7 +614,7 @@ class ColorGridsPageView extends View {
 	}
 
 	/**
-	 * Creates "color picker" button.
+	 * Creates the button responsible for displaying the color picker component.
 	 */
 	private _createColorPickerButton(): void {
 		this.colorPickerButtonView = new ButtonView();
@@ -752,21 +748,20 @@ class ColorGridsPageView extends View {
 }
 
 /**
- * A class which represents a view of color picker:
+ * A class which represents a color picker component view with the following sub–components:
  *
- * * Color Picker,
- * * Input in HEX format,
- * * Action buttons as "save" and "cancel".
+ * * Color picker saturation and hue sliders,
+ * * Input accepting colors in HEX format,
+ * * "Save" and "Cancel" action buttons.
  */
 class ColorPickerPageView extends View {
 	/**
-	 * A collection of the children of the table.
+	 * A collection of component's children.
 	 */
 	public readonly items: ViewCollection;
 
 	/**
-	 * Color picker allows to select custom colors.
-	 *
+	 * A view with saturation and hue sliders and color input.
 	 */
 	public colorPickerView?: ColorPickerView;
 
@@ -781,7 +776,7 @@ class ColorPickerPageView extends View {
 	public cancelButtonView: ButtonView;
 
 	/**
-	 * The action bar where are "save button" and "cancel button".
+	 * The action bar where are "Save" button and "Cancel" button.
 	 */
 	public actionBarView: View;
 
@@ -796,24 +791,26 @@ class ColorPickerPageView extends View {
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * The property which is responsible for is component visible or not.
+	 * Indicates whether the component is visible or not.
 	 */
 	declare public isVisible: boolean;
 
 	/**
-	 * Keeps the value of the command associated with the table for the current selection.
+	 * Keeps the value of the command associated with the component for the current selection.
 	 */
 	declare public selectedColor?: string;
 
 	/**
-	  * A collection of views that can be focused in the view.
-	  *
-	  * @readonly
-	  */
+	 * A collection of views that can be focused in the view.
+	 *
+	 * @readonly
+	 */
 	protected _focusables: ViewCollection;
 
 	/**
 	 * Color picker's config.
+	 *
+	 * @readonly
 	 */
 	private _pickerConfig: ColorPickerConfig | false;
 
@@ -908,7 +905,7 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * Remove default behavior of arrow keys in dropdown.
+	 * Removes default behavior of arrow keys in dropdown.
 	 */
 	private _stopPropagationOnArrowsKeys(): void {
 		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
@@ -939,7 +936,7 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * Creates bar with "save" and "cancel" buttons in it.
+	 * Creates bar containing "Save" and "Cancel" buttons.
 	 */
 	private _createActionBarView( { saveButtonView, cancelButtonView }: {
 		saveButtonView: ButtonView;
@@ -966,7 +963,7 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * Creates "save" and "cancel" buttons.
+	 * Creates "Save" and "Cancel" buttons.
 	 */
 	private _createActionButtons() {
 		const locale = this.locale;
@@ -1006,7 +1003,9 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * If there are any changes in color picker, it fires the event.
+	 * Fires the `execute` event if color in color picker changed.
+	 *
+	 * @fires execute
 	 */
 	private _executeUponColorChange() {
 		this.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
@@ -1019,7 +1018,7 @@ class ColorPickerPageView extends View {
 }
 
 /**
- * Fired whenever action changes the color.
+ * Fired whenever the color was changed.
  *
  * @eventName ~ColorTableView#execute
  */
@@ -1032,7 +1031,7 @@ export type ColorTableExecuteEvent = {
 };
 
 /**
- * Fired whenever changes should be canceled.
+ * Fired whenever color changes should be canceled.
  *
  * @eventName ~ColorTableView#cancel
  */
