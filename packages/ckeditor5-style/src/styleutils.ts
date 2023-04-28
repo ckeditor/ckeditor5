@@ -187,11 +187,13 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
-	* This is where the styles feature configures the GHS feature. This method translates normalized
-	* {@link module:style/styleconfig~StyleDefinition style definitions} to
-	* {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
-	* {@link module:html-support/datafilter~DataFilter} plugin.
-	*/
+	 * This is where the styles feature configures the GHS feature. This method translates normalized
+	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
+	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	 * {@link module:html-support/datafilter~DataFilter} plugin.
+	 *
+	 * @internal
+	 */
 	public configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
 		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
 

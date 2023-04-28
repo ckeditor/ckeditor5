@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module style/integrations/tablestylesupport
+ */
+
 import { Plugin } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
@@ -15,10 +19,6 @@ import StyleUtils, {
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsConfigureGHSDataFilterEvent
 } from '../styleutils';
-
-/**
- * @module style/integrations/tablestylesupport
- */
 
 export default class TableStyleSupport extends Plugin {
 	private _tableUtils!: TableUtils;
