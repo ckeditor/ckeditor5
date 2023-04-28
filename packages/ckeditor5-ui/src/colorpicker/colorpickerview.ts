@@ -65,7 +65,7 @@ export default class ColorPickerView extends View {
 	declare private _format: ColorPickerOutputFormat;
 
 	/**
-	 * TODO
+	 * Creates a view of Color Picker.
 	 *
 	 * @param locale
 	 * @param config
@@ -151,7 +151,7 @@ export default class ColorPickerView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Focuses the first pointer in color picker
 	 */
 	public focus(): void {
 		const firstSlider = this.slidersView.first!;
@@ -160,7 +160,7 @@ export default class ColorPickerView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates collection of sliders in color picker.
 	 */
 	private _createSlidersView(): void {
 		const colorPickersChildren = [ ...this.picker.shadowRoot!.children ] as Array<HTMLElement>;
@@ -216,9 +216,7 @@ export default class ColorPickerView extends View {
  */
 class SliderView extends View {
 	/**
-	 * TODO
-	 *
-	 * @param element TODO
+	 * @param element HTML elemnt of slider in color picker.
 	 */
 	constructor( element: HTMLElement ) {
 		super();
@@ -226,7 +224,7 @@ class SliderView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Focuses element.
 	 */
 	public focus(): void {
 		this.element!.focus();

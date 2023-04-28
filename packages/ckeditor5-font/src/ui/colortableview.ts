@@ -98,7 +98,7 @@ export default class ColorTableView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
-	 * TODO
+	 * Color picker's config with defined format.
 	 */
 	private _colorPickerConfig: ColorPickerConfig | false;
 
@@ -112,7 +112,7 @@ export default class ColorTableView extends View {
 	 * @param colorPickerLabel The label of the button responsible for color picker appearing.
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
-	 * @param colorPickerConfig TODO
+	 * @param colorPickerConfig The object with format of color which color picker should understand.
 	 */
 	constructor(
 		locale: Locale,
@@ -229,7 +229,8 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Renders UI in dropdown. If color picker is defined in config, then color picker is
+	 * rendered as well.
 	 *
 	 * @param param0
 	 */
@@ -277,17 +278,22 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Scans through the editor model and searches for text node attributes with the given attribute name.
+	 * Found entries are set as document colors.
 	 *
-	 * @param model
-	 * @param attributeName
+	 * All the previously stored document colors will be lost in the process.
+	 *
+	 * @param model The model used as a source to obtain the document colors.
+	 * @param attributeName Determines the name of the related model's attribute for a given dropdown.
 	 */
 	public updateDocumentColors( model: Model, attributeName: string ): void {
 		this.colorGridsPageView.updateDocumentColors( model, attributeName );
 	}
 
 	/**
-	 * TODO
+	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
+	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * of them.
 	 */
 	public updateSelectedColors(): void {
 		this.colorGridsPageView.updateSelectedColors();
@@ -817,7 +823,7 @@ class ColorPickerPageView extends View {
 	 * @param focusTracker Tracks information about the DOM focus in the list.
 	 * @param focusables A collection of views that can be focused in the view..
 	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}..
-	 * @param config TODO
+	 * @param colorPickerConfig The object with format of color which color picker should understand.
 	 */
 	constructor(
 		locale: Locale,
@@ -1001,7 +1007,7 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * TODO
+	 * If there are any changes in color picker, it fires the event.
 	 */
 	private _executeUponColorChange() {
 		this.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
@@ -1014,7 +1020,7 @@ class ColorPickerPageView extends View {
 }
 
 /**
- * TODO
+ * Fired whenever action changes the color.
  *
  * @eventName ~ColorTableView#execute
  */
@@ -1027,7 +1033,7 @@ export type ColorTableExecuteEvent = {
 };
 
 /**
- * TODO
+ * Fired whenever changes should be canceled.
  *
  * @eventName ~ColorTableView#cancel
  */
