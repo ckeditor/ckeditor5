@@ -71,6 +71,7 @@ export default class FontFamilyUI extends Plugin {
 			dropdownView.buttonView.set( 'withText', true );
 
 			// Hide the icon.
+			// @ts-ignore
 			dropdownView.buttonView.set( 'icon', false );
 
 			// Bind dropdown's button label to fontFamily value.
