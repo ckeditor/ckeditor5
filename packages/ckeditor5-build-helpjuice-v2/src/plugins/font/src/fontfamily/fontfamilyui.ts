@@ -6,7 +6,7 @@
 /**
  * @module font/fontfamily/fontfamilyui
  */
-
+// @ts-ignore
 import { Plugin } from 'ckeditor5/src/core';
 import { Collection } from 'ckeditor5/src/utils';
 import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
@@ -71,7 +71,6 @@ export default class FontFamilyUI extends Plugin {
 			dropdownView.buttonView.set( 'withText', true );
 
 			// Hide the icon.
-			// @ts-ignore
 			dropdownView.buttonView.set( 'icon', false );
 
 			// Bind dropdown's button label to fontFamily value.

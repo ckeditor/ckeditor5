@@ -1,4 +1,7 @@
 {
+	"compilerOptions": {
+		"noImplicitAny": false,
+	},
     "extends": "../../tsconfig.json",
     "include": [
         "src",
