@@ -26,9 +26,9 @@ mrgit.json
 yalc.lock
 
 # Ignore compiled TypeScript files.
-packages/*/src/**/*.d.ts
+# packages/*/src/**/*.d.ts
 # packages/*/src/**/*.js
-packages/*/src/**/*.js.map
-src/**/*.js
-src/**/*.js.map
-src/**/*.d.ts
+# packages/*/src/**/*.js.map
+# src/**/*.js
+# src/**/*.js.map
+# src/**/*.d.ts
