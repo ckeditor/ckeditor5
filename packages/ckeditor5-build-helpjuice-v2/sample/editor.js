@@ -56,7 +56,6 @@ const findNodes = function(writer, type, root) {
 	return nodes;
 };
 
-
 ClassicEditor
 	.create(document.querySelector('#helpjuice-editor'))
 	.then(editor => {
