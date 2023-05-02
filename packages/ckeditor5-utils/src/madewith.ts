@@ -13,9 +13,16 @@
 export type VerifiedKeyStatus = 'VALID' | 'INVALID' | 'EXPIRED';
 
 /**
- * TODO
+ * Checks whether the given string contains information that allows you to verify the license status.
+ *
+ * @param stringToCheck The string to check.
+ * @returns String that represents the state of given `stringToCheck` parameter. It can be `'VALID'`, `'INVALID'` or `'EXPIRED'`.
  */
 export default function verify( stringToCheck: string ): VerifiedKeyStatus {
+	// This is just a very simplified preliminary front-end check of the date validation with the current release date - it
+	// allows to check whether a CKEditor logo/link will be shown or not (for recognize the editor and to show awesome
+	// features that it can bring with customized, licensed product).
+
 	// mocked last release date
 	const currentReleaseDate = new Date();
 
@@ -53,7 +60,6 @@ export default function verify( stringToCheck: string ): VerifiedKeyStatus {
 		return 'INVALID';
 	}
 
-	// date will be compared to date of the release that will be handled like version now
 	const day = decryptedSecondElement.substring( 0, 2 );
 	const month = decryptedSecondElement.substring( 2, 4 );
 	const year = decryptedSecondElement.substring( 4, 8 );
