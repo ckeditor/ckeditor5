@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    {
+      "name": "Email editing",
+      "className": "EmailEditing",
+      "description": "Adds text to the editor.",
+      "path": "src/emailediting.js",
+      "uiComponents": [
+        {
+          "name": "emailEditingButton",
+          "type": "Button",
+          "iconPath": "theme/icons/ckeditor.svg"
+        }
+      ]
+    }
+  ]
+}

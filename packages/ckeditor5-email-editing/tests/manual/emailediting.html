@@ -1,0 +1,206 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self' http://192.168.9.55:3000 http://localhost:3000 https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *">
+	<style>
+		body {
+			max-width: 600px;
+			margin: 20px auto;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+
+		.editor-container {
+			border: 1px solid var(--ck-color-toolbar-border);
+			border-bottom: none;
+		}
+
+		.email-inputs-container {
+			display: flex;
+			flex-direction: column;
+			padding: 1em;
+		}
+
+		.email-input {
+			display: flex;
+			border-bottom: 1px solid #cfcfcf;
+			padding: .6em 0;
+			color: #747775;
+			gap: 5px;
+			font-size: .9em;
+		}
+
+		.email-input-editable {
+			width: 100%;
+			color: #444645;
+		}
+
+		.email-input-editable:focus {
+			outline: none;
+		}
+	</style>
+	<style data-cke="true">
+		.ck-content {
+			padding: 3em 2em 2em;
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 16px;
+		}
+
+		.ck-content h2 {
+			border: 0;
+			font-size: 1.3em;
+			padding-top: 0.2em;
+			padding-bottom: 0.2em;
+			margin-bottom: 0.4em;
+		}
+
+		.ck-content .ck-horizontal-line.ck-widget {
+			text-align: center;
+		}
+
+		.ck-content hr {
+			margin: auto !important;
+			width: 50px !important;
+			height: 1px !important;
+		}
+
+		.ck-content a {
+			text-decoration: none;
+		}
+
+		.ck-content a:hover {
+			text-decoration: underline;
+		}
+
+		.ck-content .table table td {
+			padding: 0;
+		}
+
+	</style>
+</head>
+<button id="copy-html">Copy HTML</button>
+<div class="editor-container">
+	<div class="email-inputs-container">
+		<div class="email-input">
+			<span class="email-input-label">To</span>
+			<span id="to-input" class="email-input-editable" contenteditable>Insert your e-mail here...</span>
+		</div>
+		<div class="email-input">
+			<span class="email-input-label">Subject</span>
+			<span id="subject-input" class="email-input-editable" contenteditable>Welcome to Fabulous Dummy App! </span>
+		</div>
+	</div>
+	<div id="editor" class="editor">
+		<p style="text-align:center;">
+			<img
+				class="image_resized"
+				style="width:65px"
+				src="https://www.freepnglogos.com/uploads/black-f-logo-6.png"
+				alt="Fabulous Dummy App logo"
+			/>
+		</p>
+		<h2 style="text-align: center;">Welcome to Fabulous Dummy App!</h2>
+		<hr />
+		<p>We are so glad to have you, <strong>{user_name}</strong>! But before you can explore all the features, please verify your email address.</p>
+		<p>We use your email address to validate your account and to keep you updated. We respect your privacy and you can opt out of direct email marketing in your account <a href="https://fabulousdummyapp.com/preferences">preferences</a>.</p>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>
+						<p style="text-align:center;">Free</p>
+					</th>
+					<th>
+						<p style="text-align:center;">Personal</p>
+					</th>
+					<th>
+						<p style="text-align:center;">Team</p>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<p style="text-align:center;">Storage</p>
+					</td>
+					<td>
+						<p style="text-align:center;">1GB</p>
+					</td>
+					<td>
+						<p style="text-align:center;">15GB</p>
+					</td>
+					<td>
+						<p style="text-align:center;">120GB</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p style="text-align:center;">Dedicated support</p>
+					</td>
+					<td>
+						<p style="text-align:center;">❌</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p style="text-align:center;">Discounts</p>
+					</td>
+					<td>
+						<p style="text-align:center;">❌</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p style="text-align:center;">Active connections limit</p>
+					</td>
+					<td>
+						<p style="text-align:center;">1</p>
+					</td>
+					<td>
+						<p style="text-align:center;">Unlimited</p>
+					</td>
+					<td>
+						<p style="text-align:center;">Unlimited</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p style="text-align:center;">Access to the full content library</p>
+					</td>
+					<td>
+						<p style="text-align:center;">❌</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+					<td>
+						<p style="text-align:center;">✅</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>If you did not create an account using this email address, please contact us at <a href="mailto:contact@fabulousdummyapp.com">contact@fabulousdummyapp.com</a>.</p>
+		<p style="text-align: center;">
+			<a href="https://fabulousdummyapp.com/verify">
+				<span class="text-big"><strong>Verify your account</strong></span>
+			</a>
+		</p>
+		<hr />
+		<p>
+			<span class="text-small" style="color: hsl(0, 0%, 60%);"><strong>Fabulous Dummy App</strong></span>
+			<br />
+			<span class="text-small" style="color: hsl(0, 0%, 60%);">One app that will do <i>anything</i> you want.</span>
+		</p>
+		<p><span class="text-small" style="color: hsl(0, 0%, 60%);">2776 Black Oak Hollow Road, San Jose, CA</span></p>
+	</div>
+</div>
+<div id="editor-toolbar-container"></div>
