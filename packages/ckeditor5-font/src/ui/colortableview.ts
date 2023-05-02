@@ -1015,7 +1015,6 @@ class ColorPickerPageView extends View {
 		} );
 
 		cancelButtonView.on( 'execute', () => {
-			console.log( 'cancel ---------' );
 			this.fire<ColorTableCancelEvent>( 'cancel' );
 		} );
 
