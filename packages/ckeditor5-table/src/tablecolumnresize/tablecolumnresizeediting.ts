@@ -146,6 +146,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
 			const classAction = value ? 'removeClass' : 'addClass';
+
 			editor.editing.view.change( writer => {
 				for ( const root of editor.editing.view.document.roots ) {
 					writer[ classAction ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot( root.rootName )! );
