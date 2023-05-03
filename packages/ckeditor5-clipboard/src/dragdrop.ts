@@ -16,12 +16,11 @@ import {
 	MouseObserver,
 	type DataTransfer,
 	type Element,
-	type Position,
 	type Range,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ViewRange
+	type DomEventData
 } from '@ckeditor/ckeditor5-engine';
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
@@ -420,7 +419,8 @@ export default class DragDrop extends Plugin {
 
 			this._removeDropMarkerDelayed.cancel();
 
-			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target, data.clientX, data.clientY, this._blockMode );
+			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+			const targetRange = findDropTargetRange( editor, data.target, clientX, clientY, this._blockMode );
 
 			// If this is content being dragged from another editor, moving out of current editor instance
 			// is not possible until 'dragend' event case will be fixed.
@@ -460,14 +460,8 @@ export default class DragDrop extends Plugin {
 				return;
 			}
 
-			const targetRange = findDropTargetRange(
-				editor,
-				data.targetRanges,
-				data.target,
-				( data as any ).clientX,
-				( data as any ).clientY,
-				this._blockMode
-			);
+			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+			const targetRange = findDropTargetRange( editor, data.target, clientX, clientY, this._blockMode );
 
 			// The dragging markers must be removed after searching for the target range because sometimes
 			// the target lands on the marker itself.
@@ -869,7 +863,6 @@ export default class DragDrop extends Plugin {
  */
 function findDropTargetRange(
 	editor: Editor,
-	targetViewRanges: Array<ViewRange> | null,
 	targetViewElement: ViewElement,
 	clientX: number,
 	clientY: number,
@@ -878,196 +871,94 @@ function findDropTargetRange(
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
-	let range: Range | null = null;
-
-	const targetViewPosition = targetViewRanges ? targetViewRanges[ 0 ].start : null;
-
-	// A UIElement is not a valid drop element, use parent (this could be a drop marker or any other UIElement).
-	if ( targetViewElement.is( 'uiElement' ) ) {
-		targetViewElement = targetViewElement.parent as ViewElement;
-	}
-
-	// Quick win if the target is a widget (but not a nested editable).
-	range = findDropTargetRangeOnWidget( editor, targetViewElement, blockMode );
-
-	if ( range ) {
-		return range;
-	}
-
-	// The easiest part is over, now we need to move to the model space.
-
-	// Find target model element and position.
 	const targetModelElement = getClosestMappedModelElement( editor, targetViewElement );
-	const targetModelPosition = targetViewPosition ? mapper.toModelPosition( targetViewPosition ) : null;
+	let modelElement = targetModelElement;
 
-	// There is no target position while hovering over an empty table cell.
-	// In Safari, target position can be empty while hovering over a widget (e.g., a page-break).
-	// Find the drop position inside the element.
-	if ( !targetModelPosition ) {
-		return findDropTargetRangeInElement( editor, targetModelElement );
-	}
+	while ( modelElement ) {
+		if ( !blockMode && model.schema.checkChild( modelElement, '$text' ) ) {
+			const childNodes = Array.from( modelElement.getChildren() )
+				.filter( node => !node.is( 'element' ) || !isFloatingElement( editor, node ) );
 
-	// Check if target position is between blocks and adjust drop position to the next object.
-	// This is because while hovering over a root element next to a widget the target position can jump in crazy places.
-	range = findDropTargetRangeBetweenBlocks( editor, targetModelPosition, targetModelElement );
+			let startOffset = 0;
+			let endOffset = childNodes.reduce( ( total, node ) => total + node.offsetSize, 0 );
 
-	if ( range ) {
-		return range;
-	}
+			// TODO find inline offset
 
-	if ( blockMode ) {
-		range = findDropTargetNextToBlock( editor, targetModelElement, clientX, clientY );
-
-		if ( range ) {
-			return range;
+			return model.createRange(
+				model.createPositionAt( modelElement, 0 )
+			);
 		}
-	} else {
-		// Try fixing selection position.
-		// In Firefox, the target position lands before widgets but in other browsers it tends to land after a widget.
-		range = model.schema.getNearestSelectionRange( targetModelPosition, env.isGecko ? 'forward' : 'backward' );
-
-		if ( range ) {
-			return range;
+		else if ( model.schema.isBlock( modelElement ) ) {
+			return findDropTargetRangeForElement( editor, modelElement, clientX, clientY );
 		}
+		else if ( model.schema.checkChild( modelElement, '$block' ) ) {
+			const childNodes = Array.from( modelElement.getChildren() )
+				.filter( ( node ): node is Element => node.is( 'element' ) && !isFloatingElement( editor, node ) );
+
+			let startIndex = 0;
+			let endIndex = childNodes.length;
+
+			while ( startIndex < endIndex - 1 ) {
+				const middleIndex = Math.floor( ( startIndex + endIndex ) / 2 );
+				const side = findElementSide( editor, childNodes[ middleIndex ], clientX, clientY );
+
+				if ( side == 'before' ) {
+					endIndex = middleIndex;
+				} else {
+					startIndex = middleIndex;
+				}
+			}
+
+			return findDropTargetRangeForElement( editor, childNodes[ startIndex ], clientX, clientY );
+		}
+
+		modelElement = modelElement.parent as Element;
 	}
 
-	// There is no valid selection position inside the current limit element so find a closest object ancestor.
-	// This happens if the model position lands directly in the <table> element itself (view target element was a `<td>`
-	// so a nested editable, but view target position was directly in the `<figure>` element).
-	return findDropTargetRangeOnAncestorObject( editor, targetModelPosition.parent as Element, blockMode );
+	console.warn( 'none:', targetModelElement.name );
+
+	return null;
 }
 
 /**
  * TODO
  */
-function findDropTargetNextToBlock( editor: Editor, targetModelElement: Element, clientX: number, clientY: number ): Range | null {
-	const model = editor.model;
-	const ancestors = targetModelElement.getAncestors( { includeSelf: true, parentFirst: true } );
-
-	for ( const ancestor of ancestors ) {
-		if ( model.schema.isBlock( ancestor ) ) {
-			const viewElement = editor.editing.mapper.toViewElement( ancestor as Element )!;
-			const domElement = editor.editing.view.domConverter.mapViewToDom( viewElement )!;
-			const rect = new Rect( domElement );
-
-			if ( clientY < ( rect.top + rect.bottom ) / 2 ) {
-				return model.createRange( model.createPositionBefore( ancestor as Element ) );
-			} else {
-				return model.createRange( model.createPositionAfter( ancestor as Element ) );
-			}
-		}
-	}
-
-	return null;
-}
-
-/**
- * Returns fixed selection range for a given position and a target element if it is over the widget but not over its nested editable.
- */
-function findDropTargetRangeOnWidget( editor: Editor, targetViewElement: ViewElement, blockMode: boolean ): Range | null {
-	const model = editor.model;
+function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
 	const mapper = editor.editing.mapper;
+	const domConverter = editor.editing.view.domConverter;
 
-	// Quick win if the target is a widget.
-	if ( isWidget( targetViewElement ) ) {
-		const modelElement = mapper.toModelElement( targetViewElement )!;
+	const viewElement = mapper.toViewElement( modelElement )!;
+	const domElement = domConverter.mapViewToDom( viewElement )!;
 
-		if ( blockMode && !model.schema.isBlock( modelElement ) ) {
-			return null;
-		}
-
-		return model.createRangeOn( modelElement );
-	}
-
-	// Check if we are deeper over a widget (but not over a nested editable).
-	if ( !targetViewElement.is( 'editableElement' ) ) {
-		// Find a closest ancestor that is either a widget or an editable element...
-		const ancestor = targetViewElement.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) )!;
-
-		// ...and if the widget was closer than it is a drop target.
-		if ( isWidget( ancestor ) ) {
-			const modelElement = mapper.toModelElement( ancestor! )!;
-
-			if ( blockMode && !model.schema.isBlock( modelElement ) ) {
-				return null;
-			}
-
-			return model.createRangeOn( modelElement );
-		}
-	}
-
-	return null;
+	return global.window.getComputedStyle( domElement ).float != 'none';
 }
 
 /**
- * Returns fixed selection range inside a model element.
+ * TODO
  */
-function findDropTargetRangeInElement( editor: Editor, targetModelElement: Element ): Range | null {
+function findDropTargetRangeForElement( editor: Editor, modelElement: Element, clientX: number, clientY: number ): Range | null {
 	const model = editor.model;
-	const schema = model.schema;
 
-	const positionAtElementStart = model.createPositionAt( targetModelElement, 0 );
-
-	return schema.getNearestSelectionRange( positionAtElementStart, 'forward' );
+	return model.createRange(
+		model.createPositionAt(
+			modelElement as Element,
+			findElementSide( editor, modelElement, clientX, clientY )
+		)
+	);
 }
 
 /**
- * Returns fixed selection range for a given position and a target element if the drop is between blocks.
+ * TODO
  */
-function findDropTargetRangeBetweenBlocks( editor: Editor, targetModelPosition: Position, targetModelElement: Element ): Range | null {
-	const model = editor.model;
+function findElementSide( editor: Editor, modelElement: Element, clientX: number, clientY: number ): 'before' | 'after' {
+	const mapper = editor.editing.mapper;
+	const domConverter = editor.editing.view.domConverter;
 
-	// Check if target is between blocks.
-	if ( !model.schema.checkChild( targetModelElement, '$block' ) ) {
-		return null;
-	}
+	const viewElement = mapper.toViewElement( modelElement )!;
+	const domElement = domConverter.mapViewToDom( viewElement )!;
+	const rect = new Rect( domElement );
 
-	// Find position between blocks.
-	const positionAtElementStart = model.createPositionAt( targetModelElement, 0 );
-
-	// Get the common part of the path (inside the target element and the target position).
-	const commonPath = targetModelPosition.path.slice( 0, positionAtElementStart.path.length );
-
-	// Position between the blocks.
-	const betweenBlocksPosition = model.createPositionFromPath( targetModelPosition.root, commonPath );
-	// const nodeAfter = betweenBlocksPosition.nodeAfter;
-	//
-	// // Adjust drop position to the next object.
-	// // This is because while hovering over a root element next to a widget the target position can jump in crazy places.
-	// if ( nodeAfter && model.schema.isObject( nodeAfter ) ) {
-	// 	return model.createRangeOn( nodeAfter );
-	// }
-	//
-	// return null;
-
-	if ( !model.schema.checkChild( betweenBlocksPosition, '$block' ) ) {
-		return null;
-	}
-
-	return model.createRange( betweenBlocksPosition );
-}
-
-/**
- * Returns a selection range on the ancestor object.
- */
-function findDropTargetRangeOnAncestorObject( editor: Editor, element: Element, blockMode: boolean ): Range | null {
-	const model = editor.model;
-	let currentElement: Element | null = element;
-
-	while ( currentElement ) {
-		if ( model.schema.isObject( currentElement ) ) {
-			if ( blockMode && !model.schema.isBlock( currentElement ) ) {
-				continue;
-			}
-
-			return model.createRangeOn( currentElement );
-		}
-
-		currentElement = currentElement.parent as Element | null;
-	}
-
-	/* istanbul ignore next -- @preserve */
-	return null;
+	return clientY < ( rect.top + rect.bottom ) / 2 ? 'before' : 'after';
 }
 
 /**
@@ -1156,4 +1047,16 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
+}
+
+/**
+ * TODO
+ */
+function createDomRange( startDomNode: Node, startOffset: number, endDomNode: Node, endOffset: number ): globalThis.Range {
+	const range = global.document.createRange();
+
+	range.setStart( startDomNode, startOffset );
+	range.setEnd( endDomNode, endOffset );
+
+	return range;
 }

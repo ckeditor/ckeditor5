@@ -70,8 +70,7 @@ export default class ClipboardObserver extends DomEventObserver<
 					method: evt.name,
 					targetRanges,
 					target: data.target,
-					clientX: ( data.domEvent as MouseEvent ).clientX,
-					clientY: ( data.domEvent as MouseEvent ).clientY
+					domEvent: data.domEvent
 				} );
 
 				// If CKEditor handled the input, do not bubble the original event any further.
@@ -347,16 +346,6 @@ export interface DraggingEventData {
 	 * It is the drop position (which can be different than the selection at the moment of drop).
 	 */
 	targetRanges: Array<ViewRange> | null;
-
-	/**
-	 * TODO
-	 */
-	clientX: number;
-
-	/**
-	 * TODO
-	 */
-	clientY: number;
 }
 
 /**
