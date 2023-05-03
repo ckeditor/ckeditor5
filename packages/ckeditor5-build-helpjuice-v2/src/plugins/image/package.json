@@ -1,0 +1,75 @@
+{
+  "name": "@ckeditor/ckeditor5-image",
+  "version": "34.1.0",
+  "description": "Image feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "^34.1.0",
+    "ckeditor5": "^34.1.0",
+    "lodash-es": "^4.17.15"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^34.1.0",
+    "@ckeditor/ckeditor5-autoformat": "^34.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^34.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^34.1.0",
+    "@ckeditor/ckeditor5-ckfinder": "^34.1.0",
+    "@ckeditor/ckeditor5-clipboard": "^34.1.0",
+    "@ckeditor/ckeditor5-cloud-services": "^34.1.0",
+    "@ckeditor/ckeditor5-core": "^34.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^30.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^34.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^34.1.0",
+    "@ckeditor/ckeditor5-engine": "^34.1.0",
+    "@ckeditor/ckeditor5-enter": "^34.1.0",
+    "@ckeditor/ckeditor5-essentials": "^34.1.0",
+    "@ckeditor/ckeditor5-heading": "^34.1.0",
+    "@ckeditor/ckeditor5-html-embed": "^34.1.0",
+    "@ckeditor/ckeditor5-indent": "^34.1.0",
+    "@ckeditor/ckeditor5-link": "^34.1.0",
+    "@ckeditor/ckeditor5-list": "^34.1.0",
+    "@ckeditor/ckeditor5-media-embed": "^34.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^34.1.0",
+    "@ckeditor/ckeditor5-table": "^34.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^34.1.0",
+    "@ckeditor/ckeditor5-typing": "^34.1.0",
+    "@ckeditor/ckeditor5-undo": "^34.1.0",
+    "@ckeditor/ckeditor5-upload": "^34.1.0",
+    "@ckeditor/ckeditor5-utils": "^34.1.0",
+    "@ckeditor/ckeditor5-watchdog": "^34.1.0",
+    "@ckeditor/ckeditor5-widget": "^34.1.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-image"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}

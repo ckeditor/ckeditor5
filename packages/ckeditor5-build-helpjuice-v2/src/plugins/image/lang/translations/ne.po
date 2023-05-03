@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
+"Language: ne_NP\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "The label for the image widget."
+msgid "image widget"
+msgstr "तस्वीर विजेट"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
+msgctxt "The label for the Side image option."
+msgid "Side image"
+msgstr "साइड तस्वीर"
+
+msgctxt "The label for the Full size image option."
+msgid "Full size image"
+msgstr "पूर्ण आकार तस्वीर"
+
+msgctxt "The label for the Left aligned image option."
+msgid "Left aligned image"
+msgstr "बायाँ पङ्क्ति तस्वीर"
+
+msgctxt "The label for the Centered image option."
+msgid "Centered image"
+msgstr "केन्द्रित तस्वीर"
+
+msgctxt "The label for the Right aligned image option."
+msgid "Right aligned image"
+msgstr "दायाँ पङ्क्तिबद्ध तस्वीर"
+
+msgctxt "The label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "तस्वीर पाठ विकल्प परिवर्तन गर्नुहोस्"
+
+msgctxt "The label for the image text alternative input."
+msgid "Text alternative"
+msgstr "पाठ विकल्प"
+
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
+msgid "Enter image caption"
+msgstr "तस्वीर क्याप्शन प्रविष्ट गर्नुहोस्"
+
+msgctxt "The label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "तस्वीर सम्मिलित गर्नुहोस्"
+
+msgctxt "The title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "अपलोड असफल भयो"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr ""
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
+msgid "Resize image"
+msgstr ""
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
+msgid "Resize image to %0"
+msgstr ""
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
+msgid "Resize image to the original size"
+msgstr ""
+
+msgctxt "The default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr ""
+
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
+msgid "Image resize list"
+msgstr ""
+
+msgctxt "The label of the form submit button if the image source URL input has no value."
+msgid "Insert"
+msgstr ""
+
+msgctxt "The label of the form submit button if the image source URL input has a value."
+msgid "Update"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form."
+msgid "Insert image via URL"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr ""

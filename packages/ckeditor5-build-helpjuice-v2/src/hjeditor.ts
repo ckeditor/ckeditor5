@@ -31,7 +31,14 @@ import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Style } from '@ckeditor/ckeditor5-style';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, ImageEditing } from '@ckeditor/ckeditor5-image';
+
+// Image Plugins
+import Image from './plugins/image/src/image';
+import ImageCaption from './plugins/image/src/imagecaption';
+import ImageStyle from './plugins/image/src/imagestyle';
+import ImageResize from './plugins/image/src/imageresize';
+import ImageToolbar from './plugins/image/src/imagetoolbar';
+import ImageUpload from './plugins/image/src/imageupload';
 
 // Custom Plugins
 import { Heading } from './plugins/heading';
@@ -74,14 +81,19 @@ HelpjuiceEditor.builtinPlugins = [
 	BlockQuote,
 	HorizontalLine,
 	Heading,
+	// @ts-ignore
 	Image,
+	// @ts-ignore
 	ImageCaption,
+	// @ts-ignore
 	ImageStyle,
+	// @ts-ignore
 	ImageResize,
+	// @ts-ignore
 	ImageToolbar,
+	// @ts-ignore
 	ImageUpload,
 	LinkImage,
-	ImageEditing,
 	Indent,
 	IndentBlock,
 	Link,
