@@ -11,7 +11,6 @@
 
 const readline = require( 'readline' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
-// const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const abortController = new AbortController();
 
@@ -34,7 +33,7 @@ process.on( 'SIGINT', () => {
 		packagesDirectory: 'release',
 		processDescription: 'Compiling TypeScript...',
 		signal: abortController.signal,
-		callback: compileTypeScriptCallback
+		taskToExecute: compileTypeScriptCallback
 	} );
 
 	/**
