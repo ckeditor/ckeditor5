@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
+import type { Element, MatcherPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
-import type { DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
@@ -46,6 +46,7 @@ export default class StyleUtils extends Plugin {
 		this.decorate( 'getAffectedInlineSelectable' );
 
 		this.decorate( 'getStylePreview' );
+		this.decorate( 'configureGHSDataFilter' );
 	}
 
 	/**
@@ -234,6 +235,21 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
+	 * This is where the styles feature configures the GHS feature. This method translates normalized
+	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
+	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	 * {@link module:html-support/datafilter~DataFilter} plugin.
+	 *
+	 * @internal
+	 */
+	public configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
+		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
+		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );
+	}
+
+	/**
 	 * Checks the attribute value of the first node in the selection that allows the attribute.
 	 * For the collapsed selection, returns the selection attribute.
 	 *
@@ -281,6 +297,16 @@ function isPreviewable( elementName: string ): boolean {
 	return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
 }
 
+/**
+ * Translates a normalized style definition to a view matcher pattern.
+ */
+function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
+	return {
+		name: element,
+		classes
+	};
+}
+
 export interface NormalizedStyleDefinitions {
 	block: Array<BlockStyleDefinition>;
 	inline: Array<InlineStyleDefinition>;
@@ -308,3 +334,4 @@ export type StyleUtilsIsStyleActiveForInlineSelectionEvent = DecoratedMethodEven
 export type StyleUtilsGetAffectedInlineSelectableEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedInlineSelectable'>;
 
 export type StyleUtilsGetStylePreviewEvent = DecoratedMethodEvent<StyleUtils, 'getStylePreview'>;
+export type StyleUtilsConfigureGHSDataFilterEvent = DecoratedMethodEvent<StyleUtils, 'configureGHSDataFilter'>;
