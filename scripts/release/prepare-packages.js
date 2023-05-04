@@ -29,6 +29,13 @@ process.on( 'SIGINT', () => {
 } );
 
 ( async () => {
+	const latestVersion = releaseTools.getLastFromChangelog();
+
+	releaseTools.updateDependencies( {
+		version: '^' + latestVersion,
+		shouldUpdateVersionCallback: require( './isckeditor5package' )
+	} );
+
 	await releaseTools.executeInParallel( {
 		packagesDirectory: 'release',
 		processDescription: 'Compiling TypeScript...',
