@@ -161,11 +161,7 @@ export default class LinkStyleSupport extends Plugin {
 		if ( selection.isCollapsed ) {
 			const linkHref = selection.getAttribute( 'linkHref' );
 
-			if ( linkHref ) {
-				return findAttributeRange( selection.getFirstPosition()!, 'linkHref', linkHref, model );
-			}
-
-			return null;
+			return findAttributeRange( selection.getFirstPosition()!, 'linkHref', linkHref, model );
 		}
 
 		// Non-collapsed selection.
