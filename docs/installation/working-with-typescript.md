@@ -19,6 +19,8 @@ CKEditor 5 is built using TypeScript and has native type definitions. All the of
 
 <info-box warning>
 	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
+
+	The minimal TypeScript version required to run CKEditor 5 is v4.8.4.
 </info-box>
 
 ## Why use CKEditor 5 with TypeScript?
