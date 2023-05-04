@@ -70,12 +70,11 @@ export default class TableStyleSupport extends Plugin {
 			'configureGHSDataFilter',
 			( evt, [ { block } ] ) => {
 				const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
+
 				ghsDataFilter.loadAllowedConfig(
 					block
 						.filter( definition => definition.element == 'figcaption' )
-						.map( definition => {
-							return { name: 'caption', classes: definition.classes };
-						} )
+						.map( definition => ( { name: 'caption', classes: definition.classes } ) )
 				);
 			}
 		);
@@ -109,8 +108,7 @@ export default class TableStyleSupport extends Plugin {
 
 		if ( definition.element == 'th' ) {
 			return isHeadingCell;
-		}
-		else {
+		} else {
 			return !isHeadingCell;
 		}
 	}
@@ -125,6 +123,7 @@ export default class TableStyleSupport extends Plugin {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
 			return null;
 		}
+
 		return [ block ];
 	}
 }
