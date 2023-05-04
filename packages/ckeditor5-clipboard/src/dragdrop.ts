@@ -20,7 +20,8 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type DomEventData
+	type DomEventData,
+	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
@@ -420,7 +421,7 @@ export default class DragDrop extends Plugin {
 			this._removeDropMarkerDelayed.cancel();
 
 			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
-			const targetRange = findDropTargetRange( editor, data.target, clientX, clientY, this._blockMode );
+			const targetRange = findDropTargetRange( editor, data.target, data.targetRanges, clientX, clientY, this._blockMode );
 
 			// If this is content being dragged from another editor, moving out of current editor instance
 			// is not possible until 'dragend' event case will be fixed.
@@ -461,7 +462,7 @@ export default class DragDrop extends Plugin {
 			}
 
 			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
-			const targetRange = findDropTargetRange( editor, data.target, clientX, clientY, this._blockMode );
+			const targetRange = findDropTargetRange( editor, data.target, data.targetRanges, clientX, clientY, this._blockMode );
 
 			// The dragging markers must be removed after searching for the target range because sometimes
 			// the target lands on the marker itself.
@@ -783,7 +784,7 @@ export default class DragDrop extends Plugin {
 
 		if ( !this._previewContainer ) {
 			this._previewContainer = createElement( global.document, 'div', {
-				style: 'position: absolute; left: -999999px;'
+				style: 'position: fixed; left: -999999px;'
 			} );
 
 			global.document.body.appendChild( this._previewContainer );
@@ -864,6 +865,7 @@ export default class DragDrop extends Plugin {
 function findDropTargetRange(
 	editor: Editor,
 	targetViewElement: ViewElement,
+	targetViewRanges: Array<ViewRange> | null,
 	clientX: number,
 	clientY: number,
 	blockMode: boolean
@@ -875,20 +877,30 @@ function findDropTargetRange(
 	let modelElement = targetModelElement;
 
 	while ( modelElement ) {
-		if ( !blockMode && model.schema.checkChild( modelElement, '$text' ) ) {
-			const childNodes = Array.from( modelElement.getChildren() )
-				.filter( node => !node.is( 'element' ) || !isFloatingElement( editor, node ) );
+		if ( !blockMode ) {
+			if ( model.schema.checkChild( modelElement, '$text' ) ) {
+				const targetViewPosition = targetViewRanges ? targetViewRanges[ 0 ].start : null;
+				const targetModelPosition = targetViewPosition ? mapper.toModelPosition( targetViewPosition ) : null;
 
-			let startOffset = 0;
-			let endOffset = childNodes.reduce( ( total, node ) => total + node.offsetSize, 0 );
-
-			// TODO find inline offset
-
-			return model.createRange(
-				model.createPositionAt( modelElement, 0 )
-			);
+				if ( targetModelPosition ) {
+					if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
+						return model.createRange( targetModelPosition );
+					}
+					else if ( targetViewPosition ) {
+						// This is the case of dropping inside a span wrapper of an inline image.
+						return findDropTargetRangeForElement( editor,
+							getClosestMappedModelElement( editor, targetViewPosition.parent as ViewElement ),
+							clientX, clientY
+						);
+					}
+				}
+			}
+			else if ( model.schema.isInline( modelElement ) ) {
+				return findDropTargetRangeForElement( editor, modelElement, clientX, clientY );
+			}
 		}
-		else if ( model.schema.isBlock( modelElement ) ) {
+
+		if ( model.schema.isBlock( modelElement ) ) {
 			return findDropTargetRangeForElement( editor, modelElement, clientX, clientY );
 		}
 		else if ( model.schema.checkChild( modelElement, '$block' ) ) {
@@ -958,7 +970,11 @@ function findElementSide( editor: Editor, modelElement: Element, clientX: number
 	const domElement = domConverter.mapViewToDom( viewElement )!;
 	const rect = new Rect( domElement );
 
-	return clientY < ( rect.top + rect.bottom ) / 2 ? 'before' : 'after';
+	if ( editor.model.schema.isInline( modelElement ) ) {
+		return clientX < ( rect.left + rect.right ) / 2 ? 'before' : 'after';
+	} else {
+		return clientY < ( rect.top + rect.bottom ) / 2 ? 'before' : 'after';
+	}
 }
 
 /**
@@ -1047,16 +1063,4 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
-}
-
-/**
- * TODO
- */
-function createDomRange( startDomNode: Node, startOffset: number, endDomNode: Node, endOffset: number ): globalThis.Range {
-	const range = global.document.createRange();
-
-	range.setStart( startDomNode, startOffset );
-	range.setEnd( endDomNode, endOffset );
-
-	return range;
 }
