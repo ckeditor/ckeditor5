@@ -12,67 +12,73 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const chalk = require( 'chalk' );
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
-
-// This script updates the version of CKEditor 5 in several places.
-//
-// It should be called as a post hook, after generating the changelog.
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
-const ENTRIES_TO_UPDATE = [
-	{
-		file: 'README.md',
-		pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/
-	},
-	{
-		file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
-		pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/
+/**
+ * Updates CKEditor 5 version and release date references in several places.
+ *
+ * @param {Object} [options]
+ * @param {String} [options.version] The version of CKEditor 5 to set.
+ * @param {String} [options.releaseDate] Release date to set.
+ */
+module.exports = function updateVersionReferences( options = {} ) {
+	const {
+		version = getLastFromChangelog(),
+		releaseDate = getCurrentDate()
+	} = options;
+
+	const filesToUpdate = [
+		{
+			file: 'README.md',
+			pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/,
+			value: version
+		},
+		{
+			file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
+			pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/,
+			value: version
+		}
+		// TODO: Add file containing the release date.
+		// {
+		// 	file: ...
+		// 	pattern: ...
+		// 	value: releaseDate
+		// }
+	];
+
+	console.log( chalk.blue( `Updating CKEditor 5 version (${ version }) and release date (${ releaseDate }) references.\n` ) );
+
+	for ( const { file, pattern, value } of filesToUpdate ) {
+		const absolutePath = path.join( ROOT_DIRECTORY, file ).split( path.sep ).join( path.posix.sep );
+
+		if ( !fs.existsSync( absolutePath ) ) {
+			console.log( chalk.red( `* File does not exist: "${ chalk.underline( absolutePath ) }"` ) );
+
+			continue;
+		}
+
+		const oldFileContent = fs.readFileSync( absolutePath, 'utf-8' );
+		const newFileContent = oldFileContent.replace( pattern, value );
+
+		if ( oldFileContent === newFileContent ) {
+			console.log( chalk.gray( `* File is up to date: "${ chalk.underline( absolutePath ) }"` ) );
+
+			continue;
+		}
+
+		fs.writeFileSync( absolutePath, newFileContent, 'utf-8' );
+
+		console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }"` ) );
 	}
-];
+};
 
-const cke5version = getLastFromChangelog();
-let shouldCommit = false;
+function getCurrentDate() {
+	const now = new Date();
+	const day = String( now.getDate() ).padStart( 2, '0' );
+	const month = String( now.getMonth() + 1 ).padStart( 2, '0' );
+	const year = now.getFullYear();
 
-console.log( chalk.blue( 'Updating CKEditor 5 version references.\n' ) );
-
-for ( const { file, pattern } of ENTRIES_TO_UPDATE ) {
-	const absolutePath = path.join( ROOT_DIRECTORY, file ).split( path.sep ).join( path.posix.sep );
-
-	if ( !fs.existsSync( absolutePath ) ) {
-		console.log( chalk.red( `* Defined file does not exist: "${ chalk.underline( absolutePath ) }"` ) );
-
-		continue;
-	}
-
-	const oldFileContent = fs.readFileSync( absolutePath, 'utf-8' );
-	const newFileContent = oldFileContent.replace( pattern, cke5version );
-
-	if ( oldFileContent === newFileContent ) {
-		console.log( chalk.gray( `* This file is up to date: "${ chalk.underline( absolutePath ) }"` ) );
-
-		continue;
-	}
-
-	shouldCommit = true;
-
-	fs.writeFileSync( absolutePath, newFileContent, 'utf-8' );
-	exec( `git add ${ absolutePath }` );
-
-	console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }"` ) );
-}
-
-if ( shouldCommit ) {
-	exec( 'git commit -m "Internal: Updated CKEditor 5 version references."' );
-
-	console.log( chalk.green( `\nUpdated CKEditor 5 version references to ${ cke5version }.` ) );
-} else {
-	console.log( chalk.green( `\nNothing to commit. CKEditor 5 version references are up-to-date (${ cke5version }).` ) );
-}
-
-function exec( command ) {
-	console.log( chalk.gray( `$ ${ command }` ) );
-
-	return tools.shExec( command, { verbosity: 'error' } );
+	return year + '-' + month + '-' + day;
 }
