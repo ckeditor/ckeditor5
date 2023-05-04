@@ -139,6 +139,28 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			dropdownView.render();
+
+			const panelContent = document.createElement( 'div' );
+			panelContent.classList.add( 'ck-font-hex-color-wrapper' );
+
+			// Create the hex color input
+			const hexColorInput = document.createElement( 'input' );
+			hexColorInput.id = 'ck-font-hex-color-input';
+			hexColorInput.placeholder = '#126CFF';
+
+			// Create button to apply hex color
+			const hexColorButton = document.createElement( 'button' );
+			hexColorButton.id = 'ck-apply-font-hex-color';
+			hexColorButton.textContent = 'Apply Color';
+			hexColorButton.disabled = true;
+
+			panelContent.appendChild( hexColorInput );
+			panelContent.appendChild( hexColorButton );
+
+			// @ts-ignore
+			dropdownView.panelView.element.appendChild( panelContent );
+
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				// Grids rendering is deferred (#6192).
 				dropdownView.colorTableView!.appendGrids();
@@ -156,6 +178,30 @@ export default class ColorUI extends Plugin {
 				dropdownView,
 				() => dropdownView.colorTableView!.staticColorsGrid!.items.find( ( item: any ) => item.isOn )
 			);
+
+			const validHexCode = /^#(?:(?:[\da-f]{3}){1,2}|(?:[\da-f]{4}){1,2})$/i;
+
+			hexColorInput.addEventListener( 'input', ( evt: any ) => {
+				evt.target.value.match( validHexCode ) ? hexColorButton.disabled = false : hexColorButton.disabled = true;
+			} );
+
+			hexColorInput.addEventListener( 'keydown', ( event: any ) => {
+				if ( event.target.value.match( validHexCode ) && event.keyCode == 13 ) {
+					event.preventDefault();
+					editor.execute( this.commandName, { value: hexColorInput.value } );
+					hexColorInput.value = '';
+					dropdownView.panelView.isVisible = false;
+					hexColorButton.disabled = true;
+				}
+			} );
+
+			hexColorButton.addEventListener( 'click', ( event: any ) => {
+				event.preventDefault();
+				editor.execute( this.commandName, { value: hexColorInput.value } );
+				hexColorInput.value = '';
+				dropdownView.panelView.isVisible = false;
+				hexColorButton.disabled = true;
+			} );
 
 			return dropdownView;
 		} );
