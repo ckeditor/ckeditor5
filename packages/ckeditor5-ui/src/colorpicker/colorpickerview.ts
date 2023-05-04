@@ -104,13 +104,19 @@ export default class ColorPickerView extends View {
 		} );
 
 		// Sets color in the picker if color was updated.
-		this.on( 'change:color', () => {
-			const convertedColor = convertColor( this.color, this._format );
+		this.on( 'set:color', ( evt, propertyName, newValue, oldValue ) => {
+			const convertedColor = convertColor( newValue, this._format );
 
-			if ( convertedColor != this.color ) {
-				this.color = convertedColor;
+			if ( convertedColor != oldValue ) {
+				evt.return = convertedColor;
+
+				return;
 			}
 
+			evt.return = oldValue;
+		} );
+
+		this.on( 'change:color', () => {
 			this._hexColor = convertColorToCommonHexFormat( this.color );
 		} );
 
