@@ -211,4 +211,37 @@ describe( 'Integration test Font', () => {
 				} );
 		} );
 	} );
+
+	describe( 'color picker feature', () => {
+		it( 'should set colors in model in hsl format by default', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text>[foo]</$text>' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+
+			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
+		} );
+
+		it( 'should set colors in model in configured format', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text>[foo]</$text>' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._format = 'lab';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+
+			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+		} );
+	} );
 } );
