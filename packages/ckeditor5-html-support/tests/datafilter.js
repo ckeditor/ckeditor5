@@ -3329,6 +3329,46 @@ describe( 'DataFilter', () => {
 				);
 			} );
 
+			it( 'should not add classes if selectable is null', () => {
+				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+
+				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], null );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>foobar</p>'
+				);
+			} );
+
+			it( 'should not remove classes if selectable is null', () => {
+				editor.setData(
+					'<p><cite class="foo bar">foobar</cite></p>'
+				);
+
+				model.change( writer => {
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+				} );
+
+				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], null );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'foo', 'bar' ]
+						}
+					}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p><cite class="foo bar">foobar</cite></p>'
+				);
+			} );
+
 			describe( 'on ranges', () => {
 				beforeEach( () => {
 					root = model.document.getRoot();
@@ -3339,7 +3379,7 @@ describe( 'DataFilter', () => {
 					dataFilter.allowAttributes( { name: 'cite', attributes: true } );
 				} );
 
-				it( 'should add new classes', () => {
+				it( 'should add new classes (single range)', () => {
 					editor.setData( '<p>foobar</p>' );
 
 					htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.createRange(
@@ -3361,7 +3401,7 @@ describe( 'DataFilter', () => {
 					);
 				} );
 
-				it( 'should remove classes', () => {
+				it( 'should remove classes (single range)', () => {
 					editor.setData( '<p><cite class="foo">foobar</cite></p>' );
 
 					htmlSupport.removeModelHtmlClass( 'cite', 'foo', model.createRange(
@@ -3380,6 +3420,65 @@ describe( 'DataFilter', () => {
 
 					expect( editor.getData() ).to.equal(
 						'<p><cite class="foo">f</cite>oobar</p>'
+					);
+				} );
+
+				it( 'should add new classes (array of ranges)', () => {
+					editor.setData( '<p>foobar</p>' );
+
+					htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], [
+						model.createRange(
+							model.createPositionAt( root.getChild( 0 ), 1 ),
+							model.createPositionAt( root.getChild( 0 ), 2 )
+						),
+						model.createRange(
+							model.createPositionAt( root.getChild( 0 ), 3 ),
+							model.createPositionAt( root.getChild( 0 ), 4 )
+						)
+					] );
+
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+						data: '<paragraph>f<$text htmlCite="(1)">o</$text>o<$text htmlCite="(2)">b</$text>ar</paragraph>',
+						attributes: {
+							1: {
+								classes: [ 'foo', 'bar' ]
+							},
+							2: {
+								classes: [ 'foo', 'bar' ]
+							}
+						}
+					} );
+
+					expect( editor.getData() ).to.equal(
+						'<p>f<cite class="foo bar">o</cite>o<cite class="foo bar">b</cite>ar</p>'
+					);
+				} );
+
+				it( 'should remove classes (array pf ranges)', () => {
+					editor.setData( '<p><cite class="foo">foobar</cite></p>' );
+
+					htmlSupport.removeModelHtmlClass( 'cite', 'foo', [
+						model.createRange(
+							model.createPositionAt( root.getChild( 0 ), 0 ),
+							model.createPositionAt( root.getChild( 0 ), 2 )
+						),
+						model.createRange(
+							model.createPositionAt( root.getChild( 0 ), 3 ),
+							model.createPositionAt( root.getChild( 0 ), 6 )
+						)
+					] );
+
+					expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+						data: '<paragraph>fo<$text htmlCite="(1)">o</$text>bar</paragraph>',
+						attributes: {
+							1: {
+								classes: [ 'foo' ]
+							}
+						}
+					} );
+
+					expect( editor.getData() ).to.equal(
+						'<p>fo<cite class="foo">o</cite>bar</p>'
 					);
 				} );
 			} );

@@ -236,6 +236,11 @@ ClassicEditor
 		style: {
 			definitions: [
 				{
+					name: 'Link',
+					element: 'a',
+					classes: [ 'styled-link' ]
+				},
+				{
 					name: 'Fancy list',
 					element: 'ol',
 					classes: [ 'fancy-list' ]

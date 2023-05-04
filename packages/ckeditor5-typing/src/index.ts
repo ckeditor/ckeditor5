@@ -16,7 +16,7 @@ export { default as TwoStepCaretMovement } from './twostepcaretmovement';
 export { default as TextTransformation } from './texttransformation';
 
 export { default as inlineHighlight } from './utils/inlinehighlight';
-export { default as findAttributeRange } from './utils/findattributerange';
+export { default as findAttributeRange, findAttributeRangeBound } from './utils/findattributerange';
 export { default as getLastTextLine, type LastTextLineData } from './utils/getlasttextline';
 
 export { default as InsertTextCommand, type InsertTextCommandExecuteEvent } from './inserttextcommand';
