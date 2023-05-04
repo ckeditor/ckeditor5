@@ -6,6 +6,8 @@
 import Model from '../../../src/model/model';
 import RootOperation from '../../../src/model/operation/rootoperation';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import DetachOperation from '../../../src/model/operation/detachoperation';
+import Position from '../../../src/model/position';
 
 describe( 'RootOperation', () => {
 	let model, doc;
@@ -44,6 +46,11 @@ describe( 'RootOperation', () => {
 			// eslint-disable-next-line
 			new RootOperation( 'new', '$root', true, doc, doc.version );
 		} ).not.to.throw();
+	} );
+
+	it( 'should return null on target() call', () => {
+		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
+		expect( op.target() ).to.equal( null );
 	} );
 
 	it( 'should attach a model in the root', () => {

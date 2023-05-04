@@ -110,6 +110,38 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.true;
 		} );
 
+		it( 'should refresh command state on selection change', () => {
+			command.affectsData = true;
+			command._executesOnCustomSelectable = false;
+			command.isEnabled = false;
+
+			editor.model.document.selection.fire( 'change');
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should disable commands when selection is in non-editable place and executesOnCustomSelectable is false', () => {
+			command.affectsData = true;
+			command._executesOnCustomSelectable = false;
+
+			editor.model.document.isReadOnly = true;
+
+			editor.model.document.selection.fire( 'change');
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should not disable commands when selection is in non-editable place, but executesOnCustomSelectable is true', () => {
+			command.affectsData = true;
+			command._executesOnCustomSelectable = true;
+
+			editor.model.document.isReadOnly = true;
+
+			editor.model.document.selection.fire( 'change');
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'is observable when is overridden', () => {
 			command.isEnabled = true;
 

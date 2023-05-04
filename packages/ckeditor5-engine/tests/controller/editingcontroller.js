@@ -164,6 +164,16 @@ describe( 'EditingController', () => {
 			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
+		it( 'should not convert changes to view on change:isReadOnly event', () => {
+			const spy = sinon.spy();
+
+			editing.view.on( 'change', spy );
+
+			model.document.fire('change:isReadOnly' )
+
+			expect( spy.called ).to.be.false;
+		} );
+
 		it( 'should convert delete', () => {
 			model.change( writer => {
 				writer.remove(

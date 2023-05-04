@@ -557,6 +557,106 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
+	describe( 'isSelectableEditable()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should return false when editor is in read-only mode', () => {
+			editor.enableReadOnlyMode( 'test' );
+			const result = editor.model.isSelectableEditable( null );
+
+			expect( result ).to.be.false;
+		} );
+
+		it( 'should work with all kind of selectables', () => {
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const position = editor.model.createPositionAt( element, 0 );
+			const range = editor.model.createRangeOn( element )
+			const ranges = [ range ];
+			const resultSelection = editor.model.isSelectableEditable( editor.model.document.selection );
+			const resultPos = editor.model.isSelectableEditable( position );
+			const resultRange = editor.model.isSelectableEditable( range );
+			const resultNode = editor.model.isSelectableEditable( element );
+			const resultRanges = editor.model.isSelectableEditable( ranges );
+
+			expect( resultSelection).to.be.true;
+			expect( resultPos ).to.be.true;
+			expect( resultRange ).to.be.true;
+			expect( resultNode ).to.be.true;
+			expect( resultRanges ).to.be.true;
+		} );
+
+		it( 'should return false when given root is disabled', () => {
+			editor.disableRoot( 'main' );
+
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const result = editor.model.isSelectableEditable( element );
+
+			expect( result ).to.be.false;
+		} );
+	} );
+
+	describe( 'enabling / disabling root', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { main: '<p>Main.</p>', second: '<p>Second.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should be able to disable particular root', () => {
+			editor.disableRoot( 'second' );
+
+			const mainElement = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const secondElement = editor.model.document.getRoot( 'second' ).getChild( 0 );
+
+			const mainResult = editor.model.isSelectableEditable( mainElement );
+			const secondResult = editor.model.isSelectableEditable( secondElement );
+
+			expect( mainResult ).to.be.true;
+			expect( secondResult ).to.be.false;
+		} );
+
+		it( 'should be able to enable disabled root', () => {
+			editor.disableRoot( 'second' );
+
+			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
+			let result = editor.model.isSelectableEditable( element );
+
+			expect( result ).to.be.false;
+
+			editor.enableRoot( 'second' );
+			result = editor.model.isSelectableEditable( element );
+
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should use lockIds for enabling / disabling roots', () => {
+			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
+
+			editor.disableRoot( 'second', 'firstLock' );
+			editor.disableRoot( 'second', 'secondLock' );
+			editor.disableRoot( 'second', 'secondLock' );
+
+			editor.enableRoot( 'second', 'firstLock' );
+			editor.enableRoot( 'second', 'differentLock' );
+
+			let result = editor.model.isSelectableEditable( element );
+			expect( result ).to.be.false;
+
+			editor.enableRoot( 'second', 'secondLock' );
+
+			result = editor.model.isSelectableEditable( element );
+			expect( result ).to.be.true;
+		});
+	})
+
 	describe( 'getFullData()', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );

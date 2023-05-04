@@ -1416,6 +1416,19 @@ describe( 'Drag and Drop', () => {
 				expectDraggingMarker( targetPosition );
 			} );
 
+			it( 'cannot be dropped on non-editable place.', () => {
+				setModelData( model, '<paragraph>[]foobar</paragraph>' );
+
+				const dataTransferMock = createDataTransfer();
+				const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
+
+				model.document.isReadOnly = true;
+
+				fireDragging( dataTransferMock, targetPosition );
+
+				expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			} );
+
 			it( 'should put drop target marker inside and attribute element', () => {
 				setModelData( model, '<paragraph>[]foo<$text bold="true">bar</$text></paragraph>' );
 
@@ -1752,6 +1765,21 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is disabled when plugin is disabled', () => {
+				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
+
+				const plugin = editor.plugins.get( 'DragDrop' );
+				plugin.isEnabled = false;
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 1 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 			} );
 
 			it( 'is disabled when starts dragging the widget', () => {

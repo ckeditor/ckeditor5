@@ -76,19 +76,6 @@ describe( 'ParagraphCommand', () => {
 
 			expect( command.value ).to.be.false;
 		} );
-
-		it( 'should be refreshed after changing selection', () => {
-			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
-			const element = document.getRoot().getChild( 1 );
-
-			model.change( writer => {
-				expect( command.value ).to.be.true;
-
-				writer.setSelection( writer.createRangeIn( element ) );
-
-				expect( command.value ).to.be.false;
-			} );
-		} );
 	} );
 
 	describe( 'execute()', () => {
@@ -98,6 +85,15 @@ describe( 'ParagraphCommand', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			expect( command.value ).to.be.true;
+		} );
+
+		it( 'should not execute when selection is in non-editable place', () => {
+			setData( model, '<heading1>[]</heading1>' );
+
+			model.document.isReadOnly = true;
+			command.execute();
+
+			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24

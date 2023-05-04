@@ -531,7 +531,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		} else if ( selectable instanceof Position ) {
 			rootName = selectable.root.rootName;
 		} else if ( selectable instanceof Node ) {
-			rootName = selectable.rootName;
+			rootName = selectable.root.rootName;
 		} else if ( isIterable( selectable ) ) {
 			for ( const range of selectable as Iterable<Range> ) {
 				rootName = range.start.root.rootName;

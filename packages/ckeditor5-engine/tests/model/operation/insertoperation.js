@@ -11,6 +11,7 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import DetachOperation from '../../../src/model/operation/detachoperation';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;
@@ -87,6 +88,12 @@ describe( 'InsertOperation', () => {
 		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
 		expect( root.getChild( 1 ).name ).to.equal( 'p' );
 		expect( root.getChild( 2 ).data ).to.equal( 'foo' );
+	} );
+
+	it( 'should return position on target() call', () => {
+		const pos = new Position( root, [ 1 ] );
+		const op = new InsertOperation( pos, 'bar',	doc.version );
+		expect( op.target() ).to.deep.equal( pos );
 	} );
 
 	it( 'should insert between existing nodes', () => {
