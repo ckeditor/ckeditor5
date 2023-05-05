@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-The most con venient way to upload, manage, and insert images into content in CKEditor is by using file managers. CKBox is a modern file management platform with a clean UI and a top-notch UX.
+The most convenient way to upload, manage, and insert images into content in CKEditor 5 is by using a file manager. CKBox is a modern file management platform with a clean UI and a top-notch UX.
 
 With CKBox you can:
 - Organize images and other files into customizable categories.
