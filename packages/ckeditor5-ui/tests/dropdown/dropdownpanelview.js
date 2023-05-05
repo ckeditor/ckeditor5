@@ -77,7 +77,10 @@ describe( 'DropdownPanelView', () => {
 
 						view.children.add( labeledInput );
 
-						const event = new Event( 'selectstart' );
+						const event = new Event( 'selectstart', {
+							bubbles: true,
+							cancelable: true
+						} );
 						const spy = sinon.spy( event, 'preventDefault' );
 
 						labeledInput.fieldView.element.dispatchEvent( event );
