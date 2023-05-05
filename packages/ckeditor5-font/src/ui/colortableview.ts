@@ -891,6 +891,7 @@ class ColorPickerPageView extends View {
 
 		this._addColorPickersElementsToFocusTracker();
 		this._stopPropagationOnArrowsKeys();
+		this._executeOnEnterPress();
 		this._executeUponColorChange();
 	}
 
@@ -906,6 +907,22 @@ class ColorPickerPageView extends View {
 	 */
 	public focus(): void {
 		this.colorPickerView!.focus();
+	}
+
+	/**
+	 * When color picker is focused and "enter" is pressed it executes command.
+	 */
+	private _executeOnEnterPress(): void {
+		this.keystrokes.set( 'enter', evt => {
+			if ( this.isVisible && this.focusTracker.focusedElement !== this.cancelButtonView.element ) {
+				this.fire( 'execute', {
+					value: this.selectedColor!
+				} );
+
+				evt.stopPropagation();
+				evt.preventDefault();
+			}
+		} );
 	}
 
 	/**

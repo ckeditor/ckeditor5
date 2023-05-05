@@ -333,6 +333,30 @@ describe( 'ColorTableView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should execute when color picker is focused and enter pressed', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.enter,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			colorTableView._appendColorPicker();
+
+			colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+			// Mock the remove color button is focused.
+			colorTableView.focusTracker.isFocused = true;
+			colorTableView.focusTracker.focusedElement = colorTableView.colorPickerPageView.colorPickerView.slidersView.first.element;
+
+			const spy = sinon.spy();
+			colorTableView.on( 'execute', spy );
+
+			colorTableView.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should stop propagation when use arrow keys', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.arrowright,
