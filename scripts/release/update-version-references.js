@@ -74,6 +74,7 @@ module.exports = function updateVersionReferences( options = {} ) {
 	}
 };
 
+// TODO: Not sure if the date format is OK.
 function getCurrentDate() {
 	const now = new Date();
 	const day = String( now.getDate() ).padStart( 2, '0' );

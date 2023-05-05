@@ -10,6 +10,7 @@
 'use strict';
 
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
+const updateVersionReferences = require( './update-version-references' );
 
 const abortController = new AbortController();
 
@@ -23,6 +24,10 @@ process.on( 'SIGINT', () => {
 	releaseTools.updateDependencies( {
 		version: '^' + latestVersion,
 		shouldUpdateVersionCallback: require( './isckeditor5package' )
+	} );
+
+	updateVersionReferences( {
+		version: latestVersion
 	} );
 
 	await releaseTools.executeInParallel( {
