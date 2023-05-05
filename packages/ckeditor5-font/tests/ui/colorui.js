@@ -208,24 +208,12 @@ describe( 'ColorUI', () => {
 				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
 			} );
 
-			it.skip( 'should avoid call the command multiple times', () => {
+			it( 'should avoid call the command multiple times', () => {
 				const spy = sinon.spy( editor, 'execute' );
 				// Color format normalization could result with command being called multiple times.
-				dropdown.colorTableView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
 
 				expect( spy.callCount ).to.equal( 1 );
-			} );
-
-			it.skip( 'should should get proper default color format', () => {
-				const dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-				const spy = sinon.spy( dropdown.colorTableView, 'appendColorPicker' );
-
-				dropdown.isOpen = true;
-
-				sinon.assert.calledWithExactly( spy, sinon.match( {
-					format: 'hsl'
-				} ) );
 			} );
 
 			it( 'should call appendColorPicker when dropdown is opened', async () => {
