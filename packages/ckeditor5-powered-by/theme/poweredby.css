@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-padding-top: 2px;
+	--ck-powered-by-padding-left: 4px;
+	--ck-powered-by-border-radius: 100px;
+	--ck-powered-by-bg: hsl(0, 0%, 100%);
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon {
+	border: 0;
+	border: var(--ck-focus-ring);
+	box-shadow: none;
+	border-radius: var(--ck-powered-by-border-radius);
+	background: var(--ck-powered-by-bg);
+	min-height: unset;
+
+	&::after,
+	&::before {
+		display: none;
+	}
+
+	& .ck.ck-powered-by {
+		line-height: var(--ck-powered-by-line-height);
+
+		& a {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			opacity: .66;
+			filter: grayscale(80%);
+			line-height: var(--ck-powered-by-line-height);
+			padding: var(--ck-powered-by-padding-top) var(--ck-powered-by-padding-left);
+		}
+
+		& .ck-powered-by__label {
+			font-size: 7.5px;
+			letter-spacing: -.2px;
+			padding-left: 2px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-right: 4px;
+			cursor: pointer;
+			line-height: var(--ck-powered-by-line-height);
+			color: hsl(0, 0%, 31%);
+
+		}
+
+		& .ck-icon {
+			display: block;
+			cursor: pointer;
+		}
+
+		&:hover {
+			/* backdrop-filter: blur(.4px); */
+
+			& a {
+				filter: grayscale(0%);
+				opacity: 1;
+			}
+		}
+	}
+
+	&.ck-balloon-panel_narrow .ck.ck-powered-by .ck-powered-by__label {
+		visibility: hidden;
+		position: absolute;
+		display: block;
+		left: 6px;
+		top: -1px;
+		bottom: -1px;
+		transform: translateX(0%);
+		max-width: 0px;
+		transition: transform .1s ease-in-out, max-width .1s ease-in-out;
+		overflow: hidden;
+		background: var(--ck-powered-by-bg);
+		border-radius: var(--ck-powered-by-border-radius) 0 0 var(--ck-powered-by-border-radius);
+		padding: var(--ck-powered-by-padding-top) 6px var(--ck-powered-by-padding-top) var(--ck-powered-by-padding-left);
+		z-index: 0;
+		border-width: 1px 0 1px 1px;
+		border-style: solid;
+		border-color: var(--ck-color-focus-border);
+	}
+
+	&.ck-balloon-panel_narrow:hover .ck.ck-powered-by .ck-powered-by__label {
+		visibility: visible;
+		max-width: 60px;
+		transform: translateX(-100%);
+	}
+}
+

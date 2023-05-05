@@ -11,6 +11,9 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import Input from './input';
 import Delete from './delete';
 
+// TODO: The way of injecting this plugin into all editors. EditorUI? EditableUIView?
+import PoweredBy from '@ckeditor/ckeditor5-powered-by/src/poweredby';
+
 /**
  * The typing feature. It handles typing.
  *
@@ -19,7 +22,7 @@ import Delete from './delete';
  */
 export default class Typing extends Plugin {
 	public static get requires() {
-		return [ Input, Delete ] as const;
+		return [ Input, Delete, PoweredBy ] as const;
 	}
 
 	/**
