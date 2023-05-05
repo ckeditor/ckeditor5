@@ -57,24 +57,29 @@ export default class HeadingEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
+		const options = editor.config.get( 'heading.options' );
 
 		const modelElements = [];
-
+		// 'options' is possibly 'undefined'
+		if ( options === undefined ) {
+			throw new Error( 'options is undefined' );
+		}
 		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( option.model === 'paragraph' ) {
-				continue;
+			if ( option.model !== defaultModelElement ) {
+				// Schema.
+				editor.model.schema.register( option.model, {
+					inheritAllFrom: '$block',
+					allowAttributes: ['id', 'data-toc', 'data-ai-suggestion']
+				} );
+
+				editor.conversion.elementToElement( option );
+				editor.conversion.attributeToAttribute( { model: 'id', view: 'id' } );
+				editor.conversion.attributeToAttribute( { model: 'data-toc', view: 'data-toc' } );
+				editor.conversion.attributeToAttribute( { model: 'data-ai-suggestion', view: 'data-ai-suggestion' } );
+
+				modelElements.push( option.model );
 			}
-
-			// Schema.
-			editor.model.schema.register( option.model, {
-				inheritAllFrom: '$block'
-			} );
-
-			editor.conversion.elementToElement( option );
-
-			modelElements.push( option.model );
 		}
 
 		this._addDefaultH1Conversion( editor );

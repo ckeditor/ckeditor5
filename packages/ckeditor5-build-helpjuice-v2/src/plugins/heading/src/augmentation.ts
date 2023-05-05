@@ -32,9 +32,11 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface PluginsMap {
-		[ Heading.pluginName ]: Heading;
+		[Heading.pluginName]: Heading;
+		// @ts-ignore
 		[ HeadingEditing.pluginName ]: HeadingEditing;
-		[ HeadingUI.pluginName ]: HeadingUI;
+		[HeadingUI.pluginName]: HeadingUI;
+		// @ts-ignore
 		[ Title.pluginName ]: Title;
 	}
 

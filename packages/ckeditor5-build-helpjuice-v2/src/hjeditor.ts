@@ -41,7 +41,7 @@ import ImageToolbar from './plugins/image/src/imagetoolbar';
 import ImageUpload from './plugins/image/src/imageupload';
 
 // Custom Plugins
-import { Heading } from './plugins/heading';
+import Heading from './plugins/heading/src/heading';
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
 import CalloutBlocks from './plugins/calloutblocks/calloutblocks';
@@ -80,6 +80,7 @@ HelpjuiceEditor.builtinPlugins = [
 	Highlight,
 	BlockQuote,
 	HorizontalLine,
+	// @ts-ignore
 	Heading,
 	// @ts-ignore
 	Image,
