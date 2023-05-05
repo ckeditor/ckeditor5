@@ -9,20 +9,9 @@
 
 'use strict';
 
-const readline = require( 'readline' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 
 const abortController = new AbortController();
-
-// Windows does not understand CTRL+C attached to `process`.
-if ( process.platform === 'win32' ) {
-	const rl = readline.createInterface( {
-		input: process.stdin,
-		output: process.stdout
-	} );
-
-	rl.on( 'SIGINT', () => process.emit( 'SIGINT' ) );
-}
 
 process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
