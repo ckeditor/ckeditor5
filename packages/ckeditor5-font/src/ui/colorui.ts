@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+import type { Batch } from 'ckeditor5/src/engine';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import {
@@ -63,6 +64,8 @@ export default class ColorUI extends Plugin {
 	 */
 	public colorTableView: ColorTableView | undefined;
 
+	private _undoStepBatch: Batch;
+
 	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
 	 *
@@ -84,6 +87,7 @@ export default class ColorUI extends Plugin {
 	) {
 		super( editor );
 
+		this._undoStepBatch = editor.model.createBatch();
 		this.commandName = commandName;
 		this.componentName = componentName;
 		this.icon = icon;
@@ -148,20 +152,28 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 				if ( dropdownView.isOpen ) {
-					editor.execute( this.commandName, data );
+					editor.execute( this.commandName, {
+						value: data.value,
+						batch: this._undoStepBatch
+					} );
 				}
 
 				if ( data.source !== 'colorPicker' ) {
 					editor.editing.view.focus();
 				}
+
+				if ( data.source === 'saveButton' ) {
+					this._undoStepBatch = editor.model.createBatch();
+				}
 			} );
 
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
-				editor.execute( this.commandName, {
-					value: colorSavedUponDropdownOpen
-				} );
-				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
+				if ( this._undoStepBatch!.operations.length ) {
+					editor.execute( 'undo', this._undoStepBatch );
+				}
 
+				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
+				this._undoStepBatch = editor.model.createBatch();
 				editor.editing.view.focus();
 			} );
 
@@ -183,6 +195,7 @@ export default class ColorUI extends Plugin {
 
 					this.colorTableView!.updateSelectedColors();
 				} else {
+					this._undoStepBatch = editor.model.createBatch();
 					this.colorTableView!.showColorGrids();
 				}
 			} );

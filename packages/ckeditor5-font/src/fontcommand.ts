@@ -8,6 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
+import { type Batch } from 'ckeditor5/src/engine';
 
 /**
  * The base font command.
@@ -57,14 +58,15 @@ export default abstract class FontCommand extends Command {
 	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: string; batch?: Batch } = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
 		const value = options.value;
+		const batch = options.batch;
 
-		model.change( writer => {
+		model.enqueueChange( batch, writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( this.attributeKey, value );
