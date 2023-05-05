@@ -71,45 +71,20 @@ describe( 'DropdownPanelView', () => {
 						view.element.dispatchEvent( event );
 						sinon.assert.calledOnce( spy );
 					} );
+
+					it( 'does not get preventDefault called for the input field', () => {
+						const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
+
+						view.children.add( labeledInput );
+
+						const event = new Event( 'selectstart' );
+						const spy = sinon.spy( event, 'preventDefault' );
+
+						labeledInput.fieldView.element.dispatchEvent( event );
+						sinon.assert.notCalled( spy );
+					} );
 				} );
 			} );
-		} );
-	} );
-
-	describe( 'render()', () => {
-		it( 'should not intercept the "selectstart" event for the text node', () => {
-			const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
-			labeledInput.label = 'foo';
-
-			view.children.add( labeledInput );
-
-			const spy = sinon.spy();
-			const event = new Event( 'selectstart', {
-				bubbles: true,
-				cancelable: true
-			} );
-
-			event.stopPropagation = spy;
-
-			labeledInput.element.children[ 0 ].children[ 1 ].childNodes[ 0 ].dispatchEvent( event ); // text node 'foo'
-			sinon.assert.notCalled( spy );
-		} );
-
-		it( 'intercepts the "selectstart" event for the input field', () => {
-			const labeledInput = new LabeledFieldView( { t: () => {} }, createLabeledInputText );
-
-			view.children.add( labeledInput );
-
-			const spy = sinon.spy();
-			const event = new Event( 'selectstart', {
-				bubbles: true,
-				cancelable: true
-			} );
-
-			event.stopPropagation = spy;
-
-			labeledInput.fieldView.element.dispatchEvent( event );
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
