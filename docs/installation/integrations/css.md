@@ -1,6 +1,6 @@
 ---
 menu-title: CSS frameworks
-category: frameworks
+category: integrations
 order: 60
 ---
 

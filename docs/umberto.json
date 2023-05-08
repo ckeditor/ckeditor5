@@ -238,7 +238,13 @@
 		"installation/advanced/features-html-output-overview.html": "installation/plugins/features-html-output-overview.html",
 		"installation/advanced/plugins.html": "installation/plugins/plugins.html",
 		"installation/advanced/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
-		"installation/frameworks/index.html": "installation/frameworks/overview.html",
+		"installation/frameworks/index.html": "installation/integrations/overview.html",
+		"installation/frameworks/overview.html": "installation/integrations/overview.html",
+		"installation/frameworks/angular.html": "installation/integrations/angular.html",
+		"installation/frameworks/react.html": "installation/integrations/react.html",
+		"latest/installation/frameworks/vuejs-v2.html": "latest/integrations/frameworks/vuejs-v2.html",
+		"installation/frameworks/vuejs-v3.html": "installation/integrations/vuejs-v3.html",
+		"installation/frameworks/css.html": "installation/integrations/css.html",
 		"installation/getting-started/basic-api.html": "installation/getting-started/editor-lifecycle.html",
 		"installation/getting-started/frameworks/css.html": "installation/frameworks/css.html",
 		"installation/getting-started/frameworks/angular.html": "installation/frameworks/angular.html",
@@ -339,9 +345,9 @@
 					"order": 25
 				},
 				{
-					"name": "Frameworks",
-					"id": "frameworks",
-					"slug": "frameworks",
+					"name": "Integrations",
+					"id": "integrations",
+					"slug": "integrations",
 					"order": 30
 				},
 				{

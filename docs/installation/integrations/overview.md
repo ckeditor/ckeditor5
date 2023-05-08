@@ -1,5 +1,5 @@
 ---
-category: frameworks
+category: integrations
 order: 10
 menu-title: Overview
 ---
@@ -24,7 +24,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	There are four official integrations so far: for {@link installation/frameworks/react React}, {@link installation/frameworks/angular Angular}, {@link installation/frameworks/vuejs-v2 Vue.js 2.x}, and for {@link installation/frameworks/vuejs-v3 Vue.js 3.x}.
+	There are four official integrations so far: for {@link installation/integrations/react React}, {@link installation/integrations/angular Angular}, {@link installation/integrations/vuejs-v2 Vue.js 2.x}, and for {@link installation/integrations/vuejs-v3 Vue.js 3.x}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework by yourself.**
 
@@ -34,35 +34,18 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 There are four official integrations so far:
 
-* {@link installation/frameworks/angular CKEditor 5 rich-text editor for Angular}
-* {@link installation/frameworks/react CKEditor 5 rich-text editor for React}
-* {@link installation/frameworks/vuejs-v2 CKEditor 5 rich-text editor for Vue.js 2.x}
-* {@link installation/frameworks/vuejs-v3 CKEditor 5 rich-text editor for Vue.js 3.x}
+* {@link installation/integrations/angular CKEditor 5 rich-text editor for Angular}
+* {@link installation/integrations/react CKEditor 5 rich-text editor for React}
+* {@link installation/integrations/vuejs-v2 CKEditor 5 rich-text editor for Vue.js 2.x}
+* {@link installation/integrations/vuejs-v3 CKEditor 5 rich-text editor for Vue.js 3.x}
 
 Refer to their documentation to learn how to use them.
 
 We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) what we should work on next.
 
-## Compatibility with Electron
-
-Starting from version 11.0.0 CKEditor 5 is compatible with Electron. Using CKEditor 5 in Electron applications does not require any additional steps.
-
-Check out a [sweet screencast of CKEditor 5 with real-time collaborative editing in Electron](https://twitter.com/ckeditor/status/1016627687568363520).
-
-## Compatibility with Ionic and Cordova
-
-CKEditor 5 is compatible with [Ionic framework](https://ionicframework.com/) and [Cordova](https://cordova.apache.org/). However, by default Ionic disables `user-select`, which [blocks typing via the virtual keyboard](https://github.com/ckeditor/ckeditor5/issues/701). It is required to set this property to `text` on the CKEditor component. Just update your stylesheet with the following code:
-
-```css
-ckeditor {
-	-webkit-user-select: text;
-	user-select: text
-}
-```
-
 ## Compatibility with CSS frameworks
 
-CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link installation/frameworks/css in this guide}.
+CKEditor 5 is compatible with popular CSS frameworks, such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link installation/integrations/css in this guide}.
 
 <info-box hint>
 **What's next?**

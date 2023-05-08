@@ -74,9 +74,9 @@ If you want to integrate CKEditor 5 directly in your TypeScript project, follow 
 
 The latest versions of our official components for Angular, React, and Vue 3 are migrated to TypeScript and use native CKEditor 5's type definitions. You don't need to provide custom definitions anymore. You can use the following guides:
 
-* {@link installation/frameworks/angular Angular component}
-* {@link installation/frameworks/react React component}
-* {@link installation/frameworks/vuejs-v3 Vue.js 3+ component}
+* {@link installation/integrations/angular Angular component}
+* {@link installation/integrations/react React component}
+* {@link installation/integrations/vuejs-v3 Vue.js 3+ component}
 
 ## Developing plugins using TypeScript
 
