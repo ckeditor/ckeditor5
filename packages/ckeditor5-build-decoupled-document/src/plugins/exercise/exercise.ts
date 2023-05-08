@@ -14,7 +14,8 @@ export default class Exercise extends Plugin {
 
 			button.set({
 				label: 'Exercise',
-				withText: false,
+				withText: true,
+			
 			});
 
 			button.on('execute', () => {
