@@ -15,6 +15,8 @@ const version = '37.1.0';
 
 export default version;
 
+export const releaseDate = new Date( 2023, 3, 19 );
+
 /* istanbul ignore next -- @preserve */
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
