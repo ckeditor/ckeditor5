@@ -66,7 +66,7 @@ export default abstract class FontCommand extends Command {
 		const value = options.value;
 		const batch = options.batch;
 
-		const action = ( writer: Writer ) => {
+		const updateAttribute = ( writer: Writer ) => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( this.attributeKey, value );
@@ -86,13 +86,14 @@ export default abstract class FontCommand extends Command {
 			}
 		};
 
+		// In some scenarios, you may want to use a single undo step for multiple changes (e.g. in color picker).
 		if ( batch ) {
 			model.enqueueChange( batch, writer => {
-				action( writer );
+				updateAttribute( writer );
 			} );
 		} else {
 			model.change( writer => {
-				action( writer );
+				updateAttribute( writer );
 			} );
 		}
 	}

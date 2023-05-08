@@ -628,7 +628,7 @@ class ColorGridsPageView extends View {
 		} );
 
 		this.colorPickerButtonView.on( 'execute', () => {
-			this.fire( 'showColorPicker' );
+			this.fire<ColorTableShowColorPickerEvent>( 'showColorPicker' );
 		} );
 	}
 
@@ -834,12 +834,12 @@ class ColorPickerPageView extends View {
 			keystrokes,
 			colorPickerConfig
 		}:
-		{
-			focusTracker: FocusTracker;
-			focusables: ViewCollection;
-			keystrokes: KeystrokeHandler;
-			colorPickerConfig: ColorPickerConfig | false;
-		}
+			{
+				focusTracker: FocusTracker;
+				focusables: ViewCollection;
+				keystrokes: KeystrokeHandler;
+				colorPickerConfig: ColorPickerConfig | false;
+			}
 	) {
 		super( locale );
 
@@ -1067,11 +1067,11 @@ export type ColorTableCancelEvent = {
 };
 
 /**
- * Fired whenever color picker should be shown.
+ * Fired whenever color picker will be shown.
  *
- * @eventName ~ColorTableView#cancel
+ * @eventName ~ColorTableView#showColorPicker
  */
-export type ShowColorPickerEvent = {
+export type ColorTableShowColorPickerEvent = {
 	name: 'showColorPicker';
 	args: [];
 };

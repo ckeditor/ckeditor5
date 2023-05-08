@@ -226,6 +226,7 @@ describe( 'FontCommand', () => {
 
 		it( 'should use parent batch for storing undo steps', () => {
 			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+
 			model.change( writer => {
 				expect( writer.batch.operations.length ).to.equal( 0 );
 				command.execute( { value: 'foo' } );
