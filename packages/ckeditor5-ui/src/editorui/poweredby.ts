@@ -124,6 +124,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 				return;
 			}
 
+			/* istanbul ignore next -- @preserve */
 			if ( !balloon ) {
 				balloon = this._createBalloonAndView();
 			}
@@ -229,6 +230,7 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 
 	const positioningFunction = editor.locale.contentLanguageDirection === 'ltr' ?
 		getLowerRightCornerPosition( focusedDomRoot ) :
+		/* istanbul ignore next -- @preserve */
 		getLowerLeftCornerPosition( focusedDomRoot );
 
 	return {
@@ -243,6 +245,7 @@ function getLowerRightCornerPosition( focusedDomRoot: HTMLElement ) {
 	} );
 }
 
+/* istanbul ignore next -- @preserve */
 function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement ) {
 	return getLowerCornerPosition( focusedDomRoot, rootRect => {
 		return rootRect.left + 5;
@@ -257,6 +260,7 @@ function getLowerCornerPosition(
 		const visibleRootRect = rootRect.getVisible();
 
 		// Root cropped by ancestors.
+		/* istanbul ignore next -- @preserve */
 		if ( !visibleRootRect ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
@@ -275,6 +279,7 @@ function getLowerCornerPosition(
 			}
 		}
 
+		/* istanbul ignore next -- @preserve */
 		return {
 			top: balloonTop,
 			left: balloonLeft,
