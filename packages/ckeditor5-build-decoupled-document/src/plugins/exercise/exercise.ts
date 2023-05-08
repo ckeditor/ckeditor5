@@ -9,14 +9,15 @@ export default class Exercise extends Plugin {
 		editor.ui.componentFactory.add('exercise', () => {
 			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
-			const open = editor.config._config.exercise.onOpen;
 
 			button.set({
 				label: 'Exercise',
-				withText: true,
+				withText: false,
 			});
 
 			button.on('execute', () => {
+				const open = editor.config._config.exercise.onOpen;
+
 				open();
 			});
 
