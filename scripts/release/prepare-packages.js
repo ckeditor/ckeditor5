@@ -29,7 +29,8 @@ process.on( 'SIGINT', () => {
 	} );
 
 	updateVersionReferences( {
-		version: latestVersion
+		version: latestVersion,
+		releaseDate: new Date()
 	} );
 
 	await releaseTools.executeInParallel( {
