@@ -48,6 +48,9 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support';
+
+
 // @ts-ignore
 import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
 // @ts-ignore
@@ -60,6 +63,7 @@ import { Exercise } from './plugins/exercise/index';
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
 		Essentials,
+		GeneralHtmlSupport,
 		Alignment,
 		FontSize,
 		FontFamily,
