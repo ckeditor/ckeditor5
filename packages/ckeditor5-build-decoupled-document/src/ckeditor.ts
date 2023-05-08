@@ -163,6 +163,14 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				reversed: true,
 			},
 		},
+		htmlSupport: {
+			allow: [
+				{
+					name: 'a',
+					classes: true,
+				},
+			],
+		},
 		// This value must be kept in sync with the language defined in webpack.config.js.
 		language: 'en',
 	};
