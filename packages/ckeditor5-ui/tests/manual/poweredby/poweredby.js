@@ -46,7 +46,7 @@ function createEditor( selector ) {
 		.then( editor => {
 			window.editors[ selector ] = editor;
 
-			CKEditorInspector.attach( selector, editor );
+			CKEditorInspector.attach( { [ selector ]: editor } );
 		} )
 		.catch( err => {
 			console.error( err.stack );

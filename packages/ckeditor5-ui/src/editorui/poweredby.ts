@@ -72,10 +72,19 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Destroys the "powered by" helper along with its view.
 	 */
 	public destroy(): void {
-		this[ POWERED_BY_BALLOON_SYMBOL ]!.unpin();
+		const editor = this.editor!;
+		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ];
+		const view = this[ POWERED_BY_VIEW_SYMBOL ];
 
-		this[ POWERED_BY_VIEW_SYMBOL ]!.destroy();
-		this[ POWERED_BY_BALLOON_SYMBOL ]!.destroy();
+		if ( balloon ) {
+			balloon.unpin();
+			editor!.ui.view.body.remove( balloon );
+			balloon.destroy();
+		}
+
+		if ( view ) {
+			view.destroy();
+		}
 
 		this.stopListening();
 
@@ -87,16 +96,18 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _handleEditorReady(): void {
 		const editor = this.editor!;
-		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ] = new BalloonPanelView();
 
-		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
-		balloon.withArrow = false;
-		balloon.class = 'ck-powered-by-balloon';
+		if ( !editor.ui.view ) {
+			return;
+		}
 
-		editor.ui.view.body.add( balloon );
-		editor.ui.focusTracker.add( balloon.element! );
+		let balloon: BalloonPanelView | undefined;
 
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
+			if ( !balloon ) {
+				balloon = this._createBalloonAndView();
+			}
+
 			if ( isFocused ) {
 				const attachOptions = getBalloonAttachOptions( editor );
 
@@ -113,6 +124,10 @@ export default class PoweredBy extends DomEmitterMixin() {
 				return;
 			}
 
+			if ( !balloon ) {
+				balloon = this._createBalloonAndView();
+			}
+
 			const attachOptions = getBalloonAttachOptions( editor );
 
 			if ( attachOptions ) {
@@ -127,6 +142,24 @@ export default class PoweredBy extends DomEmitterMixin() {
 		// TODO: Problem with Rect#isVisible() and floating editors (comments) vs. hiding the view when cropped by parent with overflow.
 		// TODO: Update position once an image loaded.
 		// TODO: Make the position (side) configurable.
+	}
+
+	/**
+	 * Creates an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
+	 * with the "powered by" view inside ready for positioning.
+	 */
+	private _createBalloonAndView(): BalloonPanelView {
+		const editor = this.editor!;
+		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ] = new BalloonPanelView();
+
+		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
+		balloon.withArrow = false;
+		balloon.class = 'ck-powered-by-balloon';
+
+		editor.ui.view.body.add( balloon );
+		editor.ui.focusTracker.add( balloon.element! );
+
+		return balloon;
 	}
 }
 
