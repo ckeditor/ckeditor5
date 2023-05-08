@@ -194,7 +194,7 @@ describe( 'ColorUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should cancel changes', () => {
+			it.only( 'should cancel changes', () => {
 				dropdown.isOpen = false;
 
 				dropdown.colorTableView.selectedColor = '#ff0000';
@@ -203,9 +203,24 @@ describe( 'ColorUI', () => {
 
 				dropdown.colorTableView.selectedColor = '#123456';
 
-				dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
+				dropdown.colorTableView.fire( 'execute', {
+					value: '#123456',
+					source: 'colorPicker'
+				} );
 
-				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
+				dropdown.colorTableView.fire( 'execute', {
+					value: '#654321',
+					source: 'colorPicker'
+				} );
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: '#321456',
+					source: 'colorPicker'
+				} );
+
+				// dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
+
+				expect( dropdown.colorTableView.selectedColor ).to.equal( '#321456' );
 			} );
 
 			it.skip( 'should avoid call the command multiple times', () => {

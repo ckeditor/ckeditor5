@@ -65,7 +65,7 @@ export default abstract class FontCommand extends Command {
 
 		const value = options.value;
 		const batch = options.batch;
-
+		console.log('----------', value)
 		model.enqueueChange( batch, writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {

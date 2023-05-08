@@ -64,7 +64,7 @@ export default class ColorUI extends Plugin {
 	 */
 	public colorTableView: ColorTableView | undefined;
 
-	private _undoStepBatch: Batch;
+	private undoStepBatch: Batch;
 
 	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
@@ -87,7 +87,7 @@ export default class ColorUI extends Plugin {
 	) {
 		super( editor );
 
-		this._undoStepBatch = editor.model.createBatch();
+		this.undoStepBatch = editor.model.createBatch();
 		this.commandName = commandName;
 		this.componentName = componentName;
 		this.icon = icon;
@@ -115,7 +115,6 @@ export default class ColorUI extends Plugin {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
 			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
 			let dropdownContentRendered = false;
-			let colorSavedUponDropdownOpen: string;
 
 			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
@@ -152,9 +151,10 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 				if ( dropdownView.isOpen ) {
+					console.log(this.commandName)
 					editor.execute( this.commandName, {
 						value: data.value,
-						batch: this._undoStepBatch
+						batch: this.undoStepBatch
 					} );
 				}
 
@@ -163,17 +163,16 @@ export default class ColorUI extends Plugin {
 				}
 
 				if ( data.source === 'saveButton' ) {
-					this._undoStepBatch = editor.model.createBatch();
+					this.undoStepBatch = editor.model.createBatch();
 				}
 			} );
 
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
-				if ( this._undoStepBatch!.operations.length ) {
-					editor.execute( 'undo', this._undoStepBatch );
+				if ( this.undoStepBatch!.operations.length ) {
+					editor.execute( 'undo', this.undoStepBatch );
 				}
 
-				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
-				this._undoStepBatch = editor.model.createBatch();
+				this.undoStepBatch = editor.model.createBatch();
 				editor.editing.view.focus();
 			} );
 
@@ -185,17 +184,13 @@ export default class ColorUI extends Plugin {
 				}
 
 				if ( isVisible ) {
-					if ( hasColorPicker ) {
-						colorSavedUponDropdownOpen = dropdownView.colorTableView!.selectedColor!;
-					}
-
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
 
 					this.colorTableView!.updateSelectedColors();
 				} else {
-					this._undoStepBatch = editor.model.createBatch();
+					this.undoStepBatch = editor.model.createBatch();
 					this.colorTableView!.showColorGrids();
 				}
 			} );
