@@ -66,7 +66,7 @@ export default class ColorUI extends Plugin {
 	public colorTableView: ColorTableView | undefined;
 
 	/**
-	 * Keeps all changes of color picker in one batch.
+	 * Keeps all changes in color picker in one batch while dropdown is open.
 	 */
 	declare private _undoStepBatch: Batch;
 
