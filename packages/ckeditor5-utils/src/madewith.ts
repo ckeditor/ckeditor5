@@ -60,10 +60,10 @@ export default function verify( stringToCheck: string ): VerifiedKeyStatus {
 		return 'INVALID';
 	}
 
-	const day = decryptedSecondElement.substring( 0, 2 );
-	const month = decryptedSecondElement.substring( 2, 4 );
-	const year = decryptedSecondElement.substring( 4, 8 );
-	const date = new Date( `${ year }-${ month }-${ day }` );
+	const day = Number( decryptedSecondElement.substring( 0, 2 ) );
+	const monthIndex = Number( decryptedSecondElement.substring( 2, 4 ) ) - 1;
+	const year = Number( decryptedSecondElement.substring( 4, 8 ) );
+	const date = new Date( year, monthIndex, day );
 
 	if ( !isFinite( Number( date ) ) ) {
 		return 'INVALID';
