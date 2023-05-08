@@ -181,13 +181,6 @@ export default class ImageInsertPanelView extends View {
 		this.keystrokes.set( 'arrowleft', stopPropagation );
 		this.keystrokes.set( 'arrowup', stopPropagation );
 		this.keystrokes.set( 'arrowdown', stopPropagation );
-
-		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
-		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( childViews[ 0 ].element!, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
 	}
 
 	/**
