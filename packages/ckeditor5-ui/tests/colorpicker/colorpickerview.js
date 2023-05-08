@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals CustomEvent, Event, document */
+/* globals CustomEvent, document */
 
 import ColorPickerView from './../../src/colorpicker/colorpickerview';
 import 'vanilla-colorful/hex-color-picker.js';
@@ -274,19 +274,6 @@ describe( 'ColorPickerView', () => {
 			clock.tick( 200 );
 
 			expect( view.color ).to.equal( '#ff0000' );
-		} );
-
-		it( 'intercepts the "selectstart" in the #input with the high priority to unlock select all', () => {
-			const spy = sinon.spy();
-			const event = new Event( 'selectstart', {
-				bubbles: true,
-				cancelable: true
-			} );
-
-			event.stopPropagation = spy;
-
-			view.hexInputRow.children.get( 1 ).element.dispatchEvent( event );
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
