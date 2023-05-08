@@ -54,6 +54,8 @@ import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
 import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 // @ts-ignore
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
+// @ts-ignore
+import { Exercise } from './plugins/exercise/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -95,7 +97,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		TextTransformation,
 		Iframe,
 		ScratchBlocks,
-		ContentTemplates
+		ContentTemplates,
+		Exercise
 	];
 
 	public static override defaultConfig = {
