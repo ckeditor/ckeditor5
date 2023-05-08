@@ -26,13 +26,13 @@ import {
 	Rect,
 	DomEmitterMixin,
 	delay,
-	type DelayedFunc,
+	ResizeObserver,
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
 import LineView from './lineview';
 
-import { type DebouncedFunc, throttle } from 'lodash-es';
+import { throttle } from 'lodash-es';
 
 /**
  * TODO
@@ -43,14 +43,23 @@ export default class DragDropTarget extends Plugin {
 	 *
 	 * @internal
 	 */
-	public readonly removeDropMarkerDelayed: DelayedFunc<() => void> = delay( () => this.removeDropMarker(), 40 );
+	public readonly removeDropMarkerDelayed = delay( () => this.removeDropMarker(), 40 );
 
 	/**
 	 * A throttled callback updating the drop marker.
 	 */
-	private readonly _updateDropMarkerThrottled: DebouncedFunc<( targetRange: Range ) => void> = throttle(
+	private readonly _updateDropMarkerThrottled = throttle(
 		targetRange => this._updateDropMarker( targetRange ), 40
 	);
+
+	/**
+	 * TODO
+	 */
+	private readonly _reconvertMarkerThrottled = throttle( () => {
+		if ( this.editor.model.markers.has( 'drop-target' ) ) {
+			this.editor.editing.reconvertMarker( 'drop-target' );
+		}
+	}, 0 );
 
 	/**
 	 * TODO
@@ -65,7 +74,10 @@ export default class DragDropTarget extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _domScrollables = new Map<string, HTMLElement>();
+	private _scrollables = new Map<string, {
+		domElement: HTMLElement;
+		resizeObserver: ResizeObserver;
+	}>();
 
 	/**
 	 * @inheritDoc
@@ -86,8 +98,14 @@ export default class DragDropTarget extends Plugin {
 	 */
 	public override destroy(): void {
 		this._domEmitter.stopListening();
+
+		for ( const { resizeObserver } of this._scrollables.values() ) {
+			resizeObserver.destroy();
+		}
+
 		this._updateDropMarkerThrottled.cancel();
 		this.removeDropMarkerDelayed.cancel();
+		this._reconvertMarkerThrottled.cancel();
 
 		return super.destroy();
 	}
@@ -260,16 +278,20 @@ export default class DragDropTarget extends Plugin {
 		const below = rectAfter ? rectAfter.top : rectParent.bottom;
 
 		const parentStyle = global.window.getComputedStyle( domElementParent );
-
-		const left = rectParent.left + parseFloat( parentStyle.paddingLeft );
 		const top = ( above <= below ? ( above + below ) / 2 : below );
 
 		if ( domScrollableRect.top < top && top < domScrollableRect.bottom ) {
+			const left = rectParent.left + parseFloat( parentStyle.paddingLeft );
+			const right = rectParent.right - parseFloat( parentStyle.paddingRight );
+
+			const leftClamped = Math.max( left + scrollX, domScrollableRect.left );
+			const rightClamped = Math.min( right + scrollX, domScrollableRect.right );
+
 			this._dropTargetLineView.set( {
 				isVisible: true,
-				left: left + scrollX,
+				left: leftClamped,
 				top: top + scrollY,
-				width: rectParent.width - parseFloat( parentStyle.paddingLeft ) - parseFloat( parentStyle.paddingRight )
+				width: rightClamped - leftClamped
 			} );
 		} else {
 			this._dropTargetLineView.isVisible = false;
@@ -284,21 +306,20 @@ export default class DragDropTarget extends Plugin {
 
 		let domScrollable;
 
-		if ( this._domScrollables.has( rootName ) ) {
-			domScrollable = this._domScrollables.get( rootName )!;
+		if ( this._scrollables.has( rootName ) ) {
+			domScrollable = this._scrollables.get( rootName )!.domElement;
 		} else {
 			const domElement = this.editor.editing.view.domConverter.mapViewToDom( viewElement )!;
 
 			domScrollable = findScrollableElement( domElement );
-			this._domScrollables.set( rootName, domScrollable );
 
-			// this._domEmitter.listenTo( domScrollable, 'scroll', () => {
-			// 	TODO console.log( 'update line on scroll' );
-			// }, { usePassive: true } );
-			//
-			// this._resizeObserver = new ResizeObserver( domScrollable, () => {
-			// 	TODO console.log( 'update line on resize' );
-			// } );
+			this._domEmitter.listenTo( domScrollable, 'scroll', this._reconvertMarkerThrottled, { usePassive: true } );
+			const resizeObserver = new ResizeObserver( domScrollable, this._reconvertMarkerThrottled );
+
+			this._scrollables.set( rootName, {
+				domElement: domScrollable,
+				resizeObserver
+			} );
 		}
 
 		return new Rect( domScrollable ).excludeScrollbarsAndBorders();
