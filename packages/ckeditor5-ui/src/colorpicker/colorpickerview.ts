@@ -138,6 +138,16 @@ export default class ColorPickerView extends View {
 
 		if ( this.element ) {
 			this.element.insertBefore( this.picker, this.hexInputRow.element );
+
+			// Create custom stylesheet with a look of focused pointer in color picker and append it into the color picker shadowDom
+			const styleSheetForFocusedColorPicker = document.createElement( 'style' );
+
+			styleSheetForFocusedColorPicker.textContent = '[role="slider"]:focus [part$="pointer"] {' +
+					'border: 1px solid #fff;' +
+					'outline: 1px solid var(--ck-color-focus-border);' +
+					'box-shadow: 0 0 0 2px #fff;' +
+				'}';
+			this.picker.shadowRoot!.appendChild( styleSheetForFocusedColorPicker );
 		}
 
 		this.picker.addEventListener( 'color-changed', event => {
