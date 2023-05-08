@@ -17,7 +17,7 @@ import poweredByIcon from '../../theme/icons/project-logo.svg';
 
 const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
 const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
-const ICON_WIDTH = 52;
+const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
