@@ -9,6 +9,9 @@ import { Strikethrough, Code } from '@ckeditor/ckeditor5-basic-styles';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
@@ -21,7 +24,12 @@ ClassicEditor
 			CodeBlock,
 			HorizontalLine,
 			Strikethrough,
-			TodoList
+			TodoList,
+			PictureEditing,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox
 		] ),
 		toolbar: {
 			items: [

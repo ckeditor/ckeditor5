@@ -41,6 +41,10 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const contactsContainer = document.querySelector( '.contacts' );
@@ -233,7 +237,12 @@ ClassicEditor
 			Font,
 			Alignment,
 			HorizontalLine,
-			HCardEditing
+			HCardEditing,
+			PictureEditing,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox
 		],
 		toolbar: {
 			items: [
