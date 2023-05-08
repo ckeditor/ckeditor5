@@ -10,7 +10,8 @@ describe( 'utils', () => {
 		describe( 'should return `VALID`', () => {
 			it( 'when date is later than the release date', () => {
 				// future
-				const string = 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbS1NakEwTkRBMk1UST0=';
+				// eslint-disable-next-line max-len
+				const string = 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbXRvb2Vhc2V0bXBzbGl1cm9ybG1pZG10b29lYXNldG1wc2xpdXJvcmxtaWRtLU1qQTBOREEyTVRJPQ==';
 
 				expect( verify( string ) ).to.be.equal( 'VALID' );
 			} );
@@ -24,6 +25,23 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'should return `INVALID`', () => {
+			describe( 'new', () => {
+				it( 'first too short', () => {
+					expect( verify( 'Wm05dlltRnktTWpBeU5UQXhNREU9' ) ).to.be.equal( 'INVALID' );
+				} );
+
+				it( 'first too long', () => {
+					// eslint-disable-next-line max-len
+					const string = 'YzNSbGJTQmxjbkp2Y2pvZ2JtVjBPanBGVWxKZlFreFBRMHRGUkY5Q1dWOURURWxGVGxSemRHVnRJR1Z5Y205eU9pQnVaWFE2T2tWU1VsOUNURTlEUzBWRVgwSlpYME5NU1VWT1ZITjBaVzBnWlhKeWIzSTZJRzVsZERvNlJWSlNYMEpNVDBOTFJVUmZRbGxmUTB4SlJVNVVjM1JsYlNCbGNuSnZjam9nYm1WME9qcEZVbEpmUWt4UFEwdEZSRjlDV1Y5RFRFbEZUbFJ6ZEdWdElHVnljbTl5T2lCdVpYUTZPa1ZTVWw5Q1RFOURTMFZFWDBKWlgwTk1TVVZPVkhOMFpXMGdaWEp5YjNJNklHNWxkRG82UlZKU1gwSk1UME5MUlVSZlFsbGZRMHhKUlU1VS1NakF5TlRBeE1ERT0=';
+					expect( verify( string ) ).to.be.equal( 'INVALID' );
+				} );
+
+				it( 'first wrong format', () => {
+					const string = 'YS1NakF5TlRBeE1ERT0=';
+					expect( verify( string ) ).to.be.equal( 'INVALID' );
+				} );
+			} );
+
 			it( 'when passed variable is invalid', () => {
 				// invalid
 				const string = 'foobarbaz';
@@ -56,14 +74,13 @@ describe( 'utils', () => {
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
-		} );
 
-		describe( 'should return `EXPIRED`', () => {
 			it( 'when date is earlier than the release date', () => {
-				// past
-				const string = 'cGVsYXVlaXN0bW9kc21pbG10cm9yby1NVGs0TURBeE1ERT0=';
+				// new, past
+				// eslint-disable-next-line max-len
+				const string = 'Y0dWc1lYVmxhWE4wYlc5a2MyMXBiRzEwY205eWIzQmxiR0YxWldsemRHMXZaSE50YVd4dGRISnZjbTlrYzJGa2MyRmtjMkU9LU1UazRNREF4TURFPQ==';
 
-				expect( verify( string ) ).to.be.equal( 'EXPIRED' );
+				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
 		} );
 	} );

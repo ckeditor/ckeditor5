@@ -7,23 +7,21 @@
  * @module utils/madewith
  */
 
+import { releaseDate } from './version';
+
 /**
  * Possible states of the key after verification.
  */
-export type VerifiedKeyStatus = 'VALID' | 'INVALID' | 'EXPIRED';
+export type VerifiedKeyStatus = 'VALID' | 'INVALID';
 
 /**
  * Checks whether the given string contains information that allows you to verify the license status.
  *
  * @param token The string to check.
- * @returns String that represents the state of given `stringToCheck` parameter. It can be `'VALID'`, `'INVALID'` or `'EXPIRED'`.
+ * @returns String that represents the state of given `token` parameter.
  */
 export default function verify( token: string ): VerifiedKeyStatus {
 	// TODO: issue ci#3175
-
-	// mocked last release date
-	const currentReleaseDate = new Date();
-
 	let decryptedData = '';
 	let decryptedSecondElement = '';
 
@@ -38,14 +36,19 @@ export default function verify( token: string ): VerifiedKeyStatus {
 	const firstElement = splittedDecryptedData[ 0 ];
 	const secondElement = splittedDecryptedData[ 1 ];
 
-	if ( !secondElement ) {
-		const isFirstElementMatchingThePattern = firstElement.match( /^[a-zA-Z0-9+/=$]+$/g );
+	try {
+		// Must be a valid format.
+		atob( firstElement );
+	} catch ( e ) {
+		return 'INVALID';
+	}
 
-		if ( isFirstElementMatchingThePattern && ( firstElement.length >= 0x28 && firstElement.length <= 0xff ) ) {
-			return 'VALID';
-		} else {
-			return 'INVALID';
-		}
+	if ( firstElement.length < 40 || firstElement.length > 255 ) {
+		return 'INVALID';
+	}
+
+	if ( !secondElement ) {
+		return 'VALID';
 	}
 
 	try {
@@ -54,7 +57,7 @@ export default function verify( token: string ): VerifiedKeyStatus {
 		return 'INVALID';
 	}
 
-	if ( decryptedSecondElement.length !== 0x8 ) {
+	if ( decryptedSecondElement.length !== 8 ) {
 		return 'INVALID';
 	}
 
@@ -64,12 +67,8 @@ export default function verify( token: string ): VerifiedKeyStatus {
 
 	const date = new Date( year, monthIndex, day );
 
-	if ( !isFinite( Number( date ) ) ) {
+	if ( date < releaseDate ) {
 		return 'INVALID';
-	}
-
-	if ( date < currentReleaseDate ) {
-		return 'EXPIRED';
 	}
 
 	return 'VALID';
