@@ -7,6 +7,8 @@
  * @module clipboard/lineview
  */
 
+/* istanbul ignore file -- @preserve */
+
 import { View } from '@ckeditor/ckeditor5-ui';
 import { toUnit } from '@ckeditor/ckeditor5-utils';
 

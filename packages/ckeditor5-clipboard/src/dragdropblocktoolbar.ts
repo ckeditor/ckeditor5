@@ -7,6 +7,8 @@
  * @module clipboard/dragdropblocktoolbar
  */
 
+/* istanbul ignore file -- @preserve */
+
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
