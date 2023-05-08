@@ -4,6 +4,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 export default class Exercise extends Plugin {
 	init() {
 		const editor = this.editor;
+		// @ts-ignore
 		const open = editor.config.exercise.onOpen;
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
