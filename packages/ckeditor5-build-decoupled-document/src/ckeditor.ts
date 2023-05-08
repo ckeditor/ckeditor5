@@ -48,9 +48,8 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
+// @ts-ignore
 import GeneralHtmlSupport from '../../ckeditor5-html-support/src/generalhtmlsupport';
-
-
 // @ts-ignore
 import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
 // @ts-ignore
