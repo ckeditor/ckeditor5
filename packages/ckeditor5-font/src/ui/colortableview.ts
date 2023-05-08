@@ -223,6 +223,7 @@ export default class ColorTableView extends View {
 		}
 		this.items.add( this.colorGridsPageView );
 		this.colorGridsPageView.delegate( 'execute' ).to( this );
+		this.colorGridsPageView.delegate( 'showColorPicker' ).to( this );
 	}
 
 	/**
@@ -241,8 +242,6 @@ export default class ColorTableView extends View {
 	 * Show "Color picker" and hide "Color grids".
 	 */
 	public showColorPicker(): void {
-		this.fire( 'showColorPicker' );
-
 		if ( !this.colorPickerPageView.colorPickerView ) {
 			return;
 		}
@@ -626,6 +625,10 @@ class ColorGridsPageView extends View {
 			withText: true,
 			icon: ColorPaletteIcon,
 			class: 'ck-color-table__color-picker'
+		} );
+
+		this.colorPickerButtonView.on( 'execute', () => {
+			this.fire( 'showColorPicker' );
 		} );
 	}
 
@@ -1060,5 +1063,15 @@ export type ColorTableExecuteEvent = {
  */
 export type ColorTableCancelEvent = {
 	name: 'cancel';
+	args: [];
+};
+
+/**
+ * Fired whenever color picker should be shown.
+ *
+ * @eventName ~ColorTableView#cancel
+ */
+export type ShowColorPickerEvent = {
+	name: 'showColorPicker';
 	args: [];
 };

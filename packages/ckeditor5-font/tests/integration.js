@@ -7,6 +7,7 @@
 
 import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -20,7 +21,7 @@ describe( 'Integration test Font', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Font, ArticlePluginSet ],
+				plugins: [ Font, ArticlePluginSet, Undo ],
 				image: {
 					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 				}
@@ -242,6 +243,33 @@ describe( 'Integration test Font', () => {
 			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+		} );
+
+		it( 'should delete all previous changes', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text>[foo]</$text>' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+			dropdown.isOpen = true;
+			dropdown.colorTableView.fire( 'showColorPicker' );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = 'hsl( 0, 0%, 100% )';
+			dropdown.isOpen = false;
+
+			dropdown.isOpen = true;
+			dropdown.colorTableView.fire( 'showColorPicker' );
+
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#654321';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#123456';
+			dropdown.isOpen = false;
+
+			editor.commands.get( 'undo' ).execute();
+			expect( getData( model ) ).to.equal( '<paragraph>' +
+			'[<$text fontColor="hsl( 0, 0%, 100% )">foo</$text>]' +
+			'</paragraph>' );
 		} );
 	} );
 } );

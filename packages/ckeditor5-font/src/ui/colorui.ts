@@ -20,7 +20,8 @@ import {
 import {
 	type default as ColorTableView,
 	type ColorTableExecuteEvent,
-	type ColorTableCancelEvent
+	type ColorTableCancelEvent,
+	type ShowColorPickerEvent
 } from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
@@ -164,7 +165,7 @@ export default class ColorUI extends Plugin {
 				}
 			} );
 
-			this.colorTableView.on( 'showColorPicker', () => {
+			this.colorTableView.on<ShowColorPickerEvent>( 'showColorPicker', () => {
 				this._undoStepBatch = editor.model.createBatch();
 			} );
 

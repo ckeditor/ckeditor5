@@ -224,6 +224,17 @@ describe( 'FontCommand', () => {
 			);
 		} );
 
+		it( 'should use parent batch for storing undo steps', () => {
+			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+			model.change( writer => {
+				expect( writer.batch.operations.length ).to.equal( 0 );
+				command.execute( { value: 'foo' } );
+				expect( writer.batch.operations.length ).to.equal( 1 );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
+		} );
+
 		it( 'should use provided batch', () => {
 			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
 			const batch = model.createBatch();

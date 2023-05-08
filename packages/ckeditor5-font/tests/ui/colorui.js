@@ -199,7 +199,7 @@ describe( 'ColorUI', () => {
 				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
 
 				dropdown.isOpen = true;
-				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+				testColorPlugin.colorTableView.fire( 'showColorPicker' );
 
 				dropdown.colorTableView.selectedColor = 'hsl( 0, 0%, 100% )';
 
@@ -228,7 +228,8 @@ describe( 'ColorUI', () => {
 					source: 'colorPicker'
 				} );
 
-				expect( testColorPlugin._undoStepBatch.operations.length ).to.equal( 1 );
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 1 change in batch' ).to.equal( 1 );
 
 				dropdown.colorTableView.fire( 'execute', {
 					value: 'hsl( 110, 60%, 12% )',
@@ -238,7 +239,8 @@ describe( 'ColorUI', () => {
 				dropdown.isOpen = true;
 				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
 
-				expect( testColorPlugin._undoStepBatch.operations.length ).to.equal( 0 );
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 0 changes in batch' ).to.equal( 0 );
 			} );
 
 			it.skip( 'should avoid call the command multiple times', () => {

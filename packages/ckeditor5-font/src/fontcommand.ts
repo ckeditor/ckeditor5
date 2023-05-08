@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import { type Batch } from 'ckeditor5/src/engine';
+import { type Batch, type Writer } from 'ckeditor5/src/engine';
 
 /**
  * The base font command.
@@ -66,7 +66,7 @@ export default abstract class FontCommand extends Command {
 		const value = options.value;
 		const batch = options.batch;
 
-		model.enqueueChange( batch, writer => {
+		const action = ( writer: Writer ) => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( this.attributeKey, value );
@@ -84,6 +84,16 @@ export default abstract class FontCommand extends Command {
 					}
 				}
 			}
-		} );
+		};
+
+		if ( batch ) {
+			model.enqueueChange( batch, writer => {
+				action( writer );
+			} );
+		} else {
+			model.change( writer => {
+				action( writer );
+			} );
+		}
 	}
 }
