@@ -22,6 +22,8 @@ export type {
 
 export { default as DragDrop } from './dragdrop';
 export { default as PastePlainText } from './pasteplaintext';
+export { default as DragDropBlockToolbar } from './dragdropblocktoolbar';
+
 export type {
 	ViewDocumentClipboardInputEvent,
 	ViewDocumentCopyEvent,

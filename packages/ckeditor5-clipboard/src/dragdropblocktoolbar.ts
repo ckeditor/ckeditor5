@@ -111,7 +111,7 @@ export default class DragDropBlockToolbar extends Plugin {
 	 * TODO
 	 */
 	private _handleBlockDragging( domEvent: DragEvent ): void {
-		if ( !this.isEnabled ) {
+		if ( !this.isEnabled || !this._isBlockDragging ) {
 			return;
 		}
 
@@ -119,7 +119,7 @@ export default class DragDropBlockToolbar extends Plugin {
 		const clientY = domEvent.clientY;
 		const target = document.elementFromPoint( clientX, clientY );
 
-		if ( !target || !target.closest( '.ck-editor__editable' ) || !this._isBlockDragging ) {
+		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
 			return;
 		}
 
