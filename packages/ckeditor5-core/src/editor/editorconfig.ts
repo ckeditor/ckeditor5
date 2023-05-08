@@ -479,11 +479,34 @@ export interface EditorConfig {
 	 * ([learn more](TODO)). It allows customizing the position of the logo to minimize the risk of collision with editor content
 	 * and UI.
 	 *
+	 * 	The following configuration properties are supported:
+	 *
+	 * 	* **`position`** &ndash; Position of the project's logo (default: `'inside'`).
+	 * 		* When `'inside'` the logo will be displayed within the boundaries of the editing area.
+	 * 		* When `'border'` the logo will be displayed over the bottom border of the editing area.
+	 *
+	 * 	* **`side`** (`'left'` or `'right'`, default: `'right'`) &ndash; Allows choosing the side of the editing area the
+	 * 	logo will be displayed to.
+	 *
+	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+	 * 		language, the side switches to `'left'` by default.
+	 *
+	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
+	 *
+	 * 		**Note**: If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+	 *
+	 * 	* **`horizontalOffset`** (default: `5`) &ndash; The horizontal distance between the side of the editing root and the
+	 * 	nearest side of the logo.
+	 *
 	 * 	```ts
 	 * 	ui: {
-	 * 		poweredBy: { position: 'border', side: 'left', verticalOffset: 2, horizontalOffset: 30 }
+	 * 		poweredBy: {
+	 * 			position: 'border',
+	 * 			side: 'left',
+	 * 			verticalOffset: 2,
+	 * 			horizontalOffset: 30
+	 * 		}
 	 * 	}
-	 * 	```
 	 */
 	ui?: UiConfig;
 
@@ -573,9 +596,41 @@ export interface UiConfig {
 	};
 
 	poweredBy?: {
+
+		/**
+		 * Position of the project's logo.
+		 *
+		 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
+		 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
+		 *
+		 * @default 'inside'
+		 */
 		position: 'inside' | 'border';
+
+		/**
+		 * Allows choosing the side of the editing area the logo will be displayed to.
+		 *
+		 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+		 * language, the side switches to `'left'` by default.
+		 *
+		 * @default 'right'
+		 */
 		side: 'left' | 'right';
+
+		/**
+		 * The vertical distance the logo can be moved away from its default position.
+		 *
+		 * **Note:** If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+		 *
+		 * @default 5
+		 */
 		verticalOffset: number;
+
+		/**
+		 * The horizontal distance between the side of the editing root and the nearest side of the logo.
+		 *
+		 * @default 5
+		 */
 		horizontalOffset: number;
 	};
 }
