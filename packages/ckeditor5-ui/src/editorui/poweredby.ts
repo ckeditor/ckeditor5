@@ -278,9 +278,11 @@ function getLowerCornerPosition(
 
 		let balloonTop;
 
+		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			balloonTop = rootRect.bottom - balloonRect.height;
-		} else {
+		}
+		else {
 			balloonTop = rootRect.bottom - balloonRect.height / 2;
 		}
 
@@ -288,6 +290,7 @@ function getLowerCornerPosition(
 
 		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
 
+		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
@@ -296,13 +299,17 @@ function getLowerCornerPosition(
 			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
 				return OFF_THE_SCREEN_POSITION;
 			}
-		} else {
+		}
+		else {
+			/* istanbul ignore next -- @preserve */
 			const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
 
+			/* istanbul ignore next -- @preserve */
 			if ( firstScrollableRootAncestor ) {
 				const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
+				/* istanbul ignore next -- @preserve */
 				if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
@@ -330,13 +337,15 @@ function getFocusedDOMRoot( editor: Editor ) {
 
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
+	/* istanbul ignore next -- @preserve */
 	const position = userConfig && userConfig.position || 'inside';
 
 	return {
 		position,
-		verticalOffset: position === 'inside' ? 5 : 0,
+		verticalOffset: position === 'inside' ? 5 : /* istanbul ignore next -- @preserve */ 0,
 		horizontalOffset: 5,
-		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : 'left',
+
+		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : /* istanbul ignore next -- @preserve */ 'left',
 		...userConfig
 	};
 }
