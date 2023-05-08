@@ -30,6 +30,7 @@ describe( 'utils', () => {
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
+
 			it( 'when date is invalid', () => {
 				// invalid = shorten than expected
 				const string = 'b2RydHNvbWlzdW1ybGxlb3RlYXBtaS1NVEV4T1RrMw==';
