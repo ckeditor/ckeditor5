@@ -162,7 +162,13 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				reversed: true,
 			},
 		},
-		htmlSupport: {
+
+		// This value must be kept in sync with the language defined in webpack.config.js.
+		language: 'en',
+	};
+
+	public static override config = {
+				htmlSupport: {
 			allow: [
 				{
 					name: 'a',
@@ -170,7 +176,5 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				},
 			],
 		},
-		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en',
-	};
+	}
 }
