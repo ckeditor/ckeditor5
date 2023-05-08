@@ -14,6 +14,8 @@ const updateVersionReferences = require( './update-version-references' );
 
 const abortController = new AbortController();
 
+const RELEASE_DIRECTORY = 'release';
+
 process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
 } );
@@ -31,9 +33,16 @@ process.on( 'SIGINT', () => {
 	} );
 
 	await releaseTools.executeInParallel( {
-		packagesDirectory: 'release',
+		packagesDirectory: RELEASE_DIRECTORY,
 		processDescription: 'Compiling TypeScript...',
 		signal: abortController.signal,
 		taskToExecute: require( './compiletypescriptcallback' )
+	} );
+
+	await releaseTools.executeInParallel( {
+		packagesDirectory: RELEASE_DIRECTORY,
+		processDescription: 'Preparing DLL builds...',
+		signal: abortController.signal,
+		taskToExecute: require( './preparedllbuildscallback' )
 	} );
 } )();

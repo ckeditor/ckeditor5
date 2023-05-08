@@ -29,32 +29,36 @@ module.exports = function updateVersionReferences( options = {} ) {
 		releaseDate = getCurrentDate()
 	} = options;
 
+	const currentDate = new Date();
+
 	const filesToUpdate = [
 		{
+			label: 'CDN',
 			file: 'README.md',
 			pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/,
 			value: version
 		},
 		{
+			label: 'version',
 			file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
 			pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/,
 			value: version
+		},
+		{
+			label: 'release date',
+			file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
+			pattern: /(?<=const releaseDate = new Date\( )\d+, \d+, \d+(?= \);)/,
+			value: `${ currentDate.getFullYear() }, ${ currentDate.getMonth() }, ${ currentDate.getDate() }`
 		}
-		// TODO: Add file containing the release date.
-		// {
-		// 	file: ...
-		// 	pattern: ...
-		// 	value: releaseDate
-		// }
 	];
 
 	console.log( chalk.blue( `Updating CKEditor 5 version (${ version }) and release date (${ releaseDate }) references.\n` ) );
 
-	for ( const { file, pattern, value } of filesToUpdate ) {
+	for ( const { file, pattern, value, label } of filesToUpdate ) {
 		const absolutePath = path.join( ROOT_DIRECTORY, file ).split( path.sep ).join( path.posix.sep );
 
 		if ( !fs.existsSync( absolutePath ) ) {
-			console.log( chalk.red( `* File does not exist: "${ chalk.underline( absolutePath ) }"` ) );
+			console.log( chalk.red( `* File does not exist: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
 
 			continue;
 		}
@@ -63,14 +67,14 @@ module.exports = function updateVersionReferences( options = {} ) {
 		const newFileContent = oldFileContent.replace( pattern, value );
 
 		if ( oldFileContent === newFileContent ) {
-			console.log( chalk.gray( `* File is up to date: "${ chalk.underline( absolutePath ) }"` ) );
+			console.log( chalk.gray( `* File is up to date: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
 
 			continue;
 		}
 
 		fs.writeFileSync( absolutePath, newFileContent, 'utf-8' );
 
-		console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }"` ) );
+		console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
 	}
 };
 
