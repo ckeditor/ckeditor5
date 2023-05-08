@@ -8,7 +8,7 @@
  */
 
 /**
- * Possible states of the key after verification
+ * Possible states of the key after verification.
  */
 export type VerifiedKeyStatus = 'VALID' | 'INVALID' | 'EXPIRED';
 
