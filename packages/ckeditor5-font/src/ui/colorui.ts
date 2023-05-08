@@ -151,7 +151,6 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 				if ( dropdownView.isOpen ) {
-					console.log(this.commandName)
 					editor.execute( this.commandName, {
 						value: data.value,
 						batch: this.undoStepBatch
