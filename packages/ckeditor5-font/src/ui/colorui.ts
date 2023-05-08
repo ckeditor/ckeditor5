@@ -64,7 +64,10 @@ export default class ColorUI extends Plugin {
 	 */
 	public colorTableView: ColorTableView | undefined;
 
-	private undoStepBatch: Batch;
+	/**
+	 * Keeps all changes of color picker in one batch.
+	 */
+	declare private _undoStepBatch: Batch;
 
 	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
@@ -87,7 +90,6 @@ export default class ColorUI extends Plugin {
 	) {
 		super( editor );
 
-		this.undoStepBatch = editor.model.createBatch();
 		this.commandName = commandName;
 		this.componentName = componentName;
 		this.icon = icon;
@@ -153,25 +155,24 @@ export default class ColorUI extends Plugin {
 				if ( dropdownView.isOpen ) {
 					editor.execute( this.commandName, {
 						value: data.value,
-						batch: this.undoStepBatch
+						batch: this._undoStepBatch
 					} );
 				}
 
 				if ( data.source !== 'colorPicker' ) {
 					editor.editing.view.focus();
 				}
+			} );
 
-				if ( data.source === 'saveButton' ) {
-					this.undoStepBatch = editor.model.createBatch();
-				}
+			this.colorTableView.on( 'showColorPicker', () => {
+				this._undoStepBatch = editor.model.createBatch();
 			} );
 
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
-				if ( this.undoStepBatch!.operations.length ) {
-					editor.execute( 'undo', this.undoStepBatch );
+				if ( this._undoStepBatch!.operations.length ) {
+					editor.execute( 'undo', this._undoStepBatch );
 				}
 
-				this.undoStepBatch = editor.model.createBatch();
 				editor.editing.view.focus();
 			} );
 
@@ -189,7 +190,6 @@ export default class ColorUI extends Plugin {
 
 					this.colorTableView!.updateSelectedColors();
 				} else {
-					this.undoStepBatch = editor.model.createBatch();
 					this.colorTableView!.showColorGrids();
 				}
 			} );

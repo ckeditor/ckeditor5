@@ -241,6 +241,8 @@ export default class ColorTableView extends View {
 	 * Show "Color picker" and hide "Color grids".
 	 */
 	public showColorPicker(): void {
+		this.fire( 'showColorPicker' );
+
 		if ( !this.colorPickerPageView.colorPickerView ) {
 			return;
 		}

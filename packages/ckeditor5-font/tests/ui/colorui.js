@@ -199,6 +199,7 @@ describe( 'ColorUI', () => {
 				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
 
 				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
 
 				dropdown.colorTableView.selectedColor = 'hsl( 0, 0%, 100% )';
 
@@ -214,8 +215,9 @@ describe( 'ColorUI', () => {
 				sinon.assert.calledOnce( spyUndo );
 			} );
 
-			it( 'should create new batch', () => {
+			it( 'should create new batch when color picker is showed', () => {
 				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
 
 				dropdown.colorTableView.selectedColor = '#000000';
 
@@ -226,14 +228,17 @@ describe( 'ColorUI', () => {
 					source: 'colorPicker'
 				} );
 
-				expect( testColorPlugin.undoStepBatch.operations.length ).to.equal( 1 );
+				expect( testColorPlugin._undoStepBatch.operations.length ).to.equal( 1 );
 
 				dropdown.colorTableView.fire( 'execute', {
-					value: '#321456',
+					value: 'hsl( 110, 60%, 12% )',
 					source: 'saveButton'
 				} );
 
-				expect( testColorPlugin.undoStepBatch.operations.length ).to.equal( 0 );
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				expect( testColorPlugin._undoStepBatch.operations.length ).to.equal( 0 );
 			} );
 
 			it.skip( 'should avoid call the command multiple times', () => {
