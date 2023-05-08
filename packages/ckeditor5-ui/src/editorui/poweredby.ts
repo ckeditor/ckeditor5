@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import { DomEmitterMixin, type PositionOptions, Rect, type Locale, findClosestScrollableAncestor } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, type PositionOptions, type Locale, type Rect } from '@ckeditor/ckeditor5-utils';
 import BalloonPanelView from '../panel/balloon/balloonpanelview';
 import IconView from '../icon/iconview';
 import View from '../view';
@@ -19,6 +19,7 @@ const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
 const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
+const CORNER_OFFSET = 5;
 const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
@@ -229,9 +230,9 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 	}
 
 	const positioningFunction = editor.locale.contentLanguageDirection === 'ltr' ?
-		getLowerRightCornerPosition( focusedDomRoot ) :
+		getLowerRightCornerPosition() :
 		/* istanbul ignore next -- @preserve */
-		getLowerLeftCornerPosition( focusedDomRoot );
+		getLowerLeftCornerPosition();
 
 	return {
 		target: focusedDomRoot,
@@ -239,23 +240,18 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 	};
 }
 
-function getLowerRightCornerPosition( focusedDomRoot: HTMLElement ) {
-	return getLowerCornerPosition( focusedDomRoot, ( rootRect, balloonRect ) => {
-		return rootRect.left + rootRect.width - balloonRect.width - 5;
+function getLowerRightCornerPosition() {
+	return getLowerCornerPosition( ( rootRect, balloonRect ) => {
+		return rootRect.left + rootRect.width - balloonRect.width - CORNER_OFFSET;
 	} );
 }
 
 /* istanbul ignore next -- @preserve */
-function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement ) {
-	return getLowerCornerPosition( focusedDomRoot, rootRect => {
-		return rootRect.left + 5;
-	} );
+function getLowerLeftCornerPosition() {
+	return getLowerCornerPosition( rootRect => rootRect.left + CORNER_OFFSET );
 }
 
-function getLowerCornerPosition(
-	focusedDomRoot: HTMLElement,
-	getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number
-) {
+function getLowerCornerPosition( getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number ) {
 	return ( rootRect: Rect, balloonRect: Rect ) => {
 		const visibleRootRect = rootRect.getVisible();
 
@@ -266,17 +262,13 @@ function getLowerCornerPosition(
 		}
 
 		const isRootNarrow = rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD;
-		const balloonTop = rootRect.bottom - balloonRect.height / 2;
+		const balloonTop = rootRect.bottom - balloonRect.height - CORNER_OFFSET;
 		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
-		const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
+		const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
-		if ( firstScrollableRootAncestor ) {
-			const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
-
-			// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-			if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
-				return OFF_THE_SCREEN_POSITION;
-			}
+		// The watermark cannot be positioned in this corner because the corner is not quite visible.
+		if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
+			return OFF_THE_SCREEN_POSITION;
 		}
 
 		/* istanbul ignore next -- @preserve */
