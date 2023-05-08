@@ -19,6 +19,7 @@ const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
 const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
 const ICON_WIDTH = 52;
 const ICON_HEIGHT = 10;
+const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
 	left: -9999999,
@@ -227,7 +228,7 @@ function getLowerCornerPosition(
 			return OFF_THE_SCREEN_POSITION;
 		}
 
-		const isRootNarrow = rootRect.width < 250;
+		const isRootNarrow = rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD;
 		const balloonTop = rootRect.bottom - balloonRect.height / 2;
 		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
 		const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
