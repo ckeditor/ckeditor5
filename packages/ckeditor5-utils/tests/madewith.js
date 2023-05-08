@@ -15,7 +15,7 @@ describe( 'utils', () => {
 				expect( verify( string ) ).to.be.equal( 'VALID' );
 			} );
 
-			it( 'when old licence key is valid', () => {
+			it( 'when old token format is given', () => {
 				// eslint-disable-next-line max-len
 				const string = 'YWZvb2JkcnphYXJhZWJvb290em9wbWJvbHJ1c21sZnJlYmFzdG1paXN1cm1tZmllenJhb2F0YmFvcmxvb3B6aWJvYWRiZWZzYXJ0bW9ibG8=';
 
