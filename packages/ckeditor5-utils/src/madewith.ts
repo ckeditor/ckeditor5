@@ -67,7 +67,7 @@ export default function verify( token: string ): VerifiedKeyStatus {
 
 	const date = new Date( year, monthIndex, day );
 
-	if ( date < releaseDate ) {
+	if ( date < releaseDate || isNaN( Number( date ) ) ) {
 		return 'INVALID';
 	}
 
