@@ -15,6 +15,7 @@ const version = '37.1.0';
 
 export default version;
 
+// The second argument is not a month. It is `monthIndex` and starts from `0`.
 export const releaseDate = new Date( 2023, 3, 19 );
 
 /* istanbul ignore next -- @preserve */
