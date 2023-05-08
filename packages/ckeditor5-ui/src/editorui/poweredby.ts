@@ -36,19 +36,19 @@ const OFF_THE_SCREEN_POSITION = {
  */
 export default class PoweredBy extends DomEmitterMixin() {
 	/**
-	 * A reference to the powered by view displaying a link with a label and a project logo.
+	 * A reference to the view displaying a link with a label and a project logo.
 	 */
-	private [ POWERED_BY_VIEW_SYMBOL ]: PoweredByView;
+	private [ POWERED_BY_VIEW_SYMBOL ]: PoweredByView | null;
 
 	/**
-	 * A reference to the powered by view displaying a link with a label and a project logo.
+	 * A reference to the balloon panel hosting and positioning the "powered by" view.
 	 */
-	private [ POWERED_BY_BALLOON_SYMBOL ]: BalloonPanelView;
+	private [ POWERED_BY_BALLOON_SYMBOL ]: BalloonPanelView | null;
 
 	/**
 	 * Editor instance the helper was created for.
 	 */
-	private editor: Editor;
+	private editor: Editor | null;
 
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
@@ -60,7 +60,10 @@ export default class PoweredBy extends DomEmitterMixin() {
 		super();
 
 		this.editor = editor;
+
 		this[ POWERED_BY_VIEW_SYMBOL ] = new PoweredByView( editor.locale );
+		this[ POWERED_BY_BALLOON_SYMBOL ] = null;
+
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
 
@@ -68,25 +71,29 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Destroys the "powered by" helper along with its view.
 	 */
 	public destroy(): void {
-		this[ POWERED_BY_VIEW_SYMBOL ].destroy();
-		this[ POWERED_BY_BALLOON_SYMBOL ].destroy();
+		this[ POWERED_BY_BALLOON_SYMBOL ]!.unpin();
+
+		this[ POWERED_BY_VIEW_SYMBOL ]!.destroy();
+		this[ POWERED_BY_BALLOON_SYMBOL ]!.destroy();
 
 		this.stopListening();
+
+		this.editor = this[ POWERED_BY_VIEW_SYMBOL ] = this[ POWERED_BY_BALLOON_SYMBOL ] = null;
 	}
 
 	/**
 	 * Enables "powered by" label once the editor (ui) is ready.
 	 */
 	private _handleEditorReady(): void {
-		const editor = this.editor;
+		const editor = this.editor!;
 		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ] = new BalloonPanelView();
 
-		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ] );
+		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
 		balloon.withArrow = false;
 		balloon.class = 'ck-powered-by-balloon';
 
 		editor.ui.view.body.add( balloon );
-		editor.ui.focusTracker.add( this[ POWERED_BY_VIEW_SYMBOL ].element! );
+		editor.ui.focusTracker.add( balloon.element! );
 
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
 			if ( isFocused ) {
