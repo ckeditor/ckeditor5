@@ -11,7 +11,6 @@ import isRange from './isrange';
 import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
-import getPositionedAncestor from './getpositionedancestor';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -246,10 +245,9 @@ export default class Rect {
 		// There's no ancestor to crop <body> with the overflow.
 		if ( !isBody( source ) ) {
 			let parent = source.parentNode || source.commonAncestorContainer;
-			const positionedAncestor = getPositionedAncestor( parent as HTMLElement );
 
 			// Check the ancestors all the way up to the <body>.
-			while ( parent && !isBody( parent ) && parent !== positionedAncestor ) {
+			while ( parent && !isBody( parent ) ) {
 				const parentRect = new Rect( parent as HTMLElement );
 				const intersectionRect = visibleRect.getIntersection( parentRect );
 

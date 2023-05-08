@@ -14,7 +14,6 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^37.1.0",
     "@ckeditor/ckeditor5-engine": "^37.1.0",
-    "@ckeditor/ckeditor5-powered-by": "^37.1.0",
     "@ckeditor/ckeditor5-utils": "^37.1.0",
     "lodash-es": "^4.17.15"
   },

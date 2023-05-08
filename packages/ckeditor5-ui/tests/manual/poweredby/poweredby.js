@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -45,6 +45,8 @@ function createEditor( selector ) {
 		} )
 		.then( editor => {
 			window.editors[ selector ] = editor;
+
+			CKEditorInspector.attach( selector, editor );
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -58,3 +60,4 @@ createEditor( '#medium-bg' );
 createEditor( '#narrow' );
 createEditor( '#narrow-dark-bg' );
 createEditor( '#padding-less' );
+createEditor( '#overflow-parent' );
