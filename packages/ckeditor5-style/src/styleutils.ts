@@ -250,6 +250,68 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
+	 * Returns `true` if the style attributes are valid for this element.
+	 *
+	 * @internal
+	 */
+	public checkElement( element: Element, definitions: Array<BlockStyleDefinition> ): Array<string> {
+		const attributeName = 'htmlAttributes';
+		const ghsAttributeValue = element.getAttribute( attributeName );
+
+		if ( !isObject( ghsAttributeValue ) ) {
+			return [];
+		}
+
+		if ( !hasClassesProperty( ghsAttributeValue ) ) {
+			return [];
+		}
+
+		const invalidClasses = [];
+
+		const elementDefinitions = ( ghsAttributeValue.classes as Array<string> )
+			// do we have a case when there would be more definitions than 1?
+			.map( c => { return { class: c, definition: definitions.filter( d => d.classes.includes( c ) )[ 0 ] || undefined }; } )
+			.filter( obj => !!obj.definition );
+
+		for ( const obj of elementDefinitions ) {
+			if ( !this.isStyleEnabledForBlock( obj.definition, element ) ) {
+				invalidClasses.push( obj.class );
+			}
+		}
+
+		return invalidClasses;
+	}
+
+	/**
+	 * Removes styles that are no longer valid for the element.
+	 *
+	 * @internal
+	 */
+	public fixElement( element: Element, normalizedDefinitions: Array<BlockStyleDefinition> ): void {
+		const invalidClasses = this.checkElement( element, normalizedDefinitions );
+		if ( !invalidClasses.length ) {
+			return;
+		}
+
+		const attributeName = 'htmlAttributes';
+		const ghsAttributeValue = element.getAttribute( attributeName );
+
+		// these checks will always be false-y as they were already checked in `checkElement` method.
+		// maybe both methods should be merged to avoid casting and coverage drop.
+		if ( !isObject( ghsAttributeValue ) ) {
+			return;
+		}
+
+		if ( !hasClassesProperty( ghsAttributeValue ) ) {
+			return;
+		}
+
+		ghsAttributeValue.classes = ( ghsAttributeValue.classes as Array<string> ).filter( c => !invalidClasses.includes( c ) );
+
+		element._setAttribute( attributeName, ghsAttributeValue ); // Should be done differently.
+	}
+
+	/**
 	 * Checks the attribute value of the first node in the selection that allows the attribute.
 	 * For the collapsed selection, returns the selection attribute.
 	 *
