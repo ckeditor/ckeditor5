@@ -267,6 +267,7 @@ function getLowerCornerPosition( getBalloonLeft: ( rootRect: Rect, balloonRect: 
 		const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
 		// The watermark cannot be positioned in this corner because the corner is not quite visible.
+		/* istanbul ignore next -- @preserve */
 		if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
