@@ -97,7 +97,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Table,
 		TableToolbar,
 		TextTransformation,
-		GeneralHtmlSupport,
 		Iframe,
 		ScratchBlocks,
 		ContentTemplates,
@@ -105,6 +104,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 	];
 
 	public static override defaultConfig = {
+		plugins: [GeneralHtmlSupport],
 		toolbar: {
 			items: [
 				'heading',
