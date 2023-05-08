@@ -89,4 +89,4 @@ export { default as spliceArray } from './splicearray';
 export { default as uid } from './uid';
 export * from './unicode';
 
-export { default as version } from './version';
+export { default as version, releaseDate } from './version';

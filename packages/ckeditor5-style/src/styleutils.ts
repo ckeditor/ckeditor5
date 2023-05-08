@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element, MatcherPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
-import type { DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
@@ -40,7 +40,13 @@ export default class StyleUtils extends Plugin {
 		this.decorate( 'isStyleEnabledForBlock' );
 		this.decorate( 'isStyleActiveForBlock' );
 		this.decorate( 'getAffectedBlocks' );
+
+		this.decorate( 'isStyleEnabledForInlineSelection' );
+		this.decorate( 'isStyleActiveForInlineSelection' );
+		this.decorate( 'getAffectedInlineSelectable' );
+
 		this.decorate( 'getStylePreview' );
+		this.decorate( 'configureGHSDataFilter' );
 	}
 
 	/**
@@ -158,6 +164,49 @@ export default class StyleUtils extends Plugin {
 	}
 
 	/**
+	 * Verifies if the given style is applicable to the provided document selection.
+	 *
+	 * @internal
+	 */
+	public isStyleEnabledForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		const model = this.editor.model;
+
+		for ( const ghsAttributeName of definition.ghsAttributes ) {
+			if ( model.schema.checkAttributeInSelection( selection, ghsAttributeName ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns true if the given style is applied to the specified document selection.
+	 *
+	 * @internal
+	 */
+	public isStyleActiveForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+		for ( const ghsAttributeName of definition.ghsAttributes ) {
+			const ghsAttributeValue = this._getValueFromFirstAllowedNode( selection, ghsAttributeName );
+
+			if ( this.hasAllClasses( ghsAttributeValue, definition.classes ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns a selectable that given style should be applied to.
+	 *
+	 * @internal
+	 */
+	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: DocumentSelection ): Selectable {
+		return selection;
+	}
+
+	/**
 	 * Returns the `TemplateDefinition` used by styles dropdown to render style preview.
 	 *
 	 * @internal
@@ -184,6 +233,48 @@ export default class StyleUtils extends Plugin {
 			hasClassesProperty( ghsAttributeValue ) &&
 			classes.every( className => ghsAttributeValue.classes.includes( className ) );
 	}
+
+	/**
+	 * This is where the styles feature configures the GHS feature. This method translates normalized
+	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
+	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	 * {@link module:html-support/datafilter~DataFilter} plugin.
+	 *
+	 * @internal
+	 */
+	public configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
+		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
+
+		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
+		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );
+	}
+
+	/**
+	 * Checks the attribute value of the first node in the selection that allows the attribute.
+	 * For the collapsed selection, returns the selection attribute.
+	 *
+	 * @param selection The document selection.
+	 * @param attributeName Name of the GHS attribute.
+	 * @returns The attribute value.
+	 */
+	private _getValueFromFirstAllowedNode( selection: DocumentSelection, attributeName: string ): unknown | null {
+		const model = this.editor.model;
+		const schema = model.schema;
+
+		if ( selection.isCollapsed ) {
+			return selection.getAttribute( attributeName );
+		}
+
+		for ( const range of selection.getRanges() ) {
+			for ( const item of range.getItems() ) {
+				if ( schema.checkAttribute( item, attributeName ) ) {
+					return item.getAttribute( attributeName );
+				}
+			}
+		}
+
+		return null;
+	}
 }
 
 /**
@@ -204,6 +295,16 @@ function hasClassesProperty<T extends { classes?: Array<unknown> }>( obj: T ): o
  */
 function isPreviewable( elementName: string ): boolean {
 	return !NON_PREVIEWABLE_ELEMENT_NAMES.includes( elementName );
+}
+
+/**
+ * Translates a normalized style definition to a view matcher pattern.
+ */
+function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
+	return {
+		name: element,
+		classes
+	};
 }
 
 export interface NormalizedStyleDefinitions {
@@ -227,4 +328,10 @@ export type NormalizedStyleDefinition = BlockStyleDefinition | InlineStyleDefini
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;
 export type StyleUtilsGetAffectedBlocksEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedBlocks'>;
+
+export type StyleUtilsIsStyleEnabledForInlineSelectionEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForInlineSelection'>;
+export type StyleUtilsIsStyleActiveForInlineSelectionEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForInlineSelection'>;
+export type StyleUtilsGetAffectedInlineSelectableEvent = DecoratedMethodEvent<StyleUtils, 'getAffectedInlineSelectable'>;
+
 export type StyleUtilsGetStylePreviewEvent = DecoratedMethodEvent<StyleUtils, 'getStylePreview'>;
+export type StyleUtilsConfigureGHSDataFilterEvent = DecoratedMethodEvent<StyleUtils, 'configureGHSDataFilter'>;
