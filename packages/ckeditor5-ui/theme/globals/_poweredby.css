@@ -10,6 +10,7 @@
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
 	--ck-powered-by-border-radius: 100px;
 	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-border-color: var(--ck-color-focus-border);
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {
@@ -64,7 +65,7 @@
 		}
 	}
 
-	&.ck-balloon-panel_narrow {
+	&[class*="root-width_narrow"] {
 		/* Label sliding out on :hover when the editor is narrow */
 		& .ck.ck-powered-by .ck-powered-by__label {
 			visibility: hidden;
@@ -87,6 +88,37 @@
 			visibility: visible;
 			max-width: 60px;
 			transform: translateX(-100%);
+		}
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+
+		&[class*="narrow"] {
+			& .ck.ck-powered-by .ck-powered-by__label {
+				top: -1px;
+				bottom: -1px;
+				border-width: 1px 0 1px 1px;
+				border-style: solid;
+				border-color: var(--ck-powered-by-border-color);
+			}
+		}
+	}
+
+	&[class*="side_left"][class*="root-width_narrow"] {
+		& .ck.ck-powered-by .ck-powered-by__label {
+			position: static;
+			border: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		&:hover .ck.ck-powered-by .ck-powered-by__label {
+			visibility: visible;
+			max-width: auto;
+			transform: translateX(0%);
+			padding: 0 0 0 2px;
+			margin-right: 4px;
 		}
 	}
 }

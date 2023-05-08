@@ -8,24 +8,32 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import { DomEmitterMixin, type PositionOptions, type Locale, type Rect } from '@ckeditor/ckeditor5-utils';
+import {
+	Rect,
+	DomEmitterMixin,
+	findClosestScrollableAncestor,
+	type PositionOptions,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 import BalloonPanelView from '../panel/balloon/balloonpanelview';
 import IconView from '../icon/iconview';
 import View from '../view';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
+import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
 const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
-const CORNER_OFFSET = 5;
 const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
 	left: -9999999,
 	name: 'invalid'
 };
+
+type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
@@ -229,10 +237,11 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 		return null;
 	}
 
-	const positioningFunction = editor.locale.contentLanguageDirection === 'ltr' ?
-		getLowerRightCornerPosition() :
+	const poweredByConfig = getNormalizedConfig( editor )!;
+	const positioningFunction = poweredByConfig.side === 'right' ?
+		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
 		/* istanbul ignore next -- @preserve */
-		getLowerLeftCornerPosition();
+		getLowerLeftCornerPosition( focusedDomRoot, poweredByConfig );
 
 	return {
 		target: focusedDomRoot,
@@ -240,18 +249,22 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 	};
 }
 
-function getLowerRightCornerPosition() {
-	return getLowerCornerPosition( ( rootRect, balloonRect ) => {
-		return rootRect.left + rootRect.width - balloonRect.width - CORNER_OFFSET;
+function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedDomRoot, config, ( rootRect, balloonRect ) => {
+		return rootRect.left + rootRect.width - balloonRect.width - config.horizontalOffset;
 	} );
 }
 
 /* istanbul ignore next -- @preserve */
-function getLowerLeftCornerPosition() {
-	return getLowerCornerPosition( rootRect => rootRect.left + CORNER_OFFSET );
+function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedDomRoot, config, rootRect => rootRect.left + config.horizontalOffset );
 }
 
-function getLowerCornerPosition( getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number ) {
+function getLowerCornerPosition(
+	focusedDomRoot: HTMLElement,
+	config: PoweredByConfig,
+	getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number
+) {
 	return ( rootRect: Rect, balloonRect: Rect ) => {
 		const visibleRootRect = rootRect.getVisible();
 
@@ -262,21 +275,45 @@ function getLowerCornerPosition( getBalloonLeft: ( rootRect: Rect, balloonRect: 
 		}
 
 		const isRootNarrow = rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD;
-		const balloonTop = rootRect.bottom - balloonRect.height - CORNER_OFFSET;
-		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
-		const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
-		// The watermark cannot be positioned in this corner because the corner is not quite visible.
-		/* istanbul ignore next -- @preserve */
-		if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
-			return OFF_THE_SCREEN_POSITION;
+		let balloonTop;
+
+		if ( config.position === 'inside' ) {
+			balloonTop = rootRect.bottom - balloonRect.height;
+		} else {
+			balloonTop = rootRect.bottom - balloonRect.height / 2;
+		}
+
+		balloonTop -= config.verticalOffset;
+
+		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
+
+		if ( config.position === 'inside' ) {
+			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
+
+			// The watermark cannot be positioned in this corner because the corner is not quite visible.
+			/* istanbul ignore next -- @preserve */
+			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
+				return OFF_THE_SCREEN_POSITION;
+			}
+		} else {
+			const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
+
+			if ( firstScrollableRootAncestor ) {
+				const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
+
+				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
+				if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
+					return OFF_THE_SCREEN_POSITION;
+				}
+			}
 		}
 
 		/* istanbul ignore next -- @preserve */
 		return {
 			top: balloonTop,
 			left: balloonLeft,
-			name: isRootNarrow ? 'narrow' : 'default'
+			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`
 		};
 	};
 }
@@ -289,4 +326,17 @@ function getFocusedDOMRoot( editor: Editor ) {
 	}
 
 	return null;
+}
+
+function getNormalizedConfig( editor: Editor ): PoweredByConfig {
+	const userConfig = editor.config.get( 'ui.poweredBy' );
+	const position = userConfig && userConfig.position || 'inside';
+
+	return {
+		position,
+		verticalOffset: position === 'inside' ? 5 : 0,
+		horizontalOffset: 5,
+		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : 'left',
+		...userConfig
+	};
 }

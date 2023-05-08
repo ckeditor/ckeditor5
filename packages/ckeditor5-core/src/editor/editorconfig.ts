@@ -466,14 +466,24 @@ export interface EditorConfig {
 	 * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned
 	 * underneath or above the page's UI.
 	 *
-	 * ```ts
-	 * ui: {
-	 * 	viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
-	 * }
-	 * ```
+	 * 	```ts
+	 * 	ui: {
+	 * 		viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
+	 * 	}
+	 * 	```
 	 *
 	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
-	 * {@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 * 	{@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 *
+	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over editor's editing are in open-source integrations
+	 * ([learn more](TODO)). It allows customizing the position of the logo to minimize the risk of collision with editor content
+	 * and UI.
+	 *
+	 * 	```ts
+	 * 	ui: {
+	 * 		poweredBy: { position: 'border', side: 'left', verticalOffset: 2, horizontalOffset: 30 }
+	 * 	}
+	 * 	```
 	 */
 	ui?: UiConfig;
 
@@ -560,5 +570,12 @@ export interface UiConfig {
 		left?: number;
 		right?: number;
 		top?: number;
+	};
+
+	poweredBy?: {
+		position: 'inside' | 'border';
+		side: 'left' | 'right';
+		verticalOffset: number;
+		horizontalOffset: number;
 	};
 }
