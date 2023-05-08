@@ -11,6 +11,7 @@ import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -72,7 +73,7 @@ describe( 'ColorUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Paragraph, TestColorPlugin ],
+				plugins: [ Paragraph, TestColorPlugin, Undo ],
 				testColor: testColorConfig
 			} )
 			.then( newEditor => {
@@ -194,18 +195,52 @@ describe( 'ColorUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should cancel changes', () => {
-				dropdown.isOpen = false;
-
-				dropdown.colorTableView.selectedColor = '#ff0000';
+			it( 'should undo changes', () => {
+				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
 
 				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.fire( 'showColorPicker' );
 
-				dropdown.colorTableView.selectedColor = '#123456';
+				dropdown.colorTableView.selectedColor = 'hsl( 0, 0%, 100% )';
+
+				editor.commands.get( 'testColorCommand' ).isEnabled = true;
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 210, 65%, 20% )',
+					source: 'colorPicker'
+				} );
 
 				dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
 
-				expect( dropdown.colorTableView.selectedColor ).to.equal( '#ff0000' );
+				sinon.assert.calledOnce( spyUndo );
+			} );
+
+			it( 'should create new batch when color picker is showed', () => {
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				dropdown.colorTableView.selectedColor = '#000000';
+
+				editor.commands.get( 'testColorCommand' ).isEnabled = true;
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 210, 65%, 20% )',
+					source: 'colorPicker'
+				} );
+
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 1 change in batch' ).to.equal( 1 );
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 110, 60%, 12% )',
+					source: 'saveButton'
+				} );
+
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 0 changes in batch' ).to.equal( 0 );
 			} );
 
 			it( 'should avoid call the command multiple times', () => {

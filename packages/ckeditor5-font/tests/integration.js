@@ -243,5 +243,23 @@ describe( 'Integration test Font', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 		} );
+
+		it( 'should undo all changes done in a batch with a single step', () => {
+			setModelData( model, '<paragraph>[foo]</paragraph>' );
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorTableView.fire( 'showColorPicker' );
+
+			// Execute multiple color changes.
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#654321';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#123456';
+
+			editor.commands.get( 'undo' ).execute();
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+		} );
 	} );
 } );

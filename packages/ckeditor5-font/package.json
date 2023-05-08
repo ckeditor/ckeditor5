@@ -16,6 +16,7 @@
     "@ckeditor/ckeditor5-ui": "^37.1.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-undo": "^37.1.0",
     "@ckeditor/ckeditor5-core": "^37.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^37.1.0",

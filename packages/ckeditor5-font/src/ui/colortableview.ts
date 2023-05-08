@@ -223,6 +223,7 @@ export default class ColorTableView extends View {
 		}
 		this.items.add( this.colorGridsPageView );
 		this.colorGridsPageView.delegate( 'execute' ).to( this );
+		this.colorGridsPageView.delegate( 'showColorPicker' ).to( this );
 	}
 
 	/**
@@ -625,6 +626,10 @@ class ColorGridsPageView extends View {
 			icon: ColorPaletteIcon,
 			class: 'ck-color-table__color-picker'
 		} );
+
+		this.colorPickerButtonView.on( 'execute', () => {
+			this.fire<ColorTableShowColorPickerEvent>( 'showColorPicker' );
+		} );
 	}
 
 	/**
@@ -829,12 +834,12 @@ class ColorPickerPageView extends View {
 			keystrokes,
 			colorPickerConfig
 		}:
-		{
-			focusTracker: FocusTracker;
-			focusables: ViewCollection;
-			keystrokes: KeystrokeHandler;
-			colorPickerConfig: ColorPickerConfig | false;
-		}
+			{
+				focusTracker: FocusTracker;
+				focusables: ViewCollection;
+				keystrokes: KeystrokeHandler;
+				colorPickerConfig: ColorPickerConfig | false;
+			}
 	) {
 		super( locale );
 
@@ -1058,5 +1063,15 @@ export type ColorTableExecuteEvent = {
  */
 export type ColorTableCancelEvent = {
 	name: 'cancel';
+	args: [];
+};
+
+/**
+ * Fired whenever color picker will be shown.
+ *
+ * @eventName ~ColorTableView#showColorPicker
+ */
+export type ColorTableShowColorPickerEvent = {
+	name: 'showColorPicker';
 	args: [];
 };

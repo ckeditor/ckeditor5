@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+import type { Batch } from 'ckeditor5/src/engine';
 import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
 
 import {
@@ -19,7 +20,8 @@ import {
 import {
 	type default as ColorTableView,
 	type ColorTableExecuteEvent,
-	type ColorTableCancelEvent
+	type ColorTableCancelEvent,
+	type ColorTableShowColorPickerEvent
 } from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
@@ -62,6 +64,11 @@ export default class ColorUI extends Plugin {
 	 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
 	 */
 	public colorTableView: ColorTableView | undefined;
+
+	/**
+	 * Keeps all changes in color picker in one batch while dropdown is open.
+	 */
+	declare private _undoStepBatch: Batch;
 
 	/**
 	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
@@ -111,7 +118,6 @@ export default class ColorUI extends Plugin {
 			const dropdownView: ColorTableDropdownView = createDropdown( locale );
 			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
 			let dropdownContentRendered = false;
-			let colorSavedUponDropdownOpen: string;
 
 			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
@@ -148,7 +154,10 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 				if ( dropdownView.isOpen ) {
-					editor.execute( this.commandName, data );
+					editor.execute( this.commandName, {
+						value: data.value,
+						batch: this._undoStepBatch
+					} );
 				}
 
 				if ( data.source !== 'colorPicker' ) {
@@ -156,11 +165,14 @@ export default class ColorUI extends Plugin {
 				}
 			} );
 
+			this.colorTableView.on<ColorTableShowColorPickerEvent>( 'showColorPicker', () => {
+				this._undoStepBatch = editor.model.createBatch();
+			} );
+
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
-				editor.execute( this.commandName, {
-					value: colorSavedUponDropdownOpen
-				} );
-				this.colorTableView!.selectedColor = colorSavedUponDropdownOpen;
+				if ( this._undoStepBatch!.operations.length ) {
+					editor.execute( 'undo', this._undoStepBatch );
+				}
 
 				editor.editing.view.focus();
 			} );
@@ -173,10 +185,6 @@ export default class ColorUI extends Plugin {
 				}
 
 				if ( isVisible ) {
-					if ( hasColorPicker ) {
-						colorSavedUponDropdownOpen = dropdownView.colorTableView!.selectedColor!;
-					}
-
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView!.updateDocumentColors( editor.model, this.componentName );
 					}
