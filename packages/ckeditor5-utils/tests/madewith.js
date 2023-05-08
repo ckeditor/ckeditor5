@@ -10,14 +10,14 @@ describe( 'utils', () => {
 		describe( 'should return `VALID`', () => {
 			it( 'when date is later than the release date', () => {
 				// future
-				const string = 'ZEhCMGNuVmtiMjlsYlcxdFpXOXNjbUZwYkdsemN3PT0tTURZeE1qSXdORFE9';
+				const string = 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbS1NakEwTkRBMk1UST0=';
 
 				expect( verify( string ) ).to.be.equal( 'VALID' );
 			} );
 
 			it( 'when old licence key is valid', () => {
 				// eslint-disable-next-line max-len
-				const string = 'bWxyZWx6emlkcmJicmZ1YnNhaW9hYWVhbWFzb29vb2ZtdHJvdG9wYmFlYnRtb3VzbXJhb2Z6b3BsdGZhYW9lYm9zb3Jpcm9sYmltYnpyYWQ=';
+				const string = 'YWZvb2JkcnphYXJhZWJvb290em9wbWJvbHJ1c21sZnJlYmFzdG1paXN1cm1tZmllenJhb2F0YmFvcmxvb3B6aWJvYWRiZWZzYXJ0bW9ibG8=';
 
 				expect( verify( string ) ).to.be.equal( 'VALID' );
 			} );
@@ -33,26 +33,26 @@ describe( 'utils', () => {
 
 			it( 'when date is invalid', () => {
 				// invalid = shorten than expected
-				const string = 'b2RydHNvbWlzdW1ybGxlb3RlYXBtaS1NVEV4T1RrMw==';
+				const string = 'bGRtb3RyZWlhZWxzcG9taXRtdXJzby1NVGs1TnpFeA==';
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
 
 			it( 'when date is missing', () => {
-				const string = 'bXVtZWxlb21wb3Jpcml0bHNvZHRzYQ==';
+				const string = 'dG1wb3Rhc2llc3VlbHJtZHJvbWlsbw==';
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
 
 			it( 'when unable to decode', () => {
-				const string = 'dW1vbW9ldG1pcnNybG9wbGRzYWl0ZS0j';
+				const string = 'bW90b2x0b2Fyc2llc2lscGVtcm1kdS1abTl2WW1GeVltRT0=';
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
 
 			it( 'when wrong string passed', () => {
 				// #
-				const string = 'dGVtb2l0aXNsbW9vc2FyZXBkbG1ydS1abTl2WW1GeVltRT0=';
+				const string = 'YXRtaXNwdWRvbGVzb3RlcmlybW9sbS0j';
 
 				expect( verify( string ) ).to.be.equal( 'INVALID' );
 			} );
@@ -61,7 +61,7 @@ describe( 'utils', () => {
 		describe( 'should return `EXPIRED`', () => {
 			it( 'when date is earlier than the release date', () => {
 				// past
-				const string = 'dXRyZWlwbHJvb21kbW9zbWVsc2F0aS1NREV3TVRFNU9EQT0=';
+				const string = 'cGVsYXVlaXN0bW9kc21pbG10cm9yby1NVGs0TURBeE1ERT0=';
 
 				expect( verify( string ) ).to.be.equal( 'EXPIRED' );
 			} );
