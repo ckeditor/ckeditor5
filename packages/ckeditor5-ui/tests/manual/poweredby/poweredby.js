@@ -7,13 +7,14 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { ImageResize } from '@ckeditor/ckeditor5-image';
 
 window.editors = {};
 
 function createEditor( selector ) {
 	ClassicEditor
 		.create( document.querySelector( selector ), {
-			plugins: [ ArticlePluginSet ],
+			plugins: [ ArticlePluginSet, ImageResize ],
 			toolbar: [
 				'heading',
 				'|',

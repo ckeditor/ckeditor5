@@ -12,6 +12,7 @@ import { DomEmitterMixin, type PositionOptions, type Locale, type Rect } from '@
 import BalloonPanelView from '../panel/balloon/balloonpanelview';
 import IconView from '../icon/iconview';
 import View from '../view';
+import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
 
@@ -43,6 +44,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private readonly editor: Editor;
 
 	/**
+	 * A throttled version of the {@link #_showBalloon} method meant for frequent use to avoid performance loss.
+	 */
+	private _showBalloonThrottled: DebouncedFunc<() => void>;
+
+	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
 	 * event.
 	 *
@@ -53,6 +59,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.editor = editor;
 		this._balloonView = null;
+		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50 );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
@@ -69,6 +76,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 			this._balloonView = null;
 		}
 
+		this._showBalloonThrottled.cancel();
 		this.stopListening();
 	}
 
@@ -96,11 +104,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 				return;
 			}
 
-			this._showBalloon();
+			this._showBalloonThrottled();
 		} );
 
-		// TODO: ~~Support for cases where the watermark gets cropped by parent with overflow: hidden~~.
-		// TODO: Debounce.
 		// TODO: Probably hide during scroll.
 		// TODO: Problem with Rect#isVisible() and floating editors (comments) vs. hiding the view when cropped by parent with overflow.
 		// TODO: Update position once an image loaded.
