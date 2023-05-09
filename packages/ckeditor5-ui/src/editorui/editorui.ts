@@ -53,7 +53,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 	public readonly tooltipManager: TooltipManager;
 
 	/**
-	 * TODO.
+	 * A helper that enables the "powered by" feature in the editor and renders a link to the project's webpage.
 	 */
 	public readonly poweredBy: PoweredBy;
 
