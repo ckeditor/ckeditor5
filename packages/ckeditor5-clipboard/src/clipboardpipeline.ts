@@ -163,8 +163,8 @@ export default class ClipboardPipeline extends Plugin {
 		const viewDocument = view.document;
 
 		// Pasting and dropping is disabled when selection is in non-editable place.
-		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', evt => {
-			if ( !editor.model.isEditable( editor.model.document.selection ) ) {
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
+			if ( data.method == 'paste' && !editor.model.isEditable( editor.model.document.selection ) ) {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );

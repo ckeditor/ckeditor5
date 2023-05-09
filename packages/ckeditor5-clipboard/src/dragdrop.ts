@@ -21,7 +21,7 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ViewRange, ViewRootEditableElement
+	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
@@ -288,7 +288,9 @@ export default class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
+			const isEditable = editor.model.isEditable( this._draggedRange );
+
+			data.dataTransfer.effectAllowed = isEditable ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
@@ -300,7 +302,7 @@ export default class DragDrop extends Plugin {
 				method: 'dragstart'
 			} );
 
-			if ( !this.isEnabled ) {
+			if ( !isEditable ) {
 				this._draggedRange.detach();
 				this._draggedRange = null;
 				this._draggingUid = '';
@@ -392,7 +394,7 @@ export default class DragDrop extends Plugin {
 			this._removeDropMarker();
 
 			/* istanbul ignore if -- @preserve */
-			if ( !targetRange ) {
+			if ( !targetRange || !editor.model.isEditable( targetRange ) ) {
 				this._finalizeDragging( false );
 				evt.stop();
 
@@ -491,15 +493,11 @@ export default class DragDrop extends Plugin {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					draggableElement = viewDocument.selection.editableElement;
-				}
-			}
+					const editableElement = viewDocument.selection.editableElement;
 
-			if ( draggableElement ) {
-				const root = draggableElement.root as ViewRootEditableElement;
-
-				if ( root.isReadOnly ) {
-					draggableElement = null;
+					if ( editableElement && !editableElement.isReadOnly ) {
+						draggableElement = editableElement;
+					}
 				}
 			}
 
