@@ -15,7 +15,6 @@ import View from '../view';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
 
-const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const CORNER_OFFSET = 5;
@@ -34,12 +33,7 @@ const OFF_THE_SCREEN_POSITION = {
  */
 export default class PoweredBy extends DomEmitterMixin() {
 	/**
-	 * A reference to the view displaying a link with a label and a project logo.
-	 */
-	private [ POWERED_BY_VIEW_SYMBOL ]: PoweredByView | null;
-
-	/**
-	 * A reference to the balloon panel hosting and positioning the "powered by" view.
+	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
 	 */
 	private _balloonView: BalloonPanelView | null;
 
@@ -58,8 +52,6 @@ export default class PoweredBy extends DomEmitterMixin() {
 		super();
 
 		this.editor = editor;
-
-		this[ POWERED_BY_VIEW_SYMBOL ] = new PoweredByView( editor.locale );
 		this._balloonView = null;
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
@@ -69,23 +61,15 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Destroys the "powered by" helper along with its view.
 	 */
 	public destroy(): void {
-		const editor = this.editor;
 		const balloon = this._balloonView;
-		const view = this[ POWERED_BY_VIEW_SYMBOL ];
 
 		if ( balloon ) {
 			balloon.unpin();
-			editor.ui.view.body.remove( balloon );
 			balloon.destroy();
-		}
-
-		if ( view ) {
-			view.destroy();
+			this._balloonView = null;
 		}
 
 		this.stopListening();
-
-		this[ POWERED_BY_VIEW_SYMBOL ] = this._balloonView = null;
 	}
 
 	/**
@@ -130,8 +114,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _createBalloonView() {
 		const editor = this.editor;
 		const balloon = this._balloonView = new BalloonPanelView();
+		const view = new PoweredByView( editor.locale );
 
-		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
+		balloon.content.add( view );
 		balloon.withArrow = false;
 		balloon.class = 'ck-powered-by-balloon';
 
