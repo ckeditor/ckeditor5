@@ -77,7 +77,13 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 			on: {
 				// Drag and drop in the panel should not break the selection in the editor.
 				// https://github.com/ckeditor/ckeditor5-ui/issues/228
-				selectstart: bind.to( evt => evt.preventDefault() )
+				selectstart: bind.to( evt => {
+					if ( ( evt.target as HTMLElement ).tagName.toLocaleLowerCase() === 'input' ) {
+						return;
+					}
+
+					evt.preventDefault();
+				} )
 			}
 		} );
 	}

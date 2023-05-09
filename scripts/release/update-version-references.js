@@ -21,23 +21,35 @@ const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
+const cke5version = getLastFromChangelog();
+const currentDate = new Date();
+
 const ENTRIES_TO_UPDATE = [
 	{
+		label: 'CDN',
 		file: 'README.md',
-		pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/
+		pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/,
+		value: cke5version
 	},
 	{
+		label: 'version',
 		file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
-		pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/
+		pattern: /(?<=const version = ')\d+\.\d+\.\d+(?=';)/,
+		value: cke5version
+	},
+	{
+		label: 'release date',
+		file: path.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
+		pattern: /(?<=const releaseDate = new Date\( )\d+, \d+, \d+(?= \);)/,
+		value: `${ currentDate.getFullYear() }, ${ currentDate.getMonth() }, ${ currentDate.getDate() }`
 	}
 ];
 
-const cke5version = getLastFromChangelog();
 let shouldCommit = false;
 
-console.log( chalk.blue( 'Updating CKEditor 5 version references.\n' ) );
+console.log( chalk.blue( 'Updating CKEditor 5 version and release date references.\n' ) );
 
-for ( const { file, pattern } of ENTRIES_TO_UPDATE ) {
+for ( const { file, pattern, value, label } of ENTRIES_TO_UPDATE ) {
 	const absolutePath = path.join( ROOT_DIRECTORY, file ).split( path.sep ).join( path.posix.sep );
 
 	if ( !fs.existsSync( absolutePath ) ) {
@@ -47,10 +59,10 @@ for ( const { file, pattern } of ENTRIES_TO_UPDATE ) {
 	}
 
 	const oldFileContent = fs.readFileSync( absolutePath, 'utf-8' );
-	const newFileContent = oldFileContent.replace( pattern, cke5version );
+	const newFileContent = oldFileContent.replace( pattern, value );
 
 	if ( oldFileContent === newFileContent ) {
-		console.log( chalk.gray( `* This file is up to date: "${ chalk.underline( absolutePath ) }"` ) );
+		console.log( chalk.gray( `* This file is up to date: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
 
 		continue;
 	}
@@ -60,7 +72,7 @@ for ( const { file, pattern } of ENTRIES_TO_UPDATE ) {
 	fs.writeFileSync( absolutePath, newFileContent, 'utf-8' );
 	exec( `git add ${ absolutePath }` );
 
-	console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }"` ) );
+	console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
 }
 
 if ( shouldCommit ) {
