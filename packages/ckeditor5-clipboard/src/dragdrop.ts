@@ -487,11 +487,15 @@ export default class DragDrop extends Plugin {
 			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
 			// Disabled in read-only mode because draggable="true" + contenteditable="false" results
 			// in not firing selectionchange event ever, which makes the selection stuck in read-only mode.
-			if ( env.isBlink && !editor.isReadOnly && !draggableElement && !viewDocument.selection.isCollapsed ) {
+			if ( env.isBlink && !draggableElement && !viewDocument.selection.isCollapsed ) {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					draggableElement = viewDocument.selection.editableElement;
+					const editableElement = viewDocument.selection.editableElement;
+
+					if ( editableElement && !editableElement.isReadOnly ) {
+						draggableElement = editableElement;
+					}
 				}
 			}
 
