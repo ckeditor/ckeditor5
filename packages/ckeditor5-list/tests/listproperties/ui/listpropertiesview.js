@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document */
 
 import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
 import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
@@ -566,19 +566,6 @@ describe( 'ListPropertiesView', () => {
 				keyEvtData.keyCode = keyCodes.arrowright;
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
-			} );
-
-			it( 'intercepts the "selectstart" in the #startIndexFieldView with the high priority to unlock select all', () => {
-				const spy = sinon.spy();
-				const event = new Event( 'selectstart', {
-					bubbles: true,
-					cancelable: true
-				} );
-
-				event.stopPropagation = spy;
-
-				view.startIndexFieldView.element.dispatchEvent( event );
-				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

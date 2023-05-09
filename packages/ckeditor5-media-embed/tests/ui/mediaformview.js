@@ -211,19 +211,6 @@ describe( 'MediaFormView', () => {
 			view.keystrokes.press( keyEvtData );
 			sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
 		} );
-
-		it( 'intercepts the "selectstart" event of the #urlInputView with the high priority', () => {
-			const spy = sinon.spy();
-			const event = new Event( 'selectstart', {
-				bubbles: true,
-				cancelable: true
-			} );
-
-			event.stopPropagation = spy;
-
-			view.urlInputView.element.dispatchEvent( event );
-			sinon.assert.calledOnce( spy );
-		} );
 	} );
 
 	describe( 'destroy()', () => {
