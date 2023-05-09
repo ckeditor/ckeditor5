@@ -827,7 +827,7 @@ export default class Model extends ObservableMixin() {
 	}
 
 	/**
-	 * Method used to check whether given selectable is placed at an editable place in the model.
+	 * Method used to check whether given selectable is at an editable place in the model.
 	 *
 	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} to check whether a user action can happen at
 	 * given selectable. It may be decorated and used differently in different environment (e.g. multi-root editor can disable
