@@ -60,7 +60,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _showBalloonThrottled: DebouncedFunc<() => void>;
 
 	/**
-	 * TODO
+	 * A reference to the last editing root focused by the user. Since the focus can move to other focusable
+	 * elements in the UI, this reference allows positioning the balloon over the right root whether the
+	 * user is typing or using the UI.
 	 */
 	private _lastFocusedDOMRoot: HTMLElement | null;
 
