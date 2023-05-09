@@ -33,7 +33,7 @@ import {
 	type ViewRootEditableElement,
 	type Selectable,
 	type Writer,
-	type ModelIsEditableEvent,
+	type ModelIsEditableEvent
 } from 'ckeditor5/src/engine';
 
 /**
