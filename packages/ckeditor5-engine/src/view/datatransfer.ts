@@ -100,7 +100,7 @@ export default class DataTransfer {
 	}
 
 	/**
-	 * TODO
+	 * Set a preview image of the dragged content.
 	 */
 	public setDragImage( image: Element, x: number, y: number ): void {
 		this._native.setDragImage( image, x, y );

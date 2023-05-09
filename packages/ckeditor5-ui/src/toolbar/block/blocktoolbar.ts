@@ -19,7 +19,6 @@ import {
 	Rect,
 	ResizeObserver,
 	getOptimalPosition,
-	env,
 	toUnit,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
