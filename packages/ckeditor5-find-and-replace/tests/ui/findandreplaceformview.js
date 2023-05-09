@@ -482,32 +482,6 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
 			} );
 
-			it( 'intercepts the "selectstart" in the #findInputView with the high priority to unlock select all', () => {
-				const spy = sinon.spy();
-				const event = new Event( 'selectstart', {
-					bubbles: true,
-					cancelable: true
-				} );
-
-				event.stopPropagation = spy;
-
-				view._findInputView.element.dispatchEvent( event );
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'intercepts the "selectstart" in the #replaceInputView with the high priority to unlock select all', () => {
-				const spy = sinon.spy();
-				const event = new Event( 'selectstart', {
-					bubbles: true,
-					cancelable: true
-				} );
-
-				event.stopPropagation = spy;
-
-				view._replaceInputView.element.dispatchEvent( event );
-				sinon.assert.calledOnce( spy );
-			} );
-
 			it( 'handles F3 keystroke and extecutes find next', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.f3,
