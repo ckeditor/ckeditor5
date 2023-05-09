@@ -16,7 +16,6 @@ import View from '../view';
 import poweredByIcon from '../../theme/icons/project-logo.svg';
 
 const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
-const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const CORNER_OFFSET = 5;
@@ -31,9 +30,6 @@ const OFF_THE_SCREEN_POSITION = {
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
  * webpage next to the bottom of the editing root when the editor is focused.
  *
- * The helper uses a {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
- * to position the link with the logo.
- *
  * @private
  */
 export default class PoweredBy extends DomEmitterMixin() {
@@ -45,12 +41,12 @@ export default class PoweredBy extends DomEmitterMixin() {
 	/**
 	 * A reference to the balloon panel hosting and positioning the "powered by" view.
 	 */
-	private [ POWERED_BY_BALLOON_SYMBOL ]: BalloonPanelView | null;
+	private _balloonView: BalloonPanelView | null;
 
 	/**
 	 * Editor instance the helper was created for.
 	 */
-	private editor: Editor | null;
+	private readonly editor: Editor;
 
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
@@ -64,7 +60,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 		this.editor = editor;
 
 		this[ POWERED_BY_VIEW_SYMBOL ] = new PoweredByView( editor.locale );
-		this[ POWERED_BY_BALLOON_SYMBOL ] = null;
+		this._balloonView = null;
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
@@ -73,13 +69,13 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Destroys the "powered by" helper along with its view.
 	 */
 	public destroy(): void {
-		const editor = this.editor!;
-		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ];
+		const editor = this.editor;
+		const balloon = this._balloonView;
 		const view = this[ POWERED_BY_VIEW_SYMBOL ];
 
 		if ( balloon ) {
 			balloon.unpin();
-			editor!.ui.view.body.remove( balloon );
+			editor.ui.view.body.remove( balloon );
 			balloon.destroy();
 		}
 
@@ -89,34 +85,25 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.stopListening();
 
-		this.editor = this[ POWERED_BY_VIEW_SYMBOL ] = this[ POWERED_BY_BALLOON_SYMBOL ] = null;
+		this[ POWERED_BY_VIEW_SYMBOL ] = this._balloonView = null;
 	}
 
 	/**
 	 * Enables "powered by" label once the editor (ui) is ready.
 	 */
 	private _handleEditorReady(): void {
-		const editor = this.editor!;
+		const editor = this.editor;
 
+		// No view means no body collection to append the powered by balloon to.
 		if ( !editor.ui.view ) {
 			return;
 		}
 
-		let balloon: BalloonPanelView | undefined;
-
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
-			if ( !balloon ) {
-				balloon = this._createBalloonAndView();
-			}
-
 			if ( isFocused ) {
-				const attachOptions = getBalloonAttachOptions( editor );
-
-				if ( attachOptions ) {
-					balloon.pin( attachOptions );
-				}
+				this._showBalloon();
 			} else {
-				balloon.unpin();
+				this._hideBalloon();
 			}
 		} );
 
@@ -125,17 +112,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 				return;
 			}
 
-			/* istanbul ignore next -- @preserve */
-			if ( !balloon ) {
-				balloon = this._createBalloonAndView();
-			}
-
-			const attachOptions = getBalloonAttachOptions( editor );
-
-			if ( attachOptions ) {
-				balloon.unpin();
-				balloon.pin( attachOptions );
-			}
+			this._showBalloon();
 		} );
 
 		// TODO: ~~Support for cases where the watermark gets cropped by parent with overflow: hidden~~.
@@ -150,9 +127,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Creates an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
 	 * with the "powered by" view inside ready for positioning.
 	 */
-	private _createBalloonAndView(): BalloonPanelView {
-		const editor = this.editor!;
-		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ] = new BalloonPanelView();
+	private _createBalloonView() {
+		const editor = this.editor;
+		const balloon = this._balloonView = new BalloonPanelView();
 
 		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
 		balloon.withArrow = false;
@@ -161,7 +138,31 @@ export default class PoweredBy extends DomEmitterMixin() {
 		editor.ui.view.body.add( balloon );
 		editor.ui.focusTracker.add( balloon.element! );
 
-		return balloon;
+		this._balloonView = balloon;
+	}
+
+	/**
+	 * Attempts to display the balloon with the "powered by" view.
+	 */
+	private _showBalloon() {
+		const attachOptions = getBalloonAttachOptions( this.editor );
+
+		if ( attachOptions ) {
+			if ( !this._balloonView ) {
+				this._createBalloonView();
+			}
+
+			this._balloonView!.pin( attachOptions );
+		}
+	}
+
+	/**
+	 * Hides the "powered by" balloon if already visible.
+	 */
+	private _hideBalloon() {
+		if ( this._balloonView ) {
+			this._balloonView!.unpin();
+		}
 	}
 }
 
