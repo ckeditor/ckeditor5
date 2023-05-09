@@ -21,7 +21,7 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ViewRange
+	type ViewRange, ViewRootEditableElement
 } from '@ckeditor/ckeditor5-engine';
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
@@ -491,11 +491,15 @@ export default class DragDrop extends Plugin {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					const editableElement = viewDocument.selection.editableElement;
+					draggableElement = viewDocument.selection.editableElement;
+				}
+			}
 
-					if ( editableElement && !editableElement.isReadOnly ) {
-						draggableElement = editableElement;
-					}
+			if ( draggableElement ) {
+				const root = draggableElement.root as ViewRootEditableElement;
+
+				if ( root.isReadOnly ) {
+					draggableElement = null;
 				}
 			}
 
