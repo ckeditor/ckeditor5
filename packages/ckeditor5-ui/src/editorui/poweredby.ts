@@ -67,7 +67,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.editor = editor;
 		this._balloonView = null;
-		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50 );
+		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50, { leading: true } );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
