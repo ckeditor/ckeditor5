@@ -538,21 +538,21 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#enableRoot re-enable} the root.
 	 *
 	 * ```ts
-	 *  const model = editor.model;
-	 * 	const myRoot = model.document.getRoot( 'myRoot' );
+	 * const model = editor.model;
+	 * const myRoot = model.document.getRoot( 'myRoot' );
 	 *
-	 * 	editor.disableRoot( 'myRoot', 'my-lock' );
-	 * 	model.isEditable( myRoot ); // `false`
+	 * editor.disableRoot( 'myRoot', 'my-lock' );
+	 * model.isEditable( myRoot ); // `false`
 	 *
-	 * 	editor.disableRoot( 'myRoot', 'other-lock' );
-	 * 	editor.disableRoot( 'myRoot', 'other-lock' ); // Multiple locks with the same ID have no effect.
-	 * 	model.isEditable( myRoot ); // `false`
+	 * editor.disableRoot( 'myRoot', 'other-lock' );
+	 * editor.disableRoot( 'myRoot', 'other-lock' ); // Multiple locks with the same ID have no effect.
+	 * model.isEditable( myRoot ); // `false`
 	 *
-	 * 	editor.enableRoot( 'myRoot', 'my-lock' );
-	 * 	model.isEditable( myRoot ); // `false`
+	 * editor.enableRoot( 'myRoot', 'my-lock' );
+	 * model.isEditable( myRoot ); // `false`
 	 *
-	 * 	editor.enableRoot( 'myRoot', 'other-lock' );
-	 * 	model.isEditable( myRoot ); // `true`
+	 * editor.enableRoot( 'myRoot', 'other-lock' );
+	 * model.isEditable( myRoot ); // `true`
 	 * ```
 	 *
 	 * See also {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode()`} and
