@@ -11,6 +11,7 @@
 
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const updateVersionReferences = require( './update-version-references' );
+const buildTsAndDllForCkeditor5Root = require( './buildtsanddllforckeditor5root' );
 
 const abortController = new AbortController();
 
@@ -32,6 +33,8 @@ process.on( 'SIGINT', () => {
 		version: latestVersion,
 		releaseDate: new Date()
 	} );
+
+	buildTsAndDllForCkeditor5Root();
 
 	await releaseTools.executeInParallel( {
 		packagesDirectory: RELEASE_DIRECTORY,
