@@ -90,4 +90,4 @@ export { default as uid } from './uid';
 export { default as delay, type DelayedFunc } from './delay';
 export * from './unicode';
 
-export { default as version } from './version';
+export { default as version, releaseDate } from './version';
