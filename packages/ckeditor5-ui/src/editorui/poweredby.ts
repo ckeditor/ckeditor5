@@ -179,6 +179,7 @@ class PoweredByView extends View<HTMLDivElement> {
 		super( locale );
 
 		const iconView = new IconView();
+		const bind = this.bindTemplate;
 
 		iconView.set( {
 			content: poweredByIcon,
@@ -216,7 +217,10 @@ class PoweredByView extends View<HTMLDivElement> {
 							children: [ 'Powered by' ]
 						},
 						iconView
-					]
+					],
+					on: {
+						dragstart: bind.to( evt => evt.preventDefault() )
+					}
 				}
 			]
 		} );
