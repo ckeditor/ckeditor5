@@ -18,12 +18,11 @@ import {
 import BalloonPanelView from '../panel/balloon/balloonpanelview';
 import IconView from '../icon/iconview';
 import View from '../view';
+import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
 import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
-const POWERED_BY_VIEW_SYMBOL = Symbol( '_poweredByView' );
-const POWERED_BY_BALLOON_SYMBOL = Symbol( '_poweredByBalloon' );
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const NARROW_ROOT_WIDTH_THRESHOLD = 250;
@@ -39,26 +38,23 @@ type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
  * webpage next to the bottom of the editing root when the editor is focused.
  *
- * The helper uses a {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
- * to position the link with the logo.
- *
  * @private
  */
 export default class PoweredBy extends DomEmitterMixin() {
 	/**
-	 * A reference to the view displaying a link with a label and a project logo.
+	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
 	 */
-	private [ POWERED_BY_VIEW_SYMBOL ]: PoweredByView | null;
-
-	/**
-	 * A reference to the balloon panel hosting and positioning the "powered by" view.
-	 */
-	private [ POWERED_BY_BALLOON_SYMBOL ]: BalloonPanelView | null;
+	private _balloonView: BalloonPanelView | null;
 
 	/**
 	 * Editor instance the helper was created for.
 	 */
-	private editor: Editor | null;
+	private readonly editor: Editor;
+
+	/**
+	 * A throttled version of the {@link #_showBalloon} method meant for frequent use to avoid performance loss.
+	 */
+	private _showBalloonThrottled: DebouncedFunc<() => void>;
 
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
@@ -70,9 +66,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 		super();
 
 		this.editor = editor;
-
-		this[ POWERED_BY_VIEW_SYMBOL ] = new PoweredByView( editor.locale );
-		this[ POWERED_BY_BALLOON_SYMBOL ] = null;
+		this._balloonView = null;
+		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50 );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
@@ -81,50 +76,34 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Destroys the "powered by" helper along with its view.
 	 */
 	public destroy(): void {
-		const editor = this.editor!;
-		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ];
-		const view = this[ POWERED_BY_VIEW_SYMBOL ];
+		const balloon = this._balloonView;
 
 		if ( balloon ) {
 			balloon.unpin();
-			editor!.ui.view.body.remove( balloon );
 			balloon.destroy();
+			this._balloonView = null;
 		}
 
-		if ( view ) {
-			view.destroy();
-		}
-
+		this._showBalloonThrottled.cancel();
 		this.stopListening();
-
-		this.editor = this[ POWERED_BY_VIEW_SYMBOL ] = this[ POWERED_BY_BALLOON_SYMBOL ] = null;
 	}
 
 	/**
 	 * Enables "powered by" label once the editor (ui) is ready.
 	 */
 	private _handleEditorReady(): void {
-		const editor = this.editor!;
+		const editor = this.editor;
 
+		// No view means no body collection to append the powered by balloon to.
 		if ( !editor.ui.view ) {
 			return;
 		}
 
-		let balloon: BalloonPanelView | undefined;
-
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
-			if ( !balloon ) {
-				balloon = this._createBalloonAndView();
-			}
-
 			if ( isFocused ) {
-				const attachOptions = getBalloonAttachOptions( editor );
-
-				if ( attachOptions ) {
-					balloon.pin( attachOptions );
-				}
+				this._showBalloon();
 			} else {
-				balloon.unpin();
+				this._hideBalloon();
 			}
 		} );
 
@@ -133,21 +112,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 				return;
 			}
 
-			/* istanbul ignore next -- @preserve */
-			if ( !balloon ) {
-				balloon = this._createBalloonAndView();
-			}
-
-			const attachOptions = getBalloonAttachOptions( editor );
-
-			if ( attachOptions ) {
-				balloon.unpin();
-				balloon.pin( attachOptions );
-			}
+			this._showBalloonThrottled();
 		} );
 
-		// TODO: ~~Support for cases where the watermark gets cropped by parent with overflow: hidden~~.
-		// TODO: Debounce.
 		// TODO: Probably hide during scroll.
 		// TODO: Problem with Rect#isVisible() and floating editors (comments) vs. hiding the view when cropped by parent with overflow.
 		// TODO: Update position once an image loaded.
@@ -158,18 +125,43 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Creates an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
 	 * with the "powered by" view inside ready for positioning.
 	 */
-	private _createBalloonAndView(): BalloonPanelView {
-		const editor = this.editor!;
-		const balloon = this[ POWERED_BY_BALLOON_SYMBOL ] = new BalloonPanelView();
+	private _createBalloonView() {
+		const editor = this.editor;
+		const balloon = this._balloonView = new BalloonPanelView();
+		const view = new PoweredByView( editor.locale );
 
-		balloon.content.add( this[ POWERED_BY_VIEW_SYMBOL ]! );
+		balloon.content.add( view );
 		balloon.withArrow = false;
 		balloon.class = 'ck-powered-by-balloon';
 
 		editor.ui.view.body.add( balloon );
 		editor.ui.focusTracker.add( balloon.element! );
 
-		return balloon;
+		this._balloonView = balloon;
+	}
+
+	/**
+	 * Attempts to display the balloon with the "powered by" view.
+	 */
+	private _showBalloon() {
+		const attachOptions = getBalloonAttachOptions( this.editor );
+
+		if ( attachOptions ) {
+			if ( !this._balloonView ) {
+				this._createBalloonView();
+			}
+
+			this._balloonView!.pin( attachOptions );
+		}
+	}
+
+	/**
+	 * Hides the "powered by" balloon if already visible.
+	 */
+	private _hideBalloon() {
+		if ( this._balloonView ) {
+			this._balloonView!.unpin();
+		}
 	}
 }
 
@@ -186,6 +178,7 @@ class PoweredByView extends View<HTMLDivElement> {
 		super( locale );
 
 		const iconView = new IconView();
+		const bind = this.bindTemplate;
 
 		iconView.set( {
 			content: poweredByIcon,
@@ -223,7 +216,13 @@ class PoweredByView extends View<HTMLDivElement> {
 							children: [ 'Powered by' ]
 						},
 						iconView
-					]
+					],
+					on: {
+						dragstart: bind.to(
+							/* istanbul ignore next -- @preserve */
+							evt => evt.preventDefault()
+						)
+					}
 				}
 			]
 		} );
@@ -327,7 +326,8 @@ function getLowerCornerPosition(
 
 function getFocusedDOMRoot( editor: Editor ) {
 	for ( const [ , domRoot ] of editor.editing.view.domRoots ) {
-		if ( domRoot.ownerDocument.activeElement === domRoot || domRoot.contains( domRoot.ownerDocument.activeElement ) ) {
+		const { activeElement } = domRoot.ownerDocument;
+		if ( activeElement === domRoot || domRoot.contains( activeElement ) ) {
 			return domRoot;
 		}
 	}
