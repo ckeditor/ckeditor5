@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, setTimeout */
+/* global document, Event, window */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import EditorUI from '../../src/editorui/editorui';
@@ -12,6 +12,7 @@ import View from '../../src/view';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -21,7 +22,7 @@ describe( 'PoweredBy', () => {
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
-		editor = await ClassicTestEditor.create( element );
+		editor = await createEditor( element );
 	} );
 
 	afterEach( async () => {
@@ -62,28 +63,53 @@ describe( 'PoweredBy', () => {
 			it( 'should show the balloon when the editor gets focused', () => {
 				editor.editing.view.focus();
 
-				expect( editor.ui.poweredBy._balloonView.element.getClientRects().length ).to.equal( 1 );
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			} );
 
-			it( 'should hide the balloon on blur', done => {
+			it( 'should show the balloon if the focus is not in the editing root but in other editor UI', async () => {
+				const focusableWebPageElement = document.createElement( 'input' );
+				focusableWebPageElement.type = 'text';
+				document.body.appendChild( focusableWebPageElement );
+
+				const focusableEditorUIElement = document.createElement( 'input' );
+				focusableEditorUIElement.type = 'text';
+				document.body.appendChild( focusableEditorUIElement );
+
+				editor.ui.focusTracker.add( focusableEditorUIElement );
+
+				// Just generate the balloon on demand.
+				editor.editing.view.focus();
+				focusableWebPageElement.focus();
+
+				await wait( 10 );
+				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+				focusableEditorUIElement.focus();
+
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+
+				focusableWebPageElement.remove();
+				focusableEditorUIElement.remove();
+			} );
+
+			it( 'should hide the balloon on blur', async () => {
 				const input = document.createElement( 'input' );
 				input.type = 'text';
 				document.body.appendChild( input );
 
 				editor.editing.view.focus();
 
-				expect( editor.ui.poweredBy._balloonView.element.getClientRects().length ).to.equal( 1 );
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 
 				input.focus();
 
 				// FocusTracker's blur handler is asynchronous.
-				setTimeout( () => {
-					expect( editor.ui.poweredBy._balloonView.element.getClientRects().length ).to.equal( 0 );
+				await wait( 200 );
 
-					input.remove();
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.false;
 
-					done();
-				}, 200 );
+				input.remove();
 			} );
 		} );
 
@@ -96,7 +122,7 @@ describe( 'PoweredBy', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
 			} );
 
-			it( 'should (re-)show the balloon but throttled', done => {
+			it( 'should (re-)show the balloon but throttled', async () => {
 				editor.editing.view.focus();
 
 				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -106,12 +132,34 @@ describe( 'PoweredBy', () => {
 
 				sinon.assert.notCalled( pinSpy );
 
-				setTimeout( () => {
-					sinon.assert.calledOnce( pinSpy );
-					sinon.assert.calledWith( pinSpy, sinon.match.object );
+				await wait( 75 );
 
-					done();
-				}, 75 );
+				sinon.assert.calledOnce( pinSpy );
+				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+			} );
+
+			it( 'should (re-)show the balloon if the focus is not in the editing root but in other editor UI', async () => {
+				const focusableEditorUIElement = document.createElement( 'input' );
+				focusableEditorUIElement.type = 'text';
+				editor.ui.focusTracker.add( focusableEditorUIElement );
+				document.body.appendChild( focusableEditorUIElement );
+
+				focusableEditorUIElement.focus();
+
+				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+				sinon.assert.notCalled( pinSpy );
+
+				editor.ui.fire( 'update' );
+				editor.ui.fire( 'update' );
+
+				sinon.assert.calledOnce( pinSpy );
+
+				await wait( 75 );
+
+				sinon.assert.calledTwice( pinSpy );
+				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+				focusableEditorUIElement.remove();
 			} );
 		} );
 
@@ -245,4 +293,268 @@ describe( 'PoweredBy', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	describe( 'balloon positioning depending on environment and configuration', () => {
+		let rootRect, balloonRect;
+
+		beforeEach( () => {
+			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 100, height: 100 } );
+			balloonRect = new Rect( { top: 0, left: 0, width: 20, right: 20, bottom: 10, height: 10 } );
+
+			sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 1000,
+				bottom: 1000,
+				left: 0,
+				width: 1000,
+				height: 1000
+			} );
+		} );
+
+		it( 'should not show the balloon if the root is not visible', async () => {
+			const domRoot = editor.editing.view.getDomRoot();
+			const parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'hidden';
+			parentWithOverflow.style.height = '0px';
+			parentWithOverflow.style.width = '0px';
+			domRoot.style.marginTop = '1000px';
+			domRoot.style.marginLeft = '1000px';
+
+			document.body.appendChild( parentWithOverflow );
+			parentWithOverflow.appendChild( domRoot );
+
+			editor.editing.view.focus();
+
+			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should position the to the left side if the UI language is RTL and no side was configured', async () => {
+			const editor = await createEditor( element, {
+				language: 'ar'
+			} );
+
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: 85,
+				left: 5,
+				name: 'root-width_narrow-position_inside-side_left',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should positiong the balloon in the lower right corner by default', async () => {
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: 85,
+				left: 75,
+				name: 'root-width_narrow-position_inside-side_right',
+				config: {
+					withArrow: false
+				}
+			} );
+		} );
+
+		it( 'should positiong the balloon in the lower left corner if configured', async () => {
+			const editor = await createEditor( element, {
+				ui: {
+					poweredBy: {
+						side: 'left'
+					}
+				}
+			} );
+
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: 85,
+				left: 5,
+				name: 'root-width_narrow-position_inside-side_left',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should positiong the balloon over the bottom root border if configured', async () => {
+			const editor = await createEditor( element, {
+				ui: {
+					poweredBy: {
+						position: 'border'
+					}
+				}
+			} );
+
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: 95,
+				left: 75,
+				name: 'root-width_narrow-position_border-side_right',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should hiden the balloon if displayed over the bottom root border but cropped by an ancestor with overflow', async () => {
+			const editor = await createEditor( element, {
+				ui: {
+					poweredBy: {
+						position: 'border'
+					}
+				}
+			} );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			parentWithOverflow.style.height = '0px';
+			parentWithOverflow.style.width = '0px';
+			domRoot.style.marginTop = '1000px';
+			domRoot.style.marginLeft = '1000px';
+
+			document.body.appendChild( parentWithOverflow );
+			parentWithOverflow.appendChild( domRoot );
+
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( domRoot );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: -9999999,
+				left: -9999999,
+				name: 'invalid',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			await editor.destroy();
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should allow configuring balloon position offsets', async () => {
+			const editor = await createEditor( element, {
+				ui: {
+					poweredBy: {
+						verticalOffset: 10,
+						horizontalOffset: 10
+					}
+				}
+			} );
+
+			editor.editing.view.focus();
+
+			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+			editor.ui.fire( 'update' );
+
+			// Throttled #update listener.
+			await wait( 75 );
+
+			sinon.assert.calledOnce( pinSpy );
+
+			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const positioningFunction = pinArgs.positions[ 0 ];
+
+			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+				top: 80,
+				left: 70,
+				name: 'root-width_narrow-position_inside-side_right',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			await editor.destroy();
+		} );
+	} );
+
+	async function createEditor( element, config = {} ) {
+		return ClassicTestEditor.create( element, config );
+	}
+
+	function wait( time ) {
+		return new Promise( res => {
+			window.setTimeout( res, time );
+		} );
+	}
 } );
