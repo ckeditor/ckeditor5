@@ -283,7 +283,8 @@ function getLowerCornerPosition( getBalloonLeft: ( rootRect: Rect, balloonRect: 
 
 function getFocusedDOMRoot( editor: Editor ) {
 	for ( const [ , domRoot ] of editor.editing.view.domRoots ) {
-		if ( domRoot.ownerDocument.activeElement === domRoot || domRoot.contains( domRoot.ownerDocument.activeElement ) ) {
+		const { activeElement } = domRoot.ownerDocument;
+		if ( activeElement === domRoot || domRoot.contains( activeElement ) ) {
 			return domRoot;
 		}
 	}
