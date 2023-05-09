@@ -210,7 +210,10 @@ class PoweredByView extends View<HTMLDivElement> {
 						iconView
 					],
 					on: {
-						dragstart: bind.to( evt => evt.preventDefault() )
+						dragstart: bind.to(
+							/* istanbul ignore next -- @preserve */
+							evt => evt.preventDefault()
+						)
 					}
 				}
 			]
