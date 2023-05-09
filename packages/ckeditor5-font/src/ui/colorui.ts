@@ -171,6 +171,7 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
 				if ( this._undoStepBatch!.operations.length ) {
+					dropdownView.isOpen = false;
 					editor.execute( 'undo', this._undoStepBatch );
 				}
 
