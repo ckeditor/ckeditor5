@@ -171,6 +171,10 @@ export default class ColorUI extends Plugin {
 
 			this.colorTableView.on<ColorTableCancelEvent>( 'cancel', () => {
 				if ( this._undoStepBatch!.operations.length ) {
+					// We need to close the dropdown before the undo batch.
+					// Otherwise, ColorUI treats undo as a selected color change,
+					// propagating the update to the whole selection.
+					// That's an issue if spans with various colors were selected.
 					dropdownView.isOpen = false;
 					editor.execute( 'undo', this._undoStepBatch );
 				}
