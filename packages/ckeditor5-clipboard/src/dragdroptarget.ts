@@ -37,7 +37,9 @@ import LineView from './lineview';
 import { throttle } from 'lodash-es';
 
 /**
- * TODO
+ * Part of the Drag and Drop handling. Responsible for finding and displaying the drop target.
+ *
+ * @internal
  */
 export default class DragDropTarget extends Plugin {
 	/**
@@ -55,7 +57,7 @@ export default class DragDropTarget extends Plugin {
 	);
 
 	/**
-	 * TODO
+	 * A throttled callback reconverting the drop parker.
 	 */
 	private readonly _reconvertMarkerThrottled = throttle( () => {
 		if ( this.editor.model.markers.has( 'drop-target' ) ) {
@@ -64,17 +66,17 @@ export default class DragDropTarget extends Plugin {
 	}, 0 );
 
 	/**
-	 * TODO
+	 * The horizontal drop target line view.
 	 */
 	private _dropTargetLineView = new LineView();
 
 	/**
-	 * TODO
+	 * DOM Emitter.
 	 */
 	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
 
 	/**
-	 * TODO
+	 * Map of document scrollable elements.
 	 */
 	private _scrollables = new Map<string, {
 		domElement: HTMLElement;
@@ -113,7 +115,7 @@ export default class DragDropTarget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Finds the drop target range and updates the drop marker.
 	 *
 	 * @internal
 	 */
@@ -135,7 +137,7 @@ export default class DragDropTarget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Finds the final drop target range.
 	 *
 	 * @internal
 	 */
@@ -237,7 +239,7 @@ export default class DragDropTarget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates the UI element for vertical (in-line) drop target.
 	 */
 	private _createDropTargetPosition( writer: DowncastWriter ): ViewElement {
 		return writer.createUIElement( 'span', { class: 'ck ck-clipboard-drop-target-position' }, function( domDocument ) {
@@ -251,7 +253,7 @@ export default class DragDropTarget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates the horizontal drop target line.
 	 */
 	private _updateDropTargetLine( range: Range ): void {
 		const editing = this.editor.editing;
@@ -301,7 +303,7 @@ export default class DragDropTarget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Finds the closest scrollable element rect for the given view element.
 	 */
 	private _getScrollableRect( viewElement: ViewElement ): Rect {
 		const rootName = ( viewElement.root as ViewRootEditableElement ).rootName;
@@ -402,7 +404,7 @@ function findDropTargetRange(
 }
 
 /**
- * TODO
+ * Returns true for elements with floating style set.
  */
 function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
 	const mapper = editor.editing.mapper;
@@ -415,7 +417,7 @@ function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
 }
 
 /**
- * TODO
+ * Returns target range relative to the given element.
  */
 function findDropTargetRangeForElement( editor: Editor, modelElement: Element, clientX: number, clientY: number ): Range | null {
 	const model = editor.model;
@@ -429,7 +431,7 @@ function findDropTargetRangeForElement( editor: Editor, modelElement: Element, c
 }
 
 /**
- * TODO
+ * Resolves whether drop marker should be before or after the given element.
  */
 function findElementSide( editor: Editor, modelElement: Element, clientX: number, clientY: number ): 'before' | 'after' {
 	const mapper = editor.editing.mapper;

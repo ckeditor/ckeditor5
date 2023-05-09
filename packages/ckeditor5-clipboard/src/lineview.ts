@@ -15,7 +15,7 @@ import { toUnit } from '@ckeditor/ckeditor5-utils';
 const toPx = toUnit( 'px' );
 
 /**
- * The page break line view.
+ * The horizontal drop target line view.
  */
 export default class LineView extends View {
 	/**

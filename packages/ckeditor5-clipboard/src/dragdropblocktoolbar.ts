@@ -24,16 +24,18 @@ import type { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import ClipboardObserver from './clipboardobserver';
 
 /**
- * TODO
+ * Integration of an experimental block Drag and drop support with the block toolbar.
+ *
+ * @internal
  */
 export default class DragDropBlockToolbar extends Plugin {
 	/**
-	 * TODO
+	 * Whether current dragging is started by block toolbar button dragging.
 	 */
 	private _isBlockDragging = false;
 
 	/**
-	 * TODO
+	 * DOM Emitter.
 	 */
 	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
 
@@ -86,7 +88,7 @@ export default class DragDropBlockToolbar extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * The `dragstart` event handler.
 	 */
 	private _handleBlockDragStart( domEvent: DragEvent ): void {
 		if ( !this.isEnabled ) {
@@ -110,7 +112,7 @@ export default class DragDropBlockToolbar extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * The `dragover` and `drop` event handler.
 	 */
 	private _handleBlockDragging( domEvent: DragEvent ): void {
 		if ( !this.isEnabled || !this._isBlockDragging ) {
@@ -138,7 +140,7 @@ export default class DragDropBlockToolbar extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * The `dragend` event handler.
 	 */
 	private _handleBlockDragEnd(): void {
 		this._isBlockDragging = false;

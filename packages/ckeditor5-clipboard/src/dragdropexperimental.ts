@@ -140,6 +140,8 @@ import '../theme/clipboard.css';
  * The drag and drop feature. It works on top of the {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
  *
  * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
+ *
+ * @internal
  */
 export default class DragDropExperimental extends Plugin {
 	/**
@@ -165,19 +167,19 @@ export default class DragDropExperimental extends Plugin {
 	private _clearDraggableAttributesDelayed: DelayedFunc<() => void> = delay( () => this._clearDraggableAttributes(), 40 );
 
 	/**
-	 * TODO
+	 * Whether the dragged content can be dropped only in block context.
 	 */
 	// TODO handle drag from other editor instance
 	// TODO configure to use block, inline or both
 	private _blockMode: boolean = false;
 
 	/**
-	 * TODO
+	 * DOM Emitter.
 	 */
 	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
 
 	/**
-	 * TODO
+	 * The DOM element used to generate dragged preview image.
 	 */
 	private _previewContainer?: HTMLElement;
 
@@ -559,7 +561,7 @@ export default class DragDropExperimental extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Sets the dragged source range based on event target and document selection.
 	 */
 	private _prepareDraggedRange( target: ViewElement ): void {
 		const editor = this.editor;
@@ -619,7 +621,7 @@ export default class DragDropExperimental extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Updates the dragged preview image.
 	 */
 	private _updatePreview( dataTransfer: DataTransfer ): void {
 		const view = this.editor.editing.view;
