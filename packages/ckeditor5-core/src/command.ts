@@ -65,7 +65,14 @@ export default class Command extends ObservableMixin() {
 	declare public isEnabled: boolean;
 
 	/**
-	 * A flag indicating whether a command's `isEnabled` state should base on where the document selection is placed.
+	 * A flag indicating whether a command's `isEnabled` state should be changed depending on where the document
+	 * selection is placed.
+	 *
+	 * By default, it is set to `true`. If the document selection is placed in a
+	 * {@link module:engine/model/model~Model#isEditable non-editable} place (such as non-editable root), the command becomes disabled.
+	 *
+	 * The flag should be changed to `false` in a concrete command's constructor if the command should not change its `isEnabled`
+	 * accordingly to the document selection.
 	 */
 	protected _baseEnabledOnSelection: boolean;
 
