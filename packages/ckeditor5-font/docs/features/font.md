@@ -357,9 +357,9 @@ ClassicEditor
 
 ### Color picker
 
-Colors from outside the preconfigured palette can be set using the "Color picker" section, available after clicking the button with the same name at the bottom of the color dropdown.
+Colors from outside of the preconfigured palette can be set using the "Color picker" option available at the bottom of the color selection dropdown.
 
-Color picker applies the colors in **HSL** format as it is the default for the whole font color feature. It can be changed using the {@link module:ui/colorpicker/utils~ColorPickerConfig `config.fontColor.colorPicker.format`} option. Available formats are defined in {@link module:ui/colorpicker/utils~ColorPickerOutputFormat} type. Note that this change will not affect the color input - it always accepts only values in `hex` format (with or without `#` sign at the beginning).
+Color picker applies colors in the **HSL** format as it is default for the font color feature. This can be changed using the {@link module:ui/colorpicker/utils~ColorPickerConfig#Format `config.fontColor.colorPicker.format`} option. Available color formats are defined in the {@link module:ui/colorpicker/utils~ColorPickerOutputFormat} type. Note that this change will not affect the color input &ndash; it always accepts only values given in the `hex` format (with or without the `#` sign at the beginning).
 
 To disable the color picker entirely for the given feature, set the {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontColor.colorPicker`} (or {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontBackgroundColor.colorPicker`}) option to `false`.
 
