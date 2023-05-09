@@ -44,7 +44,8 @@ describe( 'utils', () => {
 
 				it( 'when date is invalid', () => {
 					// invalid = shorten than expected
-					const string = 'bGRtb3RyZWlhZWxzcG9taXRtdXJzby1NVGs1TnpFeA==';
+
+					const string = 'enN6YXJ0YWxhYWZsaWViYnRvcnVpb3Jvb3BzYmVkYW9tcm1iZm9vbS1NVGs1TnpFeA==';
 
 					expect( verify( string ) ).to.be.equal( 'INVALID' );
 				} );
