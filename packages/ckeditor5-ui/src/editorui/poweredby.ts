@@ -30,7 +30,10 @@ const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
 	left: -9999999,
-	name: 'invalid'
+	name: 'invalid',
+	config: {
+		withArrow: false
+	}
 };
 
 type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
@@ -43,14 +46,14 @@ type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
  */
 export default class PoweredBy extends DomEmitterMixin() {
 	/**
-	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
-	 */
-	private _balloonView: BalloonPanelView | null;
-
-	/**
 	 * Editor instance the helper was created for.
 	 */
 	private readonly editor: Editor;
+
+	/**
+	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
+	 */
+	private _balloonView: BalloonPanelView | null;
 
 	/**
 	 * A throttled version of the {@link #_showBalloon} method meant for frequent use to avoid performance loss.
@@ -80,8 +83,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 		const balloon = this._balloonView;
 
 		if ( balloon ) {
+			// Balloon gets destroyed by the body collection.
+			// The powered by view gets destroyed by the balloon.
 			balloon.unpin();
-			balloon.destroy();
 			this._balloonView = null;
 		}
 
@@ -137,8 +141,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 		const view = new PoweredByView( editor.locale );
 
 		balloon.content.add( view );
-		balloon.withArrow = false;
-		balloon.class = 'ck-powered-by-balloon';
+		balloon.set( {
+			class: 'ck-powered-by-balloon'
+		} );
 
 		editor.ui.view.body.add( balloon );
 		editor.ui.focusTracker.add( balloon.element! );
@@ -224,10 +229,7 @@ class PoweredByView extends View<HTMLDivElement> {
 						iconView
 					],
 					on: {
-						dragstart: bind.to(
-							/* istanbul ignore next -- @preserve */
-							evt => evt.preventDefault()
-						)
+						dragstart: bind.to( evt => evt.preventDefault() )
 					}
 				}
 			]
@@ -245,7 +247,6 @@ function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | n
 	const poweredByConfig = getNormalizedConfig( editor )!;
 	const positioningFunction = poweredByConfig.side === 'right' ?
 		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
-		/* istanbul ignore next -- @preserve */
 		getLowerLeftCornerPosition( focusedDomRoot, poweredByConfig );
 
 	return {
@@ -260,7 +261,6 @@ function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, config: Power
 	} );
 }
 
-/* istanbul ignore next -- @preserve */
 function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
 	return getLowerCornerPosition( focusedDomRoot, config, rootRect => rootRect.left + config.horizontalOffset );
 }
@@ -274,7 +274,6 @@ function getLowerCornerPosition(
 		const visibleRootRect = rootRect.getVisible();
 
 		// Root cropped by ancestors.
-		/* istanbul ignore next -- @preserve */
 		if ( !visibleRootRect ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
@@ -283,7 +282,6 @@ function getLowerCornerPosition(
 
 		let balloonTop;
 
-		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			balloonTop = rootRect.bottom - balloonRect.height;
 		}
@@ -295,37 +293,34 @@ function getLowerCornerPosition(
 
 		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
 
-		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
 			// The watermark cannot be positioned in this corner because the corner is not quite visible.
-			/* istanbul ignore next -- @preserve */
 			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
 				return OFF_THE_SCREEN_POSITION;
 			}
 		}
 		else {
-			/* istanbul ignore next -- @preserve */
 			const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
 
-			/* istanbul ignore next -- @preserve */
 			if ( firstScrollableRootAncestor ) {
 				const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				/* istanbul ignore next -- @preserve */
 				if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
 		}
 
-		/* istanbul ignore next -- @preserve */
 		return {
 			top: balloonTop,
 			left: balloonLeft,
-			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`
+			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`,
+			config: {
+				withArrow: false
+			}
 		};
 	};
 }
@@ -333,6 +328,7 @@ function getLowerCornerPosition(
 function getFocusedDOMRoot( editor: Editor ) {
 	for ( const [ , domRoot ] of editor.editing.view.domRoots ) {
 		const { activeElement } = domRoot.ownerDocument;
+
 		if ( activeElement === domRoot || domRoot.contains( activeElement ) ) {
 			return domRoot;
 		}
@@ -343,15 +339,14 @@ function getFocusedDOMRoot( editor: Editor ) {
 
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
-	/* istanbul ignore next -- @preserve */
 	const position = userConfig && userConfig.position || 'inside';
 
 	return {
 		position,
-		verticalOffset: position === 'inside' ? 5 : /* istanbul ignore next -- @preserve */ 0,
+		verticalOffset: position === 'inside' ? 5 : 0,
 		horizontalOffset: 5,
 
-		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : /* istanbul ignore next -- @preserve */ 'left',
+		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : 'left',
 		...userConfig
 	};
 }
