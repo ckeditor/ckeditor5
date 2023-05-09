@@ -61,6 +61,13 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	public get affectedSelectable(): Selectable {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override toJSON(): unknown {
 		const json: any = super.toJSON();
 
@@ -90,13 +97,6 @@ export default class DetachOperation extends Operation {
 	 */
 	public _execute(): void {
 		_remove( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return null;
 	}
 
 	/**

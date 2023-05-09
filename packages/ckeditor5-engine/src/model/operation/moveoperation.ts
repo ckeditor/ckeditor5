@@ -76,6 +76,16 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return [
+			Range._createFromPositionAndShift( this.sourcePosition, this.howMany ),
+			Range._createFromPositionAndShift( this.targetPosition, 0 )
+		];
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): MoveOperation {
@@ -183,17 +193,6 @@ export default class MoveOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MoveOperation';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		if ( this.type === 'remove' ) {
-			return this.sourcePosition;
-		} else {
-			return this.targetPosition;
-		}
 	}
 
 	/**

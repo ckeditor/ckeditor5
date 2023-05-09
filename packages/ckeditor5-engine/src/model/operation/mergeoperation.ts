@@ -106,6 +106,21 @@ export default class MergeOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		const mergedElement = this.sourcePosition.parent as Element;
+
+		return [
+			Range._createOn( mergedElement ),
+
+			// These could be positions but `Selectable` type only supports `Iterable<Range>`.
+			Range._createFromPositionAndShift( this.targetPosition, 0 ),
+			Range._createFromPositionAndShift( this.graveyardPosition, 0 )
+		];
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): MergeOperation {
@@ -190,13 +205,6 @@ export default class MergeOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MergeOperation';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.targetPosition;
 	}
 
 	/**

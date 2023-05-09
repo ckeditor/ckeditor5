@@ -18,6 +18,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -557,7 +558,7 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
-	describe( 'isSelectableEditable()', () => {
+	describe( 'model.isEditable()', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
 		} );
@@ -568,7 +569,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should return false when editor is in read-only mode', () => {
 			editor.enableReadOnlyMode( 'test' );
-			const result = editor.model.isSelectableEditable( null );
+			const result = editor.model.isEditable( null );
 
 			expect( result ).to.be.false;
 		} );
@@ -576,26 +577,58 @@ describe( 'MultiRootEditor', () => {
 		it( 'should work with all kind of selectables', () => {
 			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
 			const position = editor.model.createPositionAt( element, 0 );
-			const range = editor.model.createRangeOn( element )
+			const range = editor.model.createRangeOn( element );
 			const ranges = [ range ];
-			const resultSelection = editor.model.isSelectableEditable( editor.model.document.selection );
-			const resultPos = editor.model.isSelectableEditable( position );
-			const resultRange = editor.model.isSelectableEditable( range );
-			const resultNode = editor.model.isSelectableEditable( element );
-			const resultRanges = editor.model.isSelectableEditable( ranges );
+			const emptySelection = editor.model.createSelection();
 
-			expect( resultSelection).to.be.true;
+			const resultSelection = editor.model.isEditable( editor.model.document.selection );
+			const resultPos = editor.model.isEditable( position );
+			const resultRange = editor.model.isEditable( range );
+			const resultNode = editor.model.isEditable( element );
+			const resultRanges = editor.model.isEditable( ranges );
+			const resultEmptySelection = editor.model.isEditable( emptySelection );
+			const resultNull = editor.model.isEditable( null );
+
+			expect( resultSelection ).to.be.true;
 			expect( resultPos ).to.be.true;
 			expect( resultRange ).to.be.true;
 			expect( resultNode ).to.be.true;
 			expect( resultRanges ).to.be.true;
+			expect( resultEmptySelection ).to.be.true;
+			expect( resultNull ).to.be.true;
+		} );
+
+		it( 'should always return false if editor is in read-only state', () => {
+			editor.enableReadOnlyMode( 'test' );
+
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const position = editor.model.createPositionAt( element, 0 );
+			const range = editor.model.createRangeOn( element );
+			const ranges = [ range ];
+			const emptySelection = editor.model.createSelection();
+
+			const resultSelection = editor.model.isEditable( editor.model.document.selection );
+			const resultPos = editor.model.isEditable( position );
+			const resultRange = editor.model.isEditable( range );
+			const resultNode = editor.model.isEditable( element );
+			const resultRanges = editor.model.isEditable( ranges );
+			const resultEmptySelection = editor.model.isEditable( emptySelection );
+			const resultNull = editor.model.isEditable( null );
+
+			expect( resultSelection ).to.be.false;
+			expect( resultPos ).to.be.false;
+			expect( resultRange ).to.be.false;
+			expect( resultNode ).to.be.false;
+			expect( resultRanges ).to.be.false;
+			expect( resultEmptySelection ).to.be.false;
+			expect( resultNull ).to.be.false;
 		} );
 
 		it( 'should return false when given root is disabled', () => {
 			editor.disableRoot( 'main' );
 
 			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
-			const result = editor.model.isSelectableEditable( element );
+			const result = editor.model.isEditable( element );
 
 			expect( result ).to.be.false;
 		} );
@@ -603,7 +636,10 @@ describe( 'MultiRootEditor', () => {
 
 	describe( 'enabling / disabling root', () => {
 		beforeEach( async () => {
-			editor = await MultiRootEditor.create( { main: '<p>Main.</p>', second: '<p>Second.</p>' }, { plugins: [ Paragraph, Undo ] } );
+			editor = await MultiRootEditor.create(
+				{ main: '<p>Main.</p>', second: '<table><tr><td>Foo.</td></tr></table>' },
+				{ plugins: [ Paragraph, Table, Undo ] }
+			);
 		} );
 
 		afterEach( () => {
@@ -616,23 +652,29 @@ describe( 'MultiRootEditor', () => {
 			const mainElement = editor.model.document.getRoot( 'main' ).getChild( 0 );
 			const secondElement = editor.model.document.getRoot( 'second' ).getChild( 0 );
 
-			const mainResult = editor.model.isSelectableEditable( mainElement );
-			const secondResult = editor.model.isSelectableEditable( secondElement );
+			const mainResult = editor.model.isEditable( mainElement );
+			const secondResult = editor.model.isEditable( secondElement );
 
 			expect( mainResult ).to.be.true;
 			expect( secondResult ).to.be.false;
+		} );
+
+		it( 'should throw when trying to disable $graveyard root', () => {
+			expect( () => {
+				editor.disableRoot( '$graveyard' );
+			} ).to.throw( CKEditorError, 'multi-root-editor-cannot-disable-graveyard-root' );
 		} );
 
 		it( 'should be able to enable disabled root', () => {
 			editor.disableRoot( 'second' );
 
 			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
-			let result = editor.model.isSelectableEditable( element );
+			let result = editor.model.isEditable( element );
 
 			expect( result ).to.be.false;
 
 			editor.enableRoot( 'second' );
-			result = editor.model.isSelectableEditable( element );
+			result = editor.model.isEditable( element );
 
 			expect( result ).to.be.true;
 		} );
@@ -647,15 +689,34 @@ describe( 'MultiRootEditor', () => {
 			editor.enableRoot( 'second', 'firstLock' );
 			editor.enableRoot( 'second', 'differentLock' );
 
-			let result = editor.model.isSelectableEditable( element );
+			let result = editor.model.isEditable( element );
 			expect( result ).to.be.false;
 
 			editor.enableRoot( 'second', 'secondLock' );
 
-			result = editor.model.isSelectableEditable( element );
+			result = editor.model.isEditable( element );
 			expect( result ).to.be.true;
-		});
-	})
+		} );
+
+		it( 'should manage view editables isReadOnly', () => {
+			const secondViewRoot = editor.editing.view.document.getRoot( 'second' );
+			// Figure, table (0 = div UI element, 1 = table), tbody, tr, td.
+			const secondViewTableCell = secondViewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			expect( secondViewRoot.isReadOnly ).to.be.false;
+			expect( secondViewTableCell.isReadOnly ).to.be.false;
+
+			editor.disableRoot( 'second' );
+
+			expect( secondViewRoot.isReadOnly ).to.be.true;
+			expect( secondViewTableCell.isReadOnly ).to.be.true;
+
+			editor.enableRoot( 'second' );
+
+			expect( secondViewRoot.isReadOnly ).to.be.false;
+			expect( secondViewTableCell.isReadOnly ).to.be.false;
+		} );
+	} );
 
 	describe( 'getFullData()', () => {
 		beforeEach( async () => {

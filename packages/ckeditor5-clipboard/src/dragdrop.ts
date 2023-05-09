@@ -244,13 +244,6 @@ export default class DragDrop extends Plugin {
 		this.listenTo<ViewDocumentDragStartEvent>( viewDocument, 'dragstart', ( evt, data ) => {
 			const selection = modelDocument.selection;
 
-			// Don't drag from non-editable place.
-			if ( !model.isSelectableEditable( selection ) ) {
-				data.preventDefault();
-
-				return;
-			}
-
 			// Don't drag the editable element itself.
 			if ( data.target && data.target.is( 'editableElement' ) ) {
 				data.preventDefault();
@@ -350,7 +343,7 @@ export default class DragDrop extends Plugin {
 			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target );
 
 			// Do not drop if target place is not editable.
-			if ( !editor.model.isSelectableEditable( targetRange ) ) {
+			if ( !editor.model.isEditable( targetRange ) ) {
 				data.dataTransfer.dropEffect = 'none';
 
 				return;

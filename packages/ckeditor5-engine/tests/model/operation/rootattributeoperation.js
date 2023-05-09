@@ -73,7 +73,7 @@ describe( 'RootAttributeOperation', () => {
 
 	it( 'should return rootElement on target() call', () => {
 		const op = new RootAttributeOperation( root, 'isNew', false, true, doc.version );
-		expect( op.target() ).to.equal( root );
+		expect( op.affectedSelectable ).to.equal( root );
 	} );
 
 	it( 'should change attribute on the root element', () => {

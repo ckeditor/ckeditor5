@@ -90,6 +90,13 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.root;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns Clone of this operation.
@@ -168,13 +175,6 @@ export default class RootAttributeOperation extends Operation {
 		} else {
 			this.root._removeAttribute( this.key );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.root;
 	}
 
 	/**

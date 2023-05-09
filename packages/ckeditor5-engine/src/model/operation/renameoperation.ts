@@ -65,6 +65,13 @@ export default class RenameOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.position.nodeAfter;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns Clone of this operation.
@@ -136,13 +143,6 @@ export default class RenameOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'RenameOperation';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.position;
 	}
 
 	/**

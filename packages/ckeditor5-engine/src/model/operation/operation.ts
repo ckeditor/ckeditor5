@@ -54,6 +54,13 @@ export default abstract class Operation {
 	}
 
 	/**
+	 * A selectable that will be affected by the operation after it is executed.
+	 *
+	 * The exact returned parameter differs between operation types.
+	 */
+	public abstract get affectedSelectable(): Selectable;
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns Clone of this operation.
@@ -79,11 +86,6 @@ export default abstract class Operation {
 	 * @internal
 	 */
 	public abstract _execute(): void;
-
-	/**
-	 * Place on which operation is going to be applied.
-	 */
-	public abstract target(): Selectable;
 
 	/**
 	 * Checks whether the operation's parameters are correct and the operation can be correctly executed. Throws

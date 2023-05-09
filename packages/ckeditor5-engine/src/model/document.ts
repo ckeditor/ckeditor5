@@ -25,8 +25,7 @@ import {
 	Collection,
 	EmitterMixin,
 	isInsideSurrogatePair,
-	isInsideCombinedSymbol,
-	ObservableMixin
+	isInsideCombinedSymbol
 } from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'lodash-es';
@@ -51,7 +50,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export default class Document extends ObservableMixin( EmitterMixin() ) {
+export default class Document extends EmitterMixin() {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */
@@ -79,6 +78,15 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
 	public readonly differ: Differ;
 
 	/**
+	 * Defines whether the document is in a read-only mode.
+	 *
+	 * The user should not be able to change the data of a document that is read-only.
+	 *
+	 * @readonly
+	 */
+	public isReadOnly: boolean;
+
+	/**
 	 * Post-fixer callbacks registered to the model document.
 	 */
 	private readonly _postFixers: Set<ModelPostFixer>;
@@ -87,14 +95,6 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
 	 * A flag that indicates whether the selection has changed since last change block.
 	 */
 	private _hasSelectionChangedFromTheLastChangeBlock: boolean;
-
-	/**
-	 * Defines whether the document is in a read-only mode.
-	 * When the document is read-only, then all roots are automatically in read-only mode as well.
-	 *
-	 * @observable
-	 */
-	declare public isReadOnly: boolean;
 
 	/**
 	 * Creates an empty document instance with no {@link #roots} (other than
@@ -108,6 +108,7 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
 		this.selection = new DocumentSelection( this );
 		this.roots = new Collection( { idProperty: 'rootName' } );
 		this.differ = new Differ( model.markers );
+		this.isReadOnly = false;
 
 		this._postFixers = new Set();
 		this._hasSelectionChangedFromTheLastChangeBlock = false;
@@ -496,7 +497,7 @@ export default class Document extends ObservableMixin( EmitterMixin() ) {
  * @param batch The batch that was used in the executed changes block.
  */
 export type DocumentChangeEvent = {
-	name: 'change' | 'change:data' | `change:${ string }`;
+	name: 'change' | 'change:data';
 	args: [ batch: Batch ];
 };
 

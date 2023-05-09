@@ -47,7 +47,7 @@ export default abstract class BaseCommand extends Command {
 		this.refresh();
 
 		// This command should not depend on selection change.
-		this._executesOnCustomSelectable = true;
+		this._baseEnabledOnSelection = false;
 
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.
@@ -208,7 +208,9 @@ export default abstract class BaseCommand extends Command {
 			// After reversed operation has been transformed by all history operations, apply it.
 			for ( let operation of reversedOperations ) {
 				// Do not apply any operation on non-editable space.
-				if ( !this.editor.model.isSelectableEditable( operation.target() ) ) {
+				const affectedSelectable = operation.affectedSelectable;
+
+				if ( affectedSelectable && !this.editor.model.isEditable( affectedSelectable ) ) {
 					operation = new NoOperation( operation.baseVersion );
 				}
 

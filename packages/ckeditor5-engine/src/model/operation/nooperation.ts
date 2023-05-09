@@ -24,6 +24,13 @@ export default class NoOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return null;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): NoOperation {
@@ -39,13 +46,6 @@ export default class NoOperation extends Operation {
 
 	/** @internal */
 	public _execute(): void {
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return null;
 	}
 
 	/**

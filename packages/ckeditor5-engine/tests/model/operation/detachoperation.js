@@ -29,7 +29,7 @@ describe( 'DetachOperation', () => {
 
 	it( 'should return null on target() call', () => {
 		const op = new DetachOperation( Position._createBefore( element ), 1 );
-		expect( op.target() ).to.equal( null );
+		expect( op.affectedSelectable ).to.equal( null );
 	} );
 
 	it( 'should remove given element from parent', () => {

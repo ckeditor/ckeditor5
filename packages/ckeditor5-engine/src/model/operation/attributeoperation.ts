@@ -93,6 +93,13 @@ export default class AttributeOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.range.clone();
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): AttributeOperation {
@@ -175,13 +182,6 @@ export default class AttributeOperation extends Operation {
 			// Execution.
 			_setAttribute( this.range, this.key, this.newValue );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.range;
 	}
 
 	/**

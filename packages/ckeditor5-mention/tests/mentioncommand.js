@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MentionCommand from '../src/mentioncommand';
 

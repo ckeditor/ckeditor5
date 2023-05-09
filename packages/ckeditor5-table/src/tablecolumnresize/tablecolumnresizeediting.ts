@@ -472,7 +472,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
 
 		// Do not resize if table model is in non-editable place.
-		if ( !editor.model.isSelectableEditable( modelTable ) ) {
+		if ( !editor.model.isEditable( modelTable ) ) {
 			return;
 		}
 

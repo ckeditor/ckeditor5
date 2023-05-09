@@ -81,6 +81,13 @@ export default class RootOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	public get affectedSelectable(): Selectable {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override clone(): RootOperation {
 		return new RootOperation( this.rootName, this.elementName, this.isAdd, this._document, this.baseVersion! );
 	}
@@ -127,13 +134,6 @@ export default class RootOperation extends Operation {
 	 */
 	public override _execute(): void {
 		this._document.getRoot( this.rootName )!._isAttached = this.isAdd;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return null;
 	}
 
 	/**

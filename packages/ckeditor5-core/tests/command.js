@@ -110,34 +110,24 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.true;
 		} );
 
-		it( 'should refresh command state on selection change', () => {
+		it( 'should disable commands when selection is in non-editable place and _baseEnabledOnSelection is true', () => {
+			command.isEnabled = true;
 			command.affectsData = true;
-			command._executesOnCustomSelectable = false;
-			command.isEnabled = false;
-
-			editor.model.document.selection.fire( 'change');
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should disable commands when selection is in non-editable place and executesOnCustomSelectable is false', () => {
-			command.affectsData = true;
-			command._executesOnCustomSelectable = false;
+			command._baseEnabledOnSelection = true;
 
 			editor.model.document.isReadOnly = true;
-
-			editor.model.document.selection.fire( 'change');
+			command.refresh();
 
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should not disable commands when selection is in non-editable place, but executesOnCustomSelectable is true', () => {
+		it( 'should not disable commands when selection is in non-editable place, but _baseEnabledOnSelection is false', () => {
+			command.isEnabled = true;
 			command.affectsData = true;
-			command._executesOnCustomSelectable = true;
+			command._baseEnabledOnSelection = false;
 
 			editor.model.document.isReadOnly = true;
-
-			editor.model.document.selection.fire( 'change');
+			command.refresh();
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -165,9 +155,7 @@ describe( 'Command', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			// called once because of refresh on document change (isReadOnly flag in document)
-			sinon.assert.calledOnce( setSpy );
-
+			sinon.assert.notCalled( setSpy );
 			sinon.assert.calledOnce( changeSpy );
 		} );
 	} );

@@ -85,6 +85,23 @@ export default class MarkerOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		const ranges = [];
+
+		if ( this.oldRange ) {
+			ranges.push( this.oldRange.clone() );
+		}
+
+		if ( this.newRange ) {
+			ranges.push( this.newRange.clone() );
+		}
+
+		return ranges;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): MarkerOperation {
@@ -135,13 +152,6 @@ export default class MarkerOperation extends Operation {
 	 */
 	public static override get className(): string {
 		return 'MarkerOperation';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.newRange;
 	}
 
 	/**

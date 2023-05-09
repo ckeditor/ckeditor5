@@ -167,7 +167,7 @@ export default class Model extends ObservableMixin() {
 			evt.return = insertObject( this, element, selection, options );
 		} );
 
-		this.decorate( 'isSelectableEditable' );
+		this.decorate( 'isEditable' );
 
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.document );
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
@@ -827,13 +827,13 @@ export default class Model extends ObservableMixin() {
 	}
 
 	/**
-	 * Method used to check whether given selectable is editable.
+	 * Method used to check whether given selectable is placed at an editable place in the model.
 	 *
-	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} as it may be decorated
-	 * and used differently in different environment (ex. multi-root editor can disable particular root instead of whole editor).
-	 *
+	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} to check whether a user action can happen at
+	 * given selectable. It may be decorated and used differently in different environment (e.g. multi-root editor can disable
+	 * particular root or a feature may add custom logic that disables editing of a given space in the model).
 	 */
-	public isSelectableEditable( selectable: Selectable ): boolean {
+	public isEditable( selectable: Selectable ): boolean {
 		return !this.document.isReadOnly;
 	}
 
@@ -1261,4 +1261,4 @@ export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelec
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;
 
-export type ModelIsSelectableEditableEvent = DecoratedMethodEvent<Model, 'isSelectableEditable'>;
+export type ModelIsEditableEvent = DecoratedMethodEvent<Model, 'isEditable'>;

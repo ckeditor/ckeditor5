@@ -77,6 +77,13 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.position.clone();
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): InsertOperation {
@@ -143,13 +150,6 @@ export default class InsertOperation extends Operation {
 		json.nodes = this.nodes.toJSON();
 
 		return json;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.position;
 	}
 
 	/**

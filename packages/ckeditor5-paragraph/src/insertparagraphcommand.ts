@@ -32,7 +32,7 @@ export default class InsertParagraphCommand extends Command {
 		super( editor );
 
 		// Since this command passes position in execution block instead of selection, it should be checked directly.
-		this._executesOnCustomSelectable = true;
+		this._baseEnabledOnSelection = false;
 	}
 
 	/**
@@ -53,7 +53,7 @@ export default class InsertParagraphCommand extends Command {
 		let position = options.position;
 
 		// Don't execute command if position is in non-editable place.
-		if ( !model.isSelectableEditable( position ) ) {
+		if ( !model.isEditable( position ) ) {
 			return;
 		}
 

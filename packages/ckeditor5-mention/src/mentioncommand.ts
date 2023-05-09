@@ -55,7 +55,7 @@ export default class MentionCommand extends Command {
 		super( editor );
 
 		// Since this command may pass range in execution parameters, it should be checked directly in execute block.
-		this._executesOnCustomSelectable = true;
+		this._baseEnabledOnSelection = false;
 	}
 
 	/**
@@ -92,7 +92,7 @@ export default class MentionCommand extends Command {
 		const range = options.range || selection.getFirstRange();
 
 		// Don't execute command if range is in non-editable place.
-		if ( !model.isSelectableEditable( range ) ) {
+		if ( !model.isEditable( range ) ) {
 			return;
 		}
 

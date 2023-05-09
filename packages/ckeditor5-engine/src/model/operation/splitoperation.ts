@@ -111,6 +111,23 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		// These could be positions but `Selectable` type only supports `Iterable<Range>`.
+		const ranges = [
+			Range._createFromPositionAndShift( this.splitPosition, 0 ),
+			Range._createFromPositionAndShift( this.insertionPosition, 0 )
+		];
+
+		if ( this.graveyardPosition ) {
+			ranges.push( Range._createFromPositionAndShift( this.graveyardPosition, 0 ) );
+		}
+
+		return ranges;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns Clone of this operation.
@@ -224,13 +241,6 @@ export default class SplitOperation extends Operation {
 		path[ path.length - 1 ]++;
 
 		return new Position( splitPosition.root, path, 'toPrevious' );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public target(): Selectable {
-		return this.moveTargetPosition;
 	}
 
 	/**

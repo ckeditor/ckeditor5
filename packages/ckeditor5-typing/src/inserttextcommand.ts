@@ -34,7 +34,7 @@ export default class InsertTextCommand extends Command {
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
-		this._executesOnCustomSelectable = true;
+		this._baseEnabledOnSelection = false;
 	}
 
 	/**
@@ -76,7 +76,7 @@ export default class InsertTextCommand extends Command {
 		}
 
 		// Stop executing if selectable is in non-editable place.
-		if ( !model.isSelectableEditable( selection ) ) {
+		if ( !model.isEditable( selection ) ) {
 			return;
 		}
 
