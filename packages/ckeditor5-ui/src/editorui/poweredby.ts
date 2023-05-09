@@ -60,6 +60,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _showBalloonThrottled: DebouncedFunc<() => void>;
 
 	/**
+	 * TODO
+	 */
+	private _lastFocusedDOMRoot: HTMLElement | null;
+
+	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
 	 * event.
 	 *
@@ -70,6 +75,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.editor = editor;
 		this._balloonView = null;
+		this._lastFocusedDOMRoot = null;
 		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50, { leading: true } );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
@@ -105,17 +111,24 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
 			if ( isFocused ) {
+				const focusedElement = editor.ui.focusTracker.focusedElement! as HTMLElement;
+				const domRoots = Array.from( editor.editing.view.domRoots.values() );
+
+				if ( domRoots.includes( focusedElement ) ) {
+					this._lastFocusedDOMRoot = focusedElement;
+				} else {
+					this._lastFocusedDOMRoot = domRoots[ 0 ];
+				}
+
 				this._showBalloon();
 			} else {
 				this._hideBalloon();
+
+				this._lastFocusedDOMRoot = null;
 			}
 		} );
 
 		editor.ui.on( 'update', () => {
-			if ( !editor.ui.focusTracker.isFocused ) {
-				return;
-			}
-
 			this._showBalloonThrottled();
 		} );
 
@@ -149,7 +162,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Attempts to display the balloon with the "powered by" view.
 	 */
 	private _showBalloon() {
-		const attachOptions = getBalloonAttachOptions( this.editor );
+		if ( !this._lastFocusedDOMRoot ) {
+			return;
+		}
+
+		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedDOMRoot );
 
 		if ( attachOptions ) {
 			if ( !this._balloonView ) {
@@ -231,13 +248,7 @@ class PoweredByView extends View<HTMLDivElement> {
 	}
 }
 
-function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | null {
-	const focusedDomRoot = getFocusedDOMRoot( editor );
-
-	if ( !focusedDomRoot ) {
-		return null;
-	}
-
+function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement ): Partial<PositionOptions> | null {
 	const poweredByConfig = getNormalizedConfig( editor )!;
 	const positioningFunction = poweredByConfig.side === 'right' ?
 		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
@@ -317,18 +328,6 @@ function getLowerCornerPosition(
 			}
 		};
 	};
-}
-
-function getFocusedDOMRoot( editor: Editor ) {
-	for ( const [ , domRoot ] of editor.editing.view.domRoots ) {
-		const { activeElement } = domRoot.ownerDocument;
-
-		if ( activeElement === domRoot || domRoot.contains( activeElement ) ) {
-			return domRoot;
-		}
-	}
-
-	return null;
 }
 
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
