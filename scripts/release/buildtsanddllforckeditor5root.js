@@ -11,7 +11,7 @@
 
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-module.exports = function buildDllsAndTsForCkeditor5Root() {
+module.exports = function buildTsAndDllForCkeditor5Root() {
 	tools.shExec( 'yarn run build' );
 	tools.shExec( 'yarn run dll:build --skip-packages-dll' );
 };

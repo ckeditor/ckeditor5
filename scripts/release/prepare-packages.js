@@ -11,6 +11,7 @@
 
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const updateVersionReferences = require( './update-version-references' );
+const buildTsAndDllForCkeditor5Root = require( './buildtsanddllforckeditor5root' );
 
 const abortController = new AbortController();
 
@@ -27,6 +28,8 @@ process.on( 'SIGINT', () => {
 		version: '^' + latestVersion,
 		shouldUpdateVersionCallback: require( './isckeditor5package' )
 	} );
+
+	buildTsAndDllForCkeditor5Root();
 
 	updateVersionReferences( {
 		version: latestVersion,
