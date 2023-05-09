@@ -244,6 +244,26 @@ describe( 'Integration test Font', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 		} );
 
+		it( 'should properly discard changes', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+				'</paragraph>'
+			);
+
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.isOpen = true;
+			dropdown.colorTableView.fire( 'showColorPicker' );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
+
+			dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>' +
+			'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
+			'</paragraph>' );
+		} );
+
 		it( 'should undo all changes done in a batch with a single step', () => {
 			setModelData( model, '<paragraph>[foo]</paragraph>' );
 
