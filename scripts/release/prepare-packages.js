@@ -29,12 +29,12 @@ process.on( 'SIGINT', () => {
 		shouldUpdateVersionCallback: require( './isckeditor5package' )
 	} );
 
-	buildTsAndDllForCkeditor5Root();
-
 	updateVersionReferences( {
 		version: latestVersion,
 		releaseDate: new Date()
 	} );
+
+	buildTsAndDllForCkeditor5Root();
 
 	await releaseTools.executeInParallel( {
 		packagesDirectory: RELEASE_DIRECTORY,
