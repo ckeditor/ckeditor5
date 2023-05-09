@@ -48,9 +48,8 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-
 import ClickObserver from '../../ckeditor5-engine/src/view/observer/clickobserver';
-import DoubleClickObserver from './plugins/doubleClick/doubleClickObserver';
+import DoubleClickObserver from '../../ckeditor5-engine/src/view/observer/doubleclickobserver';
 import { GeneralHtmlSupport } from '../../ckeditor5-html-support/src/index';
 // @ts-ignore
 import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
