@@ -12,6 +12,7 @@ import {
 	Rect,
 	DomEmitterMixin,
 	findClosestScrollableAncestor,
+	verifyLicense,
 	type PositionOptions,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
@@ -105,6 +106,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _handleEditorReady(): void {
 		const editor = this.editor;
+
+		/* istanbul ignore next -- @preserve */
+		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
+			return;
+		}
 
 		// No view means no body collection to append the powered by balloon to.
 		if ( !editor.ui.view ) {
