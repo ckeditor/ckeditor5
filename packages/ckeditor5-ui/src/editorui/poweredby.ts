@@ -66,6 +66,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _lastFocusedDOMRoot: HTMLElement | null;
 
+	private _collisionInterval: ReturnType<typeof setInterval> | null;
+
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
 	 * event.
@@ -79,6 +81,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 		this._balloonView = null;
 		this._lastFocusedDOMRoot = null;
 		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50, { leading: true } );
+		this._collisionInterval = null;
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
 	}
@@ -176,6 +179,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 			}
 
 			this._balloonView!.pin( attachOptions );
+
+			this._startLookingForCollisions();
 		}
 	}
 
@@ -185,6 +190,30 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _hideBalloon() {
 		if ( this._balloonView ) {
 			this._balloonView!.unpin();
+			this._endLookingForCollisions();
+		}
+	}
+
+	private _startLookingForCollisions() {
+		this._hideOnCollision();
+		this._collisionInterval = setInterval( this._hideOnCollision.bind( this ), 50 );
+	}
+
+	private _endLookingForCollisions() {
+		clearInterval( this._collisionInterval! );
+	}
+
+	private _hideOnCollision() {
+		if ( !this._lastFocusedDOMRoot ) {
+			return;
+		}
+
+		const collidingElement = getCollidingElement( this._balloonView!.element!, this._lastFocusedDOMRoot! );
+
+		if ( collidingElement ) {
+			console.log( 'collision with', collidingElement );
+
+			this._hideBalloon();
 		}
 	}
 }
@@ -344,4 +373,30 @@ function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : 'left',
 		...userConfig
 	};
+}
+
+function getCollidingElement( balloonViewElement: HTMLElement, focusedDomRoot: HTMLElement ): HTMLElement | null {
+	const balloonRect = new Rect( balloonViewElement );
+
+	for ( let x = balloonRect.left; x <= balloonRect.right; x += 2 ) {
+		for ( let y = balloonRect.top; y <= balloonRect.bottom; y += 2 ) {
+			const elementsFromPoint = document.elementsFromPoint( x, y );
+
+			for ( const element of elementsFromPoint ) {
+				if ( balloonViewElement.contains( element ) ) {
+					continue;
+				}
+
+				if ( element.contains( focusedDomRoot ) ) {
+					break;
+				}
+
+				if ( !focusedDomRoot.contains( element ) ) {
+					return element as HTMLElement;
+				}
+			}
+		}
+	}
+
+	return null;
 }
