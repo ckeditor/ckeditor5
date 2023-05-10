@@ -10,16 +10,16 @@ This article aims to get you up and running with CKEditor 5 and the CKEditor pre
 
 The following user guide deals with activation of CKEditor 5 and the following premium features: 
 * Non real-time collaboration features, including:
-	* Track changes
-	* Comments
-	* Revision history
-* Pagination
+	* {@link features/track-changes Track changes}
+	* {@link features/comments Comments}
+	* {@link features/revision-history Revision history}
+* {@link features/pagination Pagination}
 * The productivity pack including:
-	* Document outline
-	* Document templates
-	* Format painter
-	* Slash commands
-	* Table of contents
+	* {@link features/template Content templates}
+	* {@link features/document-outline Document outline}
+	* {@link features/format-painter Format painter}
+	* {@link features/slash-commands Slash commands}
+	* {@link features/table-of-contents Table of contents}
 
 For activation instructions for premium features such as export to Word, export to PDF, import from Word please refer to respective guides.
 
@@ -48,7 +48,7 @@ Log in to the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com). Yo
 ### Access the account dashboard
 
 After logging in, click "CKEditor" under the "Your products" header on the left. You will see the subscription parameters overview together with the management area below.
-
+<!-- Replace temporaryr trial screenshots with the real thing -->
 {@img assets/img/premium-features-trial-bundle.png 1060 Your CKEditor trials view in the customer dashboard.}
 
 ### Copy the license key
