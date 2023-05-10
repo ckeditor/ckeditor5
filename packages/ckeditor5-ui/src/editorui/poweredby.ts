@@ -12,7 +12,7 @@ import {
 	Rect,
 	DomEmitterMixin,
 	findClosestScrollableAncestor,
-	verify,
+	verifyLicense,
 	type PositionOptions,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
@@ -95,7 +95,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _handleEditorReady(): void {
 		const editor = this.editor;
 
-		if ( verify( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
+		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
 			return;
 		}
 
