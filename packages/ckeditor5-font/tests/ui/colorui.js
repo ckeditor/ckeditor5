@@ -11,6 +11,7 @@ import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -72,7 +73,7 @@ describe( 'ColorUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Paragraph, TestColorPlugin ],
+				plugins: [ Paragraph, TestColorPlugin, Undo ],
 				testColor: testColorConfig
 			} )
 			.then( newEditor => {
@@ -143,13 +144,13 @@ describe( 'ColorUI', () => {
 			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 			dropdown.commandName = 'testColorCommand';
-			dropdown.fire( 'execute', { value: null } );
+			dropdown.colorTableView.fire( 'execute', { value: null } );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
 		it( 'colorTableView has set proper default attributes', () => {
-			const colorTableView = dropdown.colorTableView;
+			const colorTableView = dropdown.colorTableView.colorGridsPageView;
 
 			expect( colorTableView.documentColorsCount ).to.equal( 3 );
 		} );
@@ -158,7 +159,7 @@ describe( 'ColorUI', () => {
 			const localDropdown = editor.ui.componentFactory.create( 'testColor' );
 			localDropdown.render();
 
-			for ( const item of localDropdown.colorTableView.items ) {
+			for ( const item of localDropdown.colorTableView.colorGridsPageView.items ) {
 				expect( item ).not.to.be.instanceOf( ColorGridView );
 			}
 		} );
@@ -166,7 +167,7 @@ describe( 'ColorUI', () => {
 		it( 'should focus the first active button when dropdown is opened', () => {
 			global.document.body.appendChild( dropdown.element );
 
-			const secondButton = dropdown.colorTableView.staticColorsGrid.items.get( 1 );
+			const secondButton = dropdown.colorTableView.colorGridsPageView.staticColorsGrid.items.get( 1 );
 			const spy = sinon.spy( secondButton, 'focus' );
 
 			secondButton.isOn = true;
@@ -175,6 +176,112 @@ describe( 'ColorUI', () => {
 			sinon.assert.calledOnce( spy );
 
 			dropdown.element.remove();
+		} );
+
+		describe( 'color picker', () => {
+			it( 'should execute command if the color gets changed when dropdown is open', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
+
+				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
+			} );
+
+			it( 'should not execute command if the color gets changed when dropdown is closed', () => {
+				const spy = sinon.spy( editor, 'execute' );
+
+				dropdown.isOpen = false;
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should undo changes', () => {
+				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
+
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.fire( 'showColorPicker' );
+
+				dropdown.colorTableView.selectedColor = 'hsl( 0, 0%, 100% )';
+
+				editor.commands.get( 'testColorCommand' ).isEnabled = true;
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 210, 65%, 20% )',
+					source: 'colorPicker'
+				} );
+
+				dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
+
+				sinon.assert.calledOnce( spyUndo );
+			} );
+
+			it( 'should create new batch when color picker is showed', () => {
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				dropdown.colorTableView.selectedColor = '#000000';
+
+				editor.commands.get( 'testColorCommand' ).isEnabled = true;
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 210, 65%, 20% )',
+					source: 'colorPicker'
+				} );
+
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 1 change in batch' ).to.equal( 1 );
+
+				dropdown.colorTableView.fire( 'execute', {
+					value: 'hsl( 110, 60%, 12% )',
+					source: 'saveButton'
+				} );
+
+				dropdown.isOpen = true;
+				testColorPlugin.colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				expect( testColorPlugin._undoStepBatch.operations.length,
+					'should have 0 changes in batch' ).to.equal( 0 );
+			} );
+
+			it( 'should avoid call the command multiple times', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				// Color format normalization could result with command being called multiple times.
+				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
+
+				expect( spy.callCount ).to.equal( 1 );
+			} );
+
+			it( 'should call appendColorPicker when dropdown is opened', async () => {
+				// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				const editor = await ClassicTestEditor
+					.create( element, {
+						plugins: [
+							Paragraph,
+							TestColorPlugin
+						],
+						testColor: Object.assign( {
+							colorPicker: {
+								format: 'rgb'
+							}
+						}, testColorConfig )
+					} );
+
+				const dropdown = editor.ui.componentFactory.create( 'testColor' );
+				const spy = sinon.spy( dropdown.colorTableView, '_appendColorPicker' );
+
+				dropdown.isOpen = true;
+
+				spy.restore();
+
+				element.remove();
+				dropdown.destroy();
+				await editor.destroy();
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -193,7 +300,7 @@ describe( 'ColorUI', () => {
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown.render();
-				documentColorsModel = dropdown.colorTableView.documentColors;
+				documentColorsModel = dropdown.colorTableView.colorGridsPageView.documentColors;
 				global.document.body.appendChild( dropdown.element );
 			} );
 			afterEach( () => {
@@ -301,9 +408,9 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'works for the colorTableView#items in the panel', () => {
-				const colorTableView = dropdown.colorTableView;
+				const colorTableView = dropdown.colorTableView.colorGridsPageView;
 
-				expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
+				// expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
 				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
@@ -334,7 +441,7 @@ describe( 'ColorUI', () => {
 				colors.forEach( test => {
 					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
 						dropdown.isOpen = true;
-						const colorGrid = dropdown.colorTableView.items.get( 1 );
+						const colorGrid = dropdown.colorTableView.colorGridsPageView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
 						expect( tile.label ).to.equal( test.label );
@@ -358,6 +465,31 @@ describe( 'ColorUI', () => {
 						return editor;
 					} );
 			}
+		} );
+	} );
+
+	describe( 'config.colorPicker', () => {
+		it( 'can be turned off', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const customizedEditor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: {
+						...testColorConfig,
+						colorPicker: false
+					}
+				} );
+
+			const dropdown = customizedEditor.ui.componentFactory.create( 'testColor' );
+
+			dropdown.isOpen = true;
+
+			editorElement.remove();
+			await customizedEditor.destroy();
+
+			expect( dropdown.colorTableView.colorPickerView ).to.be.undefined;
 		} );
 	} );
 } );

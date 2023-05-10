@@ -658,7 +658,10 @@ export default class TablePropertiesView extends View {
 	 * * {@link #saveButtonView},
 	 * * {@link #cancelButtonView}.
 	 */
-	private _createActionButtons() {
+	private _createActionButtons(): {
+		saveButtonView: ButtonView;
+		cancelButtonView: ButtonView;
+		} {
 		const locale = this.locale;
 		const t = this.t!;
 
