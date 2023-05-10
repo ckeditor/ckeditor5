@@ -1,0 +1,695 @@
+/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module clipboard/dragdropexperimental
+ */
+
+/* istanbul ignore file -- @preserve */
+
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+import {
+	LiveRange,
+	MouseObserver,
+	type DataTransfer,
+	type Element,
+	type ViewDocumentMouseDownEvent,
+	type ViewDocumentMouseUpEvent,
+	type ViewElement,
+	type DomEventData
+} from '@ckeditor/ckeditor5-engine';
+
+import {
+	Widget,
+	isWidget,
+	type WidgetToolbarRepository
+} from '@ckeditor/ckeditor5-widget';
+
+import {
+	env,
+	uid,
+	global,
+	createElement,
+	DomEmitterMixin,
+	delay,
+	type DelayedFunc,
+	type ObservableChangeEvent,
+	type DomEmitter
+} from '@ckeditor/ckeditor5-utils';
+
+import ClipboardPipeline, {
+	type ClipboardContentInsertionEvent,
+	type ViewDocumentClipboardOutputEvent
+} from './clipboardpipeline';
+
+import ClipboardObserver, {
+	type ViewDocumentDragEndEvent,
+	type ViewDocumentDragEnterEvent,
+	type ViewDocumentDraggingEvent,
+	type ViewDocumentDragLeaveEvent,
+	type ViewDocumentDragStartEvent,
+	type ViewDocumentClipboardInputEvent
+} from './clipboardobserver';
+
+import DragDropTarget from './dragdroptarget';
+
+import '../theme/clipboard.css';
+
+// Drag and drop events overview:
+//
+//                ┌──────────────────┐
+//                │     mousedown    │   Sets the draggable attribute.
+//                └─────────┬────────┘
+//                          │
+//                          └─────────────────────┐
+//                          │                     │
+//                          │           ┌─────────V────────┐
+//                          │           │      mouseup     │   Dragging did not start, removes the draggable attribute.
+//                          │           └──────────────────┘
+//                          │
+//                ┌─────────V────────┐   Retrieves the selected model.DocumentFragment
+//                │     dragstart    │   and converts it to view.DocumentFragment.
+//                └─────────┬────────┘
+//                          │
+//                ┌─────────V────────┐   Processes view.DocumentFragment to text/html and text/plain
+//                │  clipboardOutput │   and stores the results in data.dataTransfer.
+//                └─────────┬────────┘
+//                          │
+//                          │   DOM dragover
+//                          ┌────────────┐
+//                          │            │
+//                ┌─────────V────────┐   │
+//                │     dragging     │   │   Updates the drop target marker.
+//                └─────────┬────────┘   │
+//                          │            │
+//            ┌─────────────└────────────┘
+//            │             │            │
+//            │   ┌─────────V────────┐   │
+//            │   │     dragleave    │   │   Removes the drop target marker.
+//            │   └─────────┬────────┘   │
+//            │             │            │
+//        ┌───│─────────────┘            │
+//        │   │             │            │
+//        │   │   ┌─────────V────────┐   │
+//        │   │   │     dragenter    │   │   Focuses the editor view.
+//        │   │   └─────────┬────────┘   │
+//        │   │             │            │
+//        │   │             └────────────┘
+//        │   │
+//        │   └─────────────┐
+//        │   │             │
+//        │   │   ┌─────────V────────┐
+//        └───┐   │       drop       │   (The default handler of the clipboard pipeline).
+//            │   └─────────┬────────┘
+//            │             │
+//            │   ┌─────────V────────┐   Resolves the final data.targetRanges.
+//            │   │  clipboardInput  │   Aborts if dropping on dragged content.
+//            │   └─────────┬────────┘
+//            │             │
+//            │   ┌─────────V────────┐
+//            │   │  clipboardInput  │   (The default handler of the clipboard pipeline).
+//            │   └─────────┬────────┘
+//            │             │
+//            │ ┌───────────V───────────┐
+//            │ │  inputTransformation  │   (The default handler of the clipboard pipeline).
+//            │ └───────────┬───────────┘
+//            │             │
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   Updates the document selection to drop range.
+//            │  └──────────┬──────────┘
+//            │             │
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   (The default handler of the clipboard pipeline).
+//            │  └──────────┬──────────┘
+//            │             │
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   Removes the content from the original range if the insertion was successful.
+//            │  └──────────┬──────────┘
+//            │             │
+//            └─────────────┐
+//                          │
+//                ┌─────────V────────┐
+//                │      dragend     │   Removes the drop marker and cleans the state.
+//                └──────────────────┘
+//
+
+/**
+ * The drag and drop feature. It works on top of the {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
+ *
+ * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
+ *
+ * @internal
+ */
+export default class DragDropExperimental extends Plugin {
+	/**
+	 * The live range over the original content that is being dragged.
+	 */
+	private _draggedRange!: LiveRange | null;
+
+	/**
+	 * The UID of current dragging that is used to verify if the drop started in the same editor as the drag start.
+	 *
+	 * **Note**: This is a workaround for broken 'dragend' events (they are not fired if the source text node got removed).
+	 */
+	private _draggingUid!: string;
+
+	/**
+	 * The reference to the model element that currently has a `draggable` attribute set (it is set while dragging).
+	 */
+	private _draggableElement!: Element | null;
+
+	/**
+	 * A delayed callback removing draggable attributes.
+	 */
+	private _clearDraggableAttributesDelayed: DelayedFunc<() => void> = delay( () => this._clearDraggableAttributes(), 40 );
+
+	/**
+	 * Whether the dragged content can be dropped only in block context.
+	 */
+	// TODO handle drag from other editor instance
+	// TODO configure to use block, inline or both
+	private _blockMode: boolean = false;
+
+	/**
+	 * DOM Emitter.
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
+
+	/**
+	 * The DOM element used to generate dragged preview image.
+	 */
+	private _previewContainer?: HTMLElement;
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get pluginName(): 'DragDropExperimental' {
+		return 'DragDropExperimental';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ ClipboardPipeline, Widget, DragDropTarget ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const view = editor.editing.view;
+
+		this._draggedRange = null;
+		this._draggingUid = '';
+		this._draggableElement = null;
+
+		view.addObserver( ClipboardObserver );
+		view.addObserver( MouseObserver );
+
+		this._setupDragging();
+		this._setupContentInsertionIntegration();
+		this._setupClipboardInputIntegration();
+		this._setupDraggableAttributeHandling();
+
+		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
+			if ( isReadOnly ) {
+				this.forceDisabled( 'readOnlyMode' );
+			} else {
+				this.clearForceDisabled( 'readOnlyMode' );
+			}
+		} );
+
+		this.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', ( evt, name, isEnabled ) => {
+			if ( !isEnabled ) {
+				this._finalizeDragging( false );
+			}
+		} );
+
+		if ( env.isAndroid ) {
+			this.forceDisabled( 'noAndroidSupport' );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		if ( this._draggedRange ) {
+			this._draggedRange.detach();
+			this._draggedRange = null;
+		}
+
+		if ( this._previewContainer ) {
+			this._previewContainer.remove();
+		}
+
+		this._domEmitter.stopListening();
+		this._clearDraggableAttributesDelayed.cancel();
+
+		return super.destroy();
+	}
+
+	/**
+	 * Drag and drop events handling.
+	 */
+	private _setupDragging(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const dragDropTarget = editor.plugins.get( DragDropTarget );
+
+		// The handler for the drag start; it is responsible for setting data transfer object.
+		this.listenTo<ViewDocumentDragStartEvent>( viewDocument, 'dragstart', ( evt, data ) => {
+			// Don't drag the editable element itself.
+			if ( data.target && data.target.is( 'editableElement' ) ) {
+				data.preventDefault();
+
+				return;
+			}
+
+			this._prepareDraggedRange( data.target );
+
+			if ( !this._draggedRange ) {
+				data.preventDefault();
+
+				return;
+			}
+
+			this._draggingUid = uid();
+
+			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
+			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
+
+			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
+			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
+
+			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
+				dataTransfer: data.dataTransfer,
+				content,
+				method: 'dragstart'
+			} );
+
+			this._updatePreview( data.dataTransfer );
+
+			data.stopPropagation();
+
+			if ( !this.isEnabled ) {
+				this._draggedRange.detach();
+				this._draggedRange = null;
+				this._draggingUid = '';
+			}
+		}, { priority: 'low' } );
+
+		// The handler for finalizing drag and drop. It should always be triggered after dragging completes
+		// even if it was completed in a different application.
+		// Note: This is not fired if source text node got removed while downcasting a marker.
+		this.listenTo<ViewDocumentDragEndEvent>( viewDocument, 'dragend', ( evt, data ) => {
+			this._finalizeDragging( !data.dataTransfer.isCanceled && data.dataTransfer.dropEffect == 'move' );
+		}, { priority: 'low' } );
+
+		// Reset block dragging mode even if dropped outside the editable.
+		this._domEmitter.listenTo( global.document, 'dragend', () => {
+			this._blockMode = false;
+		}, { useCapture: true } );
+
+		// Dragging over the editable.
+		this.listenTo<ViewDocumentDragEnterEvent>( viewDocument, 'dragenter', () => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
+			view.focus();
+		} );
+
+		// Dragging out of the editable.
+		this.listenTo<ViewDocumentDragLeaveEvent>( viewDocument, 'dragleave', () => {
+			// We do not know if the mouse left the editor or just some element in it, so let us wait a few milliseconds
+			// to check if 'dragover' is not fired.
+			dragDropTarget.removeDropMarkerDelayed();
+		} );
+
+		// Handler for moving dragged content over the target area.
+		this.listenTo<ViewDocumentDraggingEvent>( viewDocument, 'dragging', ( evt, data ) => {
+			if ( !this.isEnabled ) {
+				data.dataTransfer.dropEffect = 'none';
+
+				return;
+			}
+
+			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+
+			dragDropTarget.updateDropMarker( data.target, data.targetRanges, clientX, clientY, this._blockMode );
+
+			// If this is content being dragged from another editor, moving out of current editor instance
+			// is not possible until 'dragend' event case will be fixed.
+			if ( !this._draggedRange ) {
+				data.dataTransfer.dropEffect = 'copy';
+			}
+
+			// In Firefox it is already set and effect allowed remains the same as originally set.
+			if ( !env.isGecko ) {
+				if ( data.dataTransfer.effectAllowed == 'copy' ) {
+					data.dataTransfer.dropEffect = 'copy';
+				} else if ( [ 'all', 'copyMove' ].includes( data.dataTransfer.effectAllowed ) ) {
+					data.dataTransfer.dropEffect = 'move';
+				}
+			}
+
+			evt.stop();
+		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Integration with the `clipboardInput` event.
+	 */
+	private _setupClipboardInputIntegration(): void {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const dragDropTarget = editor.plugins.get( DragDropTarget );
+
+		// Update the event target ranges and abort dropping if dropping over itself.
+		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
+			if ( data.method != 'drop' ) {
+				return;
+			}
+
+			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+			const targetRange = dragDropTarget.getFinalDropRange( data.target, data.targetRanges, clientX, clientY, this._blockMode );
+
+			/* istanbul ignore if -- @preserve */
+			if ( !targetRange ) {
+				this._finalizeDragging( false );
+				evt.stop();
+
+				return;
+			}
+
+			// Since we cannot rely on the drag end event, we must check if the local drag range is from the current drag and drop
+			// or it is from some previous not cleared one.
+			if ( this._draggedRange && this._draggingUid != data.dataTransfer.getData( 'application/ckeditor5-dragging-uid' ) ) {
+				this._draggedRange.detach();
+				this._draggedRange = null;
+				this._draggingUid = '';
+			}
+
+			// Do not do anything if some content was dragged within the same document to the same position.
+			const isMove = getFinalDropEffect( data.dataTransfer ) == 'move';
+
+			if ( isMove && this._draggedRange && this._draggedRange.containsRange( targetRange, true ) ) {
+				this._finalizeDragging( false );
+				evt.stop();
+
+				return;
+			}
+
+			// Override the target ranges with the one adjusted to the best one for a drop.
+			data.targetRanges = [ editor.editing.mapper.toViewRange( targetRange ) ];
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Integration with the `contentInsertion` event of the clipboard pipeline.
+	 */
+	private _setupContentInsertionIntegration(): void {
+		const clipboardPipeline = this.editor.plugins.get( ClipboardPipeline );
+
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
+				return;
+			}
+
+			// Update the selection to the target range in the same change block to avoid selection post-fixing
+			// and to be able to clone text attributes for plain text dropping.
+			const ranges = data.targetRanges!.map( viewRange => this.editor.editing.mapper.toModelRange( viewRange ) );
+
+			this.editor.model.change( writer => writer.setSelection( ranges ) );
+		}, { priority: 'high' } );
+
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
+				return;
+			}
+
+			// Remove dragged range content, remove markers, clean after dragging.
+			const isMove = getFinalDropEffect( data.dataTransfer ) == 'move';
+
+			// Whether any content was inserted (insertion might fail if the schema is disallowing some elements
+			// (for example an image caption allows only the content of a block but not blocks themselves.
+			// Some integrations might not return valid range (i.e., table pasting).
+			const isSuccess = !data.resultRange || !data.resultRange.isCollapsed;
+
+			this._finalizeDragging( isSuccess && isMove );
+		}, { priority: 'lowest' } );
+	}
+
+	/**
+	 * Adds listeners that add the `draggable` attribute to the elements while the mouse button is down so the dragging could start.
+	 */
+	private _setupDraggableAttributeHandling(): void {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+
+		// Add the 'draggable' attribute to the widget while pressing the selection handle.
+		// This is required for widgets to be draggable. In Chrome it will enable dragging text nodes.
+		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( evt, data ) => {
+			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
+			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
+			if ( env.isAndroid || !data ) {
+				return;
+			}
+
+			this._clearDraggableAttributesDelayed.cancel();
+
+			// Check if this is a mousedown over the widget (but not a nested editable).
+			let draggableElement = findDraggableWidget( data.target );
+
+			// Note: There is a limitation that if more than a widget is selected (a widget and some text)
+			// and dragging starts on the widget, then only the widget is dragged.
+
+			// If this was not a widget then we should check if we need to drag some text content.
+			// In Chrome set a 'draggable' attribute on closest editable to allow immediate dragging of the selected text range.
+			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
+			// Disabled in read-only mode because draggable="true" + contenteditable="false" results
+			// in not firing selectionchange event ever, which makes the selection stuck in read-only mode.
+			if ( env.isBlink && !editor.isReadOnly && !draggableElement && !viewDocument.selection.isCollapsed ) {
+				const selectedElement = viewDocument.selection.getSelectedElement();
+
+				if ( !selectedElement || !isWidget( selectedElement ) ) {
+					draggableElement = viewDocument.selection.editableElement;
+				}
+			}
+
+			if ( draggableElement ) {
+				view.change( writer => {
+					writer.setAttribute( 'draggable', 'true', draggableElement! );
+				} );
+
+				// Keep the reference to the model element in case the view element gets removed while dragging.
+				this._draggableElement = editor.editing.mapper.toModelElement( draggableElement )!;
+			}
+		} );
+
+		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
+		this.listenTo<ViewDocumentMouseUpEvent>( viewDocument, 'mouseup', () => {
+			if ( !env.isAndroid ) {
+				this._clearDraggableAttributesDelayed();
+			}
+		} );
+	}
+
+	/**
+	 * Removes the `draggable` attribute from the element that was used for dragging.
+	 */
+	private _clearDraggableAttributes(): void {
+		const editing = this.editor.editing;
+
+		editing.view.change( writer => {
+			// Remove 'draggable' attribute.
+			if ( this._draggableElement && this._draggableElement.root.rootName != '$graveyard' ) {
+				writer.removeAttribute( 'draggable', editing.mapper.toViewElement( this._draggableElement )! );
+			}
+
+			this._draggableElement = null;
+		} );
+	}
+
+	/**
+	 * Deletes the dragged content from its original range and clears the dragging state.
+	 *
+	 * @param moved Whether the move succeeded.
+	 */
+	private _finalizeDragging( moved: boolean ): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const dragDropTarget = editor.plugins.get( DragDropTarget );
+
+		dragDropTarget.removeDropMarker();
+		this._clearDraggableAttributes();
+
+		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+			const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
+		}
+
+		this._draggingUid = '';
+
+		if ( this._previewContainer ) {
+			this._previewContainer.remove();
+			this._previewContainer = undefined;
+		}
+
+		if ( !this._draggedRange ) {
+			return;
+		}
+
+		// Delete moved content.
+		if ( moved && this.isEnabled ) {
+			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
+		}
+
+		this._draggedRange.detach();
+		this._draggedRange = null;
+	}
+
+	/**
+	 * Sets the dragged source range based on event target and document selection.
+	 */
+	private _prepareDraggedRange( target: ViewElement ): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+
+		// Check if this is dragstart over the widget (but not a nested editable).
+		const draggableWidget = target ? findDraggableWidget( target ) : null;
+
+		if ( draggableWidget ) {
+			const modelElement = editor.editing.mapper.toModelElement( draggableWidget )!;
+
+			this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+			this._blockMode = model.schema.isBlock( modelElement );
+
+			// Disable toolbars so they won't obscure the drop area.
+			if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+				const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+				widgetToolbarRepository.forceDisabled( 'dragDrop' );
+			}
+		}
+
+		// If this was not a widget we should check if we need to drag some text content.
+		else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+			const blocks = Array.from( selection.getSelectedBlocks() );
+
+			if ( blocks.length > 1 ) {
+				this._draggedRange = LiveRange.fromRange( model.createRange(
+					model.createPositionBefore( blocks[ 0 ] ),
+					model.createPositionAfter( blocks[ blocks.length - 1 ] )
+				) );
+
+				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
+				this._blockMode = true;
+				// TODO block mode for dragging from outside editor? or inline? or both?
+			}
+			else if ( blocks.length == 1 ) {
+				const draggedRange = selection.getFirstRange()!;
+				const blockRange = model.createRange(
+					model.createPositionBefore( blocks[ 0 ] ),
+					model.createPositionAfter( blocks[ 0 ] )
+				);
+
+				if (
+					draggedRange.start.isTouching( blockRange.start ) &&
+					draggedRange.end.isTouching( blockRange.end )
+				) {
+					this._draggedRange = LiveRange.fromRange( blockRange );
+					this._blockMode = true;
+				} else {
+					this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
+					this._blockMode = false;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Updates the dragged preview image.
+	 */
+	private _updatePreview( dataTransfer: DataTransfer ): void {
+		const view = this.editor.editing.view;
+		const editable = view.document.selection.editableElement!;
+		const domEditable = view.domConverter.mapViewToDom( editable )!;
+		const computedStyle = global.window.getComputedStyle( domEditable );
+
+		if ( !this._previewContainer ) {
+			this._previewContainer = createElement( global.document, 'div', {
+				style: 'position: fixed; left: -999999px;'
+			} );
+
+			global.document.body.appendChild( this._previewContainer );
+		} else {
+			this._previewContainer.removeChild( this._previewContainer.firstElementChild! );
+		}
+
+		const preview = createElement( global.document, 'div' );
+
+		preview.className = 'ck ck-content';
+		preview.style.width = computedStyle.width;
+
+		preview.innerHTML = dataTransfer.getData( 'text/html' );
+		dataTransfer.setDragImage( preview, 0, 0 );
+		// TODO set x to make dragged widget stick to the mouse cursor
+
+		this._previewContainer.appendChild( preview );
+	}
+}
+
+/**
+ * Returns the drop effect that should be a result of dragging the content.
+ * This function is handling a quirk when checking the effect in the 'drop' DOM event.
+ */
+function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEffect' ] {
+	if ( env.isGecko ) {
+		return dataTransfer.dropEffect;
+	}
+
+	return [ 'all', 'copyMove' ].includes( dataTransfer.effectAllowed ) ? 'move' : 'copy';
+}
+
+/**
+ * Returns a widget element that should be dragged.
+ */
+function findDraggableWidget( target: ViewElement ): ViewElement | null {
+	// This is directly an editable so not a widget for sure.
+	if ( target.is( 'editableElement' ) ) {
+		return null;
+	}
+
+	// TODO: Let's have a isWidgetSelectionHandleDomElement() helper in ckeditor5-widget utils.
+	if ( target.hasClass( 'ck-widget__selection-handle' ) ) {
+		return target.findAncestor( isWidget );
+	}
+
+	// Direct hit on a widget.
+	if ( isWidget( target ) ) {
+		return target;
+	}
+
+	// Find closest ancestor that is either a widget or an editable element...
+	const ancestor = target.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) )!;
+
+	// ...and if closer was the widget then enable dragging it.
+	if ( isWidget( ancestor ) ) {
+		return ancestor;
+	}
+
+	return null;
+}

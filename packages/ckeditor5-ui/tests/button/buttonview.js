@@ -323,30 +323,33 @@ describe( 'ButtonView', () => {
 			} );
 
 			describe( 'in Safari', () => {
-				let view, stub;
+				let view, stub, clock;
 
 				beforeEach( () => {
 					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+					clock = testUtils.sinon.useFakeTimers();
 					view = new ButtonView( locale );
 					view.render();
 				} );
 
 				afterEach( () => {
 					stub.resetBehavior();
+					clock.restore();
 					view.destroy();
 				} );
 
 				it( 'the button is focused', () => {
 					const spy = sinon.spy( view.element, 'focus' );
 					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					clock.tick( 0 );
 
 					expect( spy.callCount ).to.equal( 1 );
 				} );
 
-				it( 'the event is prevented', () => {
+				it( 'the event is not prevented', () => {
 					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-					expect( ret ).to.false;
+					expect( ret ).to.true;
 				} );
 			} );
 		} );
