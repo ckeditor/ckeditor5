@@ -129,6 +129,7 @@ export { default as ViewText } from './view/text';
 export { default as ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element';
 export { default as ViewContainerElement } from './view/containerelement';
 export { default as ViewEditableElement } from './view/editableelement';
+export { default as ViewRootEditableElement } from './view/rooteditableelement';
 export { default as ViewAttributeElement } from './view/attributeelement';
 export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
