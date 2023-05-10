@@ -20,10 +20,14 @@ export type VerifiedKeyStatus = 'VALID' | 'INVALID';
  * @param token The string to check.
  * @returns String that represents the state of given `token` parameter.
  */
-export default function verify( token: string ): VerifiedKeyStatus {
+export default function verify( token: string | undefined ): VerifiedKeyStatus {
 	// TODO: issue ci#3175
 	let decryptedData = '';
 	let decryptedSecondElement = '';
+
+	if ( !token ) {
+		return 'INVALID';
+	}
 
 	try {
 		decryptedData = atob( token );

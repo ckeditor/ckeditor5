@@ -26,6 +26,14 @@ describe( 'utils', () => {
 		} );
 
 		describe( 'should return `INVALID`', () => {
+			it( 'when token is empty', () => {
+				expect( verify( '' ) ).to.be.equal( 'INVALID' );
+			} );
+
+			it( 'when token is not passed', () => {
+				expect( verify( ) ).to.be.equal( 'INVALID' );
+			} );
+
 			describe( 'new', () => {
 				it( 'first too short', () => {
 					expect( verify( 'Wm05dlltRnktTWpBeU5UQXhNREU9' ) ).to.be.equal( 'INVALID' );
