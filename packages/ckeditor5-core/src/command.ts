@@ -133,7 +133,7 @@ export default class Command extends ObservableMixin() {
 			if ( !this.isEnabled ) {
 				evt.stop();
 			}
-		} );
+		}, { priority: 'high' } );
 	}
 
 	/**
