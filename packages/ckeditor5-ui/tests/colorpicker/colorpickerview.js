@@ -53,6 +53,17 @@ describe( 'ColorPickerView', () => {
 			expect( view.hexInputRow.children.get( 1 ).fieldView.value ).to.equal( '0000ff' );
 		} );
 
+		it( 'should reset the color when input is empty', () => {
+			view.color = '#0000ff';
+
+			view.hexInputRow.children.get( 1 ).fieldView.value = '';
+			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );
+
+			clock.tick( 200 );
+
+			expect( view.color ).to.equal( '' );
+		} );
+
 		it( 'should update color property after getting an input', () => {
 			view.hexInputRow.children.get( 1 ).fieldView.value = '#ff0000';
 			view.hexInputRow.children.get( 1 ).fieldView.fire( 'input' );

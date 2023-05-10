@@ -107,10 +107,14 @@ export default class ColorPickerView extends View {
 		this.on( 'set:color', ( evt, propertyName, newValue ) => {
 			// The color needs always to be kept in the output format.
 			evt.return = convertColor( newValue, this._format );
+
+			// const input = [ ...this.hexInputRow.children ][ 1 ] as LabeledFieldView<InputTextView>;
+			// input!.fieldView.value = convertColorToCommonHexFormat( newValue );
 		} );
 
 		this.on( 'change:color', () => {
 			this._hexColor = convertColorToCommonHexFormat( this.color );
+			console.log( this._hexColor );
 		} );
 
 		this.on( 'change:_hexColor', () => {
@@ -245,6 +249,9 @@ export default class ColorPickerView extends View {
 					// Otherwise, do nothing.
 					this._debounceColorPickerEvent( '#' + hashlessInput );
 				}
+			} else if ( inputValue === '' ) {
+				// If input is empty, color is reseted.
+				this._debounceColorPickerEvent( '' );
 			}
 		} );
 
