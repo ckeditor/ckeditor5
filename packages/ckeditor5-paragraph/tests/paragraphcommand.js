@@ -76,6 +76,19 @@ describe( 'ParagraphCommand', () => {
 
 			expect( command.value ).to.be.false;
 		} );
+
+		it( 'should be refreshed after calling refresh()', () => {
+			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
+			const element = document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( element ) );
+
+				expect( command.value ).to.be.true;
+				command.refresh();
+				expect( command.value ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'execute()', () => {

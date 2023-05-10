@@ -95,7 +95,11 @@ export default class MarkerOperation extends Operation {
 		}
 
 		if ( this.newRange ) {
-			ranges.push( this.newRange.clone() );
+			if ( this.oldRange ) {
+				ranges.push( ...this.newRange.getDifference( this.oldRange ) );
+			} else {
+				ranges.push( this.newRange.clone() );
+			}
 		}
 
 		return ranges;

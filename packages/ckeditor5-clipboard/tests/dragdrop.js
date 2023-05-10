@@ -1470,7 +1470,11 @@ describe( 'Drag and Drop', () => {
 				const dataTransferMock = createDataTransfer();
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 
-				model.document.isReadOnly = true;
+				// For selection to be in non-editable place by overwriting `canEditAt()`.
+				model.on( 'canEditAt', evt => {
+					evt.return = false;
+					evt.stop();
+				}, { priority: 'highest' } );
 
 				fireDragging( dataTransferMock, targetPosition );
 

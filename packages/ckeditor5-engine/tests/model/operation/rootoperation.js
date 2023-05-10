@@ -46,9 +46,9 @@ describe( 'RootOperation', () => {
 		} ).not.to.throw();
 	} );
 
-	it( 'should return null on target() call', () => {
+	it( 'should return the root element on affectedSelectable', () => {
 		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
-		expect( op.affectedSelectable ).to.equal( null );
+		expect( op.affectedSelectable ).to.equal( doc.getRoot( 'new' ) );
 	} );
 
 	it( 'should attach a model in the root', () => {

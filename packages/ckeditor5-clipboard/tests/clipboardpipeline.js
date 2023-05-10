@@ -310,7 +310,8 @@ describe( 'ClipboardPipeline feature', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
 			viewDocument.fire( 'clipboardInput', {
-				dataTransfer: dataTransferMock
+				dataTransfer: dataTransferMock,
+				method: 'paste'
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -509,7 +510,7 @@ describe( 'ClipboardPipeline feature', () => {
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			viewDocument.on( 'clipboardInput', spy );
+			viewDocument.on( 'clipboardOutput', spy );
 
 			viewDocument.fire( 'cut', {
 				dataTransfer: dataTransferMock,

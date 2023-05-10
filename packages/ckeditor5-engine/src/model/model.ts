@@ -850,7 +850,7 @@ export default class Model extends ObservableMixin() {
 	 * @fires canEditAt
 	 */
 	public canEditAt( selectable: Selectable ): boolean {
-		const selection = normalizeSelectable( selectable )!;
+		const selection = normalizeSelectable( selectable );
 
 		return this.fire<ModelCanEditAtEvent>( 'canEditAt', [ selection ] )!;
 	}
@@ -1146,7 +1146,7 @@ function normalizeSelectable(
 	}
 
 	if ( selectable instanceof Node ) {
-		if ( placeOrOffset ) {
+		if ( placeOrOffset || placeOrOffset === 0 ) {
 			return new ModelSelection( selectable, placeOrOffset );
 		} else {
 			if ( selectable.is( 'rootElement' ) ) {
@@ -1302,7 +1302,7 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
 export type ModelCanEditAtEvent = {
 	name: 'canEditAt';
 	args: [ [
-		selectable: ModelSelection | DocumentSelection
+		selectable?: ModelSelection | DocumentSelection
 	] ];
 	return: boolean;
 };

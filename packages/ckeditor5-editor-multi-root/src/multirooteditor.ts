@@ -233,17 +233,26 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		// Check if the provided selection is inside a read-only root. If so, return `false`.
 		this.listenTo<ModelCanEditAtEvent>( this.model, 'canEditAt', ( evt, [ selection ] ) => {
 			// Skip empty selections.
-			if ( !selection.getFirstPosition() ) {
+			if ( !selection ) {
 				return;
 			}
 
-			const rootName = selection.getFirstPosition()!.root.rootName!;
-			const canEditAt = !this._readOnlyRootLocks.has( rootName );
+			let selectionInReadOnlyRoot = false;
 
-			evt.return = canEditAt;
+			for ( const range of selection.getRanges() ) {
+				const rootName = range.root.rootName!;
 
-			if ( !canEditAt ) {
-				// Prevent further processing if the selection is at non-editable place.
+				if ( this._readOnlyRootLocks.has( rootName ) ) {
+					selectionInReadOnlyRoot = true;
+
+					break;
+				}
+			}
+
+			// If selection is in read-only root, return `false` and prevent further processing.
+			// Otherwise, allow for other callbacks (or default callback) to evaluate.
+			if ( selectionInReadOnlyRoot ) {
+				evt.return = false;
 				evt.stop();
 			}
 		}, { priority: 'high' } );
