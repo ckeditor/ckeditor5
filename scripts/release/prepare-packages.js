@@ -100,6 +100,20 @@ abortController.signal.addEventListener( 'abort', () => {
 		signal: abortController.signal,
 		taskToExecute: require( './preparedllbuildscallback' )
 	} );
+
+	releaseTools.push( {
+		version: latestVersion,
+		releaseBranch: 'TODO'
+	} );
+
+	releaseTools.createGithubRelease( {
+		token: 'TODO',
+		version: latestVersion,
+		repositoryOwner: 'TODO',
+		repositoryName: 'TODO',
+		description: 'TODO',
+		isPrerelease: 'TODO'
+	} );
 } )();
 
 /**
