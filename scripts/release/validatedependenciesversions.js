@@ -13,16 +13,19 @@ const { sync } = require( 'glob' );
 const fs = require( 'fs' );
 const isCKEditor5Package = require( './isckeditor5package' );
 const chalk = require( 'chalk' );
+const { normalizeTrim } = require( 'upath' );
 
 /**
- * Validates the versions of the dependencies in package.json file for the root ckeditor5 package and its packages.
+ * Validates if the versions of package the dependencies in specified directory match the provided version.
  *
  * @param {Object} options
- * @param {String} options.version Version that all pacakges need to match.
+ * @param {String} releaseDirectory Path to directory with packages to validate.
+ * @param {String} options.version Version that all package dependencies need to match.
  */
-module.exports = function validateDependenciesVersions( { version } ) {
-	const globPatterns = '{package.json,packages/*/package.json}';
-	const pkgJsonPaths = sync( globPatterns, { absolute: true, nodir: true } );
+module.exports = function validateDependenciesVersions( { releaseDirectory, version } ) {
+	const normalizedReleaseDirectory = normalizeTrim( releaseDirectory );
+	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
+	const pkgJsonPaths = sync( globPattern, { absolute: true, nodir: true } );
 
 	const errors = pkgJsonPaths.flatMap( pkgJsonPath => {
 		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf8' ) );
