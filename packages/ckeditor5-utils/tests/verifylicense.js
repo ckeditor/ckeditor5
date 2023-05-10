@@ -23,6 +23,19 @@ describe( 'utils', () => {
 
 				expect( verifyLicense( string ) ).to.be.equal( 'VALID' );
 			} );
+
+			it( 'when old token format is given with a special sign', () => {
+				const string = 'LWRsZ2h2bWxvdWhnbXZsa3ZkaGdzZGhtdmxrc2htZ3Nma2xnaGxtcDk4N212Z3V3OTU4NHc5bWdtdw==';
+
+				expect( verifyLicense( string ) ).to.be.equal( 'VALID' );
+			} );
+
+			it( 'when old token is splitted', () => {
+				// eslint-disable-next-line max-len
+				const string = 'ZXNybGl1aG1jbGlldWdtbHdpZWgvIUAjNW1nbGNlXVtcd2l1Z2NsZWpnbWNsc2lkZmdjbHNpZGZoZ2xjc2Rnc25jZGZnaGNubHMtd3A5bWN5dDlwaGdtcGM5d2g4dGc3Y3doODdvaGddW10hQCMhdG5jN293NTg0aGdjbzhud2U4Z2Nodw==';
+
+				expect( verifyLicense( string ) ).to.be.equal( 'VALID' );
+			} );
 		} );
 
 		describe( 'should return `INVALID`', () => {
@@ -42,11 +55,13 @@ describe( 'utils', () => {
 				it( 'first too long', () => {
 					// eslint-disable-next-line max-len
 					const string = 'YzNSbGJTQmxjbkp2Y2pvZ2JtVjBPanBGVWxKZlFreFBRMHRGUkY5Q1dWOURURWxGVGxSemRHVnRJR1Z5Y205eU9pQnVaWFE2T2tWU1VsOUNURTlEUzBWRVgwSlpYME5NU1VWT1ZITjBaVzBnWlhKeWIzSTZJRzVsZERvNlJWSlNYMEpNVDBOTFJVUmZRbGxmUTB4SlJVNVVjM1JsYlNCbGNuSnZjam9nYm1WME9qcEZVbEpmUWt4UFEwdEZSRjlDV1Y5RFRFbEZUbFJ6ZEdWdElHVnljbTl5T2lCdVpYUTZPa1ZTVWw5Q1RFOURTMFZFWDBKWlgwTk1TVVZPVkhOMFpXMGdaWEp5YjNJNklHNWxkRG82UlZKU1gwSk1UME5MUlVSZlFsbGZRMHhKUlU1VS1NakF5TlRBeE1ERT0=';
+
 					expect( verifyLicense( string ) ).to.be.equal( 'INVALID' );
 				} );
 
 				it( 'first wrong format', () => {
-					const string = 'YS1NakF5TlRBeE1ERT0=';
+					const string = 'ZGx1Z2hjbXNsaXVkZ2NobXN8IjolRVdFVnwifCJEVnxERyJXJSUkXkVSVHxWIll8UkRUIkJTfFIlQiItTWpBeU16RXlNekU9';
+
 					expect( verifyLicense( string ) ).to.be.equal( 'INVALID' );
 				} );
 
