@@ -30,6 +30,9 @@ export abstract class ReplaceCommandBase extends Command {
 		this.isEnabled = true;
 
 		this._state = state;
+
+		// Since this command executes on particular result independent of selection, it should be checked directly in execute block.
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	public abstract override execute( ...args: Array<unknown> ): void;
@@ -43,9 +46,14 @@ export abstract class ReplaceCommandBase extends Command {
 	protected _replace( replacementText: string, result: ResultType ): void {
 		const { model } = this.editor;
 
-		model.change( writer => {
-			const range = result.marker!.getRange();
+		const range = result.marker!.getRange();
 
+		// Don't replace a result that is in non-editable place.
+		if ( !model.canEditAt( range ) ) {
+			return;
+		}
+
+		model.change( writer => {
 			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
 			if ( range.root.rootName === '$graveyard' ) {
 				this._state.results.remove( result );

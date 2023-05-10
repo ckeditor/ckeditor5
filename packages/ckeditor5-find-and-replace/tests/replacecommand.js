@@ -159,6 +159,18 @@ describe( 'ReplaceCommand', () => {
 			);
 		} );
 
+		it( 'should not replace if selectable is not editable', () => {
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			model.document.isReadOnly = true;
+			const { results } = editor.execute( 'find', 'foo' );
+			editor.execute( 'replace', 'bar', results.get( 0 ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>'
+			);
+		} );
+
 		it( 'doesn\'t pick attributes from sibling nodes', () => {
 			setData( model, '<paragraph><$text italic="true">foo </$text>bar<$text italic="true"> foo</$text></paragraph>' );
 

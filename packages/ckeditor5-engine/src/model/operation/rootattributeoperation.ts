@@ -13,6 +13,7 @@ import type Document from '../document';
 import type RootElement from '../rootelement';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Selectable } from '../selection';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
@@ -86,6 +87,13 @@ export default class RootAttributeOperation extends Operation {
 		} else {
 			return 'changeRootAttribute';
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.root;
 	}
 
 	/**

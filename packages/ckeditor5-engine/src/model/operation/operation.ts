@@ -7,6 +7,7 @@
 
 import type Batch from '../batch';
 import type Document from '../document';
+import type { Selectable } from '../selection';
 
 /**
  * @module engine/model/operation/operation
@@ -51,6 +52,13 @@ export default abstract class Operation {
 		this.isDocumentOperation = this.baseVersion !== null;
 		this.batch = null;
 	}
+
+	/**
+	 * A selectable that will be affected by the operation after it is executed.
+	 *
+	 * The exact returned parameter differs between operation types.
+	 */
+	public abstract get affectedSelectable(): Selectable;
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
