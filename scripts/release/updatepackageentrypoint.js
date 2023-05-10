@@ -10,7 +10,8 @@
 /**
  * @param {String} packagePath
  */
-module.exports = function compileTypeScriptCallback( packagePath ) {
+module.exports = function updatePackageEntryPoint( packagePath ) {
+	const upath = require( 'upath' );
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 	// All paths are resolved from the root repository directory.
 	const isPackageWrittenInTs = require( './scripts/release//utils/ispackagewrittenints' );
@@ -19,8 +20,16 @@ module.exports = function compileTypeScriptCallback( packagePath ) {
 		return;
 	}
 
-	tools.shExec( 'yarn run build', {
-		cwd: packagePath,
-		verbosity: 'error'
+	const packageJsonPath = upath.join( packagePath, 'package.json' );
+
+	tools.updateJSONFile( packageJsonPath, json => {
+		const { main } = json;
+
+		if ( main ) {
+			json.main = main.replace( /\.ts$/, '.js' );
+			json.types = main.replace( /\.ts$/, '.d.ts' );
+		}
+
+		return json;
 	} );
 };
