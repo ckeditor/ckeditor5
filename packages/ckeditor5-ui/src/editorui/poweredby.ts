@@ -171,13 +171,13 @@ export default class PoweredBy extends DomEmitterMixin() {
 			return;
 		}
 
-		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedDOMRoot );
+		if ( !this._balloonView ) {
+			this._createBalloonView();
+		}
+
+		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedDOMRoot, this._balloonView.element );
 
 		if ( attachOptions ) {
-			if ( !this._balloonView ) {
-				this._createBalloonView();
-			}
-
 			this._balloonView!.pin( attachOptions );
 
 			this._startLookingForCollisions();
@@ -195,25 +195,27 @@ export default class PoweredBy extends DomEmitterMixin() {
 	}
 
 	private _startLookingForCollisions() {
-		this._hideOnCollision();
-		this._collisionInterval = setInterval( this._hideOnCollision.bind( this ), 50 );
+		this._repinOnCollision();
+		this._collisionInterval = setInterval( this._repinOnCollision.bind( this ), 50 );
 	}
 
 	private _endLookingForCollisions() {
 		clearInterval( this._collisionInterval! );
 	}
 
-	private _hideOnCollision() {
+	private _repinOnCollision() {
 		if ( !this._lastFocusedDOMRoot ) {
 			return;
 		}
 
-		const collidingElement = getCollidingElement( this._balloonView!.element!, this._lastFocusedDOMRoot! );
+		const balloonViewElement = this._balloonView!.element!;
+		const balloonRect = new Rect( balloonViewElement );
+		const collidingElement = getCollidingElement( balloonRect, balloonViewElement, this._lastFocusedDOMRoot! );
 
 		if ( collidingElement ) {
-			console.log( 'collision with', collidingElement );
+			console.log( 'interval: collision detected with', collidingElement );
 
-			this._hideBalloon();
+			this._showBalloon();
 		}
 	}
 }
@@ -279,11 +281,13 @@ class PoweredByView extends View<HTMLDivElement> {
 	}
 }
 
-function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement ): Partial<PositionOptions> | null {
+function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement, balloonViewElement: HTMLElement ):
+	Partial<PositionOptions> | null
+{
 	const poweredByConfig = getNormalizedConfig( editor )!;
 	const positioningFunction = poweredByConfig.side === 'right' ?
-		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
-		getLowerLeftCornerPosition( focusedDomRoot, poweredByConfig );
+		getLowerRightCornerPosition( focusedDomRoot, balloonViewElement, poweredByConfig ) :
+		getLowerLeftCornerPosition( focusedDomRoot, balloonViewElement, poweredByConfig );
 
 	return {
 		target: focusedDomRoot,
@@ -291,18 +295,19 @@ function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement ):
 	};
 }
 
-function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
-	return getLowerCornerPosition( focusedDomRoot, config, ( rootRect, balloonRect ) => {
+function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, balloonViewElement: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedDomRoot, balloonViewElement, config, ( rootRect, balloonRect ) => {
 		return rootRect.left + rootRect.width - balloonRect.width - config.horizontalOffset;
 	} );
 }
 
-function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
-	return getLowerCornerPosition( focusedDomRoot, config, rootRect => rootRect.left + config.horizontalOffset );
+function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, balloonViewElement: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedDomRoot, balloonViewElement, config, rootRect => rootRect.left + config.horizontalOffset );
 }
 
 function getLowerCornerPosition(
 	focusedDomRoot: HTMLElement,
+	balloonViewElement: HTMLElement,
 	config: PoweredByConfig,
 	getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number
 ) {
@@ -327,11 +332,21 @@ function getLowerCornerPosition(
 
 		balloonTop -= config.verticalOffset;
 
-		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
+		let balloonLeft = getBalloonLeft( rootRect, balloonRect );
+		const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
+		const collidingElement = getCollidingElement( newBalloonRect, balloonViewElement, focusedDomRoot );
+
+		if ( collidingElement ) {
+			const collidingElementRect = new Rect( collidingElement );
+
+			if ( config.side === 'right' ) {
+				balloonLeft = collidingElementRect.left - balloonRect.width - 5;
+			} else {
+				balloonLeft = collidingElementRect.right + 5;
+			}
+		}
 
 		if ( config.position === 'inside' ) {
-			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
-
 			// The watermark cannot be positioned in this corner because the corner is not quite visible.
 			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
 				return OFF_THE_SCREEN_POSITION;
@@ -375,9 +390,7 @@ function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	};
 }
 
-function getCollidingElement( balloonViewElement: HTMLElement, focusedDomRoot: HTMLElement ): HTMLElement | null {
-	const balloonRect = new Rect( balloonViewElement );
-
+function getCollidingElement( balloonRect: Rect, balloonViewElement: HTMLElement, focusedDomRoot: HTMLElement ): HTMLElement | null {
 	for ( let x = balloonRect.left; x <= balloonRect.right; x += 2 ) {
 		for ( let y = balloonRect.top; y <= balloonRect.bottom; y += 2 ) {
 			const elementsFromPoint = document.elementsFromPoint( x, y );
