@@ -13,10 +13,13 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
+* color-convert - color-convert is copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016-2021 Josh Junon <josh@junon.me> and released under the MIT license.
+* color-parse - color-parse is copyright (c) 2015 Dmitry Ivanov and released under the MIT license.
 * lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 * marked - Copyright (c) Christopher Jeffrey. (MIT License)
 * turndown - turndown is copyright © Dom Christie and released under the MIT license.
 * turndown-plugin-gfm - turndown-plugin-gfm is copyright © Dom Christie and released under the MIT license.
+* vanilla-colorful - vanilla-colorful is copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com> and released under the MIT license.
 
 Trademarks
 ----------
