@@ -352,7 +352,7 @@ describe( 'PoweredBy', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should positiong the balloon in the lower right corner by default', async () => {
+		it( 'should positioning the balloon in the lower right corner by default', async () => {
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -378,7 +378,7 @@ describe( 'PoweredBy', () => {
 			} );
 		} );
 
-		it( 'should positiong the balloon in the lower left corner if configured', async () => {
+		it( 'should positioning the balloon in the lower left corner if configured', async () => {
 			const editor = await createEditor( element, {
 				ui: {
 					poweredBy: {
@@ -414,7 +414,7 @@ describe( 'PoweredBy', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should positiong the balloon over the bottom root border if configured', async () => {
+		it( 'should positioning the balloon over the bottom root border if configured', async () => {
 			const editor = await createEditor( element, {
 				ui: {
 					poweredBy: {
@@ -450,7 +450,7 @@ describe( 'PoweredBy', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should hiden the balloon if displayed over the bottom root border but cropped by an ancestor with overflow', async () => {
+		it( 'should hide the balloon if displayed over the bottom root border but cropped by an ancestor with overflow', async () => {
 			const editor = await createEditor( element, {
 				ui: {
 					poweredBy: {
