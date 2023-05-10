@@ -87,6 +87,7 @@ export { default as insertToPriorityArray } from './inserttopriorityarray';
 export { default as spliceArray } from './splicearray';
 
 export { default as uid } from './uid';
+export { default as verifyLicense } from './verifylicense';
 export * from './unicode';
 
 export { default as version, releaseDate } from './version';
