@@ -128,8 +128,8 @@ export default class Autosave extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Autosave' {
-		return 'Autosave';
+	public static get pluginName() {
+		return 'Autosave' as const;
 	}
 
 	/**

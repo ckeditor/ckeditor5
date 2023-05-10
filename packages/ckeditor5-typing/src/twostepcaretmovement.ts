@@ -166,8 +166,8 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TwoStepCaretMovement' {
-		return 'TwoStepCaretMovement';
+	public static get pluginName() {
+		return 'TwoStepCaretMovement' as const;
 	}
 
 	/**

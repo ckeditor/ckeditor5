@@ -33,8 +33,8 @@ export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableElementSupport' {
-		return 'TableElementSupport';
+	public static get pluginName() {
+		return 'TableElementSupport' as const;
 	}
 
 	/**

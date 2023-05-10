@@ -20,8 +20,8 @@ export default class HtmlComment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HtmlComment' {
-		return 'HtmlComment';
+	public static get pluginName() {
+		return 'HtmlComment' as const;
 	}
 
 	/**

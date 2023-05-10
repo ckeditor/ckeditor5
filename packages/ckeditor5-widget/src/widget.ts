@@ -59,8 +59,8 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Widget' {
-		return 'Widget';
+	public static get pluginName() {
+		return 'Widget' as const;
 	}
 
 	/**

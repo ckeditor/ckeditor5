@@ -141,8 +141,8 @@ export default class WordCount extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WordCount' {
-		return 'WordCount';
+	public static get pluginName() {
+		return 'WordCount' as const;
 	}
 
 	/**

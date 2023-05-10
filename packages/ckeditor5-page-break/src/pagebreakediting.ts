@@ -22,8 +22,8 @@ export default class PageBreakEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PageBreakEditing' {
-		return 'PageBreakEditing';
+	public static get pluginName() {
+		return 'PageBreakEditing' as const;
 	}
 
 	/**

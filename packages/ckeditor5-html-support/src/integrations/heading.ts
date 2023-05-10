@@ -33,8 +33,8 @@ export default class HeadingElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingElementSupport' {
-		return 'HeadingElementSupport';
+	public static get pluginName() {
+		return 'HeadingElementSupport' as const;
 	}
 
 	/**

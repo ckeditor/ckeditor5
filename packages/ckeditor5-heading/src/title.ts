@@ -48,8 +48,8 @@ export default class Title extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Title' {
-		return 'Title';
+	public static get pluginName() {
+		return 'Title' as const;
 	}
 
 	/**

@@ -31,7 +31,7 @@ export default class Underline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Underline' {
-		return 'Underline';
+	public static get pluginName() {
+		return 'Underline' as const;
 	}
 }

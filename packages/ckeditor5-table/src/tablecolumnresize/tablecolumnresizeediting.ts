@@ -127,8 +127,8 @@ export default class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableColumnResizeEditing' {
-		return 'TableColumnResizeEditing';
+	public static get pluginName() {
+		return 'TableColumnResizeEditing' as const;
 	}
 
 	/**

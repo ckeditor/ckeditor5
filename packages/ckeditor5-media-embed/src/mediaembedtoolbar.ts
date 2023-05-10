@@ -31,8 +31,8 @@ export default class MediaEmbedToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedToolbar' {
-		return 'MediaEmbedToolbar';
+	public static get pluginName() {
+		return 'MediaEmbedToolbar' as const;
 	}
 
 	/**

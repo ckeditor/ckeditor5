@@ -41,8 +41,8 @@ export default class CKFinderUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKFinderUploadAdapter' {
-		return 'CKFinderUploadAdapter';
+	public static get pluginName() {
+		return 'CKFinderUploadAdapter' as const;
 	}
 
 	/**

@@ -1006,7 +1006,9 @@ To create a code executed only in the debug mode, follow the description of the 
 
 ### Non public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
-**This rule should only be used on `.ts` files.**
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
 
 In order to remove non public members from typings, the `@internal` tag has to be used in member's JSDoc.
 
@@ -1062,3 +1064,49 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
+
+### Declaring module augmentation for the core package: `allow-declare-module-only-in-augmentation-file`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+The main entry points (`index.ts` files) in most modules have a side effect import `import './augmentation'` which uses module augmentation to populate the editor types with information about available plugins, configurations and commands.
+
+This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined in this `augmentation.ts` file.
+
+### Importing from modules: `allow-imports-only-from-main-package-entry-point`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
+
+This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point:
+
+```ts
+// ❌ Importing from the `/src/` folder is not allowed.
+import Table from '@ckeditor/ckeditor5-table/src/table';
+
+// ✔️ Importing from the main entry point is allowed.
+import { Table } from '@ckeditor/ckeditor5-table';
+```
+
+### Require `as const`: `require-as-const-returns-in-methods`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+In TypeScript, types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
+
+This rule forces all return statements in some methods to end with `as const`.
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName() {
+		return 'Delete' as const;
+	}
+}
+```

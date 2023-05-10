@@ -20,8 +20,8 @@ export default class BoldUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BoldUI' {
-		return 'BoldUI';
+	public static get pluginName() {
+		return 'BoldUI' as const;
 	}
 
 	/**

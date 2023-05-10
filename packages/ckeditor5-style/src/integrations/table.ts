@@ -27,8 +27,8 @@ export default class TableStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableStyleSupport' {
-		return 'TableStyleSupport';
+	public static get pluginName() {
+		return 'TableStyleSupport' as const;
 	}
 
 	/**

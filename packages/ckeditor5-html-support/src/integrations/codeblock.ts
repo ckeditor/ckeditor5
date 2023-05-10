@@ -34,8 +34,8 @@ export default class CodeBlockElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockElementSupport' {
-		return 'CodeBlockElementSupport';
+	public static get pluginName() {
+		return 'CodeBlockElementSupport' as const;
 	}
 
 	/**

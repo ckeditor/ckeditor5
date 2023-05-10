@@ -36,8 +36,8 @@ export default class MediaEmbedElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedElementSupport' {
-		return 'MediaEmbedElementSupport';
+	public static get pluginName() {
+		return 'MediaEmbedElementSupport' as const;
 	}
 
 	/**

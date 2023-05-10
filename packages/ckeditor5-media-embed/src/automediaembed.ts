@@ -35,8 +35,8 @@ export default class AutoMediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AutoMediaEmbed' {
-		return 'AutoMediaEmbed';
+	public static get pluginName() {
+		return 'AutoMediaEmbed' as const;
 	}
 
 	/**

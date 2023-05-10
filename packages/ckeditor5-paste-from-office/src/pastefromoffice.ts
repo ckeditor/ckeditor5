@@ -35,8 +35,8 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PasteFromOffice' {
-		return 'PasteFromOffice';
+	public static get pluginName() {
+		return 'PasteFromOffice' as const;
 	}
 
 	/**

@@ -31,8 +31,8 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SourceEditing' {
-		return 'SourceEditing';
+	public static get pluginName() {
+		return 'SourceEditing' as const;
 	}
 
 	/**

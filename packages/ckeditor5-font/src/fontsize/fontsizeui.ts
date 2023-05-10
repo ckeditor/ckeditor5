@@ -32,8 +32,8 @@ export default class FontSizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontSizeUI' {
-		return 'FontSizeUI';
+	public static get pluginName() {
+		return 'FontSizeUI' as const;
 	}
 
 	/**

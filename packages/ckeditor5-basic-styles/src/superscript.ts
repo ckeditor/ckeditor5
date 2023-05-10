@@ -28,7 +28,7 @@ export default class Superscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Superscript' {
-		return 'Superscript';
+	public static get pluginName() {
+		return 'Superscript' as const;
 	}
 }

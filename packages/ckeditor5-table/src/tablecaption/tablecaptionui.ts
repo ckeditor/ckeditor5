@@ -20,8 +20,8 @@ export default class TableCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCaptionUI' {
-		return 'TableCaptionUI';
+	public static get pluginName() {
+		return 'TableCaptionUI' as const;
 	}
 
 	/**

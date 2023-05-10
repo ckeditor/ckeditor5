@@ -32,8 +32,8 @@ export default class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleElementSupport' {
-		return 'StyleElementSupport';
+	public static get pluginName() {
+		return 'StyleElementSupport' as const;
 	}
 
 	/**

@@ -24,8 +24,8 @@ export default class BlockQuoteUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockQuoteUI' {
-		return 'BlockQuoteUI';
+	public static get pluginName() {
+		return 'BlockQuoteUI' as const;
 	}
 
 	/**

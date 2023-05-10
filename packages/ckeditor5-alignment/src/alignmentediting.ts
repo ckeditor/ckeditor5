@@ -22,8 +22,8 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AlignmentEditing' {
-		return 'AlignmentEditing';
+	public static get pluginName() {
+		return 'AlignmentEditing' as const;
 	}
 
 	/**

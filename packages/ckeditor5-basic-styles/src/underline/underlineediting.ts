@@ -22,8 +22,8 @@ export default class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UnderlineEditing' {
-		return 'UnderlineEditing';
+	public static get pluginName() {
+		return 'UnderlineEditing' as const;
 	}
 
 	/**

@@ -31,8 +31,8 @@ export default class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ScriptElementSupport' {
-		return 'ScriptElementSupport';
+	public static get pluginName() {
+		return 'ScriptElementSupport' as const;
 	}
 
 	/**

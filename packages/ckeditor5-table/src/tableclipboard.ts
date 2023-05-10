@@ -53,8 +53,8 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableClipboard' {
-		return 'TableClipboard';
+	public static get pluginName() {
+		return 'TableClipboard' as const;
 	}
 
 	/**

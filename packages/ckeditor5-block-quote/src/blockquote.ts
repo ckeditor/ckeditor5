@@ -33,7 +33,7 @@ export default class BlockQuote extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockQuote' {
-		return 'BlockQuote';
+	public static get pluginName() {
+		return 'BlockQuote' as const;
 	}
 }

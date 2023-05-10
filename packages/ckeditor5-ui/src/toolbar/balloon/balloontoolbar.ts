@@ -92,8 +92,8 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BalloonToolbar' {
-		return 'BalloonToolbar';
+	public static get pluginName() {
+		return 'BalloonToolbar' as const;
 	}
 
 	/**
