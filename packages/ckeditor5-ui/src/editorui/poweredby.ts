@@ -214,6 +214,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 		if ( editableEditorElements.includes( focusedElement ) ) {
 			this._lastFocusedEditableElement = focusedElement;
 		} else {
+			// If it's none of the editable element, then the focus is somewhere in the UI. Let's display powered by
+			// over the first element then.
 			this._lastFocusedEditableElement = editableEditorElements[ 0 ]!;
 		}
 	}

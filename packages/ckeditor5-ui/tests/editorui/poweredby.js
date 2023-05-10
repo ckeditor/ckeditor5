@@ -13,6 +13,7 @@ import View from '../../src/view';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -99,6 +100,38 @@ describe( 'PoweredBy', () => {
 				await wait( 200 );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.false;
+			} );
+
+			// This is a weak test because it does not check the geometry but it will do.
+			it( 'should show the balloon when the source editing is engaged', async () => {
+				focusEditor( editor );
+
+				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+				editor.ui.fire( 'update' );
+
+				await wait( 75 );
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'root-width_default-position_inside-side_right' );
+				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+
+				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+				focusEditor( editor, editor.ui.getEditableElement( 'sourceEditing:main' ) );
+				sinon.assert.calledWith(
+					pinSpy.lastCall,
+					sinon.match.has( 'target', editor.ui.getEditableElement( 'sourceEditing:main' ) )
+				);
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'root-width_default-position_inside-side_right' );
+
+				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'root-width_default-position_inside-side_right' );
+				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
 			} );
 		} );
 
@@ -537,7 +570,7 @@ describe( 'PoweredBy', () => {
 		} );
 	} );
 
-	async function createEditor( element, config = {} ) {
+	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
 		return ClassicTestEditor.create( element, config );
 	}
 
