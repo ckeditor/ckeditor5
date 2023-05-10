@@ -558,7 +558,7 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
-	describe( 'model.isEditable()', () => {
+	describe( 'model.canEditAt()', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
 		} );
@@ -569,7 +569,7 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'should return false when editor is in read-only mode', () => {
 			editor.enableReadOnlyMode( 'test' );
-			const result = editor.model.isEditable( null );
+			const result = editor.model.canEditAt( null );
 
 			expect( result ).to.be.false;
 		} );
@@ -581,13 +581,13 @@ describe( 'MultiRootEditor', () => {
 			const ranges = [ range ];
 			const emptySelection = editor.model.createSelection();
 
-			const resultSelection = editor.model.isEditable( editor.model.document.selection );
-			const resultPos = editor.model.isEditable( position );
-			const resultRange = editor.model.isEditable( range );
-			const resultNode = editor.model.isEditable( element );
-			const resultRanges = editor.model.isEditable( ranges );
-			const resultEmptySelection = editor.model.isEditable( emptySelection );
-			const resultNull = editor.model.isEditable( null );
+			const resultSelection = editor.model.canEditAt( editor.model.document.selection );
+			const resultPos = editor.model.canEditAt( position );
+			const resultRange = editor.model.canEditAt( range );
+			const resultNode = editor.model.canEditAt( element );
+			const resultRanges = editor.model.canEditAt( ranges );
+			const resultEmptySelection = editor.model.canEditAt( emptySelection );
+			const resultNull = editor.model.canEditAt( null );
 
 			expect( resultSelection ).to.be.true;
 			expect( resultPos ).to.be.true;
@@ -607,13 +607,13 @@ describe( 'MultiRootEditor', () => {
 			const ranges = [ range ];
 			const emptySelection = editor.model.createSelection();
 
-			const resultSelection = editor.model.isEditable( editor.model.document.selection );
-			const resultPos = editor.model.isEditable( position );
-			const resultRange = editor.model.isEditable( range );
-			const resultNode = editor.model.isEditable( element );
-			const resultRanges = editor.model.isEditable( ranges );
-			const resultEmptySelection = editor.model.isEditable( emptySelection );
-			const resultNull = editor.model.isEditable( null );
+			const resultSelection = editor.model.canEditAt( editor.model.document.selection );
+			const resultPos = editor.model.canEditAt( position );
+			const resultRange = editor.model.canEditAt( range );
+			const resultNode = editor.model.canEditAt( element );
+			const resultRanges = editor.model.canEditAt( ranges );
+			const resultEmptySelection = editor.model.canEditAt( emptySelection );
+			const resultNull = editor.model.canEditAt( null );
 
 			expect( resultSelection ).to.be.false;
 			expect( resultPos ).to.be.false;
@@ -628,7 +628,7 @@ describe( 'MultiRootEditor', () => {
 			editor.disableRoot( 'main' );
 
 			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
-			const result = editor.model.isEditable( element );
+			const result = editor.model.canEditAt( element );
 
 			expect( result ).to.be.false;
 		} );
@@ -652,8 +652,8 @@ describe( 'MultiRootEditor', () => {
 			const mainElement = editor.model.document.getRoot( 'main' ).getChild( 0 );
 			const secondElement = editor.model.document.getRoot( 'second' ).getChild( 0 );
 
-			const mainResult = editor.model.isEditable( mainElement );
-			const secondResult = editor.model.isEditable( secondElement );
+			const mainResult = editor.model.canEditAt( mainElement );
+			const secondResult = editor.model.canEditAt( secondElement );
 
 			expect( mainResult ).to.be.true;
 			expect( secondResult ).to.be.false;
@@ -669,12 +669,12 @@ describe( 'MultiRootEditor', () => {
 			editor.disableRoot( 'second' );
 
 			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
-			let result = editor.model.isEditable( element );
+			let result = editor.model.canEditAt( element );
 
 			expect( result ).to.be.false;
 
 			editor.enableRoot( 'second' );
-			result = editor.model.isEditable( element );
+			result = editor.model.canEditAt( element );
 
 			expect( result ).to.be.true;
 		} );
@@ -689,12 +689,12 @@ describe( 'MultiRootEditor', () => {
 			editor.enableRoot( 'second', 'firstLock' );
 			editor.enableRoot( 'second', 'differentLock' );
 
-			let result = editor.model.isEditable( element );
+			let result = editor.model.canEditAt( element );
 			expect( result ).to.be.false;
 
 			editor.enableRoot( 'second', 'secondLock' );
 
-			result = editor.model.isEditable( element );
+			result = editor.model.canEditAt( element );
 			expect( result ).to.be.true;
 		} );
 

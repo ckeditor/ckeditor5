@@ -288,9 +288,9 @@ export default class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			const isEditable = editor.model.isEditable( this._draggedRange );
+			const canEditAtDraggedRange = this.isEnabled && editor.model.canEditAt( this._draggedRange );
 
-			data.dataTransfer.effectAllowed = isEditable ? 'copyMove' : 'copy';
+			data.dataTransfer.effectAllowed = canEditAtDraggedRange ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
@@ -302,7 +302,7 @@ export default class DragDrop extends Plugin {
 				method: 'dragstart'
 			} );
 
-			if ( !isEditable ) {
+			if ( !canEditAtDraggedRange ) {
 				this._draggedRange.detach();
 				this._draggedRange = null;
 				this._draggingUid = '';
@@ -345,7 +345,7 @@ export default class DragDrop extends Plugin {
 			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target );
 
 			// Do not drop if target place is not editable.
-			if ( !editor.model.isEditable( targetRange ) ) {
+			if ( !editor.model.canEditAt( targetRange ) ) {
 				data.dataTransfer.dropEffect = 'none';
 
 				return;
@@ -394,7 +394,7 @@ export default class DragDrop extends Plugin {
 			this._removeDropMarker();
 
 			/* istanbul ignore if -- @preserve */
-			if ( !targetRange || !editor.model.isEditable( targetRange ) ) {
+			if ( !targetRange || !editor.model.canEditAt( targetRange ) ) {
 				this._finalizeDragging( false );
 				evt.stop();
 

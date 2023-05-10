@@ -82,7 +82,7 @@ export default class RootOperation extends Operation {
 	 * @inheritDoc
 	 */
 	public get affectedSelectable(): Selectable {
-		return null;
+		return this._document.getRoot( this.rootName );
 	}
 
 	/**

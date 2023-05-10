@@ -32,7 +32,7 @@ export abstract class ReplaceCommandBase extends Command {
 		this._state = state;
 
 		// Since this command executes on particular result independent of selection, it should be checked directly in execute block.
-		this._baseEnabledOnSelection = false;
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	public abstract override execute( ...args: Array<unknown> ): void;
@@ -49,7 +49,7 @@ export abstract class ReplaceCommandBase extends Command {
 		const range = result.marker!.getRange();
 
 		// Don't replace a result that is in non-editable place.
-		if ( !model.isEditable( range ) ) {
+		if ( !model.canEditAt( range ) ) {
 			return;
 		}
 

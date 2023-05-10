@@ -167,7 +167,17 @@ export default class Model extends ObservableMixin() {
 			evt.return = insertObject( this, element, selection, options );
 		} );
 
-		this.decorate( 'isEditable' );
+		// The base implementation for "decorated" method with remapped arguments.
+		this.on<ModelCanEditAtEvent>( 'canEditAt', evt => {
+			const canEditAt = !this.document.isReadOnly;
+
+			evt.return = canEditAt;
+
+			if ( !canEditAt ) {
+				// Prevent further processing if the selection is at non-editable place.
+				evt.stop();
+			}
+		} );
 
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.document );
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
@@ -827,14 +837,22 @@ export default class Model extends ObservableMixin() {
 	}
 
 	/**
-	 * Method used to check whether given selectable is at an editable place in the model.
+	 * Check whether given selectable is at a place in the model where it can be edited (returns `true`) or not (returns `false`).
 	 *
 	 * Should be used instead of {@link module:core/editor/editor~Editor#isReadOnly} to check whether a user action can happen at
 	 * given selectable. It may be decorated and used differently in different environment (e.g. multi-root editor can disable
-	 * particular root or a feature may add custom logic that disables editing of a given space in the model).
+	 * a particular root).
+	 *
+	 * This method is decorated. Although this method accepts any parameter of `Selectable` type, the
+	 * {@link ~Model#event:canEditAt `canEditAt` event} is fired with `selectable` normalized to an instance of
+	 * {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}
+	 *
+	 * @fires canEditAt
 	 */
-	public isEditable( selectable: Selectable ): boolean {
-		return !this.document.isReadOnly;
+	public canEditAt( selectable: Selectable ): boolean {
+		const selection = normalizeSelectable( selectable )!;
+
+		return this.fire<ModelCanEditAtEvent>( 'canEditAt', [ selection ] )!;
 	}
 
 	/**
@@ -1128,7 +1146,15 @@ function normalizeSelectable(
 	}
 
 	if ( selectable instanceof Node ) {
-		return new ModelSelection( selectable, placeOrOffset! );
+		if ( placeOrOffset ) {
+			return new ModelSelection( selectable, placeOrOffset );
+		} else {
+			if ( selectable.is( 'rootElement' ) ) {
+				return new ModelSelection( selectable, 'in' );
+			} else {
+				return new ModelSelection( selectable, 'on' );
+			}
+		}
 	}
 
 	return new ModelSelection( selectable );
@@ -1232,7 +1258,7 @@ export type ModelInsertObjectEvent = {
  * Event fired when {@link ~Model#deleteContent} method is called.
  *
  * The {@link ~Model#deleteContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#deleteContent
  * @param args The arguments passed to the original method.
@@ -1243,7 +1269,7 @@ export type ModelDeleteContentEvent = DecoratedMethodEvent<Model, 'deleteContent
  * Event fired when {@link ~Model#modifySelection} method is called.
  *
  * The {@link ~Model#modifySelection default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#modifySelection
  * @param args The arguments passed to the original method.
@@ -1254,11 +1280,29 @@ export type ModelModifySelectionEvent = DecoratedMethodEvent<Model, 'modifySelec
  * Event fired when {@link ~Model#getSelectedContent} method is called.
  *
  * The {@link ~Model#getSelectedContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
+ * listener to this event, so it can be fully customized by the features.
  *
  * @eventName ~Model#getSelectedContent
  * @param args The arguments passed to the original method.
  */
 export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelectedContent'>;
 
-export type ModelIsEditableEvent = DecoratedMethodEvent<Model, 'isEditable'>;
+/**
+ * Event fired when {@link ~Model#canEditAt} method is called.
+ *
+ * The {@link ~Model#canEditAt default action of that method} is implemented as a
+ * listener to this event, so it can be fully customized by the features.
+ *
+ * Although the original method accepts any parameter of `Selectable` type, this event is fired with `selectable` normalized
+ * to an instance of {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}.
+ *
+ * @eventName ~Model#canEditAt
+ * @param args The arguments passed to the original method.
+ */
+export type ModelCanEditAtEvent = {
+	name: 'canEditAt';
+	args: [ [
+		selectable: ModelSelection | DocumentSelection
+	] ];
+	return: boolean;
+};

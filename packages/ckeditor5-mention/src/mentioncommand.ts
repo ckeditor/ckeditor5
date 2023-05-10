@@ -51,11 +51,14 @@ import type { MentionAttribute } from './mention';
  *	```
  */
 export default class MentionCommand extends Command {
+	/**
+	 * @inheritDoc
+	 */
 	public constructor( editor: Editor ) {
 		super( editor );
 
 		// Since this command may pass range in execution parameters, it should be checked directly in execute block.
-		this._baseEnabledOnSelection = false;
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -92,7 +95,7 @@ export default class MentionCommand extends Command {
 		const range = options.range || selection.getFirstRange();
 
 		// Don't execute command if range is in non-editable place.
-		if ( !model.isEditable( range ) ) {
+		if ( !model.canEditAt( range ) ) {
 			return;
 		}
 

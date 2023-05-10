@@ -16,7 +16,13 @@ import {
 	type EditorReadyEvent
 } from 'ckeditor5/src/core';
 
-import { CKEditorError, getDataFromElement, isIterable, setDataInElement, type CollectionAddEvent } from 'ckeditor5/src/utils';
+import {
+	CKEditorError,
+	getDataFromElement,
+	setDataInElement,
+	type CollectionAddEvent
+} from 'ckeditor5/src/utils';
+
 import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
 
 import MultiRootEditorUI from './multirooteditorui';
@@ -24,16 +30,10 @@ import MultiRootEditorUIView from './multirooteditoruiview';
 
 import { isElement as _isElement } from 'lodash-es';
 import {
-	Selection,
-	DocumentSelection,
-	Node,
-	Range,
-	Position,
 	type RootElement,
 	type ViewRootEditableElement,
-	type Selectable,
 	type Writer,
-	type ModelIsEditableEvent
+	type ModelCanEditAtEvent
 } from 'ckeditor5/src/engine';
 
 /**
@@ -86,7 +86,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * A set of lock IDs for enabling or disabling particular root.
 	 */
-	private readonly _readOnlyRootLocks: Map<string, Set<symbol | string>>;
+	private readonly _readOnlyRootLocks = new Map<string, Set<symbol | string>>();
 
 	/**
 	 * Creates an instance of the multi-root editor.
@@ -116,8 +116,6 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		} else {
 			this.sourceElements = {};
 		}
-
-		this._readOnlyRootLocks = new Map();
 
 		if ( this.config.get( 'initialData' ) === undefined ) {
 			// Create initial data object containing data from all roots.
@@ -231,11 +229,21 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			}
 		} );
 
-		this.listenTo<ModelIsEditableEvent>( this.model, 'isEditable', ( evt, [ selectable ] ) => {
-			const isEditable = this._isEditable( selectable );
-			evt.return = isEditable;
+		// Overwrite `Model#canEditAt()` decorated method.
+		// Check if the provided selection is inside a read-only root. If so, return `false`.
+		this.listenTo<ModelCanEditAtEvent>( this.model, 'canEditAt', ( evt, [ selection ] ) => {
+			// Skip empty selections.
+			if ( !selection.getFirstPosition() ) {
+				return;
+			}
 
-			if ( !isEditable ) {
+			const rootName = selection.getFirstPosition()!.root.rootName!;
+			const canEditAt = !this._readOnlyRootLocks.has( rootName );
+
+			evt.return = canEditAt;
+
+			if ( !canEditAt ) {
+				// Prevent further processing if the selection is at non-editable place.
 				evt.stop();
 			}
 		}, { priority: 'high' } );
@@ -530,7 +538,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * Switches given editor root to the read-only mode.
 	 *
 	 * In contrary to {@link module:core/editor/editor~Editor#enableReadOnlyMode `enableReadOnlyMode()`}, which switches the whole editor
-	 * to the read-only mode, this method turns only a particular to the read-only mode. This can be useful when you want to prevent
+	 * to the read-only mode, this method turns only a particular root to the read-only mode. This can be useful when you want to prevent
 	 * editing only a part of the editor content.
 	 *
 	 * When you switch a root to the read-only mode, you need provide a unique identifier (`lockId`) that will identify this request. You
@@ -542,25 +550,23 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 * const myRoot = model.document.getRoot( 'myRoot' );
 	 *
 	 * editor.disableRoot( 'myRoot', 'my-lock' );
-	 * model.isEditable( myRoot ); // `false`
+	 * model.canEditAt( myRoot ); // `false`
 	 *
 	 * editor.disableRoot( 'myRoot', 'other-lock' );
 	 * editor.disableRoot( 'myRoot', 'other-lock' ); // Multiple locks with the same ID have no effect.
-	 * model.isEditable( myRoot ); // `false`
+	 * model.canEditAt( myRoot ); // `false`
 	 *
 	 * editor.enableRoot( 'myRoot', 'my-lock' );
-	 * model.isEditable( myRoot ); // `false`
+	 * model.canEditAt( myRoot ); // `false`
 	 *
 	 * editor.enableRoot( 'myRoot', 'other-lock' );
-	 * model.isEditable( myRoot ); // `true`
+	 * model.canEditAt( myRoot ); // `true`
 	 * ```
 	 *
 	 * See also {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode()`} and
 	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#enableRoot `MultiRootEditor#enableRoot()`}.
 	 *
-	 * Note that the editor will throw an error if you try to turn `$graveyard` root into read-only mode.
-	 *
-	 * @param rootName Name of the root to switch to read-only mode
+	 * @param rootName Name of the root to switch to read-only mode.
 	 * @param lockId A unique ID for setting the editor to the read-only state.
 	 */
 	public disableRoot( rootName: string, lockId: string | symbol ): void {
@@ -581,6 +587,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this._readOnlyRootLocks.set( rootName, new Set( [ lockId ] ) );
 
 			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+
 			editableRootElement.isReadOnly = true;
 
 			// Since one of the roots has changed read-only state, we need to refresh all commands that affect data.
@@ -607,6 +614,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 			this._readOnlyRootLocks.delete( rootName );
 
 			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+
 			editableRootElement.isReadOnly = this.isReadOnly;
 
 			// Since one of the roots has changed read-only state, we need to refresh all commands that affect data.
@@ -614,48 +622,6 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		} else {
 			locksForGivenRoot.delete( lockId );
 		}
-	}
-
-	/**
-	 * Checks whether given `selectable` is at a place in the model in which it can be edited.
-	 *
-	 * The check considers editor state (whether the editor is in read-only mode) and root state (whether the root is read-only or not)
-	 * in which the selectable is placed.
-	 *
-	 * The method returns `false` **only** when the editor is read-only or if the `selectable` has a root and the root is read-only.
-	 *
-	 * The method returns `true` for `null` selectable and for an empty selection. This is made this way for the closest compatibility with
-	 * the original {@link module:engine/model/model~Model#isEditable `Model#isEditable()`}.
-	 */
-	private _isEditable( selectable: Selectable ): boolean {
-		// All elements of a particular `selectable` should belong to the same root (if any).
-		let rootName: string | undefined;
-
-		if ( this.isReadOnly ) {
-			return false;
-		}
-
-		if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
-			rootName = selectable.getFirstPosition() ? selectable.getFirstPosition()!.root.rootName : undefined;
-		} else if ( selectable instanceof Range ) {
-			rootName = selectable.start.root.rootName;
-		} else if ( selectable instanceof Position ) {
-			rootName = selectable.root.rootName;
-		} else if ( selectable instanceof Node ) {
-			rootName = selectable.root.rootName;
-		} else if ( isIterable( selectable ) ) {
-			for ( const range of selectable as Iterable<Range> ) {
-				rootName = range.start.root.rootName;
-
-				break; // Since all ranges should have same root we can only check the first element.
-			}
-		}
-
-		if ( rootName && this._readOnlyRootLocks.has( rootName ) ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**

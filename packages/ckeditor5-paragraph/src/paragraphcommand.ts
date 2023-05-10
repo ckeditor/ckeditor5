@@ -20,7 +20,7 @@ export default class ParagraphCommand extends Command {
 		super( editor );
 
 		// Since this command may pass selection in execution block, it should be checked directly.
-		this._baseEnabledOnSelection = false;
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -61,7 +61,7 @@ export default class ParagraphCommand extends Command {
 		const selection = options.selection || document.selection;
 
 		// Don't execute command if selection is in non-editable place.
-		if ( !model.isEditable( selection ) ) {
+		if ( !model.canEditAt( selection ) ) {
 			return;
 		}
 

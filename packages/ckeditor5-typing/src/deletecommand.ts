@@ -42,7 +42,7 @@ export default class DeleteCommand extends Command {
 		this._buffer = new ChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
-		this._baseEnabledOnSelection = false;
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -77,7 +77,7 @@ export default class DeleteCommand extends Command {
 			const selection = writer.createSelection( options.selection || doc.selection );
 
 			// Don't execute command when selection is in non-editable place.
-			if ( !model.isEditable( selection ) ) {
+			if ( !model.canEditAt( selection ) ) {
 				return;
 			}
 

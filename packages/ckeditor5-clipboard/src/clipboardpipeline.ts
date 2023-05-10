@@ -164,7 +164,7 @@ export default class ClipboardPipeline extends Plugin {
 
 		// Pasting and dropping is disabled when selection is in non-editable place.
 		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
-			if ( data.method == 'paste' && !editor.model.isEditable( editor.model.document.selection ) ) {
+			if ( data.method == 'paste' && !editor.model.canEditAt( editor.model.document.selection ) ) {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
@@ -269,7 +269,7 @@ export default class ClipboardPipeline extends Plugin {
 		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => {
 			// Cutting is disabled when selection is in non-editable place.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
-			if ( !editor.model.isEditable( editor.model.document.selection ) ) {
+			if ( !editor.model.canEditAt( editor.model.document.selection ) ) {
 				data.preventDefault();
 			} else {
 				onCopyCut( evt, data );

@@ -359,7 +359,7 @@ export default class Widget extends Plugin {
 		const modelSelection = modelDocument.selection;
 
 		// Do nothing when the read only mode is enabled.
-		if ( !this.editor.model.isEditable( modelSelection ) ) {
+		if ( !this.editor.model.canEditAt( modelSelection ) ) {
 			return;
 		}
 

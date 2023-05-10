@@ -47,7 +47,7 @@ export default abstract class BaseCommand extends Command {
 		this.refresh();
 
 		// This command should not depend on selection change.
-		this._baseEnabledOnSelection = false;
+		this._isEnabledBasedOnSelection = false;
 
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set already.
@@ -210,7 +210,7 @@ export default abstract class BaseCommand extends Command {
 				// Do not apply any operation on non-editable space.
 				const affectedSelectable = operation.affectedSelectable;
 
-				if ( affectedSelectable && !this.editor.model.isEditable( affectedSelectable ) ) {
+				if ( affectedSelectable && !model.canEditAt( affectedSelectable ) ) {
 					operation = new NoOperation( operation.baseVersion );
 				}
 

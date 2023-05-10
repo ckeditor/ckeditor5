@@ -110,10 +110,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.true;
 		} );
 
-		it( 'should disable commands when selection is in non-editable place and _baseEnabledOnSelection is true', () => {
+		it( 'should disable commands when selection is in non-editable place and _isEnabledBasedOnSelection is true', () => {
 			command.isEnabled = true;
 			command.affectsData = true;
-			command._baseEnabledOnSelection = true;
+			command._isEnabledBasedOnSelection = true;
 
 			editor.model.document.isReadOnly = true;
 			command.refresh();
@@ -121,10 +121,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should not disable commands when selection is in non-editable place, but _baseEnabledOnSelection is false', () => {
+		it( 'should not disable commands when selection is in non-editable place, but _isEnabledBasedOnSelection is false', () => {
 			command.isEnabled = true;
 			command.affectsData = true;
-			command._baseEnabledOnSelection = false;
+			command._isEnabledBasedOnSelection = false;
 
 			editor.model.document.isReadOnly = true;
 			command.refresh();

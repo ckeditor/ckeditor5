@@ -69,12 +69,12 @@ export default class Command extends ObservableMixin() {
 	 * selection is placed.
 	 *
 	 * By default, it is set to `true`. If the document selection is placed in a
-	 * {@link module:engine/model/model~Model#isEditable non-editable} place (such as non-editable root), the command becomes disabled.
+	 * {@link module:engine/model/model~Model#canEditAt non-editable} place (such as non-editable root), the command becomes disabled.
 	 *
 	 * The flag should be changed to `false` in a concrete command's constructor if the command should not change its `isEnabled`
 	 * accordingly to the document selection.
 	 */
-	protected _baseEnabledOnSelection: boolean;
+	protected _isEnabledBasedOnSelection: boolean;
 
 	/**
 	 * A flag indicating whether a command execution changes the editor data or not.
@@ -101,7 +101,7 @@ export default class Command extends ObservableMixin() {
 		this.set( 'isEnabled', false );
 
 		this._affectsData = true;
-		this._baseEnabledOnSelection = true;
+		this._isEnabledBasedOnSelection = true;
 		this._disableStack = new Set();
 
 		this.decorate( 'execute' );
@@ -116,14 +116,14 @@ export default class Command extends ObservableMixin() {
 		} );
 
 		// By default, commands are disabled if the selection is in non-editable place or editor is in read-only mode.
-		this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', ( evt: EventInfo<string, boolean> ) => {
+		this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', evt => {
 			if ( !this.affectsData ) {
 				return;
 			}
 
-			// Checking `editor.isReadOnly` is needed for all commands that have `_baseEnabledOnSelection == false`.
+			// Checking `editor.isReadOnly` is needed for all commands that have `_isEnabledBasedOnSelection == false`.
 			// E.g. undo does not base on selection, but affects data and should be disabled when the editor is in read-only mode.
-			if ( editor.isReadOnly || ( this._baseEnabledOnSelection && !editor.model.isEditable( editor.model.document.selection ) ) ) {
+			if ( editor.isReadOnly || this._isEnabledBasedOnSelection && !editor.model.canEditAt( editor.model.document.selection ) ) {
 				evt.return = false;
 				evt.stop();
 			}
