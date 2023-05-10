@@ -21,11 +21,6 @@
 	background: var(--ck-powered-by-background);
 	min-height: unset;
 
-	&::after,
-	&::before {
-		display: none;
-	}
-
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);
 

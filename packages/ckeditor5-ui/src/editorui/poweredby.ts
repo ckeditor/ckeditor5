@@ -30,7 +30,10 @@ const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
 	left: -9999999,
-	name: 'invalid'
+	name: 'invalid',
+	config: {
+		withArrow: false
+	}
 };
 
 type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
@@ -43,19 +46,26 @@ type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
  */
 export default class PoweredBy extends DomEmitterMixin() {
 	/**
-	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
-	 */
-	private _balloonView: BalloonPanelView | null;
-
-	/**
 	 * Editor instance the helper was created for.
 	 */
 	private readonly editor: Editor;
 
 	/**
+	 * A reference to the balloon panel hosting and positioning the "powered by" link and logo.
+	 */
+	private _balloonView: BalloonPanelView | null;
+
+	/**
 	 * A throttled version of the {@link #_showBalloon} method meant for frequent use to avoid performance loss.
 	 */
 	private _showBalloonThrottled: DebouncedFunc<() => void>;
+
+	/**
+	 * A reference to the last editing root focused by the user. Since the focus can move to other focusable
+	 * elements in the UI, this reference allows positioning the balloon over the right root whether the
+	 * user is typing or using the UI.
+	 */
+	private _lastFocusedDOMRoot: HTMLElement | null;
 
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
@@ -68,6 +78,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.editor = editor;
 		this._balloonView = null;
+		this._lastFocusedDOMRoot = null;
 		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50, { leading: true } );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
@@ -80,8 +91,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 		const balloon = this._balloonView;
 
 		if ( balloon ) {
+			// Balloon gets destroyed by the body collection.
+			// The powered by view gets destroyed by the balloon.
 			balloon.unpin();
-			balloon.destroy();
 			this._balloonView = null;
 		}
 
@@ -107,17 +119,24 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
 			if ( isFocused ) {
+				const focusedElement = editor.ui.focusTracker.focusedElement! as HTMLElement;
+				const domRoots = Array.from( editor.editing.view.domRoots.values() );
+
+				if ( domRoots.includes( focusedElement ) ) {
+					this._lastFocusedDOMRoot = focusedElement;
+				} else {
+					this._lastFocusedDOMRoot = domRoots[ 0 ];
+				}
+
 				this._showBalloon();
 			} else {
 				this._hideBalloon();
+
+				this._lastFocusedDOMRoot = null;
 			}
 		} );
 
 		editor.ui.on( 'update', () => {
-			if ( !editor.ui.focusTracker.isFocused ) {
-				return;
-			}
-
 			this._showBalloonThrottled();
 		} );
 
@@ -137,8 +156,9 @@ export default class PoweredBy extends DomEmitterMixin() {
 		const view = new PoweredByView( editor.locale );
 
 		balloon.content.add( view );
-		balloon.withArrow = false;
-		balloon.class = 'ck-powered-by-balloon';
+		balloon.set( {
+			class: 'ck-powered-by-balloon'
+		} );
 
 		editor.ui.view.body.add( balloon );
 		editor.ui.focusTracker.add( balloon.element! );
@@ -150,7 +170,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Attempts to display the balloon with the "powered by" view.
 	 */
 	private _showBalloon() {
-		const attachOptions = getBalloonAttachOptions( this.editor );
+		if ( !this._lastFocusedDOMRoot ) {
+			return;
+		}
+
+		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedDOMRoot );
 
 		if ( attachOptions ) {
 			if ( !this._balloonView ) {
@@ -224,10 +248,7 @@ class PoweredByView extends View<HTMLDivElement> {
 						iconView
 					],
 					on: {
-						dragstart: bind.to(
-							/* istanbul ignore next -- @preserve */
-							evt => evt.preventDefault()
-						)
+						dragstart: bind.to( evt => evt.preventDefault() )
 					}
 				}
 			]
@@ -235,17 +256,10 @@ class PoweredByView extends View<HTMLDivElement> {
 	}
 }
 
-function getBalloonAttachOptions( editor: Editor ): Partial<PositionOptions> | null {
-	const focusedDomRoot = getFocusedDOMRoot( editor );
-
-	if ( !focusedDomRoot ) {
-		return null;
-	}
-
+function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement ): Partial<PositionOptions> | null {
 	const poweredByConfig = getNormalizedConfig( editor )!;
 	const positioningFunction = poweredByConfig.side === 'right' ?
 		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
-		/* istanbul ignore next -- @preserve */
 		getLowerLeftCornerPosition( focusedDomRoot, poweredByConfig );
 
 	return {
@@ -260,7 +274,6 @@ function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, config: Power
 	} );
 }
 
-/* istanbul ignore next -- @preserve */
 function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
 	return getLowerCornerPosition( focusedDomRoot, config, rootRect => rootRect.left + config.horizontalOffset );
 }
@@ -274,7 +287,6 @@ function getLowerCornerPosition(
 		const visibleRootRect = rootRect.getVisible();
 
 		// Root cropped by ancestors.
-		/* istanbul ignore next -- @preserve */
 		if ( !visibleRootRect ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
@@ -283,7 +295,6 @@ function getLowerCornerPosition(
 
 		let balloonTop;
 
-		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			balloonTop = rootRect.bottom - balloonRect.height;
 		}
@@ -295,63 +306,48 @@ function getLowerCornerPosition(
 
 		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
 
-		/* istanbul ignore else -- @preserve */
 		if ( config.position === 'inside' ) {
 			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
 			// The watermark cannot be positioned in this corner because the corner is not quite visible.
-			/* istanbul ignore next -- @preserve */
 			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
 				return OFF_THE_SCREEN_POSITION;
 			}
 		}
 		else {
-			/* istanbul ignore next -- @preserve */
 			const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
 
-			/* istanbul ignore next -- @preserve */
 			if ( firstScrollableRootAncestor ) {
 				const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				/* istanbul ignore next -- @preserve */
 				if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
 		}
 
-		/* istanbul ignore next -- @preserve */
 		return {
 			top: balloonTop,
 			left: balloonLeft,
-			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`
+			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`,
+			config: {
+				withArrow: false
+			}
 		};
 	};
 }
 
-function getFocusedDOMRoot( editor: Editor ) {
-	for ( const [ , domRoot ] of editor.editing.view.domRoots ) {
-		const { activeElement } = domRoot.ownerDocument;
-		if ( activeElement === domRoot || domRoot.contains( activeElement ) ) {
-			return domRoot;
-		}
-	}
-
-	return null;
-}
-
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
-	/* istanbul ignore next -- @preserve */
 	const position = userConfig && userConfig.position || 'inside';
 
 	return {
 		position,
-		verticalOffset: position === 'inside' ? 5 : /* istanbul ignore next -- @preserve */ 0,
+		verticalOffset: position === 'inside' ? 5 : 0,
 		horizontalOffset: 5,
 
-		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : /* istanbul ignore next -- @preserve */ 'left',
+		side: editor.locale.contentLanguageDirection === 'ltr' ? 'right' : 'left',
 		...userConfig
 	};
 }
