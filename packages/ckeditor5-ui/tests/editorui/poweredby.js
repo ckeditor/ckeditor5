@@ -566,7 +566,7 @@ describe( 'PoweredBy', () => {
 				height: 100
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			editor.ui.fire( 'update' );
 
@@ -629,7 +629,7 @@ describe( 'PoweredBy', () => {
 				height: 49
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			editor.ui.fire( 'update' );
 
