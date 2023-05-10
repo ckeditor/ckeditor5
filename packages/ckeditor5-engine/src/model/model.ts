@@ -1148,12 +1148,10 @@ function normalizeSelectable(
 	if ( selectable instanceof Node ) {
 		if ( placeOrOffset || placeOrOffset === 0 ) {
 			return new ModelSelection( selectable, placeOrOffset );
+		} else if ( selectable.is( 'rootElement' ) ) {
+			return new ModelSelection( selectable, 'in' );
 		} else {
-			if ( selectable.is( 'rootElement' ) ) {
-				return new ModelSelection( selectable, 'in' );
-			} else {
-				return new ModelSelection( selectable, 'on' );
-			}
+			return new ModelSelection( selectable, 'on' );
 		}
 	}
 
