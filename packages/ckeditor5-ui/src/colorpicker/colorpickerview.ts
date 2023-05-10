@@ -9,7 +9,7 @@
 
 import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerOutputFormat } from './utils';
 
-import { type Locale, global } from '@ckeditor/ckeditor5-utils';
+import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
@@ -162,6 +162,16 @@ export default class ColorPickerView extends View {
 	 *
 	 */
 	public focus(): void {
+		// In Firefox we need to move the focus to the input first.
+		// Otherwise, once the saturation slider is moved for the first time,
+		// editor collapses the selection and doesn't apply the color change.
+		/* istanbul ignore next -- @preserve */
+		if ( env.isGecko ) {
+			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
+
+			input.focus();
+		}
+
 		const firstSlider = this.slidersView.first!;
 
 		firstSlider.focus();
