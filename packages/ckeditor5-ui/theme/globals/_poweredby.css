@@ -1,0 +1,120 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-padding-top: 2px;
+	--ck-powered-by-padding-left: 4px;
+	--ck-powered-by-text-color: hsl(0, 0%, 31%);
+	--ck-powered-by-border-radius: 100px;
+	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-border-color: var(--ck-color-focus-border);
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon {
+	--ck-border-radius: var(--ck-powered-by-border-radius);
+
+	border: 0;
+	box-shadow: none;
+	background: var(--ck-powered-by-background);
+	min-height: unset;
+
+	& .ck.ck-powered-by {
+		line-height: var(--ck-powered-by-line-height);
+
+		& a {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			opacity: .66;
+			filter: grayscale(80%);
+			line-height: var(--ck-powered-by-line-height);
+			padding: var(--ck-powered-by-padding-top) var(--ck-powered-by-padding-left);
+		}
+
+		& .ck-powered-by__label {
+			font-size: 7.5px;
+			letter-spacing: -.2px;
+			padding-left: 2px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-right: 4px;
+			cursor: pointer;
+			line-height: var(--ck-powered-by-line-height);
+			color: var(--ck-powered-by-text-color);
+
+		}
+
+		& .ck-icon {
+			display: block;
+			cursor: pointer;
+		}
+
+		&:hover {
+			& a {
+				filter: grayscale(0%);
+				opacity: 1;
+			}
+		}
+	}
+
+	&[class*="root-width_narrow"] {
+		/* Label sliding out on :hover when the editor is narrow */
+		& .ck.ck-powered-by .ck-powered-by__label {
+			visibility: hidden;
+			position: absolute;
+			display: block;
+			left: 6px;
+			top: 0px;
+			bottom: 0px;
+			transform: translateX(0%);
+			max-width: 0px;
+			transition: transform .1s ease-in-out, max-width .1s ease-in-out;
+			overflow: hidden;
+			background: var(--ck-powered-by-background);
+			border-radius: var(--ck-powered-by-border-radius) 0 0 var(--ck-powered-by-border-radius);
+			padding: var(--ck-powered-by-padding-top) 6px var(--ck-powered-by-padding-top) var(--ck-powered-by-padding-left);
+			z-index: 0;
+		}
+
+		&:hover .ck.ck-powered-by .ck-powered-by__label {
+			visibility: visible;
+			max-width: 60px;
+			transform: translateX(-100%);
+		}
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+
+		&[class*="narrow"] {
+			& .ck.ck-powered-by .ck-powered-by__label {
+				top: -1px;
+				bottom: -1px;
+				border-width: 1px 0 1px 1px;
+				border-style: solid;
+				border-color: var(--ck-powered-by-border-color);
+			}
+		}
+	}
+
+	&[class*="side_left"][class*="root-width_narrow"] {
+		& .ck.ck-powered-by .ck-powered-by__label {
+			position: static;
+			border: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		&:hover .ck.ck-powered-by .ck-powered-by__label {
+			visibility: visible;
+			max-width: auto;
+			transform: translateX(0%);
+			padding: 0 0 0 2px;
+			margin-right: 4px;
+		}
+	}
+}
+
