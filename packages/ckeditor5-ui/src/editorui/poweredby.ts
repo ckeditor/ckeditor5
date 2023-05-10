@@ -95,7 +95,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _handleEditorReady(): void {
 		const editor = this.editor;
 
-		const licenseKey = this.editor.config.get( 'licenseKey' );
+		const licenseKey = editor.config.get( 'licenseKey' );
 
 		if ( licenseKey && verify( licenseKey ) === 'VALID' ) {
 			return;
