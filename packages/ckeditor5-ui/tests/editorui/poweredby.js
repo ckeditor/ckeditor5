@@ -71,7 +71,7 @@ describe( 'PoweredBy', () => {
 			it( 'should create the balloon on demand', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.null;
 
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
@@ -79,16 +79,12 @@ describe( 'PoweredBy', () => {
 
 		describe( 'balloon management on editor focus change', () => {
 			it( 'should show the balloon when the editor gets focused', () => {
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			} );
 
 			it( 'should show the balloon if the focus is not in the editing root but in other editor UI', async () => {
-				const focusableWebPageElement = document.createElement( 'input' );
-				focusableWebPageElement.type = 'text';
-				document.body.appendChild( focusableWebPageElement );
-
 				const focusableEditorUIElement = document.createElement( 'input' );
 				focusableEditorUIElement.type = 'text';
 				document.body.appendChild( focusableEditorUIElement );
@@ -96,38 +92,31 @@ describe( 'PoweredBy', () => {
 				editor.ui.focusTracker.add( focusableEditorUIElement );
 
 				// Just generate the balloon on demand.
-				editor.editing.view.focus();
-				focusableWebPageElement.focus();
+				focusEditor( editor );
+				blurEditor( editor );
 
 				await wait( 10 );
 				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
-				focusableEditorUIElement.focus();
+				focusEditor( editor, focusableEditorUIElement );
 
 				sinon.assert.calledOnce( pinSpy );
 				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
 
-				focusableWebPageElement.remove();
 				focusableEditorUIElement.remove();
 			} );
 
 			it( 'should hide the balloon on blur', async () => {
-				const input = document.createElement( 'input' );
-				input.type = 'text';
-				document.body.appendChild( input );
-
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 
-				input.focus();
+				blurEditor( editor );
 
 				// FocusTracker's blur handler is asynchronous.
 				await wait( 200 );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.false;
-
-				input.remove();
 			} );
 		} );
 
@@ -141,7 +130,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should (re-)show the balloon but throttled', async () => {
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -153,7 +142,7 @@ describe( 'PoweredBy', () => {
 				await wait( 75 );
 
 				sinon.assert.calledOnce( pinSpy );
-				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+				sinon.assert.calledWith( pinSpy.firstCall, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
 			} );
 
 			it( 'should (re-)show the balloon if the focus is not in the editing root but in other editor UI', async () => {
@@ -162,7 +151,7 @@ describe( 'PoweredBy', () => {
 				editor.ui.focusTracker.add( focusableEditorUIElement );
 				document.body.appendChild( focusableEditorUIElement );
 
-				focusableEditorUIElement.focus();
+				focusEditor( editor, focusableEditorUIElement );
 
 				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -187,7 +176,7 @@ describe( 'PoweredBy', () => {
 			beforeEach( () => {
 				focusTrackerAddSpy = testUtils.sinon.spy( editor.ui.focusTracker, 'add' );
 
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				balloon = editor.ui.poweredBy._balloonView;
 			} );
@@ -221,7 +210,7 @@ describe( 'PoweredBy', () => {
 			let view;
 
 			beforeEach( () => {
-				editor.editing.view.focus();
+				focusEditor( editor );
 
 				view = editor.ui.poweredBy._balloonView.content.first;
 			} );
@@ -265,7 +254,7 @@ describe( 'PoweredBy', () => {
 	describe( 'destroy()', () => {
 		describe( 'if there was a balloon', () => {
 			beforeEach( () => {
-				editor.editing.view.focus();
+				focusEditor( editor );
 			} );
 
 			it( 'should unpin the balloon', () => {
@@ -333,7 +322,7 @@ describe( 'PoweredBy', () => {
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
@@ -346,7 +335,7 @@ describe( 'PoweredBy', () => {
 				language: 'ar'
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -374,7 +363,7 @@ describe( 'PoweredBy', () => {
 		} );
 
 		it( 'should position the balloon in the lower right corner by default', async () => {
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -408,7 +397,7 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -444,7 +433,7 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -471,7 +460,7 @@ describe( 'PoweredBy', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should hiden the balloon if displayed over the bottom root border but cropped by an ancestor with overflow', async () => {
+		it( 'should hide the balloon if displayed over the bottom root border but cropped by an ancestor with overflow', async () => {
 			const editor = await createEditor( element, {
 				ui: {
 					poweredBy: {
@@ -491,7 +480,7 @@ describe( 'PoweredBy', () => {
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -530,7 +519,7 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
-			editor.editing.view.focus();
+			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -692,5 +681,22 @@ describe( 'PoweredBy', () => {
 		return new Promise( res => {
 			window.setTimeout( res, time );
 		} );
+	}
+
+	function focusEditor( editor, focusableUIElement ) {
+		if ( !focusableUIElement ) {
+			focusableUIElement = editor.editing.view.getDomRoot();
+			editor.editing.view.focus();
+		} else {
+			focusableUIElement.focus();
+		}
+
+		editor.ui.focusTracker.focusedElement = focusableUIElement;
+		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function blurEditor( editor ) {
+		editor.ui.focusTracker.focusedElement = null;
+		editor.ui.focusTracker.isFocused = null;
 	}
 } );
