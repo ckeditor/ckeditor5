@@ -10,7 +10,9 @@ meta-description: Learn how to get help and support and how to provide feedback.
 <!-- This is a placeholder article -->
 ## Why the "Powered by CKEditor 5" logo?
 
-Starting from version v38.0.0 onwards, all open-source installations of CKEditor (using it under the GPL terms) will carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. This new logo links directly to the [CKEditor website](https://ckeditor.com/) to strengthen the awareness of who is powering and modernizing their rich text editor.
+From version v38.0.0 onwards, all open source installations of CKEditor will carry a small “Powered by CKEditor” annotation in the bottom right corner of the editing area. This new tag links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some, it is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+
+It is also another way for us to gather feedback from users and continue to improve this major open source project that we have been supporting for more than 20 years. CKEditor has 40+ full time engineers and R&D professionals focused on its continual evolution, with 30K+ developers now using it on a daily basis.
 
 This change does not affect customers with commercial licenses. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 <!-- Place a screenshot somewhere around this area possibly -->
