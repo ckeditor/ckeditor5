@@ -26,6 +26,7 @@ import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig'
 
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
+const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 250;
 const OFF_THE_SCREEN_POSITION = {
 	top: -9999999,
@@ -291,7 +292,9 @@ function getLowerCornerPosition(
 			return OFF_THE_SCREEN_POSITION;
 		}
 
-		const isRootNarrow = rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD;
+		if ( rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD || rootRect.height < NARROW_ROOT_HEIGHT_THRESHOLD ) {
+			return OFF_THE_SCREEN_POSITION;
+		}
 
 		let balloonTop;
 
@@ -330,7 +333,7 @@ function getLowerCornerPosition(
 		return {
 			top: balloonTop,
 			left: balloonLeft,
-			name: `root-width_${ isRootNarrow ? 'narrow' : 'default' }-position_${ config.position }-side_${ config.side }`,
+			name: `position_${ config.position }-side_${ config.side }`,
 			config: {
 				withArrow: false
 			}
