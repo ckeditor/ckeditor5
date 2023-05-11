@@ -106,6 +106,10 @@
 		}
 	}
 
+	&:focus {
+		outline: none;
+	}
+
 	@nest .ck-toolbar-container & {
 		border: 0;
 	}

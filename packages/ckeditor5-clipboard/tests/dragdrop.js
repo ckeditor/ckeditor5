@@ -37,6 +37,26 @@ describe( 'Drag and Drop', () => {
 		expect( DragDrop.pluginName ).to.equal( 'DragDrop' );
 	} );
 
+	it( 'should not initialize if DragDropExperimental plugin is loaded', async () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		function DragDropExperimental() {}
+
+		DragDropExperimental.pluginName = 'DragDropExperimental';
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ DragDrop, DragDropExperimental ]
+		} );
+
+		const plugin = editor.plugins.get( 'DragDrop' );
+
+		expect( plugin.isEnabled ).to.be.false;
+
+		await editor.destroy();
+		await editorElement.remove();
+	} );
+
 	it( 'should be disabled on Android', async () => {
 		env.isAndroid = true;
 

@@ -14,7 +14,6 @@ const upath = require( 'upath' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const updateVersionReferences = require( './update-version-references' );
 const buildTsAndDllForCkeditor5Root = require( './buildtsanddllforckeditor5root' );
-const pkgJson = require( '../../package.json' );
 
 const abortController = new AbortController();
 const PACKAGES_DIRECTORY = 'packages';
@@ -39,13 +38,14 @@ abortController.signal.addEventListener( 'abort', () => {
 
 	releaseTools.updateDependencies( {
 		version: '^' + latestVersion,
+		packagesDirectory: PACKAGES_DIRECTORY,
 		shouldUpdateVersionCallback: require( './isckeditor5package' )
 	} );
 
-	// releaseTools.updateVersions( {
-	// 	packagesDirectory: PACKAGES_DIRECTORY,
-	// 	version: latestVersion
-	// } );
+	releaseTools.updateVersions( {
+		packagesDirectory: PACKAGES_DIRECTORY,
+		version: latestVersion
+	} );
 
 	updateVersionReferences( {
 		version: latestVersion,
@@ -54,44 +54,24 @@ abortController.signal.addEventListener( 'abort', () => {
 
 	buildTsAndDllForCkeditor5Root();
 
+	await releaseTools.executeInParallel( {
+		packagesDirectory: PACKAGES_DIRECTORY,
+		processDescription: 'Compiling TypeScript...',
+		signal: abortController.signal,
+		taskToExecute: require( './compiletypescriptcallback' )
+	} );
+
 	await releaseTools.prepareRepository( {
 		outputDirectory: RELEASE_DIRECTORY,
 		packagesDirectory: PACKAGES_DIRECTORY,
-		rootPackageJson: {
-			name: pkgJson.name,
-			version: pkgJson.version,
-			keywords: pkgJson.keywords,
-			description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
-				' Made with real-time collaborative editing in mind.',
-			dependencies: getCKEditor5Dependencies( pkgJson.dependencies ),
-			engines: pkgJson.engines,
-			author: pkgJson.author,
-			license: pkgJson.license,
-			homepage: pkgJson.homepage,
-			bugs: pkgJson.bugs,
-			repository: pkgJson.repository,
-			files: [
-				// Do not add the entire `build/` directory as it contains files produced by internal scripts:
-				// automated/manual tests, translations, documentation, content styles.
-				// If you need to release anything from the directory, insert a relative path to the file/directory.
-				'src/*.js',
-				'src/*.d.ts',
-				'build/ckeditor5-dll.js',
-				'build/ckeditor5-dll.manifest.json',
-				'build/translations/*.js',
-				// npm default files.
-				'CHANGELOG.md',
-				'LICENSE.md',
-				'README.md'
-			]
-		}
+		rootPackageJson: getCKEditor5PackageJson()
 	} );
 
 	await releaseTools.executeInParallel( {
 		packagesDirectory: RELEASE_DIRECTORY,
-		processDescription: 'Compiling TypeScript...',
+		processDescription: 'Updating entries in `package.json`...',
 		signal: abortController.signal,
-		taskToExecute: require( './compiletypescriptcallback' )
+		taskToExecute: require( './updatepackageentrypoint' )
 	} );
 
 	await releaseTools.executeInParallel( {
@@ -101,6 +81,42 @@ abortController.signal.addEventListener( 'abort', () => {
 		taskToExecute: require( './preparedllbuildscallback' )
 	} );
 } )();
+
+/**
+ * @returns {Object}
+ */
+function getCKEditor5PackageJson() {
+	const pkgJson = require( '../../package.json' );
+
+	return {
+		name: pkgJson.name,
+		version: pkgJson.version,
+		keywords: pkgJson.keywords,
+		description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
+			' Made with real-time collaborative editing in mind.',
+		dependencies: getCKEditor5Dependencies( pkgJson.dependencies ),
+		engines: pkgJson.engines,
+		author: pkgJson.author,
+		license: pkgJson.license,
+		homepage: pkgJson.homepage,
+		bugs: pkgJson.bugs,
+		repository: pkgJson.repository,
+		files: [
+			// Do not add the entire `build/` directory as it contains files produced by internal scripts:
+			// automated/manual tests, translations, documentation, content styles.
+			// If you need to release anything from the directory, insert a relative path to the file/directory.
+			'src/*.js',
+			'src/*.d.ts',
+			'build/ckeditor5-dll.js',
+			'build/ckeditor5-dll.manifest.json',
+			'build/translations/*.js',
+			// npm default files.
+			'CHANGELOG.md',
+			'LICENSE.md',
+			'README.md'
+		]
+	};
+}
 
 /**
  * Returns an array that contains name of packages that the `ckeditor5` package should define as its dependencies.

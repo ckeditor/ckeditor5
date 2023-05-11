@@ -7,8 +7,6 @@
  * @module clipboard/dragdrop
  */
 
-/* globals setTimeout, clearTimeout */
-
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -26,7 +24,13 @@ import {
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
-import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	uid,
+	delay,
+	type DelayedFunc,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, {
@@ -38,7 +42,7 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver';
 
-import { type DebouncedFunc, throttle } from 'lodash-es';
+import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/clipboard.css';
 
@@ -185,6 +189,12 @@ export default class DragDrop extends Plugin {
 		this._updateDropMarkerThrottled = throttle( targetRange => this._updateDropMarker( targetRange ), 40 );
 		this._removeDropMarkerDelayed = delay( () => this._removeDropMarker(), 40 );
 		this._clearDraggableAttributesDelayed = delay( () => this._clearDraggableAttributes(), 40 );
+
+		if ( editor.plugins.has( 'DragDropExperimental' ) ) {
+			this.forceDisabled( 'DragDropExperimental' );
+
+			return;
+		}
 
 		view.addObserver( ClipboardObserver );
 		view.addObserver( MouseObserver );
@@ -807,32 +817,6 @@ function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEf
 	}
 
 	return [ 'all', 'copyMove' ].includes( dataTransfer.effectAllowed ) ? 'move' : 'copy';
-}
-
-/**
- * Returns a function wrapper that will trigger a function after a specified wait time.
- * The timeout can be canceled by calling the cancel function on the returned wrapped function.
- * @param func The function to wrap.
- * @param wait The timeout in ms.
- */
-function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
-	let timer: ReturnType<typeof setTimeout>;
-
-	function delayed( ...args: Parameters<T> ) {
-		delayed.cancel();
-		timer = setTimeout( () => func( ...args ), wait );
-	}
-
-	delayed.cancel = () => {
-		clearTimeout( timer );
-	};
-
-	return delayed;
-}
-
-interface DelayedFunc<T extends ( ...args: Array<any> ) => any> {
-	( ...args: Parameters<T> ): void;
-	cancel(): void;
 }
 
 /**
