@@ -1,6 +1,6 @@
 ---
-category: support
-order: 15
+category: licensing
+order: 20
 menu-title: Obtaining the license key
 ---
 

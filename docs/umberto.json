@@ -535,7 +535,15 @@
 			"name": "Support",
 			"id": "support",
 			"navigationIncludeIndex": true,
-			"slug": "support"
+			"slug": "support",
+			"categories": [
+				{
+					"name": "Licensing and activation",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 20
+				}
+			]
 		},
 		{
 			"name": "Framework",
