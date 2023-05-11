@@ -29,8 +29,8 @@ const ICON_HEIGHT = 10;
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
 const OFF_THE_SCREEN_POSITION = {
-	top: -9999999,
-	left: -9999999,
+	top: -99999,
+	left: -99999,
 	name: 'invalid',
 	config: {
 		withArrow: false
