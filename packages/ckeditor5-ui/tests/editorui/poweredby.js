@@ -148,8 +148,8 @@ describe( 'PoweredBy', () => {
 						return {
 							top: 0,
 							left: 0,
-							right: 300,
-							width: 300,
+							right: 400,
+							width: 400,
 							bottom: 200,
 							height: 200
 						};
@@ -163,8 +163,8 @@ describe( 'PoweredBy', () => {
 				domRoot.getBoundingClientRect.returns( {
 					top: 0,
 					left: 0,
-					right: 250,
-					width: 250,
+					right: 350,
+					width: 350,
 					bottom: 100,
 					height: 100
 				} );
@@ -387,7 +387,7 @@ describe( 'PoweredBy', () => {
 		let rootRect, balloonRect;
 
 		beforeEach( () => {
-			rootRect = new Rect( { top: 0, left: 0, width: 300, right: 300, bottom: 100, height: 100 } );
+			rootRect = new Rect( { top: 0, left: 0, width: 400, right: 400, bottom: 100, height: 100 } );
 			balloonRect = new Rect( { top: 0, left: 0, width: 20, right: 20, bottom: 10, height: 10 } );
 		} );
 
@@ -461,7 +461,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 85,
-				left: 275,
+				left: 375,
 				name: 'position_inside-side_right',
 				config: {
 					withArrow: false
@@ -531,7 +531,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 95,
-				left: 275,
+				left: 375,
 				name: 'position_border-side_right',
 				config: {
 					withArrow: false
@@ -617,7 +617,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 80,
-				left: 270,
+				left: 370,
 				name: 'position_inside-side_right',
 				config: {
 					withArrow: false
@@ -627,7 +627,7 @@ describe( 'PoweredBy', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should not display the balloon if the root is narrower than 250px', async () => {
+		it( 'should not display the balloon if the root is narrower than 350px', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
 			testUtils.sinon.stub( Rect.prototype, 'getVisible' ).callsFake( function() {
@@ -641,8 +641,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 249,
-				width: 249,
+				right: 349,
+				width: 349,
 				bottom: 100,
 				height: 100
 			} );
@@ -662,8 +662,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 250,
-				width: 250,
+				right: 350,
+				width: 350,
 				bottom: 100,
 				height: 100
 			} );
@@ -682,7 +682,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 85,
-				left: 275,
+				left: 375,
 				name: 'position_inside-side_right',
 				config: {
 					withArrow: false
@@ -704,8 +704,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 300,
-				width: 300,
+				right: 1000,
+				width: 1000,
 				bottom: 49,
 				height: 49
 			} );
@@ -725,8 +725,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 300,
-				width: 300,
+				right: 1000,
+				width: 1000,
 				bottom: 50,
 				height: 50
 			} );
@@ -745,7 +745,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 85,
-				left: 275,
+				left: 375,
 				name: 'position_inside-side_right',
 				config: {
 					withArrow: false
