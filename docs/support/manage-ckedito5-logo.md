@@ -16,7 +16,7 @@ From version v38.0.0 onwards, all open source installations of CKEditor will car
 
 It is also another way for us to gather feedback from users and continue to improve this major open source project that we have been supporting for more than 20 years. CKEditor has 40+ full time engineers and R&D professionals focused on its continual evolution, with 30K+ developers now using it on a daily basis.
 
-This change does not affect customers with commercial licenses. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
+This change **does not affect customers with commercial licenses**. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 
 ## How to remove the "Powered by CKEditor" logo?
 
