@@ -486,8 +486,8 @@ describe( 'PoweredBy', () => {
 
 			expect( pinArgs.target ).to.equal( domRoot );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -9999999,
-				left: -9999999,
+				top: -99999,
+				left: -99999,
 				name: 'invalid',
 				config: {
 					withArrow: false
