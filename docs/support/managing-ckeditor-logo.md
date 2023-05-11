@@ -24,6 +24,12 @@ In order to remove the logo, you need a commercial license for CKEditor 5. If yo
 
 If you already have a commercial license, you need to configure the `config.LicenseKey` setting properly. Please refer to the the {@link support/obtaining-license-key Activating your product} guide in the support section for details on where to find the authentication data and how to configure it.
 
+<info-box warning>
+	Licensed users will now have **two** license key available in their CKEditor Dashboard. There will be the old key that works for all version of CKEditor 5 older than v38.0.0. These versions do not sport the "Powered by CKEditor" footer logo.
+
+	The other key available is the new format lcience key that is **only** valid for versons 38.0.0 and up. Please refer to the {@link updating/update-t0-38 Updating to CKEditor 5 v38.0.0} guide for more details.
+</info-box>
+
 ## How to configure the "Powered by CKEditor" logo?
 
 _Explain once it's ready._
