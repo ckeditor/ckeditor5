@@ -139,11 +139,6 @@ export default class PoweredBy extends DomEmitterMixin() {
 		editor.ui.on( 'update', () => {
 			this._showBalloonThrottled();
 		} );
-
-		// TODO: Probably hide during scroll.
-		// TODO: Problem with Rect#isVisible() and floating editors (comments) vs. hiding the view when cropped by parent with overflow.
-		// TODO: Update position once an image loaded.
-		// TODO: Make the position (side) configurable.
 	}
 
 	/**
