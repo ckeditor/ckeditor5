@@ -111,3 +111,7 @@ msgstr "Barra de ferramentas de edição do conteúdo de blocos"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Barra de ferramentas contextual de edição"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""
