@@ -11,16 +11,17 @@
 
 const { sync } = require( 'glob' );
 const fs = require( 'fs' );
-const isCKEditor5Package = require( './isckeditor5package' );
 const chalk = require( 'chalk' );
+const semver = require( 'semver' );
 const { normalizeTrim } = require( 'upath' );
+const isCKEditor5Package = require( './isckeditor5package' );
 
 /**
- * Validates if the versions of package the dependencies in specified directory match the provided version.
+ * Validates if the versions of packages and their dependencies in specified directory match the provided version.
  *
  * @param {Object} options
  * @param {String} releaseDirectory Path to directory with packages to validate.
- * @param {String} options.version Version that all package dependencies need to match.
+ * @param {String} options.version Version that all packages and their dependencies need to match.
  */
 module.exports = function validateDependenciesVersions( { releaseDirectory, version } ) {
 	const normalizedReleaseDirectory = normalizeTrim( releaseDirectory );
@@ -30,15 +31,29 @@ module.exports = function validateDependenciesVersions( { releaseDirectory, vers
 	const errors = pkgJsonPaths.flatMap( pkgJsonPath => {
 		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf8' ) );
 
-		return validateDependenciesMatchVersion( version, pkgJson );
+		return [
+			...validatePackageMatchVersion( version, pkgJson ),
+			...validateDependenciesMatchVersion( version, pkgJson )
+		];
 	} );
 
 	if ( errors.length ) {
-		throw new Error( 'Found version mismatches for specified packages\n' + errors.join( '\n' ) );
+		throw new Error( 'Found version mismatches for specified packages:\n' + errors.join( '\n' ) );
 	}
 
-	console.log( chalk.green.bold( '✨ All packages versions are valid.' ) );
+	console.log( chalk.green.bold( '✨ All released packages\' versions and their dependencies are valid.' ) );
 };
+
+/**
+ * @param {String} version
+ * @param {Object} pkgJson
+ * @returns {Array.<String>}
+ */
+function validatePackageMatchVersion( version, pkgJson ) {
+	return pkgJson.version !== version ?
+		[ `${ pkgJson.name }: Package version is expected to be ${ version }, but is ${ pkgJson.version }.` ] :
+		[];
+}
 
 /**
  * @param {String} version
@@ -53,9 +68,11 @@ function validateDependenciesMatchVersion( version, pkgJson ) {
 	const ckeditor5Dependencies = Object.entries( allDependencies )
 		.filter( ( [ depName ] ) => isCKEditor5Package( depName ) );
 
-	return ckeditor5Dependencies.reduce( ( accum, [ depName, depVersion ] ) =>
-		depVersion !== version ?
-			[ ...accum, `${ pkgJson.name }: ${ depName } is expected to be ${ version } but is ${ depVersion }.` ] :
-			accum
-	, [] );
+	return ckeditor5Dependencies.reduce( ( accum, [ depName, depVersion ] ) => {
+		const semverMinVersion = semver.minVersion( depVersion ).version;
+
+		return semverMinVersion !== version ?
+			[ ...accum, `${ pkgJson.name }: ${ depName } is expected to be ${ version }, but is ${ semverMinVersion }.` ] :
+			accum;
+	}, [] );
 }
