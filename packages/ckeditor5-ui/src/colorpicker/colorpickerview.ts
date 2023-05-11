@@ -166,7 +166,7 @@ export default class ColorPickerView extends View {
 		// Otherwise, once the saturation slider is moved for the first time,
 		// editor collapses the selection and doesn't apply the color change.
 		/* istanbul ignore next -- @preserve */
-		if ( env.isGecko ) {
+		if ( env.isGecko || env.isiOS ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
 
 			input.focus();
