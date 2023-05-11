@@ -21,8 +21,8 @@ The following code will let you run the editor inside a chat application like in
 <summary>View editor configuration script</summary>
 
 ```js
-import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { Mention } from '@ckeditor/ckeditor5-mention';

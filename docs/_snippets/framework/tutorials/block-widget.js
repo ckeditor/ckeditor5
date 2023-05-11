@@ -4,8 +4,8 @@
  */
 
 /* globals console, window, document */
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';

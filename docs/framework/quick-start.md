@@ -140,8 +140,8 @@ Based on these packages you can create a simple application.
 ```js
 // app.js
 
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 

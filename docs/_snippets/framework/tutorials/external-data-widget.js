@@ -5,9 +5,9 @@
 
 /* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
 
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';

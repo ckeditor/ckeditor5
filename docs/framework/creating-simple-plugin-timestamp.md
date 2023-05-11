@@ -46,8 +46,8 @@ We are going to write the whole plugin in your base `app.js` file. It should loo
 ```js
 // app.js
 
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -99,8 +99,8 @@ All features in the CKEditor 5 are powered by plugins. In order to create our cu
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's plugins array.
 
 ```js
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';

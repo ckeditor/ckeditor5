@@ -515,8 +515,8 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
-import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -889,8 +889,8 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
-import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';

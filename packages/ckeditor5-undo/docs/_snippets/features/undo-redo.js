@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';

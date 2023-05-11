@@ -19,12 +19,12 @@ Below, you can see an editor with the dark theme as a result of customizations d
 <summary>View editor configuration script</summary>
 
 ```js
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';

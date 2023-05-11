@@ -99,7 +99,7 @@ You can now import all the needed plugins and configurations into your code. If 
 ```js
 // ckeditor.js
 
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
@@ -167,7 +167,7 @@ If you scaffolded your project using a Vite template with TypeScript, add the `c
 ```ts
 // ckeditor.ts
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
@@ -177,9 +177,9 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-export default class CustomEditor extends ClassicEditor {}
+export default class ClassicEditor extends ClassicEditorBase {}
 
-CustomEditor.builtinPlugins = [
+ClassicEditor.builtinPlugins = [
     Essentials,
     Autoformat,
     Bold,
@@ -191,7 +191,7 @@ CustomEditor.builtinPlugins = [
     Paragraph
 ];
 
-CustomEditor.defaultConfig = {
+ClassicEditor.defaultConfig = {
     toolbar: {
         items: [
             'heading',

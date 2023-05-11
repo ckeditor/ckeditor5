@@ -39,9 +39,9 @@ import ReactDOM from 'react-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The base editor class and features required to run the editor.
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';

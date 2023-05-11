@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 

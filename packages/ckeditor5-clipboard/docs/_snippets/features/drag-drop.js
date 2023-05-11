@@ -5,6 +5,7 @@
 
 /* globals console, window, document */
 
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -13,7 +14,6 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
