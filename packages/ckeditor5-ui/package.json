@@ -35,6 +35,7 @@
     "@ckeditor/ckeditor5-list": "^37.1.0",
     "@ckeditor/ckeditor5-mention": "^37.1.0",
     "@ckeditor/ckeditor5-paragraph": "^37.1.0",
+    "@ckeditor/ckeditor5-source-editing": "^37.1.0",
     "@ckeditor/ckeditor5-table": "^37.1.0",
     "@ckeditor/ckeditor5-typing": "^37.1.0",
     "@types/color-convert": "2.0.0",

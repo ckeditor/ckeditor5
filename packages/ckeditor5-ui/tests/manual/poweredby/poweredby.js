@@ -6,6 +6,7 @@
 /* globals console, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { ImageResize } from '@ckeditor/ckeditor5-image';
 
@@ -13,8 +14,10 @@ window.editors = {};
 
 function createEditor( selector, poweredByConfig ) {
 	const config = {
-		plugins: [ ArticlePluginSet, ImageResize ],
+		plugins: [ ArticlePluginSet, ImageResize, SourceEditing ],
 		toolbar: [
+			'sourceEditing',
+			'|',
 			'heading',
 			'|',
 			'bold',

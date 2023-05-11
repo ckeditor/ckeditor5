@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, window */
+/* global document, Event, window, HTMLElement */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import EditorUI from '../../src/editorui/editorui';
@@ -13,6 +13,7 @@ import View from '../../src/view';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -78,6 +79,8 @@ describe( 'PoweredBy', () => {
 		} );
 
 		describe( 'balloon management on editor focus change', () => {
+			const originalGetVisible = Rect.prototype.getVisible;
+
 			it( 'should show the balloon when the editor gets focused', () => {
 				focusEditor( editor );
 
@@ -117,6 +120,84 @@ describe( 'PoweredBy', () => {
 				await wait( 200 );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.false;
+			} );
+
+			// This is a weak test because it does not check the geometry but it will do.
+			it( 'should show the balloon when the source editing is engaged', async () => {
+				const domRoot = editor.editing.view.getDomRoot();
+				const originalGetBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
+
+				function isEditableElement( element ) {
+					return Array.from( editor.ui.getEditableElementsNames() ).map( name => {
+						return editor.ui.getEditableElement( name );
+					} ).includes( element );
+				}
+
+				// Rect#getVisible() passthrough to ignore ancestors. Makes testing a lot easier.
+				testUtils.sinon.stub( Rect.prototype, 'getVisible' ).callsFake( function() {
+					if ( isEditableElement( this._source ) ) {
+						return new Rect( this._source );
+					} else {
+						return originalGetVisible.call( this );
+					}
+				} );
+
+				// Stub textarea's client rect.
+				testUtils.sinon.stub( HTMLElement.prototype, 'getBoundingClientRect' ).callsFake( function() {
+					if ( this.parentNode.classList.contains( 'ck-source-editing-area' ) ) {
+						return {
+							top: 0,
+							left: 0,
+							right: 300,
+							width: 300,
+							bottom: 200,
+							height: 200
+						};
+					}
+
+					return originalGetBoundingClientRect.call( this );
+				} );
+
+				focusEditor( editor );
+
+				domRoot.getBoundingClientRect.returns( {
+					top: 0,
+					left: 0,
+					right: 250,
+					width: 250,
+					bottom: 100,
+					height: 100
+				} );
+
+				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
+
+				editor.ui.fire( 'update' );
+
+				await wait( 75 );
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_inside-side_right' );
+				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', domRoot ) );
+
+				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+				const sourceAreaElement = editor.ui.getEditableElement( 'sourceEditing:main' );
+
+				focusEditor( editor, sourceAreaElement );
+				sinon.assert.calledWith(
+					pinSpy.lastCall,
+					sinon.match.has( 'target', sourceAreaElement )
+				);
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_inside-side_right' );
+
+				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_inside-side_right' );
+				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', domRoot ) );
 			} );
 		} );
 
@@ -673,7 +754,7 @@ describe( 'PoweredBy', () => {
 		} );
 	} );
 
-	async function createEditor( element, config = {} ) {
+	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
 		return ClassicTestEditor.create( element, config );
 	}
 

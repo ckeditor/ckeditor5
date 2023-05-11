@@ -41,7 +41,7 @@ type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
- * webpage next to the bottom of the editing root when the editor is focused.
+ * webpage next to the bottom of the editable element (editor root, source editing area, etc.) when the editor is focused.
  *
  * @private
  */
@@ -62,11 +62,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _showBalloonThrottled: DebouncedFunc<() => void>;
 
 	/**
-	 * A reference to the last editing root focused by the user. Since the focus can move to other focusable
-	 * elements in the UI, this reference allows positioning the balloon over the right root whether the
-	 * user is typing or using the UI.
+	 * A reference to the last editable element (root, source editing area, etc.) focused by the user.
+	 * Since the focus can move to other focusable elements in the UI, this reference allows positioning the balloon over the
+	 * right element whether the user is typing or using the UI.
 	 */
-	private _lastFocusedDOMRoot: HTMLElement | null;
+	private _lastFocusedEditableElement: HTMLElement | null;
 
 	/**
 	 * Creates a "powered by" helper for a given editor. The feature is initialized on Editor#ready
@@ -79,7 +79,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		this.editor = editor;
 		this._balloonView = null;
-		this._lastFocusedDOMRoot = null;
+		this._lastFocusedEditableElement = null;
 		this._showBalloonThrottled = throttle( this._showBalloon.bind( this ), 50, { leading: true } );
 
 		editor.on( 'ready', this._handleEditorReady.bind( this ) );
@@ -119,21 +119,20 @@ export default class PoweredBy extends DomEmitterMixin() {
 		}
 
 		editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
+			this._updateLastFocusedEditableElement();
+
 			if ( isFocused ) {
-				const focusedElement = editor.ui.focusTracker.focusedElement! as HTMLElement;
-				const domRoots = Array.from( editor.editing.view.domRoots.values() );
-
-				if ( domRoots.includes( focusedElement ) ) {
-					this._lastFocusedDOMRoot = focusedElement;
-				} else {
-					this._lastFocusedDOMRoot = domRoots[ 0 ];
-				}
-
 				this._showBalloon();
 			} else {
 				this._hideBalloon();
+			}
+		} );
 
-				this._lastFocusedDOMRoot = null;
+		editor.ui.focusTracker.on( 'change:focusedElement', ( evt, data, focusedElement ) => {
+			this._updateLastFocusedEditableElement();
+
+			if ( focusedElement ) {
+				this._showBalloon();
 			}
 		} );
 
@@ -171,11 +170,11 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Attempts to display the balloon with the "powered by" view.
 	 */
 	private _showBalloon() {
-		if ( !this._lastFocusedDOMRoot ) {
+		if ( !this._lastFocusedEditableElement ) {
 			return;
 		}
 
-		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedDOMRoot );
+		const attachOptions = getBalloonAttachOptions( this.editor, this._lastFocusedEditableElement );
 
 		if ( attachOptions ) {
 			if ( !this._balloonView ) {
@@ -192,6 +191,33 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _hideBalloon() {
 		if ( this._balloonView ) {
 			this._balloonView!.unpin();
+		}
+	}
+
+	/**
+	 * Updates the {@link #_lastFocusedEditableElement} based on the state of the global focus tracker.
+	 */
+	private _updateLastFocusedEditableElement(): void {
+		const editor = this.editor;
+		const isFocused = editor.ui.focusTracker.isFocused;
+		const focusedElement = editor.ui.focusTracker.focusedElement! as HTMLElement;
+
+		if ( !isFocused || !focusedElement ) {
+			this._lastFocusedEditableElement = null;
+
+			return;
+		}
+
+		const editableEditorElements = Array.from( editor.ui.getEditableElementsNames() ).map( name => {
+			return editor.ui.getEditableElement( name );
+		} );
+
+		if ( editableEditorElements.includes( focusedElement ) ) {
+			this._lastFocusedEditableElement = focusedElement;
+		} else {
+			// If it's none of the editable element, then the focus is somewhere in the UI. Let's display powered by
+			// over the first element then.
+			this._lastFocusedEditableElement = editableEditorElements[ 0 ]!;
 		}
 	}
 }
@@ -257,74 +283,74 @@ class PoweredByView extends View<HTMLDivElement> {
 	}
 }
 
-function getBalloonAttachOptions( editor: Editor, focusedDomRoot: HTMLElement ): Partial<PositionOptions> | null {
+function getBalloonAttachOptions( editor: Editor, focusedEditableElement: HTMLElement ): Partial<PositionOptions> | null {
 	const poweredByConfig = getNormalizedConfig( editor )!;
 	const positioningFunction = poweredByConfig.side === 'right' ?
-		getLowerRightCornerPosition( focusedDomRoot, poweredByConfig ) :
-		getLowerLeftCornerPosition( focusedDomRoot, poweredByConfig );
+		getLowerRightCornerPosition( focusedEditableElement, poweredByConfig ) :
+		getLowerLeftCornerPosition( focusedEditableElement, poweredByConfig );
 
 	return {
-		target: focusedDomRoot,
+		target: focusedEditableElement,
 		positions: [ positioningFunction ]
 	};
 }
 
-function getLowerRightCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
-	return getLowerCornerPosition( focusedDomRoot, config, ( rootRect, balloonRect ) => {
+function getLowerRightCornerPosition( focusedEditableElement: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedEditableElement, config, ( rootRect, balloonRect ) => {
 		return rootRect.left + rootRect.width - balloonRect.width - config.horizontalOffset;
 	} );
 }
 
-function getLowerLeftCornerPosition( focusedDomRoot: HTMLElement, config: PoweredByConfig ) {
-	return getLowerCornerPosition( focusedDomRoot, config, rootRect => rootRect.left + config.horizontalOffset );
+function getLowerLeftCornerPosition( focusedEditableElement: HTMLElement, config: PoweredByConfig ) {
+	return getLowerCornerPosition( focusedEditableElement, config, rootRect => rootRect.left + config.horizontalOffset );
 }
 
 function getLowerCornerPosition(
-	focusedDomRoot: HTMLElement,
+	focusedEditableElement: HTMLElement,
 	config: PoweredByConfig,
-	getBalloonLeft: ( rootRect: Rect, balloonRect: Rect ) => number
+	getBalloonLeft: ( editableElementRect: Rect, balloonRect: Rect ) => number
 ) {
-	return ( rootRect: Rect, balloonRect: Rect ) => {
-		const visibleRootRect = rootRect.getVisible();
+	return ( editableElementRect: Rect, balloonRect: Rect ) => {
+		const visibleEditableElementRect = editableElementRect.getVisible();
 
 		// Root cropped by ancestors.
-		if ( !visibleRootRect ) {
+		if ( !visibleEditableElementRect ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
 
-		if ( rootRect.width < NARROW_ROOT_WIDTH_THRESHOLD || rootRect.height < NARROW_ROOT_HEIGHT_THRESHOLD ) {
+		if ( editableElementRect.width < NARROW_ROOT_WIDTH_THRESHOLD || editableElementRect.height < NARROW_ROOT_HEIGHT_THRESHOLD ) {
 			return OFF_THE_SCREEN_POSITION;
 		}
 
 		let balloonTop;
 
 		if ( config.position === 'inside' ) {
-			balloonTop = rootRect.bottom - balloonRect.height;
+			balloonTop = editableElementRect.bottom - balloonRect.height;
 		}
 		else {
-			balloonTop = rootRect.bottom - balloonRect.height / 2;
+			balloonTop = editableElementRect.bottom - balloonRect.height / 2;
 		}
 
 		balloonTop -= config.verticalOffset;
 
-		const balloonLeft = getBalloonLeft( rootRect, balloonRect );
+		const balloonLeft = getBalloonLeft( editableElementRect, balloonRect );
 
 		if ( config.position === 'inside' ) {
 			const newBalloonRect = balloonRect.clone().moveTo( balloonLeft, balloonTop );
 
 			// The watermark cannot be positioned in this corner because the corner is not quite visible.
-			if ( newBalloonRect.getIntersectionArea( visibleRootRect ) < newBalloonRect.getArea() ) {
+			if ( newBalloonRect.getIntersectionArea( visibleEditableElementRect ) < newBalloonRect.getArea() ) {
 				return OFF_THE_SCREEN_POSITION;
 			}
 		}
 		else {
-			const firstScrollableRootAncestor = findClosestScrollableAncestor( focusedDomRoot );
+			const firstScrollableEditableElementAncestor = findClosestScrollableAncestor( focusedEditableElement );
 
-			if ( firstScrollableRootAncestor ) {
-				const firstScrollableRootAncestorRect = new Rect( firstScrollableRootAncestor );
+			if ( firstScrollableEditableElementAncestor ) {
+				const firstScrollableEditableElementAncestorRect = new Rect( firstScrollableEditableElementAncestor );
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				if ( visibleRootRect.bottom + balloonRect.height / 2 > firstScrollableRootAncestorRect.bottom ) {
+				if ( visibleEditableElementRect.bottom + balloonRect.height / 2 > firstScrollableEditableElementAncestorRect.bottom ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
