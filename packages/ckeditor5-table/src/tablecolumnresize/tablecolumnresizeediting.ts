@@ -465,11 +465,16 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		domEventData.preventDefault();
-		eventInfo.stop();
-
 		const editor = this.editor;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
+
+		// Do not resize if table model is in non-editable place.
+		if ( !editor.model.canEditAt( modelTable ) ) {
+			return;
+		}
+
+		domEventData.preventDefault();
+		eventInfo.stop();
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );

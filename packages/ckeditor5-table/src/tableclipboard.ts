@@ -96,7 +96,7 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		if ( evt.name == 'cut' && this.editor.isReadOnly ) {
+		if ( evt.name == 'cut' && !this.editor.model.canEditAt( this.editor.model.document.selection ) ) {
 			return;
 		}
 

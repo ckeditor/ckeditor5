@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Tatar (https://www.transifex.com/ckeditor/teams/11143/tt/)\n"
+"Language-Team: Tatar (https://app.transifex.com/ckeditor/teams/11143/tt/)\n"
 "Language: tt\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 

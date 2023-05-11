@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Greek (https://www.transifex.com/ckeditor/teams/11143/el/)\n"
+"Language-Team: Greek (https://app.transifex.com/ckeditor/teams/11143/el/)\n"
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -111,3 +111,7 @@ msgstr "Γραμμή εργαλείων επεξεργασίας περιεχο�
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Γραμμή εργαλείων επεξεργασίας συμφραζομένων"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

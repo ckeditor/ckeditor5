@@ -475,8 +475,8 @@ export interface EditorConfig {
 	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
 	 * 	{@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
 	 *
-	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over editor's editing are in open-source integrations
-	 * ([learn more](TODO)). It allows customizing the position of the logo to minimize the risk of collision with editor content
+	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over editor's editing are in open-source integrations.
+	 * It allows customizing the position of the logo to minimize the risk of collision with editor content
 	 * and UI.
 	 *
 	 * 	The following configuration properties are supported:

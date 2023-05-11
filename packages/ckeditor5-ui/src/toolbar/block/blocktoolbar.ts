@@ -312,8 +312,8 @@ export default class BlockToolbar extends Plugin {
 			return;
 		}
 
-		// Hides the button when the editor switches to the read-only mode.
-		if ( editor.isReadOnly ) {
+		// Hides the button when the selection is in non-editable place.
+		if ( !editor.model.canEditAt( editor.model.document.selection ) ) {
 			this._hideButton();
 
 			return;
