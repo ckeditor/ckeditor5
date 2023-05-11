@@ -162,7 +162,7 @@ export default class ColorPickerView extends View {
 	 *
 	 */
 	public focus(): void {
-		// In Firefox we need to move the focus to the input first.
+		// In Firefox and iOS we need to move the focus to the input first.
 		// Otherwise, once the saturation slider is moved for the first time,
 		// editor collapses the selection and doesn't apply the color change.
 		/* istanbul ignore next -- @preserve */
