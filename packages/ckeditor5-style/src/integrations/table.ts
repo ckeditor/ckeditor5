@@ -87,7 +87,15 @@ export default class TableStyleSupport extends Plugin {
 	 * @returns True if the defintion-block pair meet the plugin criteria, false otherwise.
 	 */
 	private _isApplicable( definition: BlockStyleDefinition, block: Element ): boolean {
-		return [ 'td', 'th' ].includes( definition.element ) && block.name == 'tableCell';
+		if ( [ 'td', 'th' ].includes( definition.element ) ) {
+			return block.name == 'tableCell';
+		}
+
+		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+			return block.name == 'table';
+		}
+
+		return false;
 	}
 
 	/**
@@ -97,20 +105,34 @@ export default class TableStyleSupport extends Plugin {
 	 * @returns True if the block should be style with the style description, false otherwise.
 	 */
 	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
-		const location = this._tableUtils.getCellLocation( block )!;
+		if ( [ 'td', 'th' ].includes( definition.element ) ) {
+			const location = this._tableUtils.getCellLocation( block )!;
 
-		const tableRow = block.parent!;
-		const table = tableRow.parent as Element;
+			const tableRow = block.parent!;
+			const table = tableRow.parent as Element;
 
-		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const isHeadingCell = location.row < headingRows || location.column < headingColumns;
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			const isHeadingCell = location.row < headingRows || location.column < headingColumns;
 
-		if ( definition.element == 'th' ) {
-			return isHeadingCell;
-		} else {
-			return !isHeadingCell;
+			if ( definition.element == 'th' ) {
+				return isHeadingCell;
+			} else {
+				return !isHeadingCell;
+			}
 		}
+
+		if ( [ 'thead', 'tbody' ].includes( definition.element ) ) {
+			const headingRows = block.getAttribute( 'headingRows' ) as number || 0;
+
+			if ( definition.element == 'thead' ) {
+				return headingRows > 0;
+			} else {
+				return headingRows < this._tableUtils.getRows( block );
+			}
+		}
+
+		return false;
 	}
 
 	/**
