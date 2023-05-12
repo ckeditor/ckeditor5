@@ -23,7 +23,7 @@ In order to remove the logo, you need a commercial license for CKEditor 5. If yo
 
 ### Stand-alone features
 
-If you already have a commercial license for one of the **stand-alone features**, you need to configure the `config.LicenseKey` setting properly.
+If you already have a commercial license for one of the **stand-alone features**, you need to configure the `config.licenseKey` setting properly.
 
 This concerns users holding licences for the following standalone options:
 * Non real-time collaboration features, including:
