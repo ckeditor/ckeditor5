@@ -80,6 +80,10 @@ abortController.signal.addEventListener( 'abort', () => {
 		signal: abortController.signal,
 		taskToExecute: require( './preparedllbuildscallback' )
 	} );
+
+	releaseTools.cleanUpPackages( {
+		packagesDirectory: RELEASE_DIRECTORY
+	} );
 } )();
 
 /**
