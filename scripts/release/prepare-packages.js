@@ -47,7 +47,7 @@ abortController.signal.addEventListener( 'abort', () => {
 		version: latestVersion
 	} );
 
-	updateVersionReferences( {
+	const updatedFiles = updateVersionReferences( {
 		version: latestVersion,
 		releaseDate: new Date()
 	} );
@@ -83,6 +83,15 @@ abortController.signal.addEventListener( 'abort', () => {
 
 	releaseTools.cleanUpPackages( {
 		packagesDirectory: RELEASE_DIRECTORY
+	} );
+
+	releaseTools.commitAndTag( {
+		version: latestVersion,
+		files: [
+			'package.json',
+			`${ PACKAGES_DIRECTORY }/*/package.json`,
+			...updatedFiles
+		]
 	} );
 } )();
 

@@ -10,9 +10,8 @@
 'use strict';
 
 const fs = require( 'fs' );
-const chalk = require( 'chalk' );
+const { yellow, cyan, underline } = require( 'chalk' );
 const upath = require( 'upath' );
-
 const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 
 /**
@@ -21,6 +20,7 @@ const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
  * @param {Object} options
  * @param {String} options.version The version of CKEditor 5 to set.
  * @param {Date} options.releaseDate The release date to set.
+ * @returns {Array.<String>} An array of relative paths to updated files.
  */
 module.exports = function updateVersionReferences( { version, releaseDate } ) {
 	const filesToUpdate = [
@@ -44,28 +44,29 @@ module.exports = function updateVersionReferences( { version, releaseDate } ) {
 		}
 	];
 
-	console.log( chalk.blue( `Updating CKEditor 5 version (${ version }) and release date (${ releaseDate }) references.\n` ) );
+	const updatedFiles = new Set();
 
 	for ( const { file, pattern, value, label } of filesToUpdate ) {
 		const absolutePath = upath.join( ROOT_DIRECTORY, file );
 
 		if ( !fs.existsSync( absolutePath ) ) {
-			console.log( chalk.red( `* File does not exist: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
-
+			console.log( yellow( `* File does not exist: "${ underline( file ) }" (${ label })` ) );
 			continue;
 		}
 
-		const oldFileContent = fs.readFileSync( absolutePath, 'utf-8' );
+		const oldFileContent = fs.readFileSync( file, 'utf-8' );
 		const newFileContent = oldFileContent.replace( pattern, value );
 
 		if ( oldFileContent === newFileContent ) {
-			console.log( chalk.gray( `* File is up to date: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
-
+			console.log( `* File is up to date: "${ underline( file ) }" (${ label })` );
 			continue;
 		}
 
-		fs.writeFileSync( absolutePath, newFileContent, 'utf-8' );
+		fs.writeFileSync( file, newFileContent, 'utf-8' );
+		console.log( cyan( `* Updated file: "${ underline( file ) }" (${ label })` ) );
 
-		console.log( chalk.cyan( `* Updated file: "${ chalk.underline( absolutePath ) }" (${ label })` ) );
+		updatedFiles.add( file );
 	}
+
+	return [ ...updatedFiles ];
 };
