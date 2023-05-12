@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
+"Language-Team: Turkish (https://app.transifex.com/ckeditor/teams/11143/tr/)\n"
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
@@ -55,3 +55,7 @@ msgstr "Yazı Tipi Arkaplan Rengi"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Belge Rengi"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

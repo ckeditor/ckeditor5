@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Sinhala (Sri Lanka) (https://www.transifex.com/ckeditor/teams/11143/si_LK/)\n"
+"Language-Team: Sinhala (Sri Lanka) (https://app.transifex.com/ckeditor/teams/11143/si_LK/)\n"
 "Language: si_LK\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

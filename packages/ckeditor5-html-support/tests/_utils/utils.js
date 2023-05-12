@@ -32,7 +32,7 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
  * @returns {String} result.data The stringified data.
  * @returns {Object} result.attributes Indexed data attributes.
  */
-export function getModelDataWithAttributes( model, options ) {
+export function getModelDataWithAttributes( model, options = {} ) {
 	// Simplify GHS attributes as they are not very readable at this point due to object structure.
 	let counter = 1;
 	const data = getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {

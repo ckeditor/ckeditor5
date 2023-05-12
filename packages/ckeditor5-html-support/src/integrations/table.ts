@@ -15,7 +15,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement } from 'ckeditor5/src/engine';
 import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes, type GHSViewAttributes } from '../conversionutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
 
@@ -86,6 +86,10 @@ export default class TableElementSupport extends Plugin {
 function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewTableElement = data.viewItem;
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
@@ -157,7 +161,12 @@ function modelToViewTableAttributeConverter() {
 				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue as GHSViewAttributes, viewElement! );
+				updateViewAttributes(
+					conversionApi.writer,
+					data.attributeOldValue as GHSViewAttributes,
+					data.attributeNewValue as GHSViewAttributes,
+					viewElement!
+				);
 			} );
 		}
 	};

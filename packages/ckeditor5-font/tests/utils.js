@@ -12,6 +12,7 @@ import {
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -23,7 +24,8 @@ describe( 'utils', () => {
 
 	describe( 'addColorTableToDropdown()', () => {
 		it( 'should create dropdown with color table', () => {
-			const dropdown = createDropdown();
+			const locale = new Locale();
+			const dropdown = createDropdown( locale );
 			dropdown.render();
 
 			addColorTableToDropdown( {

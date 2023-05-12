@@ -11,6 +11,7 @@ import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
 import { _move } from './utils';
+import type { Selectable } from '../selection';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -72,6 +73,16 @@ export default class MoveOperation extends Operation {
 		}
 
 		return 'move';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return [
+			Range._createFromPositionAndShift( this.sourcePosition, this.howMany ),
+			Range._createFromPositionAndShift( this.targetPosition, 0 )
+		];
 	}
 
 	/**

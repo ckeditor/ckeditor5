@@ -71,6 +71,7 @@ export { default as AttributeOperation } from './model/operation/attributeoperat
 export { default as RenameOperation } from './model/operation/renameoperation';
 export { default as RootAttributeOperation } from './model/operation/rootattributeoperation';
 export { default as RootOperation } from './model/operation/rootoperation';
+export { default as NoOperation } from './model/operation/nooperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
@@ -115,7 +116,8 @@ export type {
 	ModelGetSelectedContentEvent,
 	ModelInsertContentEvent,
 	ModelInsertObjectEvent,
-	ModelModifySelectionEvent
+	ModelModifySelectionEvent,
+	ModelCanEditAtEvent
 } from './model/model';
 export type { SelectionChangeRangeEvent } from './model/selection';
 
@@ -129,6 +131,7 @@ export { default as ViewText } from './view/text';
 export { default as ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element';
 export { default as ViewContainerElement } from './view/containerelement';
 export { default as ViewEditableElement } from './view/editableelement';
+export { default as ViewRootEditableElement } from './view/rooteditableelement';
 export { default as ViewAttributeElement } from './view/attributeelement';
 export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';

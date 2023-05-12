@@ -69,7 +69,8 @@ export default class ClipboardObserver extends DomEventObserver<
 					dataTransfer: data.dataTransfer,
 					method: evt.name,
 					targetRanges,
-					target: data.target
+					target: data.target,
+					domEvent: data.domEvent
 				} );
 
 				// If CKEditor handled the input, do not bubble the original event any further.

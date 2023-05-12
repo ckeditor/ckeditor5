@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Language-Team: Czech (https://app.transifex.com/ckeditor/teams/11143/cs/)\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
@@ -55,3 +55,7 @@ msgstr "Barva pozadí písma"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Barvy dokumentu"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

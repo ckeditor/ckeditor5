@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto (https://www.transifex.com/ckeditor/teams/11143/eo/)\n"
+"Language-Team: Esperanto (https://app.transifex.com/ckeditor/teams/11143/eo/)\n"
 "Language: eo\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

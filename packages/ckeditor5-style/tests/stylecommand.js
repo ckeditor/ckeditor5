@@ -14,6 +14,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -78,6 +79,16 @@ describe( 'StyleCommand', () => {
 			name: 'Vibrant code block',
 			element: 'pre',
 			classes: [ 'vibrant-code' ]
+		},
+		{
+			name: 'Code (dark)',
+			element: 'pre',
+			classes: [ 'fancy-code', 'fancy-code-dark' ]
+		},
+		{
+			name: 'Code (bright)',
+			element: 'pre',
+			classes: [ 'fancy-code', 'fancy-code-bright' ]
 		}
 	];
 
@@ -94,6 +105,11 @@ describe( 'StyleCommand', () => {
 			name: 'Table style',
 			element: 'table',
 			classes: [ 'example' ]
+		},
+		{
+			name: 'Figure',
+			element: 'figure',
+			classes: [ 'fancy-figure' ]
 		}
 	];
 
@@ -187,6 +203,46 @@ describe( 'StyleCommand', () => {
 				] );
 			} );
 
+			it( 'should enable styles for the closest widget but no outer blocks', () => {
+				setData( model,
+					'<blockQuote>' +
+						'<table>' +
+							'<tableRow>' +
+								'[<tableCell>' +
+									'<paragraph></paragraph>' +
+								'</tableCell>]' +
+							'</tableRow>' +
+						'</table>' +
+					'</blockQuote>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockWidgetStyles.map( ( { name } ) => name )
+				] );
+			} );
+
+			it( 'should enable styles for view elements that does not map to model element', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph></paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockWidgetStyles.map( ( { name } ) => name )
+				] );
+			} );
+
 			it( 'should enable styles for the first selected block', () => {
 				setData( model,
 					'<paragraph>foo</paragraph>' +
@@ -218,7 +274,7 @@ describe( 'StyleCommand', () => {
 				] );
 			} );
 
-			it( 'should not enable styles for elements outside a limit element', () => {
+			it( 'should not enable styles for elements outside an object element', () => {
 				setData( model,
 					'<blockQuote>' +
 						'<table>' +
@@ -235,7 +291,8 @@ describe( 'StyleCommand', () => {
 
 				expect( command.enabledStyles ).to.have.members( [
 					...inlineStyles.map( ( { name } ) => name ),
-					...blockParagraphStyles.map( ( { name } ) => name )
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockWidgetStyles.map( ( { name } ) => name )
 				] );
 			} );
 
@@ -279,8 +336,8 @@ describe( 'StyleCommand', () => {
 	} );
 
 	describe( '#isEnabled', () => {
-		it( 'should be disabled if selection is on a block widget', () => {
-			setData( model, '[<imageBlock></imageBlock>]' );
+		it( 'should be disabled if none of styles applies to selection', () => {
+			setData( model, '[<horizontalLine></horizontalLine>]' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -363,7 +420,7 @@ describe( 'StyleCommand', () => {
 				expect( command.value ).to.have.members( [ 'Vibrant code block' ] );
 			} );
 
-			it( 'should not detect styles for elements outside a limit element', () => {
+			it( 'should not detect styles for elements outside a widget element', () => {
 				setData( model,
 					'<blockQuote>' +
 						'<table>' +
@@ -378,10 +435,54 @@ describe( 'StyleCommand', () => {
 
 				model.change( writer => {
 					writer.setAttribute( 'htmlAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
 					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
 				} );
 
-				expect( command.value ).to.have.members( [ 'Red paragraph' ] );
+				expect( command.value ).to.have.members( [ 'Red paragraph', 'Table style' ] );
+			} );
+
+			it( 'should detect styles for selected widget element only', () => {
+				setData( model,
+					'<blockQuote>' +
+						'[<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]' +
+					'</blockQuote>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlAttributes', { classes: [ 'side-quote' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getNodeByPath( [ 0, 0 ] ) );
+					writer.setAttribute( 'htmlAttributes', { classes: [ 'red' ] }, root.getNodeByPath( [ 0, 0, 0, 0, 0 ] ) );
+				} );
+
+				expect( command.value ).to.have.members( [ 'Table style' ] );
+			} );
+
+			it( 'should detect styles for view elements that does not map to model element', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph></paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlFigureAttributes', { classes: [ 'fancy-figure' ] }, root.getChild( 0 ) );
+					writer.setAttribute( 'htmlAttributes', { classes: [ 'example' ] }, root.getChild( 0 ) );
+				} );
+
+				expect( command.value ).to.have.members( [
+					...blockWidgetStyles.map( ( { name } ) => name )
+				] );
 			} );
 		} );
 
@@ -478,6 +579,26 @@ describe( 'StyleCommand', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 			sinon.assert.calledWithMatch( stub, 'style-command-executed-with-incorrect-style-name' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11748
+		it( 'should keep classes of removed style if other active styles also use them', () => {
+			setData( model, '<codeBlock language="typescript">[]</codeBlock>' );
+
+			// Add light and dark themes
+			command.execute( { styleName: 'Code (bright)' } );
+			command.execute( { styleName: 'Code (dark)' } );
+
+			// Remove light theme
+			command.execute( { styleName: 'Code (bright)' } );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock ' +
+					'htmlAttributes="{"classes":["fancy-code","fancy-code-dark"]}" ' +
+					'language="typescript"' +
+				'>' +
+				'</codeBlock>'
+			);
 		} );
 
 		describe( 'inline styles', () => {
@@ -688,7 +809,7 @@ describe( 'StyleCommand', () => {
 				);
 			} );
 
-			it( 'should add htmlAttribute only to elements in the same limit element', () => {
+			it( 'should add htmlAttribute only to elements in the same widget element boundaries', () => {
 				setData( model,
 					'<blockQuote>' +
 						'<table>' +
@@ -717,6 +838,102 @@ describe( 'StyleCommand', () => {
 							'</tableRow>' +
 						'</table>' +
 					'</blockQuote>'
+				);
+			} );
+
+			it( 'should add htmlAttribute only to elements in the same widget element boundaries (table)', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>fo[]o</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.execute( { styleName: 'Table style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table htmlAttributes="{"classes":["example"]}">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>fo[]o</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should add style to view element that does not exist in model', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.execute( { styleName: 'Figure' } );
+
+				expect( getData( model ) ).to.equal(
+					'<table htmlFigureAttributes="{"classes":["fancy-figure"]}">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should remove style from view element that does not exist in model', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.execute( { styleName: 'Figure' } );
+
+				expect( getData( model ) ).to.equal(
+					'<table htmlFigureAttributes="{"classes":["fancy-figure"]}">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				command.execute( { styleName: 'Figure' } );
+
+				expect( getData( model ) ).to.equal(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
 				);
 			} );
 
@@ -781,7 +998,9 @@ describe( 'StyleCommand', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, ImageBlock, ImageCaption, Heading, CodeBlock, BlockQuote, Table, GeneralHtmlSupport, Style ],
+			plugins: [
+				Paragraph, ImageBlock, ImageCaption, Heading, CodeBlock, BlockQuote, Table, HorizontalLine, GeneralHtmlSupport, Style
+			],
 			style: {
 				definitions: styleDefinitions
 			},

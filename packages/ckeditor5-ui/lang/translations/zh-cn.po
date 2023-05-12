@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -111,3 +111,7 @@ msgstr "编辑器块内容工具栏"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "编辑器上下文工具栏"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

@@ -7,7 +7,7 @@
  * @module mention/mentioncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Range } from 'ckeditor5/src/engine';
 import { CKEditorError, toMap } from 'ckeditor5/src/utils';
 
@@ -54,6 +54,16 @@ export default class MentionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	public constructor( editor: Editor ) {
+		super( editor );
+
+		// Since this command may pass range in execution parameters, it should be checked directly in execute block.
+		this._isEnabledBasedOnSelection = false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override refresh(): void {
 		const model = this.editor.model;
 		const doc = model.document;
@@ -83,6 +93,11 @@ export default class MentionCommand extends Command {
 		const mentionID = mentionData.id;
 
 		const range = options.range || selection.getFirstRange();
+
+		// Don't execute command if range is in non-editable place.
+		if ( !model.canEditAt( range ) ) {
+			return;
+		}
 
 		const mentionText = options.text || mentionID;
 
