@@ -10,17 +10,17 @@ meta-description: Learn how to get help and support and how to provide feedback.
 
 ## Why the "Powered by CKEditor" logo?
 
-From version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) will carry a small “Powered by CKEditor” watermark in the bottom right corner of the editing area. This new label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some. This branding is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” watermark in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some. This new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
 It is also another way for us to gather feedback from users and continue to improve this major open source project that we have been supporting for more than 20 years. CKEditor has 40+ full time engineers and R&D professionals focused on its continual evolution, with 30K+ developers now using it on a daily basis.
 
-This change **does not affect customers with commercial licenses**. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
+This change **does not affect customers with commercial licenses**, but please read on as certain actions need to be taken. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 
 ## How to remove the "Powered by CKEditor" logo?
 
-In order to remove the logo, you need a commercial license for CKEditor 5. If you need one, please [contact us](https://ckeditor.com/) for a tailored offer.
+In order to remove the logo, you need a commercial license for CKEditor 5. If you need one, please [contact us](https://ckeditor.com/) for a tailored offer. If you already have one, please read on.
 
 ### Stand-alone features
 
@@ -62,6 +62,12 @@ Features and services secured on the server side **do not need any additional ac
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
-For open source, free users, the "Powered by CKEditor" whaite-label will always be displayed. There is, however, some degree of control that lets you customize the appearance of the watermark, namely the location.
+For open source, free users, the "Powered by CKEditor" whaite-label will always be displayed. There is, however, some degree of control over the watermark.
+
+The following properties can be configured:
+
+* position (the default is inside the container; it can be also displayed over the edge)
+* logo offset
+* alignment: left or right
 
 <!-- Explain once it's ready. -->
