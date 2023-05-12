@@ -59,10 +59,9 @@ config.ui.poweredBy.side: "left"
 ```
 The default option is `right`.
 
-All aboves changes should be done in {@link module:core/editor/editorconfig~EditorConfig Editor config}.
+All aboves changes should be done in the {@link module:core/editor/editorconfig~EditorConfig editor config} file.
 
-
-There are also `CSS variables` dedicated to customize the style of the "Powered by CKEditor" logo.
+There a set of ready-made CSS variables available dedicated to customize the style of the "Powered by CKEditor" logo.
 
 ```css
 /*
@@ -79,9 +78,9 @@ There are also `CSS variables` dedicated to customize the style of the "Powered 
 }
 ```
 
-### Customized example
+### Customization example
 
-An example how "Powered by CKEditor" logo can be customized:
+Below you will find and example how the "Powered by CKEditor" logo can be customized:
 
 ```css
 /*
@@ -109,4 +108,4 @@ config.ui.poweredBy.position: "border"
 ```
 
 Final effect:
-{@img assets/img/powered-by-ckeditor-customized.png Placement of the "Powered by CKEditor" logo within the editor}
+{@img assets/img/powered-by-ckeditor-customized.png Placement of the customized "Powered by CKEditor" logo within the editor}
