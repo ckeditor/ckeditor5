@@ -49,6 +49,7 @@ import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
@@ -2806,6 +2807,32 @@ describe( 'TableColumnResizeEditing', () => {
 						'</tbody>' +
 					'</table>'
 				);
+			} );
+		} );
+
+		describe( 'multi-root editor integration', () => {
+			beforeEach( () => {
+				return MultiRootEditor
+					.create( {
+						foo: document.createElement( 'div' ),
+						bar: document.createElement( 'div' )
+					}, {
+						plugins: [
+							Paragraph, Table, TableColumnResize, Paragraph, WidgetResize
+						]
+					} )
+					.then( _editor => {
+						editor = _editor;
+						model = editor.model;
+						resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+					} );
+			} );
+
+			it( 'change of _isResizingAllowed should affect all roots', () => {
+				resizePlugin._isResizingAllowed = false;
+
+				expect( editor.editing.view.document.getRoot( 'foo' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
+				expect( editor.editing.view.document.getRoot( 'bar' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
 			} );
 		} );
 	} );
