@@ -2,8 +2,8 @@
 # Scope:
 # * Clarify copyright and license conditions.
 
-category: support
-order: 30
+category: licensing
+order: 10
 ---
 
 # License and legal

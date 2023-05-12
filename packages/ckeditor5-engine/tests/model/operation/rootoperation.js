@@ -46,6 +46,11 @@ describe( 'RootOperation', () => {
 		} ).not.to.throw();
 	} );
 
+	it( 'should return the root element on affectedSelectable', () => {
+		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
+		expect( op.affectedSelectable ).to.equal( doc.getRoot( 'new' ) );
+	} );
+
 	it( 'should attach a model in the root', () => {
 		const op = new RootOperation( 'new', '$root', true, doc, doc.version );
 		const root = model.document.getRoot( 'new' );

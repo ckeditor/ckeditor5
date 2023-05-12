@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
+"Language-Team: French (https://app.transifex.com/ckeditor/teams/11143/fr/)\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
@@ -55,3 +55,7 @@ msgstr "Couleur d'arrière-plan"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Couleurs du document"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

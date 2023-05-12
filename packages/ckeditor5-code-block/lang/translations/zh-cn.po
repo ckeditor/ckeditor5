@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 

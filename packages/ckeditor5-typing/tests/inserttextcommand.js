@@ -107,6 +107,16 @@ describe( 'InsertTextCommand', () => {
 			expect( buffer.size ).to.equal( 3 );
 		} );
 
+		it( 'should not execute when selection is in non-editable place', () => {
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			model.document.isReadOnly = true;
+
+			editor.execute( 'insertText', {	text: 'bar'	} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
 		it( 'should insert text for a collapsed selection', () => {
 			setData( model, '<paragraph>foo</paragraph>' );
 

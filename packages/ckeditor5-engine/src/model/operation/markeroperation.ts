@@ -12,6 +12,7 @@ import Range from '../range';
 
 import type Document from '../document';
 import type MarkerCollection from '../markercollection';
+import type { Selectable } from '../selection';
 
 export default class MarkerOperation extends Operation {
 	/**
@@ -81,6 +82,27 @@ export default class MarkerOperation extends Operation {
 	 */
 	public get type(): 'marker' {
 		return 'marker';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		const ranges = [];
+
+		if ( this.oldRange ) {
+			ranges.push( this.oldRange.clone() );
+		}
+
+		if ( this.newRange ) {
+			if ( this.oldRange ) {
+				ranges.push( ...this.newRange.getDifference( this.oldRange ) );
+			} else {
+				ranges.push( this.newRange.clone() );
+			}
+		}
+
+		return ranges;
 	}
 
 	/**
