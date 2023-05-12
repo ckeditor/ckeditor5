@@ -19,24 +19,7 @@ This change **does not affect customers with commercial licenses**, but please r
 
 ## How to remove the "Powered by CKEditor" logo?
 
-In order to remove the logo, you need a commercial license for CKEditor 5. If you need one, please [contact us](https://ckeditor.com/) for a tailored offer. If you already have one, please read on.
-
-### Stand-alone features
-
-If you already have a commercial license for one of the **stand-alone features**, you need to configure the `config.licenseKey` setting properly.
-
-This concerns users holding licences for the following standalone options:
-* Non real-time collaboration features, including:
-	* {@link features/track-changes Track changes}
-	* {@link features/comments Comments}
-	* {@link features/revision-history Revision history}
-* {@link features/pagination Pagination}
-* The productivity pack including:
-	* {@link features/template Content templates}
-	* {@link features/document-outline Document outline}
-	* {@link features/format-painter Format painter}
-	* {@link features/slash-commands Slash commands}
-	* {@link features/table-of-contents Table of contents}
+In order to remove the logo, you need to configure the `config.licenseKey` setting properly. You will find the new license key in the [CKEditor 5 Ecosystem dashboard](https://dashboard.ckeditor.com/login).
 
 <info-box warning>
 	Licensed users will now have **two** license keys available in their CKEditor Environment Dashboard.
@@ -46,18 +29,7 @@ The old lincense key works for all version of CKEditor 5 older than v38.0.0. The
 
 The new key available is the new format license key that is **only** valid for versons 38.0.0 or newer. It needs to replace the current key set up in the editor configuration if it is updated to v38.0.0 or newer.
 
-Please refer to the the {@link support/obtaining-license-key Activating your product} guide in the support section for details on where to find the authentication data and how to configure this setting properly.
-
-### SaaS features
-
-Features and services secured on the server side **do not need any additional actions**, the change will be held automatically. This concerns the following features:
-* Real time collaboration
-* Real time comments
-* Real time revision history
-* Real time track changes
-* Export to PDF
-* Export to Word
-* Import from Word
+Please refer to the the {@link support/obtaining-license-key Activating your product} guide in the support section for details on where to find the authentication data.
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
