@@ -1,7 +1,6 @@
 ---
 category: licensing
 order: 30
-toc: false
 meta-title: CKEditor 5 support documentation
 meta-description: Learn how to get help and support and how to provide feedback.
 ---
@@ -10,7 +9,7 @@ meta-description: Learn how to get help and support and how to provide feedback.
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” watermark in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some. This new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some. This new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
@@ -62,7 +61,7 @@ Features and services secured on the server side **do not need any additional ac
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
-For open source, free users, the "Powered by CKEditor" whaite-label will always be displayed. There is, however, some degree of control over the watermark.
+For open source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over the watermark.
 
 The following properties can be configured:
 
