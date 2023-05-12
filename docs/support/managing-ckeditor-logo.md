@@ -9,11 +9,11 @@ meta-description: Learn how to get help and support and how to provide feedback.
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some. This new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some, this new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
-It is also another way for us to gather feedback from users and continue to improve this major open source project that we have been supporting for more than 20 years. CKEditor has 40+ full time engineers and R&D professionals focused on its continual evolution, with 30K+ developers now using it on a daily basis.
+We are absolutely committed to keeping CKEditor free and open source and plan to maintain it for many years to come. But all that comes at a cost. Currently, we hire well over 20 full-time employees who contribute to CKEditor every day. We ere also 8 years into the development of the project (and 20 years if you count all CKEditor versions).
 
 This change **does not affect customers with commercial licenses**, but please read on as certain actions need to be taken. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 
