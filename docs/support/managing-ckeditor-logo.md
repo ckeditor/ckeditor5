@@ -69,4 +69,20 @@ The following properties can be configured:
 * logo offset
 * alignment: left or right
 
-<!-- Explain once it's ready. -->
+To change the default position and display it over the edge use this configuration option:
+```json
+config.ui.poweredBy.position: "border"
+```
+
+To customize the logo offset use following settings:
+```json
+config.ui.poweredBy.verticalOffset: 10,
+config.ui.poweredBy.horizontalOffset: 10
+```
+where value is set in pixels.
+
+To change the alignment:
+```json
+config.ui.poweredBy.side: "left"
+```
+The default option is `right`.
