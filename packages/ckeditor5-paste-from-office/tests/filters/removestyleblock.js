@@ -20,7 +20,7 @@ describe( 'PasteFromOffice - filters', () => {
 			writer = new UpcastWriter( viewDocument );
 		} );
 
-		it( 'should remove google sheets element', () => {
+		it( 'should remove <style> element', () => {
 			const inputData =
 				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>' +
 				'<table>' +
