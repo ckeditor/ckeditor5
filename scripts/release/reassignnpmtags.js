@@ -36,9 +36,8 @@ module.exports = function reassignNpmTags( { authorizedUser, version, packages }
 			}
 
 			exec( `npm dist-tag add ${ packageName }@${ version } latest` );
-			exec( `npm dist-tag rm ${ packageName }@${ version } staging` );
-
 			packagesUpdated.push( `${ packageName }@${ version }` );
+			exec( `npm dist-tag rm ${ packageName }@${ version } staging` );
 		} catch ( e ) {
 			errors.push( trimErrorMessage( e.message ) );
 		}
