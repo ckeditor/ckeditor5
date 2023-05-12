@@ -58,3 +58,55 @@ To change the alignment:
 config.ui.poweredBy.side: "left"
 ```
 The default option is `right`.
+
+All aboves changes should be done in {@link module:core/editor/editorconfig~EditorConfig Editor config}.
+
+
+There are also `CSS variables` dedicated to customize the style of the "Powered by CKEditor" logo.
+
+```css
+/*
+ * Default values.
+ */
+:root {
+	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-padding-vertical: 2px;
+	--ck-powered-by-padding-horizontal: 4px;
+	--ck-powered-by-text-color: hsl(0, 0%, 31%);
+	--ck-powered-by-border-radius: 100px;
+	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-border-color: var(--ck-color-focus-border);
+}
+```
+
+### Customized example
+
+An example how "Powered by CKEditor" logo can be customized:
+
+```css
+/*
+ * Customized values.
+ */
+:root {
+	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-padding-vertical: 8px;
+	--ck-powered-by-padding-horizontal: 12px;
+	--ck-powered-by-text-color: hsl(133, 100%, 31%);
+	--ck-powered-by-border-radius: 20px 0 0 0;
+	--ck-powered-by-background: linear-gradient(57deg, hsla(181, 70%, 45%, 0) 0%, hsl(41, 98%, 58%) 100%);
+	--ck-powered-by-border-color: hsl(0, 0%, 45%) transparent transparent hsl(0, 0%, 45%) ;
+}
+
+body {
+	background-color: hsl(0, 0%, 45%);
+}
+```
+
+And
+
+```json
+config.ui.poweredBy.position: "border"
+```
+
+Final effect:
+{@img assets/img/powered-by-ckeditor-customized.png Placement of the "Powered by CKEditor" logo within the editor}
