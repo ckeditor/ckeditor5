@@ -82,6 +82,7 @@ export default class TableStyleSupport extends Plugin {
 
 	/**
 	 * Checks if this plugin's custom logic should be applied for defintion-block pair.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the defintion-block pair meet the plugin criteria, false otherwise.
@@ -100,6 +101,7 @@ export default class TableStyleSupport extends Plugin {
 
 	/**
 	 * Checks if the style definition should be applied to selected block.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the block should be style with the style description, false otherwise.
@@ -132,11 +134,13 @@ export default class TableStyleSupport extends Plugin {
 			}
 		}
 
+		/* istanbul ignore next -- @preserve */
 		return false;
 	}
 
 	/**
 	 * Gets all blocks that the style should be applied to.
+	 *
 	 * @param definition Style definition that is being considered.
 	 * @param block A block element from selection.
 	 * @returns An array with the block that was passed as an argument if meets the criteria, null otherwise.
