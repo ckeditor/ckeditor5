@@ -2811,8 +2811,10 @@ describe( 'TableColumnResizeEditing', () => {
 		} );
 
 		describe( 'multi-root editor integration', () => {
-			beforeEach( () => {
-				return MultiRootEditor
+			let multiRoot, tableColumnPlugin;
+
+			beforeEach( async () => {
+				multiRoot = await MultiRootEditor
 					.create( {
 						foo: document.createElement( 'div' ),
 						bar: document.createElement( 'div' )
@@ -2820,19 +2822,19 @@ describe( 'TableColumnResizeEditing', () => {
 						plugins: [
 							Paragraph, Table, TableColumnResize, Paragraph, WidgetResize
 						]
-					} )
-					.then( _editor => {
-						editor = _editor;
-						model = editor.model;
-						resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
 					} );
+				tableColumnPlugin = multiRoot.plugins.get( 'TableColumnResizeEditing' );
 			} );
 
-			it( 'change of _isResizingAllowed should affect all roots', () => {
-				resizePlugin._isResizingAllowed = false;
+			afterEach( async() => {
+				multiRoot.destroy();
+			} );
 
-				expect( editor.editing.view.document.getRoot( 'foo' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
-				expect( editor.editing.view.document.getRoot( 'bar' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
+			it( 'change of _isResizingAllowed should affect all roots', async () => {
+				tableColumnPlugin._isResizingAllowed = false;
+
+				expect( multiRoot.editing.view.document.getRoot( 'foo' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
+				expect( multiRoot.editing.view.document.getRoot( 'bar' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
 			} );
 		} );
 	} );
