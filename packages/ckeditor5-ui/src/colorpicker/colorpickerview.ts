@@ -162,11 +162,11 @@ export default class ColorPickerView extends View {
 	 *
 	 */
 	public focus(): void {
-		// In Firefox and iOS we need to move the focus to the input first.
+		// In some browsers we need to move the focus to the input first.
 		// Otherwise, once the saturation slider is moved for the first time,
 		// editor collapses the selection and doesn't apply the color change.
 		/* istanbul ignore next -- @preserve */
-		if ( env.isGecko || env.isiOS ) {
+		if ( env.isGecko || env.isiOS || env.isSafari ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
 
 			input.focus();
