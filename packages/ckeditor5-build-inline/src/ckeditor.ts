@@ -25,6 +25,7 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { FontSize, FontFamily } from '@ckeditor/ckeditor5-font';
 
 export default class InlineEditor extends InlineEditorBase {
 	public static override builtinPlugins = [
@@ -53,7 +54,9 @@ export default class InlineEditor extends InlineEditorBase {
 		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		FontSize,
+		FontFamily
 	];
 
 	public static override defaultConfig = {
@@ -81,6 +84,20 @@ export default class InlineEditor extends InlineEditorBase {
 				'tableColumn',
 				'tableRow',
 				'mergeTableCells'
+			]
+		},
+		fontSize: {
+			options: [
+				'tiny',
+				'default',
+				'big'
+			]
+		},
+		fontFamily: {
+			options: [
+				'default',
+				'Ubuntu, Arial, sans-serif',
+				'Ubuntu Mono, Courier New, Courier, monospace'
 			]
 		},
 		// This value must be kept in sync with the language defined in webpack.config.js.
