@@ -25,7 +25,7 @@ In order to remove the logo, you need to configure the `config.licenseKey` setti
 	Licensed users will now have **two** license keys available in their CKEditor Environment Dashboard.
 </info-box>
 
-The old lincense key works for all version of CKEditor 5 older than v38.0.0. These versions do not display the "Powered by CKEditor" footer logo, so there is **no need** to introduce any changes unless you update the editor. The key will be valid until expired according to due agreement.
+The old license key works for all versions of CKEditor 5 older than v38.0.0. These versions do not display the "Powered by CKEditor" footer logo, so there is **no need** to introduce any changes unless you update the editor. The key will be valid until expired according to due agreement.
 
 The new key available is the new format license key that is **only** valid for versons 38.0.0 or newer. It needs to replace the current key set up in the editor configuration if it is updated to v38.0.0 or newer.
 
