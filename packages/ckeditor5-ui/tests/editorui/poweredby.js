@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, window, HTMLElement */
+/* global document, Event, HTMLElement */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import EditorUI from '../../src/editorui/editorui';
@@ -16,11 +16,12 @@ import { Rect } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 describe( 'PoweredBy', () => {
-	let editor, element;
+	let editor, element, clock;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
+		clock = sinon.useFakeTimers();
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 		editor = await createEditor( element );
@@ -98,7 +99,7 @@ describe( 'PoweredBy', () => {
 				focusEditor( editor );
 				blurEditor( editor );
 
-				await wait( 10 );
+				clock.tick( 10 );
 				const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
 				focusEditor( editor, focusableEditorUIElement );
@@ -117,7 +118,7 @@ describe( 'PoweredBy', () => {
 				blurEditor( editor );
 
 				// FocusTracker's blur handler is asynchronous.
-				await wait( 200 );
+				clock.tick( 200 );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.false;
 			} );
@@ -173,7 +174,7 @@ describe( 'PoweredBy', () => {
 
 				editor.ui.fire( 'update' );
 
-				await wait( 75 );
+				clock.tick( 75 );
 
 				expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 				expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_border-side_right' );
@@ -220,7 +221,7 @@ describe( 'PoweredBy', () => {
 
 				sinon.assert.notCalled( pinSpy );
 
-				await wait( 75 );
+				clock.tick( 75 );
 
 				sinon.assert.calledOnce( pinSpy );
 				sinon.assert.calledWith( pinSpy.firstCall, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
@@ -243,7 +244,7 @@ describe( 'PoweredBy', () => {
 
 				sinon.assert.calledOnce( pinSpy );
 
-				await wait( 75 );
+				clock.tick( 75 );
 
 				sinon.assert.calledTwice( pinSpy );
 				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
@@ -430,7 +431,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -458,7 +459,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -492,7 +493,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -528,7 +529,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -564,7 +565,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -600,7 +601,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -640,7 +641,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -684,7 +685,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -721,7 +722,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			sinon.assert.calledOnce( pinSpy );
 
@@ -766,7 +767,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -785,7 +786,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_border-side_right' );
@@ -829,7 +830,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
@@ -848,7 +849,7 @@ describe( 'PoweredBy', () => {
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
-			await wait( 75 );
+			clock.tick( 75 );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'position_border-side_right' );
@@ -870,12 +871,6 @@ describe( 'PoweredBy', () => {
 
 	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
 		return ClassicTestEditor.create( element, config );
-	}
-
-	function wait( time ) {
-		return new Promise( res => {
-			window.setTimeout( res, time );
-		} );
 	}
 
 	function focusEditor( editor, focusableUIElement ) {
