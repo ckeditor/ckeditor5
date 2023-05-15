@@ -42,7 +42,7 @@
 			font-weight: bold;
 			margin-right: 4px;
 			cursor: pointer;
-			line-height: var(--ck-powered-by-line-height);
+			line-height: normal;
 			color: var(--ck-powered-by-text-color);
 
 		}
