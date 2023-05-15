@@ -25,15 +25,11 @@ Each kind of content must be handled by some feature. For instance the [`ckedito
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
 
-## How to turn the source mode on?
-
-The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
-
 ## The build I downloaded is missing some features. How do I add them?
 
 See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
-You can learn which editor features are available in the {@link features/index feature index}.
+You can learn which editor features are available in which guild in the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds Predefined builds} guide.
 
 ## How to insert some content into the editor?
 
@@ -156,3 +152,15 @@ editorInstance.editing.view.change( writer => {
 	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
 } );
 ```
+
+## How to check the CKEditor version?
+
+If you need to check your editor version, open the console in the inspection pane. This is usually done by right-clicking anywhere on the page and choosing the `Inpect` option from the dropdown.
+
+Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
+
+{@img assets/img/version.png 468 CKEditor 5 version displaye in the console.}
+
+## How to turn the source mode on?
+
+The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
