@@ -9,7 +9,7 @@
 
 'use strict';
 
-const fs = require( 'fs' );
+const fs = require( 'fs/promises' );
 const { yellow, cyan, underline } = require( 'chalk' );
 const upath = require( 'upath' );
 const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
@@ -20,9 +20,9 @@ const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
  * @param {Object} options
  * @param {String} options.version The version of CKEditor 5 to set.
  * @param {Date} options.releaseDate The release date to set.
- * @returns {Array.<String>} An array of relative paths to updated files.
+ * @returns {Promise<Array.<String>>} An array of relative paths to updated files.
  */
-module.exports = function updateVersionReferences( { version, releaseDate } ) {
+module.exports = async function updateVersionReferences( { version, releaseDate } ) {
 	const filesToUpdate = [
 		{
 			label: 'CDN',
@@ -49,12 +49,15 @@ module.exports = function updateVersionReferences( { version, releaseDate } ) {
 	for ( const { file, pattern, value, label } of filesToUpdate ) {
 		const absolutePath = upath.join( ROOT_DIRECTORY, file );
 
-		if ( !fs.existsSync( absolutePath ) ) {
-			console.log( yellow( `* File does not exist: "${ underline( file ) }" (${ label })` ) );
+		const oldFileContent = await fs.readFile( absolutePath, 'utf-8' )
+			.catch( () => {
+				console.log( yellow( `* File does not exist: "${ underline( file ) }" (${ label })` ) );
+			} );
+
+		if ( !oldFileContent ) {
 			continue;
 		}
 
-		const oldFileContent = fs.readFileSync( file, 'utf-8' );
 		const newFileContent = oldFileContent.replace( pattern, value );
 
 		if ( oldFileContent === newFileContent ) {
@@ -62,7 +65,7 @@ module.exports = function updateVersionReferences( { version, releaseDate } ) {
 			continue;
 		}
 
-		fs.writeFileSync( file, newFileContent, 'utf-8' );
+		await fs.writeFile( file, newFileContent, 'utf-8' );
 		console.log( cyan( `* Updated file: "${ underline( file ) }" (${ label })` ) );
 
 		updatedFiles.add( file );
