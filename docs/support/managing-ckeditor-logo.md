@@ -13,7 +13,7 @@ Starting from version v38.0.0 onwards, all **open source installations** of CKEd
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
-We are absolutely committed to keeping CKEditor free and open source and plan to maintain it for many years to come. But all that comes at a cost. Currently, we hire well over 20 full-time employees who contribute to CKEditor every day. We ere also 8 years into the development of the project (and 20 years if you count all CKEditor versions).
+We are absolutely committed to keeping CKEditor free and open source and plan to maintain it for many years to come. But all that comes at a cost. Currently, we hire well over 20 full-time employees who contribute to CKEditor every day. We are also 8 years into the development of the project (and 20 years if you count all CKEditor versions).
 
 This change **does not affect customers with commercial licenses**, but please read on as certain actions need to be taken. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 
