@@ -287,6 +287,36 @@ describe( 'ColorPickerView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		describe( 'should update the input field value', () => {
+			it( 'if input value was removed', () => {
+				view._hexColor = '#123123';
+
+				const input = view.hexInputRow.children.get( 1 );
+
+				input.fieldView.value = '321321';
+				input.fieldView.element.value = '';
+
+				view.focus();
+
+				expect( input.fieldView.element.value ).to.equal( '123123' );
+				expect( input.fieldView.value ).to.equal( '123123' );
+			} );
+
+			it( 'if input value was modified to incorrect color string', () => {
+				view._hexColor = '#123123';
+
+				const input = view.hexInputRow.children.get( 1 );
+
+				input.fieldView.value = '321321';
+				input.fieldView.element.value = '32';
+
+				view.focus();
+
+				expect( input.fieldView.element.value ).to.equal( '123123' );
+				expect( input.fieldView.value ).to.equal( '123123' );
+			} );
+		} );
 	} );
 
 	describe( 'color property', () => {
