@@ -2826,7 +2826,7 @@ describe( 'TableColumnResizeEditing', () => {
 				tableColumnPlugin = multiRoot.plugins.get( 'TableColumnResizeEditing' );
 			} );
 
-			afterEach( async() => {
+			afterEach( async () => {
 				multiRoot.destroy();
 			} );
 
