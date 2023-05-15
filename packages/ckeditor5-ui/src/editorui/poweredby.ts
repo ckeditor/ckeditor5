@@ -365,7 +365,7 @@ function getLowerCornerPosition(
 
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
-	const position = userConfig && userConfig.position || 'inside';
+	const position = userConfig && userConfig.position || 'border';
 
 	return {
 		position,
