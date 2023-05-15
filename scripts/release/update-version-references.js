@@ -20,7 +20,7 @@ const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
  * @param {Object} options
  * @param {String} options.version The version of CKEditor 5 to set.
  * @param {Date} options.releaseDate The release date to set.
- * @returns {Promise<Array.<String>>} An array of relative paths to updated files.
+ * @returns {Promise.<Array.<String>>} An array of relative paths to updated files.
  */
 module.exports = async function updateVersionReferences( { version, releaseDate } ) {
 	const filesToUpdate = [
