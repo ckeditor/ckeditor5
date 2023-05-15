@@ -3,13 +3,27 @@ Changelog
 
 ## [38.0.0-rc.0](https://github.com/ckeditor/ckeditor5/compare/v37.1.0...v38.0.0-rc.0) (2023-05-16)
 
-<!-- ### Release highlights -->
+### Release highlights
 
-<!-- Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html) to learn more about these changes. -->
+#### "Powered by CKEditor" logo
+
+From version v38.0.0 onwards, all open-source installations of CKEditor (using it under the GPL terms) will carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. This new logo links directly to the [CKEditor website](https://ckeditor.com/) to strengthen the awareness of who’s powering and modernizing their rich text editor.
+
+This change does not affect customers with commercial licenses. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
+
+You can read more about this change in the [announcement on GitHub](https://github.com/ckeditor/ckeditor5/issues/14082), the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html) and the [Managing the "Powered by CKEditor" logo guide](https://ckeditor.com/docs/ckeditor5/latest/support/managing-ckeditor-logo.html).
+
+#### Color picker
+
+Until v38.0.0 users were only able to choose from predefined colors in features like font color, font background color, table border color, etc. Starting from v38.0.0 they are now also able to use a color picker to choose any possible color.
+
+The color picker is now available in font color and font background color features. In the coming versions (next month) it will also be added to the table-related color features.
+
+If you're interested in keeping the old behavior where the user was able to choose only from predefined colors, check out the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html).
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* Introduced the "Powered by CKEditor" logo.
+* Introduced the "Powered by CKEditor" logo. Closes [#14082](https://github.com/ckeditor/ckeditor5/issues/14082).
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
