@@ -19,7 +19,7 @@ Listed below are the most important changes that require your attention when upg
 
 ## Introduction of the "Powered by CKEditor" logo
 
-From version v38.0.0 onwards, all **open source installations** of CKEditor 5 will carry a small “Powered by CKEditor” watermark in the bottom right corner of the editing area. This new tag links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some, it is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
+From version v38.0.0 onwards, all **open source installations** of CKEditor 5 will carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. This new tag links directly to the [CKEditor website](https://ckeditor.com/) and while it may be a little frustrating to some, it is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 This change **does not affect customers with commercial licenses** who already use the following: pagination, productivity pack, non-real-time collaboration features. Otherwise, owners of commercial license for CKEditor 5 will have to update their authentication key available in the CKEditor Environment Dashboard.
 
