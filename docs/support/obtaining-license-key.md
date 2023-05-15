@@ -33,7 +33,7 @@ If you wish to purchase a CKEditor 5 commercial license or a license to one of t
 
 ### Subscribing to the CKEditor Premium Features free trial
 
-If you wish to test our opffer, you can create an account by [signing up for CKEditor Premium Features free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard).
+If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard).
 
 The trial is commitment-free and there is no need to provide creadit card details in order to start it. The Premium Features Free Trial lets you test all premium features, including the ones listed above, the converter services and the CKBox file manager as well.
 
