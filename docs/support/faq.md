@@ -29,7 +29,7 @@ If you load some content unknown to any editor feature, it will be dropped. If y
 
 See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
-You can learn which editor features are available in which guild in the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds Predefined builds} guide.
+You can learn which editor features are available in which build in the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds Predefined builds} guide.
 
 ## How to insert some content into the editor?
 
