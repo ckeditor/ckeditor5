@@ -21,7 +21,7 @@ The following user guide deals with activation of CKEditor 5 and the following p
 	* {@link features/slash-commands Slash commands}
 	* {@link features/table-of-contents Table of contents}
 
-For activation instructions for premium features such as export to Word, export to PDF, import from Word please refer to respective guides.
+Premium features such as {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 ## Obtaining a license
 
@@ -43,19 +43,19 @@ Follow this guide to get the license key necessary to activate your premium feat
 
 ### Log in to the CKEditor Ecosystem dashboard
 
-Log in to the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com). You will receive a confirmation email and will be asked to create a password for your account. Keep it safe.
-
+Log in to the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com). If this is the very first time you do it, you will receive a confirmation email and will be asked to create a password for your account. Keep it safe.
+<!-- Add info about CKEditor5 itself once it's there, with mention of two license keys from 38.0.0 -->
 ### Access the account dashboard
 
 After logging in, click "CKEditor" under the "Your products" header on the left. You will see the subscription parameters overview together with the management area below.
 <!-- Replace temporaryr trial screenshots with the real thing -->
-{@img assets/img/premium-features-trial-bundle.png 1060 Your CKEditor trials view in the customer dashboard.}
+{@img assets/img/premium-features-trial-bundle.png 1064 Your CKEditor subsriptions in the customer dashboard.}
 
 ### Copy the license key
 
 Once you enter the management console, you have access to the license key needed to run the features. Note that the same license key will be valid for both the productivity pack and other standalone features.
 
-{@img assets/img/standalone.png 953 Productivity pack license key in the management console.}
+{@img assets/img/standalone.png 1030 Premium features license key in the management console.}
 
 ### Activate the product
 
