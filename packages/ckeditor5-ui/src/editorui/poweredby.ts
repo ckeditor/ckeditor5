@@ -249,7 +249,8 @@ class PoweredByView extends View<HTMLDivElement> {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-powered-by' ]
+				class: [ 'ck', 'ck-powered-by' ],
+				'aria-hidden': true
 			},
 			children: [
 				{
