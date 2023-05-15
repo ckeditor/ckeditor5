@@ -305,7 +305,6 @@ describe( 'PoweredBy', () => {
 				expect( view.element.firstChild.tagName ).to.equal( 'A' );
 				expect( view.element.firstChild.href ).to.equal( 'https://ckeditor.com/' );
 				expect( view.element.firstChild.target ).to.equal( '_blank' );
-				expect( view.element.firstChild.tabIndex ).to.equal( -1 );
 			} );
 
 			it( 'should have a label inside the link', () => {
@@ -328,6 +327,14 @@ describe( 'PoweredBy', () => {
 				view.element.firstChild.dispatchEvent( evt );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should be excluded from the accessibility tree', () => {
+				expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+			} );
+
+			it( 'should not be accessible via tab key navigation', () => {
+				expect( view.element.firstChild.tabIndex ).to.equal( -1 );
 			} );
 		} );
 	} );
