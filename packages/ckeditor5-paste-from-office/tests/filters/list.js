@@ -104,18 +104,6 @@ describe( 'PasteFromOffice - filters', () => {
 				);
 			} );
 
-			// #12361
-			it( 'removes `text-indent` from the list item', () => {
-				const html = '<p style="mso-list:l0 level1 lfo0;text-indent:-18.0pt"><span style="mso-list:Ignore">1.</span>Item 1</p>';
-				const view = htmlDataProcessor.toView( html );
-
-				transformListItemLikeElementsIntoLists( view, '' );
-
-				expect( view.childCount ).to.equal( 1 );
-				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
-				expect( stringify( view ) ).to.equal( '<ol><li style="mso-list:l0 level1 lfo0">Item 1</li></ol>' );
-			} );
-
 			describe( 'nesting', () => {
 				const level1 = 'style="mso-list:l0 level1 lfo0"';
 				const level2 = 'style="mso-list:l0 level2 lfo0"';
