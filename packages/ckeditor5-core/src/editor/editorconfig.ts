@@ -481,7 +481,7 @@ export interface EditorConfig {
 	 *
 	 * 	The following configuration properties are supported:
 	 *
-	 * 	* **`position`** &ndash; Position of the project's logo (default: `'inside'`).
+	 * 	* **`position`** &ndash; Position of the project's logo (default: `'border'`).
 	 * 		* When `'inside'` the logo will be displayed within the boundaries of the editing area.
 	 * 		* When `'border'` the logo will be displayed over the bottom border of the editing area.
 	 *
@@ -603,7 +603,7 @@ export interface UiConfig {
 		 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
 		 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
 		 *
-		 * @default 'inside'
+		 * @default 'border'
 		 */
 		position: 'inside' | 'border';
 
