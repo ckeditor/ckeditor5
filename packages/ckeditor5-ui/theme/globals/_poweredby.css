@@ -8,7 +8,7 @@
 	--ck-powered-by-padding-top: 2px;
 	--ck-powered-by-padding-left: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
-	--ck-powered-by-border-radius: 100px;
+	--ck-powered-by-border-radius: var(--ck-border-radius);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
 	--ck-powered-by-border-color: var(--ck-color-focus-border);
 }
