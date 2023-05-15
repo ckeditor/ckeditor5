@@ -25,7 +25,7 @@ Premium features such as {@link features/export-word export to Word}, {@link fea
 
 ## Obtaining a license
 
-To active CKEditor 5 and the selected premium features you will need either a commercial CKEditor 5 and selected premium features license, or a trial license.
+To activate CKEditor 5 and the selected premium features you will need either a commercial CKEditor 5, or selected premium features license, or a trial license.
 
 ### Purchasing a comercial license
 
