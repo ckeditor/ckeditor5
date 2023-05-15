@@ -127,18 +127,16 @@ You can use the knowledge from the previous sections to create a complete plugin
 If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Command, Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-import plainTextToHtml from '@ckeditor/ckeditor5-clipboard/src/utils/plaintexttohtml';
+import { plainTextToHtml } from '@ckeditor/ckeditor5-clipboard';
 
 class PastePlainText extends Plugin {
 	static get pluginName() {

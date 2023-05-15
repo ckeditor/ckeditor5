@@ -159,9 +159,9 @@ An example JavaScript file:
 ```js
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

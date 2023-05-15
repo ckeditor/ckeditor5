@@ -43,7 +43,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import { TodoList } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

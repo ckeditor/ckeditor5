@@ -164,7 +164,7 @@ npm install --save @ckeditor/ckeditor5-heading
 And add it to your plugin list and toolbar configuration:
 
 ```js
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -180,8 +180,8 @@ ClassicEditor
 To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
 ```js
-import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 ```
 
 <info-box info>

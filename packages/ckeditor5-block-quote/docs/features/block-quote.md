@@ -45,7 +45,7 @@ npm install --save @ckeditor/ckeditor5-block-quote
 And add it to your plugin list configuration:
 
 ```js
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

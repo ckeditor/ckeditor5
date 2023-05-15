@@ -67,7 +67,7 @@ npm install --save @ckeditor/ckeditor5-html-support
 And add it to your plugin list configuration:
 
 ```js
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -223,12 +223,12 @@ To enable such elements and add attributes or classes to them, you need to use t
 Base implementation example:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 /**
  * A plugin extending General HTML Support for example custom HTML elements.

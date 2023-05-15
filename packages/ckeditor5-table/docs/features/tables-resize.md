@@ -37,8 +37,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import { Table, TableColumnResize } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

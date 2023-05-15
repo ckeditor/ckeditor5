@@ -54,7 +54,7 @@ npm install --save @ckeditor/ckeditor5-html-embed
 And add it to your plugin list configuration:
 
 ```js
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
