@@ -6,9 +6,9 @@ menu-title: Obtaining the license key
 
 # Activating your product
 
-This article aims to get you up and running with CKEditor 5 and the CKEditor premium features activation. 
+This article aims to get you up and running with CKEditor 5 and the CKEditor premium features activation.
 
-The following user guide deals with activation of CKEditor 5 and the following premium features: 
+The following user guide deals with activation of CKEditor 5 and the following premium features:
 * Non real-time collaboration features, including:
 	* {@link features/track-changes Track changes}
 	* {@link features/comments Comments}
@@ -27,7 +27,7 @@ Premium features such as {@link features/export-word export to Word}, {@link fea
 
 To activate CKEditor 5 and the selected premium features you will need either a commercial CKEditor 5, or selected premium features license, or a trial license.
 
-### Purchasing a comercial license
+### Purchasing a commercial license
 
 If you wish to purchase a CKEditor 5 commercial license or a license to one of the premium features, please [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
@@ -39,7 +39,7 @@ The trial is commitment-free and there is no need to provide credit card details
 
 ## Obtaining a license key
 
-Follow this guide to get the license key necessary to activate your premium features.
+Follow this guide to get the license key necessary to activate your premium features or to white-label CKEditor 5.
 
 ### Log in to the CKEditor Ecosystem dashboard
 
@@ -57,11 +57,17 @@ Once you enter the management console, you have access to the license key needed
 
 {@img assets/img/standalone.png 1030 Premium features license key in the management console.}
 
+There are two license keys available:
+1. The old key for versions older than 38.0.0
+2. The new key for versions newer than 38.0.0
+
+The new key available is the new format license key that is **only** valid for versions 38.0.0 or newer. The old key will work with CKE5 versions between v38.0.0+ and up to a version to be released in May 2024 (when we consider removing support for these keys), as long as the key itself is not expired.
+
 ### Activate the product
 
 To install the plugins into your WYSIWYG editor, use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a custom CKEditor 5 build with the plugin enabled. Alternatively, refer to the installation sections in the plugins documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
 
-You need to add the license key to your CKEditor 5 configuration. It is enough to add the license key once for the stand-alone features listed in this guide, no matter which and how many premium features you intend to use. 
+You need to add the license key to your CKEditor 5 configuration. It is enough to add the license key once for the stand-alone features listed in this guide, no matter which and how many premium features you intend to use.
 
 ```js
 ClassicEditor
