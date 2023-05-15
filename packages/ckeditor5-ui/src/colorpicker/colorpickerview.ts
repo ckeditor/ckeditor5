@@ -159,9 +159,20 @@ export default class ColorPickerView extends View {
 
 	/**
 	 * Focuses the first pointer in color picker.
-	 *
 	 */
 	public focus(): void {
+		const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
+
+		// Set the value in the input to match the selected color (set in _hexColor prop).
+		// As the input is not cleared automatically at any time,
+		// it can desynchronise with the hex color value in the component
+		// (e.g. if incorrect color string was set - like 'a').
+		// We need a hard refresh (always triggering the 'change' event)
+		// because in some scenarios input value can be equal to the hex color,
+		// but vary from DOM element value.
+		// See https://github.com/cksource/ckeditor5-internal/issues/3236 for reference.
+		this._hardRefreshInputValue( input );
+
 		// In some browsers we need to move the focus to the input first.
 		// Otherwise, the color picker doesn't behave as expected.
 		// In FF, after selecting the color via slider, it instantly moves back to the previous color.
@@ -171,8 +182,6 @@ export default class ColorPickerView extends View {
 		// https://github.com/cksource/ckeditor5-internal/issues/3268.
 		/* istanbul ignore next -- @preserve */
 		if ( env.isGecko || env.isiOS || env.isSafari ) {
-			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
-
 			input.focus();
 		}
 
@@ -263,6 +272,16 @@ export default class ColorPickerView extends View {
 		} );
 
 		return labeledInput;
+	}
+
+	/**
+	 * Refreshes the input value. Triggers the 'change' event even if the value didn't actually change.
+	 *
+	 * @private
+	 */
+	private _hardRefreshInputValue( input: LabeledFieldView<InputTextView> ) {
+		input.fieldView.value = '';
+		input.fieldView.value = this._hexColor.slice( 1 );
 	}
 }
 
