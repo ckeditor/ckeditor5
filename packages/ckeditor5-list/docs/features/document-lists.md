@@ -7,7 +7,7 @@ modified_at: 2022-09-20
 
 {@snippet features/lists-source}
 
-# Document list
+# Document lists
 
 The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 

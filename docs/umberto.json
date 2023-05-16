@@ -260,6 +260,7 @@
 		"installation/overview.html": "installation/index.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
+		"support/license-and-legal.html": "support/licensing/license-and-legal.html",
 		"updating/changelog.html": "updating/guides/changelog.html",
 		"updating/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
@@ -541,7 +542,15 @@
 			"name": "Support",
 			"id": "support",
 			"navigationIncludeIndex": true,
-			"slug": "support"
+			"slug": "support",
+			"categories": [
+				{
+					"name": "Licensing and activation",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 20
+				}
+			]
 		},
 		{
 			"name": "Framework",
