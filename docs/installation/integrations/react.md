@@ -1,10 +1,10 @@
 ---
-menu-title: React component
-category: frameworks
+menu-title: React
+category: integrations
 order: 30
 ---
 
-{@snippet installation/frameworks/framework-integration}
+{@snippet installation/integrations/framework-integration}
 
 # React rich text editor component
 

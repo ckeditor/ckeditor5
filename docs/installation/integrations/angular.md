@@ -1,10 +1,10 @@
 ---
-menu-title: Angular component
-category: frameworks
+menu-title: Angular
+category: integrations
 order: 20
 ---
 
-{@snippet installation/frameworks/framework-integration}
+{@snippet installation/integrations/framework-integration}
 
 # Angular rich text editor component
 
