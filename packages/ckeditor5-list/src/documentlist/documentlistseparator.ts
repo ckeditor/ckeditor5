@@ -27,20 +27,23 @@ export default class DocumentListSeparator extends Plugin {
 		const model = editor.model;
 
 		model.schema.register( 'listSeparator', {
-			allowWhere: '$block'
+			allowWhere: '$block',
+			isBlock: true
 		} );
 
 		editor.conversion.for( 'upcast' )
+			// Add `listSeparator` element between similar list elements on upcast
 			.add( dispatcher => {
-				// dispatcher.on<UpcastElementEvent>( 'element:li', liHandler() );
-				dispatcher.on<UpcastElementEvent>( 'element:ol', handler() );
-				dispatcher.on<UpcastElementEvent>( 'element:ul', handler() );
+				dispatcher.on<UpcastElementEvent>( 'element:ol', listSeparatorUpcastConverter() );
+				dispatcher.on<UpcastElementEvent>( 'element:ul', listSeparatorUpcastConverter() );
 			} )
+			// View to model transformation
 			.elementToElement( {
 				model: 'listSeparator',
 				view: 'ck-list-separator'
 			} );
 
+		// `listSeparator` should exist in view, but be invisible (hidden)
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: {
@@ -49,12 +52,15 @@ export default class DocumentListSeparator extends Plugin {
 			}
 		} );
 
+		// `listSeparator` should not exist in output data
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: ( modelElement, conversionApi ) => {
-				const viewElement = conversionApi.writer.createEmptyElement( 'ck-list-separator' );
+				const viewElement = conversionApi.writer.createContainerElement( 'ck-list-separator' );
 
 				conversionApi.writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+
+				viewElement.getFillerOffset = () => null;
 
 				return viewElement;
 			}
@@ -62,7 +68,10 @@ export default class DocumentListSeparator extends Plugin {
 	}
 }
 
-function handler(): GetCallback<UpcastElementEvent> {
+/**
+ * Inserts a `listSeparator` element between two lists of the same type (`ol` + `ol` or `ul` + `ul`).
+ */
+function listSeparatorUpcastConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const element: ViewElement = data.viewItem;
 		const nextSibling = element.nextSibling as ViewElement | null;
@@ -77,57 +86,23 @@ function handler(): GetCallback<UpcastElementEvent> {
 
 		if ( !data.modelRange ) {
 			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-
-			if ( !data.modelRange ) {
-				return;
-			}
 		}
 
 		const writer = conversionApi.writer;
 		const modelElement = writer.createElement( 'listSeparator' );
 
+		// Try to insert `listSeparator` element on the current model cursor position.
 		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 			return;
 		}
 
 		const parts = conversionApi.getSplitParts( modelElement );
 
-		data.modelRange = data.modelRange.getJoined( writer.createRange(
-			writer.createPositionBefore( modelElement ),
+		// Extend model range with the range of the created listSeparator element.
+		data.modelRange = writer.createRange(
+			data.modelRange!.start,
 			writer.createPositionAfter( parts[ parts.length - 1 ] )
-		) );
-
-		conversionApi.updateConversionResult( modelElement, data );
-	};
-}
-
-function liHandler(): GetCallback<UpcastElementEvent> {
-	return ( evt, data, conversionApi ) => {
-		const element: ViewElement = data.viewItem;
-
-		if ( element.previousSibling ) {
-			return;
-		}
-
-		const parent = element.parent as ViewElement | null;
-		const siblingParent = parent!.previousSibling as ViewElement | null;
-
-		if ( !siblingParent ) {
-			return;
-		}
-
-		if ( parent!.name !== siblingParent.name ) {
-			return;
-		}
-
-		const writer = conversionApi.writer;
-		const modelElement = writer.createElement( 'paragraph' );
-		writer.insertText( 'XXX', modelElement );
-		const position = writer.createPositionAt( data.modelCursor, 'before' );
-
-		if ( !conversionApi.safeInsert( modelElement, position ) ) {
-			return;
-		}
+		);
 
 		conversionApi.updateConversionResult( modelElement, data );
 	};
