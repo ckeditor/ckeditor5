@@ -1,10 +1,10 @@
 ---
-menu-title: Vue.js 2.x component
-category: frameworks
+menu-title: Vue.js 2.x
+category: integrations
 order: 40
 ---
 
-{@snippet installation/frameworks/framework-integration}
+{@snippet installation/integrations/framework-integration}
 
 # Vue.js 2.x rich text editor component
 
@@ -15,7 +15,7 @@ order: 40
 </p>
 
 <info-box>
-	**Important**: This guide is about the CKEditor 5 integration with Vue.js 2.x. To learn more about the integration with Vue.js 3+, check out the {@link installation/frameworks/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
+	**Important**: This guide is about the CKEditor 5 integration with Vue.js 2.x. To learn more about the integration with Vue.js 3+, check out the {@link installation/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
 </info-box>
 
 CKEditor 5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor 5 Framework} upon which the builds are based.
@@ -25,7 +25,7 @@ The easiest way to use CKEditor 5 in your Vue.js application is by choosing one 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
-	The {@link features/watchdog watchdog feature} is available for the {@link installation/frameworks/react React} and {@link installation/frameworks/angular Angular} integrations, but is not supported in Vue yet.
+	The {@link features/watchdog watchdog feature} is available for the {@link installation/integrations/react React} and {@link installation/integrations/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
 ## Quick start

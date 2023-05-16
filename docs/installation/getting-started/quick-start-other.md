@@ -500,5 +500,5 @@ After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!
 
 Congratulations, you have just run your first CKEditor 5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/frameworks/overview Frameworks section}.
+P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>
