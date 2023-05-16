@@ -51,8 +51,8 @@ function getCkeditor5Plugins() {
  * @returns {Promise.<Array>}
  */
 async function getCkeditor5ModulePaths() {
-	const files = await globPromise( 'node_modules/@ckeditor/ckeditor5-!(dev-)/src/**/*.[jt]s', { cwd: ROOT_DIRECTORY } );
-	const ossPackages = ( await globPromise( 'packages/*/', { cwd: ROOT_DIRECTORY } ) )
+	const files = await glob( 'node_modules/@ckeditor/ckeditor5-!(dev-)/src/**/*.[jt]s', { cwd: ROOT_DIRECTORY } );
+	const ossPackages = ( await glob( 'packages/*/', { cwd: ROOT_DIRECTORY } ) )
 		.map( packagePath => {
 			const shortPackageName = packagePath.replace( /^packages/, '' );
 
@@ -61,23 +61,6 @@ async function getCkeditor5ModulePaths() {
 
 	return files.filter( modulePath => {
 		return ossPackages.some( pkg => modulePath.match( pkg ) );
-	} );
-}
-
-/**
- * @param {String} pattern
- * @param {Object} options
- * @returns {Promise.<Array.<String>>}
- */
-function globPromise( pattern, options ) {
-	return new Promise( ( resolve, reject ) => {
-		glob( pattern, options, ( err, files ) => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve( files );
-		} );
 	} );
 }
 

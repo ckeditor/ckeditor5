@@ -9,8 +9,8 @@
 
 'use strict';
 
-const { sync } = require( 'glob' );
-const fs = require( 'fs' );
+const { glob } = require( 'glob' );
+const { promises: { readFile } } = require( 'fs' );
 const chalk = require( 'chalk' );
 const semver = require( 'semver' );
 const { normalizeTrim } = require( 'upath' );
@@ -23,19 +23,19 @@ const isCKEditor5Package = require( './isckeditor5package' );
  * @param {String} releaseDirectory Path to directory with packages to validate.
  * @param {String} options.version Version that all packages and their dependencies need to match.
  */
-module.exports = function validateDependenciesVersions( { releaseDirectory, version } ) {
+module.exports = async function validateDependenciesVersions( { releaseDirectory, version } ) {
 	const normalizedReleaseDirectory = normalizeTrim( releaseDirectory );
 	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
-	const pkgJsonPaths = sync( globPattern, { absolute: true, nodir: true } );
+	const pkgJsonPaths = await glob( globPattern, { absolute: true, nodir: true } );
 
-	const errors = pkgJsonPaths.flatMap( pkgJsonPath => {
-		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf8' ) );
+	const pkgJsons = await Promise.all(
+		pkgJsonPaths.map( async pkgJsonPath => JSON.parse( await readFile( pkgJsonPath, 'utf8' ) ) )
+	);
 
-		return [
-			...validatePackageMatchVersion( version, pkgJson ),
-			...validateDependenciesMatchVersion( version, pkgJson )
-		];
-	} );
+	const errors = pkgJsons.flatMap( pkgJson => ( [
+		...validatePackageMatchVersion( version, pkgJson ),
+		...validateDependenciesMatchVersion( version, pkgJson )
+	] ) );
 
 	if ( errors.length ) {
 		throw new Error( 'Found version mismatches for specified packages:\n' + errors.join( '\n' ) );
