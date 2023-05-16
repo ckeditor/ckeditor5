@@ -23,7 +23,7 @@ If you're interested in keeping the old behavior where the user was able to choo
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* Introduced the "Powered by CKEditor" logo. Closes [#14082](https://github.com/ckeditor/ckeditor5/issues/14082).
+* Introduced the "Powered by CKEditor" logo.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
