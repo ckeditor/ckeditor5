@@ -106,7 +106,7 @@ const builtinPlugins = [
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	constructor(
-		extraPlugins: { label: string; icon: any; onOpen: () => {} }[]
+		extraPlugins?: { label: string; icon: any; onOpen: () => {} }[]
 	) {
 		super();
 		for (let plugin of extraPlugins) {
