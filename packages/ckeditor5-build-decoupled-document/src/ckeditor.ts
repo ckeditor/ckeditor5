@@ -109,9 +109,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		const { extraPlugins, ...rest } = props;
 		super(rest);
 		for (let plugin of extraPlugins) {
-			builtinPlugins.push(
-				new CustomPlugin(plugin.label, plugin.icon, plugin.onOpen)
-			);
+			builtinPlugins.push(new CustomPlugin(plugin));
 		}
 	}
 
