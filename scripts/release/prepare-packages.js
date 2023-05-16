@@ -36,23 +36,23 @@ abortController.signal.addEventListener( 'abort', () => {
 ( async () => {
 	const latestVersion = releaseTools.getLastFromChangelog();
 
-	releaseTools.updateDependencies( {
+	await releaseTools.updateDependencies( {
 		version: '^' + latestVersion,
 		packagesDirectory: PACKAGES_DIRECTORY,
 		shouldUpdateVersionCallback: require( './isckeditor5package' )
 	} );
 
-	releaseTools.updateVersions( {
+	await releaseTools.updateVersions( {
 		packagesDirectory: PACKAGES_DIRECTORY,
 		version: latestVersion
 	} );
 
-	const updatedFiles = updateVersionReferences( {
+	const updatedFiles = await updateVersionReferences( {
 		version: latestVersion,
 		releaseDate: new Date()
 	} );
 
-	buildTsAndDllForCkeditor5Root();
+	await buildTsAndDllForCkeditor5Root();
 
 	await releaseTools.executeInParallel( {
 		packagesDirectory: PACKAGES_DIRECTORY,
@@ -81,11 +81,11 @@ abortController.signal.addEventListener( 'abort', () => {
 		taskToExecute: require( './preparedllbuildscallback' )
 	} );
 
-	releaseTools.cleanUpPackages( {
+	await releaseTools.cleanUpPackages( {
 		packagesDirectory: RELEASE_DIRECTORY
 	} );
 
-	releaseTools.commitAndTag( {
+	await releaseTools.commitAndTag( {
 		version: latestVersion,
 		files: [
 			'package.json',

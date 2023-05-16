@@ -9,18 +9,19 @@
 
 /**
  * @param {String} packagePath
+ * @returns {Promise}
  */
-module.exports = function compileTypeScriptCallback( packagePath ) {
+module.exports = async function compileTypeScriptCallback( packagePath ) {
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 	// All paths are resolved from the root repository directory.
-	const isPackageWrittenInTs = require( './scripts/release//utils/ispackagewrittenints' );
+	const isTypeScriptPackage = require( './scripts/release/utils/istypescriptpackage' );
 
-	if ( !isPackageWrittenInTs( packagePath ) ) {
+	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
 		return;
 	}
 
-	tools.shExec( 'yarn run build', {
+	return tools.shExec( 'yarn run build', {
 		cwd: packagePath,
 		verbosity: 'error'
-	} );
+	}, { async: true } );
 };
