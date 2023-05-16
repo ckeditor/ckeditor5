@@ -54,6 +54,7 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 			continue;
 		}
 
+		await fs.writeFile( absolutePath, newFileContent );
 		updatedFiles.add( file );
 	}
 
