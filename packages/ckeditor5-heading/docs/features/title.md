@@ -55,7 +55,7 @@ npm install --save @ckeditor/ckeditor5-heading
 Then add the `Title` plugin to your plugin list:
 
 ```js
-import Title from '@ckeditor/ckeditor5-heading/src/title';
+import { Title } from '@ckeditor/ckeditor5-heading';
 
 ClassicEditor
     .create( document.querySelector( '#editor' ), {

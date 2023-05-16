@@ -51,7 +51,7 @@ npm install --save @ckeditor/ckeditor5-source-editing
 And add it to your plugin list configuration:
 
 ```js
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -65,8 +65,8 @@ ClassicEditor
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
 ```js
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -36,7 +36,7 @@ npm install --save @ckeditor/ckeditor5-select-all
 Then add the `SelectAll` plugin to your plugin list and to the toolbar:
 
 ```js
-import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

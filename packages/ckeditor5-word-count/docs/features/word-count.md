@@ -244,7 +244,7 @@ npm install --save @ckeditor/ckeditor5-word-count
 And add it to your plugin list configuration:
 
 ```js
-import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import { WordCount } from '@ckeditor/ckeditor5-word-count';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

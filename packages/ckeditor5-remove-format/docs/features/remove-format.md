@@ -82,7 +82,7 @@ npm install --save @ckeditor/ckeditor5-remove-format
 And add it to your plugin list and the toolbar configuration:
 
 ```js
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

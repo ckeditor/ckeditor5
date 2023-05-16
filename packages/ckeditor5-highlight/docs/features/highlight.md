@@ -184,7 +184,7 @@ npm install --save @ckeditor/ckeditor5-highlight
 And add it to your plugin list and the toolbar configuration:
 
 ```js
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

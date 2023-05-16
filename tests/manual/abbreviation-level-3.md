@@ -104,13 +104,12 @@ Create your project's entry point:
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -185,7 +184,7 @@ Let's define the 3 plugins.
 
 import AbbreviationEditing from './abbreviationediting';
 import AbbreviationUI from './abbreviationui';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class Abbreviation extends Plugin {
 	static get requires() {
@@ -197,7 +196,7 @@ export default class Abbreviation extends Plugin {
 ```js
 // abbreviation/abbreviationui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -209,7 +208,7 @@ export default class AbbreviationUI extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -223,15 +222,14 @@ Now you need to load the `Abbreviation` plugin in your `app.js` file:
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Abbreviation from './simplebox/abbreviation';                              // ADDED
+import Abbreviation from './simplebox/abbreviation'; // ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -272,7 +270,7 @@ Update the `AbbreviationEditing` plugin with this definition.
 ```js
 // abbreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -306,7 +304,7 @@ Getting the title is a little bit tricky. In upcast conversion, we will need a s
 ```js
 // abbreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -340,7 +338,7 @@ export default class AbbreviationEditing extends Plugin {
 ```js
 // abbreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationEditing extends Plugin {
 	init() {
@@ -394,7 +392,7 @@ Create a new file `abbreviationcommand.js` in the `abbreviation/` directory.
 ```js
 // abbreviation/abbreviationcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class Abbreviationommand extends Command {
 	execute( value ) {
@@ -419,7 +417,7 @@ Import the command and register it in the `AbbreviationEditing` plugin:
 ```js
 // abbreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import AbbreviationCommand from './abbreviationcommand';                 // ADDED
 

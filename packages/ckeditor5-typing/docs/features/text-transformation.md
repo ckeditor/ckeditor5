@@ -164,7 +164,7 @@ npm install --save @ckeditor/ckeditor5-typing
 And add it to your plugin list configuration:
 
 ```js
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -25,43 +25,29 @@ The presented combination of the UI and editor's features works best for integra
 ```js
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-import DropdownPanelView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownpanelview';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Font from '@ckeditor/ckeditor5-font/src/font';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { DropdownButtonView, DropdownPanelView, DropdownView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
+import { clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 
 class FormattingOptions extends Plugin {
 	/**

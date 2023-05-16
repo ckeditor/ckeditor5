@@ -46,7 +46,7 @@ npm install --save @ckeditor/ckeditor5-undo
 Then add the `Undo` plugin to your plugin list and to the toolbar:
 
 ```js
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

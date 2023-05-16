@@ -33,7 +33,7 @@ npm install --save @ckeditor/ckeditor5-find-and-replace
 Then add the `FindAndReplace` plugin to your plugin list:
 
 ```js
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
