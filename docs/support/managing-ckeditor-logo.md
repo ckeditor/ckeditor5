@@ -21,6 +21,7 @@ In order to remove the logo, you need to obtain a commercial license and then co
 Please refer to the {@link support/obtaining-license-key Activating your product} guide for details on where to find the license key and how to use the key in your configuration.
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
+
 For open-source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over the watermark.
 
 The following properties can be configured:
@@ -35,17 +36,22 @@ config.ui.poweredBy.position: "inside"
 ```
 
 To customize the logo offset use following settings:
+
 ```json
 config.ui.poweredBy.verticalOffset: 10,
 config.ui.poweredBy.horizontalOffset: 10
 ```
+
 where value is set in pixels.
 
 To change the alignment:
+
 ```json
 config.ui.poweredBy.side: "left"
 ```
+
 The default option is `right`.
+
 All above changes should be done in the {@link module:core/editor/editorconfig~EditorConfig editor config} file.
 
 There is a set of ready-made CSS variables available dedicated to customizing the style of the "Powered by CKEditor" logo.
@@ -94,5 +100,5 @@ And
 config.ui.poweredBy.position: "border"
 ```
 
-Final effect:
+The final effect:
 {@img assets/img/powered-by-ckeditor-customized.png Placement of the customized "Powered by CKEditor" logo within the editor}
