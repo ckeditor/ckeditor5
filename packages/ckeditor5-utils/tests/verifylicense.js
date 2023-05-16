@@ -19,7 +19,7 @@ describe( 'utils', () => {
 			it( 'when old token format is given', () => {
 				// old
 				// eslint-disable-next-line max-len
-				const string = 'YWZvb2JkcnphYXJhZWJvb290em9wbWJvbHJ1c21sZnJlYmFzdG1paXN1cm1tZmllenJhb2F0YmFvcmxvb3B6aWJvYWRiZWZzYXJ0bW9ibG8=';
+				const string = 'K1RHbDJhb0RoYXpRQTI0alZOaUowZE5NTldHM05rc3ovYnRkTVZOR3VnZDBhLzVOa3Z1SUd2N2JEY2JVWk13YkNzUjBleC9tSlJiYSswNHNYTEdHTkRiV0xwR0h0ZkhZU095eEZDWHpZd3ZkQ2huaTA0UmxHQkZEM00wUFVzcXk=';
 
 				expect( verifyLicense( string ) ).to.be.equal( 'VALID' );
 			} );
