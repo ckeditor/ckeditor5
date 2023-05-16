@@ -57,63 +57,56 @@ import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 // @ts-ignore
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
 // @ts-ignore
+import { Exercise } from './plugins/exercise/index';
 // @ts-ignore
-import CustomPlugin from './customPlugin';
-
-const builtinPlugins = [
-	Essentials,
-	GeneralHtmlSupport,
-	ClickObserver,
-	Alignment,
-	FontSize,
-	FontFamily,
-	FontColor,
-	FontBackgroundColor,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	Strikethrough,
-	Underline,
-	BlockQuote,
-	CKBox,
-	CKFinder,
-	CloudServices,
-	EasyImage,
-	Heading,
-	Image,
-	ImageCaption,
-	ImageResize,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	IndentBlock,
-	Link,
-	List,
-	ListProperties,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	PictureEditing,
-	Table,
-	TableToolbar,
-	TextTransformation,
-	Iframe,
-	ScratchBlocks,
-	ContentTemplates,
-];
+import { Modal } from './plugins/modal';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
-	constructor(props: any) {
-		const { extraPlugins, ...rest } = props;
-		super(rest);
-		for (let plugin of extraPlugins) {
-			builtinPlugins.push(new CustomPlugin(plugin));
-		}
-	}
-
-	public static override builtinPlugins = builtinPlugins;
+	public static override builtinPlugins = [
+		Essentials,
+		GeneralHtmlSupport,
+		ClickObserver,
+		Alignment,
+		FontSize,
+		FontFamily,
+		FontColor,
+		FontBackgroundColor,
+		UploadAdapter,
+		Autoformat,
+		Bold,
+		Italic,
+		Strikethrough,
+		Underline,
+		BlockQuote,
+		CKBox,
+		CKFinder,
+		CloudServices,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageResize,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		IndentBlock,
+		Link,
+		List,
+		ListProperties,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation,
+		Iframe,
+		ScratchBlocks,
+		ContentTemplates,
+		Exercise,
+		Modal,
+	];
 
 	public static override defaultConfig = {
 		toolbar: {
@@ -150,6 +143,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'iframe',
 				'scratchBlocks',
 				'contentTemplates',
+				'exercise',
+				'modal',
 			],
 		},
 		image: {
