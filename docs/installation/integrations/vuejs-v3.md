@@ -1,5 +1,5 @@
 ---
-menu-title: Vue.js 3+ component
+menu-title: Vue.js 3+
 category: integrations
 order: 50
 ---

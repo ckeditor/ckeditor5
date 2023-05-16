@@ -1,7 +1,7 @@
 ---
 category: integrations
 order: 70
-menu-title: Other integrations
+menu-title: Other
 ---
 
 # Integrating CKEditor 5 with other frameworks

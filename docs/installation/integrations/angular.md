@@ -1,5 +1,5 @@
 ---
-menu-title: Angular component
+menu-title: Angular
 category: integrations
 order: 20
 ---

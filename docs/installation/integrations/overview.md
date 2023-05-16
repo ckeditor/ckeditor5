@@ -4,15 +4,9 @@ order: 10
 menu-title: Overview
 ---
 
-# Integrating CKEditor 5
+# CKEditor 5 integrations
 
-<info-box hint>
-**Quick recap**
-
-In the previous guides you have learned several different methods of getting your CKEditor 5 installation up and running. Now you will learn how to utilize the power of popular JavaScript frameworks with our dedicated, ready-to-use CKEditor 5 components.<!-- This one'll need an update when we get anything more'n just JS frameworks. So'll the opening paragraph. -->
-</info-box>
-
-CKEditor 5 is compatible with any JavaScript framework. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Therefore, unless the framework that you use has very atypical limitations, CKEditor 5 is compatible with it. Native integrations with the most popular libraries will save you time, money and effort. It is also possible to use CKEditor 5 component in other applications like [Strapi](https://market.strapi.io/plugins/@_sh-strapi-plugin-ckeditor) or [GitHub](https://github.com/ckeditor/github-writer).
+CKEditor 5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor 5 is a native JavaScript rich-text editing component and it does not require any uncommon techniques or technologies to be used. Therefore, unless the framework that you use has very atypical limitations, CKEditor 5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.
 
 ## Official WYSIWYG editor integrations
 

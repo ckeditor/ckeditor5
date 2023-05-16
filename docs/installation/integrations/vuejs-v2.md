@@ -1,5 +1,5 @@
 ---
-menu-title: Vue.js 2.x component
+menu-title: Vue.js 2.x
 category: integrations
 order: 40
 ---

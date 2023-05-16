@@ -1,5 +1,5 @@
 ---
-menu-title: React component
+menu-title: React
 category: integrations
 order: 30
 ---
