@@ -60,8 +60,25 @@ import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-
 import { Exercise } from './plugins/exercise/index';
 // @ts-ignore
 import { Modal } from './plugins/modal';
+import CustomPlugin from './customPlugin';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
+	extraPlugins: CustomPlugin[];
+
+	constructor(
+		extraPlugins: { label: string; icon: any; onOpen: () => {} }[]
+	) {
+		super();
+
+		const plugins: CustomPlugin[] = [];
+		for (let plugin of extraPlugins) {
+			plugins.push(
+				new CustomPlugin(plugin.label, plugin.icon, plugin.onOpen)
+			);
+		}
+		this.extraPlugins = plugins;
+	}
+
 	public static override builtinPlugins = [
 		Essentials,
 		GeneralHtmlSupport,
@@ -106,6 +123,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		ContentTemplates,
 		Exercise,
 		Modal,
+		...this.extraPlugins,
 	];
 
 	public static override defaultConfig = {
