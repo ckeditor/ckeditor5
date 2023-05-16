@@ -493,7 +493,7 @@ export interface EditorConfig {
 	 *
 	 * 	* **`label`** (default: `'Powered by'`) &ndash; Allows changing the label displayed next to the project's logo.
 	 *
-	 * 		**Note**: Set the value to `null` to hide the label.
+	 * 		**Note**: Set the value to `null` to display the logo without a text.
 	 *
 	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
 	 *
@@ -622,7 +622,7 @@ export interface UiConfig {
 		side: 'left' | 'right';
 
 		/**
-		 * Allows changing the label displayed next to the project's logo.
+		 * Allows changing the label displayed next to the CKEditor logo.
 		 *
 		 * **Note:** Set the value to `null` to hide the label.
 		 *
