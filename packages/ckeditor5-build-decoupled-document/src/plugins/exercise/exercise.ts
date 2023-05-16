@@ -1,5 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import icon from './icon.svg';
 
 export default class Exercise extends Plugin {
 	init() {
@@ -14,8 +15,8 @@ export default class Exercise extends Plugin {
 
 			button.set({
 				label: 'Exercise',
-				withText: true,
-			
+				withText: false,
+				icon,
 			});
 
 			button.on('execute', () => {
