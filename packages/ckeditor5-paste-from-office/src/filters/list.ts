@@ -347,6 +347,7 @@ function insertNewEmptyList(
  */
 function transformElementIntoListItem( element: ViewElement, writer: UpcastWriter ) {
 	removeBulletElement( element, writer );
+	writer.removeStyle( 'text-indent', element ); // #12361
 
 	return writer.rename( 'li', element )!;
 }
