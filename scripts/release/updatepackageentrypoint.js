@@ -9,27 +9,29 @@
 
 /**
  * @param {String} packagePath
+ * @returns {Promise}
  */
-module.exports = function updatePackageEntryPoint( packagePath ) {
+module.exports = async function updatePackageEntryPoint( packagePath ) {
 	const upath = require( 'upath' );
-	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	// All paths are resolved from the root repository directory.
-	const isPackageWrittenInTs = require( './scripts/release//utils/ispackagewrittenints' );
+	const fs = require( 'fs-extra' );
 
-	if ( !isPackageWrittenInTs( packagePath ) ) {
+	// All paths are resolved from the root repository directory.
+	const isTypeScriptPackage = require( './scripts/release/utils/istypescriptpackage' );
+
+	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
 		return;
 	}
 
 	const packageJsonPath = upath.join( packagePath, 'package.json' );
+	const pkgJson = await fs.readJson( packageJsonPath );
+	const { main } = pkgJson;
 
-	tools.updateJSONFile( packageJsonPath, json => {
-		const { main } = json;
+	if ( !main ) {
+		return;
+	}
 
-		if ( main ) {
-			json.main = main.replace( /\.ts$/, '.js' );
-			json.types = main.replace( /\.ts$/, '.d.ts' );
-		}
+	pkgJson.main = main.replace( /\.ts$/, '.js' );
+	pkgJson.types = main.replace( /\.ts$/, '.d.ts' );
 
-		return json;
-	} );
+	return fs.writeJson( packageJsonPath, pkgJson );
 };

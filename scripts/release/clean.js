@@ -13,6 +13,7 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const rimraf = require( 'rimraf' );
 const minimist = require( 'minimist' );
+const isTypeScriptPackage = require( './utils/ispackagewrittenints' );
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
@@ -88,20 +89,6 @@ function findAllPackages( repositoryRoot ) {
 			} else {
 				resolve( files );
 			}
-		} );
-	} );
-}
-
-/**
- * Checks if the package is in TypeScript.
- *
- * @param {String} pkg Package name.
- * @returns {Promise} Whether the package is TypeScript one.
- */
-function isTypeScriptPackage( pkg ) {
-	return new Promise( resolve => {
-		fs.access( `packages/${ pkg }/tsconfig.json`, fs.constants.F_OK, err => {
-			resolve( !err );
 		} );
 	} );
 }

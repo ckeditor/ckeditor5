@@ -7,14 +7,14 @@
 
 /* eslint-env node */
 
-const fs = require( 'fs' );
+const fs = require( 'fs/promises' );
 const path = require( 'upath' );
 
 /**
  * @param {String} packagePath
- * @returns {Boolean}
+ * @returns {Promise.<Boolean>}
  */
-module.exports = function isPackageWrittenInTs( packagePath ) {
+module.exports = function isTypeScriptPackage( packagePath ) {
 	const packageJsonPath = path.join( packagePath, 'package.json' );
 	const packageJson = require( packageJsonPath );
 
@@ -25,5 +25,11 @@ module.exports = function isPackageWrittenInTs( packagePath ) {
 	}
 
 	// Otherwise, let's check if the package contains a `tsconfig.json` file.
-	return fs.existsSync( path.join( packagePath, 'tsconfig.json' ) );
+	return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
 };
+
+function checkFileExists( file ) {
+	return fs.access( file, fs.constants.F_OK )
+		.then( () => true )
+		.catch( () => false );
+}

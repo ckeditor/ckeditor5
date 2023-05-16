@@ -34,7 +34,7 @@ abortController.signal.addEventListener( 'abort', () => {
 }, { once: true } );
 
 ( async () => {
-	const latestVersion = await releaseTools.getLastFromChangelog();
+	const latestVersion = releaseTools.getLastFromChangelog();
 
 	await releaseTools.updateDependencies( {
 		version: '^' + latestVersion,
