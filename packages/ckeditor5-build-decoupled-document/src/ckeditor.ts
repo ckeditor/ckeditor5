@@ -58,6 +58,8 @@ import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
 // @ts-ignore
 import { Exercise } from './plugins/exercise/index';
+// @ts-ignore
+import { Modal } from './plugins/modal';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -103,6 +105,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		ScratchBlocks,
 		ContentTemplates,
 		Exercise,
+		Modal,
 	];
 
 	public static override defaultConfig = {
@@ -141,6 +144,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'scratchBlocks',
 				'contentTemplates',
 				'exercise',
+				'modal',
 			],
 		},
 		image: {
