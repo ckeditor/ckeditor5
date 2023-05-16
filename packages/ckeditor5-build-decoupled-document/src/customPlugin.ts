@@ -6,11 +6,12 @@ export default class CustomPlugin extends Plugin {
 	icon: any;
 	onOpen: () => {};
 
-	constructor(props) {
-		super(props);
-		this.label = props.label;
-		this.icon = props.icon;
-		this.onOpen = props.onOpen;
+	constructor(props: any) {
+		const { label, icon, onOpen, ...rest } = props;
+		super(rest);
+		this.label = label;
+		this.icon = icon;
+		this.onOpen = onOpen;
 	}
 	init() {
 		const editor = this.editor;
