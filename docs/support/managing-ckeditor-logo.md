@@ -29,9 +29,9 @@ The following properties can be configured:
 * logo offset
 * alignment: left or right
 
-To change the default position and display it over the edge use this configuration option:<!-- needs update -->
+To change the default position and display it inside the container use this configuration option:
 ```json
-config.ui.poweredBy.position: "border"
+config.ui.poweredBy.position: "inside"
 ```
 
 To customize the logo offset use following settings:
