@@ -5,35 +5,29 @@
 
 /* globals window, document */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
-
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import {
-	View,
+	BalloonPanelView, ButtonView, IconView,
 	LabeledFieldView,
-	createLabeledInputText,
-	createLabeledInputNumber,
-	BalloonPanelView,
-	createDropdown,
-	addToolbarToDropdown,
-	addListToDropdown,
 	Model,
+	SplitButtonView, SwitchButtonView, ToolbarSeparatorView,
 	ToolbarView,
-	ToolbarSeparatorView,
-	SplitButtonView,
-	IconView,
-	TooltipManager
+	TooltipManager,
+	View,
+	addListToDropdown,
+	addToolbarToDropdown,
+	createDropdown,
+	createLabeledInputNumber,
+	createLabeledInputText
 } from '@ckeditor/ckeditor5-ui';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview';
+import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
-import { icons as coreIcons } from 'ckeditor5/src/core';
-import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
+import { icons as coreIcons } from 'ckeditor5/src/core';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 
 window.Locale = Locale;
 window.ButtonView = ButtonView;

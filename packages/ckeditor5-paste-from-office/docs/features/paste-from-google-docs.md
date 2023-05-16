@@ -53,7 +53,7 @@ npm install --save @ckeditor/ckeditor5-paste-from-office
 Then add the {@link module:paste-from-office/pastefromoffice~PasteFromOffice `PasteFromOffice`} plugin to your plugin list:
 
 ```js
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

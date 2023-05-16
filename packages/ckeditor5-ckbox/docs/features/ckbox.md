@@ -85,11 +85,9 @@ Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and [configure
 
 ```js
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
-
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CKBox } from "@ckeditor/ckeditor5-ckbox";
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -131,7 +129,7 @@ After you purchase a license, log into the CKEditor Ecosystem customer dashboard
 By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
 
 ```js
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -164,7 +162,7 @@ Please keep in mind that if you define your own upload category mappings for a p
 After choosing an asset from the CKBox dialog, it is inserted into the editor content with a unique `data-ckbox-resource-id` attribute. If you want to disable it and do not want to add this attribute, set the {@link module:ckbox/ckboxconfig~CKBoxConfig#ignoreDataId `config.ckbox.ignoreDataId`} option to `true`:
 
 ```js
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -183,7 +181,7 @@ ClassicEditor
 By default, the CKBox dialog takes the current language from the editor. If you want to use a different language, you can set the language code in the {@link module:ckbox/ckboxconfig~CKBoxConfig#language `config.ckbox.language`} option:
 
 ```js
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -209,7 +207,7 @@ Also, make sure to include the translation file after loading the CKBox library:
 The CKBox feature requires the token endpoint URL configured in the {@link module:ckbox/ckboxconfig~CKBoxConfig#tokenUrl `config.ckbox.tokenUrl`} key. If not explicitly provided, the token URL from {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`} is used instead. If both are provided, the token URL defined in `config.ckbox.tokenUrl` takes precedence over the `config.cloudServices.tokenUrl`.
 
 ```js
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -228,7 +226,7 @@ ClassicEditor
 If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} and {@link module:ckbox/ckboxconfig~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
 
 ```js
-import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

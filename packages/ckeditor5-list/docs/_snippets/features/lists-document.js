@@ -7,7 +7,7 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-/* import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist'; */
+/* import { DocumentList } from '@ckeditor/ckeditor5-list'; */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-document' ), {

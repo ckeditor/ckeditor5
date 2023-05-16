@@ -106,8 +106,8 @@ The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckedit
 import React, { Component } from 'react';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-import { Context } from '@ckeditor/ckeditor5-core';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Context } from '@ckeditor/ckeditor5-core';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';

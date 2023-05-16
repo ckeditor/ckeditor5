@@ -32,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-page-break
 And add it to your plugin list configuration:
 
 ```js
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

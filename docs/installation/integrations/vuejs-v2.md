@@ -455,13 +455,12 @@ Now all you need to do is specify the list of rich text editor options (**includ
 <script>
 	// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
 	// Since we're building CKEditor 5 from source, we use the source version of ClassicEditor.
-	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+	import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-	import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-	import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-	import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+	import { Essentials } from '@ckeditor/ckeditor5-essentials';
+	import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+	import { Link } from '@ckeditor/ckeditor5-link';
+	import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 	export default {
 		name: 'app',
@@ -471,11 +470,11 @@ Now all you need to do is specify the list of rich text editor options (**includ
 				editorData: '<p>Content of the editor.</p>',
 				editorConfig: {
 					plugins: [
-						EssentialsPlugin,
-						BoldPlugin,
-						ItalicPlugin,
-						LinkPlugin,
-						ParagraphPlugin
+						Essentials,
+						Bold,
+						Italic,
+						Link,
+						Paragraph
 					],
 
 					toolbar: {
