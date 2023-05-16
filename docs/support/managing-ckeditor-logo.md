@@ -1,15 +1,14 @@
 ---
 category: licensing
 order: 30
-meta-title: CKEditor 5 support documentation
-meta-description: Learn how to get help and support and how to provide feedback.
+meta-description: Managing the "Powered by CKEditor" logo
 ---
 
 # Managing the "Powered by CKEditor" logo
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor. [Read more](https://github.com/ckeditor/ckeditor5/issues/14082).
+Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) carry a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor. You can [read more about it](https://github.com/ckeditor/ckeditor5/issues/14082) on GitHub.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
@@ -26,11 +25,11 @@ For open-source, free users, the "Powered by CKEditor" logo will always be displ
 
 The following properties can be configured:
 
-* position (the default is inside the container; it can be also displayed over the edge)
+* position (the default is over the edge; it can be also displayed inside the container)
 * logo offset
 * alignment: left or right
 
-To change the default position and display it over the edge use this configuration option:
+To change the default position and display it over the edge use this configuration option:<!-- needs update -->
 ```json
 config.ui.poweredBy.position: "border"
 ```
