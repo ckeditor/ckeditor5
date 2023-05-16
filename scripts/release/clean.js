@@ -13,7 +13,7 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const rimraf = require( 'rimraf' );
 const minimist = require( 'minimist' );
-const isTypeScriptPackage = require( './utils/ispackagewrittenints' );
+const isTypeScriptPackage = require( './utils/istypescriptpackage' );
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
