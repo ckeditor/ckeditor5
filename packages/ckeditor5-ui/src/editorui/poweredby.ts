@@ -28,6 +28,7 @@ const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
+const DEFAULT_LABEL = 'Powered by';
 const OFF_THE_SCREEN_POSITION = {
 	top: -99999,
 	left: -99999,
@@ -148,7 +149,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _createBalloonView() {
 		const editor = this.editor;
 		const balloon = this._balloonView = new BalloonPanelView();
-		const view = new PoweredByView( editor.locale );
+		const poweredByConfig = getNormalizedConfig( editor );
+		const view = new PoweredByView( editor.locale, poweredByConfig.label );
 
 		balloon.content.add( view );
 		balloon.set( {
@@ -225,8 +227,9 @@ class PoweredByView extends View<HTMLDivElement> {
 	 * Created an instance of the "powered by" view.
 	 *
 	 * @param locale The localization services instance.
+	 * @param label The label text.
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, label: string | null ) {
 		super( locale );
 
 		const iconView = new IconView();
@@ -262,13 +265,15 @@ class PoweredByView extends View<HTMLDivElement> {
 						tabindex: '-1'
 					},
 					children: [
-						{
-							tag: 'span',
-							attributes: {
-								class: [ 'ck', 'ck-powered-by__label' ]
-							},
-							children: [ 'Powered by' ]
-						},
+						...label ? [
+							{
+								tag: 'span',
+								attributes: {
+									class: [ 'ck', 'ck-powered-by__label' ]
+								},
+								children: [ label ]
+							}
+						] : [],
 						iconView
 					],
 					on: {
@@ -370,6 +375,7 @@ function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 
 	return {
 		position,
+		label: DEFAULT_LABEL,
 		verticalOffset: position === 'inside' ? 5 : 0,
 		horizontalOffset: 5,
 

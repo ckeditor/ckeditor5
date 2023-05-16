@@ -338,6 +338,43 @@ describe( 'PoweredBy', () => {
 			it( 'should not be accessible via tab key navigation', () => {
 				expect( view.element.firstChild.tabIndex ).to.equal( -1 );
 			} );
+
+			it( 'should have a configurable label (custom text)', async () => {
+				const editor = await createEditor( element, {
+					ui: {
+						poweredBy: {
+							label: 'foo'
+						}
+					}
+				} );
+
+				focusEditor( editor );
+
+				const view = editor.ui.poweredBy._balloonView.content.first;
+
+				expect( view.element.firstChild.firstChild.textContent ).to.equal( 'foo' );
+
+				await editor.destroy();
+			} );
+
+			it( 'should have an option to hide the label', async () => {
+				const editor = await createEditor( element, {
+					ui: {
+						poweredBy: {
+							label: null
+						}
+					}
+				} );
+
+				focusEditor( editor );
+
+				const view = editor.ui.poweredBy._balloonView.content.first;
+
+				expect( view.element.firstChild.childElementCount ).to.equal( 1 );
+				expect( view.element.firstChild.firstChild.tagName ).to.equal( 'svg' );
+
+				await editor.destroy();
+			} );
 		} );
 	} );
 
