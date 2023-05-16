@@ -40,14 +40,14 @@ async function cleanReleaseArtifacts( options ) {
 	const typeScriptPatterns = typeScriptPackages.map( pkg => {
 		return [
 			// Ignore the `lib/` directory in each package.
-			`packages/${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
+			`${ pkg }/src/!(lib)/**/*.@(js|js.map|d.ts)`,
 			// Remove files from in the `src/` directory.
-			`packages/${ pkg }/src/*.@(js|js.map|d.ts)`
+			`${ pkg }/src/*.@(js|js.map|d.ts)`
 		];
 	} );
 
 	// The root directory.
-	typeScriptPatterns.push( 'src/*.@(js|js.map|d.ts)' );
+	typeScriptPatterns.push( `${ options.cwd }/src/*.@(js|js.map|d.ts)` );
 
 	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
@@ -87,7 +87,7 @@ function findAllPackages( repositoryRoot ) {
 			if ( err ) {
 				reject( err );
 			} else {
-				resolve( files );
+				resolve( files.map( pkg => path.join( repositoryRoot, 'packages', pkg ) ) );
 			}
 		} );
 	} );
