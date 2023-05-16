@@ -57,74 +57,66 @@ import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 // @ts-ignore
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
 // @ts-ignore
-import { Exercise } from './plugins/exercise/index';
 // @ts-ignore
-import { Modal } from './plugins/modal';
 import CustomPlugin from './customPlugin';
 
-export default class DecoupledEditor extends DecoupledEditorBase {
-	extraPlugins: CustomPlugin[];
+const builtinPlugins = [
+	Essentials,
+	GeneralHtmlSupport,
+	ClickObserver,
+	Alignment,
+	FontSize,
+	FontFamily,
+	FontColor,
+	FontBackgroundColor,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	Strikethrough,
+	Underline,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	CloudServices,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Indent,
+	IndentBlock,
+	Link,
+	List,
+	ListProperties,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	PictureEditing,
+	Table,
+	TableToolbar,
+	TextTransformation,
+	Iframe,
+	ScratchBlocks,
+	ContentTemplates,
+];
 
+export default class DecoupledEditor extends DecoupledEditorBase {
 	constructor(
 		extraPlugins: { label: string; icon: any; onOpen: () => {} }[]
 	) {
 		super();
-
-		const plugins: CustomPlugin[] = [];
 		for (let plugin of extraPlugins) {
-			plugins.push(
+			builtinPlugins.push(
 				new CustomPlugin(plugin.label, plugin.icon, plugin.onOpen)
 			);
 		}
-		this.extraPlugins = plugins;
 	}
 
-	public static override builtinPlugins = [
-		Essentials,
-		GeneralHtmlSupport,
-		ClickObserver,
-		Alignment,
-		FontSize,
-		FontFamily,
-		FontColor,
-		FontBackgroundColor,
-		UploadAdapter,
-		Autoformat,
-		Bold,
-		Italic,
-		Strikethrough,
-		Underline,
-		BlockQuote,
-		CKBox,
-		CKFinder,
-		CloudServices,
-		EasyImage,
-		Heading,
-		Image,
-		ImageCaption,
-		ImageResize,
-		ImageStyle,
-		ImageToolbar,
-		ImageUpload,
-		Indent,
-		IndentBlock,
-		Link,
-		List,
-		ListProperties,
-		MediaEmbed,
-		Paragraph,
-		PasteFromOffice,
-		PictureEditing,
-		Table,
-		TableToolbar,
-		TextTransformation,
-		Iframe,
-		ScratchBlocks,
-		ContentTemplates,
-		Exercise,
-		Modal,
-		...this.extraPlugins,
-	];
+	public static override builtinPlugins = builtinPlugins;
 
 	public static override defaultConfig = {
 		toolbar: {
