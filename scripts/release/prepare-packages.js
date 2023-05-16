@@ -12,12 +12,16 @@
 const fs = require( 'fs' );
 const upath = require( 'upath' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
+const { Listr } = require( 'listr2' );
 const updateVersionReferences = require( './update-version-references' );
 const buildTsAndDllForCkeditor5Root = require( './buildtsanddllforckeditor5root' );
+
+// TODO: Integrate with `minimist` to read CLI arguments.
 
 const abortController = new AbortController();
 const PACKAGES_DIRECTORY = 'packages';
 const RELEASE_DIRECTORY = 'release';
+const latestVersion = releaseTools.getLastFromChangelog();
 
 process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
@@ -33,67 +37,125 @@ abortController.signal.addEventListener( 'abort', () => {
 	process.exit( 1 );
 }, { once: true } );
 
-( async () => {
-	const latestVersion = releaseTools.getLastFromChangelog();
+const tasks = new Listr( [
+	{
+		title: 'Preparation phase.',
+		task: ( _, task ) => {
+			return task.newListr( [
+				{
+					title: 'Updating "version" value.',
+					task: () => {
+						return releaseTools.updateDependencies( {
+							version: '^' + latestVersion,
+							packagesDirectory: PACKAGES_DIRECTORY,
+							shouldUpdateVersionCallback: require( './isckeditor5package' )
+						} );
+					}
+				},
+				{
+					title: 'Updating dependencies.',
+					task: () => {
+						return releaseTools.updateVersions( {
+							packagesDirectory: PACKAGES_DIRECTORY,
+							version: latestVersion
+						} );
+					}
+				},
+				{
+					title: 'Updating references.',
+					task: async ctx => {
+						ctx.updatedFiles = await updateVersionReferences( {
+							version: latestVersion,
+							releaseDate: new Date()
+						} );
+					}
+				}
+			] );
+		}
+	},
+	{
+		title: 'Compilation phase.',
+		task: ( _, task ) => {
+			return task.newListr( [
+				{
+					title: 'Prepare "ckeditor5" package files.',
+					task: () => {
+						return buildTsAndDllForCkeditor5Root();
+					}
+				},
+				{
+					title: 'Compile TypeScript in `ckeditor5-*` packages.',
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: PACKAGES_DIRECTORY,
+							signal: abortController.signal,
+							listrTask: task,
+							taskToExecute: require( './compiletypescriptcallback' )
+						} );
+					}
+				},
+				{
+					title: '',
+					task: () => {
+						return releaseTools.prepareRepository( {
+							outputDirectory: RELEASE_DIRECTORY,
+							packagesDirectory: PACKAGES_DIRECTORY,
+							rootPackageJson: getCKEditor5PackageJson()
+						} );
+					}
+				},
+				{
+					title: 'Update entries in `package.json`.',
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: RELEASE_DIRECTORY,
+							signal: abortController.signal,
+							listrTask: task,
+							taskToExecute: require( './updatepackageentrypoint' )
+						} );
+					}
+				},
+				{
+					title: 'Prepare DLL builds.',
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: RELEASE_DIRECTORY,
+							signal: abortController.signal,
+							listrTask: task,
+							taskToExecute: require( './preparedllbuildscallback' )
+						} );
+					}
+				}
+			] );
+		}
+	},
+	{
+		title: 'Clean up phase.',
+		task: () => {
+			return releaseTools.cleanUpPackages( {
+				packagesDirectory: RELEASE_DIRECTORY
+			} );
+		}
+	},
+	{
+		title: 'Commit & tag.',
+		task: ctx => {
+			return releaseTools.commitAndTag( {
+				version: latestVersion,
+				files: [
+					'package.json',
+					`${ PACKAGES_DIRECTORY }/*/package.json`,
+					...ctx.updatedFiles
+				]
+			} );
+		}
+	}
+] );
 
-	await releaseTools.updateDependencies( {
-		version: '^' + latestVersion,
-		packagesDirectory: PACKAGES_DIRECTORY,
-		shouldUpdateVersionCallback: require( './isckeditor5package' )
+tasks.run()
+	.catch( err => {
+		console.error( err );
 	} );
-
-	await releaseTools.updateVersions( {
-		packagesDirectory: PACKAGES_DIRECTORY,
-		version: latestVersion
-	} );
-
-	const updatedFiles = await updateVersionReferences( {
-		version: latestVersion,
-		releaseDate: new Date()
-	} );
-
-	await buildTsAndDllForCkeditor5Root();
-
-	await releaseTools.executeInParallel( {
-		packagesDirectory: PACKAGES_DIRECTORY,
-		processDescription: 'Compiling TypeScript...',
-		signal: abortController.signal,
-		taskToExecute: require( './compiletypescriptcallback' )
-	} );
-
-	await releaseTools.prepareRepository( {
-		outputDirectory: RELEASE_DIRECTORY,
-		packagesDirectory: PACKAGES_DIRECTORY,
-		rootPackageJson: getCKEditor5PackageJson()
-	} );
-
-	await releaseTools.executeInParallel( {
-		packagesDirectory: RELEASE_DIRECTORY,
-		processDescription: 'Updating entries in `package.json`...',
-		signal: abortController.signal,
-		taskToExecute: require( './updatepackageentrypoint' )
-	} );
-
-	await releaseTools.executeInParallel( {
-		packagesDirectory: RELEASE_DIRECTORY,
-		processDescription: 'Preparing DLL builds...',
-		signal: abortController.signal,
-		taskToExecute: require( './preparedllbuildscallback' )
-	} );
-
-	await releaseTools.cleanUpPackages( {
-		packagesDirectory: RELEASE_DIRECTORY
-	} );
-
-	await releaseTools.commitAndTag( {
-		version: latestVersion,
-		files: [
-			'package.json',
-			`${ PACKAGES_DIRECTORY }/*/package.json`,
-			...updatedFiles
-		]
-	} );
-} )();
 
 /**
  * @returns {Object}

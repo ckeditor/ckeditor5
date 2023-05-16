@@ -123,6 +123,7 @@
     "husky": "^8.0.2",
     "is-relative-url": "^3.0.0",
     "lint-staged": "^12.0.0",
+    "listr2": "^6.5.0",
     "minimatch": "^5.1.0",
     "minimist": "^1.2.5",
     "mkdirp": "^1.0.4",
