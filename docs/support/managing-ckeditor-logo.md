@@ -97,7 +97,7 @@ body {
 And
 
 ```json
-config.ui.poweredBy.position: "border"
+config.ui.poweredBy.position: "inside"
 ```
 
 The final effect:
