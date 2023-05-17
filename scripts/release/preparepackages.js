@@ -41,6 +41,8 @@ process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
 } );
 
+// TODO: Verify the current branch.
+
 const tasks = new Listr( [
 	{
 		title: 'Preparation phase.',
@@ -49,19 +51,19 @@ const tasks = new Listr( [
 				{
 					title: 'Updating "version" value.',
 					task: () => {
-						return releaseTools.updateDependencies( {
-							version: '^' + latestVersion,
+						return releaseTools.updateVersions( {
 							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: isCKEditor5Package
+							version: latestVersion
 						} );
 					}
 				},
 				{
 					title: 'Updating dependencies.',
 					task: () => {
-						return releaseTools.updateVersions( {
+						return releaseTools.updateDependencies( {
+							version: '^' + latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							version: latestVersion
+							shouldUpdateVersionCallback: isCKEditor5Package
 						} );
 					}
 				},
@@ -82,20 +84,20 @@ const tasks = new Listr( [
 		task: ( _, task ) => {
 			return task.newListr( [
 				{
-					title: 'Prepare "ckeditor5" package files.',
+					title: 'Preparing the "ckeditor5" package files.',
 					task: () => {
 						return buildTsAndDllForCkeditor5Root();
 					}
 				},
 				{
-					title: 'Prepare "ckeditor5-build-*" builds.',
+					title: 'Preparing "ckeditor5-build-*" builds.',
 					task: () => {
 						// TODO: Waits for #14177.
 						return Promise.resolve();
 					}
 				},
 				{
-					title: 'Compile TypeScript in `ckeditor5-*` packages.',
+					title: 'Compiling TypeScript in `ckeditor5-*` packages.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
@@ -118,7 +120,7 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Update entries in `package.json`.',
+					title: 'Updating entries in `package.json`.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
@@ -130,7 +132,7 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Prepare DLL builds.',
+					title: 'Preparing DLL builds.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
@@ -153,7 +155,7 @@ const tasks = new Listr( [
 		}
 	},
 	{
-		title: 'Commit & tag.',
+		title: 'Commit & tag phase.',
 		task: ctx => {
 			return releaseTools.commitAndTag( {
 				version: latestVersion,
