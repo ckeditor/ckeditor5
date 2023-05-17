@@ -1,7 +1,7 @@
 ---
 menu-title: Non-JS frameworks
-category: frameworks
-order: 70
+category: integrations
+order: 80
 ---
 
 # Compatibility with non-JavaScript frameworks
