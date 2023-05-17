@@ -28,6 +28,7 @@ const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
+const DEFAULT_LABEL = 'Powered by';
 const OFF_THE_SCREEN_POSITION = {
 	top: -99999,
 	left: -99999,
@@ -148,7 +149,8 @@ export default class PoweredBy extends DomEmitterMixin() {
 	private _createBalloonView() {
 		const editor = this.editor;
 		const balloon = this._balloonView = new BalloonPanelView();
-		const view = new PoweredByView( editor.locale );
+		const poweredByConfig = getNormalizedConfig( editor );
+		const view = new PoweredByView( editor.locale, poweredByConfig.label );
 
 		balloon.content.add( view );
 		balloon.set( {
@@ -225,8 +227,9 @@ class PoweredByView extends View<HTMLDivElement> {
 	 * Created an instance of the "powered by" view.
 	 *
 	 * @param locale The localization services instance.
+	 * @param label The label text.
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, label: string | null ) {
 		super( locale );
 
 		const iconView = new IconView();
@@ -249,24 +252,28 @@ class PoweredByView extends View<HTMLDivElement> {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck', 'ck-powered-by' ]
+				class: [ 'ck', 'ck-powered-by' ],
+				'aria-hidden': true
 			},
 			children: [
 				{
 					tag: 'a',
 					attributes: {
-						href: 'https://ckeditor.com',
+						href: 'https://ckeditor.com/?utm_source=ckeditor&' +
+							'utm_medium=referral&utm_campaign=701Dn000000hVgmIAE_powered_by_ckeditor_logo',
 						target: '_blank',
 						tabindex: '-1'
 					},
 					children: [
-						{
-							tag: 'span',
-							attributes: {
-								class: [ 'ck', 'ck-powered-by__label' ]
-							},
-							children: [ 'Powered by' ]
-						},
+						...label ? [
+							{
+								tag: 'span',
+								attributes: {
+									class: [ 'ck', 'ck-powered-by__label' ]
+								},
+								children: [ label ]
+							}
+						] : [],
 						iconView
 					],
 					on: {
@@ -364,10 +371,11 @@ function getLowerCornerPosition(
 
 function getNormalizedConfig( editor: Editor ): PoweredByConfig {
 	const userConfig = editor.config.get( 'ui.poweredBy' );
-	const position = userConfig && userConfig.position || 'inside';
+	const position = userConfig && userConfig.position || 'border';
 
 	return {
 		position,
+		label: DEFAULT_LABEL,
 		verticalOffset: position === 'inside' ? 5 : 0,
 		horizontalOffset: 5,
 

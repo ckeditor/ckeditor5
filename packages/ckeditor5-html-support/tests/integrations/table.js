@@ -1569,6 +1569,132 @@ describe( 'TableElementSupport', () => {
 		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 	} );
 
+	it( 'should remove htmlTheadAttributes if table does not have thead', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead data-foo="head">' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-bar="body">' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				},
+				2: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
+
+		model.change( writer => {
+			writer.removeAttribute( 'headingRows', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTbodyAttributes="(1)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				}
+			}
+		} );
+	} );
+
+	it( 'should remove htmlTbodyAttributes if table does not have tbody', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead data-foo="head">' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-bar="body">' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				},
+				2: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
+
+		model.change( writer => {
+			writer.setAttribute( 'headingRows', 2, model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="2" htmlTheadAttributes="(1)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
+	} );
+
 	describe( 'TableCaption', () => {
 		// Sanity tests verifying if table caption is correctly handled by default converters.
 
