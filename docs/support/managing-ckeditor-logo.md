@@ -28,7 +28,7 @@ The following properties can be configured:
 
 * position (the default is over the edge; it can be also displayed inside the container)
 * logo offset towards the configured editable's corner
-* alignment: left or right
+* alignment: left or right side of the editable area
 
 To change the default position and display it inside the container use this configuration option:
 ```json
