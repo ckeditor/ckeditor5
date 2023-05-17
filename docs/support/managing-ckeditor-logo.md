@@ -73,7 +73,7 @@ There is a set of ready-made CSS variables available dedicated to customizing th
 
 ### Customization example
 
-Below you will find an example on how the "Powered by CKEditor" logo can be customized:
+Below you will find an example on how the "Powered by CKEditor" logo can be customized in CSS:
 
 ```css
 /*
