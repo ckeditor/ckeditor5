@@ -15,8 +15,8 @@ import {
 
 import Mapper from '../conversion/mapper';
 
-import DowncastDispatcher, { type DowncastInsertEvent } from '../conversion/downcastdispatcher';
-import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
+import DowncastDispatcher, { type DowncastInsertEvent, type DowncastRemoveEvent } from '../conversion/downcastdispatcher';
+import { insertAttributesAndChildren, insertText, remove } from '../conversion/downcasthelpers';
 
 import UpcastDispatcher, {
 	type UpcastDocumentFragmentEvent,
@@ -45,6 +45,9 @@ import type DataProcessor from '../dataprocessor/dataprocessor';
 
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import View from '../view/view';
+import type { DocumentChangeEvent } from '../model/document';
+import RootEditableElement from '../view/rooteditableelement';
+import { stringify } from '../dev-utils/view';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -125,6 +128,7 @@ export default class DataController extends EmitterMixin() {
 		} );
 		this.downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.downcastDispatcher.on<DowncastInsertEvent>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
+		this.downcastDispatcher.on<DowncastRemoveEvent>( 'remove', remove(), { priority: 'low' } );
 
 		this.upcastDispatcher = new UpcastDispatcher( {
 			schema: model.schema
@@ -161,6 +165,37 @@ export default class DataController extends EmitterMixin() {
 		this.on<DataControllerReadyEvent>( 'ready', () => {
 			this.model.enqueueChange( { isUndoable: false }, autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
+
+		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
+		// Do it on 'low' priority, so changes are converted after other listeners did their job.
+		// Also convert model selection.
+		this.listenTo<DocumentChangeEvent>( this.model.document, 'change', () => {
+			this.view.change( writer => {
+				this.downcastDispatcher.convertChanges( this.model.document.differ, this.model.markers, writer );
+
+				console.clear();
+				console.log( stringify( this.view.document.getRoot() as Element, null, {
+					ignoreRoot: true
+				} ) );
+			} );
+		}, { priority: 'low' } );
+
+		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
+		// {@link module:engine/model/document~Document#roots model roots collection} so creating
+		// model root automatically creates corresponding view root.
+		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {
+			// $graveyard is a special root that has no reflection in the view.
+			if ( root.rootName == '$graveyard' ) {
+				return null;
+			}
+
+			const viewRoot = new RootEditableElement( this.view.document, root.name );
+
+			viewRoot.rootName = root.rootName;
+			this.mapper.bindElements( root, viewRoot );
+
+			return viewRoot;
+		} );
 	}
 
 	/**
