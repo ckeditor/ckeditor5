@@ -20,7 +20,7 @@ The logo **will not be displayed for customers with commercial licenses**, but p
 
 To remove the logo, you need to obtain a commercial license and then configure the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
 
-Please refer to the {@link support/license-key-and-activation License key and activation} guide for details on where to find the license key and how to use it in your configuration.
+Refer to the {@link support/license-key-and-activation License key and activation} guide for details on where to find the license key and how to use it in your configuration.
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
