@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import type { ViewElement } from 'ckeditor5/src/engine';
+import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine';
 import ImageUtils from './imageutils';
 
 /**
@@ -32,7 +32,7 @@ export default class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		this._registerSchema();
 		this._registerConverters( 'imageBlock' );
 		this._registerConverters( 'imageInline' );
@@ -87,37 +87,26 @@ export default class ImageSizeAttributes extends Plugin {
 
 		// Dedicated converter to propagate attributes to the <img> element.
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( `attribute:widthAttribute:${ imageType }`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-				const img = imageUtils.findViewImgElement( viewElement );
-
-				if ( data.attributeNewValue !== null ) {
-					viewWriter.setAttribute( 'width', data.attributeNewValue, img );
-				} else {
-					viewWriter.removeAttribute( 'width', img );
-				}
-			} );
-
-			dispatcher.on( `attribute:heightAttribute:${ imageType }`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-				const img = imageUtils.findViewImgElement( viewElement );
-
-				if ( data.attributeNewValue !== null ) {
-					viewWriter.setAttribute( 'height', data.attributeNewValue, img );
-				} else {
-					viewWriter.removeAttribute( 'height', img );
-				}
-			} );
+			attachDowncastConverter( dispatcher, 'widthAttribute', 'width' );
+			attachDowncastConverter( dispatcher, 'heightAttribute', 'height' );
 		} );
+
+		function attachDowncastConverter( dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string ) {
+			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const img = imageUtils.findViewImgElement( viewElement )!;
+
+				if ( data.attributeNewValue !== null ) {
+					viewWriter.setAttribute( viewAttributeName, data.attributeNewValue, img );
+				} else {
+					viewWriter.removeAttribute( viewAttributeName, img );
+				}
+			} );
+		}
 	}
 }
