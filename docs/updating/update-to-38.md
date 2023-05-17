@@ -27,7 +27,7 @@ We have prepared a detailed {@link support/managing-ckeditor-logo Managing the "
 
 ## Introduction of color pickers to font color and font background color features
 
-Starting with 38.0.0 release, the user interface of the {@link features/font#configuring-the-font-color-and-font-background-color-features font color and font background color features} will display a {@link features/font#color-picker color picker}. The new feature is **enabled by default** and supplements existing color palettes to improve the editing experience and boost the creativity of content authors.
+Starting with v38.0.0, the user interface of the {@link features/font#configuring-the-font-color-and-font-background-color-features font color and font background color features} will display a {@link features/font#color-picker color picker}. The new feature is **enabled by default** and supplements existing color palettes to improve the editing experience and boost the creativity of content authors.
 
 However, we are aware of the fact that the freedom to choose any color may introduce noise and inconsistency to the content of some integrations with {@link features/font#specifying-available-colors already configured palettes}. If this is your case, you should know that you can disable color pickers in both font color and font background color features by setting the {@link module:font/fontconfig~FontColorConfig#colorPicker `colorPicker` option} in their respective configurations to `false`:
 
