@@ -48,6 +48,7 @@ export default class AnchorEditing extends Plugin {
 		editor.model.schema.extend( '$text', { allowAttributes: 'anchorName' } );
 
 		this._defineConversion();
+		this._registerBuiltinFeed();
 	}
 
 	public _defineConversion(): void {
@@ -79,25 +80,49 @@ export default class AnchorEditing extends Plugin {
 	}
 
 	public getAnchors(): Array<AnchorItem> {
-		const model = this.editor.model;
-		const ret = [] as Array<AnchorItem>;
+		let ret = [] as Array<AnchorItem>;
 
-		for ( const rootName of model.document.getRootNames() ) {
-			const root = model.document.getRoot( rootName )!;
-			const range = model.createRangeIn( root );
-
-			for ( const { item } of range ) {
-				if ( item.hasAttribute( 'anchorName' ) ) {
-					ret.push( {
-						key: String( item.getAttribute( 'anchorName' ) ),
-						element: item
-					} );
-				}
-			}
+		for ( const feed of this._feeds ) {
+			ret = ret.concat( feed.getAnchors() );
 		}
 
 		return ret;
 	}
+
+	public _registerBuiltinFeed(): void {
+		this.addFeed( {
+			getAnchors: () => {
+				const model = this.editor.model;
+				const ret = [] as Array<AnchorItem>;
+
+				for ( const rootName of model.document.getRootNames() ) {
+					const root = model.document.getRoot( rootName )!;
+					const range = model.createRangeIn( root );
+
+					for ( const { item } of range ) {
+						if ( item.hasAttribute( 'anchorName' ) ) {
+							ret.push( {
+								key: String( item.getAttribute( 'anchorName' ) ),
+								element: item
+							} );
+						}
+					}
+				}
+
+				return ret;
+			}
+		} );
+	}
+
+	public addFeed( feed: AnchorFeed ): void {
+		this._feeds.push( feed );
+	}
+
+	private _feeds: Array<AnchorFeed> = [];
+}
+
+export interface AnchorFeed {
+	getAnchors(): Array<AnchorItem>;
 }
 
 type AnchorItem = {
