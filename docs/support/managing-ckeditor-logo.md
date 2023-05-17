@@ -47,7 +47,7 @@ where value is set in pixels.
 To change the alignment:
 
 ```json
-config.ui.poweredBy.side: "left"
+config.ui.poweredBy.side: 'left'
 ```
 
 The default option is `right`.
