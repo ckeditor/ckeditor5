@@ -8,11 +8,13 @@ meta-description: Managing the "Powered by CKEditor" logo
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open source installations** of CKEditor 5 (free users) display a small “Powered by CKEditor” logo in the bottom right corner of the editing area. This logo is only visible when editor is focused and only in the editable. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor. You can [read more about it](https://github.com/ckeditor/ckeditor5/issues/14082) on GitHub.
+Starting from version v38.0.0 onwards, all **open-source** installations** of CKEditor 5 (free users) display a small “Powered by CKEditor” logo in the bottom right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor. You can [read more about it](https://github.com/ckeditor/ckeditor5/issues/14082) on GitHub.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
-The logo **will not be visible to customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor 5 installation. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
+This logo is only visible when the editor is focused and only in the editable. The editor needs to have a minimal size of 350px x 50px to display the logo. It will be shown in all editor types.
+
+The logo **will not be displayed for customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor 5 installation. You can reach out to our Technical Support team, using [this form](https://ckeditor.com/contact/), if you have any questions.
 
 ## How to remove the "Powered by CKEditor" logo?
 
@@ -36,7 +38,7 @@ To change the default position and display it inside the container use this conf
 config.ui.poweredBy.position: 'inside'
 ```
 
-To customize the logo offset use following settings:
+To customize the logo offset use the following settings:
 
 ```json
 config.ui.poweredBy.verticalOffset: 10,
@@ -52,7 +54,8 @@ config.ui.poweredBy.side: 'left'
 ```
 
 The default option is `right`.
-You can also customize the text displayed in the logo's label:
+
+You can also customize the text displayed on the logo's label:
 
 ```json
 config.ui.poweredBy.label: 'Created with'
@@ -78,7 +81,7 @@ There is a set of ready-made CSS variables available dedicated to customizing th
 
 ### Customization example
 
-Below you will find an example on how the "Powered by CKEditor" logo can be customized in CSS:
+Below you will find an example of how the "Powered by CKEditor" logo can be customized in CSS:
 
 ```css
 /*
