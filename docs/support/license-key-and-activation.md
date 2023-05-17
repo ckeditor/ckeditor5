@@ -63,9 +63,7 @@ There are two license keys available:
 
 The new key available is the new format license key that is **only** valid for versions 38.0.0 or newer. The old key will work with CKE5 versions between v38.0.0+ and up to a version to be released in May 2024 (when we consider removing support for these keys), as long as the key itself is not expired.
 
-### Activate the product
-
-To install the plugins into your WYSIWYG editor, use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a custom CKEditor 5 build with the plugin enabled. Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
+## Activating the product
 
 You need to add the license key to your CKEditor 5 configuration. It is enough to add the license key once for the stand-alone features listed in this guide, no matter which and how many premium features you intend to use.
 
@@ -84,3 +82,5 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+Please note that in order to use premium features, you need to install the plugins into your WYSIWYG editor. To do it, use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a custom CKEditor 5 build with the plugin enabled. Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
