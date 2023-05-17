@@ -24,7 +24,7 @@ Please refer to the {@link support/obtaining-license-key Activating your product
 
 For open-source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over the watermark.
 
-The following properties can be configured:
+Full configuration reference is available in the {@link module:core/editor/editorconfig~EditorConfig#ui API documentation}. In short, the following properties can be configured:
 
 * position regarding the editor's bottom edge (the default is over the edge; it can be also displayed inside the container)
 * logo offset towards the configured editable's corner
