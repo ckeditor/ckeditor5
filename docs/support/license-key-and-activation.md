@@ -59,7 +59,7 @@ Once you enter the management console, you have access to the license key needed
 
 There are two license keys available:
 1. The old key for versions older than 38.0.0
-2. The new key for versions newer than 38.0.0
+2. The new key for versions 38.0.0 and newer
 
 The new key available is the new format license key that is **only** valid for versions 38.0.0 or newer. The old key will work with CKE5 versions between v38.0.0+ and up to a version to be released in May 2024 (when we consider removing support for these keys), as long as the key itself is not expired.
 
