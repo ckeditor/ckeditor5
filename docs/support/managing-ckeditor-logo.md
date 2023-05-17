@@ -32,7 +32,7 @@ The following properties can be configured:
 
 To change the default position and display it inside the container use this configuration option:
 ```json
-config.ui.poweredBy.position: "inside"
+config.ui.poweredBy.position: 'inside'
 ```
 
 To customize the logo offset use following settings:
