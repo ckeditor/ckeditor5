@@ -91,14 +91,18 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 			return;
 		}
 
-		const matchingOptions = getAutocompleteOptions( 'foo' ).filter( ( { key } ) => {
-			return key.indexOf( currentInputValue ) !== -1;
+		const matchingOptions = getAutocompleteOptions( 'foo' ).filter( ( { key, label } ) => {
+			return key.indexOf( currentInputValue ) !== -1 ||
+				( label && label.toLocaleLowerCase().indexOf( currentInputValue.toLocaleLowerCase() ) !== -1 );
 		} );
 
 		listView.items.add( getAutocompleteItemView( '🔗 ' + currentInputValue, currentInputValue ) );
 
 		for ( const option of matchingOptions ) {
-			listView.items.add( getAutocompleteItemView( '⚓︎ ' + option.key, option.key ) );
+			const label = option.label || option.key;
+			const itemView = getAutocompleteOption( `⚓︎ ${ label }`, option.key );
+
+			listView.items.add( itemView );
 		}
 	} );
 
