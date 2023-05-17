@@ -96,10 +96,6 @@ Below you will find an example of how the "Powered by CKEditor" logo can be cust
 	--ck-powered-by-background: linear-gradient(57deg, hsla(181, 70%, 45%, 0) 0%, hsl(41, 98%, 58%) 100%);
 	--ck-powered-by-border-color: hsl(0, 0%, 45%) transparent transparent hsl(0, 0%, 45%) ;
 }
-
-body {
-	background-color: hsl(0, 0%, 45%);
-}
 ```
 
 And editor's configuration:
