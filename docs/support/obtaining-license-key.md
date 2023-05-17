@@ -8,8 +8,8 @@ menu-title: Obtaining the license key
 
 This article aims to get you up and running with CKEditor 5 and the CKEditor premium features activation.
 
-The following user guide deals with activation of CKEditor 5 and the following premium features:
-* Non real-time collaboration features, including:
+The following user guide deals with the activation of CKEditor 5 and the following premium features:
+* Non-real-time collaboration features, including:
 	* {@link features/track-changes Track changes}
 	* {@link features/comments Comments}
 	* {@link features/revision-history Revision history}
@@ -35,7 +35,7 @@ If you wish to purchase a CKEditor 5 commercial license or a license to one of t
 
 If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features free trial](https://orders.ckeditor.com/trial/premium-features). After signing up, you will receive access to the customer dashboard (CKEditor Ecosystem dashboard).
 
-The trial is commitment-free and there is no need to provide credit card details in order to start it. The Premium Features Free Trial lets you test all premium features, including the ones listed above, the converter services and the CKBox file manager as well.
+The trial is commitment-free and there is no need to provide credit card details in order to start it. The Premium Features Free Trial lets you test all premium features, including the ones listed above, the converter services, and the CKBox file manager as well.
 
 ## Obtaining a license key
 
@@ -44,18 +44,18 @@ Follow this guide to get the license key necessary to activate your premium feat
 ### Log in to the CKEditor Ecosystem dashboard
 
 Log in to the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com). If this is the very first time you do it, you will receive a confirmation email and will be asked to create a password for your account. Keep it safe.
-<!-- Add info about CKEditor5 itself once it's there, with mention of two license keys from 38.0.0 -->
+
 ### Access the account dashboard
 
 After logging in, click "CKEditor" under the "Your products" header on the left. You will see the subscription parameters overview together with the management area below.
-<!-- Replace temporaryr trial screenshots with the real thing -->
-{@img assets/img/premium-features-trial-bundle.png 1064 Your CKEditor subsriptions in the customer dashboard.}
+
+{@img assets/img/ckeditor-dashboard.png 920 Your CKEditor subscriptions in the customer dashboard.}
 
 ### Copy the license key
 
-Once you enter the management console, you have access to the license key needed to run the features. Note that the same license key will be valid for both the productivity pack and other standalone features.
+Once you enter the management console, you have access to the license key needed to run the editor and the features. Note that the same license key will be valid for both the productivity pack and other standalone features, as well as CKEditor 5 itself.
 
-{@img assets/img/standalone.png 1030 Premium features license key in the management console.}
+{@img assets/img/ckeditor-key.png 822 Premium features license key in the management console.}
 
 There are two license keys available:
 1. The old key for versions older than 38.0.0
@@ -65,7 +65,7 @@ The new key available is the new format license key that is **only** valid for v
 
 ### Activate the product
 
-To install the plugins into your WYSIWYG editor, use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a custom CKEditor 5 build with the plugin enabled. Alternatively, refer to the installation sections in the plugins documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
+To install the plugins into your WYSIWYG editor, use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a custom CKEditor 5 build with the plugin enabled. Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
 
 You need to add the license key to your CKEditor 5 configuration. It is enough to add the license key once for the stand-alone features listed in this guide, no matter which and how many premium features you intend to use.
 
