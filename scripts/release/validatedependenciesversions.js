@@ -20,11 +20,11 @@ const isCKEditor5Package = require( './isckeditor5package' );
  * Validates if the versions of packages and their dependencies in specified directory match the provided version.
  *
  * @param {Object} options
- * @param {String} releaseDirectory Path to directory with packages to validate.
+ * @param {String} options.packagesDirectory Path to directory with packages to validate.
  * @param {String} options.version Version that all packages and their dependencies need to match.
  */
-module.exports = async function validateDependenciesVersions( { releaseDirectory, version } ) {
-	const normalizedReleaseDirectory = normalizeTrim( releaseDirectory );
+module.exports = async function validateDependenciesVersions( { packagesDirectory, version } ) {
+	const normalizedReleaseDirectory = normalizeTrim( packagesDirectory );
 	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
 	const pkgJsonPaths = await glob( globPattern, { absolute: true, nodir: true } );
 
