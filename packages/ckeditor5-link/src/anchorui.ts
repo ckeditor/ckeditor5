@@ -61,8 +61,10 @@ export default class AnchorUI extends Plugin {
 }
 
 function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( query: string ) => Array<AnchorItem> ) {
-	const listView: ListView & { isVisible?: boolean } = new ListView();
+	const listView: OptionsListView = new ListView();
 	const bind = listView.bindTemplate;
+
+	listView.items.delegate( 'execute' ).to( listView );
 
 	listView.set( {
 		isVisible: true
@@ -74,6 +76,10 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 				bind.if( 'isVisible', 'ck-hidden', value => !value )
 			]
 		}
+	} );
+
+	listView.on( 'execute', evt => {
+		acceptOption( evt.source as ButtonViewWithUrl, formView, listView );
 	} );
 
 	formView.urlInputView.fieldView.on( 'input', () => {
@@ -89,12 +95,10 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 			return key.indexOf( currentInputValue ) !== -1;
 		} );
 
-		listView.items.add( getAutocompleteOption( '🔗 ' + currentInputValue, currentInputValue ) );
+		listView.items.add( getAutocompleteItemView( '🔗 ' + currentInputValue, currentInputValue ) );
 
 		for ( const option of matchingOptions ) {
-			const itemView = getAutocompleteOption( '⚓︎ ' + option.key, option.key );
-
-			listView.items.add( itemView );
+			listView.items.add( getAutocompleteItemView( '⚓︎ ' + option.key, option.key ) );
 		}
 	} );
 
@@ -113,9 +117,7 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 			const selectedOption = getSelectedOption( listView );
 
 			if ( listView.isVisible && selectedOption ) {
-				formView.urlInputView.fieldView.value = ( selectedOption.children.first as ButtonViewWithUrl ).url;
-				listView.isVisible = false;
-				resetList( listView );
+				acceptOption( selectedOption.children.first as ButtonViewWithUrl, formView, listView );
 				domEvent.preventDefault();
 
 				return;
@@ -128,9 +130,17 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 	listView.bind( 'isVisible' ).to( formView.urlInputView, 'isFocused' );
 
 	formView.urlInputView.fieldWrapperChildren.add( listView );
+	formView.urlInputView.fieldView.focusTracker.add( listView.element! );
 }
 
-function getAutocompleteOption( label: string, url: string ): ListItemView {
+function acceptOption( button: ButtonViewWithUrl, formView: LinkFormView, listView: OptionsListView ) {
+	formView.urlInputView.fieldView.value = button.url;
+	listView.isVisible = false;
+	formView.urlInputView.focus();
+	resetList( listView );
+}
+
+function getAutocompleteItemView( label: string, url: string ): ListItemView {
 	const item = new ListItemView();
 	const button: ButtonViewWithUrl = new ButtonView();
 
@@ -140,6 +150,7 @@ function getAutocompleteOption( label: string, url: string ): ListItemView {
 	} );
 
 	button.label = label;
+	button.delegate( 'execute' ).to( item );
 	item.children.add( button );
 
 	return item;
@@ -228,3 +239,4 @@ function selectPreviousOption( listView: ListView ) {
 }
 
 type ButtonViewWithUrl = ButtonView & { url?: string };
+type OptionsListView = ListView & { isVisible?: boolean };
