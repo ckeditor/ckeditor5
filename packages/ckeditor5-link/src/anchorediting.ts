@@ -100,10 +100,12 @@ export default class AnchorEditing extends Plugin {
 					const range = model.createRangeIn( root );
 
 					for ( const { item } of range ) {
+						const isText = item.is( 'model:$text' ) || item.is( 'model:$textProxy' );
 						if ( item.hasAttribute( 'anchorName' ) ) {
 							ret.push( {
 								key: String( item.getAttribute( 'anchorName' ) ),
-								element: item
+								element: item,
+								label: isText ? item.data : undefined
 							} );
 						}
 					}
