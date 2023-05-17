@@ -807,9 +807,12 @@ describe( 'ImageResizeHandles', () => {
 
 				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
-					'[<imageInline ' +
-					`src="${ imageBaseUrl }" srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
-					'sizes="100vw" width="96"></imageInline>]' +
+						'[<imageInline ' +
+							`src="${ imageBaseUrl }" ` +
+							`srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
+							'sizes="100vw" ' +
+							'widthAttribute="96">' +
+						'</imageInline>]' +
 					'</paragraph>'
 				);
 
@@ -844,7 +847,7 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png"></p>';
+				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png" width="96"></p>';
 				expect( editor.getData() ).to.equal( expectedHtml );
 			} );
 

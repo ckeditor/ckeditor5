@@ -140,7 +140,7 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				setModelData( model,
-					'<imageBlock src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+					'<imageBlock src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 
@@ -173,12 +173,12 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
@@ -322,7 +322,7 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
 					);
 			} );
@@ -336,7 +336,7 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
 					);
 			} );
@@ -514,7 +514,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -524,12 +524,12 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
@@ -546,7 +546,7 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
-					'<imageBlock src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageBlock>'
+					'<imageBlock src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" ></imageBlock>'
 				);
 				const image = doc.getRoot().getChild( 0 );
 
