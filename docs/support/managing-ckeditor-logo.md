@@ -52,7 +52,11 @@ config.ui.poweredBy.side: 'left'
 ```
 
 The default option is `right`.
+You can also customize the text displayed in the logo's label:
 
+```json
+config.ui.poweredBy.label: 'Created with'
+```
 All above changes should be done in the {@link module:core/editor/editorconfig~EditorConfig editor config} file.
 
 There is a set of ready-made CSS variables available dedicated to customizing the style of the "Powered by CKEditor" logo.
