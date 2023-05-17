@@ -151,28 +151,6 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<figure class="image">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</figure>'
-				);
-			} );
-
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.data.downcastDispatcher.on( 'attribute:srcset:imageBlock', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
@@ -184,7 +162,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageBlock>'
 				);
 
@@ -347,22 +325,6 @@ describe( 'ImageBlockEditing', () => {
 						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
 						'</imageBlock>'
 					);
-			} );
-
-			it( 'should convert image with srcset and width attributes', () => {
-				editor.setData(
-					'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" />' +
-					'</figure>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<imageBlock ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageBlock>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -582,27 +544,6 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageBlock>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</figure>'
-				);
-			} );
-
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
 					'<imageBlock src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageBlock>'
@@ -620,26 +561,6 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-				const image = doc.getRoot().getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-					'</figure>'
-				);
-			} );
-
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.editing.downcastDispatcher.on( 'attribute:srcset:imageBlock', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
@@ -651,7 +572,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageBlock>'
 				);
 

@@ -157,28 +157,6 @@ describe( 'ImageInlineEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p>' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</p>'
-				);
-			} );
-
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.data.downcastDispatcher.on( 'attribute:srcset:imageInline', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
@@ -190,7 +168,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageInline></paragraph>'
 				);
 
@@ -327,20 +305,6 @@ describe( 'ImageInlineEditing', () => {
 							'</imageInline>' +
 						'</paragraph>'
 					);
-			} );
-
-			it( 'should convert image with srcset and width attributes', () => {
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageInline></paragraph>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -609,52 +573,11 @@ describe( 'ImageInlineEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</span></p>'
-				);
-			} );
-
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
 					'<paragraph>' +
 						'<imageInline src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageInline>' +
 					'</paragraph>'
-				);
-				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
-			} );
-
-			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
 				);
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -680,7 +603,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
 					'</imageInline></paragraph>'
 				);
 
