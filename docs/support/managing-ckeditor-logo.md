@@ -31,6 +31,7 @@ The following properties can be configured:
 * alignment: left or right side of the editable area
 
 To change the default position and display it inside the container use this configuration option:
+
 ```json
 config.ui.poweredBy.position: 'inside'
 ```
