@@ -104,7 +104,7 @@ npm install --save @ckeditor/ckeditor5-alignment
 And add it to your plugin list and toolbar configuration:
 
 ```js
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

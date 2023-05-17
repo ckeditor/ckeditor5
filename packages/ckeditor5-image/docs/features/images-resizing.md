@@ -39,9 +39,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 * Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that won't load the unnecessary `ImageResizeButtons` plugin:
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
-import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
+import { Image, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -143,10 +141,7 @@ As a result, your plugin setup should look like this: `plugins: [ 'ImageResizeEd
 This will enable the image resize feature only by means of the chosen UI: either a [dropdown](#using-resize-dropdown) or [standalone buttons](#using-standalone-resize-buttons)) in the image toolbar.
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeedititing';
-import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imageresizebuttons';
+import { Image, ImageResizeButtons, ImageResizeEditing, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -298,8 +293,7 @@ Check out the difference in the live demo below:
 To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import { Image, ImageResize } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

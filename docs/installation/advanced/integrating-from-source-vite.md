@@ -99,29 +99,28 @@ You can now import all the needed plugins and configurations into your code. If 
 ```js
 // ckeditor.js
 
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.builtinPlugins = [
-    EssentialsPlugin,
-    AutoformatPlugin,
-    BoldPlugin,
-    ItalicPlugin,
-    BlockQuotePlugin,
-    HeadingPlugin,
-    LinkPlugin,
-    ListPlugin,
-    ParagraphPlugin
+    Essentials,
+    Autoformat,
+    Bold,
+    Italic,
+    BlockQuote,
+    Heading,
+    Link,
+    List,
+    Paragraph
 ];
 
 ClassicEditor.defaultConfig = {
@@ -168,20 +167,19 @@ If you scaffolded your project using a Vite template with TypeScript, add the `c
 ```ts
 // ckeditor.ts
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-export default class CustomEditor extends ClassicEditor {}
+export default class ClassicEditor extends ClassicEditorBase {}
 
-CustomEditor.builtinPlugins = [
+ClassicEditor.builtinPlugins = [
     Essentials,
     Autoformat,
     Bold,
@@ -193,7 +191,7 @@ CustomEditor.builtinPlugins = [
     Paragraph
 ];
 
-CustomEditor.defaultConfig = {
+ClassicEditor.defaultConfig = {
     toolbar: {
         items: [
             'heading',
@@ -239,30 +237,29 @@ The second variant of how to run the editor is to use the creator class directly
 ```js
 // main.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
     .create( document.querySelector( '#app' ), {
         // The plugins are now passed directly to .create().
         plugins: [
-            EssentialsPlugin,
-            AutoformatPlugin,
-            BoldPlugin,
-            ItalicPlugin,
-            BlockQuotePlugin,
-            HeadingPlugin,
-            LinkPlugin,
-            ListPlugin,
-            ParagraphPlugin,
+            Essentials,
+            Autoformat,
+            Bold,
+            Italic,
+            BlockQuote,
+            Heading,
+            Link,
+            List,
+            Paragraph,
         ],
 
         // So is the rest of the default configuration.
@@ -297,8 +294,7 @@ You can also translate the above code using TypeScript.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';

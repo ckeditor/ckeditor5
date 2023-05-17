@@ -276,8 +276,7 @@ npm install --save @ckeditor/ckeditor5-link
 Then add the `Link` and `AutoLink` plugins to your plugin list:
 
 ```js
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -37,7 +37,7 @@ npm install --save @ckeditor/ckeditor5-html-support
 Then add it to the editor configuration:
 
 ```js
-import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
+import { HtmlComment } from '@ckeditor/ckeditor5-html-support';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
