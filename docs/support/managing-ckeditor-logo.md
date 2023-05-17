@@ -26,7 +26,7 @@ For open-source, free users, the "Powered by CKEditor" logo will always be displ
 
 The following properties can be configured:
 
-* position (the default is over the edge; it can be also displayed inside the container)
+* position regarding the editor's bottom edge (the default is over the edge; it can be also displayed inside the container)
 * logo offset towards the configured editable's corner
 * alignment: left or right side of the editable area
 
