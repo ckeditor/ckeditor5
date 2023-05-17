@@ -97,8 +97,18 @@ body {
 
 And editor's configuration:
 
-```json
-config.ui.poweredBy.position: "inside"
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		/* ... */
+		ui: {
+			poweredBy: {
+				position: 'inside'
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The final effect:
