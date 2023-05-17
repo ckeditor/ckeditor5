@@ -22,6 +22,7 @@ import {
 } from 'ckeditor5/src/ui';
 
 import '../theme/anchorui.css';
+import { scrollAncestorsToShowTarget } from 'ckeditor5/src/utils';
 
 /**
  * The anchor UI plugin.
@@ -180,6 +181,11 @@ function resetList( listView: ListView ) {
 	}
 }
 
+function selectButton( button: ButtonViewWithUrl ) {
+	button.isOn = true;
+	scrollAncestorsToShowTarget( button.element! );
+}
+
 function selectFirstOption( listView: ListView ) {
 	const items = listView.items as ViewCollection<ListItemView>;
 
@@ -187,7 +193,7 @@ function selectFirstOption( listView: ListView ) {
 		( item.children.first as ButtonView ).isOn = false;
 	}
 
-	( items.first?.children.first as ButtonView ).isOn = true;
+	selectButton( items.first?.children.first as ButtonViewWithUrl );
 }
 
 function selectLastOption( listView: ListView ) {
@@ -197,7 +203,7 @@ function selectLastOption( listView: ListView ) {
 		( item.children.first as ButtonView ).isOn = false;
 	}
 
-	( items.last?.children.first as ButtonView ).isOn = true;
+	selectButton( items.last?.children.first as ButtonViewWithUrl );
 }
 
 function selectNextOption( listView: ListView ) {
@@ -217,7 +223,7 @@ function selectNextOption( listView: ListView ) {
 		return;
 	}
 
-	( items.get( currentIndex as number + 1 )!.children.first as ButtonView ).isOn = true;
+	selectButton( items.get( currentIndex as number + 1 )!.children.first as ButtonView );
 	( selectedOption.children.first as ButtonView ).isOn = false;
 }
 
@@ -238,7 +244,7 @@ function selectPreviousOption( listView: ListView ) {
 		return;
 	}
 
-	( items.get( currentIndex as number - 1 )!.children.first as ButtonView ).isOn = true;
+	selectButton( items.get( currentIndex as number - 1 )!.children.first as ButtonView );
 	( selectedOption.children.first as ButtonView ).isOn = false;
 }
 
