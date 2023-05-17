@@ -1,10 +1,10 @@
 ---
 category: licensing
 order: 20
-menu-title: Obtaining the license key
+menu-title: License key and activation
 ---
 
-# Activating your product
+# License key and activation
 
 This article aims to get you up and running with CKEditor 5 and the CKEditor premium features activation.
 
