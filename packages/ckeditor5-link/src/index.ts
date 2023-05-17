@@ -15,6 +15,10 @@ export { default as LinkImageEditing } from './linkimageediting';
 export { default as LinkImageUI } from './linkimageui';
 export { default as AutoLink } from './autolink';
 
+export { default as Anchor } from './anchor';
+export { default as AnchorEditing, type AnchorFeed, type AnchorItem } from './anchorediting';
+export { default as AnchorUI } from './anchorui';
+
 export { LinkConfig } from './linkconfig';
 export { default as LinkCommand } from './linkcommand';
 export { default as UnlinkCommand } from './unlinkcommand';

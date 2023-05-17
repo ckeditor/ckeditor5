@@ -92,8 +92,8 @@ export default class AnchorEditing extends Plugin {
 	public _registerBuiltinFeed(): void {
 		this.addFeed( {
 			getAnchors: () => {
-				const model = this.editor.model;
 				const ret = [] as Array<AnchorItem>;
+				const model = this.editor.model;
 
 				for ( const rootName of model.document.getRootNames() ) {
 					const root = model.document.getRoot( rootName )!;
@@ -125,8 +125,9 @@ export interface AnchorFeed {
 	getAnchors(): Array<AnchorItem>;
 }
 
-type AnchorItem = {
+export type AnchorItem = {
 	key: string; // either anchor name or link id.
+	label?: string; // human readable label for the anchor.
 	element: any; // associated model item. // @todo: narrow down the type, e.g. text proxy
 };
 
