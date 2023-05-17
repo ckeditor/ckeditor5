@@ -20,6 +20,8 @@ import type {
 
 /**
  * Conversion for anchors.
+ *
+ * It also provides API to fetch all anchors in the document.
  */
 export default class AnchorEditing extends Plugin {
 	/**
@@ -75,4 +77,31 @@ export default class AnchorEditing extends Plugin {
 				}
 			} );
 	}
+
+	public getAnchors(): Array<AnchorItem> {
+		const model = this.editor.model;
+		const ret = [] as Array<AnchorItem>;
+
+		for ( const rootName of model.document.getRootNames() ) {
+			const root = model.document.getRoot( rootName )!;
+			const range = model.createRangeIn( root );
+
+			for ( const { item } of range ) {
+				if ( item.hasAttribute( 'anchorName' ) ) {
+					ret.push( {
+						key: String( item.getAttribute( 'anchorName' ) ),
+						element: item
+					} );
+				}
+			}
+		}
+
+		return ret;
+	}
 }
+
+type AnchorItem = {
+	key: string; // either anchor name or link id.
+	element: any; // associated model item. // @todo: narrow down the type, e.g. text proxy
+};
+
