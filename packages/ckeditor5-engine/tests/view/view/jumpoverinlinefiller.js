@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
 
 import createViewRoot from '../_utils/createroot';

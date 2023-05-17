@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import UIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttribtueElement from '../../../src/view/attributeelement';

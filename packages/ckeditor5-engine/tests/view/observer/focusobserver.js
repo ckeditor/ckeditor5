@@ -8,7 +8,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import FocusObserver from '../../../src/view/observer/focusobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';

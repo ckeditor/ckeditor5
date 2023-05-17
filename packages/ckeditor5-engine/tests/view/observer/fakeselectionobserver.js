@@ -7,7 +7,7 @@
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import DomEventData from '../../../src/view/observer/domeventdata';
 import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';

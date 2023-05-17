@@ -6,7 +6,7 @@
 /* globals document */
 
 import KeyObserver from '../../../src/view/observer/keyobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 

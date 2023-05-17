@@ -11,7 +11,7 @@ import {
 	needsPlaceholder
 } from '../../src/view/placeholder';
 import createViewRoot from './_utils/createroot';
-import View from '../../src/view/view';
+import View from '../../src/view/editingview';
 import ViewRange from '../../src/view/range';
 import { setData } from '../../src/dev-utils/view';
 import { StylesProcessor } from '../../src/view/stylesmap';

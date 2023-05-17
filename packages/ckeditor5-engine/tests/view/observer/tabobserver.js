@@ -6,7 +6,7 @@
 /* globals document */
 
 import TabObserver from '../../../src/view/observer/tabobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import createViewRoot from '../../../tests/view/_utils/createroot';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';

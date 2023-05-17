@@ -26,8 +26,6 @@ import UpcastDispatcher, {
 import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
 
 import ViewDocumentFragment from '../view/documentfragment';
-import ViewDocument from '../view/document';
-import ViewDowncastWriter from '../view/downcastwriter';
 import type ViewElement from '../view/element';
 import type { StylesProcessor } from '../view/stylesmap';
 import type { MatcherPattern } from '../view/matcher';
@@ -46,6 +44,7 @@ import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
 import type DataProcessor from '../dataprocessor/dataprocessor';
 
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import View from '../view/view';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -88,9 +87,9 @@ export default class DataController extends EmitterMixin() {
 	public readonly upcastDispatcher: UpcastDispatcher;
 
 	/**
-	 * The view document used by the data controller.
+	 * TODO
 	 */
-	public readonly viewDocument: ViewDocument;
+	public readonly view: View;
 
 	/**
 	 * Styles processor used during the conversion.
@@ -107,12 +106,6 @@ export default class DataController extends EmitterMixin() {
 	 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
 	 */
 	public processor: DataProcessor;
-
-	/**
-	 * The view downcast writer just for data conversion purposes, i.e. to modify
-	 * the {@link #viewDocument}.
-	 */
-	private readonly _viewWriter: ViewDowncastWriter;
 
 	/**
 	 * Creates a data controller instance.
@@ -137,11 +130,10 @@ export default class DataController extends EmitterMixin() {
 			schema: model.schema
 		} );
 
-		this.viewDocument = new ViewDocument( stylesProcessor );
+		this.view = new View( stylesProcessor );
 		this.stylesProcessor = stylesProcessor;
-		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
+		this.htmlProcessor = new HtmlDataProcessor( this.view.document );
 		this.processor = this.htmlProcessor;
-		this._viewWriter = new ViewDowncastWriter( this.viewDocument );
 
 		// Define default converters for text and elements.
 		//
@@ -271,15 +263,12 @@ export default class DataController extends EmitterMixin() {
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
 		options: Record<string, unknown> = {}
 	): ViewDocumentFragment {
-		const viewDocument = this.viewDocument;
-		const viewWriter = this._viewWriter;
-
 		// Clear bindings so the call to this method returns correct results.
 		this.mapper.clearBindings();
 
 		// First, convert elements.
 		const modelRange = ModelRange._createIn( modelElementOrFragment );
-		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
+		const viewDocumentFragment = new ViewDocumentFragment( this.view.document );
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
@@ -292,7 +281,9 @@ export default class DataController extends EmitterMixin() {
 			modelElementOrFragment.markers :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
-		this.downcastDispatcher.convert( modelRange, markers, viewWriter, options );
+		this.view.change( writer => {
+			this.downcastDispatcher.convert( modelRange, markers, writer, options );
+		} );
 
 		return viewDocumentFragment;
 	}

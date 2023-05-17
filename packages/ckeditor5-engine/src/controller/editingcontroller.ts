@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import RootEditableElement from '../view/rooteditableelement';
-import View from '../view/view';
+import EditingView from '../view/editingview';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher, {
 	type DowncastInsertEvent,
@@ -30,6 +30,7 @@ import {
 	insertText,
 	remove
 } from '../conversion/downcasthelpers';
+import type View from '../view/view';
 
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
@@ -62,7 +63,7 @@ export default class EditingController extends ObservableMixin() {
 	/**
 	 * Editing view controller.
 	 */
-	public readonly view: View;
+	public readonly view: EditingView;
 
 	/**
 	 * A mapper that describes the model-view binding.
@@ -84,7 +85,7 @@ export default class EditingController extends ObservableMixin() {
 		super();
 
 		this.model = model;
-		this.view = new View( stylesProcessor );
+		this.view = new EditingView( stylesProcessor );
 		this.mapper = new Mapper();
 
 		this.downcastDispatcher = new DowncastDispatcher( {

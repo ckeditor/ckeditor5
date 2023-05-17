@@ -6,7 +6,7 @@
 /* globals document */
 
 import ClickObserver from '../../../src/view/observer/clickobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'ClickObserver', () => {

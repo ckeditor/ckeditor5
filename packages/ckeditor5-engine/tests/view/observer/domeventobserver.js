@@ -7,7 +7,7 @@
 
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import Observer from '../../../src/view/observer/observer';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import UIElement from '../../../src/view/uielement';
 import createViewRoot from '../_utils/createroot';
 import { StylesProcessor } from '../../../src/view/stylesmap';

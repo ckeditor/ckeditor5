@@ -5,7 +5,7 @@
 
 /* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
 
-import View from '../../src/view/view';
+import View from '../../src/view/editingview';
 import ViewElement from '../../src/view/element';
 import ViewEditableElement from '../../src/view/editableelement';
 import ViewContainerElement from '../../src/view/containerelement';

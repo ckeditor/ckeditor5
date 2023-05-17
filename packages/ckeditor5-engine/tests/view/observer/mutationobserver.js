@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
 import RawElement from '../../../src/view/rawelement';

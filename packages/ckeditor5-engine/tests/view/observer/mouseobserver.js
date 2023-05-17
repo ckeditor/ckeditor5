@@ -6,7 +6,7 @@
 /* globals document */
 
 import MouseObserver from '../../../src/view/observer/mouseobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'MouseObserver', () => {

@@ -5,7 +5,7 @@
 
 /* globals document, console, setTimeout */
 
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import Observer from '../../../src/view/observer/observer';
 import KeyObserver from '../../../src/view/observer/keyobserver';
 import TabObserver from '../../../src/view/observer/tabobserver';

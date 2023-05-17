@@ -8,7 +8,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import InputObserver from '../../../src/view/observer/inputobserver';
 import DataTransfer from '../../../src/view/datatransfer';
 import Range from '../../../src/view/range';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 import createViewRoot from '../_utils/createroot';

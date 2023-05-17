@@ -6,7 +6,7 @@
 /* globals document */
 
 import DomEventData from '../../../src/view/observer/domeventdata';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomEventData', () => {

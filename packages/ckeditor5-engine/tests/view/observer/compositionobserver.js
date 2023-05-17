@@ -5,7 +5,7 @@
 
 /* globals document */
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
-import View from '../../../src/view/view';
+import View from '../../../src/view/editingview';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'CompositionObserver', () => {
