@@ -21,6 +21,8 @@ import {
 	type ViewCollection
 } from 'ckeditor5/src/ui';
 
+import '../theme/anchorui.css';
+
 /**
  * The anchor UI plugin.
  */
