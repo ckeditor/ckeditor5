@@ -94,7 +94,7 @@ body {
 }
 ```
 
-And
+And editor's configuration:
 
 ```json
 config.ui.poweredBy.position: "inside"
