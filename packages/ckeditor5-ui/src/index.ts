@@ -44,6 +44,7 @@ export { default as FocusCycler, type FocusableView } from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
 export { default as InputView } from './input/inputview';
+export { default as SelectView, OptionView } from './select/selectview';
 export { default as InputTextView } from './inputtext/inputtextview';
 export { default as InputNumberView } from './inputnumber/inputnumberview';
 
