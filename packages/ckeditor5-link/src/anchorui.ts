@@ -100,7 +100,7 @@ function enableAutoComplete( formView: LinkFormView, getAutocompleteOptions: ( q
 
 		for ( const option of matchingOptions ) {
 			const label = option.label || option.key;
-			const itemView = getAutocompleteOption( `⚓︎ ${ label }`, option.key );
+			const itemView = getAutocompleteItemView( `⚓︎ ${ label }`, option.key );
 
 			listView.items.add( itemView );
 		}
