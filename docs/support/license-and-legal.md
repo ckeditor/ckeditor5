@@ -21,4 +21,3 @@ Where not otherwise indicated, all CKEditor 5 content is authored by CKSource en
 ## Trademarks
 
 CKEditor is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com/) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.
-
