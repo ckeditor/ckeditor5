@@ -79,7 +79,7 @@ const tasks = new Listr( [
 					task: () => {
 						return releaseTools.updateDependencies( {
 							// We do not use caret ranges by purpose. See: #14046.
-							version: '^' + latestVersion,
+							version: latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
 							shouldUpdateVersionCallback: isCKEditor5Package
 						} );

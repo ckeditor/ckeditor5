@@ -14,9 +14,7 @@
 module.exports = async function updatePackageEntryPoint( packagePath ) {
 	const upath = require( 'upath' );
 	const fs = require( 'fs-extra' );
-
-	// All paths are resolved from the root repository directory.
-	const isTypeScriptPackage = require( './scripts/release/utils/istypescriptpackage' );
+	const path = require( 'upath' );
 
 	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
 		return;
@@ -34,4 +32,29 @@ module.exports = async function updatePackageEntryPoint( packagePath ) {
 	pkgJson.types = main.replace( /\.ts$/, '.d.ts' );
 
 	return fs.writeJson( packageJsonPath, pkgJson );
+
+	/**
+	 * @param {String} packagePath
+	 * @returns {Promise.<Boolean>}
+	 */
+	function isTypeScriptPackage( packagePath ) {
+		const packageJsonPath = path.join( packagePath, 'package.json' );
+		const packageJson = require( packageJsonPath );
+
+		// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
+		// the package is written in TS.
+		if ( packageJson.main ) {
+			return packageJson.main.includes( '.ts' );
+		}
+
+		// Otherwise, let's check if the package contains a `tsconfig.json` file.
+		return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
+	}
+
+	function checkFileExists( file ) {
+		return fs.access( file, fs.constants.F_OK )
+			.then( () => true )
+			.catch( () => false );
+	}
 };
+
