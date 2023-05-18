@@ -22,6 +22,10 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
+
+// `executeInParallel()` is executed thrice.
+EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
+
 const abortController = new AbortController();
 const PACKAGES_DIRECTORY = 'packages';
 const RELEASE_DIRECTORY = 'release';
@@ -29,9 +33,6 @@ const RELEASE_DIRECTORY = 'release';
 // TODO: Nightly.
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
-
-// `executeInParallel()` is executed thrice.
-EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
 process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
