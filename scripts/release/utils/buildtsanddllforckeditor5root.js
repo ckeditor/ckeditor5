@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -12,6 +10,6 @@
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = async function buildTsAndDllForCkeditor5Root() {
-	await tools.shExec( 'yarn run build', { async: true } );
-	await tools.shExec( 'yarn run dll:build --skip-packages-dll', { async: true } );
+	await tools.shExec( 'yarn run build', { async: true, verbosity: 'silent' } );
+	await tools.shExec( 'yarn run dll:build --skip-packages-dll', { async: true, verbosity: 'silent' } );
 };
