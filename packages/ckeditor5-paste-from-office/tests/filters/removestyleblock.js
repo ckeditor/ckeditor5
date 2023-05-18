@@ -37,5 +37,44 @@ describe( 'PasteFromOffice - filters', () => {
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
+
+		it( 'works with multiple consecutive <style> tags', () => {
+			const inputData =
+				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>' +
+				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>' +
+				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			removeStyleBlock( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+		} );
+
+		it( 'works with multiple non-consecutive <style> tags', () => {
+			const inputData =
+				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+				'<style type="text/css"><!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}--></style>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			removeStyleBlock( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+		} );
 	} );
 } );

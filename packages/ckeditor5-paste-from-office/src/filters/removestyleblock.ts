@@ -15,7 +15,7 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
  * @param documentFragment element `data.content` obtained from clipboard
  */
 export default function removeStyleBlock( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
-	for ( const child of documentFragment.getChildren() ) {
+	for ( const child of Array.from( documentFragment.getChildren() ) ) {
 		if ( child.is( 'element', 'style' ) ) {
 			writer.remove( child );
 		}
