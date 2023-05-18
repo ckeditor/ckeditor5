@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
+"Language-Team: Japanese (https://app.transifex.com/ckeditor/teams/11143/ja/)\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -111,3 +111,7 @@ msgstr "エディター ブロック コンテンツ ツールバー"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "エディター コンテクスト ツールバー"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

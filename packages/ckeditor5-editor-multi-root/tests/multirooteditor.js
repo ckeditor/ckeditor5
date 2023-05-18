@@ -18,6 +18,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -554,6 +555,166 @@ describe( 'MultiRootEditor', () => {
 
 			expect( root ).not.to.be.null;
 			expect( root.isAttached() ).to.be.false;
+		} );
+	} );
+
+	describe( 'model.canEditAt()', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should return false when editor is in read-only mode', () => {
+			editor.enableReadOnlyMode( 'test' );
+			const result = editor.model.canEditAt( null );
+
+			expect( result ).to.be.false;
+		} );
+
+		it( 'should work with all kind of selectables', () => {
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const position = editor.model.createPositionAt( element, 0 );
+			const range = editor.model.createRangeOn( element );
+			const ranges = [ range ];
+			const emptySelection = editor.model.createSelection();
+
+			const resultSelection = editor.model.canEditAt( editor.model.document.selection );
+			const resultPos = editor.model.canEditAt( position );
+			const resultRange = editor.model.canEditAt( range );
+			const resultNode = editor.model.canEditAt( element );
+			const resultRanges = editor.model.canEditAt( ranges );
+			const resultEmptySelection = editor.model.canEditAt( emptySelection );
+			const resultNull = editor.model.canEditAt( null );
+
+			expect( resultSelection ).to.be.true;
+			expect( resultPos ).to.be.true;
+			expect( resultRange ).to.be.true;
+			expect( resultNode ).to.be.true;
+			expect( resultRanges ).to.be.true;
+			expect( resultEmptySelection ).to.be.true;
+			expect( resultNull ).to.be.true;
+		} );
+
+		it( 'should always return false if editor is in read-only state', () => {
+			editor.enableReadOnlyMode( 'test' );
+
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const position = editor.model.createPositionAt( element, 0 );
+			const range = editor.model.createRangeOn( element );
+			const ranges = [ range ];
+			const emptySelection = editor.model.createSelection();
+
+			const resultSelection = editor.model.canEditAt( editor.model.document.selection );
+			const resultPos = editor.model.canEditAt( position );
+			const resultRange = editor.model.canEditAt( range );
+			const resultNode = editor.model.canEditAt( element );
+			const resultRanges = editor.model.canEditAt( ranges );
+			const resultEmptySelection = editor.model.canEditAt( emptySelection );
+			const resultNull = editor.model.canEditAt( null );
+
+			expect( resultSelection ).to.be.false;
+			expect( resultPos ).to.be.false;
+			expect( resultRange ).to.be.false;
+			expect( resultNode ).to.be.false;
+			expect( resultRanges ).to.be.false;
+			expect( resultEmptySelection ).to.be.false;
+			expect( resultNull ).to.be.false;
+		} );
+
+		it( 'should return false when given root is disabled', () => {
+			editor.disableRoot( 'main' );
+
+			const element = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const result = editor.model.canEditAt( element );
+
+			expect( result ).to.be.false;
+		} );
+	} );
+
+	describe( 'enabling / disabling root', () => {
+		beforeEach( async () => {
+			editor = await MultiRootEditor.create(
+				{ main: '<p>Main.</p>', second: '<table><tr><td>Foo.</td></tr></table>' },
+				{ plugins: [ Paragraph, Table, Undo ] }
+			);
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should be able to disable particular root', () => {
+			editor.disableRoot( 'second' );
+
+			const mainElement = editor.model.document.getRoot( 'main' ).getChild( 0 );
+			const secondElement = editor.model.document.getRoot( 'second' ).getChild( 0 );
+
+			const mainResult = editor.model.canEditAt( mainElement );
+			const secondResult = editor.model.canEditAt( secondElement );
+
+			expect( mainResult ).to.be.true;
+			expect( secondResult ).to.be.false;
+		} );
+
+		it( 'should throw when trying to disable $graveyard root', () => {
+			expect( () => {
+				editor.disableRoot( '$graveyard' );
+			} ).to.throw( CKEditorError, 'multi-root-editor-cannot-disable-graveyard-root' );
+		} );
+
+		it( 'should be able to enable disabled root', () => {
+			editor.disableRoot( 'second' );
+
+			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
+			let result = editor.model.canEditAt( element );
+
+			expect( result ).to.be.false;
+
+			editor.enableRoot( 'second' );
+			result = editor.model.canEditAt( element );
+
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should use lockIds for enabling / disabling roots', () => {
+			const element = editor.model.document.getRoot( 'second' ).getChild( 0 );
+
+			editor.disableRoot( 'second', 'firstLock' );
+			editor.disableRoot( 'second', 'secondLock' );
+			editor.disableRoot( 'second', 'secondLock' );
+
+			editor.enableRoot( 'second', 'firstLock' );
+			editor.enableRoot( 'second', 'differentLock' );
+
+			let result = editor.model.canEditAt( element );
+			expect( result ).to.be.false;
+
+			editor.enableRoot( 'second', 'secondLock' );
+
+			result = editor.model.canEditAt( element );
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should manage view editables isReadOnly', () => {
+			const secondViewRoot = editor.editing.view.document.getRoot( 'second' );
+			// Figure, table (0 = div UI element, 1 = table), tbody, tr, td.
+			const secondViewTableCell = secondViewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			expect( secondViewRoot.isReadOnly ).to.be.false;
+			expect( secondViewTableCell.isReadOnly ).to.be.false;
+
+			editor.disableRoot( 'second' );
+
+			expect( secondViewRoot.isReadOnly ).to.be.true;
+			expect( secondViewTableCell.isReadOnly ).to.be.true;
+
+			editor.enableRoot( 'second' );
+
+			expect( secondViewRoot.isReadOnly ).to.be.false;
+			expect( secondViewTableCell.isReadOnly ).to.be.false;
 		} );
 	} );
 

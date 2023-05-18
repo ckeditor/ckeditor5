@@ -9,6 +9,7 @@
 
 /**
  * @param {String} packagePath
+ * @returns {Promise}
  */
 module.exports = function prepareDllBuildsCallback( packagePath ) {
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -18,13 +19,13 @@ module.exports = function prepareDllBuildsCallback( packagePath ) {
 	const packageJson = require( packageJsonPath );
 
 	if ( !isDllPackage() ) {
-		return;
+		return Promise.resolve();
 	}
 
-	tools.shExec( 'yarn run dll:build', {
+	return tools.shExec( 'yarn run dll:build', {
 		cwd: packagePath,
 		verbosity: 'error'
-	} );
+	}, { async: true } );
 
 	function isDllPackage() {
 		return 'dll:build' in ( packageJson.scripts || {} );

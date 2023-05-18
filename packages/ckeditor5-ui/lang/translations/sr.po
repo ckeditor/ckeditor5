@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (https://www.transifex.com/ckeditor/teams/11143/sr/)\n"
+"Language-Team: Serbian (https://app.transifex.com/ckeditor/teams/11143/sr/)\n"
 "Language: sr\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -111,3 +111,7 @@ msgstr "Трака са алаткама за блокирање садржај�
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Контекстуална трака са алаткама Едитор"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

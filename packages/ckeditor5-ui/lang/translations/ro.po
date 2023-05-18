@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Language-Team: Romanian (https://app.transifex.com/ckeditor/teams/11143/ro/)\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
@@ -111,3 +111,7 @@ msgstr "Bară de instrumente editor pentru blocuri de conținut"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Bară contextuală de instrumente editor"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

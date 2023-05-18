@@ -304,6 +304,10 @@ export default abstract class Editor extends ObservableMixin() {
 
 		this.model = new Model();
 
+		this.on( 'change:isReadOnly', () => {
+			this.model.document.isReadOnly = this.isReadOnly;
+		} );
+
 		const stylesProcessor = new StylesProcessor();
 
 		this.data = new DataController( this.model, stylesProcessor );

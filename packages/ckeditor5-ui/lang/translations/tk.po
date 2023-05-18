@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Turkmen (https://www.transifex.com/ckeditor/teams/11143/tk/)\n"
+"Language-Team: Turkmen (https://app.transifex.com/ckeditor/teams/11143/tk/)\n"
 "Language: tk\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -110,4 +110,8 @@ msgstr ""
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
+msgstr ""
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
 msgstr ""
