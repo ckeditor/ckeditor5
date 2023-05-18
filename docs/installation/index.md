@@ -16,9 +16,9 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 </info-box>
 </span>
 
-<!-- <info-box>
+<info-box>
 	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
-</info-box> -->
+</info-box>
 
 ## Migrating from CKEditor 4
 
@@ -57,7 +57,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
 	const QUIZ_RESOLUTION_BUTTON_DEFINITIONS = [
 		{
@@ -367,4 +367,4 @@ div.quiz-pane[id="quiz-start"] p {
 	flex-wrap: nowrap;
 	align-items: center;
 }
-</style> -->
+</style>
