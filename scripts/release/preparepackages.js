@@ -22,14 +22,20 @@ const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
+const abortController = new AbortController();
+const PACKAGES_DIRECTORY = 'packages';
+const RELEASE_DIRECTORY = 'release';
+
+// TODO: Nightly.
+const latestVersion = releaseTools.getLastFromChangelog();
+const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
 // `executeInParallel()` is executed thrice.
 EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
-const abortController = new AbortController();
-const PACKAGES_DIRECTORY = 'packages';
-const RELEASE_DIRECTORY = 'release';
-const latestVersion = releaseTools.getLastFromChangelog();
+process.on( 'SIGINT', () => {
+	abortController.abort( 'SIGINT' );
+} );
 
 const taskOptions = {
 	rendererOptions: {
@@ -37,13 +43,24 @@ const taskOptions = {
 	}
 };
 
-process.on( 'SIGINT', () => {
-	abortController.abort( 'SIGINT' );
-} );
-
-// TODO: Verify the current branch.
-
 const tasks = new Listr( [
+	{
+		title: 'Verify the repository.',
+		task: async () => {
+			const errors = await releaseTools.validateRepositoryToRelease( {
+				version: latestVersion,
+				changes: versionChangelog,
+				branch: 'release'
+			} );
+
+			if ( !errors.length ) {
+				return;
+			}
+
+			return Promise.reject( 'Aborted due to errors.\n' + errors.map( message => `* ${ message }` ).join( '\n' ) );
+		},
+		skip: cliArguments.nightly
+	},
 	{
 		title: 'Preparation phase.',
 		task: ( _, task ) => {
@@ -61,6 +78,7 @@ const tasks = new Listr( [
 					title: 'Updating dependencies.',
 					task: () => {
 						return releaseTools.updateDependencies( {
+							// We do not use caret ranges by purpose. See: #14046.
 							version: '^' + latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
 							shouldUpdateVersionCallback: isCKEditor5Package
@@ -165,11 +183,15 @@ const tasks = new Listr( [
 					...ctx.updatedFiles
 				]
 			} );
-		}
+		},
+		skip: cliArguments.nightly
 	}
 ], taskOptions );
 
 tasks.run()
 	.catch( err => {
+		process.exitCode = 1;
+
+		console.log( '' );
 		console.error( err );
 	} );

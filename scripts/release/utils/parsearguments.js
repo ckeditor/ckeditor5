@@ -11,12 +11,14 @@ const minimist = require( 'minimist' );
 
 /**
  * @param {Array.<String>} cliArguments
- * @returns {Object} options
- * @returns {Number} options.concurrency
- * @returns {Array.<String>|null} options.packages
+ * @returns {ReleaseOptions} options
  */
 module.exports = function parseArguments( cliArguments ) {
 	const config = {
+		boolean: [
+			'nightly'
+		],
+
 		number: [
 			'concurrency'
 		],
@@ -26,6 +28,7 @@ module.exports = function parseArguments( cliArguments ) {
 		],
 
 		default: {
+			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
 			packages: null
 		}
@@ -39,3 +42,13 @@ module.exports = function parseArguments( cliArguments ) {
 
 	return options;
 };
+
+/**
+ * @typedef {Object} ReleaseOptions
+ *
+ * @property {Boolean} nightly
+ *
+ * @property {Number} concurrency
+ *
+ * @property {Array.<String>|null} packages
+ */
